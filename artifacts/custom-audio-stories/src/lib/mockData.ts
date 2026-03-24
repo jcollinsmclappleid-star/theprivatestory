@@ -1,4 +1,4 @@
-import type { Story, Series, Scene } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Story, Series, Scene } from "@workspace/api-client-react";
 
 const STOCK_COVERS = [
   "https://images.unsplash.com/photo-1510215682820-2216503c5d6c?w=800&q=80", // Wine glass

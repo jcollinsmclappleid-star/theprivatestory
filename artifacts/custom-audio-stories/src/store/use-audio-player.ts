@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Story } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Story } from "@workspace/api-client-react";
 
 interface AudioPlayerState {
   currentStory: Story | null;

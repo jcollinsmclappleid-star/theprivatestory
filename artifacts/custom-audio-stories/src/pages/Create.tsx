@@ -108,14 +108,16 @@ export default function Create() {
 
     try {
       await generateMutation.mutateAsync({
-        listenerName: data.listenerName ?? "",
-        mood: data.mood,
-        intensity: data.intensity,
-        voiceFeel: data.voiceFeel,
-        storyLength: data.storyLength,
-        scenarioPrompt: data.scenarioPrompt,
-        cinematicVisuals: data.cinematicVisuals,
-        emotionalFocus: data.emotionalFocus,
+        data: {
+          listenerName: data.listenerName ?? "",
+          mood: data.mood,
+          intensity: data.intensity,
+          voiceFeel: data.voiceFeel,
+          storyLength: data.storyLength,
+          scenarioPrompt: data.scenarioPrompt,
+          cinematicVisuals: data.cinematicVisuals,
+          emotionalFocus: data.emotionalFocus,
+        },
       });
     } finally {
       timers.forEach(clearTimeout);

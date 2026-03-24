@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Lock, Sparkles } from "lucide-react";
-import type { Story } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Story } from "@workspace/api-client-react";
 
 export function StoryCard({ story, className = "" }: { story: Story, className?: string }) {
   return (

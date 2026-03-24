@@ -1,5 +1,5 @@
 import { StoryCard } from "./StoryCard";
-import type { Story } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { Story } from "@workspace/api-client-react";
 
 interface RowSliderProps {
   title: string;

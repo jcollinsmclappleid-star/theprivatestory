@@ -91,6 +91,40 @@ Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used b
 
 Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
 
+### `artifacts/custom-audio-stories` (`@workspace/custom-audio-stories`)
+
+React + Vite frontend for the Custom Audio Stories app. Premium dark UI (Netflix × Calm aesthetic).
+
+- Pages: Home, Browse, Search, Create, StoryDetail, SeriesList, SeriesDetail, Library (coming Task #4)
+- The Create page runs the full AI story generation pipeline with 7 loading phases
+- Audio player with scene-sync (image changes as audio progresses) via `use-audio-player` Zustand store
+- Connects to API server via generated React Query hooks from `@workspace/api-client-react`
+
+### `artifacts/api-server` AI Generation Pipeline
+
+The API server at `/api/generate-full-story` runs a fully hidden pipeline:
+
+1. **normaliseIntake()** — validates and enriches raw user input before anything else
+2. **Request hash caching** — deterministic hash(name+mood+intensity+length+scenario+...) checked against `data/generatedCache.json` for instant repeat-request returns
+3. **planStory()** — hidden GPT-4o story architect with Story Bible pools (4 emotional arcs, 6 relationship dynamics, 5 conflict types, 5 ending types, 4 sensory palettes) for controlled variety. Returns brief with `recommendation_tags` and `quality_target`.
+4. **writeStoryFromBrief()** — GPT-4o story writer producing scenes with `emotionalShift` per scene
+5. **qcStory()** — 7-dimension quality evaluation (emotional_depth, specificity, pacing, scene_progression, originality, sensory_detail, ending_strength). Threshold 7.5 average, ending_strength >= 7
+6. **rewriteStory()** — targeted rewrite (max one pass) using one of 5 strategies: rewrite_ending, increase_specificity, tighten_scene_flow, increase_vulnerability, rotate_dynamic_or_setting
+7. **buildImagePrompts()** — cohesive image prompt generation for cover + all scenes
+8. **Parallel**: generateAllImages() + generateAudioFile() — images via OpenAI, audio via ElevenLabs
+
+Generated stories persisted to `artifacts/api-server/data/stories.json`. Cache entries in `data/generatedCache.json`.
+
+### `artifacts/api-server/src/lib/storage.ts`
+
+JSON file persistence layer for all server-side data. Files live at `artifacts/api-server/data/`:
+- `stories.json` — all generated stories by ID
+- `generatedCache.json` — request hash → story ID for deduplication
+- `users.json` — taste profiles + saved/generated story IDs per userId (used in Task #4+)
+- `progress.json` — listening progress per userId/storyId (used in Task #4+)
+
+Exports: `storiesStore`, `usersStore`, `progressStore`, `generatedCacheStore` — each with typed get/set/getAll methods. Atomic writes via temp file + rename.
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.

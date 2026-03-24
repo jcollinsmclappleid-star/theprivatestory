@@ -21,4 +21,6 @@ export interface StoryBrief {
   recurring_motif: string;
   title_direction: string;
   image_style_direction: string;
+  recommendation_tags?: string[];
+  quality_target?: string;
 }

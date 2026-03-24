@@ -12,5 +12,6 @@ export interface Scene {
   text: string;
   visualPrompt: string;
   durationEstimate: number;
+  emotionalShift?: string;
   image?: string;
 }

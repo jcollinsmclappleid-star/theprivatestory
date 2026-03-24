@@ -37,6 +37,8 @@ const SAMPLE_PROMPTS = [
 const LOADING_PHASES = [
   { label: "Architecting your story…", sub: "Building the emotional arc and scene structure" },
   { label: "Writing the narrative…", sub: "Crafting the scenes, tension, and pacing" },
+  { label: "Reviewing your story…", sub: "Checking emotional quality and depth" },
+  { label: "Refining the ending…", sub: "Ensuring every scene lands the way it should" },
   { label: "Composing the visuals…", sub: "Designing cinematic imagery for each scene" },
   { label: "Rendering the artwork…", sub: "Generating premium visuals in parallel" },
   { label: "Narrating your story…", sub: "Bringing the voice to life" },
@@ -98,7 +100,7 @@ export default function Create() {
     setStep("generating");
     setLoadingPhase(0);
 
-    const phaseMs = [8000, 25000, 15000, 40000, 25000];
+    const phaseMs = [8000, 20000, 12000, 12000, 12000, 35000, 20000];
     const timers: ReturnType<typeof setTimeout>[] = [];
     let cumulativeMs = 0;
     phaseMs.forEach((ms, i) => {

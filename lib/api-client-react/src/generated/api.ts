@@ -29,6 +29,9 @@ import type {
   GetStoriesParams,
   HealthStatus,
   ImagePrompts,
+  QcResult,
+  QcStoryRequest,
+  RewriteStoryRequest,
   Series,
   Story,
   StoryBrief,
@@ -621,6 +624,178 @@ export const useGenerateStory = <
   TContext
 > => {
   return useMutation(getGenerateStoryMutationOptions(options));
+};
+
+/**
+ * @summary Quality-check a generated story against its brief
+ */
+export const getQcStoryUrl = () => {
+  return `/api/qc-story`;
+};
+
+export const qcStory = async (
+  qcStoryRequest: QcStoryRequest,
+  options?: RequestInit,
+): Promise<QcResult> => {
+  return customFetch<QcResult>(getQcStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(qcStoryRequest),
+  });
+};
+
+export const getQcStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof qcStory>>,
+    TError,
+    { data: BodyType<QcStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof qcStory>>,
+  TError,
+  { data: BodyType<QcStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["qcStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof qcStory>>,
+    { data: BodyType<QcStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return qcStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type QcStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof qcStory>>
+>;
+export type QcStoryMutationBody = BodyType<QcStoryRequest>;
+export type QcStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Quality-check a generated story against its brief
+ */
+export const useQcStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof qcStory>>,
+    TError,
+    { data: BodyType<QcStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof qcStory>>,
+  TError,
+  { data: BodyType<QcStoryRequest> },
+  TContext
+> => {
+  return useMutation(getQcStoryMutationOptions(options));
+};
+
+/**
+ * @summary Apply targeted rewrite to improve a specific quality dimension
+ */
+export const getRewriteStoryUrl = () => {
+  return `/api/rewrite-story`;
+};
+
+export const rewriteStory = async (
+  rewriteStoryRequest: RewriteStoryRequest,
+  options?: RequestInit,
+): Promise<GeneratedStory> => {
+  return customFetch<GeneratedStory>(getRewriteStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(rewriteStoryRequest),
+  });
+};
+
+export const getRewriteStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewriteStory>>,
+    TError,
+    { data: BodyType<RewriteStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rewriteStory>>,
+  TError,
+  { data: BodyType<RewriteStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["rewriteStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rewriteStory>>,
+    { data: BodyType<RewriteStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return rewriteStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RewriteStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rewriteStory>>
+>;
+export type RewriteStoryMutationBody = BodyType<RewriteStoryRequest>;
+export type RewriteStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Apply targeted rewrite to improve a specific quality dimension
+ */
+export const useRewriteStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewriteStory>>,
+    TError,
+    { data: BodyType<RewriteStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof rewriteStory>>,
+  TError,
+  { data: BodyType<RewriteStoryRequest> },
+  TContext
+> => {
+  return useMutation(getRewriteStoryMutationOptions(options));
 };
 
 /**

@@ -15,6 +15,7 @@ export interface Scene {
   text: string;
   visualPrompt: string;
   durationEstimate: number;
+  emotionalShift?: string;
   image?: string;
 }
 
@@ -72,6 +73,43 @@ export interface StoryBrief {
   recurring_motif: string;
   title_direction: string;
   image_style_direction: string;
+  recommendation_tags?: string[];
+  quality_target?: string;
+}
+
+export interface QcSubScores {
+  emotional_depth: number;
+  specificity: number;
+  pacing: number;
+  scene_progression: number;
+  originality: number;
+  sensory_detail: number;
+  ending_strength: number;
+}
+
+export interface QcResult {
+  passed: boolean;
+  score_total: number;
+  sub_scores: QcSubScores;
+  issues: string[];
+  rewrite_strategy?: string | null;
+}
+
+export interface GeneratedStory {
+  title: string;
+  description: string;
+  scenes: Scene[];
+}
+
+export interface QcStoryRequest {
+  brief: StoryBrief;
+  story: GeneratedStory;
+}
+
+export interface RewriteStoryRequest {
+  brief: StoryBrief;
+  story: GeneratedStory;
+  strategy: string;
 }
 
 export interface GenerateStoryRequest {
@@ -88,12 +126,6 @@ export interface GenerateStoryRequest {
 export interface GenerateStoryFromBriefRequest {
   brief: StoryBrief;
   listenerName?: string;
-}
-
-export interface GeneratedStory {
-  title: string;
-  description: string;
-  scenes: Scene[];
 }
 
 export interface GenerateImagePromptsRequest {
@@ -140,6 +172,8 @@ export interface FullGeneratedStory {
   brief?: StoryBrief;
   scenes: Scene[];
   images: GenerateImagesResponse;
+  qc?: QcResult;
+  recommendation_tags?: string[];
   cached?: boolean;
 }
 

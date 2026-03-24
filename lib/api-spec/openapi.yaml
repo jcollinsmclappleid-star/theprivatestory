@@ -153,6 +153,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/GeneratedStory"
 
+  /qc-story:
+    post:
+      operationId: qcStory
+      tags: [generate]
+      summary: Quality-check a generated story against its brief
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QcStoryRequest"
+      responses:
+        "200":
+          description: QC evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QcResult"
+
+  /rewrite-story:
+    post:
+      operationId: rewriteStory
+      tags: [generate]
+      summary: Apply targeted rewrite to improve a specific quality dimension
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RewriteStoryRequest"
+      responses:
+        "200":
+          description: Improved story
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedStory"
+
   /generate-image-prompts:
     post:
       operationId: generateImagePrompts
@@ -298,6 +336,8 @@ components:
           type: string
         durationEstimate:
           type: number
+        emotionalShift:
+          type: string
         image:
           type: string
       required:
@@ -397,6 +437,12 @@ components:
           type: string
         image_style_direction:
           type: string
+        recommendation_tags:
+          type: array
+          items:
+            type: string
+        quality_target:
+          type: string
       required:
         - emotional_arc
         - relationship_dynamic
@@ -411,6 +457,79 @@ components:
         - recurring_motif
         - title_direction
         - image_style_direction
+
+    QcSubScores:
+      type: object
+      properties:
+        emotional_depth:
+          type: number
+        specificity:
+          type: number
+        pacing:
+          type: number
+        scene_progression:
+          type: number
+        originality:
+          type: number
+        sensory_detail:
+          type: number
+        ending_strength:
+          type: number
+      required:
+        - emotional_depth
+        - specificity
+        - pacing
+        - scene_progression
+        - originality
+        - sensory_detail
+        - ending_strength
+
+    QcResult:
+      type: object
+      properties:
+        passed:
+          type: boolean
+        score_total:
+          type: number
+        sub_scores:
+          $ref: "#/components/schemas/QcSubScores"
+        issues:
+          type: array
+          items:
+            type: string
+        rewrite_strategy:
+          type: string
+          nullable: true
+      required:
+        - passed
+        - score_total
+        - sub_scores
+        - issues
+
+    QcStoryRequest:
+      type: object
+      properties:
+        brief:
+          $ref: "#/components/schemas/StoryBrief"
+        story:
+          $ref: "#/components/schemas/GeneratedStory"
+      required:
+        - brief
+        - story
+
+    RewriteStoryRequest:
+      type: object
+      properties:
+        brief:
+          $ref: "#/components/schemas/StoryBrief"
+        story:
+          $ref: "#/components/schemas/GeneratedStory"
+        strategy:
+          type: string
+      required:
+        - brief
+        - story
+        - strategy
 
     GenerateStoryRequest:
       type: object
@@ -568,6 +687,12 @@ components:
             $ref: "#/components/schemas/Scene"
         images:
           $ref: "#/components/schemas/GenerateImagesResponse"
+        qc:
+          $ref: "#/components/schemas/QcResult"
+        recommendation_tags:
+          type: array
+          items:
+            type: string
         cached:
           type: boolean
       required:

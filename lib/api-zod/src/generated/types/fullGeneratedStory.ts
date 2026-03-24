@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { GenerateImagesResponse } from "./generateImagesResponse";
+import type { QcResult } from "./qcResult";
 import type { Scene } from "./scene";
 import type { StoryBrief } from "./storyBrief";
 
@@ -19,5 +20,7 @@ export interface FullGeneratedStory {
   brief?: StoryBrief;
   scenes: Scene[];
   images: GenerateImagesResponse;
+  qc?: QcResult;
+  recommendation_tags?: string[];
   cached?: boolean;
 }

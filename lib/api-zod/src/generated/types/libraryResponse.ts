@@ -7,8 +7,10 @@
  */
 import type { LibraryResponseGeneratedItem } from "./libraryResponseGeneratedItem";
 import type { LibraryResponseSavedItem } from "./libraryResponseSavedItem";
+import type { LibraryResponseVariationsItem } from "./libraryResponseVariationsItem";
 
 export interface LibraryResponse {
   saved: LibraryResponseSavedItem[];
   generated: LibraryResponseGeneratedItem[];
+  variations: LibraryResponseVariationsItem[];
 }

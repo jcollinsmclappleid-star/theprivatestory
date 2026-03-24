@@ -1,28 +1,29 @@
 import { useEffect, useRef } from 'react';
-import { useAudioPlayer, getUserId, AMBIENT_OPTIONS } from '@/store/use-audio-player';
+import { useAudioPlayer, AMBIENT_OPTIONS } from '@/store/use-audio-player';
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function trackCompletion(storyId: string, mood: string) {
-  const userId = getUserId();
   fetch(`${API_BASE}/api/update-taste`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, mood, event: "completed" }),
+    credentials: "include",
+    body: JSON.stringify({ mood, event: "completed" }),
   }).catch(() => {});
   fetch(`${API_BASE}/api/progress`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, storyId }),
+    credentials: "include",
+    body: JSON.stringify({ storyId }),
   }).catch(() => {});
 }
 
 function trackReplay(mood: string) {
-  const userId = getUserId();
   fetch(`${API_BASE}/api/update-taste`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, mood, event: "replayed" }),
+    credentials: "include",
+    body: JSON.stringify({ mood, event: "replayed" }),
   }).catch(() => {});
 }
 
@@ -112,8 +113,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Ambient audio control — loops INDEPENDENTLY of narration
-  // Ambient plays whenever an ambientMode is selected, regardless of narration state.
-  // It only stops if the user removes ambient mode entirely.
   useEffect(() => {
     const el = ambientRef.current;
     if (!el) return;

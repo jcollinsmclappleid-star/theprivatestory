@@ -5,26 +5,27 @@ import { Link } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
-import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+import { useAudioPlayer } from "@/store/use-audio-player";
+import { useAuth } from "@workspace/replit-auth-web";
 import type { Story } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-function useContinueListening() {
+function useContinueListening(isAuthenticated: boolean) {
   const [items, setItems] = useState<Story[]>([]);
 
   useEffect(() => {
-    const userId = getUserId();
-    fetch(`${API_BASE}/api/continue-listening?userId=${encodeURIComponent(userId)}`)
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/continue-listening`, { credentials: "include" })
       .then((r) => r.ok ? r.json() : [])
       .then((data) => setItems((data as Story[]).slice(0, 8)))
       .catch(() => {});
-  }, []);
+  }, [isAuthenticated]);
 
   return items;
 }
 
-function useRecommendations() {
+function useRecommendations(userId: string | null) {
   const [recs, setRecs] = useState<{
     for_you: Story[];
     because_you_liked: Story[];
@@ -33,12 +34,12 @@ function useRecommendations() {
   }>({ for_you: [], because_you_liked: [], because_you_liked_mood: null, has_taste_profile: false });
 
   useEffect(() => {
-    const userId = getUserId();
-    fetch(`${API_BASE}/api/recommendations/${encodeURIComponent(userId)}`)
+    const uid = userId ?? "editorial";
+    fetch(`${API_BASE}/api/recommendations/${encodeURIComponent(uid)}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setRecs(data); })
       .catch(() => {});
-  }, []);
+  }, [userId]);
 
   return recs;
 }
@@ -84,8 +85,9 @@ function ContinueCard({ story }: { story: Story & { progress?: Record<string, un
 
 export default function Home() {
   const { data: stories, isLoading } = useStoriesFallback();
-  const continueListening = useContinueListening();
-  const recs = useRecommendations();
+  const { user, isAuthenticated } = useAuth();
+  const continueListening = useContinueListening(isAuthenticated);
+  const recs = useRecommendations(user?.id ?? null);
 
   const featured = stories?.[0];
   const tonightPicks = stories?.slice(1, 9) || [];

@@ -123,8 +123,6 @@ export interface GenerateStoryRequest {
   emotionalFocus?: boolean;
   /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
   bypassCache?: boolean;
-  /** Guest userId from localStorage — used to track generated story in user profile */
-  userId?: string;
 }
 
 export interface GenerateStoryFromBriefRequest {
@@ -199,7 +197,6 @@ export const GenerateVariationRequestVariationType = {
 export interface GenerateVariationRequest {
   storyId: string;
   variation_type: GenerateVariationRequestVariationType;
-  userId?: string;
 }
 
 export type ContinueStoryRequestContinuationMode =
@@ -215,11 +212,9 @@ export const ContinueStoryRequestContinuationMode = {
 export interface ContinueStoryRequest {
   storyId: string;
   continuation_mode: ContinueStoryRequestContinuationMode;
-  userId?: string;
 }
 
 export interface SaveStoryRequest {
-  userId: string;
   storyId: string;
 }
 
@@ -228,7 +223,6 @@ export interface SaveStoryResponse {
 }
 
 export interface UpdateProgressRequest {
-  userId: string;
   storyId: string;
   audioProgressSeconds: number;
   sceneIndex: number;
@@ -245,7 +239,6 @@ export const UpdateTasteRequestEvent = {
 } as const;
 
 export interface UpdateTasteRequest {
-  userId: string;
   mood?: string;
   intensity?: string;
   voiceFeel?: string;
@@ -258,9 +251,12 @@ export type LibraryResponseSavedItem = { [key: string]: unknown };
 
 export type LibraryResponseGeneratedItem = { [key: string]: unknown };
 
+export type LibraryResponseVariationsItem = { [key: string]: unknown };
+
 export interface LibraryResponse {
   saved: LibraryResponseSavedItem[];
   generated: LibraryResponseGeneratedItem[];
+  variations: LibraryResponseVariationsItem[];
 }
 
 export type RecommendationsResponseForYouItem = { [key: string]: unknown };
@@ -280,6 +276,53 @@ export interface RecommendationsResponse {
   continue_the_mood: RecommendationsResponseContinueTheMoodItem[];
   has_taste_profile: boolean;
 }
+
+export interface AuthUser {
+  id: string;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  firstName: string | null;
+  /** @nullable */
+  lastName: string | null;
+  /** @nullable */
+  profileImageUrl: string | null;
+}
+
+export interface AuthUserEnvelope {
+  user: AuthUser | null;
+}
+
+export interface MobileTokenExchangeRequest {
+  /** @minLength 1 */
+  code: string;
+  /** @minLength 1 */
+  code_verifier: string;
+  /** @minLength 1 */
+  redirect_uri: string;
+  /** @minLength 1 */
+  state: string;
+  /** @minLength 1 */
+  nonce?: string;
+}
+
+export interface MobileTokenExchangeSuccess {
+  token: string;
+}
+
+export const LogoutSuccessValue = {
+  success: true,
+} as const;
+export type LogoutSuccess = typeof LogoutSuccessValue;
+
+export interface ErrorEnvelope {
+  error: string;
+}
+
+/**
+ * Opaque session token — `Bearer <sid>`.
+ */
+export type AuthorizationSessionHeaderParameter = string;
 
 export type GetStoriesParams = {
   mood?: string;
@@ -302,4 +345,17 @@ export type GetContinueListening200Item = { [key: string]: unknown };
 
 export type UpdateTaste200 = {
   updated: boolean;
+};
+
+export type BeginBrowserLoginParams = {
+  /**
+   * Relative path to redirect to after login (must start with `/`). Defaults to `/`.
+   */
+  returnTo?: string;
+};
+
+export type HandleBrowserLoginCallbackParams = {
+  code?: string;
+  state?: string;
+  iss?: string;
 };

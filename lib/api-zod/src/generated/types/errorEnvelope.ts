@@ -6,8 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface UpdateProgressRequest {
-  storyId: string;
-  audioProgressSeconds: number;
-  sceneIndex: number;
+export interface ErrorEnvelope {
+  error: string;
 }

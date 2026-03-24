@@ -7,6 +7,5 @@
  */
 
 export interface SaveStoryRequest {
-  userId: string;
   storyId: string;
 }

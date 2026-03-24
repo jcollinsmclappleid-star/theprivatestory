@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw } from "lucide-react";
+import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn } from "lucide-react";
 import { Link } from "wouter";
-import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
 import { SkeletonCard } from "@/components/SkeletonCard";
+import { useAuth } from "@workspace/replit-auth-web";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -34,19 +35,20 @@ function StoryCard({ story, showProgress, progress, onUnsave, isSaved }: {
   const sceneIndex = (progress?.sceneIndex as number) ?? 0;
 
   const handleSave = async () => {
-    const userId = getUserId();
     if (isSaved) {
       await fetch(`${API_BASE}/api/save-story`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, storyId: story.id }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: story.id }),
       });
       onUnsave?.();
     } else {
       await fetch(`${API_BASE}/api/save-story`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, storyId: story.id }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: story.id }),
       });
     }
   };
@@ -167,6 +169,31 @@ function EmptyState({ tab }: { tab: LibraryTab }) {
   );
 }
 
+function AuthGate({ login }: { login: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center justify-center py-24 text-center px-4"
+    >
+      <div className="mb-6 opacity-60">
+        <BookOpen className="w-12 h-12 text-primary/40 mx-auto" />
+      </div>
+      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Sign in to access your library</h2>
+      <p className="text-muted-foreground text-sm max-w-xs mb-8">
+        Your saved stories, generated stories, and listening progress are all stored in your personal library.
+      </p>
+      <button
+        onClick={login}
+        className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all"
+      >
+        <LogIn className="w-4 h-4" />
+        Sign In to Continue
+      </button>
+    </motion.div>
+  );
+}
+
 const TAB_CONFIG = [
   { id: "saved" as LibraryTab, label: "Saved", icon: Heart },
   { id: "generated" as LibraryTab, label: "Generated", icon: Sparkles },
@@ -175,12 +202,13 @@ const TAB_CONFIG = [
 ];
 
 export default function Library() {
+  const { isAuthenticated, isLoading: authLoading, login } = useAuth();
   const [activeTab, setActiveTab] = useState<LibraryTab>("saved");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
   const [variations, setVariations] = useState<FullGeneratedStory[]>([]);
   const [inProgress, setInProgress] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const VARIATION_LABELS: Record<string, string> = {
     softer: "Softer",
@@ -193,12 +221,11 @@ export default function Library() {
   };
 
   const load = useCallback(async () => {
-    const userId = getUserId();
     setLoading(true);
     try {
       const [libRes, contRes] = await Promise.all([
-        fetch(`${API_BASE}/api/library?userId=${encodeURIComponent(userId)}`),
-        fetch(`${API_BASE}/api/continue-listening?userId=${encodeURIComponent(userId)}`),
+        fetch(`${API_BASE}/api/library`, { credentials: "include" }),
+        fetch(`${API_BASE}/api/continue-listening`, { credentials: "include" }),
       ]);
       if (libRes.ok) {
         const lib = await libRes.json() as { saved: Story[]; generated: Story[]; variations: FullGeneratedStory[] };
@@ -216,11 +243,41 @@ export default function Library() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (isAuthenticated) load();
+  }, [isAuthenticated, load]);
 
   const handleUnsave = (storyId: string) => {
     setSaved((prev) => prev.filter((s) => s.id !== storyId));
   };
+
+  if (authLoading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8 w-full space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex gap-4 p-4 rounded-2xl bg-card/40 border border-border/20 animate-pulse">
+            <SkeletonCard className="w-16 h-16 rounded-xl shrink-0" />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-3 w-16 bg-muted/30 rounded-full" />
+              <div className="h-4 w-2/3 bg-muted/40 rounded-full" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8 w-full">
+        <div className="mb-8">
+          <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
+          <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
+        </div>
+        <AuthGate login={login} />
+      </div>
+    );
+  }
 
   return (
     <motion.div

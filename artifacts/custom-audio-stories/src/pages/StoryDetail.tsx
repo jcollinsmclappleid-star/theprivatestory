@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "wouter";
 import { Play, Pause, FastForward, Rewind, Heart } from "lucide-react";
 import { useStoryFallback } from "@/hooks/use-api-fallbacks";
-import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+import { useAudioPlayer } from "@/store/use-audio-player";
 import { Slider } from "@/components/ui/slider";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -25,20 +25,21 @@ export default function StoryDetail() {
   const handleSave = useCallback(async () => {
     if (!story || savePending) return;
     setSavePending(true);
-    const userId = getUserId();
     const nextSaved = !saved;
     setSaved(nextSaved);
     try {
       await fetch(`${API_BASE}/api/save-story`, {
         method: nextSaved ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, storyId: story.id }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: story.id }),
       });
       if (nextSaved) {
         fetch(`${API_BASE}/api/update-taste`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, mood: story.mood, event: "saved" }),
+          credentials: "include",
+          body: JSON.stringify({ mood: story.mood, event: "saved" }),
         }).catch(() => {});
       }
     } catch {

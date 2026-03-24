@@ -2,25 +2,16 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Story } from "@workspace/api-client-react";
 
-const getUserId = () => {
-  let id = localStorage.getItem("cas-user-id");
-  if (!id) {
-    id = `guest-${crypto.randomUUID()}`;
-    localStorage.setItem("cas-user-id", id);
-  }
-  return id;
-};
-
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 let progressTimer: ReturnType<typeof setInterval> | null = null;
 
 const syncProgress = (storyId: string, currentTime: number, sceneIndex: number) => {
-  const userId = getUserId();
   fetch(`${API_BASE}/api/update-progress`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, storyId, audioProgressSeconds: Math.floor(currentTime), sceneIndex }),
+    credentials: "include",
+    body: JSON.stringify({ storyId, audioProgressSeconds: Math.floor(currentTime), sceneIndex }),
   }).catch(() => {});
 };
 
@@ -79,8 +70,9 @@ export const useAudioPlayer = create<AudioPlayerState>()(
           if (get().currentStory?.id !== story.id) {
             set({ currentStory: story, progress: 0, currentTime: 0, isPlaying: true });
 
-            const userId = getUserId();
-            fetch(`${API_BASE}/api/progress?userId=${encodeURIComponent(userId)}&storyId=${encodeURIComponent(story.id)}`)
+            fetch(`${API_BASE}/api/progress?storyId=${encodeURIComponent(story.id)}`, {
+              credentials: "include",
+            })
               .then((r) => r.ok ? r.json() : null)
               .then((entry: { audioProgressSeconds?: number } | null) => {
                 if (entry && entry.audioProgressSeconds && entry.audioProgressSeconds > 5) {
@@ -160,5 +152,3 @@ export const useAudioPlayer = create<AudioPlayerState>()(
     }
   )
 );
-
-export { getUserId };

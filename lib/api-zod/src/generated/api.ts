@@ -161,12 +161,6 @@ export const PlanStoryBody = zod.object({
     .describe(
       "When true, skips request-hash cache lookup (used for variation and continuation requests)",
     ),
-  userId: zod
-    .string()
-    .optional()
-    .describe(
-      "Guest userId from localStorage — used to track generated story in user profile",
-    ),
 });
 
 export const PlanStoryResponse = zod.object({
@@ -427,12 +421,6 @@ export const GenerateFullStoryBody = zod.object({
     .describe(
       "When true, skips request-hash cache lookup (used for variation and continuation requests)",
     ),
-  userId: zod
-    .string()
-    .optional()
-    .describe(
-      "Guest userId from localStorage — used to track generated story in user profile",
-    ),
 });
 
 export const GenerateFullStoryResponse = zod.object({
@@ -513,7 +501,6 @@ export const GenerateVariationBody = zod.object({
     "new_setting",
     "continue_chemistry",
   ]),
-  userId: zod.string().optional(),
 });
 
 export const GenerateVariationResponse = zod.object({
@@ -591,7 +578,6 @@ export const ContinueStoryBody = zod.object({
     "softer_continuation",
     "unresolved_continuation",
   ]),
-  userId: zod.string().optional(),
 });
 
 export const ContinueStoryResponse = zod.object({
@@ -662,7 +648,6 @@ export const ContinueStoryResponse = zod.object({
  * @summary Save a story to user's library
  */
 export const SaveStoryBody = zod.object({
-  userId: zod.string(),
   storyId: zod.string(),
 });
 
@@ -674,7 +659,6 @@ export const SaveStoryResponse = zod.object({
  * @summary Unsave a story from user's library
  */
 export const UnsaveStoryBody = zod.object({
-  userId: zod.string(),
   storyId: zod.string(),
 });
 
@@ -686,7 +670,6 @@ export const UnsaveStoryResponse = zod.object({
  * @summary Save listening progress for a story
  */
 export const UpdateProgressBody = zod.object({
-  userId: zod.string(),
   storyId: zod.string(),
   audioProgressSeconds: zod.number(),
   sceneIndex: zod.number(),
@@ -706,6 +689,7 @@ export const GetLibraryQueryParams = zod.object({
 export const GetLibraryResponse = zod.object({
   saved: zod.array(zod.object({}).passthrough()),
   generated: zod.array(zod.object({}).passthrough()),
+  variations: zod.array(zod.object({}).passthrough()),
 });
 
 /**
@@ -724,7 +708,6 @@ export const GetContinueListeningResponse = zod.array(
  * @summary Update user taste profile after an event
  */
 export const UpdateTasteBody = zod.object({
-  userId: zod.string(),
   mood: zod.string().optional(),
   intensity: zod.string().optional(),
   voiceFeel: zod.string().optional(),
@@ -750,4 +733,88 @@ export const GetRecommendationsResponse = zod.object({
   because_you_liked_mood: zod.string().nullish(),
   continue_the_mood: zod.array(zod.object({}).passthrough()),
   has_taste_profile: zod.boolean(),
+});
+
+/**
+ * @summary Get the currently authenticated user
+ */
+export const GetCurrentAuthUserHeader = zod.object({
+  Authorization: zod
+    .string()
+    .optional()
+    .describe("Opaque session token — `Bearer <sid>`."),
+});
+
+export const GetCurrentAuthUserResponse = zod.object({
+  user: zod.union([
+    zod.object({
+      id: zod.string(),
+      email: zod.string().email().nullable(),
+      firstName: zod.string().nullable(),
+      lastName: zod.string().nullable(),
+      profileImageUrl: zod.string().nullable(),
+    }),
+    zod.null(),
+  ]),
+});
+
+/**
+ * @summary Start the browser OIDC login flow
+ */
+export const BeginBrowserLoginQueryParams = zod.object({
+  returnTo: zod.coerce
+    .string()
+    .optional()
+    .describe(
+      "Relative path to redirect to after login (must start with `\/`). Defaults to `\/`.",
+    ),
+});
+
+/**
+ * @summary Complete the browser OIDC login flow
+ */
+export const HandleBrowserLoginCallbackQueryParams = zod.object({
+  code: zod.coerce.string().optional(),
+  state: zod.coerce.string().optional(),
+  iss: zod.coerce.string().url().optional(),
+});
+
+/**
+ * @summary Clear the session and begin OIDC logout
+ */
+export const LogoutBrowserSessionHeader = zod.object({
+  Authorization: zod
+    .string()
+    .optional()
+    .describe("Opaque session token — `Bearer <sid>`."),
+});
+
+/**
+ * @summary Exchange a mobile OIDC code for a session token
+ */
+
+export const ExchangeMobileAuthorizationCodeBody = zod.object({
+  code: zod.string().min(1),
+  code_verifier: zod.string().min(1),
+  redirect_uri: zod.string().url().min(1),
+  state: zod.string().min(1),
+  nonce: zod.string().min(1).optional(),
+});
+
+export const ExchangeMobileAuthorizationCodeResponse = zod.object({
+  token: zod.string(),
+});
+
+/**
+ * @summary Delete a mobile session token
+ */
+export const LogoutMobileSessionHeader = zod.object({
+  Authorization: zod
+    .string()
+    .optional()
+    .describe("Opaque session token — `Bearer <sid>`."),
+});
+
+export const LogoutMobileSessionResponse = zod.object({
+  success: zod.boolean(),
 });

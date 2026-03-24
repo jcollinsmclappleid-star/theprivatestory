@@ -10,5 +10,4 @@ import type { GenerateVariationRequestVariationType } from "./generateVariationR
 export interface GenerateVariationRequest {
   storyId: string;
   variation_type: GenerateVariationRequestVariationType;
-  userId?: string;
 }

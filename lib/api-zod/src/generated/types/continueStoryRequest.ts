@@ -10,5 +10,4 @@ import type { ContinueStoryRequestContinuationMode } from "./continueStoryReques
 export interface ContinueStoryRequest {
   storyId: string;
   continuation_mode: ContinueStoryRequestContinuationMode;
-  userId?: string;
 }

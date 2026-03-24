@@ -1,8 +1,15 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import { usersStore, progressStore, storiesStore } from "../lib/storage.js";
-import type { UserProfile } from "../lib/storage.js";
 
 const router = Router();
+
+function getUserId(req: Request, res: Response): string | null {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return null;
+  }
+  return req.user.id;
+}
 
 // ---------------------------------------------------------------------------
 // Editorial fallback stories for when taste profile is empty
@@ -13,9 +20,12 @@ const EDITORIAL_PICKS = ["story-1", "story-2", "story-3", "story-4", "story-5"];
 // POST /save-story
 // ---------------------------------------------------------------------------
 router.post("/save-story", (req, res) => {
-  const { userId, storyId } = req.body as { userId: string; storyId: string };
-  if (!userId || !storyId) {
-    res.status(400).json({ error: "userId and storyId are required" });
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId } = req.body as { storyId: string };
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
     return;
   }
 
@@ -31,9 +41,12 @@ router.post("/save-story", (req, res) => {
 // DELETE /save-story
 // ---------------------------------------------------------------------------
 router.delete("/save-story", (req, res) => {
-  const { userId, storyId } = req.body as { userId: string; storyId: string };
-  if (!userId || !storyId) {
-    res.status(400).json({ error: "userId and storyId are required" });
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId } = req.body as { storyId: string };
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
     return;
   }
 
@@ -47,15 +60,17 @@ router.delete("/save-story", (req, res) => {
 // POST /update-progress
 // ---------------------------------------------------------------------------
 router.post("/update-progress", (req, res) => {
-  const { userId, storyId, audioProgressSeconds, sceneIndex } = req.body as {
-    userId: string;
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId, audioProgressSeconds, sceneIndex } = req.body as {
     storyId: string;
     audioProgressSeconds: number;
     sceneIndex: number;
   };
 
-  if (!userId || !storyId) {
-    res.status(400).json({ error: "userId and storyId are required" });
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
     return;
   }
 
@@ -73,11 +88,8 @@ router.post("/update-progress", (req, res) => {
 // GET /library
 // ---------------------------------------------------------------------------
 router.get("/library", (req, res) => {
-  const { userId } = req.query as { userId?: string };
-  if (!userId) {
-    res.status(400).json({ error: "userId is required" });
-    return;
-  }
+  const userId = getUserId(req, res);
+  if (!userId) return;
 
   const profile = usersStore.get(userId);
   const allStories = storiesStore.getAll();
@@ -102,9 +114,12 @@ router.get("/library", (req, res) => {
 // GET /progress — fetch stored position for a single story
 // ---------------------------------------------------------------------------
 router.get("/progress", (req, res) => {
-  const { userId, storyId } = req.query as { userId?: string; storyId?: string };
-  if (!userId || !storyId) {
-    res.status(400).json({ error: "userId and storyId are required" });
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId } = req.query as { storyId?: string };
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
     return;
   }
   const entry = progressStore.get(userId, storyId);
@@ -115,9 +130,12 @@ router.get("/progress", (req, res) => {
 // DELETE /progress — mark story complete by removing its progress entry
 // ---------------------------------------------------------------------------
 router.delete("/progress", (req, res) => {
-  const { userId, storyId } = req.body as { userId: string; storyId: string };
-  if (!userId || !storyId) {
-    res.status(400).json({ error: "userId and storyId are required" });
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId } = req.body as { storyId: string };
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
     return;
   }
   progressStore.delete(userId, storyId);
@@ -128,11 +146,8 @@ router.delete("/progress", (req, res) => {
 // GET /continue-listening
 // ---------------------------------------------------------------------------
 router.get("/continue-listening", (req, res) => {
-  const { userId } = req.query as { userId?: string };
-  if (!userId) {
-    res.status(400).json({ error: "userId is required" });
-    return;
-  }
+  const userId = getUserId(req, res);
+  if (!userId) return;
 
   const userProgress = progressStore.getUserProgress(userId);
   const allStories = storiesStore.getAll();
@@ -155,8 +170,10 @@ router.get("/continue-listening", (req, res) => {
 // POST /update-taste
 // ---------------------------------------------------------------------------
 router.post("/update-taste", (req, res) => {
-  const { userId, mood, intensity, voiceFeel, endingType, relationshipDynamic, event } = req.body as {
-    userId: string;
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { mood, intensity, voiceFeel, endingType, relationshipDynamic, event } = req.body as {
     mood?: string;
     intensity?: string;
     voiceFeel?: string;
@@ -164,11 +181,6 @@ router.post("/update-taste", (req, res) => {
     relationshipDynamic?: string;
     event: "generated" | "replayed" | "saved" | "completed";
   };
-
-  if (!userId) {
-    res.status(400).json({ error: "userId is required" });
-    return;
-  }
 
   const weight = event === "saved" ? 3 : event === "completed" ? 2 : 1;
   const profile = usersStore.get(userId);

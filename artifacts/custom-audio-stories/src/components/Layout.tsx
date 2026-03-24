@@ -1,9 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, BookOpen, Coins } from "lucide-react";
+import { Search, Sparkles, Menu, BookOpen, LogIn, LogOut, User } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
+import { useAuth } from "@workspace/replit-auth-web";
 
 function Navbar() {
   const [location] = useLocation();
+  const { user, isLoading, isAuthenticated, login, logout } = useAuth();
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -37,14 +39,11 @@ function Navbar() {
           <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors p-2">
             <Search className="w-5 h-5" />
           </Link>
-          {/* Story Credits indicator — placeholder, no real enforcement */}
-          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/60 border border-border/40 text-xs text-muted-foreground" title="Story Credits">
-            <Coins className="w-3.5 h-3.5 text-amber-400" />
-            <span>3 credits</span>
-          </div>
+
           <Link href="/library" className="text-muted-foreground hover:text-primary transition-colors p-2 md:hidden">
             <BookOpen className="w-5 h-5" />
           </Link>
+
           <Link
             href="/create"
             className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
@@ -52,6 +51,41 @@ function Navbar() {
             <Sparkles className="w-4 h-4" />
             Create Story
           </Link>
+
+          {!isLoading && (
+            isAuthenticated && user ? (
+              <div className="flex items-center gap-2">
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt={user.firstName ?? "User"}
+                    className="w-8 h-8 rounded-full object-cover border border-border/40"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                )}
+                <button
+                  onClick={logout}
+                  className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                  title="Sign out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={login}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/50 text-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Sign In</span>
+              </button>
+            )
+          )}
+
           <button className="md:hidden text-foreground p-2">
             <Menu className="w-6 h-6" />
           </button>

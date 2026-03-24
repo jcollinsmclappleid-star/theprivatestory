@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
-import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+import { useAudioPlayer } from "@/store/use-audio-player";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -114,20 +114,21 @@ export default function Create() {
   const handleResultSave = useCallback(async () => {
     if (!result || savePending) return;
     setSavePending(true);
-    const userId = getUserId();
     const nextSaved = !resultSaved;
     setResultSaved(nextSaved);
     try {
       await fetch(`${API_BASE}/api/save-story`, {
         method: nextSaved ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, storyId: result.id }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: result.id }),
       });
       if (nextSaved) {
         fetch(`${API_BASE}/api/update-taste`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, mood: result.mood, event: "saved" }),
+          credentials: "include",
+          body: JSON.stringify({ mood: result.mood, event: "saved" }),
         }).catch(() => {});
       }
     } catch {
@@ -203,7 +204,8 @@ export default function Create() {
       const res = await fetch(`${API_BASE}/api/generate-variation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storyId: result.id, variation_type: selectedVariation, userId: getUserId() }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: result.id, variation_type: selectedVariation }),
       });
       if (!res.ok) throw new Error("Variation generation failed");
       const data = await res.json() as FullGeneratedStory;
@@ -231,7 +233,8 @@ export default function Create() {
       const res = await fetch(`${API_BASE}/api/continue-story`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storyId: result.id, continuation_mode: selectedContinuation, userId: getUserId() }),
+        credentials: "include",
+        body: JSON.stringify({ storyId: result.id, continuation_mode: selectedContinuation }),
       });
       if (!res.ok) throw new Error("Continuation generation failed");
       const data = await res.json() as FullGeneratedStory;
@@ -277,7 +280,6 @@ export default function Create() {
           scenarioPrompt: data.scenarioPrompt,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
-          userId: getUserId(),
         },
       });
     } finally {

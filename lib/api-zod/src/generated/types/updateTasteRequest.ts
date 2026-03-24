@@ -8,7 +8,6 @@
 import type { UpdateTasteRequestEvent } from "./updateTasteRequestEvent";
 
 export interface UpdateTasteRequest {
-  userId: string;
   mood?: string;
   intensity?: string;
   voiceFeel?: string;

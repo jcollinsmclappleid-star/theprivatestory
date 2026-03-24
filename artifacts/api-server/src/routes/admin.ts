@@ -174,10 +174,13 @@ router.post("/generate-one", async (req, res) => {
     }
 
     // Extract [HOOK]...[/HOOK] — becomes the description listeners see before pressing play
+    // Falls back to a category-specific teaser if GPT doesn't emit the block
     let description = "";
     const hookMatch = rawStoryText.match(/\[HOOK\]([\s\S]*?)\[\/HOOK\]/i);
     if (hookMatch) {
       description = hookMatch[1].trim();
+    } else {
+      description = `A ${categoryName.toLowerCase()} story. Press play.`;
     }
 
     // Strip the [HOOK] block from the story text used for TTS and read-along

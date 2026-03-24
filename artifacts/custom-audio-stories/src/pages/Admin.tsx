@@ -295,23 +295,41 @@ export default function Admin() {
         {activeView === "generate" ? (
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-0.5">
+              {queue.length === 0 && (
+                <div className="text-white/40 text-xs p-3 text-center">Loading categories…</div>
+              )}
               {queue.map((qi, idx) => (
-                <button
+                <div
                   key={`${qi.item.categoryId}-${qi.item.subthemeId}`}
-                  onClick={() => { setSelected(idx); setActiveView("generate"); }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${
-                    selected === idx ? "bg-white/15" : "hover:bg-white/8"
+                  className={`rounded-lg transition-colors cursor-pointer ${
+                    selected === idx ? "bg-white/15" : "bg-white/5 hover:bg-white/10"
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-base leading-none">{qi.item.categoryIcon}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-white/90">{qi.item.subthemeName}</div>
-                      <div className="text-white/40 truncate">{qi.item.categoryName}</div>
+                  <button
+                    onClick={() => { setSelected(idx); setActiveView("generate"); }}
+                    className="w-full text-left px-3 py-2 text-xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-base leading-none">{qi.item.categoryIcon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate text-white/90">{qi.item.subthemeName}</div>
+                        <div className="text-white/40 truncate text-xs">{qi.item.categoryName}</div>
+                      </div>
+                      <StatusDot status={qi.status} />
                     </div>
-                    <StatusDot status={qi.status} />
-                  </div>
-                </button>
+                  </button>
+                  {selected === idx && (
+                    <div className="px-3 pb-2 pt-0">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); generateOne(idx); }}
+                        className="w-full bg-rose-600 hover:bg-rose-500 text-white text-xs py-1.5 rounded font-medium disabled:opacity-50"
+                        disabled={isRunning || qi.status !== "pending"}
+                      >
+                        {isRunning ? "Generating…" : qi.status === "done" ? "Done" : qi.status === "error" ? "Error" : "Generate"}
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </ScrollArea>
@@ -360,27 +378,31 @@ export default function Admin() {
         {activeView === "generate" && selectedItem ? (
           <>
             {/* Story header */}
-            <div className="px-6 py-4 border-b border-white/10 flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{selectedItem.item.categoryIcon}</span>
-                <div>
-                  <h2 className="font-semibold">{selectedItem.item.subthemeName}</h2>
-                  <div className="text-white/50 text-sm">{selectedItem.item.categoryName}</div>
+            <div className="px-6 py-4 border-b border-white/10 flex-shrink-0 bg-white/5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{selectedItem.item.categoryIcon}</span>
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-lg">{selectedItem.item.subthemeName}</h2>
+                    <div className="text-white/50 text-sm">{selectedItem.item.categoryName}</div>
+                  </div>
                 </div>
-                <div className="ml-auto flex items-center gap-3">
-                  <StatusBadge status={selectedItem.status} />
-                  {selectedItem.status === "pending" && (
-                    <Button
-                      size="sm"
-                      className="bg-rose-600 hover:bg-rose-500 text-white text-xs h-7"
-                      onClick={() => generateOne(selected!)}
-                      disabled={isRunning}
-                    >
-                      Generate
-                    </Button>
-                  )}
-                </div>
+                <StatusBadge status={selectedItem.status} />
               </div>
+              {selectedItem.status === "pending" ? (
+                <Button
+                  size="sm"
+                  className="w-full bg-rose-600 hover:bg-rose-500 text-white font-medium h-8"
+                  onClick={() => generateOne(selected!)}
+                  disabled={isRunning}
+                >
+                  {isRunning ? "Generating Story…" : "Generate Story"}
+                </Button>
+              ) : (
+                <div className="text-xs text-white/50 text-center py-2">
+                  {selectedItem.status === "done" ? "✓ Generation complete" : selectedItem.status === "error" ? "✗ Generation failed" : "Generating…"}
+                </div>
+              )}
             </div>
 
             <div className="flex-1 overflow-hidden flex">

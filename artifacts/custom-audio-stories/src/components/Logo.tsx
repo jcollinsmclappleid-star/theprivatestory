@@ -8,7 +8,7 @@ interface LogoProps {
 export function Logo({ height = 136, className = "" }: LogoProps) {
   // SVG viewBox is 200 × 290 units
   // The PNG (1024×1536) is scaled so the arch illustration fills the top 195 units,
-  // then "After Dusk / STORIES" text fills the remaining ~95 units.
+  // then "Your Romantic / STORY" text fills the remaining ~95 units.
   //
   // PNG content estimates:
   //   arch+person region: x≈100–920, y≈90–800  (820 × 710 px)
@@ -49,35 +49,35 @@ export function Logo({ height = 136, className = "" }: LogoProps) {
         preserveAspectRatio="none"
       />
 
-      {/* "After Dusk" — main wordmark */}
+      {/* "Your Romantic" — main wordmark */}
       <text
         x="100"
-        y="214"
+        y="209"
         textAnchor="middle"
         fontFamily="'Playfair Display', Georgia, 'Times New Roman', serif"
-        fontSize="25"
+        fontSize="21"
         fontWeight="500"
         fill="#c9a06a"
-        letterSpacing="0.5"
+        letterSpacing="0.3"
       >
-        After Dusk
+        Your Romantic
       </text>
 
-      {/* Decorative lines + STORIES */}
-      <line x1="24" y1="228" x2="60" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
+      {/* Decorative lines + STORY */}
+      <line x1="24" y1="225" x2="60" y2="225" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
       <text
         x="100"
-        y="233"
+        y="230"
         textAnchor="middle"
         fontFamily="'Inter', 'Helvetica Neue', Arial, sans-serif"
         fontSize="8.5"
         fill="#c9a06a"
-        letterSpacing="4.5"
+        letterSpacing="5"
         opacity="0.9"
       >
-        STORIES
+        STORY
       </text>
-      <line x1="140" y1="228" x2="176" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
+      <line x1="140" y1="225" x2="176" y2="225" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
     </svg>
   );
 }

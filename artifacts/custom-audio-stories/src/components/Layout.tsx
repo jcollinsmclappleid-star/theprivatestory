@@ -113,7 +113,7 @@ function Footer() {
           <Logo height={160} />
         </div>
         <p className="text-muted-foreground text-sm max-w-md mb-6">
-          Immersive audio stories crafted for the hours after dusk.
+          Immersive romantic audio stories crafted just for you.
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mb-6">
           {footerLinks.map((link) => (

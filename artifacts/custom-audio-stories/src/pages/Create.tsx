@@ -337,7 +337,7 @@ export default function Create() {
         <div>
           <h2 className="font-display text-2xl font-bold text-foreground mb-2">Sign in to create a story</h2>
           <p className="text-muted-foreground max-w-sm">
-            Your After Dusk stories are crafted just for you and saved to your private library.
+            Your romantic story is crafted just for you and saved to your private library.
           </p>
         </div>
         <button

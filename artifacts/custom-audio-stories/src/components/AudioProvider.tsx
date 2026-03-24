@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useAudioPlayer, getUserId } from '@/store/use-audio-player';
+import { useAudioPlayer, getUserId, AMBIENT_OPTIONS } from '@/store/use-audio-player';
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -10,7 +10,6 @@ function trackCompletion(storyId: string, mood: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, mood, event: "completed" }),
   }).catch(() => {});
-  // Remove from continue-listening by deleting the progress entry
   fetch(`${API_BASE}/api/progress`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -28,35 +27,35 @@ function trackReplay(mood: string) {
 }
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
-  const { 
-    currentStory, 
-    isPlaying, 
-    setProgress, 
-    setCurrentTime, 
+  const {
+    currentStory,
+    isPlaying,
+    setProgress,
+    setCurrentTime,
     setDuration,
     duration,
-    pause
+    pause,
+    ambientMode,
+    ambientVolume,
   } = useAudioPlayer();
-  
+
   const audioRef = useRef<HTMLAudioElement>(null);
+  const ambientRef = useRef<HTMLAudioElement>(null);
   const simulationIntervalRef = useRef<number | null>(null);
   const playCountRef = useRef<Record<string, number>>({});
 
   const handlePlay = (storyId: string, mood: string) => {
     const count = (playCountRef.current[storyId] ?? 0) + 1;
     playCountRef.current[storyId] = count;
-    if (count > 1) {
-      trackReplay(mood);
-    }
+    if (count > 1) trackReplay(mood);
   };
 
   const handleEnded = () => {
-    if (currentStory) {
-      trackCompletion(currentStory.id, currentStory.mood ?? "");
-    }
+    if (currentStory) trackCompletion(currentStory.id, currentStory.mood ?? "");
     pause();
   };
 
+  // Narration audio control
   useEffect(() => {
     if (!currentStory) return;
 
@@ -95,17 +94,49 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isPlaying, currentStory]);
 
+  // Ambient audio control
+  useEffect(() => {
+    const el = ambientRef.current;
+    if (!el) return;
+
+    const option = AMBIENT_OPTIONS.find((o) => o.id === ambientMode);
+    if (!option) {
+      el.pause();
+      el.src = "";
+      return;
+    }
+
+    if (el.src !== option.url) {
+      el.src = option.url;
+      el.loop = true;
+      el.volume = ambientVolume;
+    }
+
+    if (isPlaying && currentStory) {
+      el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  }, [ambientMode, isPlaying, currentStory]);
+
+  // Ambient volume sync
+  useEffect(() => {
+    if (ambientRef.current) {
+      ambientRef.current.volume = ambientVolume;
+    }
+  }, [ambientVolume]);
+
   return (
     <>
-      <audio 
-        ref={audioRef} 
-        src={currentStory?.audioUrl} 
+      <audio
+        ref={audioRef}
+        src={currentStory?.audioUrl}
         onTimeUpdate={(e) => {
           const t = e.currentTarget.currentTime;
           const d = e.currentTarget.duration || duration;
           setCurrentTime(t);
           setProgress(t / d);
-        }} 
+        }}
         onLoadedMetadata={(e) => {
           if (e.currentTarget.duration !== Infinity) {
             setDuration(e.currentTarget.duration);
@@ -113,6 +144,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         }}
         onEnded={handleEnded}
       />
+      <audio ref={ambientRef} loop />
       {children}
     </>
   );

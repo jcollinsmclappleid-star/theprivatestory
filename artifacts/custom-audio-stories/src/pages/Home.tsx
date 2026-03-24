@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { Link } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
+import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
 import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
 import type { Story } from "@workspace/api-client-react";
@@ -35,9 +36,7 @@ function useRecommendations() {
     const userId = getUserId();
     fetch(`${API_BASE}/api/recommendations/${encodeURIComponent(userId)}`)
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data) setRecs(data);
-      })
+      .then((data) => { if (data) setRecs(data); })
       .catch(() => {});
   }, []);
 
@@ -84,7 +83,7 @@ function ContinueCard({ story }: { story: Story & { progress?: Record<string, un
 }
 
 export default function Home() {
-  const { data: stories } = useStoriesFallback();
+  const { data: stories, isLoading } = useStoriesFallback();
   const continueListening = useContinueListening();
   const recs = useRecommendations();
 
@@ -96,17 +95,17 @@ export default function Home() {
   const showContinue = continueListening.length > 0;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="flex-1 flex flex-col"
     >
       {/* Hero Section */}
       <section className="relative w-full h-[70vh] min-h-[500px] flex items-end pb-24">
         <div className="absolute inset-0 z-0">
-          <img 
+          <img
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
-            alt="Hero Background" 
+            alt="Hero Background"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
@@ -114,29 +113,42 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
             className="max-w-2xl"
           >
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-              Featured Premiere
+              Personalised Audio Stories
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-4 leading-tight drop-shadow-xl">
-              {featured?.title || "Midnight Whispers"}
+              {featured?.title || "Stories shaped around you"}
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 line-clamp-2">
-              {featured?.description}
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 line-clamp-2">
+              {featured?.description || "Immersive, cinematic audio experiences crafted for your quietest moments."}
+            </p>
+            <p className="text-sm text-muted-foreground/60 mb-8 italic">
+              Best experienced alone, with headphones.
             </p>
             <div className="flex items-center gap-4">
-              <Link 
+              <Link
                 href={`/story/${featured?.id}`}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-full font-semibold flex items-center gap-2 transition-all hover:scale-105 hover:shadow-glow"
               >
                 <Play className="w-5 h-5 fill-current" />
                 Listen Now
               </Link>
+            </div>
+
+            {/* Trust strip */}
+            <div className="mt-8 flex flex-wrap gap-4 text-xs text-muted-foreground/60 tracking-wide">
+              {["Personalised", "Audio-first", "Cinematic visuals", "Private library"].map((item) => (
+                <span key={item} className="flex items-center gap-1.5">
+                  <span className="w-1 h-1 rounded-full bg-primary/40 inline-block" />
+                  {item}
+                </span>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -145,7 +157,7 @@ export default function Home() {
       {/* Content Rows */}
       <div className="relative z-20 -mt-12 space-y-4">
 
-        {/* Continue Listening — real API data + fallback to in-player story */}
+        {/* Continue Listening */}
         {showContinue && (
           <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
             <div className="flex items-center justify-between mb-4">
@@ -157,55 +169,71 @@ export default function Home() {
                 See all →
               </Link>
             </div>
-            {continueListening.length > 0 && (
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                {continueListening.map((s) => (
-                  <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
-                ))}
-              </div>
-            )}
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+              {continueListening.map((s) => (
+                <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
+              ))}
+            </div>
           </section>
         )}
 
-        {/* For You row — personalised when taste profile exists */}
-        {recs.for_you.length > 0 && (
-          <RowSlider
-            title="For You"
-            subtitle="Picked for tonight"
-            stories={recs.for_you as Story[]}
-          />
+        {isLoading ? (
+          <>
+            <SkeletonRow count={5} />
+            <SkeletonRow count={5} />
+            <SkeletonRow count={5} />
+          </>
+        ) : (
+          <>
+            {/* For You row — personalised when taste profile exists */}
+            {recs.for_you.length > 0 && (
+              <RowSlider
+                title="For You"
+                subtitle="Picked for tonight"
+                stories={recs.for_you as Story[]}
+              />
+            )}
+
+            <RowSlider
+              title="Tonight's Picks"
+              subtitle="Curated for this exact mood"
+              stories={tonightPicks}
+            />
+
+            {/* Because You Liked — only when taste profile exists */}
+            {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
+              <RowSlider
+                title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}
+                stories={recs.because_you_liked as Story[]}
+              />
+            )}
+
+            <RowSlider
+              title="Late Night"
+              subtitle="Made for after midnight"
+              stories={lateNight}
+            />
+          </>
         )}
 
-        <RowSlider title="Tonight's Picks" stories={tonightPicks} />
-
-        {/* Because You Liked — only when taste profile exists */}
-        {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
-          <RowSlider
-            title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}
-            stories={recs.because_you_liked as Story[]}
-          />
-        )}
-
-        <RowSlider title="Late Night Intimacy" stories={lateNight} />
-        
         {/* Create CTA Banner */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-3xl p-8 md:p-16 text-center border border-primary/20 bg-card/40 backdrop-blur-md flex flex-col items-center justify-center">
-            <img 
-              src="https://images.unsplash.com/photo-1499914485622-a88fac536970?w=1200&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1499914485622-a88fac536970?w=1200&q=80"
               alt="Atmosphere"
               className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-screen"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-background/40" />
-            
+
             <div className="relative z-10 max-w-xl mx-auto">
               <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-foreground">
-                Your desires, narrated.
+                Your story, your voice.
               </h2>
               <p className="text-muted-foreground mb-8 text-lg">
-                Craft a completely personalized immersive audio experience in seconds using our premium AI models.
+                Craft a completely personalised immersive audio experience in moments — shaped entirely around you.
               </p>
-              <Link 
+              <Link
                 href="/create"
                 className="inline-flex bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-8 py-4 rounded-full font-semibold items-center gap-2 transition-all hover:scale-105 hover:shadow-glow-lg"
               >
@@ -215,7 +243,13 @@ export default function Home() {
           </div>
         </section>
 
-        <RowSlider title="Slow Burn" stories={slowBurn} />
+        {!isLoading && (
+          <RowSlider
+            title="Slow Burn"
+            subtitle="Languid, layered, and intimate"
+            stories={slowBurn}
+          />
+        )}
       </div>
     </motion.div>
   );

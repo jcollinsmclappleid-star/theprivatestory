@@ -24,12 +24,34 @@ const syncProgress = (storyId: string, currentTime: number, sceneIndex: number) 
   }).catch(() => {});
 };
 
+export const AMBIENT_OPTIONS = [
+  { id: "rain", label: "Rain", url: "https://cdn.pixabay.com/audio/2022/05/17/audio_d9090b2f7e.mp3" },
+  { id: "city_night", label: "City at Night", url: "https://cdn.pixabay.com/audio/2022/03/09/audio_c8c8a73467.mp3" },
+  { id: "train", label: "Train", url: "https://cdn.pixabay.com/audio/2021/08/09/audio_ea0e95f1f3.mp3" },
+  { id: "firelight", label: "Firelight", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0c6ff1bab.mp3" },
+  { id: "ocean", label: "Ocean", url: "https://cdn.pixabay.com/audio/2021/09/06/audio_27512d05ea.mp3" },
+  { id: "quiet_room", label: "Quiet Room", url: "https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" },
+] as const;
+
+export type AmbientId = (typeof AMBIENT_OPTIONS)[number]["id"];
+
+export const MOOD_TO_AMBIENT: Record<string, AmbientId> = {
+  "Late Night": "city_night",
+  "Slow Burn": "firelight",
+  "Emotional": "rain",
+  "Tender": "quiet_room",
+  "Forbidden": "city_night",
+  "First Encounter": "ocean",
+};
+
 interface AudioPlayerState {
   currentStory: Story | null;
   isPlaying: boolean;
   progress: number;
   currentTime: number;
   duration: number;
+  ambientMode: AmbientId | null;
+  ambientVolume: number;
   play: (story?: Story) => void;
   pause: () => void;
   togglePlay: () => void;
@@ -37,6 +59,8 @@ interface AudioPlayerState {
   setCurrentTime: (t: number, sceneIndex?: number) => void;
   setDuration: (d: number) => void;
   close: () => void;
+  setAmbientMode: (id: AmbientId | null) => void;
+  setAmbientVolume: (v: number) => void;
 }
 
 export const useAudioPlayer = create<AudioPlayerState>()(
@@ -47,14 +71,14 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       progress: 0,
       currentTime: 0,
       duration: 300,
+      ambientMode: null,
+      ambientVolume: 0.2,
 
       play: (story) => {
         if (story) {
           if (get().currentStory?.id !== story.id) {
-            // Load new story — reset position first, then fetch stored progress
             set({ currentStory: story, progress: 0, currentTime: 0, isPlaying: true });
 
-            // Attempt to resume from stored server-side progress
             const userId = getUserId();
             fetch(`${API_BASE}/api/progress?userId=${encodeURIComponent(userId)}&storyId=${encodeURIComponent(story.id)}`)
               .then((r) => r.ok ? r.json() : null)
@@ -68,6 +92,12 @@ export const useAudioPlayer = create<AudioPlayerState>()(
                 }
               })
               .catch(() => {});
+
+            // Auto-suggest ambient based on story mood
+            const suggestedAmbient = story.mood ? MOOD_TO_AMBIENT[story.mood] ?? null : null;
+            if (suggestedAmbient && !get().ambientMode) {
+              set({ ambientMode: suggestedAmbient });
+            }
           } else {
             set({ isPlaying: true });
           }
@@ -114,6 +144,9 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         }
         set({ currentStory: null, isPlaying: false, progress: 0, currentTime: 0 });
       },
+
+      setAmbientMode: (id) => set({ ambientMode: id }),
+      setAmbientVolume: (v) => set({ ambientVolume: v }),
     }),
     {
       name: 'cas-audio-storage',
@@ -121,6 +154,8 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         currentStory: state.currentStory,
         progress: state.progress,
         currentTime: state.currentTime,
+        ambientMode: state.ambientMode,
+        ambientVolume: state.ambientVolume,
       }),
     }
   )

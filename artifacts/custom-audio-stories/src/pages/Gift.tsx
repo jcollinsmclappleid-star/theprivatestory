@@ -645,6 +645,8 @@ function Step8({
         <ReviewRow label="Your names" value={[state.yourName, state.partnerName].filter(Boolean).join(" & ")} onEdit={() => goToStep(2)} />
         {state.nickname && <ReviewRow label="Nickname" value={state.nickname} onEdit={() => goToStep(2)} />}
         {state.specialMemory && <ReviewRow label="Special memory" value={state.specialMemory.slice(0, 80) + (state.specialMemory.length > 80 ? "…" : "")} onEdit={() => goToStep(2)} />}
+        {state.relationshipDetail && <ReviewRow label="Relationship detail" value={state.relationshipDetail.slice(0, 100) + (state.relationshipDetail.length > 100 ? "…" : "")} onEdit={() => goToStep(2)} />}
+        {state.giftMessage && <ReviewRow label="Gift message" value={state.giftMessage.slice(0, 80) + (state.giftMessage.length > 80 ? "…" : "")} onEdit={() => goToStep(2)} />}
         <ReviewRow label="Setting" value={state.setting === "Custom" ? state.customSetting || "Custom" : state.setting} onEdit={() => goToStep(3)} />
         <ReviewRow label="Voice" value={state.voicePreference} onEdit={() => goToStep(4)} />
         <ReviewRow label="Length" value={`${state.storyLength} Story`} onEdit={() => goToStep(5)} />
@@ -746,7 +748,7 @@ function Step9({
         ) : (
           <>
             <Heart className="w-5 h-5" />
-            Confirm Order · £{pricing.finalTotal.toFixed(2)}
+            Continue to Checkout · £{pricing.finalTotal.toFixed(2)}
           </>
         )}
       </button>

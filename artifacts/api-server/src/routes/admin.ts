@@ -6,7 +6,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore } from "../lib/storage.js";
 import { buildPrompt, type StoryRegistryEntry } from "../lib/buildPrompt.js";
-import { getNonCustomSubthemes } from "../lib/storyCategories.js";
+import { getNonCustomSubthemes, STORY_CATEGORIES } from "../lib/storyCategories.js";
+import { getStoryName } from "../lib/storyNames.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
@@ -165,13 +166,9 @@ router.post("/generate-one", async (req, res) => {
       }
     }
 
-    // Extract title from markdown heading or plain first line
-    const titleMatch =
-      rawStoryText.match(/^#{1,3}\s+(.+)$/m) ??
-      rawStoryText.match(/^Title:\s*(.+)$/im);
-    const title =
-      titleMatch?.[1]?.replace(/[*_`]/g, "").trim() ??
-      `${prompt.metadata.category}: ${prompt.metadata.subtheme}`;
+    // Use predefined story name, fallback to generated name if not found
+    const categoryName = STORY_CATEGORIES.find(c => c.id === categoryId)?.name ?? prompt.metadata.category;
+    const title = getStoryName(categoryId, subthemeId, categoryName);
 
     // Extract description — first non-heading paragraph
     const paragraphs = rawStoryText.split(/\n\n+/).filter((p) => p.trim().length > 30);

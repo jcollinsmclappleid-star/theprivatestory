@@ -900,7 +900,7 @@ async function runDerivedPipeline(
     ...(variantType ? { variant_type: variantType } : {}),
   };
 
-  await storiesStore.set(storyId, result);
+  await storiesStore.set(storyId, { ...result, ownerUserId: userId ?? null });
 
   if (userId) {
     await trackGeneratedStory(userId, storyId, mood, "Warm", voiceFeel, variantType);

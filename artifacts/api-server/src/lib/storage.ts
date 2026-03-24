@@ -6,7 +6,7 @@ import {
   userTaste,
   generatedCache,
 } from "@workspace/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -137,24 +137,18 @@ export const libraryStore = {
       .where(
         and(
           eq(userLibrary.userId, userId),
-          // 'generated' and 'variation' types
+          inArray(userLibrary.type, ["generated", "variation"]),
         ),
       )
       .orderBy(userLibrary.savedAt);
-    return rows
-      .filter((r) => r.type === "generated" || r.type === "variation")
-      .map((r) => ({ storyId: r.storyId, type: r.type }))
-      .reverse();
+    return rows.map((r) => ({ storyId: r.storyId, type: r.type })).reverse();
   },
 
   async addSaved(userId: string, storyId: string): Promise<void> {
     await db
       .insert(userLibrary)
       .values({ userId, storyId, type: "saved" })
-      .onConflictDoUpdate({
-        target: [userLibrary.userId, userLibrary.storyId],
-        set: { type: "saved" },
-      });
+      .onConflictDoNothing();
   },
 
   async removeSaved(userId: string, storyId: string): Promise<void> {

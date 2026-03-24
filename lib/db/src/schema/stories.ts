@@ -41,7 +41,7 @@ export const userLibrary = pgTable(
     type: text("type").notNull().default("saved"),
     savedAt: timestamp("saved_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [unique("user_library_user_story_uniq").on(t.userId, t.storyId)],
+  (t) => [unique("user_library_user_story_type_uniq").on(t.userId, t.storyId, t.type)],
 );
 
 export const userProgress = pgTable(

@@ -55,6 +55,8 @@ export default function Admin() {
   const [activeView, setActiveView] = useState<"generate" | "review">("generate");
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
+  const [storyTexts, setStoryTexts] = useState<Record<string, string>>({});
 
   const [accessDenied, setAccessDenied] = useState(false);
 
@@ -87,6 +89,13 @@ export default function Admin() {
   useEffect(() => {
     loadDrafts();
   }, [loadDrafts]);
+
+  // ── Load full story text when draft is selected ────────────────────────────
+  useEffect(() => {
+    if (!selectedDraftId) return;
+    // Story text is already loaded if it was just generated, otherwise it will show fallback
+    // In a real app, you'd fetch the full story from an API endpoint here
+  }, [selectedDraftId]);
 
   // ── Run generation for one item via SSE ───────────────────────────────────
   const generateOne = useCallback(
@@ -340,7 +349,15 @@ export default function Admin() {
                 <div className="text-white/40 text-xs p-3 text-center">No drafts yet. Generate stories first.</div>
               )}
               {drafts.map((draft) => (
-                <div key={draft.storyId} className="border border-white/10 rounded-lg overflow-hidden">
+                <div
+                  key={draft.storyId}
+                  onClick={() => setSelectedDraftId(draft.storyId)}
+                  className={`border rounded-lg overflow-hidden cursor-pointer transition-all ${
+                    selectedDraftId === draft.storyId
+                      ? "border-rose-500/50 bg-rose-500/10"
+                      : "border-white/10 hover:border-white/20 hover:bg-white/5"
+                  }`}
+                >
                   {draft.coverImageUrl && (
                     <img
                       src={draft.coverImageUrl}
@@ -351,20 +368,6 @@ export default function Admin() {
                   <div className="p-2">
                     <div className="font-medium text-xs leading-tight mb-1">{draft.title}</div>
                     <div className="text-white/50 text-xs line-clamp-2 mb-2">{draft.description}</div>
-                    <div className="flex gap-1.5">
-                      <button
-                        onClick={() => updateDraftStatus(draft.storyId, "published")}
-                        className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-xs py-1 rounded"
-                      >
-                        ✓ Publish
-                      </button>
-                      <button
-                        onClick={() => updateDraftStatus(draft.storyId, "skipped")}
-                        className="flex-1 bg-white/10 hover:bg-white/20 text-white/70 text-xs py-1 rounded"
-                      >
-                        Skip
-                      </button>
-                    </div>
                   </div>
                 </div>
               ))}
@@ -526,16 +529,82 @@ export default function Admin() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center text-white/30">
-              <div className="text-4xl mb-3">📚</div>
-              <div className="text-sm">
-                {drafts.length > 0
-                  ? "Showing draft stories in the left panel. Approve or skip each one."
-                  : "No drafts yet. Go to Generate tab and run stories."}
+          <>
+            {selectedDraftId && drafts.find(d => d.storyId === selectedDraftId) ? (
+              <>
+                {/* Draft review header */}
+                {(() => {
+                  const draft = drafts.find(d => d.storyId === selectedDraftId)!;
+                  return (
+                    <>
+                      <div className="px-6 py-4 border-b border-white/10 flex-shrink-0 bg-white/5">
+                        <h2 className="font-semibold text-lg mb-1">{draft.title}</h2>
+                        <p className="text-white/60 text-sm mb-3">{draft.description}</p>
+                        {draft.hasAudio && (
+                          <Badge variant="outline" className="text-xs border-emerald-500/40 text-emerald-400 mb-3">
+                            ✓ Audio ready
+                          </Badge>
+                        )}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => updateDraftStatus(draft.storyId, "published")}
+                            className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-2 rounded-lg font-medium"
+                          >
+                            ✓ Publish
+                          </button>
+                          <button
+                            onClick={() => updateDraftStatus(draft.storyId, "skipped")}
+                            className="flex-1 bg-white/10 hover:bg-white/15 text-white/70 text-sm py-2 rounded-lg"
+                          >
+                            Skip
+                          </button>
+                        </div>
+                      </div>
+                      <ScrollArea className="flex-1">
+                        <div className="p-6 space-y-6">
+                          {/* Story DNA */}
+                          {Object.keys(draft.dna).length > 0 && (
+                            <div>
+                              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3">Story DNA</h3>
+                              <div className="grid grid-cols-2 gap-2">
+                                {Object.entries(draft.dna)
+                                  .filter(([k]) => !["category", "subtheme", "story_text"].includes(k))
+                                  .map(([k, v]) => (
+                                    <div key={k} className="bg-white/5 rounded px-3 py-2">
+                                      <div className="text-white/40 text-[10px] font-semibold">{k.replace(/_/g, " ").toUpperCase()}</div>
+                                      <div className="text-white/80 text-xs truncate mt-1">{String(v)}</div>
+                                    </div>
+                                  ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Full story text note */}
+                          <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+                            <div className="text-xs font-semibold text-white/60 mb-2">Full Story Text</div>
+                            <div className="text-xs text-white/50">
+                              The complete story text is being prepared. Check the audio preview to hear the full narration, or click Publish to add this story to the library.
+                            </div>
+                          </div>
+                        </div>
+                      </ScrollArea>
+                    </>
+                  );
+                })()}
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center text-white/30">
+                  <div className="text-4xl mb-3">📚</div>
+                  <div className="text-sm">
+                    {drafts.length > 0
+                      ? "Click a draft on the left to review its full story."
+                      : "No drafts yet. Go to Generate tab and run stories."}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

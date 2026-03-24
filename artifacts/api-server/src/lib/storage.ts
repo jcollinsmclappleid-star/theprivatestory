@@ -99,6 +99,13 @@ export const progressStore = {
     all[userId][storyId] = entry;
     writeJSON("progress.json", all);
   },
+  delete(userId: string, storyId: string): void {
+    const all = this.getAll();
+    if (all[userId]) {
+      delete all[userId][storyId];
+      writeJSON("progress.json", all);
+    }
+  },
   getUserProgress(userId: string): Record<string, ProgressEntry> {
     return this.getAll()[userId] ?? {};
   },

@@ -10,10 +10,11 @@ function trackCompletion(storyId: string, mood: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, mood, event: "completed" }),
   }).catch(() => {});
-  fetch(`${API_BASE}/api/update-progress`, {
-    method: "POST",
+  // Remove from continue-listening by deleting the progress entry
+  fetch(`${API_BASE}/api/progress`, {
+    method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, storyId, audioProgressSeconds: 0, sceneIndex: 0 }),
+    body: JSON.stringify({ userId, storyId }),
   }).catch(() => {});
 }
 

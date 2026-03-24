@@ -94,6 +94,32 @@ router.get("/library", (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /progress — fetch stored position for a single story
+// ---------------------------------------------------------------------------
+router.get("/progress", (req, res) => {
+  const { userId, storyId } = req.query as { userId?: string; storyId?: string };
+  if (!userId || !storyId) {
+    res.status(400).json({ error: "userId and storyId are required" });
+    return;
+  }
+  const entry = progressStore.get(userId, storyId);
+  res.json(entry ?? null);
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /progress — mark story complete by removing its progress entry
+// ---------------------------------------------------------------------------
+router.delete("/progress", (req, res) => {
+  const { userId, storyId } = req.body as { userId: string; storyId: string };
+  if (!userId || !storyId) {
+    res.status(400).json({ error: "userId and storyId are required" });
+    return;
+  }
+  progressStore.delete(userId, storyId);
+  res.json({ deleted: true });
+});
+
+// ---------------------------------------------------------------------------
 // GET /continue-listening
 // ---------------------------------------------------------------------------
 router.get("/continue-listening", (req, res) => {
@@ -106,7 +132,9 @@ router.get("/continue-listening", (req, res) => {
   const userProgress = progressStore.getUserProgress(userId);
   const allStories = storiesStore.getAll();
 
+  // Only include stories with meaningful progress (> 5 seconds in)
   const inProgress = Object.values(userProgress)
+    .filter((entry) => entry.audioProgressSeconds > 5)
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     .map((entry) => {
       const story = allStories[entry.storyId];

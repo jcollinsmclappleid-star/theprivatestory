@@ -51,7 +51,23 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       play: (story) => {
         if (story) {
           if (get().currentStory?.id !== story.id) {
+            // Load new story — reset position first, then fetch stored progress
             set({ currentStory: story, progress: 0, currentTime: 0, isPlaying: true });
+
+            // Attempt to resume from stored server-side progress
+            const userId = getUserId();
+            fetch(`${API_BASE}/api/progress?userId=${encodeURIComponent(userId)}&storyId=${encodeURIComponent(story.id)}`)
+              .then((r) => r.ok ? r.json() : null)
+              .then((entry: { audioProgressSeconds?: number } | null) => {
+                if (entry && entry.audioProgressSeconds && entry.audioProgressSeconds > 5) {
+                  const dur = useAudioPlayer.getState().duration || 300;
+                  useAudioPlayer.setState({
+                    currentTime: entry.audioProgressSeconds,
+                    progress: Math.min(entry.audioProgressSeconds / dur, 1),
+                  });
+                }
+              })
+              .catch(() => {});
           } else {
             set({ isPlaying: true });
           }

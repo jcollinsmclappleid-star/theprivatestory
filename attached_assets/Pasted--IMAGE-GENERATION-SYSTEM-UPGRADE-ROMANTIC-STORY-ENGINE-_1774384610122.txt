@@ -1,0 +1,86 @@
+# IMAGE GENERATION SYSTEM UPGRADE (ROMANTIC STORY ENGINE)
+
+## OBJECTIVE
+Replace generic style prompts with a structured system that converts story context into cinematic, emotionally accurate, brand-consistent image prompts.
+
+---
+
+## STEP 1 — DEFINE BASE_STYLE (GLOBAL CONSTANT)
+
+Use this EXACT base style for ALL images:
+
+cinematic adult animation, premium streaming-quality illustration, emotionally driven romance, tasteful sensuality, soft cinematic lighting, warm amber and deep shadow contrast, shallow depth of field, filmic composition, high-detail character rendering, subtle skin texture, expressive eyes, elegant body language, non-explicit, cohesive color palette, consistent character design, soft film grain, romantic realism, intimate atmosphere, tension-filled stillness, signature warm vs cool cinematic contrast, dramatic romantic lighting identity, consistent lens style (50mm cinematic), soft background bokeh, foreground subject focus
+
+---
+
+## STEP 2 — REPLACE image_style_direction WITH STRUCTURED SCHEMA
+
+Instead of free-form style text, GPT MUST output the following structured fields:
+
+scene_subject:
+scene_action:
+environment:
+lighting:
+emotion:
+composition:
+key_visual_details:
+
+---
+
+## STEP 3 — GPT INSTRUCTION (IMPORTANT)
+
+Use this instruction when generating the structured fields:
+
+"Extract the scene visually from the story. Be specific and cinematic. Avoid generic words like 'beautiful', 'cinematic', or 'high quality'. Focus on physical details, lighting, motion, and emotion. The output must describe what is visibly happening in the scene."
+
+---
+
+## STEP 4 — BUILD FINAL IMAGE PROMPT
+
+Concatenate like this:
+
+FINAL_PROMPT =
+{BASE_STYLE},
+{scene_subject}, {scene_action},
+{environment},
+{lighting},
+{emotion},
+{composition},
+{key_visual_details}
+
+---
+
+## STEP 5 — EXAMPLE OUTPUT
+
+scene_subject: man and woman  
+scene_action: man running toward train reaching for woman inside  
+environment: rainy train station platform at dusk  
+lighting: warm golden interior light contrasting with cool blue rain outside  
+emotion: urgency, longing, near-missed connection  
+composition: dynamic side angle, motion blur on man, woman framed in doorway  
+key_visual_details: rain reflections on ground, wind movement, glowing train windows, extended hand  
+
+---
+
+## STEP 6 — FINAL PROMPT OUTPUT EXAMPLE
+
+cinematic adult animation, premium streaming-quality illustration, emotionally driven romance, tasteful sensuality, soft cinematic lighting, warm amber and deep shadow contrast, shallow depth of field, filmic composition, high-detail character rendering, subtle skin texture, expressive eyes, elegant body language, non-explicit, cohesive color palette, consistent character design, soft film grain, romantic realism, intimate atmosphere, tension-filled stillness, signature warm vs cool cinematic contrast, dramatic romantic lighting identity, consistent lens style (50mm cinematic), soft background bokeh, foreground subject focus, man and woman, man running toward train reaching for woman inside, rainy train station platform at dusk, warm golden interior light contrasting with cool blue rain outside, urgency, longing, near-missed connection, dynamic side angle with motion blur on man, woman framed in doorway, rain reflections on ground, wind movement, glowing train windows, extended hand
+
+---
+
+## RESULT
+
+- Every image is grounded in the story
+- Strong visual consistency across scenes
+- Premium, cinematic, emotionally engaging outputs
+- Scalable system for all stories
+
+---
+
+## CRITICAL RULE
+
+Do NOT allow GPT to output vague style phrases. All outputs must be:
+- visual
+- specific
+- scene-based
+- grounded in action and environment

@@ -73,6 +73,31 @@ interface ImagePrompts {
   scenePrompts: Array<{ sceneId: number; prompt: string }>;
 }
 
+interface SceneVisual {
+  scene_subject: string;
+  scene_action: string;
+  environment: string;
+  lighting: string;
+  emotion: string;
+  composition: string;
+  key_visual_details: string;
+}
+
+const BASE_STYLE =
+  "cinematic adult animation, premium streaming-quality illustration, emotionally driven romance, tasteful sensuality, soft cinematic lighting, warm amber and deep shadow contrast, shallow depth of field, filmic composition, high-detail character rendering, subtle skin texture, expressive eyes, elegant body language, non-explicit, cohesive color palette, consistent character design, soft film grain, romantic realism, intimate atmosphere, tension-filled stillness, signature warm vs cool cinematic contrast, dramatic romantic lighting identity, consistent lens style (50mm cinematic), soft background bokeh, foreground subject focus";
+
+function buildFinalPrompt(visual: SceneVisual): string {
+  return [
+    BASE_STYLE,
+    `${visual.scene_subject}, ${visual.scene_action}`,
+    visual.environment,
+    visual.lighting,
+    visual.emotion,
+    visual.composition,
+    visual.key_visual_details,
+  ].join(", ");
+}
+
 interface QcSubScores {
   emotional_depth: number;
   specificity: number;
@@ -280,7 +305,7 @@ Rules:
 - Ensure the story has depth even if the user input is simple.
 - The story should feel like it is happening to the listener.
 - If the user input is vague, intelligently infer the most compelling emotional setup.
-- image_style_direction must specify a premium adult animation aesthetic (e.g. "cinematic adult animation, warm tones, painterly, moody lighting, tasteful intimacy")
+- image_style_direction: a one-line mood note for internal use only (e.g. "warm oil-painting tones, moody late-night lighting, amber shadows")
 
 Return JSON in exactly this shape:
 {
@@ -552,40 +577,56 @@ Return the improved story in this exact JSON shape:
 }
 
 async function buildImagePrompts(brief: StoryBrief, story: WrittenStory): Promise<ImagePrompts> {
-  const systemPrompt = `You generate image prompts for premium cinematic adult animation artwork.
-The output must be tasteful, intimate, warm, emotionally charged, and visually cohesive across all scenes.
-Do not create explicit sexual imagery. Style should be: ${brief.image_style_direction}.`;
+  const systemPrompt = `Extract the scene visually from the story. Be specific and cinematic. Avoid generic words like 'beautiful', 'cinematic', or 'high quality'. Focus on physical details, lighting, motion, and emotion. The output must describe what is visibly happening in the scene.
 
-  const BASE_STYLE =
-    "cinematic animated illustration, adult romance tone, tasteful intimacy, soft lighting, warm shadows, elegant composition, premium streaming artwork, not explicit";
+Return only JSON — no markdown, no explanation. Every image entry must have exactly these fields:
+- scene_subject: who is in the scene (specific, physical)
+- scene_action: what they are physically doing (active, precise)
+- environment: the physical location with specific sensory details
+- lighting: specific light sources, direction, color temperature, contrast
+- emotion: the felt emotional state — tension, longing, urgency, restraint, etc.
+- composition: camera angle, framing, depth cues
+- key_visual_details: 3–5 specific physical details that make this scene distinct
 
-  const userPrompt = `Using the brief and story below, generate one cover image prompt and one scene image prompt per scene.
+Do NOT output style instructions, quality descriptors, or vague words. Only describe what is physically, visibly happening.`;
 
-Story Brief:
-${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, sensory_palette: brief.sensory_palette, image_style_direction: brief.image_style_direction }, null, 2)}
+  const userPrompt = `Story: "${story.title}"
+Emotional arc: ${brief.emotional_arc}
+Relationship: ${brief.relationship_dynamic}
+Sensory palette: ${brief.sensory_palette?.join(", ")}
 
-Story:
-Title: ${story.title}
-Scenes: ${story.scenes.map((s, i) => `Scene ${i + 1} "${s.heading}": ${s.text.slice(0, 120)}...`).join("\n")}
+Generate a structured visual extraction for:
+1. A COVER image that captures the emotional essence of the whole story (not a single scene moment — a symbolic or atmospheric composition)
+${story.scenes.map((s, i) => `${i + 2}. Scene ${i + 1} — "${s.heading}": ${s.text.slice(0, 220)}`).join("\n")}
 
-Requirements:
-- Style for ALL images: "${BASE_STYLE}, ${brief.image_style_direction}"
-- Cinematic composition, soft shadows, warm lighting, emotionally intimate
-- Visually cohesive — all images should feel from the same story world
-- Cover should capture the emotional essence, not a specific scene moment
-- Each scene prompt should match that scene's emotional shift and visual focus
-
-Return JSON only — no markdown:
+Return JSON only in exactly this shape:
 {
-  "cover_prompt": "...",
-  "scene_prompts": [
-    { "scene_id": 1, "prompt": "..." }
+  "cover": {
+    "scene_subject": "",
+    "scene_action": "",
+    "environment": "",
+    "lighting": "",
+    "emotion": "",
+    "composition": "",
+    "key_visual_details": ""
+  },
+  "scenes": [
+    {
+      "scene_id": 1,
+      "scene_subject": "",
+      "scene_action": "",
+      "environment": "",
+      "lighting": "",
+      "emotion": "",
+      "composition": "",
+      "key_visual_details": ""
+    }
   ]
 }`;
 
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
-    max_completion_tokens: 2048,
+    max_completion_tokens: 3000,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
@@ -596,11 +637,14 @@ Return JSON only — no markdown:
   const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
   const parsed = JSON.parse(cleaned);
 
+  const coverVisual = parsed.cover as SceneVisual;
+  const sceneVisuals = (parsed.scenes ?? []) as Array<SceneVisual & { scene_id: number }>;
+
   return {
-    coverPrompt: parsed.cover_prompt,
-    scenePrompts: (parsed.scene_prompts ?? []).map((s: { scene_id: number; prompt: string }) => ({
+    coverPrompt: buildFinalPrompt(coverVisual),
+    scenePrompts: sceneVisuals.map((s) => ({
       sceneId: s.scene_id,
-      prompt: s.prompt,
+      prompt: buildFinalPrompt(s),
     })),
   };
 }

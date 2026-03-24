@@ -43,6 +43,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const ambientRef = useRef<HTMLAudioElement>(null);
   const simulationIntervalRef = useRef<number | null>(null);
   const playCountRef = useRef<Record<string, number>>({});
+  const ambientStartedRef = useRef(false);
 
   const handlePlay = (storyId: string, mood: string) => {
     const count = (playCountRef.current[storyId] ?? 0) + 1;
@@ -94,32 +95,46 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isPlaying, currentStory]);
 
-  // Ambient audio control
+  // Ambient audio control — loops INDEPENDENTLY of narration
+  // Ambient plays whenever an ambientMode is selected, regardless of narration state.
+  // It only stops if the user removes ambient mode entirely.
   useEffect(() => {
     const el = ambientRef.current;
     if (!el) return;
 
     const option = AMBIENT_OPTIONS.find((o) => o.id === ambientMode);
+
     if (!option) {
+      // No ambient selected — stop and clear
       el.pause();
-      el.src = "";
+      el.removeAttribute("src");
+      el.load();
+      ambientStartedRef.current = false;
       return;
     }
 
-    if (el.src !== option.url) {
-      el.src = option.url;
+    const newUrl = option.url;
+
+    if (el.src !== newUrl) {
+      el.src = newUrl;
       el.loop = true;
       el.volume = ambientVolume;
+      el.load();
+      ambientStartedRef.current = false;
     }
 
-    if (isPlaying && currentStory) {
-      el.play().catch(() => {});
-    } else {
-      el.pause();
+    // Play immediately (ambient loops regardless of narration state)
+    if (!ambientStartedRef.current) {
+      el.play()
+        .then(() => { ambientStartedRef.current = true; })
+        .catch(() => {
+          // Autoplay may be blocked; will retry on next user gesture
+          ambientStartedRef.current = false;
+        });
     }
-  }, [ambientMode, isPlaying, currentStory]);
+  }, [ambientMode]);
 
-  // Ambient volume sync
+  // Ambient volume sync (independent effect so it doesn't restart the track)
   useEffect(() => {
     if (ambientRef.current) {
       ambientRef.current.volume = ambientVolume;

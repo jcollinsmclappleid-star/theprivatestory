@@ -4,6 +4,7 @@ import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw } 
 import { Link } from "wouter";
 import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -267,8 +268,15 @@ export default function Library() {
             exit={{ opacity: 0 }}
             className="space-y-3"
           >
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 rounded-2xl bg-card/40 animate-pulse border border-border/20" />
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex gap-4 p-4 rounded-2xl bg-card/40 border border-border/20 animate-pulse">
+                <SkeletonCard className="w-16 h-16 rounded-xl shrink-0" />
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-3 w-16 bg-muted/30 rounded-full" />
+                  <div className="h-4 w-2/3 bg-muted/40 rounded-full" />
+                  <div className="h-3 w-1/2 bg-muted/20 rounded-full" />
+                </div>
+              </div>
             ))}
           </motion.div>
         ) : (

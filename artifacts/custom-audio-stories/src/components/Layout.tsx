@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, BookOpen } from "lucide-react";
+import { Search, Sparkles, Menu, BookOpen, Coins } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 
 function Navbar() {
@@ -33,10 +33,15 @@ function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors p-2">
             <Search className="w-5 h-5" />
           </Link>
+          {/* Story Credits indicator — placeholder, no real enforcement */}
+          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/60 border border-border/40 text-xs text-muted-foreground" title="Story Credits">
+            <Coins className="w-3.5 h-3.5 text-amber-400" />
+            <span>3 credits</span>
+          </div>
           <Link href="/library" className="text-muted-foreground hover:text-primary transition-colors p-2 md:hidden">
             <BookOpen className="w-5 h-5" />
           </Link>

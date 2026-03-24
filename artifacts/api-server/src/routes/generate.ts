@@ -109,11 +109,11 @@ function getCacheKey(data: object): string {
 // Voice IDs
 // ---------------------------------------------------------------------------
 
-const voiceIdMap: Record<string, string> = {
-  "Soft Voice": "EXAVITQu4vr4xnSDxMaL",
-  "Deep Voice": "VR6AewLTigWG4xSOukaG",
-  "Breathy Voice": "ThT5KcBeYPX3keUQqHPh",
-  "Confident Voice": "pNInz6obpgDQGcFmaJgB",
+const voiceMap: Record<string, "nova" | "onyx" | "shimmer" | "echo"> = {
+  "Soft Voice": "nova",
+  "Deep Voice": "onyx",
+  "Breathy Voice": "shimmer",
+  "Confident Voice": "echo",
 };
 
 // ---------------------------------------------------------------------------
@@ -637,31 +637,21 @@ async function generateAudioFile(
   voiceFeel: string,
   cacheKey: string
 ): Promise<string> {
-  const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
-  if (!elevenLabsApiKey) return "";
-
-  const voiceId = voiceIdMap[voiceFeel] ?? voiceIdMap["Soft Voice"];
+  const voice = voiceMap[voiceFeel] ?? voiceMap["Soft Voice"];
   const fullText = scenes.map((s) => s.text).join("\n\n");
 
   try {
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "xi-api-key": elevenLabsApiKey,
-      },
-      body: JSON.stringify({
-        text: fullText,
-        model_id: "eleven_monolingual_v1",
-        voice_settings: { stability: 0.6, similarity_boost: 0.7, style: 0.8 },
-      }),
+    const speechResponse = await openai.audio.speech.create({
+      model: "tts-1",
+      voice,
+      input: fullText,
+      response_format: "mp3",
     });
-
-    if (!response.ok) throw new Error(`ElevenLabs ${response.status}`);
 
     const audioDir = getPublicAudioDir();
     const filename = `audio-${cacheKey}.mp3`;
-    fs.writeFileSync(path.join(audioDir, filename), Buffer.from(await response.arrayBuffer()));
+    const buffer = Buffer.from(await speechResponse.arrayBuffer());
+    fs.writeFileSync(path.join(audioDir, filename), buffer);
     return `/api/audio/${filename}`;
   } catch {
     return "";

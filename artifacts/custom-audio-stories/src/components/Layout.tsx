@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, BookOpen, LogIn, LogOut, User } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
+import { Logo } from "./Logo";
 import { useAuth } from "@workspace/replit-auth-web";
 
 function Navbar() {
@@ -18,8 +19,8 @@ function Navbar() {
     <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="font-display text-xl font-bold tracking-wider text-foreground flex items-center gap-2">
-            <span className="text-primary">C</span>ustom Audio Stories
+          <Link href="/" className="flex items-center">
+            <Logo size={32} />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
@@ -107,9 +108,9 @@ function Footer() {
   return (
     <footer className="border-t border-border/40 bg-background/50 py-12 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
-        <h2 className="font-display text-2xl font-bold text-foreground mb-3">
-          <span className="text-primary">C</span>ustom Audio Stories
-        </h2>
+        <div className="mb-3">
+          <Logo size={38} />
+        </div>
         <p className="text-muted-foreground text-sm max-w-md mb-6">
           Personalised audio stories, shaped around you.
         </p>

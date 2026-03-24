@@ -1,0 +1,564 @@
+Build a premium web app called MoonlitAudio.
+
+This is an AI-powered immersive audio storytelling platform with a dark, luxurious, cinematic interface.
+
+IMPORTANT:
+- Build from scratch based on this specification.
+- Use a modern, clean, premium UI.
+- Do NOT make it look like a generic demo.
+- The product should feel like Netflix x Calm x Spotify, with tasteful adult romantic animation styling.
+- The tone should be intimate, emotionally charged, cinematic, warm, and sensual — but NOT explicit pornography.
+- Focus on a premium consumer product, not a developer tool.
+
+==================================================
+1. PRODUCT VISION
+==================================================
+
+MoonlitAudio is an immersive storytelling platform where users can:
+
+1. Browse a premium library of curated audio stories and series
+2. Search by mood, category, tone, or title
+3. Click “Create Your Story”
+4. Fill out an elegant onboarding intake
+5. Generate a personalised story experience using AI
+6. Receive:
+   - generated title
+   - generated description
+   - structured story split into scenes
+   - narrated audio using ElevenLabs
+   - AI-generated cover image
+   - AI-generated scene images
+7. Play the story while visuals change as playback progresses
+
+The app must feel emotional, addictive, private, immersive, and premium.
+
+==================================================
+2. KEY PRODUCT DECISION
+==================================================
+
+DO NOT generate one image per minute.
+
+For V1, use:
+- 1 cover image
+- 1 image per scene
+- 4 to 6 scenes per generated story
+
+Images should change based on story progress.
+
+Reason:
+- lower cost
+- faster load times
+- better UX
+- still feels immersive
+
+This is an audio-first product with scene-anchor visuals.
+
+==================================================
+3. DESIGN DIRECTION
+==================================================
+
+Use:
+- Tailwind CSS
+- Node.js + Express backend
+- Vanilla JS frontend OR lightweight component structure if needed
+- Keep implementation simple and robust
+
+Visual style:
+- dark background
+- deep charcoal / black base
+- warm plum / burgundy / wine accents
+- subtle gold highlights
+- soft gradients
+- elegant serif display typography
+- clean modern sans-serif body typography
+- cinematic imagery
+- glassmorphism where appropriate
+- soft hover animations
+- Netflix-style horizontal content rows
+- rounded premium cards
+- smooth transitions and fades
+
+Emotional design goals:
+- warm
+- luxurious
+- intimate
+- cinematic
+- private
+- premium
+- slightly sensual
+- emotionally immersive
+
+Do NOT use:
+- bright colours
+- cheap neon UI
+- cluttered layouts
+- explicit pornographic imagery
+- overly technical copy
+
+==================================================
+4. APP STRUCTURE / PAGES
+==================================================
+
+Create the following app pages/views:
+
+A. HOME PAGE
+- Fixed premium navbar
+- Hero section with cinematic featured story / series
+- “Continue Listening” section
+- Premium callout section for “Create Your Story”
+- Netflix-style horizontal content rows
+- Featured series block
+- Footer
+
+B. CREATE YOUR STORY PAGE
+- This is the most important page
+- Beautiful onboarding intake form
+- Strong emotional copy
+- Loading state for generation
+- Result view with audio + synced visuals
+
+C. BROWSE PAGE
+- Grid of stories
+- Mood filters
+- Clean search / discovery UX
+
+D. SERIES PAGE
+- Grid of multi-part series
+- Each series should feel premium and bingeable
+
+E. SERIES DETAIL PAGE
+- Series hero header
+- Description
+- Episode list
+- Locked / unlocked states
+- CTA to start listening
+
+F. STORY DETAIL PAGE
+- Large image
+- Title
+- Description
+- Tags
+- Player
+- CTA to play
+
+G. SEARCH PAGE
+- Search input
+- Mood quick filters
+- Results grid
+
+==================================================
+5. HOME PAGE CONTENT / UX
+==================================================
+
+Include these content rows:
+
+- Tonight’s Picks
+- Late Night
+- Slow Burn
+- Forbidden
+- First Encounter
+- 5 Minute Escapes
+- Emotional
+- New This Week
+
+Each row should be horizontally scrollable like Netflix.
+
+Each card should include:
+- thumbnail image
+- title
+- short description
+- tags
+- hover state
+- play affordance
+- optional “5-Part Series” badge
+
+Also add:
+- Continue Listening section
+- Featured series section
+- Clear CTA to “Create Your Story”
+
+==================================================
+6. CREATE YOUR STORY EXPERIENCE
+==================================================
+
+This is the core product.
+
+Build a beautiful guided intake form with these fields:
+
+- Listener Name (text)
+- Mood / Genre (dropdown)
+  - Slow Burn
+  - Late Night
+  - Emotional
+  - Forbidden
+  - First Encounter
+  - Tender
+- Intensity (dropdown)
+  - Soft
+  - Warm
+  - Magnetic
+- Voice Feel (dropdown)
+  - Soft Voice
+  - Deep Voice
+  - Breathy Voice
+  - Confident Voice
+- Story Length (dropdown)
+  - 3 min
+  - 5 min
+  - 10 min
+- Scenario Prompt (textarea)
+
+Optional toggles:
+- More cinematic visuals
+- More emotional focus
+
+Add:
+- “Use sample” button
+- “Create My Story” CTA
+
+The intake should feel premium and intentional, like it is crafting something personal.
+
+==================================================
+7. GENERATION FLOW
+==================================================
+
+When user clicks “Create My Story”:
+
+1. Show loading state:
+   “Creating your story…”
+2. Call backend endpoint
+3. Generate:
+   - title
+   - description
+   - scenes
+   - audio
+   - cover image
+   - scene images
+4. Return result to frontend
+5. Display full generated story experience
+
+==================================================
+8. BACKEND ARCHITECTURE
+==================================================
+
+Use Node.js + Express.
+
+Create these backend routes:
+
+POST /api/generate-story
+POST /api/generate-audio
+POST /api/generate-images
+POST /api/generate-full-story
+
+Use .env variables for API keys.
+
+Use:
+- OpenAI for story generation
+- OpenAI image generation OR compatible image API for visuals
+- ElevenLabs for audio
+
+==================================================
+9. STORY GENERATION (GPT)
+==================================================
+
+Use OpenAI to generate a structured story.
+
+The story must be:
+- second person (“you”)
+- emotionally immersive
+- intimate
+- cinematic
+- sensual but not explicit
+- adult in tone
+- slow and atmospheric
+- not generic
+- not over-expository
+
+Return JSON in this exact shape:
+
+{
+  "title": "...",
+  "description": "...",
+  "scenes": [
+    {
+      "id": 1,
+      "text": "...",
+      "visual_prompt": "...",
+      "duration_estimate": 60
+    }
+  ]
+}
+
+Story requirements:
+- 4 to 6 scenes
+- each scene should be roughly 45–90 seconds
+- each scene must include a visual prompt for image generation
+- the story should feel like it is happening to the listener
+- strong emotional subtext
+- slow build
+- good pacing
+- premium language
+- tasteful adult romance energy
+
+Use this GPT instruction style:
+
+“Write an immersive, second-person audio story.
+Make the listener feel like the story is happening to them.
+Prioritise atmosphere, pauses, subtext, emotional tension, and anticipation.
+Avoid generic narration, clumsy exposition, and explicit sexual detail.
+The tone should be intimate, cinematic, emotionally charged, and adult.”
+
+==================================================
+10. IMAGE GENERATION
+==================================================
+
+Generate:
+- 1 cover image
+- 1 image per scene
+
+Do NOT generate one image per minute.
+
+Image style prompt base:
+
+“cinematic animated illustration, adult romance tone, tasteful and intimate, soft shadows, realistic lighting, warm tones, elegant composition, premium streaming artwork, not explicit”
+
+Each scene image should use:
+- the scene’s visual_prompt
+- consistent style
+- cohesive look across the whole story
+
+The cover image should feel like premium streaming art.
+
+Store in structure:
+
+images: {
+  cover: "...",
+  scenes: ["...", "...", "..."]
+}
+
+==================================================
+11. AUDIO GENERATION (ELEVENLABS)
+==================================================
+
+Combine all scene text into one full narration script.
+
+Use ElevenLabs to generate a single audio file.
+
+Use a warm, intimate delivery style.
+
+Recommended voice settings:
+- stability: 0.6
+- similarity_boost: 0.7
+- style: 0.8
+
+Return:
+- playable audio URL or stored audio file path
+
+==================================================
+12. SCENE / IMAGE SYNCING
+==================================================
+
+As audio plays:
+- switch visuals based on playback progress
+- use scene boundaries, not per-minute generation
+
+If exact timestamps are difficult:
+- approximate by dividing audio progress by number of scenes
+
+Example:
+if progress is 0–20% show scene 1 image
+20–40% show scene 2
+etc.
+
+Use smooth fades between images.
+
+==================================================
+13. GENERATED STORY RESULT VIEW
+==================================================
+
+After generation, show:
+
+- large cover image
+- title
+- description
+- tags
+- audio player
+- scene image panel
+- synced visual changes during playback
+- loading complete state
+- regenerate button
+- save story button
+- optional download audio button
+
+This should feel like the reward moment.
+
+==================================================
+14. PLAYER BEHAVIOUR
+==================================================
+
+Build a premium audio player:
+- play / pause
+- progress bar
+- current time / total time
+- floating mini-player at bottom
+- persistent playback while navigating
+- waveform or animated bars
+- fade audio in on play
+- responsive on mobile
+
+Also include:
+- Continue Listening tracking
+- remember progress in local storage
+- save recently played stories
+
+==================================================
+15. SERIES FUNCTIONALITY
+==================================================
+
+Support curated 3–5 part series.
+
+Each series should have:
+- title
+- mood
+- description
+- cover image
+- list of episodes
+- free / locked episode states
+
+Show:
+- “5-Part Series” badges
+- episode durations
+- “Begin” or “Play” button
+- locked state for premium episodes
+
+==================================================
+16. SEARCH / FILTERING
+==================================================
+
+Search should support:
+- title
+- mood
+- tags
+- keywords
+
+Include quick mood pills:
+- Slow Burn
+- Emotional
+- Forbidden
+- Late Night
+- Tender
+
+==================================================
+17. MONETISATION STRUCTURE
+==================================================
+
+Do NOT overbuild payments yet, but prepare the structure.
+
+Add UI support for:
+- free preview stories
+- locked premium stories
+- locked premium series episodes
+- future paywall modal
+- “Unlock full story” CTA
+- “Start free trial” CTA placeholder
+
+Make architecture ready for:
+- subscription
+- pay-per-story
+- pay-per-series
+
+==================================================
+18. COST CONTROL / PERFORMANCE
+==================================================
+
+Important:
+- cache generated stories
+- store generated outputs
+- do not regenerate the same thing repeatedly
+- do not over-generate images
+- optimise for speed
+- preload generated images before playback if possible
+- use loading states and placeholder skeletons
+
+==================================================
+19. DATA STRUCTURE
+==================================================
+
+Use a clear data structure for generated stories:
+
+{
+  id,
+  title,
+  description,
+  mood,
+  audio_url,
+  duration,
+  scenes: [
+    { id, text, visual_prompt, duration_estimate }
+  ],
+  images: {
+    cover,
+    scenes: []
+  }
+}
+
+Also include static mock content for launch:
+- 30 story cards
+- 3 to 5 series
+- continue listening items
+- mood rows
+
+==================================================
+20. CONTENT STYLE
+==================================================
+
+Keep story/product copy aligned to this tone:
+- emotional
+- premium
+- immersive
+- luxurious
+- private
+- intimate
+- cinematic
+
+Avoid:
+- cheap erotic language
+- explicit content
+- porn wording
+- generic AI copy
+
+==================================================
+21. IMPLEMENTATION NOTES
+==================================================
+
+Please:
+- build working frontend + backend
+- wire the create flow end-to-end
+- scaffold real API integration
+- keep code clean and modular
+- use reusable render functions for rows/cards/story results
+- make the product feel polished
+- ensure mobile responsiveness
+- ensure dark theme consistency
+- make the generated story experience the centrepiece
+
+==================================================
+22. FINAL DELIVERABLE
+==================================================
+
+Deliver a working MoonlitAudio app with:
+- premium home page
+- browse page
+- series page
+- series detail page
+- search page
+- “Create Your Story” flow
+- GPT structured story generation
+- ElevenLabs audio generation
+- AI cover + scene visuals
+- synced visual playback
+- persistent player
+- cached outputs
+- premium UI and interactions
+
+This should feel like a real consumer product ready for MVP launch.

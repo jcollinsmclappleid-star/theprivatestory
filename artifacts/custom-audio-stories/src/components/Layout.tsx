@@ -47,11 +47,11 @@ function Navbar() {
           </Link>
 
           <Link
-            href="/create"
+            href="/gift"
             className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
           >
             <Sparkles className="w-4 h-4" />
-            Create Story
+            Create Your Story
           </Link>
 
           {!isLoading && (
@@ -100,7 +100,7 @@ function Navbar() {
 function Footer() {
   const footerLinks = [
     { label: "Home", href: "/" },
-    { label: "Create", href: "/create" },
+    { label: "Gift a Story", href: "/gift" },
     { label: "Browse", href: "/browse" },
     { label: "Series", href: "/series" },
     { label: "My Library", href: "/library" },

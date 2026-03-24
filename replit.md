@@ -95,10 +95,28 @@ Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHea
 
 React + Vite frontend for the Custom Audio Stories app. Premium dark UI (Netflix × Calm aesthetic).
 
-- Pages: Home, Browse, Search, Create, StoryDetail, SeriesList, SeriesDetail, Library (coming Task #4)
+- Pages: Home, Browse, Search, Create, Gift, StoryDetail, SeriesList, SeriesDetail, Library
 - The Create page runs the full AI story generation pipeline with 7 loading phases
 - Audio player with scene-sync (image changes as audio progresses) via `use-audio-player` Zustand store
 - Connects to API server via generated React Query hooks from `@workspace/api-client-react`
+- Auth: better-auth v1 with email+password + Google OAuth; `AuthModal` component (sign-in/up tabs) wired into Layout; `useAuth` hook with `openSignIn`/`openSignUp`/`logout`; `authClient.ts` uses `createAuthClient` from `better-auth/react`
+
+### Gift Purchase Funnel
+
+`/gift` — 8-step multi-part builder for personalised romantic audio story gifts:
+- Steps: Who it's for → Mood → Personal details → Setting → Voice → Length (pricing) → Add-ons → Review
+- Pricing: Short £9.99 / Standard £17.99 / Deluxe £24.99; 8 add-ons at £2.99–£14.99 each
+- On submit: `POST /api/gift/orders` → orderId → confirmation screen
+- `GiftFAQ` reusable accordion component (9 questions)
+- Home page updated with gift positioning section, occasion tags, sample previews, trust strip, FAQ, gift CTA banners
+
+### Auth (better-auth)
+
+- `lib/db/src/schema/auth.ts` — `usersTable`, `baSessionsTable`, `baAccountsTable`, `baVerificationsTable`
+- `artifacts/api-server/src/lib/auth.ts` — `betterAuth()` with drizzleAdapter, emailAndPassword, Google social provider
+- `artifacts/api-server/src/middlewares/authMiddleware.ts` — populates `req.user` from session
+- `artifacts/api-server/src/app.ts` — `app.all("/api/auth{/*path}", toNodeHandler(auth))`
+- `BETTER_AUTH_SECRET` is set in env. Google OAuth needs `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` from user.
 
 ### `artifacts/api-server` AI Generation Pipeline
 

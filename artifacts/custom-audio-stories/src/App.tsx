@@ -13,6 +13,7 @@ import SeriesDetail from "@/pages/SeriesDetail";
 import Search from "@/pages/Search";
 import StoryDetail from "@/pages/StoryDetail";
 import Create from "@/pages/Create";
+import Gift from "@/pages/Gift";
 import Library from "@/pages/Library";
 import NotFound from "@/pages/not-found";
 
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/search" component={Search} />
         <Route path="/story/:id" component={StoryDetail} />
         <Route path="/create" component={Create} />
+        <Route path="/gift" component={Gift} />
         <Route path="/library" component={Library} />
         <Route component={NotFound} />
       </Switch>

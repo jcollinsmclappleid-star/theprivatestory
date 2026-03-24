@@ -86,11 +86,16 @@ router.get("/library", (req, res) => {
     .map((id) => allStories[id])
     .filter(Boolean);
 
-  const generated = profile.generatedStories
+  const allGenerated = profile.generatedStories
     .map((id) => allStories[id])
-    .filter(Boolean);
+    .filter(Boolean) as Array<Record<string, unknown>>;
 
-  res.json({ saved, generated });
+  // Split: variations have variant_type, continuations have parent_story_id but no variant_type
+  const generated = allGenerated.filter((s) => !s.variant_type);
+  const variations = allGenerated.filter((s) => Boolean(s.variant_type));
+
+  // Continued stories (parent_story_id set, no variant_type) show in Generated with "Continued" badge
+  res.json({ saved, generated, variations });
 });
 
 // ---------------------------------------------------------------------------

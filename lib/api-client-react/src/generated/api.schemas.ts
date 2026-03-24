@@ -179,6 +179,43 @@ export interface FullGeneratedStory {
   qc?: QcResult;
   recommendation_tags?: string[];
   cached?: boolean;
+  parent_story_id?: string;
+  variant_type?: string;
+}
+
+export type GenerateVariationRequestVariationType =
+  (typeof GenerateVariationRequestVariationType)[keyof typeof GenerateVariationRequestVariationType];
+
+export const GenerateVariationRequestVariationType = {
+  softer: "softer",
+  darker: "darker",
+  slower: "slower",
+  more_emotional: "more_emotional",
+  new_ending: "new_ending",
+  new_setting: "new_setting",
+  continue_chemistry: "continue_chemistry",
+} as const;
+
+export interface GenerateVariationRequest {
+  storyId: string;
+  variation_type: GenerateVariationRequestVariationType;
+  userId?: string;
+}
+
+export type ContinueStoryRequestContinuationMode =
+  (typeof ContinueStoryRequestContinuationMode)[keyof typeof ContinueStoryRequestContinuationMode];
+
+export const ContinueStoryRequestContinuationMode = {
+  keep_same_mood: "keep_same_mood",
+  raise_stakes: "raise_stakes",
+  softer_continuation: "softer_continuation",
+  unresolved_continuation: "unresolved_continuation",
+} as const;
+
+export interface ContinueStoryRequest {
+  storyId: string;
+  continuation_mode: ContinueStoryRequestContinuationMode;
+  userId?: string;
 }
 
 export interface SaveStoryRequest {

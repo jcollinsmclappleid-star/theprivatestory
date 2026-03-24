@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./continueStoryRequest";
+export * from "./continueStoryRequestContinuationMode";
 export * from "./episode";
 export * from "./fullGeneratedStory";
 export * from "./generateAudioRequest";
@@ -16,6 +18,8 @@ export * from "./generateImagesRequest";
 export * from "./generateImagesResponse";
 export * from "./generateStoryFromBriefRequest";
 export * from "./generateStoryRequest";
+export * from "./generateVariationRequest";
+export * from "./generateVariationRequestVariationType";
 export * from "./getContinueListening200Item";
 export * from "./getContinueListeningParams";
 export * from "./getLibraryParams";

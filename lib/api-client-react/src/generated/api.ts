@@ -17,6 +17,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  ContinueStoryRequest,
   FullGeneratedStory,
   GenerateAudioRequest,
   GenerateAudioResponse,
@@ -25,6 +26,7 @@ import type {
   GenerateImagesResponse,
   GenerateStoryFromBriefRequest,
   GenerateStoryRequest,
+  GenerateVariationRequest,
   GeneratedStory,
   GetContinueListening200Item,
   GetContinueListeningParams,
@@ -1152,6 +1154,178 @@ export const useGenerateFullStory = <
   TContext
 > => {
   return useMutation(getGenerateFullStoryMutationOptions(options));
+};
+
+/**
+ * @summary Generate a variation of an existing story through the full pipeline
+ */
+export const getGenerateVariationUrl = () => {
+  return `/api/generate-variation`;
+};
+
+export const generateVariation = async (
+  generateVariationRequest: GenerateVariationRequest,
+  options?: RequestInit,
+): Promise<FullGeneratedStory> => {
+  return customFetch<FullGeneratedStory>(getGenerateVariationUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateVariationRequest),
+  });
+};
+
+export const getGenerateVariationMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateVariation>>,
+    TError,
+    { data: BodyType<GenerateVariationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateVariation>>,
+  TError,
+  { data: BodyType<GenerateVariationRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateVariation"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateVariation>>,
+    { data: BodyType<GenerateVariationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateVariation(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateVariationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateVariation>>
+>;
+export type GenerateVariationMutationBody = BodyType<GenerateVariationRequest>;
+export type GenerateVariationMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate a variation of an existing story through the full pipeline
+ */
+export const useGenerateVariation = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateVariation>>,
+    TError,
+    { data: BodyType<GenerateVariationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateVariation>>,
+  TError,
+  { data: BodyType<GenerateVariationRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateVariationMutationOptions(options));
+};
+
+/**
+ * @summary Continue an existing story as a new chapter through the full pipeline
+ */
+export const getContinueStoryUrl = () => {
+  return `/api/continue-story`;
+};
+
+export const continueStory = async (
+  continueStoryRequest: ContinueStoryRequest,
+  options?: RequestInit,
+): Promise<FullGeneratedStory> => {
+  return customFetch<FullGeneratedStory>(getContinueStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(continueStoryRequest),
+  });
+};
+
+export const getContinueStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof continueStory>>,
+    TError,
+    { data: BodyType<ContinueStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof continueStory>>,
+  TError,
+  { data: BodyType<ContinueStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["continueStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof continueStory>>,
+    { data: BodyType<ContinueStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return continueStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContinueStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof continueStory>>
+>;
+export type ContinueStoryMutationBody = BodyType<ContinueStoryRequest>;
+export type ContinueStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Continue an existing story as a new chapter through the full pipeline
+ */
+export const useContinueStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof continueStory>>,
+    TError,
+    { data: BodyType<ContinueStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof continueStory>>,
+  TError,
+  { data: BodyType<ContinueStoryRequest> },
+  TContext
+> => {
+  return useMutation(getContinueStoryMutationOptions(options));
 };
 
 /**

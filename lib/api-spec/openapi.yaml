@@ -269,6 +269,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/FullGeneratedStory"
 
+  /generate-variation:
+    post:
+      operationId: generateVariation
+      tags: [generate]
+      summary: Generate a variation of an existing story through the full pipeline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateVariationRequest"
+      responses:
+        "200":
+          description: Variation story with audio and images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullGeneratedStory"
+
+  /continue-story:
+    post:
+      operationId: continueStory
+      tags: [generate]
+      summary: Continue an existing story as a new chapter through the full pipeline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContinueStoryRequest"
+      responses:
+        "200":
+          description: Continuation story with audio and images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullGeneratedStory"
+
   /save-story:
     post:
       operationId: saveStory
@@ -846,6 +884,10 @@ components:
             type: string
         cached:
           type: boolean
+        parent_story_id:
+          type: string
+        variant_type:
+          type: string
       required:
         - id
         - title
@@ -855,6 +897,34 @@ components:
         - duration
         - scenes
         - images
+
+    GenerateVariationRequest:
+      type: object
+      properties:
+        storyId:
+          type: string
+        variation_type:
+          type: string
+          enum: [softer, darker, slower, more_emotional, new_ending, new_setting, continue_chemistry]
+        userId:
+          type: string
+      required:
+        - storyId
+        - variation_type
+
+    ContinueStoryRequest:
+      type: object
+      properties:
+        storyId:
+          type: string
+        continuation_mode:
+          type: string
+          enum: [keep_same_mood, raise_stakes, softer_continuation, unresolved_continuation]
+        userId:
+          type: string
+      required:
+        - storyId
+        - continuation_mode
 
     SaveStoryRequest:
       type: object

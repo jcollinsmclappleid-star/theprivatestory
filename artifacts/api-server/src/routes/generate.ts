@@ -670,6 +670,247 @@ async function generateAudioFile(
 }
 
 // ---------------------------------------------------------------------------
+// Variation + Continuation helpers
+// ---------------------------------------------------------------------------
+
+async function rewriteStoryAsVariation(
+  brief: StoryBrief,
+  story: WrittenStory,
+  variationType: string
+): Promise<WrittenStory> {
+  const variationInstructions: Record<string, string> = {
+    softer:
+      "Soften the emotional atmosphere throughout. More tenderness, less tension. Preserve the relationship and setting but make every exchange feel gentler and warmer.",
+    darker:
+      "Deepen the atmosphere. Add heavier emotional undertones, more unresolved pull, and deeper longing. The air should feel denser, the silences heavier.",
+    slower:
+      "Slow the pacing significantly. Expand the sensory dwelling. Add longer pauses between moments, more emotional build, more time in each scene before moving forward.",
+    more_emotional:
+      "Amplify the emotional vulnerability throughout. More interiority, more unspoken feeling, more weight in every exchange. Make the connection feel rawer and more exposed.",
+    new_ending:
+      "Preserve all scenes EXCEPT the final one exactly as written. Rewrite ONLY the ending scene with a completely different emotional resolution — different final note, different feeling to close on.",
+    new_setting:
+      "Move the entire story to a completely different physical location while preserving the characters, chemistry, emotional arc, and all dialogue beats exactly.",
+    continue_chemistry:
+      "Carry the emotional thread forward naturally, as if the story has one more secret chapter that was always there. Deepen the connection without resolving it. Leave them closer but still reaching.",
+  };
+
+  const instruction = variationInstructions[variationType] ?? variationInstructions.softer;
+
+  const systemPrompt = `You are rewriting a premium cinematic audio story to apply a specific variation.
+Preserve the emotional core of the story while applying the variation instruction.
+Keep the writing premium, cinematic, and emotionally coherent.
+Return a full new story JSON in the same schema as the original.
+No markdown, no explanation — JSON only.`;
+
+  const userPrompt = `Apply this variation to the story: "${instruction}"
+
+Original Story Brief (preserve these elements):
+${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type, sensory_palette: brief.sensory_palette, recurring_motif: brief.recurring_motif }, null, 2)}
+
+Original Story to vary:
+${JSON.stringify({ title: story.title, description: story.description, scenes: story.scenes.map(s => ({ id: s.id, heading: s.heading, text: s.text })) }, null, 2)}
+
+Return the varied story in this exact JSON shape (same number of scenes as original):
+{
+  "title": "...",
+  "description": "one compelling sentence hook",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "short evocative scene title",
+      "text": "full scene narration text in second person (100-180 words)",
+      "duration_estimate": 60,
+      "emotional_shift": "..."
+    }
+  ]
+}`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    max_completion_tokens: 8192,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  });
+
+  const raw = completion.choices[0]?.message?.content ?? "{}";
+  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  const parsed = JSON.parse(cleaned);
+
+  return {
+    title: parsed.title ?? story.title,
+    description: parsed.description ?? story.description,
+    scenes: (parsed.scenes ?? story.scenes).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
+      id: s.id,
+      heading: s.heading ?? `Scene ${s.id}`,
+      text: s.text,
+      visualPrompt: "",
+      durationEstimate: s.duration_estimate ?? 60,
+      emotionalShift: s.emotional_shift ?? "",
+    })),
+  };
+}
+
+async function writeStoryContinuation(
+  brief: StoryBrief,
+  story: WrittenStory,
+  continuationMode: string
+): Promise<WrittenStory> {
+  const modeInstructions: Record<string, string> = {
+    keep_same_mood:
+      "Continue at the exact same emotional temperature. Same mood, same atmosphere, seamlessly picking up where the story ended. Do not raise or lower the stakes.",
+    raise_stakes:
+      "The next chapter should push toward a more intense emotional moment. The connection deepens, the tension sharpens, something shifts that cannot be undone.",
+    softer_continuation:
+      "The next chapter moves to a softer, more tender register. Like the quiet after something significant — more intimate, more settled, more honest.",
+    unresolved_continuation:
+      "Continue but do not resolve. Leave everything still charged, even more saturated with what hasn't been said. End the chapter more unresolved than the original.",
+  };
+
+  const instruction = modeInstructions[continuationMode] ?? modeInstructions.keep_same_mood;
+  const sceneCount = brief.scene_count ?? 5;
+
+  const systemPrompt = `You are writing the next chapter of a premium cinematic audio story.
+Do not restart from zero. This is a direct continuation.
+Preserve the emotional logic, relationship dynamic, and tonal atmosphere of the original.
+Make the continuation feel earned and inevitable — not random.
+Return only JSON, no markdown, no explanation.`;
+
+  const userPrompt = `Continue this story as the next chapter. ${instruction}
+
+Original Story Brief:
+${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, conflict_type: brief.conflict_type, ending_type: brief.ending_type, sensory_palette: brief.sensory_palette, recurring_motif: brief.recurring_motif }, null, 2)}
+
+Original Story (the chapter that just ended):
+Title: ${story.title}
+${story.scenes.map((s, i) => `Scene ${i + 1} — "${s.heading}":\n${s.text}`).join("\n\n")}
+
+Write the NEXT CHAPTER as a completely new story with ${sceneCount} scenes.
+Requirements:
+- Do not repeat what already happened
+- Pick up naturally from where the original story ended
+- Use the same recurring motif: "${brief.recurring_motif}"
+- Keep the same sensory palette
+- Use second person point of view throughout
+- The continuation should feel like it belongs in the same world
+
+Return JSON only:
+{
+  "title": "...",
+  "description": "one compelling sentence hook for this chapter",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "short evocative scene title",
+      "text": "full scene narration text in second person (100-180 words)",
+      "duration_estimate": 60,
+      "emotional_shift": "..."
+    }
+  ]
+}`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    max_completion_tokens: 8192,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  });
+
+  const raw = completion.choices[0]?.message?.content ?? "{}";
+  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  const parsed = JSON.parse(cleaned);
+
+  return {
+    title: parsed.title ?? `${story.title} — Continued`,
+    description: parsed.description ?? story.description,
+    scenes: (parsed.scenes ?? []).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
+      id: s.id,
+      heading: s.heading ?? `Scene ${s.id}`,
+      text: s.text,
+      visualPrompt: "",
+      durationEstimate: s.duration_estimate ?? 60,
+      emotionalShift: s.emotional_shift ?? "",
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Shared pipeline for variation + continuation (skips planStory — uses existing brief)
+// ---------------------------------------------------------------------------
+
+async function runDerivedPipeline(
+  brief: StoryBrief,
+  story: WrittenStory,
+  voiceFeel: string,
+  mood: string,
+  duration: string,
+  storyId: string,
+  parentStoryId: string,
+  variantType: string | null,
+  userId: string | undefined
+): Promise<Record<string, unknown>> {
+  // QC + targeted rewrite pass
+  let finalStory = story;
+  let qcResult = await qcStory(brief, finalStory);
+  if (qcResult.score_total < 7.5) {
+    // One regeneration attempt isn't useful for derived stories — do targeted rewrite instead
+    if (qcResult.rewrite_strategy) {
+      finalStory = await rewriteStory(brief, finalStory, qcResult.rewrite_strategy);
+    }
+    qcResult = await qcStory(brief, finalStory);
+  } else if (qcResult.rewrite_strategy) {
+    finalStory = await rewriteStory(brief, finalStory, qcResult.rewrite_strategy);
+    qcResult = await qcStory(brief, finalStory);
+  }
+
+  // Image prompts
+  const imagePrompts = await buildImagePrompts(brief, finalStory);
+
+  // Images + audio in parallel
+  const pipelineKey = getCacheKey({ storyId, ts: Date.now() });
+  const [images, audioUrl] = await Promise.all([
+    generateAllImages(imagePrompts, pipelineKey),
+    generateAudioFile(finalStory.scenes, voiceFeel, pipelineKey),
+  ]);
+
+  // Assemble scenes
+  const scenesWithImages = finalStory.scenes.map((scene, i) => ({
+    ...scene,
+    visualPrompt: imagePrompts.scenePrompts[i]?.prompt ?? "",
+    image: images.scenes[i],
+  }));
+
+  const result: Record<string, unknown> = {
+    id: storyId,
+    title: finalStory.title,
+    description: finalStory.description,
+    mood,
+    audioUrl,
+    duration,
+    brief,
+    scenes: scenesWithImages,
+    images: { cover: images.cover, scenes: images.scenes },
+    qc: qcResult,
+    recommendation_tags: brief.recommendation_tags ?? [mood],
+    cached: false,
+    parent_story_id: parentStoryId,
+    ...(variantType ? { variant_type: variantType } : {}),
+  };
+
+  storiesStore.set(storyId, result);
+
+  if (userId) {
+    trackGeneratedStory(userId, storyId, mood, "Warm", voiceFeel);
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
 
@@ -931,6 +1172,128 @@ router.post("/generate-full-story", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "Full story generation failed");
     const message = err instanceof Error ? err.message : "Full story generation failed";
+    res.status(500).json({ error: message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /generate-variation
+// ---------------------------------------------------------------------------
+
+router.post("/generate-variation", async (req, res) => {
+  const { storyId, variation_type, userId } = req.body as {
+    storyId: string;
+    variation_type: string;
+    userId?: string;
+  };
+
+  if (!storyId || !variation_type) {
+    res.status(400).json({ error: "storyId and variation_type are required" });
+    return;
+  }
+
+  const VALID_VARIATION_TYPES = ["softer", "darker", "slower", "more_emotional", "new_ending", "new_setting", "continue_chemistry"];
+  if (!VALID_VARIATION_TYPES.includes(variation_type)) {
+    res.status(400).json({ error: `variation_type must be one of: ${VALID_VARIATION_TYPES.join(", ")}` });
+    return;
+  }
+
+  const original = storiesStore.get(storyId) as Record<string, unknown>;
+  if (!original) {
+    res.status(404).json({ error: "Story not found" });
+    return;
+  }
+
+  const brief = original.brief as StoryBrief;
+  const originalScenes = (original.scenes as Scene[]) ?? [];
+  const originalStory: WrittenStory = {
+    title: original.title as string,
+    description: original.description as string,
+    scenes: originalScenes,
+  };
+  const mood = (original.mood as string) ?? "Emotional";
+  const duration = (original.duration as string) ?? "5 min";
+  const voiceFeel = (brief?.voice_tone?.includes("deep") ? "Deep Voice" : "Soft Voice");
+
+  const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
+
+  const TIMEOUT_MS = 150_000;
+
+  const pipeline = async () => {
+    const variedStory = await rewriteStoryAsVariation(brief, originalStory, variation_type);
+    return runDerivedPipeline(brief, variedStory, voiceFeel, mood, duration, newStoryId, storyId, variation_type, userId);
+  };
+
+  try {
+    const result = await Promise.race([
+      pipeline(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Generation timed out")), TIMEOUT_MS)),
+    ]);
+    res.json(result);
+  } catch (err) {
+    req.log.error({ err }, "Variation generation failed");
+    const message = err instanceof Error ? err.message : "Variation generation failed";
+    res.status(500).json({ error: message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /continue-story
+// ---------------------------------------------------------------------------
+
+router.post("/continue-story", async (req, res) => {
+  const { storyId, continuation_mode, userId } = req.body as {
+    storyId: string;
+    continuation_mode: string;
+    userId?: string;
+  };
+
+  if (!storyId || !continuation_mode) {
+    res.status(400).json({ error: "storyId and continuation_mode are required" });
+    return;
+  }
+
+  const VALID_MODES = ["keep_same_mood", "raise_stakes", "softer_continuation", "unresolved_continuation"];
+  if (!VALID_MODES.includes(continuation_mode)) {
+    res.status(400).json({ error: `continuation_mode must be one of: ${VALID_MODES.join(", ")}` });
+    return;
+  }
+
+  const original = storiesStore.get(storyId) as Record<string, unknown>;
+  if (!original) {
+    res.status(404).json({ error: "Story not found" });
+    return;
+  }
+
+  const brief = original.brief as StoryBrief;
+  const originalScenes = (original.scenes as Scene[]) ?? [];
+  const originalStory: WrittenStory = {
+    title: original.title as string,
+    description: original.description as string,
+    scenes: originalScenes,
+  };
+  const mood = (original.mood as string) ?? "Emotional";
+  const duration = (original.duration as string) ?? "5 min";
+  const voiceFeel = (brief?.voice_tone?.includes("deep") ? "Deep Voice" : "Soft Voice");
+
+  const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
+
+  const TIMEOUT_MS = 150_000;
+
+  const pipeline = async () => {
+    const continuation = await writeStoryContinuation(brief, originalStory, continuation_mode);
+    return runDerivedPipeline(brief, continuation, voiceFeel, mood, duration, newStoryId, storyId, null, userId);
+  };
+
+  try {
+    const result = await Promise.race([
+      pipeline(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Generation timed out")), TIMEOUT_MS)),
+    ]);
+    res.json(result);
+  } catch (err) {
+    req.log.error({ err }, "Story continuation failed");
+    const message = err instanceof Error ? err.message : "Story continuation failed";
     res.status(500).json({ error: message });
   }
 });

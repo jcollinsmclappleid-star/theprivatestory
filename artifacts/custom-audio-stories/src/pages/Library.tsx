@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw } from "lucide-react";
 import { Link } from "wouter";
 import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
-import type { Story } from "@workspace/api-client-react";
+import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -177,8 +177,19 @@ export default function Library() {
   const [activeTab, setActiveTab] = useState<LibraryTab>("saved");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
+  const [variations, setVariations] = useState<FullGeneratedStory[]>([]);
   const [inProgress, setInProgress] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const VARIATION_LABELS: Record<string, string> = {
+    softer: "Softer",
+    darker: "Darker",
+    slower: "Slower",
+    more_emotional: "More Emotional",
+    new_ending: "New Ending",
+    new_setting: "New Setting",
+    continue_chemistry: "Continue the Chemistry",
+  };
 
   const load = useCallback(async () => {
     const userId = getUserId();
@@ -189,9 +200,10 @@ export default function Library() {
         fetch(`${API_BASE}/api/continue-listening?userId=${encodeURIComponent(userId)}`),
       ]);
       if (libRes.ok) {
-        const lib = await libRes.json() as { saved: Story[]; generated: Story[] };
+        const lib = await libRes.json() as { saved: Story[]; generated: Story[]; variations: FullGeneratedStory[] };
         setSaved(lib.saved ?? []);
         setGenerated(lib.generated ?? []);
+        setVariations(lib.variations ?? []);
       }
       if (contRes.ok) {
         const cont = await contRes.json() as (Story & { progress?: Record<string, unknown> })[];
@@ -309,7 +321,36 @@ export default function Library() {
             )}
 
             {activeTab === "variations" && (
-              <EmptyState tab="variations" />
+              variations.length === 0 ? (
+                <EmptyState tab="variations" />
+              ) : (
+                variations.map((story) => {
+                  const varLabel = story.variant_type ? (VARIATION_LABELS[story.variant_type] ?? story.variant_type) : null;
+                  const storyAsStory: Story = {
+                    id: story.id,
+                    title: story.title,
+                    description: story.description,
+                    mood: story.mood,
+                    tags: story.recommendation_tags ?? [story.mood],
+                    duration: story.duration,
+                    coverImage: story.images?.cover ?? "",
+                    audioUrl: story.audioUrl,
+                    isPremium: false,
+                    isNew: false,
+                    scenes: story.scenes ?? [],
+                  };
+                  return (
+                    <div key={story.id} className="relative">
+                      {varLabel && (
+                        <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium border border-primary/30">
+                          {varLabel}
+                        </div>
+                      )}
+                      <StoryCard story={storyAsStory} />
+                    </div>
+                  );
+                })
+              )
             )}
           </motion.div>
         )}

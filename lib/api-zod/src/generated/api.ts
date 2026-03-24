@@ -495,6 +495,167 @@ export const GenerateFullStoryResponse = zod.object({
     .optional(),
   recommendation_tags: zod.array(zod.string()).optional(),
   cached: zod.boolean().optional(),
+  parent_story_id: zod.string().optional(),
+  variant_type: zod.string().optional(),
+});
+
+/**
+ * @summary Generate a variation of an existing story through the full pipeline
+ */
+export const GenerateVariationBody = zod.object({
+  storyId: zod.string(),
+  variation_type: zod.enum([
+    "softer",
+    "darker",
+    "slower",
+    "more_emotional",
+    "new_ending",
+    "new_setting",
+    "continue_chemistry",
+  ]),
+  userId: zod.string().optional(),
+});
+
+export const GenerateVariationResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  audioUrl: zod.string(),
+  duration: zod.string(),
+  brief: zod
+    .object({
+      emotional_arc: zod.string(),
+      relationship_dynamic: zod.string(),
+      conflict_type: zod.string(),
+      pacing_style: zod.string(),
+      ending_type: zod.string(),
+      sensory_palette: zod.array(zod.string()),
+      point_of_view: zod.string(),
+      voice_tone: zod.string(),
+      scene_count: zod.number(),
+      scene_plan: zod.array(zod.object({}).passthrough()),
+      recurring_motif: zod.string(),
+      title_direction: zod.string(),
+      image_style_direction: zod.string(),
+      recommendation_tags: zod.array(zod.string()).optional(),
+      quality_target: zod.string().optional(),
+    })
+    .optional(),
+  scenes: zod.array(
+    zod.object({
+      id: zod.number(),
+      heading: zod.string().optional(),
+      text: zod.string(),
+      visualPrompt: zod.string(),
+      durationEstimate: zod.number(),
+      emotionalShift: zod.string().optional(),
+      image: zod.string().optional(),
+    }),
+  ),
+  images: zod.object({
+    cover: zod.string(),
+    scenes: zod.array(zod.string()),
+  }),
+  qc: zod
+    .object({
+      passed: zod.boolean(),
+      score_total: zod.number(),
+      sub_scores: zod.object({
+        emotional_depth: zod.number(),
+        specificity: zod.number(),
+        pacing: zod.number(),
+        scene_progression: zod.number(),
+        originality: zod.number(),
+        sensory_detail: zod.number(),
+        ending_strength: zod.number(),
+      }),
+      issues: zod.array(zod.string()),
+      rewrite_strategy: zod.string().nullish(),
+    })
+    .optional(),
+  recommendation_tags: zod.array(zod.string()).optional(),
+  cached: zod.boolean().optional(),
+  parent_story_id: zod.string().optional(),
+  variant_type: zod.string().optional(),
+});
+
+/**
+ * @summary Continue an existing story as a new chapter through the full pipeline
+ */
+export const ContinueStoryBody = zod.object({
+  storyId: zod.string(),
+  continuation_mode: zod.enum([
+    "keep_same_mood",
+    "raise_stakes",
+    "softer_continuation",
+    "unresolved_continuation",
+  ]),
+  userId: zod.string().optional(),
+});
+
+export const ContinueStoryResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  audioUrl: zod.string(),
+  duration: zod.string(),
+  brief: zod
+    .object({
+      emotional_arc: zod.string(),
+      relationship_dynamic: zod.string(),
+      conflict_type: zod.string(),
+      pacing_style: zod.string(),
+      ending_type: zod.string(),
+      sensory_palette: zod.array(zod.string()),
+      point_of_view: zod.string(),
+      voice_tone: zod.string(),
+      scene_count: zod.number(),
+      scene_plan: zod.array(zod.object({}).passthrough()),
+      recurring_motif: zod.string(),
+      title_direction: zod.string(),
+      image_style_direction: zod.string(),
+      recommendation_tags: zod.array(zod.string()).optional(),
+      quality_target: zod.string().optional(),
+    })
+    .optional(),
+  scenes: zod.array(
+    zod.object({
+      id: zod.number(),
+      heading: zod.string().optional(),
+      text: zod.string(),
+      visualPrompt: zod.string(),
+      durationEstimate: zod.number(),
+      emotionalShift: zod.string().optional(),
+      image: zod.string().optional(),
+    }),
+  ),
+  images: zod.object({
+    cover: zod.string(),
+    scenes: zod.array(zod.string()),
+  }),
+  qc: zod
+    .object({
+      passed: zod.boolean(),
+      score_total: zod.number(),
+      sub_scores: zod.object({
+        emotional_depth: zod.number(),
+        specificity: zod.number(),
+        pacing: zod.number(),
+        scene_progression: zod.number(),
+        originality: zod.number(),
+        sensory_detail: zod.number(),
+        ending_strength: zod.number(),
+      }),
+      issues: zod.array(zod.string()),
+      rewrite_strategy: zod.string().nullish(),
+    })
+    .optional(),
+  recommendation_tags: zod.array(zod.string()).optional(),
+  cached: zod.boolean().optional(),
+  parent_story_id: zod.string().optional(),
+  variant_type: zod.string().optional(),
 });
 
 /**

@@ -23,4 +23,6 @@ export interface FullGeneratedStory {
   qc?: QcResult;
   recommendation_tags?: string[];
   cached?: boolean;
+  parent_story_id?: string;
+  variant_type?: string;
 }

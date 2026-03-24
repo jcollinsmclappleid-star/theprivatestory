@@ -1052,6 +1052,11 @@ router.post("/generate-images", async (req, res) => {
 });
 
 router.post("/generate-full-story", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const rawIntake = req.body as GenerateStoryRequest;
 
   // Step 1: Normalise input
@@ -1154,10 +1159,7 @@ router.post("/generate-full-story", async (req, res) => {
     }
 
     // Step 11: Track in user profile (taste + generated stories list)
-    const trackUserId = req.user?.id;
-    if (trackUserId) {
-      trackGeneratedStory(trackUserId, storyId, intake.mood, intake.intensity, intake.voiceFeel);
-    }
+    trackGeneratedStory(req.user.id, storyId, intake.mood, intake.intensity, intake.voiceFeel);
 
     return result;
   };
@@ -1181,11 +1183,16 @@ router.post("/generate-full-story", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.post("/generate-variation", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const { storyId, variation_type } = req.body as {
     storyId: string;
     variation_type: string;
   };
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!storyId || !variation_type) {
     res.status(400).json({ error: "storyId and variation_type are required" });
@@ -1242,11 +1249,16 @@ router.post("/generate-variation", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.post("/continue-story", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const { storyId, continuation_mode } = req.body as {
     storyId: string;
     continuation_mode: string;
   };
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!storyId || !continuation_mode) {
     res.status(400).json({ error: "storyId and continuation_mode are required" });

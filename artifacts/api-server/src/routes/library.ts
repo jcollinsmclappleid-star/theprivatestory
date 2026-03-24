@@ -224,13 +224,30 @@ export function trackGeneratedStory(userId: string, storyId: string, mood: strin
 }
 
 // ---------------------------------------------------------------------------
-// GET /recommendations/:userId
+// GET /recommendations — personalised for the authenticated user
 // ---------------------------------------------------------------------------
-router.get("/recommendations/:userId", (req, res) => {
-  const { userId } = req.params;
-  const profile = usersStore.get(userId);
+router.get("/recommendations", (req, res) => {
   const allStories = storiesStore.getAll();
   const storyList = Object.values(allStories);
+
+  const editorialFallback = EDITORIAL_PICKS
+    .map((id) => allStories[id])
+    .filter(Boolean);
+
+  if (!req.isAuthenticated()) {
+    // Unauthenticated: return editorial picks only
+    res.json({
+      for_you: editorialFallback,
+      because_you_liked: [],
+      because_you_liked_mood: null,
+      continue_the_mood: [],
+      has_taste_profile: false,
+    });
+    return;
+  }
+
+  const userId = req.user.id;
+  const profile = usersStore.get(userId);
 
   const hasProfile = Object.keys(profile.tasteProfile).length > 0;
 
@@ -249,10 +266,6 @@ router.get("/recommendations/:userId", (req, res) => {
 
   const matchMood = (mood: string) =>
     storyList.filter((s) => (s as Record<string, unknown>).mood === mood).slice(0, 8);
-
-  const editorialFallback = EDITORIAL_PICKS
-    .map((id) => allStories[id])
-    .filter(Boolean);
 
   const forYou = hasProfile && topMood ? matchMood(topMood) : editorialFallback;
   const becauseYouLiked = hasProfile && topMood ? matchMood(topMood).slice(0, 6) : [];

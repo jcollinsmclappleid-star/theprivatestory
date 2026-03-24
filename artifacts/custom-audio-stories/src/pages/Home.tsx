@@ -25,7 +25,7 @@ function useContinueListening(isAuthenticated: boolean) {
   return items;
 }
 
-function useRecommendations(userId: string | null) {
+function useRecommendations() {
   const [recs, setRecs] = useState<{
     for_you: Story[];
     because_you_liked: Story[];
@@ -34,12 +34,11 @@ function useRecommendations(userId: string | null) {
   }>({ for_you: [], because_you_liked: [], because_you_liked_mood: null, has_taste_profile: false });
 
   useEffect(() => {
-    const uid = userId ?? "editorial";
-    fetch(`${API_BASE}/api/recommendations/${encodeURIComponent(uid)}`)
+    fetch(`${API_BASE}/api/recommendations`, { credentials: "include" })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setRecs(data); })
       .catch(() => {});
-  }, [userId]);
+  }, []);
 
   return recs;
 }
@@ -87,7 +86,7 @@ export default function Home() {
   const { data: stories, isLoading } = useStoriesFallback();
   const { user, isAuthenticated } = useAuth();
   const continueListening = useContinueListening(isAuthenticated);
-  const recs = useRecommendations(user?.id ?? null);
+  const recs = useRecommendations();
 
   const featured = stories?.[0];
   const tonightPicks = stories?.slice(1, 9) || [];

@@ -1,12 +1,13 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { useAuth } from "@workspace/replit-auth-web";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -93,6 +94,7 @@ function OptionCard<T extends string>({
 }
 
 export default function Create() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [step, setStep] = useState<"form" | "generating" | "result">("form");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
@@ -317,6 +319,37 @@ export default function Create() {
     ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
     : 0;
   const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] ?? result?.images?.cover ?? "";
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <Sparkles className="w-8 h-8 text-primary" />
+        </div>
+        <div>
+          <h2 className="font-display text-2xl font-bold text-foreground mb-2">Sign in to create a story</h2>
+          <p className="text-muted-foreground max-w-sm">
+            Your personalised audio stories are crafted just for you and saved to your private library.
+          </p>
+        </div>
+        <a
+          href={`${API_BASE}/api/login?returnTo=${encodeURIComponent("/create")}`}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+        >
+          <LogIn className="w-4 h-4" />
+          Sign In to Continue
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 w-full">

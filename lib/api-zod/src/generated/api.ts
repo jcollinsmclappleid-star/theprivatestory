@@ -721,12 +721,8 @@ export const UpdateTasteResponse = zod.object({
 });
 
 /**
- * @summary Get personalised story recommendations for a user
+ * @summary Get personalised story recommendations for the authenticated user
  */
-export const GetRecommendationsParams = zod.object({
-  userId: zod.coerce.string(),
-});
-
 export const GetRecommendationsResponse = zod.object({
   for_you: zod.array(zod.object({}).passthrough()),
   because_you_liked: zod.array(zod.object({}).passthrough()),

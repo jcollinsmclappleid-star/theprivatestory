@@ -1877,58 +1877,45 @@ export const useUpdateTaste = <
 };
 
 /**
- * @summary Get personalised story recommendations for a user
+ * @summary Get personalised story recommendations for the authenticated user
  */
-export const getGetRecommendationsUrl = (userId: string) => {
-  return `/api/recommendations/${userId}`;
+export const getGetRecommendationsUrl = () => {
+  return `/api/recommendations`;
 };
 
 export const getRecommendations = async (
-  userId: string,
   options?: RequestInit,
 ): Promise<RecommendationsResponse> => {
-  return customFetch<RecommendationsResponse>(
-    getGetRecommendationsUrl(userId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
+  return customFetch<RecommendationsResponse>(getGetRecommendationsUrl(), {
+    ...options,
+    method: "GET",
+  });
 };
 
-export const getGetRecommendationsQueryKey = (userId: string) => {
-  return [`/api/recommendations/${userId}`] as const;
+export const getGetRecommendationsQueryKey = () => {
+  return [`/api/recommendations`] as const;
 };
 
 export const getGetRecommendationsQueryOptions = <
   TData = Awaited<ReturnType<typeof getRecommendations>>,
   TError = ErrorType<unknown>,
->(
-  userId: string,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getRecommendations>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-) => {
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRecommendations>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetRecommendationsQueryKey(userId);
+  const queryKey = queryOptions?.queryKey ?? getGetRecommendationsQueryKey();
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getRecommendations>>
-  > = ({ signal }) => getRecommendations(userId, { signal, ...requestOptions });
+  > = ({ signal }) => getRecommendations({ signal, ...requestOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!userId,
-    ...queryOptions,
-  } as UseQueryOptions<
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getRecommendations>>,
     TError,
     TData
@@ -1941,24 +1928,21 @@ export type GetRecommendationsQueryResult = NonNullable<
 export type GetRecommendationsQueryError = ErrorType<unknown>;
 
 /**
- * @summary Get personalised story recommendations for a user
+ * @summary Get personalised story recommendations for the authenticated user
  */
 
 export function useGetRecommendations<
   TData = Awaited<ReturnType<typeof getRecommendations>>,
   TError = ErrorType<unknown>,
->(
-  userId: string,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof getRecommendations>>,
-      TError,
-      TData
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetRecommendationsQueryOptions(userId, options);
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRecommendations>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetRecommendationsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

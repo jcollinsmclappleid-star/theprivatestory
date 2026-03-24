@@ -433,17 +433,11 @@ paths:
                 required:
                   - updated
 
-  /recommendations/{userId}:
+  /recommendations:
     get:
       operationId: getRecommendations
       tags: [library]
-      summary: Get personalised story recommendations for a user
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
+      summary: Get personalised story recommendations for the authenticated user
       responses:
         "200":
           description: Personalised recommendations

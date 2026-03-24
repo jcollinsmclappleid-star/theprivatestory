@@ -7,6 +7,7 @@
  */
 import type { GenerateImagesResponse } from "./generateImagesResponse";
 import type { Scene } from "./scene";
+import type { StoryBrief } from "./storyBrief";
 
 export interface FullGeneratedStory {
   id: string;
@@ -15,6 +16,7 @@ export interface FullGeneratedStory {
   mood: string;
   audioUrl: string;
   duration: string;
+  brief?: StoryBrief;
   scenes: Scene[];
   images: GenerateImagesResponse;
   cached?: boolean;

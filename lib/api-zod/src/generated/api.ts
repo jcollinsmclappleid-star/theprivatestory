@@ -42,6 +42,7 @@ export const GetStoriesResponseItem = zod.object({
     .array(
       zod.object({
         id: zod.number(),
+        heading: zod.string().optional(),
         text: zod.string(),
         visualPrompt: zod.string(),
         durationEstimate: zod.number(),
@@ -77,6 +78,7 @@ export const GetStoryResponse = zod.object({
     .array(
       zod.object({
         id: zod.number(),
+        heading: zod.string().optional(),
         text: zod.string(),
         visualPrompt: zod.string(),
         durationEstimate: zod.number(),
@@ -140,9 +142,9 @@ export const GetSeriesByIdResponse = zod.object({
 });
 
 /**
- * @summary Generate AI story text
+ * @summary Generate hidden story brief from user intake
  */
-export const GenerateStoryBody = zod.object({
+export const PlanStoryBody = zod.object({
   listenerName: zod.string(),
   mood: zod.string(),
   intensity: zod.string(),
@@ -153,16 +155,100 @@ export const GenerateStoryBody = zod.object({
   emotionalFocus: zod.boolean().optional(),
 });
 
+export const PlanStoryResponse = zod.object({
+  emotional_arc: zod.string(),
+  relationship_dynamic: zod.string(),
+  conflict_type: zod.string(),
+  pacing_style: zod.string(),
+  ending_type: zod.string(),
+  sensory_palette: zod.array(zod.string()),
+  point_of_view: zod.string(),
+  voice_tone: zod.string(),
+  scene_count: zod.number(),
+  scene_plan: zod.array(zod.object({}).passthrough()),
+  recurring_motif: zod.string(),
+  title_direction: zod.string(),
+  image_style_direction: zod.string(),
+});
+
+/**
+ * @summary Generate story text from a story brief
+ */
+export const GenerateStoryBody = zod.object({
+  brief: zod.object({
+    emotional_arc: zod.string(),
+    relationship_dynamic: zod.string(),
+    conflict_type: zod.string(),
+    pacing_style: zod.string(),
+    ending_type: zod.string(),
+    sensory_palette: zod.array(zod.string()),
+    point_of_view: zod.string(),
+    voice_tone: zod.string(),
+    scene_count: zod.number(),
+    scene_plan: zod.array(zod.object({}).passthrough()),
+    recurring_motif: zod.string(),
+    title_direction: zod.string(),
+    image_style_direction: zod.string(),
+  }),
+  listenerName: zod.string().optional(),
+});
+
 export const GenerateStoryResponse = zod.object({
   title: zod.string(),
   description: zod.string(),
   scenes: zod.array(
     zod.object({
       id: zod.number(),
+      heading: zod.string().optional(),
       text: zod.string(),
       visualPrompt: zod.string(),
       durationEstimate: zod.number(),
       image: zod.string().optional(),
+    }),
+  ),
+});
+
+/**
+ * @summary Generate cohesive image prompts from brief and story
+ */
+export const GenerateImagePromptsBody = zod.object({
+  brief: zod.object({
+    emotional_arc: zod.string(),
+    relationship_dynamic: zod.string(),
+    conflict_type: zod.string(),
+    pacing_style: zod.string(),
+    ending_type: zod.string(),
+    sensory_palette: zod.array(zod.string()),
+    point_of_view: zod.string(),
+    voice_tone: zod.string(),
+    scene_count: zod.number(),
+    scene_plan: zod.array(zod.object({}).passthrough()),
+    recurring_motif: zod.string(),
+    title_direction: zod.string(),
+    image_style_direction: zod.string(),
+  }),
+  story: zod.object({
+    title: zod.string(),
+    description: zod.string(),
+    scenes: zod.array(
+      zod.object({
+        id: zod.number(),
+        heading: zod.string().optional(),
+        text: zod.string(),
+        visualPrompt: zod.string(),
+        durationEstimate: zod.number(),
+        image: zod.string().optional(),
+      }),
+    ),
+  }),
+});
+
+export const GenerateImagePromptsResponse = zod.object({
+  coverPrompt: zod.string(),
+  scenePrompts: zod.array(
+    zod.object({
+      sceneId: zod.number(),
+      prompt: zod.string(),
     }),
   ),
 });
@@ -177,7 +263,6 @@ export const GenerateAudioBody = zod.object({
 
 export const GenerateAudioResponse = zod.object({
   audioUrl: zod.string(),
-  duration: zod.number().optional(),
 });
 
 /**
@@ -194,7 +279,7 @@ export const GenerateImagesResponse = zod.object({
 });
 
 /**
- * @summary Generate complete story with audio and images
+ * @summary Generate complete story with audio and images via full pipeline
  */
 export const GenerateFullStoryBody = zod.object({
   listenerName: zod.string(),
@@ -214,9 +299,27 @@ export const GenerateFullStoryResponse = zod.object({
   mood: zod.string(),
   audioUrl: zod.string(),
   duration: zod.string(),
+  brief: zod
+    .object({
+      emotional_arc: zod.string(),
+      relationship_dynamic: zod.string(),
+      conflict_type: zod.string(),
+      pacing_style: zod.string(),
+      ending_type: zod.string(),
+      sensory_palette: zod.array(zod.string()),
+      point_of_view: zod.string(),
+      voice_tone: zod.string(),
+      scene_count: zod.number(),
+      scene_plan: zod.array(zod.object({}).passthrough()),
+      recurring_motif: zod.string(),
+      title_direction: zod.string(),
+      image_style_direction: zod.string(),
+    })
+    .optional(),
   scenes: zod.array(
     zod.object({
       id: zod.number(),
+      heading: zod.string().optional(),
       text: zod.string(),
       visualPrompt: zod.string(),
       durationEstimate: zod.number(),

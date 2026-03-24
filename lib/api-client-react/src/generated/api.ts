@@ -20,14 +20,18 @@ import type {
   FullGeneratedStory,
   GenerateAudioRequest,
   GenerateAudioResponse,
+  GenerateImagePromptsRequest,
   GenerateImagesRequest,
   GenerateImagesResponse,
+  GenerateStoryFromBriefRequest,
   GenerateStoryRequest,
   GeneratedStory,
   GetStoriesParams,
   HealthStatus,
+  ImagePrompts,
   Series,
   Story,
+  StoryBrief,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -448,21 +452,107 @@ export function useGetSeriesById<
 }
 
 /**
- * @summary Generate AI story text
+ * @summary Generate hidden story brief from user intake
+ */
+export const getPlanStoryUrl = () => {
+  return `/api/plan-story`;
+};
+
+export const planStory = async (
+  generateStoryRequest: GenerateStoryRequest,
+  options?: RequestInit,
+): Promise<StoryBrief> => {
+  return customFetch<StoryBrief>(getPlanStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateStoryRequest),
+  });
+};
+
+export const getPlanStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof planStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof planStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["planStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof planStory>>,
+    { data: BodyType<GenerateStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return planStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PlanStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof planStory>>
+>;
+export type PlanStoryMutationBody = BodyType<GenerateStoryRequest>;
+export type PlanStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate hidden story brief from user intake
+ */
+export const usePlanStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof planStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof planStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  return useMutation(getPlanStoryMutationOptions(options));
+};
+
+/**
+ * @summary Generate story text from a story brief
  */
 export const getGenerateStoryUrl = () => {
   return `/api/generate-story`;
 };
 
 export const generateStory = async (
-  generateStoryRequest: GenerateStoryRequest,
+  generateStoryFromBriefRequest: GenerateStoryFromBriefRequest,
   options?: RequestInit,
 ): Promise<GeneratedStory> => {
   return customFetch<GeneratedStory>(getGenerateStoryUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(generateStoryRequest),
+    body: JSON.stringify(generateStoryFromBriefRequest),
   });
 };
 
@@ -473,14 +563,14 @@ export const getGenerateStoryMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof generateStory>>,
     TError,
-    { data: BodyType<GenerateStoryRequest> },
+    { data: BodyType<GenerateStoryFromBriefRequest> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof generateStory>>,
   TError,
-  { data: BodyType<GenerateStoryRequest> },
+  { data: BodyType<GenerateStoryFromBriefRequest> },
   TContext
 > => {
   const mutationKey = ["generateStory"];
@@ -494,7 +584,7 @@ export const getGenerateStoryMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof generateStory>>,
-    { data: BodyType<GenerateStoryRequest> }
+    { data: BodyType<GenerateStoryFromBriefRequest> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -507,11 +597,11 @@ export const getGenerateStoryMutationOptions = <
 export type GenerateStoryMutationResult = NonNullable<
   Awaited<ReturnType<typeof generateStory>>
 >;
-export type GenerateStoryMutationBody = BodyType<GenerateStoryRequest>;
+export type GenerateStoryMutationBody = BodyType<GenerateStoryFromBriefRequest>;
 export type GenerateStoryMutationError = ErrorType<unknown>;
 
 /**
- * @summary Generate AI story text
+ * @summary Generate story text from a story brief
  */
 export const useGenerateStory = <
   TError = ErrorType<unknown>,
@@ -520,17 +610,104 @@ export const useGenerateStory = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof generateStory>>,
     TError,
-    { data: BodyType<GenerateStoryRequest> },
+    { data: BodyType<GenerateStoryFromBriefRequest> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof generateStory>>,
   TError,
-  { data: BodyType<GenerateStoryRequest> },
+  { data: BodyType<GenerateStoryFromBriefRequest> },
   TContext
 > => {
   return useMutation(getGenerateStoryMutationOptions(options));
+};
+
+/**
+ * @summary Generate cohesive image prompts from brief and story
+ */
+export const getGenerateImagePromptsUrl = () => {
+  return `/api/generate-image-prompts`;
+};
+
+export const generateImagePrompts = async (
+  generateImagePromptsRequest: GenerateImagePromptsRequest,
+  options?: RequestInit,
+): Promise<ImagePrompts> => {
+  return customFetch<ImagePrompts>(getGenerateImagePromptsUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateImagePromptsRequest),
+  });
+};
+
+export const getGenerateImagePromptsMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateImagePrompts>>,
+    TError,
+    { data: BodyType<GenerateImagePromptsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateImagePrompts>>,
+  TError,
+  { data: BodyType<GenerateImagePromptsRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateImagePrompts"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateImagePrompts>>,
+    { data: BodyType<GenerateImagePromptsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateImagePrompts(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateImagePromptsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateImagePrompts>>
+>;
+export type GenerateImagePromptsMutationBody =
+  BodyType<GenerateImagePromptsRequest>;
+export type GenerateImagePromptsMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate cohesive image prompts from brief and story
+ */
+export const useGenerateImagePrompts = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateImagePrompts>>,
+    TError,
+    { data: BodyType<GenerateImagePromptsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateImagePrompts>>,
+  TError,
+  { data: BodyType<GenerateImagePromptsRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateImagePromptsMutationOptions(options));
 };
 
 /**
@@ -706,7 +883,7 @@ export const useGenerateImages = <
 };
 
 /**
- * @summary Generate complete story with audio and images
+ * @summary Generate complete story with audio and images via full pipeline
  */
 export const getGenerateFullStoryUrl = () => {
   return `/api/generate-full-story`;
@@ -769,7 +946,7 @@ export type GenerateFullStoryMutationBody = BodyType<GenerateStoryRequest>;
 export type GenerateFullStoryMutationError = ErrorType<unknown>;
 
 /**
- * @summary Generate complete story with audio and images
+ * @summary Generate complete story with audio and images via full pipeline
  */
 export const useGenerateFullStory = <
   TError = ErrorType<unknown>,

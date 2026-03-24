@@ -11,6 +11,7 @@ export interface HealthStatus {
 
 export interface Scene {
   id: number;
+  heading?: string;
   text: string;
   visualPrompt: string;
   durationEstimate: number;
@@ -55,6 +56,24 @@ export interface Series {
   tags: string[];
 }
 
+export type StoryBriefScenePlanItem = { [key: string]: unknown };
+
+export interface StoryBrief {
+  emotional_arc: string;
+  relationship_dynamic: string;
+  conflict_type: string;
+  pacing_style: string;
+  ending_type: string;
+  sensory_palette: string[];
+  point_of_view: string;
+  voice_tone: string;
+  scene_count: number;
+  scene_plan: StoryBriefScenePlanItem[];
+  recurring_motif: string;
+  title_direction: string;
+  image_style_direction: string;
+}
+
 export interface GenerateStoryRequest {
   listenerName: string;
   mood: string;
@@ -66,10 +85,30 @@ export interface GenerateStoryRequest {
   emotionalFocus?: boolean;
 }
 
+export interface GenerateStoryFromBriefRequest {
+  brief: StoryBrief;
+  listenerName?: string;
+}
+
 export interface GeneratedStory {
   title: string;
   description: string;
   scenes: Scene[];
+}
+
+export interface GenerateImagePromptsRequest {
+  brief: StoryBrief;
+  story: GeneratedStory;
+}
+
+export interface SceneImagePrompt {
+  sceneId: number;
+  prompt: string;
+}
+
+export interface ImagePrompts {
+  coverPrompt: string;
+  scenePrompts: SceneImagePrompt[];
 }
 
 export interface GenerateAudioRequest {
@@ -79,7 +118,6 @@ export interface GenerateAudioRequest {
 
 export interface GenerateAudioResponse {
   audioUrl: string;
-  duration?: number;
 }
 
 export interface GenerateImagesRequest {
@@ -99,6 +137,7 @@ export interface FullGeneratedStory {
   mood: string;
   audioUrl: string;
   duration: string;
+  brief?: StoryBrief;
   scenes: Scene[];
   images: GenerateImagesResponse;
   cached?: boolean;

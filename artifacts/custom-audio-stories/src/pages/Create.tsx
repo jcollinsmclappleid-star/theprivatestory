@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 
 const formSchema = z.object({
-  listenerName: z.string().min(1, "Name is required"),
+  listenerName: z.string().optional().default(""),
   mood: z.string().min(1, "Select a mood"),
   intensity: z.string(),
   voiceFeel: z.string(),
@@ -30,14 +30,16 @@ const SAMPLE_PROMPTS = [
   "A rainy evening in a Tokyo hotel room, waiting for a knock at the door.",
   "A late night drive through empty city streets, the radio low, the air between you electric.",
   "A stolen weekend at a coastal cottage, two people who shouldn't be here.",
+  "A chance reunion at a rooftop bar, someone you thought you'd never see again.",
+  "An overnight train through mountains, a stranger in the seat across from you.",
 ];
 
 const LOADING_PHASES = [
-  "Crafting your story…",
-  "Weaving the narrative…",
-  "Synthesising the voice…",
-  "Rendering the visuals…",
-  "Polishing the final experience…",
+  { label: "Architecting your story…", sub: "Building the emotional arc and scene structure" },
+  { label: "Writing the narrative…", sub: "Crafting the scenes, tension, and pacing" },
+  { label: "Composing the visuals…", sub: "Designing cinematic imagery for each scene" },
+  { label: "Rendering the artwork…", sub: "Generating premium visuals in parallel" },
+  { label: "Narrating your story…", sub: "Bringing the voice to life" },
 ];
 
 export default function Create() {
@@ -51,23 +53,29 @@ export default function Create() {
       onSuccess: (data) => {
         setResult(data);
         setStep("result");
-        const storyForPlayer = {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          mood: data.mood,
-          tags: [data.mood],
-          duration: data.duration,
-          coverImage: data.images.cover,
-          audioUrl: data.audioUrl,
-          isPremium: false,
-          isNew: true,
-          scenes: data.scenes.map((s, i) => ({
-            ...s,
-            image: data.images.scenes[i],
-          })),
-        };
-        setTimeout(() => play(storyForPlayer as Parameters<typeof play>[0]), 300);
+
+        if (data.audioUrl) {
+          const storyForPlayer = {
+            id: data.id,
+            title: data.title,
+            description: data.description,
+            mood: data.mood,
+            tags: [data.mood],
+            duration: data.duration,
+            coverImage: data.images.cover,
+            audioUrl: data.audioUrl,
+            isPremium: false,
+            isNew: true,
+            scenes: data.scenes.map((s, i) => ({
+              ...s,
+              image: data.images.scenes[i],
+            })),
+          };
+          setTimeout(() => play(storyForPlayer as Parameters<typeof play>[0]), 300);
+        }
+      },
+      onError: () => {
+        setStep("form");
       },
     },
   });
@@ -90,13 +98,17 @@ export default function Create() {
     setStep("generating");
     setLoadingPhase(0);
 
-    const intervals = LOADING_PHASES.map((_, i) =>
-      setTimeout(() => setLoadingPhase(i), (i * 60000) / LOADING_PHASES.length)
-    );
+    const phaseMs = [8000, 25000, 15000, 40000, 25000];
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let cumulativeMs = 0;
+    phaseMs.forEach((ms, i) => {
+      cumulativeMs += ms;
+      timers.push(setTimeout(() => setLoadingPhase(Math.min(i + 1, LOADING_PHASES.length - 1)), cumulativeMs));
+    });
 
     try {
       await generateMutation.mutateAsync({
-        listenerName: data.listenerName,
+        listenerName: data.listenerName ?? "",
         mood: data.mood,
         intensity: data.intensity,
         voiceFeel: data.voiceFeel,
@@ -106,11 +118,7 @@ export default function Create() {
         emotionalFocus: data.emotionalFocus,
       });
     } finally {
-      intervals.forEach(clearTimeout);
-    }
-
-    if (generateMutation.isError) {
-      setStep("form");
+      timers.forEach(clearTimeout);
     }
   };
 
@@ -141,14 +149,13 @@ export default function Create() {
 
   const activeSceneIndex =
     result && currentStory?.id === result.id
-      ? Math.min(
-          Math.floor(progress * result.scenes.length),
-          result.scenes.length - 1
-        )
+      ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
       : 0;
 
   const activeSceneImage =
     result?.images.scenes[activeSceneIndex] ?? result?.images.cover ?? "";
+
+  const isThisPlaying = isPlaying && currentStory?.id === result?.id;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
@@ -170,7 +177,7 @@ export default function Create() {
                 Create Your Story
               </h1>
               <p className="text-muted-foreground text-lg">
-                Direct the narrative, mood, and voice. We'll craft the experience.
+                Set the mood. We'll architect everything else.
               </p>
             </div>
 
@@ -182,24 +189,19 @@ export default function Create() {
               </div>
             )}
 
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-10 relative z-10"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
-                  Listener Name
+                  Your Name{" "}
+                  <span className="normal-case text-muted-foreground font-normal tracking-normal">
+                    (optional)
+                  </span>
                 </label>
                 <input
                   {...form.register("listenerName")}
                   placeholder="What should the narrator call you?"
                   className="w-full bg-background border border-border rounded-xl px-4 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 />
-                {form.formState.errors.listenerName && (
-                  <p className="text-destructive text-xs mt-1">
-                    {form.formState.errors.listenerName.message}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -215,7 +217,7 @@ export default function Create() {
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
-                  Emotional Intensity
+                  Intensity
                 </label>
                 <div className="flex flex-wrap gap-3">
                   {INTENSITIES.map((m) => (
@@ -226,7 +228,7 @@ export default function Create() {
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
-                  Voice Feel
+                  Narrator Voice
                 </label>
                 <div className="flex flex-wrap gap-3">
                   {VOICES.map((m) => (
@@ -248,7 +250,7 @@ export default function Create() {
 
               <div>
                 <label className="flex items-center justify-between text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
-                  <span>Scenario Prompt</span>
+                  <span>Scenario</span>
                   <button
                     type="button"
                     onClick={() =>
@@ -259,12 +261,12 @@ export default function Create() {
                     }
                     className="text-primary hover:underline text-xs flex items-center gap-1 normal-case"
                   >
-                    <Wand2 className="w-3 h-3" /> Use sample
+                    <Wand2 className="w-3 h-3" /> Inspire me
                   </button>
                 </label>
                 <textarea
                   {...form.register("scenarioPrompt")}
-                  placeholder="Describe the setting, the dynamic, the tension you want to feel…"
+                  placeholder="Describe the feeling, the tension, the moment you want to inhabit…"
                   rows={4}
                   className="w-full bg-background border border-border rounded-xl px-4 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
                 />
@@ -283,7 +285,7 @@ export default function Create() {
                     className="w-4 h-4 rounded border-border accent-primary"
                   />
                   <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                    Cinematic visuals
+                    More cinematic visuals
                   </span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
@@ -306,6 +308,9 @@ export default function Create() {
                   <Sparkles className="w-5 h-5" />
                   Create My Story
                 </button>
+                <p className="text-center text-xs text-muted-foreground mt-4">
+                  Takes 1–2 minutes to craft your personalised story
+                </p>
               </div>
             </form>
           </motion.div>
@@ -317,52 +322,64 @@ export default function Create() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+            className="flex flex-col items-center justify-center min-h-[70vh] text-center"
           >
             <div className="relative w-40 h-40 mb-10">
               <div
-                className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping"
+                className="absolute inset-0 rounded-full border border-primary/20 animate-ping"
+                style={{ animationDuration: "3s" }}
+              />
+              <div
+                className="absolute inset-4 rounded-full border border-primary/40 animate-ping"
                 style={{ animationDuration: "2s" }}
               />
               <div
-                className="absolute inset-4 rounded-full border-2 border-primary/50 animate-ping"
-                style={{ animationDuration: "1.5s" }}
+                className="absolute inset-8 rounded-full border border-primary/60 animate-ping"
+                style={{ animationDuration: "1.2s" }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-16 h-16 border-t-2 border-primary rounded-full animate-spin" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Sparkles className="w-8 h-8 text-primary opacity-60" />
+                <Sparkles className="w-7 h-7 text-primary" />
               </div>
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.h2
+              <motion.div
                 key={loadingPhase}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-3xl font-display font-bold text-foreground mb-4"
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4 }}
+                className="mb-6"
               >
-                {LOADING_PHASES[loadingPhase]}
-              </motion.h2>
+                <h2 className="text-3xl font-display font-bold text-foreground mb-2">
+                  {LOADING_PHASES[loadingPhase].label}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  {LOADING_PHASES[loadingPhase].sub}
+                </p>
+              </motion.div>
             </AnimatePresence>
 
-            <p className="text-muted-foreground max-w-sm">
-              Our AI models are weaving together narrative, voice, and visuals for your
-              personal experience.
-            </p>
-
-            <div className="mt-8 flex gap-1.5">
+            <div className="mt-6 flex gap-2 items-center">
               {LOADING_PHASES.map((_, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className={`h-1 rounded-full transition-all duration-700 ${
-                    i <= loadingPhase ? "bg-primary w-8" : "bg-border w-4"
-                  }`}
+                  animate={{
+                    width: i === loadingPhase ? 32 : i < loadingPhase ? 16 : 8,
+                    opacity: i <= loadingPhase ? 1 : 0.3,
+                  }}
+                  className={`h-1 rounded-full ${i <= loadingPhase ? "bg-primary" : "bg-border"}`}
+                  transition={{ duration: 0.4 }}
                 />
               ))}
             </div>
+
+            <p className="text-xs text-muted-foreground mt-8 max-w-xs">
+              Our AI is running a full cinematic pipeline — story planning, writing, visual generation, and narration.
+            </p>
           </motion.div>
         )}
 
@@ -387,60 +404,66 @@ export default function Create() {
                     key={activeSceneIndex}
                     src={activeSceneImage}
                     alt={`Scene ${activeSceneIndex + 1}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 1.2, ease: "easeInOut" }}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+
                 <div className="absolute bottom-0 left-0 p-8 z-10">
-                  <p className="text-primary text-sm font-medium uppercase tracking-widest mb-2">
-                    {result.mood}
+                  <p className="text-primary text-xs font-medium uppercase tracking-widest mb-2">
+                    {result.mood} · AI Generated
                   </p>
                   <h1 className="font-display text-4xl font-bold text-foreground mb-3">
                     {result.title}
                   </h1>
-                  <p className="text-muted-foreground text-lg max-w-xl">
+                  <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
                     {result.description}
                   </p>
                 </div>
-                {currentStory?.id === result.id && isPlaying && (
-                  <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-primary text-xs font-medium">
+
+                {isThisPlaying && (
+                  <div className="absolute top-4 right-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-primary text-xs font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    Scene {activeSceneIndex + 1} of {result.scenes.length}
+                    {result.scenes[activeSceneIndex]?.heading ?? `Scene ${activeSceneIndex + 1}`}
                   </div>
                 )}
               </div>
 
               <div className="p-8">
-                <div className="flex items-center gap-4 mb-8">
-                  <button
-                    onClick={togglePlay}
-                    className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
-                  >
-                    {isPlaying && currentStory?.id === result.id ? (
-                      <Volume2 className="w-5 h-5" />
-                    ) : (
-                      <Play className="w-5 h-5" />
-                    )}
-                    {isPlaying && currentStory?.id === result.id
-                      ? "Playing…"
-                      : "Play Story"}
-                  </button>
+                <div className="flex items-center gap-4 mb-8 flex-wrap">
+                  {result.audioUrl ? (
+                    <button
+                      onClick={togglePlay}
+                      className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
+                    >
+                      {isThisPlaying ? (
+                        <Volume2 className="w-5 h-5" />
+                      ) : (
+                        <Play className="w-5 h-5" />
+                      )}
+                      {isThisPlaying ? "Playing…" : "Play Story"}
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-3 bg-muted/30 text-muted-foreground px-6 py-3 rounded-full border border-border/50 text-sm">
+                      <Headphones className="w-4 h-4" />
+                      Connect ElevenLabs for audio narration
+                    </div>
+                  )}
                   <span className="text-muted-foreground text-sm">
-                    {result.duration} · AI generated
+                    {result.duration} · {result.scenes.length} scenes
                   </span>
                 </div>
 
                 <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground uppercase tracking-wider mb-4">
-                    Scenes
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
+                    Story Scenes
                   </p>
                   {result.scenes.map((scene, i) => {
-                    const isActiveScene =
-                      currentStory?.id === result.id && activeSceneIndex === i;
+                    const isActiveScene = currentStory?.id === result.id && activeSceneIndex === i;
                     return (
                       <motion.div
                         key={scene.id}
@@ -450,7 +473,7 @@ export default function Create() {
                             : "hsl(var(--border) / 0.3)",
                           backgroundColor: isActiveScene
                             ? "hsl(var(--primary) / 0.05)"
-                            : "hsl(var(--background) / 0.5)",
+                            : "transparent",
                         }}
                         className="flex gap-4 p-4 rounded-xl border transition-colors"
                       >
@@ -458,7 +481,7 @@ export default function Create() {
                           <div className="relative flex-shrink-0">
                             <img
                               src={result.images.scenes[i]}
-                              alt={`Scene ${i + 1}`}
+                              alt={scene.heading ?? `Scene ${i + 1}`}
                               className="w-16 h-16 object-cover rounded-lg"
                             />
                             {isActiveScene && (
@@ -468,16 +491,21 @@ export default function Create() {
                             )}
                           </div>
                         )}
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">
-                            Scene {i + 1}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs text-muted-foreground">
+                              {i + 1}.
+                            </span>
+                            <span className="text-sm font-medium text-foreground truncate">
+                              {scene.heading ?? `Scene ${i + 1}`}
+                            </span>
                             {isActiveScene && (
-                              <span className="ml-2 text-primary font-medium">
+                              <span className="text-xs text-primary font-medium flex-shrink-0">
                                 · Now playing
                               </span>
                             )}
-                          </p>
-                          <p className="text-sm text-foreground line-clamp-2">
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                             {scene.text}
                           </p>
                         </div>
@@ -488,12 +516,40 @@ export default function Create() {
               </div>
             </div>
 
-            <button
-              onClick={() => setStep("form")}
-              className="w-full border border-border/50 text-muted-foreground py-4 rounded-2xl hover:border-primary/30 hover:text-foreground transition-all"
-            >
-              Create a new story
-            </button>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => setStep("form")}
+                className="border border-border/50 text-muted-foreground py-4 rounded-2xl hover:border-primary/30 hover:text-foreground transition-all text-sm font-medium"
+              >
+                Create a new story
+              </button>
+              <button
+                onClick={() => {
+                  if (!result.audioUrl) return;
+                  const storyForPlayer = {
+                    id: result.id,
+                    title: result.title,
+                    description: result.description,
+                    mood: result.mood,
+                    tags: [result.mood],
+                    duration: result.duration,
+                    coverImage: result.images.cover,
+                    audioUrl: result.audioUrl,
+                    isPremium: false,
+                    isNew: true,
+                    scenes: result.scenes.map((s, i) => ({
+                      ...s,
+                      image: result.images.scenes[i],
+                    })),
+                  };
+                  play(storyForPlayer as Parameters<typeof play>[0]);
+                }}
+                disabled={!result.audioUrl}
+                className="bg-card border border-border/50 text-foreground py-4 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Play in full player
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

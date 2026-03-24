@@ -6,6 +6,4 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface GenerateAudioResponse {
-  audioUrl: string;
-}
+export type StoryBriefScenePlanItem = { [key: string]: unknown };

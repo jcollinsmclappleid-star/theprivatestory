@@ -1,0 +1,480 @@
+Build MoonlitAudio as an AI-powered personalised audio story product using a minimal user intake and a hidden story-planning layer behind the scenes.
+
+IMPORTANT PRODUCT LOGIC:
+Do NOT generate the final story directly from raw user input.
+Instead use this pipeline:
+
+1. User fills minimal intake
+2. Backend creates hidden structured story brief
+3. Backend writes final story from that brief
+4. Backend generates one cover image + one image per scene
+5. Backend generates one narrated audio file
+6. Frontend plays audio while visuals change by scene progress
+
+==================================================
+1. USER-FACING INTAKE (MINIMAL ONLY)
+==================================================
+
+The user should only see:
+
+- Listener Name (optional text input)
+- Mood / Genre (dropdown)
+  - Slow Burn
+  - Late Night
+  - Emotional
+  - Forbidden
+  - First Encounter
+  - Tender
+- Intensity (dropdown)
+  - Soft
+  - Warm
+  - Magnetic
+- Story Length (dropdown)
+  - 3 min
+  - 5 min
+  - 10 min
+- Scenario Prompt (textarea)
+- Optional toggle:
+  - More cinematic visuals
+  - More emotional focus
+
+Keep this intake elegant, premium, and low-friction.
+Do NOT ask users for complicated story structure directly.
+
+==================================================
+2. HIDDEN STORY PLANNER LAYER
+==================================================
+
+Before writing the story, create a hidden internal story brief.
+
+Create an endpoint:
+POST /api/plan-story
+
+This endpoint takes the user intake and transforms it into a structured brief.
+
+Use this prompt:
+
+SYSTEM PROMPT:
+You are a premium story architect for an intimate, cinematic audio storytelling product.
+Your job is to turn short user input into a rich internal story brief that guarantees emotional depth, pacing, and substance.
+Do not write the final story yet.
+Return only structured JSON.
+
+USER PROMPT TEMPLATE:
+Take this user input and turn it into a hidden internal story brief.
+
+User Input:
+- Name: {{name}}
+- Mood: {{mood}}
+- Intensity: {{intensity}}
+- Length: {{length}}
+- Scenario: {{scenario}}
+- Visual Emphasis: {{visualPreference}}
+- Emotional Emphasis: {{emotionalPreference}}
+
+You must infer and return:
+- emotional_arc
+- relationship_dynamic
+- conflict_type
+- pacing_style
+- ending_type
+- sensory_palette
+- point_of_view
+- voice_tone
+- scene_count
+- scene_plan (array)
+- recurring_motif
+- title_direction
+- image_style_direction
+
+Rules:
+- The story must feel intimate, cinematic, emotionally immersive, and adult in tone.
+- Sensual is allowed, but do NOT make it explicit.
+- Prioritise emotional tension, atmosphere, vulnerability, and anticipation.
+- Avoid generic plots and clichés.
+- Ensure the story has depth even if the user input is simple.
+- The story should feel like it is happening to the listener.
+- If the user input is vague, intelligently infer the most compelling emotional setup.
+
+Return JSON in exactly this shape:
+
+{
+  "emotional_arc": "curiosity → vulnerability → longing",
+  "relationship_dynamic": "old friends reconnecting",
+  "conflict_type": "things left unsaid for years",
+  "pacing_style": "slow and intimate",
+  "ending_type": "lingering and unresolved",
+  "sensory_palette": ["warm lamplight", "quiet night air", "close silence"],
+  "point_of_view": "second person",
+  "voice_tone": "soft, cinematic, intimate",
+  "scene_count": 4,
+  "scene_plan": [
+    {
+      "scene_number": 1,
+      "goal": "hook and atmosphere",
+      "emotional_shift": "curiosity begins",
+      "visual_focus": "night setting, first glance"
+    },
+    {
+      "scene_number": 2,
+      "goal": "tension deepens",
+      "emotional_shift": "familiarity becomes charged",
+      "visual_focus": "close body language, warm light"
+    },
+    {
+      "scene_number": 3,
+      "goal": "vulnerability / reveal",
+      "emotional_shift": "guard drops",
+      "visual_focus": "stillness, eye contact, intimate distance"
+    },
+    {
+      "scene_number": 4,
+      "goal": "payoff / lingering ending",
+      "emotional_shift": "longing remains",
+      "visual_focus": "quiet aftermath, lingering closeness"
+    }
+  ],
+  "recurring_motif": "the feeling of almost saying too much",
+  "title_direction": "poetic, emotionally charged, premium",
+  "image_style_direction": "cinematic adult animation, warm tones, moody, tasteful, soft lighting"
+}
+
+==================================================
+3. STORY WRITER LAYER
+==================================================
+
+Create endpoint:
+POST /api/generate-story
+
+Input:
+{
+  "brief": { ...hidden story brief json... }
+}
+
+Use this prompt:
+
+SYSTEM PROMPT:
+You are writing premium, immersive audio stories for a consumer storytelling product.
+The story must feel emotionally deep, cinematic, sensual but not explicit, and designed for voice narration.
+Write with control, atmosphere, subtext, and elegance.
+
+USER PROMPT TEMPLATE:
+Using the internal story brief below, write the final story.
+
+Internal Brief:
+{{brief_json}}
+
+Requirements:
+- Use the specified point_of_view
+- Make the story feel like it is happening to the listener
+- Write in scenes
+- Match the emotional arc exactly
+- Each scene must have a clear emotional purpose
+- Include one strong sensory image per scene
+- Include at least one moment of vulnerability
+- Include relationship tension
+- Include one line or moment that lingers emotionally after the ending
+- Keep it emotionally rich, not generic
+- Avoid clichés
+- Avoid rushed pacing
+- Avoid explicit sexual detail
+- The tone should be adult, intimate, cinematic, and premium
+- The final result should be ideal for voice narration
+
+Return JSON only in this format:
+
+{
+  "title": "...",
+  "description": "...",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "...",
+      "text": "...",
+      "duration_estimate": 60
+    }
+  ]
+}
+
+==================================================
+4. IMAGE PROMPT GENERATION LAYER
+==================================================
+
+Create endpoint:
+POST /api/generate-image-prompts
+
+Input:
+{
+  "brief": { ... },
+  "story": { ... }
+}
+
+Use this prompt:
+
+SYSTEM PROMPT:
+You generate image prompts for premium cinematic adult animation artwork.
+The output must be tasteful, intimate, warm, emotionally charged, and consistent across scenes.
+Do not create explicit sexual imagery.
+
+USER PROMPT TEMPLATE:
+Using the brief and story below, generate:
+- one cover image prompt
+- one scene image prompt per scene
+
+Requirements:
+- style should feel like premium adult animation
+- cinematic composition
+- soft shadows
+- warm lighting
+- emotionally intimate
+- realistic proportions
+- luxurious colour palette
+- not explicit
+- visually cohesive across the whole story
+
+Return JSON only in this format:
+
+{
+  "cover_prompt": "...",
+  "scene_prompts": [
+    {
+      "scene_id": 1,
+      "prompt": "..."
+    }
+  ]
+}
+
+Base style language to include in every prompt:
+“cinematic animated illustration, adult romance tone, tasteful intimacy, soft lighting, warm shadows, elegant composition, premium streaming artwork, not explicit”
+
+==================================================
+5. AUDIO GENERATION LAYER
+==================================================
+
+Create endpoint:
+POST /api/generate-audio
+
+Input:
+{
+  "story": { ...full story json... },
+  "voiceFeel": "{{voiceFeel}}"
+}
+
+Implementation:
+- combine all scene text into one clean narration script
+- send to ElevenLabs
+- generate one full audio file
+- return audio URL or stored file path
+
+Voice goals:
+- intimate
+- emotionally controlled
+- cinematic pacing
+- warm tone
+- clean narration
+- non-rushed delivery
+
+Suggested ElevenLabs settings:
+- stability: 0.6
+- similarity_boost: 0.7
+- style: 0.8
+
+==================================================
+6. IMAGE GENERATION LAYER
+==================================================
+
+Create endpoint:
+POST /api/generate-images
+
+Input:
+{
+  "cover_prompt": "...",
+  "scene_prompts": [...]
+}
+
+Generate:
+- 1 cover image
+- 1 image per scene
+
+Do NOT generate images every minute.
+Only generate per scene.
+
+Return JSON:
+{
+  "cover": "url",
+  "scenes": [
+    { "scene_id": 1, "url": "..." }
+  ]
+}
+
+==================================================
+7. FULL PIPELINE ENDPOINT
+==================================================
+
+Create endpoint:
+POST /api/generate-full-story
+
+Flow:
+1. accept user intake
+2. call /api/plan-story
+3. call /api/generate-story
+4. call /api/generate-image-prompts
+5. call /api/generate-audio
+6. call /api/generate-images
+7. return complete object
+
+Return shape:
+
+{
+  "title": "...",
+  "description": "...",
+  "brief": {...},
+  "story": {
+    "scenes": [...]
+  },
+  "audio_url": "...",
+  "images": {
+    "cover": "...",
+    "scenes": [...]
+  }
+}
+
+==================================================
+8. FRONTEND UX REQUIREMENTS
+==================================================
+
+Build these pages/views:
+- Home
+- Browse
+- Series
+- Series Detail
+- Search
+- Create Your Story
+- Generated Story Result View
+
+Home page should include:
+- luxury cinematic hero
+- featured story or series
+- continue listening
+- netflix-style horizontal rows
+- CTA for Create Your Story
+
+Create page should include:
+- elegant guided intake
+- loading state:
+  “Creating your story…”
+- result state with:
+  - cover image
+  - title
+  - description
+  - audio player
+  - scene image panel
+  - regenerate variation button
+  - save story button
+
+Generated story player should:
+- play audio
+- sync image changes by scene progress
+- if exact timestamps are unavailable, divide total duration by scene count
+- smoothly fade visuals when changing scenes
+
+==================================================
+9. SCENE SYNC LOGIC
+==================================================
+
+During playback:
+- determine current progress
+- map progress to current scene
+- update displayed scene image
+
+Pseudo logic:
+
+const progress = audio.currentTime / audio.duration;
+const sceneIndex = Math.floor(progress * story.scenes.length);
+currentImage.src = images.scenes[sceneIndex].url;
+
+Add smooth fade transition between images.
+
+==================================================
+10. DEPTH GUARANTEE RULES
+==================================================
+
+These must always be enforced internally, regardless of user input quality:
+
+Every generated story must include:
+- a clear emotional arc
+- a relationship dynamic
+- at least one emotional shift
+- one moment of vulnerability
+- one strong sensory image per scene
+- a meaningful ending
+- controlled pacing
+- atmosphere and subtext
+
+If user input is vague, infer strong defaults automatically.
+
+Default hidden story pattern:
+- Scene 1: hook + atmosphere
+- Scene 2: tension / curiosity
+- Scene 3: vulnerability / reveal
+- Scene 4: lingering payoff
+
+==================================================
+11. VARIETY CONTROL
+==================================================
+
+To avoid repetitive outputs, rotate intelligently across:
+- relationship dynamic
+- setting
+- pacing
+- conflict type
+- ending type
+- sensory palette
+- recurring motif
+
+Do not let every story feel the same.
+
+==================================================
+12. CONTENT BOUNDARIES
+==================================================
+
+The product should feel:
+- adult
+- romantic
+- sensual
+- cinematic
+- intimate
+- premium
+
+But avoid:
+- explicit pornographic detail
+- graphic sexual language
+- crude erotica
+- generic AI romance clichés
+
+==================================================
+13. COST CONTROL
+==================================================
+
+Optimise for cost:
+- cache generated outputs
+- store finished stories
+- do not regenerate repeatedly
+- use scene-based visuals only
+- keep generation flow efficient
+
+==================================================
+14. FINAL DELIVERABLE
+==================================================
+
+Deliver a working MoonlitAudio app with:
+- premium dark UI
+- full browse/search/series structure
+- Create Your Story flow
+- hidden story planner
+- structured story generation
+- ElevenLabs audio generation
+- AI cover + scene image generation
+- synced visuals during playback
+- persistent premium experience
+- code structured cleanly for future paywall and account support

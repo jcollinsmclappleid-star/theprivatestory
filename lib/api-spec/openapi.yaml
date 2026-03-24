@@ -115,11 +115,11 @@ paths:
         "404":
           description: Not found
 
-  /generate-story:
+  /plan-story:
     post:
-      operationId: generateStory
+      operationId: planStory
       tags: [generate]
-      summary: Generate AI story text
+      summary: Generate hidden story brief from user intake
       requestBody:
         required: true
         content:
@@ -128,11 +128,49 @@ paths:
               $ref: "#/components/schemas/GenerateStoryRequest"
       responses:
         "200":
+          description: Story brief
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryBrief"
+
+  /generate-story:
+    post:
+      operationId: generateStory
+      tags: [generate]
+      summary: Generate story text from a story brief
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateStoryFromBriefRequest"
+      responses:
+        "200":
           description: Generated story
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneratedStory"
+
+  /generate-image-prompts:
+    post:
+      operationId: generateImagePrompts
+      tags: [generate]
+      summary: Generate cohesive image prompts from brief and story
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateImagePromptsRequest"
+      responses:
+        "200":
+          description: Generated image prompts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImagePrompts"
 
   /generate-audio:
     post:
@@ -176,7 +214,7 @@ paths:
     post:
       operationId: generateFullStory
       tags: [generate]
-      summary: Generate complete story with audio and images
+      summary: Generate complete story with audio and images via full pipeline
       requestBody:
         required: true
         content:
@@ -252,6 +290,8 @@ components:
       properties:
         id:
           type: number
+        heading:
+          type: string
         text:
           type: string
         visualPrompt:
@@ -324,6 +364,54 @@ components:
         - duration
         - isLocked
 
+    StoryBrief:
+      type: object
+      properties:
+        emotional_arc:
+          type: string
+        relationship_dynamic:
+          type: string
+        conflict_type:
+          type: string
+        pacing_style:
+          type: string
+        ending_type:
+          type: string
+        sensory_palette:
+          type: array
+          items:
+            type: string
+        point_of_view:
+          type: string
+        voice_tone:
+          type: string
+        scene_count:
+          type: number
+        scene_plan:
+          type: array
+          items:
+            type: object
+        recurring_motif:
+          type: string
+        title_direction:
+          type: string
+        image_style_direction:
+          type: string
+      required:
+        - emotional_arc
+        - relationship_dynamic
+        - conflict_type
+        - pacing_style
+        - ending_type
+        - sensory_palette
+        - point_of_view
+        - voice_tone
+        - scene_count
+        - scene_plan
+        - recurring_motif
+        - title_direction
+        - image_style_direction
+
     GenerateStoryRequest:
       type: object
       properties:
@@ -351,6 +439,16 @@ components:
         - storyLength
         - scenarioPrompt
 
+    GenerateStoryFromBriefRequest:
+      type: object
+      properties:
+        brief:
+          $ref: "#/components/schemas/StoryBrief"
+        listenerName:
+          type: string
+      required:
+        - brief
+
     GeneratedStory:
       type: object
       properties:
@@ -366,6 +464,41 @@ components:
         - title
         - description
         - scenes
+
+    GenerateImagePromptsRequest:
+      type: object
+      properties:
+        brief:
+          $ref: "#/components/schemas/StoryBrief"
+        story:
+          $ref: "#/components/schemas/GeneratedStory"
+      required:
+        - brief
+        - story
+
+    SceneImagePrompt:
+      type: object
+      properties:
+        sceneId:
+          type: number
+        prompt:
+          type: string
+      required:
+        - sceneId
+        - prompt
+
+    ImagePrompts:
+      type: object
+      properties:
+        coverPrompt:
+          type: string
+        scenePrompts:
+          type: array
+          items:
+            $ref: "#/components/schemas/SceneImagePrompt"
+      required:
+        - coverPrompt
+        - scenePrompts
 
     GenerateAudioRequest:
       type: object
@@ -383,8 +516,6 @@ components:
       properties:
         audioUrl:
           type: string
-        duration:
-          type: number
       required:
         - audioUrl
 
@@ -429,6 +560,8 @@ components:
           type: string
         duration:
           type: string
+        brief:
+          $ref: "#/components/schemas/StoryBrief"
         scenes:
           type: array
           items:

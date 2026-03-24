@@ -8,6 +8,7 @@
 
 export interface Scene {
   id: number;
+  heading?: string;
   text: string;
   visualPrompt: string;
   durationEstimate: number;

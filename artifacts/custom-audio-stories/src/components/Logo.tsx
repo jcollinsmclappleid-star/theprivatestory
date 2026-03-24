@@ -1,66 +1,58 @@
+const BASE = import.meta.env.BASE_URL;
+
 interface LogoProps {
   height?: number;
   className?: string;
 }
 
-export function Logo({ height = 56, className = "" }: LogoProps) {
+export function Logo({ height = 136, className = "" }: LogoProps) {
+  // SVG viewBox is 200 × 290 units
+  // The PNG (1024×1536) is scaled so the arch illustration fills the top 195 units,
+  // then "After Dusk / STORIES" text fills the remaining ~95 units.
+  //
+  // PNG content estimates:
+  //   arch+person region: x≈100–920, y≈90–800  (820 × 710 px)
+  //   "Custom Audio Stories" text: y≈820–1200   (clipped away)
+  //
+  // Scale = 200 / 820 = 0.2439
+  //   → rendered PNG size: 250 × 375 SVG units
+  //   → x offset: -(100 × 0.2439) = -24.4
+  //   → y offset: -(90  × 0.2439) = -22.0
+  //   → clip height: 710 × 0.2439 = 173 units  (clips off old text)
   const w = Math.round(height * (200 / 290));
+  const logoSrc = `${BASE}images/logo.png`;
+
   return (
     <svg
       viewBox="0 0 200 290"
       width={w}
       height={height}
       xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
       className={className}
       style={{ display: "block", flexShrink: 0 }}
     >
-      {/* Arch frame */}
-      <path
-        d="M 38 178 L 38 88 Q 38 20 100 20 Q 162 20 162 88 L 162 178 Z"
-        fill="none"
-        stroke="#c9a06a"
-        strokeWidth="1.6"
-        opacity="0.85"
-      />
-      {/* Bottom bar of arch */}
-      <line x1="38" y1="178" x2="162" y2="178" stroke="#c9a06a" strokeWidth="1" opacity="0.5" />
+      <defs>
+        <clipPath id="archClip">
+          <rect x="0" y="0" width="200" height="175" />
+        </clipPath>
+      </defs>
 
-      {/* Crescent moon — outer arc */}
-      <path
-        d="M 100 50 A 30 30 0 1 1 86 127 A 20 20 0 1 0 100 50 Z"
-        fill="#c9a06a"
-        opacity="0.75"
-      />
-
-      {/* Stars / sparkles */}
-      {/* Top-right sparkle */}
-      <path
-        d="M 143 38 L 144.4 42 L 148.5 43.3 L 144.4 44.6 L 143 48.5 L 141.6 44.6 L 137.5 43.3 L 141.6 42 Z"
-        fill="#c9a06a"
-        opacity="0.7"
-      />
-      {/* Small stars */}
-      <circle cx="55" cy="52" r="1.8" fill="#c9a06a" opacity="0.6" />
-      <circle cx="148" cy="68" r="1.2" fill="#c9a06a" opacity="0.5" />
-      <circle cx="62" cy="148" r="1.2" fill="#c9a06a" opacity="0.4" />
-      <circle cx="140" cy="140" r="1.5" fill="#c9a06a" opacity="0.45" />
-      <circle cx="50" cy="110" r="1" fill="#c9a06a" opacity="0.35" />
-      <circle cx="152" cy="105" r="1" fill="#c9a06a" opacity="0.35" />
-
-      {/* Floating quill / pen stroke beneath moon */}
-      <path
-        d="M 78 155 Q 100 148 122 155"
-        fill="none"
-        stroke="#c9a06a"
-        strokeWidth="0.8"
-        opacity="0.4"
-        strokeLinecap="round"
+      {/* Original arch + person illustration from PNG, old text clipped off */}
+      <image
+        href={logoSrc}
+        x="-24"
+        y="-22"
+        width="250"
+        height="375"
+        clipPath="url(#archClip)"
+        preserveAspectRatio="none"
       />
 
       {/* "After Dusk" — main wordmark */}
       <text
         x="100"
-        y="212"
+        y="214"
         textAnchor="middle"
         fontFamily="'Playfair Display', Georgia, 'Times New Roman', serif"
         fontSize="25"
@@ -72,7 +64,7 @@ export function Logo({ height = 56, className = "" }: LogoProps) {
       </text>
 
       {/* Decorative lines + STORIES */}
-      <line x1="26" y1="228" x2="60" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.6" />
+      <line x1="24" y1="228" x2="60" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
       <text
         x="100"
         y="233"
@@ -85,12 +77,7 @@ export function Logo({ height = 56, className = "" }: LogoProps) {
       >
         STORIES
       </text>
-      <line x1="140" y1="228" x2="174" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.6" />
-
-      {/* Tagline dots */}
-      <circle cx="88" cy="250" r="1" fill="#c9a06a" opacity="0.3" />
-      <circle cx="100" cy="250" r="1" fill="#c9a06a" opacity="0.3" />
-      <circle cx="112" cy="250" r="1" fill="#c9a06a" opacity="0.3" />
+      <line x1="140" y1="228" x2="176" y2="228" stroke="#c9a06a" strokeWidth="0.8" opacity="0.65" />
     </svg>
   );
 }

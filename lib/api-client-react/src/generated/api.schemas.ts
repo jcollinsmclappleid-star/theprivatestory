@@ -8,3 +8,103 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface Scene {
+  id: number;
+  text: string;
+  visualPrompt: string;
+  durationEstimate: number;
+  image?: string;
+}
+
+export interface Story {
+  id: string;
+  title: string;
+  description: string;
+  mood: string;
+  tags: string[];
+  duration: string;
+  coverImage: string;
+  audioUrl?: string;
+  isPremium: boolean;
+  isNew: boolean;
+  isSeries?: boolean;
+  seriesName?: string;
+  seriesEpisode?: number;
+  scenes?: Scene[];
+}
+
+export interface Episode {
+  id: string;
+  episodeNumber: number;
+  title: string;
+  description: string;
+  duration: string;
+  isLocked: boolean;
+  audioUrl?: string;
+}
+
+export interface Series {
+  id: string;
+  title: string;
+  description: string;
+  mood: string;
+  coverImage: string;
+  episodeCount: number;
+  episodes: Episode[];
+  tags: string[];
+}
+
+export interface GenerateStoryRequest {
+  listenerName: string;
+  mood: string;
+  intensity: string;
+  voiceFeel: string;
+  storyLength: string;
+  scenarioPrompt: string;
+  cinematicVisuals?: boolean;
+  emotionalFocus?: boolean;
+}
+
+export interface GeneratedStory {
+  title: string;
+  description: string;
+  scenes: Scene[];
+}
+
+export interface GenerateAudioRequest {
+  text: string;
+  voiceFeel: string;
+}
+
+export interface GenerateAudioResponse {
+  audioUrl: string;
+  duration?: number;
+}
+
+export interface GenerateImagesRequest {
+  coverPrompt: string;
+  scenePrompts: string[];
+}
+
+export interface GenerateImagesResponse {
+  cover: string;
+  scenes: string[];
+}
+
+export interface FullGeneratedStory {
+  id: string;
+  title: string;
+  description: string;
+  mood: string;
+  audioUrl: string;
+  duration: string;
+  scenes: Scene[];
+  images: GenerateImagesResponse;
+  cached?: boolean;
+}
+
+export type GetStoriesParams = {
+  mood?: string;
+  search?: string;
+};

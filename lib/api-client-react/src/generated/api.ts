@@ -5,18 +5,33 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  FullGeneratedStory,
+  GenerateAudioRequest,
+  GenerateAudioResponse,
+  GenerateImagesRequest,
+  GenerateImagesResponse,
+  GenerateStoryRequest,
+  GeneratedStory,
+  GetStoriesParams,
+  HealthStatus,
+  Series,
+  Story,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -99,3 +114,679 @@ export function useHealthCheck<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Returns list of curated stories
+ * @summary Get story library
+ */
+export const getGetStoriesUrl = (params?: GetStoriesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/stories?${stringifiedParams}`
+    : `/api/stories`;
+};
+
+export const getStories = async (
+  params?: GetStoriesParams,
+  options?: RequestInit,
+): Promise<Story[]> => {
+  return customFetch<Story[]>(getGetStoriesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetStoriesQueryKey = (params?: GetStoriesParams) => {
+  return [`/api/stories`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetStoriesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStories>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetStoriesParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStories>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetStoriesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getStories>>> = ({
+    signal,
+  }) => getStories(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getStories>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetStoriesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getStories>>
+>;
+export type GetStoriesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get story library
+ */
+
+export function useGetStories<
+  TData = Awaited<ReturnType<typeof getStories>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetStoriesParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStories>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetStoriesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get story by ID
+ */
+export const getGetStoryUrl = (id: string) => {
+  return `/api/stories/${id}`;
+};
+
+export const getStory = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Story> => {
+  return customFetch<Story>(getGetStoryUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetStoryQueryKey = (id: string) => {
+  return [`/api/stories/${id}`] as const;
+};
+
+export const getGetStoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStory>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStory>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetStoryQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getStory>>> = ({
+    signal,
+  }) => getStory(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getStory>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
+
+export type GetStoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getStory>>
+>;
+export type GetStoryQueryError = ErrorType<void>;
+
+/**
+ * @summary Get story by ID
+ */
+
+export function useGetStory<
+  TData = Awaited<ReturnType<typeof getStory>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStory>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetStoryQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get series library
+ */
+export const getGetSeriesUrl = () => {
+  return `/api/series`;
+};
+
+export const getSeries = async (options?: RequestInit): Promise<Series[]> => {
+  return customFetch<Series[]>(getGetSeriesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetSeriesQueryKey = () => {
+  return [`/api/series`] as const;
+};
+
+export const getGetSeriesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getSeries>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getSeries>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetSeriesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSeries>>> = ({
+    signal,
+  }) => getSeries({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getSeries>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetSeriesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getSeries>>
+>;
+export type GetSeriesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get series library
+ */
+
+export function useGetSeries<
+  TData = Awaited<ReturnType<typeof getSeries>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getSeries>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetSeriesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get series by ID
+ */
+export const getGetSeriesByIdUrl = (id: string) => {
+  return `/api/series/${id}`;
+};
+
+export const getSeriesById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Series> => {
+  return customFetch<Series>(getGetSeriesByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetSeriesByIdQueryKey = (id: string) => {
+  return [`/api/series/${id}`] as const;
+};
+
+export const getGetSeriesByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getSeriesById>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getSeriesById>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetSeriesByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSeriesById>>> = ({
+    signal,
+  }) => getSeriesById(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getSeriesById>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetSeriesByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getSeriesById>>
+>;
+export type GetSeriesByIdQueryError = ErrorType<void>;
+
+/**
+ * @summary Get series by ID
+ */
+
+export function useGetSeriesById<
+  TData = Awaited<ReturnType<typeof getSeriesById>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getSeriesById>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetSeriesByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Generate AI story text
+ */
+export const getGenerateStoryUrl = () => {
+  return `/api/generate-story`;
+};
+
+export const generateStory = async (
+  generateStoryRequest: GenerateStoryRequest,
+  options?: RequestInit,
+): Promise<GeneratedStory> => {
+  return customFetch<GeneratedStory>(getGenerateStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateStoryRequest),
+  });
+};
+
+export const getGenerateStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateStory>>,
+    { data: BodyType<GenerateStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateStory>>
+>;
+export type GenerateStoryMutationBody = BodyType<GenerateStoryRequest>;
+export type GenerateStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate AI story text
+ */
+export const useGenerateStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateStoryMutationOptions(options));
+};
+
+/**
+ * @summary Generate audio narration
+ */
+export const getGenerateAudioUrl = () => {
+  return `/api/generate-audio`;
+};
+
+export const generateAudio = async (
+  generateAudioRequest: GenerateAudioRequest,
+  options?: RequestInit,
+): Promise<GenerateAudioResponse> => {
+  return customFetch<GenerateAudioResponse>(getGenerateAudioUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateAudioRequest),
+  });
+};
+
+export const getGenerateAudioMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateAudio>>,
+    TError,
+    { data: BodyType<GenerateAudioRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateAudio>>,
+  TError,
+  { data: BodyType<GenerateAudioRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateAudio"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateAudio>>,
+    { data: BodyType<GenerateAudioRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateAudio(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateAudioMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateAudio>>
+>;
+export type GenerateAudioMutationBody = BodyType<GenerateAudioRequest>;
+export type GenerateAudioMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate audio narration
+ */
+export const useGenerateAudio = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateAudio>>,
+    TError,
+    { data: BodyType<GenerateAudioRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateAudio>>,
+  TError,
+  { data: BodyType<GenerateAudioRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateAudioMutationOptions(options));
+};
+
+/**
+ * @summary Generate story images
+ */
+export const getGenerateImagesUrl = () => {
+  return `/api/generate-images`;
+};
+
+export const generateImages = async (
+  generateImagesRequest: GenerateImagesRequest,
+  options?: RequestInit,
+): Promise<GenerateImagesResponse> => {
+  return customFetch<GenerateImagesResponse>(getGenerateImagesUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateImagesRequest),
+  });
+};
+
+export const getGenerateImagesMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateImages>>,
+    TError,
+    { data: BodyType<GenerateImagesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateImages>>,
+  TError,
+  { data: BodyType<GenerateImagesRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateImages"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateImages>>,
+    { data: BodyType<GenerateImagesRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateImages(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateImagesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateImages>>
+>;
+export type GenerateImagesMutationBody = BodyType<GenerateImagesRequest>;
+export type GenerateImagesMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate story images
+ */
+export const useGenerateImages = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateImages>>,
+    TError,
+    { data: BodyType<GenerateImagesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateImages>>,
+  TError,
+  { data: BodyType<GenerateImagesRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateImagesMutationOptions(options));
+};
+
+/**
+ * @summary Generate complete story with audio and images
+ */
+export const getGenerateFullStoryUrl = () => {
+  return `/api/generate-full-story`;
+};
+
+export const generateFullStory = async (
+  generateStoryRequest: GenerateStoryRequest,
+  options?: RequestInit,
+): Promise<FullGeneratedStory> => {
+  return customFetch<FullGeneratedStory>(getGenerateFullStoryUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateStoryRequest),
+  });
+};
+
+export const getGenerateFullStoryMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateFullStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateFullStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["generateFullStory"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateFullStory>>,
+    { data: BodyType<GenerateStoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateFullStory(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateFullStoryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateFullStory>>
+>;
+export type GenerateFullStoryMutationBody = BodyType<GenerateStoryRequest>;
+export type GenerateFullStoryMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Generate complete story with audio and images
+ */
+export const useGenerateFullStory = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateFullStory>>,
+    TError,
+    { data: BodyType<GenerateStoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateFullStory>>,
+  TError,
+  { data: BodyType<GenerateStoryRequest> },
+  TContext
+> => {
+  return useMutation(getGenerateFullStoryMutationOptions(options));
+};

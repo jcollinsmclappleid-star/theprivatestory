@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: stories
+    description: Story library operations
+  - name: series
+    description: Series library operations
+  - name: generate
+    description: AI story generation operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,167 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /stories:
+    get:
+      operationId: getStories
+      tags: [stories]
+      summary: Get story library
+      description: Returns list of curated stories
+      parameters:
+        - name: mood
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Story"
+
+  /stories/{id}:
+    get:
+      operationId: getStory
+      tags: [stories]
+      summary: Get story by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Story detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Story"
+        "404":
+          description: Not found
+
+  /series:
+    get:
+      operationId: getSeries
+      tags: [series]
+      summary: Get series library
+      responses:
+        "200":
+          description: List of series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Series"
+
+  /series/{id}:
+    get:
+      operationId: getSeriesById
+      tags: [series]
+      summary: Get series by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Series detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        "404":
+          description: Not found
+
+  /generate-story:
+    post:
+      operationId: generateStory
+      tags: [generate]
+      summary: Generate AI story text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateStoryRequest"
+      responses:
+        "200":
+          description: Generated story
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedStory"
+
+  /generate-audio:
+    post:
+      operationId: generateAudio
+      tags: [generate]
+      summary: Generate audio narration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateAudioRequest"
+      responses:
+        "200":
+          description: Generated audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateAudioResponse"
+
+  /generate-images:
+    post:
+      operationId: generateImages
+      tags: [generate]
+      summary: Generate story images
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateImagesRequest"
+      responses:
+        "200":
+          description: Generated images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateImagesResponse"
+
+  /generate-full-story:
+    post:
+      operationId: generateFullStory
+      tags: [generate]
+      summary: Generate complete story with audio and images
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateStoryRequest"
+      responses:
+        "200":
+          description: Complete generated story with audio and images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullGeneratedStory"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +201,248 @@ components:
       required:
         - status
 
+    Story:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        mood:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        duration:
+          type: string
+        coverImage:
+          type: string
+        audioUrl:
+          type: string
+        isPremium:
+          type: boolean
+        isNew:
+          type: boolean
+        isSeries:
+          type: boolean
+        seriesName:
+          type: string
+        seriesEpisode:
+          type: number
+        scenes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scene"
+      required:
+        - id
+        - title
+        - description
+        - mood
+        - tags
+        - duration
+        - coverImage
+        - isPremium
+        - isNew
+
+    Scene:
+      type: object
+      properties:
+        id:
+          type: number
+        text:
+          type: string
+        visualPrompt:
+          type: string
+        durationEstimate:
+          type: number
+        image:
+          type: string
+      required:
+        - id
+        - text
+        - visualPrompt
+        - durationEstimate
+
+    Series:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        mood:
+          type: string
+        coverImage:
+          type: string
+        episodeCount:
+          type: number
+        episodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Episode"
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - title
+        - description
+        - mood
+        - coverImage
+        - episodeCount
+        - episodes
+        - tags
+
+    Episode:
+      type: object
+      properties:
+        id:
+          type: string
+        episodeNumber:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: string
+        isLocked:
+          type: boolean
+        audioUrl:
+          type: string
+      required:
+        - id
+        - episodeNumber
+        - title
+        - description
+        - duration
+        - isLocked
+
+    GenerateStoryRequest:
+      type: object
+      properties:
+        listenerName:
+          type: string
+        mood:
+          type: string
+        intensity:
+          type: string
+        voiceFeel:
+          type: string
+        storyLength:
+          type: string
+        scenarioPrompt:
+          type: string
+        cinematicVisuals:
+          type: boolean
+        emotionalFocus:
+          type: boolean
+      required:
+        - listenerName
+        - mood
+        - intensity
+        - voiceFeel
+        - storyLength
+        - scenarioPrompt
+
+    GeneratedStory:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        scenes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scene"
+      required:
+        - title
+        - description
+        - scenes
+
+    GenerateAudioRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        voiceFeel:
+          type: string
+      required:
+        - text
+        - voiceFeel
+
+    GenerateAudioResponse:
+      type: object
+      properties:
+        audioUrl:
+          type: string
+        duration:
+          type: number
+      required:
+        - audioUrl
+
+    GenerateImagesRequest:
+      type: object
+      properties:
+        coverPrompt:
+          type: string
+        scenePrompts:
+          type: array
+          items:
+            type: string
+      required:
+        - coverPrompt
+        - scenePrompts
+
+    GenerateImagesResponse:
+      type: object
+      properties:
+        cover:
+          type: string
+        scenes:
+          type: array
+          items:
+            type: string
+      required:
+        - cover
+        - scenes
+
+    FullGeneratedStory:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        mood:
+          type: string
+        audioUrl:
+          type: string
+        duration:
+          type: string
+        scenes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scene"
+        images:
+          $ref: "#/components/schemas/GenerateImagesResponse"
+        cached:
+          type: boolean
+      required:
+        - id
+        - title
+        - description
+        - mood
+        - audioUrl
+        - duration
+        - scenes
+        - images

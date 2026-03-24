@@ -1,0 +1,14 @@
+packages:
+  "zustand": "For global audio player state management across pages"
+
+images:
+  - path: "artifacts/custom-audio-stories/public/images/magic-aura.png"
+    description: "Abstract swirling magical aura in deep plum, black, and gold, highly cinematic, mysterious"
+    aspect_ratio: "1:1"
+  - path: "artifacts/custom-audio-stories/public/images/noise-texture.png"
+    description: "Subtle film grain noise texture on dark charcoal background"
+    aspect_ratio: "16:9"
+
+notes:
+  - Using zustand for global persistent audio player state
+  - Implementing robust fallback to mock data to ensure the UI remains fully populated and functional even if backend generation APIs are missing or fail

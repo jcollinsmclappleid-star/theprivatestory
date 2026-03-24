@@ -14,3 +14,218 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Returns list of curated stories
+ * @summary Get story library
+ */
+export const GetStoriesQueryParams = zod.object({
+  mood: zod.coerce.string().optional(),
+  search: zod.coerce.string().optional(),
+});
+
+export const GetStoriesResponseItem = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  tags: zod.array(zod.string()),
+  duration: zod.string(),
+  coverImage: zod.string(),
+  audioUrl: zod.string().optional(),
+  isPremium: zod.boolean(),
+  isNew: zod.boolean(),
+  isSeries: zod.boolean().optional(),
+  seriesName: zod.string().optional(),
+  seriesEpisode: zod.number().optional(),
+  scenes: zod
+    .array(
+      zod.object({
+        id: zod.number(),
+        text: zod.string(),
+        visualPrompt: zod.string(),
+        durationEstimate: zod.number(),
+        image: zod.string().optional(),
+      }),
+    )
+    .optional(),
+});
+export const GetStoriesResponse = zod.array(GetStoriesResponseItem);
+
+/**
+ * @summary Get story by ID
+ */
+export const GetStoryParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const GetStoryResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  tags: zod.array(zod.string()),
+  duration: zod.string(),
+  coverImage: zod.string(),
+  audioUrl: zod.string().optional(),
+  isPremium: zod.boolean(),
+  isNew: zod.boolean(),
+  isSeries: zod.boolean().optional(),
+  seriesName: zod.string().optional(),
+  seriesEpisode: zod.number().optional(),
+  scenes: zod
+    .array(
+      zod.object({
+        id: zod.number(),
+        text: zod.string(),
+        visualPrompt: zod.string(),
+        durationEstimate: zod.number(),
+        image: zod.string().optional(),
+      }),
+    )
+    .optional(),
+});
+
+/**
+ * @summary Get series library
+ */
+export const GetSeriesResponseItem = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  coverImage: zod.string(),
+  episodeCount: zod.number(),
+  episodes: zod.array(
+    zod.object({
+      id: zod.string(),
+      episodeNumber: zod.number(),
+      title: zod.string(),
+      description: zod.string(),
+      duration: zod.string(),
+      isLocked: zod.boolean(),
+      audioUrl: zod.string().optional(),
+    }),
+  ),
+  tags: zod.array(zod.string()),
+});
+export const GetSeriesResponse = zod.array(GetSeriesResponseItem);
+
+/**
+ * @summary Get series by ID
+ */
+export const GetSeriesByIdParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const GetSeriesByIdResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  coverImage: zod.string(),
+  episodeCount: zod.number(),
+  episodes: zod.array(
+    zod.object({
+      id: zod.string(),
+      episodeNumber: zod.number(),
+      title: zod.string(),
+      description: zod.string(),
+      duration: zod.string(),
+      isLocked: zod.boolean(),
+      audioUrl: zod.string().optional(),
+    }),
+  ),
+  tags: zod.array(zod.string()),
+});
+
+/**
+ * @summary Generate AI story text
+ */
+export const GenerateStoryBody = zod.object({
+  listenerName: zod.string(),
+  mood: zod.string(),
+  intensity: zod.string(),
+  voiceFeel: zod.string(),
+  storyLength: zod.string(),
+  scenarioPrompt: zod.string(),
+  cinematicVisuals: zod.boolean().optional(),
+  emotionalFocus: zod.boolean().optional(),
+});
+
+export const GenerateStoryResponse = zod.object({
+  title: zod.string(),
+  description: zod.string(),
+  scenes: zod.array(
+    zod.object({
+      id: zod.number(),
+      text: zod.string(),
+      visualPrompt: zod.string(),
+      durationEstimate: zod.number(),
+      image: zod.string().optional(),
+    }),
+  ),
+});
+
+/**
+ * @summary Generate audio narration
+ */
+export const GenerateAudioBody = zod.object({
+  text: zod.string(),
+  voiceFeel: zod.string(),
+});
+
+export const GenerateAudioResponse = zod.object({
+  audioUrl: zod.string(),
+  duration: zod.number().optional(),
+});
+
+/**
+ * @summary Generate story images
+ */
+export const GenerateImagesBody = zod.object({
+  coverPrompt: zod.string(),
+  scenePrompts: zod.array(zod.string()),
+});
+
+export const GenerateImagesResponse = zod.object({
+  cover: zod.string(),
+  scenes: zod.array(zod.string()),
+});
+
+/**
+ * @summary Generate complete story with audio and images
+ */
+export const GenerateFullStoryBody = zod.object({
+  listenerName: zod.string(),
+  mood: zod.string(),
+  intensity: zod.string(),
+  voiceFeel: zod.string(),
+  storyLength: zod.string(),
+  scenarioPrompt: zod.string(),
+  cinematicVisuals: zod.boolean().optional(),
+  emotionalFocus: zod.boolean().optional(),
+});
+
+export const GenerateFullStoryResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  mood: zod.string(),
+  audioUrl: zod.string(),
+  duration: zod.string(),
+  scenes: zod.array(
+    zod.object({
+      id: zod.number(),
+      text: zod.string(),
+      visualPrompt: zod.string(),
+      durationEstimate: zod.number(),
+      image: zod.string().optional(),
+    }),
+  ),
+  images: zod.object({
+    cover: zod.string(),
+    scenes: zod.array(zod.string()),
+  }),
+  cached: zod.boolean().optional(),
+});

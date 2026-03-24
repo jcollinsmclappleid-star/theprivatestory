@@ -6,4 +6,16 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./episode";
+export * from "./fullGeneratedStory";
+export * from "./generateAudioRequest";
+export * from "./generateAudioResponse";
+export * from "./generatedStory";
+export * from "./generateImagesRequest";
+export * from "./generateImagesResponse";
+export * from "./generateStoryRequest";
+export * from "./getStoriesParams";
 export * from "./healthStatus";
+export * from "./scene";
+export * from "./series";
+export * from "./story";

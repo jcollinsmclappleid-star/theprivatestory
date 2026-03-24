@@ -2,11 +2,12 @@ import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, BookOpen, LogIn, LogOut, User } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
-import { useAuth } from "@workspace/replit-auth-web";
+import { AuthModal } from "./AuthModal";
+import { useAuth } from "../hooks/useAuth";
 
 function Navbar() {
   const [location] = useLocation();
-  const { user, isLoading, isAuthenticated, login, logout } = useAuth();
+  const { user, isLoading, isAuthenticated, openSignIn, logout } = useAuth();
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -56,10 +57,10 @@ function Navbar() {
           {!isLoading && (
             isAuthenticated && user ? (
               <div className="flex items-center gap-2">
-                {user.profileImageUrl ? (
+                {user.profileImageUrl || user.image ? (
                   <img
-                    src={user.profileImageUrl}
-                    alt={user.firstName ?? "User"}
+                    src={(user.profileImageUrl || user.image) ?? ""}
+                    alt={user.firstName ?? user.name ?? "User"}
                     className="w-8 h-8 rounded-full object-cover border border-border/40"
                   />
                 ) : (
@@ -78,7 +79,7 @@ function Navbar() {
               </div>
             ) : (
               <button
-                onClick={login}
+                onClick={openSignIn}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/50 text-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-all"
               >
                 <LogIn className="w-3.5 h-3.5" />
@@ -137,6 +138,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/noise-texture.png)` }}
       />
 
+      <AuthModal />
       <Navbar />
       <main className="pt-16 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />

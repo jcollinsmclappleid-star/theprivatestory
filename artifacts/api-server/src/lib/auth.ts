@@ -1,86 +1,70 @@
-import * as client from "openid-client";
-import crypto from "crypto";
-import { type Request, type Response } from "express";
-import { db, sessionsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
-import type { AuthUser } from "@workspace/api-zod";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db, usersTable, baSessionsTable, baAccountsTable, baVerificationsTable } from "@workspace/db";
 
-export const ISSUER_URL = process.env.ISSUER_URL ?? "https://replit.com/oidc";
-export const SESSION_COOKIE = "sid";
-export const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
-
-export interface SessionData {
-  user: AuthUser;
-  access_token: string;
-  refresh_token?: string;
-  expires_at?: number;
+function getBaseURL(): string {
+  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL;
+  if (process.env.REPLIT_DEV_DOMAIN) return `https://${process.env.REPLIT_DEV_DOMAIN}`;
+  return "http://localhost:8080";
 }
 
-let oidcConfig: client.Configuration | null = null;
+export const auth = betterAuth({
+  baseURL: getBaseURL(),
+  basePath: "/api/auth",
+  secret: process.env.BETTER_AUTH_SECRET ?? "dev-secret-change-in-production",
 
-export async function getOidcConfig(): Promise<client.Configuration> {
-  if (!oidcConfig) {
-    oidcConfig = await client.discovery(
-      new URL(ISSUER_URL),
-      process.env.REPL_ID!,
-    );
-  }
-  return oidcConfig;
-}
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: usersTable,
+      session: baSessionsTable,
+      account: baAccountsTable,
+      verification: baVerificationsTable,
+    },
+  }),
 
-export async function createSession(data: SessionData): Promise<string> {
-  const sid = crypto.randomBytes(32).toString("hex");
-  await db.insert(sessionsTable).values({
-    sid,
-    sess: data as unknown as Record<string, unknown>,
-    expire: new Date(Date.now() + SESSION_TTL),
-  });
-  return sid;
-}
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+  },
 
-export async function getSession(sid: string): Promise<SessionData | null> {
-  const [row] = await db
-    .select()
-    .from(sessionsTable)
-    .where(eq(sessionsTable.sid, sid));
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    },
+  },
 
-  if (!row || row.expire < new Date()) {
-    if (row) await deleteSession(sid);
-    return null;
-  }
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const parts = (user.name ?? "").trim().split(/\s+/);
+          const firstName = parts[0] ?? "";
+          const lastName = parts.slice(1).join(" ") || null;
+          return {
+            data: {
+              ...user,
+              firstName,
+              lastName: lastName,
+              profileImageUrl: user.image ?? null,
+            },
+          };
+        },
+      },
+    },
+  },
 
-  return row.sess as unknown as SessionData;
-}
+  advanced: {
+    crossSubDomainCookies: { enabled: false },
+    defaultCookieAttributes: {
+      secure: true,
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  },
 
-export async function updateSession(
-  sid: string,
-  data: SessionData,
-): Promise<void> {
-  await db
-    .update(sessionsTable)
-    .set({
-      sess: data as unknown as Record<string, unknown>,
-      expire: new Date(Date.now() + SESSION_TTL),
-    })
-    .where(eq(sessionsTable.sid, sid));
-}
+  trustedOrigins: [getBaseURL()],
+});
 
-export async function deleteSession(sid: string): Promise<void> {
-  await db.delete(sessionsTable).where(eq(sessionsTable.sid, sid));
-}
-
-export async function clearSession(
-  res: Response,
-  sid?: string,
-): Promise<void> {
-  if (sid) await deleteSession(sid);
-  res.clearCookie(SESSION_COOKIE, { path: "/" });
-}
-
-export function getSessionId(req: Request): string | undefined {
-  const authHeader = req.headers["authorization"];
-  if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.slice(7);
-  }
-  return req.cookies?.[SESSION_COOKIE];
-}
+export type Auth = typeof auth;

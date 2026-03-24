@@ -27,3 +27,8 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+BETTER_AUTH_SECRET = "6755e0eb33dc17459611d077cae39120dafad6d899ca327913919399b3dbf76f"

@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
 import { SkeletonCard } from "@/components/SkeletonCard";
-import { useAuth } from "@workspace/replit-auth-web";
+import { useAuth } from "@/hooks/useAuth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -169,7 +169,7 @@ function EmptyState({ tab }: { tab: LibraryTab }) {
   );
 }
 
-function AuthGate({ login }: { login: () => void }) {
+function AuthGate({ openSignIn }: { openSignIn: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -184,7 +184,7 @@ function AuthGate({ login }: { login: () => void }) {
         Your saved stories, generated stories, and listening progress are all stored in your personal library.
       </p>
       <button
-        onClick={login}
+        onClick={openSignIn}
         className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all"
       >
         <LogIn className="w-4 h-4" />
@@ -202,7 +202,7 @@ const TAB_CONFIG = [
 ];
 
 export default function Library() {
-  const { isAuthenticated, isLoading: authLoading, login } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [activeTab, setActiveTab] = useState<LibraryTab>("saved");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
@@ -274,7 +274,7 @@ export default function Library() {
           <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
           <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
         </div>
-        <AuthGate login={login} />
+        <AuthGate openSignIn={openSignIn} />
       </div>
     );
   }

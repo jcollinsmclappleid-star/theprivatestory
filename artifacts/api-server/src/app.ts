@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 import router from "./routes/index.js";
 import { logger } from "./lib/logger.js";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
@@ -35,6 +37,10 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// better-auth handles all /api/auth/* routes (before authMiddleware so it can set session cookie)
+app.all("/api/auth{/*path}", toNodeHandler(auth));
+
 app.use(authMiddleware);
 
 const publicDir = path.resolve(__dirname, "../public");

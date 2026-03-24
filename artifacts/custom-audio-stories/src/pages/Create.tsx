@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
-import { useAuth } from "@workspace/replit-auth-web";
+import { useAuth } from "@/hooks/useAuth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -94,7 +94,7 @@ function OptionCard<T extends string>({
 }
 
 export default function Create() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [step, setStep] = useState<"form" | "generating" | "result">("form");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
@@ -340,13 +340,13 @@ export default function Create() {
             Your personalised audio stories are crafted just for you and saved to your private library.
           </p>
         </div>
-        <a
-          href={`${API_BASE}/api/login?returnTo=${encodeURIComponent("/create")}`}
+        <button
+          onClick={openSignIn}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
         >
           <LogIn className="w-4 h-4" />
           Sign In to Continue
-        </a>
+        </button>
       </div>
     );
   }

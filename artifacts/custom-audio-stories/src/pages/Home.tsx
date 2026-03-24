@@ -6,7 +6,7 @@ import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
 import { useAudioPlayer } from "@/store/use-audio-player";
-import { useAuth } from "@workspace/replit-auth-web";
+import { useAuth } from "@/hooks/useAuth";
 import type { Story } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");

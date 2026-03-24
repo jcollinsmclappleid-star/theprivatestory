@@ -107,7 +107,7 @@ The text for each scene should be 80-150 words. All ${sceneCount} scenes must be
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: "gpt-4o",
       max_completion_tokens: 8192,
       messages: [
         { role: "system", content: systemPrompt },
@@ -286,7 +286,7 @@ Return ONLY valid JSON:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: "gpt-4o",
       max_completion_tokens: 8192,
       messages: [
         { role: "system", content: systemPrompt },

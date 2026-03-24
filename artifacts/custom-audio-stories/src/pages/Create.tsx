@@ -4,7 +4,8 @@ import { Sparkles, Wand2, Play, Volume2, ChevronLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation } from "wouter";
+import { useGenerateFullStory } from "@workspace/api-client-react";
+import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 
 const formSchema = z.object({
@@ -31,18 +32,6 @@ const SAMPLE_PROMPTS = [
   "A stolen weekend at a coastal cottage, two people who shouldn't be here.",
 ];
 
-interface GeneratedResult {
-  id: string;
-  title: string;
-  description: string;
-  mood: string;
-  audioUrl: string;
-  duration: string;
-  scenes: Array<{ id: number; text: string; visualPrompt: string; durationEstimate: number; image?: string }>;
-  images: { cover: string; scenes: string[] };
-  cached: boolean;
-}
-
 const LOADING_PHASES = [
   "Crafting your story…",
   "Weaving the narrative…",
@@ -52,12 +41,36 @@ const LOADING_PHASES = [
 ];
 
 export default function Create() {
-  const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
+  const [step, setStep] = useState<"form" | "generating" | "result">("form");
   const [loadingPhase, setLoadingPhase] = useState(0);
-  const [result, setResult] = useState<GeneratedResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [, setLocation] = useLocation();
-  const { play, isPlaying, togglePlay } = useAudioPlayer();
+  const [result, setResult] = useState<FullGeneratedStory | null>(null);
+  const { play, isPlaying, togglePlay, progress, currentStory } = useAudioPlayer();
+
+  const generateMutation = useGenerateFullStory({
+    mutation: {
+      onSuccess: (data) => {
+        setResult(data);
+        setStep("result");
+        const storyForPlayer = {
+          id: data.id,
+          title: data.title,
+          description: data.description,
+          mood: data.mood,
+          tags: [data.mood],
+          duration: data.duration,
+          coverImage: data.images.cover,
+          audioUrl: data.audioUrl,
+          isPremium: false,
+          isNew: true,
+          scenes: data.scenes.map((s, i) => ({
+            ...s,
+            image: data.images.scenes[i],
+          })),
+        };
+        setTimeout(() => play(storyForPlayer as Parameters<typeof play>[0]), 300);
+      },
+    },
+  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -70,79 +83,55 @@ export default function Create() {
       scenarioPrompt: "",
       cinematicVisuals: true,
       emotionalFocus: false,
-    }
+    },
   });
 
   const onSubmit = async (data: FormData) => {
-    setStep('generating');
-    setError(null);
+    setStep("generating");
     setLoadingPhase(0);
 
-    const phaseIntervals = LOADING_PHASES.map((_, i) =>
-      setTimeout(() => setLoadingPhase(i), i * 8000 / LOADING_PHASES.length)
+    const intervals = LOADING_PHASES.map((_, i) =>
+      setTimeout(() => setLoadingPhase(i), (i * 60000) / LOADING_PHASES.length)
     );
 
     try {
-      const response = await fetch('/api/generate-full-story', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          listenerName: data.listenerName,
-          mood: data.mood,
-          intensity: data.intensity,
-          voiceFeel: data.voiceFeel,
-          storyLength: data.storyLength,
-          scenarioPrompt: data.scenarioPrompt,
-          cinematicVisuals: data.cinematicVisuals,
-          emotionalFocus: data.emotionalFocus,
-        }),
+      await generateMutation.mutateAsync({
+        listenerName: data.listenerName,
+        mood: data.mood,
+        intensity: data.intensity,
+        voiceFeel: data.voiceFeel,
+        storyLength: data.storyLength,
+        scenarioPrompt: data.scenarioPrompt,
+        cinematicVisuals: data.cinematicVisuals,
+        emotionalFocus: data.emotionalFocus,
       });
+    } finally {
+      intervals.forEach(clearTimeout);
+    }
 
-      phaseIntervals.forEach(clearTimeout);
-
-      if (!response.ok) {
-        throw new Error(`Generation failed: ${response.statusText}`);
-      }
-
-      const generated: GeneratedResult = await response.json();
-      setResult(generated);
-      setStep('result');
-
-      const storyForPlayer = {
-        id: generated.id,
-        title: generated.title,
-        description: generated.description,
-        mood: generated.mood,
-        tags: [generated.mood],
-        duration: generated.duration,
-        coverImage: generated.images.cover,
-        audioUrl: generated.audioUrl,
-        isPremium: false,
-        isNew: true,
-        scenes: generated.scenes.map((s, i) => ({
-          ...s,
-          image: generated.images.scenes[i],
-        })),
-      };
-
-      setTimeout(() => play(storyForPlayer as Parameters<typeof play>[0]), 300);
-    } catch (err) {
-      phaseIntervals.forEach(clearTimeout);
-      setError(err instanceof Error ? err.message : 'Story generation failed. Please try again.');
-      setStep('form');
+    if (generateMutation.isError) {
+      setStep("form");
     }
   };
 
-  const OptionPill = ({ label, field, value }: { label: string, field: keyof FormData, value: string }) => {
+  const OptionPill = ({
+    label,
+    field,
+    value,
+  }: {
+    label: string;
+    field: keyof FormData;
+    value: string;
+  }) => {
     const isSelected = form.watch(field) === value;
     return (
       <button
         type="button"
         onClick={() => form.setValue(field, value as never)}
-        className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+        className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
           isSelected
-            ? 'bg-primary text-primary-foreground shadow-glow border-primary'
-            : 'bg-card border-border hover:border-primary/50 text-muted-foreground hover:text-foreground'
+            ? "bg-primary text-primary-foreground shadow-glow border-primary"
+            : "bg-card border-border hover:border-primary/50 text-muted-foreground hover:text-foreground"
         }`}
       >
         {label}
@@ -150,11 +139,21 @@ export default function Create() {
     );
   };
 
+  const activeSceneIndex =
+    result && currentStory?.id === result.id
+      ? Math.min(
+          Math.floor(progress * result.scenes.length),
+          result.scenes.length - 1
+        )
+      : 0;
+
+  const activeSceneImage =
+    result?.images.scenes[activeSceneIndex] ?? result?.images.cover ?? "";
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
       <AnimatePresence mode="wait">
-
-        {step === 'form' && (
+        {step === "form" && (
           <motion.div
             key="form"
             initial={{ opacity: 0, y: 20 }}
@@ -167,54 +166,83 @@ export default function Create() {
             </div>
 
             <div className="mb-10 relative z-10">
-              <h1 className="text-4xl font-display font-bold text-foreground mb-4">Create Your Story</h1>
-              <p className="text-muted-foreground text-lg">Direct the narrative, mood, and voice. We'll craft the experience.</p>
+              <h1 className="text-4xl font-display font-bold text-foreground mb-4">
+                Create Your Story
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Direct the narrative, mood, and voice. We'll craft the experience.
+              </p>
             </div>
 
-            {error && (
+            {generateMutation.isError && (
               <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm">
-                {error}
+                {generateMutation.error instanceof Error
+                  ? generateMutation.error.message
+                  : "Story generation failed. Please try again."}
               </div>
             )}
 
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 relative z-10">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-10 relative z-10"
+            >
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">Listener Name</label>
+                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
+                  Listener Name
+                </label>
                 <input
                   {...form.register("listenerName")}
                   placeholder="What should the narrator call you?"
                   className="w-full bg-background border border-border rounded-xl px-4 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 />
                 {form.formState.errors.listenerName && (
-                  <p className="text-destructive text-xs mt-1">{form.formState.errors.listenerName.message}</p>
+                  <p className="text-destructive text-xs mt-1">
+                    {form.formState.errors.listenerName.message}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">Genre & Mood</label>
+                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
+                  Genre & Mood
+                </label>
                 <div className="flex flex-wrap gap-3">
-                  {MOODS.map(m => <OptionPill key={m} label={m} field="mood" value={m} />)}
+                  {MOODS.map((m) => (
+                    <OptionPill key={m} label={m} field="mood" value={m} />
+                  ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">Emotional Intensity</label>
+                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
+                  Emotional Intensity
+                </label>
                 <div className="flex flex-wrap gap-3">
-                  {INTENSITIES.map(m => <OptionPill key={m} label={m} field="intensity" value={m} />)}
+                  {INTENSITIES.map((m) => (
+                    <OptionPill key={m} label={m} field="intensity" value={m} />
+                  ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">Voice Feel</label>
+                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
+                  Voice Feel
+                </label>
                 <div className="flex flex-wrap gap-3">
-                  {VOICES.map(m => <OptionPill key={m} label={m} field="voiceFeel" value={m} />)}
+                  {VOICES.map((m) => (
+                    <OptionPill key={m} label={m} field="voiceFeel" value={m} />
+                  ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">Duration</label>
+                <label className="block text-sm font-medium text-foreground mb-3 uppercase tracking-wider">
+                  Duration
+                </label>
                 <div className="flex flex-wrap gap-3">
-                  {LENGTHS.map(m => <OptionPill key={m} label={m} field="storyLength" value={m} />)}
+                  {LENGTHS.map((m) => (
+                    <OptionPill key={m} label={m} field="storyLength" value={m} />
+                  ))}
                 </div>
               </div>
 
@@ -223,7 +251,12 @@ export default function Create() {
                   <span>Scenario Prompt</span>
                   <button
                     type="button"
-                    onClick={() => form.setValue("scenarioPrompt", SAMPLE_PROMPTS[Math.floor(Math.random() * SAMPLE_PROMPTS.length)])}
+                    onClick={() =>
+                      form.setValue(
+                        "scenarioPrompt",
+                        SAMPLE_PROMPTS[Math.floor(Math.random() * SAMPLE_PROMPTS.length)]
+                      )
+                    }
                     className="text-primary hover:underline text-xs flex items-center gap-1 normal-case"
                   >
                     <Wand2 className="w-3 h-3" /> Use sample
@@ -236,18 +269,22 @@ export default function Create() {
                   className="w-full bg-background border border-border rounded-xl px-4 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
                 />
                 {form.formState.errors.scenarioPrompt && (
-                  <p className="text-destructive text-xs mt-1">{form.formState.errors.scenarioPrompt.message}</p>
+                  <p className="text-destructive text-xs mt-1">
+                    {form.formState.errors.scenarioPrompt.message}
+                  </p>
                 )}
               </div>
 
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-6 flex-wrap">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input
                     type="checkbox"
                     {...form.register("cinematicVisuals")}
                     className="w-4 h-4 rounded border-border accent-primary"
                   />
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">More cinematic visuals</span>
+                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                    Cinematic visuals
+                  </span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input
@@ -255,7 +292,9 @@ export default function Create() {
                     {...form.register("emotionalFocus")}
                     className="w-4 h-4 rounded border-border accent-primary"
                   />
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">More emotional focus</span>
+                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                    Deeper emotional focus
+                  </span>
                 </label>
               </div>
 
@@ -272,7 +311,7 @@ export default function Create() {
           </motion.div>
         )}
 
-        {step === 'generating' && (
+        {step === "generating" && (
           <motion.div
             key="generating"
             initial={{ opacity: 0 }}
@@ -281,8 +320,14 @@ export default function Create() {
             className="flex flex-col items-center justify-center min-h-[60vh] text-center"
           >
             <div className="relative w-40 h-40 mb-10">
-              <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping" style={{ animationDuration: '2s' }} />
-              <div className="absolute inset-4 rounded-full border-2 border-primary/50 animate-ping" style={{ animationDuration: '1.5s' }} />
+              <div
+                className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping"
+                style={{ animationDuration: "2s" }}
+              />
+              <div
+                className="absolute inset-4 rounded-full border-2 border-primary/50 animate-ping"
+                style={{ animationDuration: "1.5s" }}
+              />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-16 h-16 border-t-2 border-primary rounded-full animate-spin" />
               </div>
@@ -304,93 +349,153 @@ export default function Create() {
             </AnimatePresence>
 
             <p className="text-muted-foreground max-w-sm">
-              Our AI models are weaving together narrative, voice, and visuals for your personal experience.
+              Our AI models are weaving together narrative, voice, and visuals for your
+              personal experience.
             </p>
 
             <div className="mt-8 flex gap-1.5">
               {LOADING_PHASES.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 rounded-full transition-all duration-700 ${i <= loadingPhase ? 'bg-primary w-8' : 'bg-border w-4'}`}
+                  className={`h-1 rounded-full transition-all duration-700 ${
+                    i <= loadingPhase ? "bg-primary w-8" : "bg-border w-4"
+                  }`}
                 />
               ))}
             </div>
           </motion.div>
         )}
 
-        {step === 'result' && result && (
+        {step === "result" && result && (
           <motion.div
             key="result"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-8"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <button
-                onClick={() => setStep('form')}
-                className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
-              >
-                <ChevronLeft className="w-4 h-4" /> Create another
-              </button>
-            </div>
+            <button
+              onClick={() => setStep("form")}
+              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
+            >
+              <ChevronLeft className="w-4 h-4" /> Create another
+            </button>
 
             <div className="glass-panel rounded-3xl overflow-hidden">
               <div className="relative aspect-video">
-                <img
-                  src={result.images.cover}
-                  alt={result.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-8">
-                  <p className="text-primary text-sm font-medium uppercase tracking-widest mb-2">{result.mood}</p>
-                  <h1 className="font-display text-4xl font-bold text-foreground mb-3">{result.title}</h1>
-                  <p className="text-muted-foreground text-lg max-w-xl">{result.description}</p>
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeSceneIndex}
+                    src={activeSceneImage}
+                    alt={`Scene ${activeSceneIndex + 1}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-8 z-10">
+                  <p className="text-primary text-sm font-medium uppercase tracking-widest mb-2">
+                    {result.mood}
+                  </p>
+                  <h1 className="font-display text-4xl font-bold text-foreground mb-3">
+                    {result.title}
+                  </h1>
+                  <p className="text-muted-foreground text-lg max-w-xl">
+                    {result.description}
+                  </p>
                 </div>
+                {currentStory?.id === result.id && isPlaying && (
+                  <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-primary text-xs font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    Scene {activeSceneIndex + 1} of {result.scenes.length}
+                  </div>
+                )}
               </div>
 
               <div className="p-8">
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 mb-8">
                   <button
                     onClick={togglePlay}
                     className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
                   >
-                    {isPlaying ? <Volume2 className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                    {isPlaying ? 'Playing…' : 'Play Story'}
+                    {isPlaying && currentStory?.id === result.id ? (
+                      <Volume2 className="w-5 h-5" />
+                    ) : (
+                      <Play className="w-5 h-5" />
+                    )}
+                    {isPlaying && currentStory?.id === result.id
+                      ? "Playing…"
+                      : "Play Story"}
                   </button>
-                  <span className="text-muted-foreground text-sm">{result.duration} · AI generated</span>
+                  <span className="text-muted-foreground text-sm">
+                    {result.duration} · AI generated
+                  </span>
                 </div>
 
                 <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground uppercase tracking-wider">Scenes</p>
-                  {result.scenes.map((scene, i) => (
-                    <div key={scene.id} className="flex gap-4 p-4 rounded-xl bg-background/50 border border-border/30 hover:border-primary/20 transition-colors">
-                      {result.images.scenes[i] && (
-                        <img
-                          src={result.images.scenes[i]}
-                          alt={`Scene ${i + 1}`}
-                          className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                        />
-                      )}
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Scene {i + 1} · ~{scene.durationEstimate}s</p>
-                        <p className="text-sm text-foreground line-clamp-2">{scene.text}</p>
-                      </div>
-                    </div>
-                  ))}
+                  <p className="text-sm font-medium text-foreground uppercase tracking-wider mb-4">
+                    Scenes
+                  </p>
+                  {result.scenes.map((scene, i) => {
+                    const isActiveScene =
+                      currentStory?.id === result.id && activeSceneIndex === i;
+                    return (
+                      <motion.div
+                        key={scene.id}
+                        animate={{
+                          borderColor: isActiveScene
+                            ? "hsl(var(--primary) / 0.5)"
+                            : "hsl(var(--border) / 0.3)",
+                          backgroundColor: isActiveScene
+                            ? "hsl(var(--primary) / 0.05)"
+                            : "hsl(var(--background) / 0.5)",
+                        }}
+                        className="flex gap-4 p-4 rounded-xl border transition-colors"
+                      >
+                        {result.images.scenes[i] && (
+                          <div className="relative flex-shrink-0">
+                            <img
+                              src={result.images.scenes[i]}
+                              alt={`Scene ${i + 1}`}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                            {isActiveScene && (
+                              <div className="absolute inset-0 rounded-lg border-2 border-primary/60 flex items-center justify-center bg-black/30">
+                                <Volume2 className="w-4 h-4 text-primary" />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Scene {i + 1}
+                            {isActiveScene && (
+                              <span className="ml-2 text-primary font-medium">
+                                · Now playing
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-foreground line-clamp-2">
+                            {scene.text}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
 
             <button
-              onClick={() => setStep('form')}
+              onClick={() => setStep("form")}
               className="w-full border border-border/50 text-muted-foreground py-4 rounded-2xl hover:border-primary/30 hover:text-foreground transition-all"
             >
               Create a new story
             </button>
           </motion.div>
         )}
-
       </AnimatePresence>
     </div>
   );

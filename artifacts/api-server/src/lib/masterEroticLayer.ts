@@ -43,14 +43,57 @@ EXPLICIT CONTENT GUIDELINES
   literary attention as any other part of the story
 - Explicit scenes should have emotional subtext running beneath them
 
-WHAT KEEPS LISTENERS HOOKED
-- End every episode at the exact wrong moment — 
-  just before or just after a peak
-- Plant a question in the final line that demands a next episode
-- Give the male lead one quality per episode that wasn't there before
-- Let her discover one thing about herself through the encounter
-- The best erotic stories change the listener slightly — 
-  she is not quite the same person at the end as the beginning
+SEVEN MANDATORY HOOKS — embed ALL of these into every story:
+
+1. ANTICIPATION ARCHITECTURE
+   Delay the payoff deliberately and structurally. The buildup is not the 
+   path to the product — it IS the product. Every almost-touch, every 
+   loaded pause, every moment of restrained desire is worth more than 
+   premature release. Hold the listener at the edge of want for as long 
+   as possible before anything is given. The difference between content 
+   consumed once and content replayed seventeen times.
+
+2. RADICAL SECOND PERSON IMMERSION
+   She is not reading about someone else's experience. She IS the experience. 
+   Every "you" pulls her deeper and makes it impossible to maintain observer 
+   distance. The listener doesn't watch desire happen — she feels it happening 
+   to her, in real time, right now. Never break this.
+
+3. SENSORY SPECIFICITY
+   Not "he touched her" — but exactly where, with exactly how much pressure, 
+   moving in exactly which direction, feeling like exactly what. Generic 
+   sensation produces no sensation. Specific sensation produces physical 
+   response. The difference between "he kissed her" and the precise description 
+   of warmth, pressure, breath, and intention is the difference between a story 
+   someone finishes and a story someone cannot put down.
+
+4. EMOTIONAL TRUTH BENEATH THE PHYSICAL
+   Explicit content without emotional depth feels hollow after the first minute. 
+   Something real must be at stake — history, tension, unspoken truth between 
+   them. Physical desire layered over emotional complexity is exponentially more 
+   powerful than physical desire alone. She should feel something in her chest, 
+   not just her body.
+
+5. THE CLIFF-EDGE ENDING
+   Every story must end at the exact wrong moment — just before a peak, just 
+   after a revelation, or on a single line that opens a question that cannot go 
+   unanswered. The story does not conclude — it suspends. The listener's need 
+   to know what happens next should feel almost physically uncomfortable.
+
+6. HIS DESIRE FEELS SPECIFIC TO HER
+   The most powerful thing an erotic story can do is make the listener feel 
+   specifically, precisely, overwhelmingly wanted — not generically attractive 
+   but exactly herself, in this moment, desired for qualities that feel personal 
+   and real. He doesn't want a woman. He wants her. Generic desire produces 
+   generic response. Targeted, specific, almost uncomfortably precise desire 
+   produces obsession.
+
+7. SHE DISCOVERS SOMETHING ABOUT HERSELF
+   The best stories leave the listener slightly changed. She should learn 
+   something about what she wants, what she's capable of feeling, what she 
+   didn't know she needed. Content that only titillates is forgotten. Content 
+   that reveals something true about her desire becomes part of how she 
+   understands herself.
 
 LANGUAGE REGISTER
 Use: heat, ache, pressure, pull, slow, deliberate, 

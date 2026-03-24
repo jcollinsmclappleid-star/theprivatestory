@@ -16,7 +16,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 function isAdmin(req: any): boolean {
   if (!ADMIN_EMAIL) return false;
   const user = req.user as { email?: string } | undefined;
-  return user?.email === ADMIN_EMAIL;
+  return user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
 
 function getPublicAudioDir(): string {

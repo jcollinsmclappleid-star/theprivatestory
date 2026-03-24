@@ -214,7 +214,6 @@ CONFLICT TYPES (pick one):
 3. fear of closeness despite wanting it
 4. emotional hesitation at the edge of something real
 5. one night that feels larger than it should
-6. the risk of finally saying what is true
 
 ENDING TYPES (pick one):
 1. lingering and unresolved — it ends but does not finish
@@ -901,9 +900,16 @@ router.post("/generate-full-story", async (req, res) => {
       cached: false,
     };
 
-    // Step 10: Persist to JSON storage
-    storiesStore.set(requestHash, result as unknown as Record<string, unknown>);
-    generatedCacheStore.set(requestHash, requestHash);
+    // Step 10: Persist to JSON storage.
+    // bypassCache (variation/continuation) requests get a unique story ID so they
+    // never overwrite an existing story stored under the same normalised hash.
+    const storyId = rawIntake.bypassCache
+      ? `${requestHash}-var-${Date.now()}`
+      : requestHash;
+    storiesStore.set(storyId, result as unknown as Record<string, unknown>);
+    if (!rawIntake.bypassCache) {
+      generatedCacheStore.set(requestHash, storyId);
+    }
 
     return result;
   };

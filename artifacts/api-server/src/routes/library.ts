@@ -235,14 +235,7 @@ router.get("/recommendations", (req, res) => {
     .filter(Boolean);
 
   if (!req.isAuthenticated()) {
-    // Unauthenticated: return editorial picks only
-    res.json({
-      for_you: editorialFallback,
-      because_you_liked: [],
-      because_you_liked_mood: null,
-      continue_the_mood: [],
-      has_taste_profile: false,
-    });
+    res.status(401).json({ error: "Authentication required" });
     return;
   }
 

@@ -1,0 +1,387 @@
+We already have the visual design. Do NOT redesign the site. Keep the current aesthetic, layout system, colours, spacing, typography, and overall premium feel.
+
+Your job is to build the PRODUCT / PERSONALISATION / GIFT PURCHASE ARM into the existing site.
+
+PRIMARY GOAL
+Add a full personalised gift-story purchase flow for “Your Romantic Story” so the site becomes a working conversion funnel, not just a brochure site.
+
+This is for personalised romantic audio stories, especially gifts for partners.
+
+The product experience should feel:
+- premium
+- emotionally driven
+- intimate
+- modern
+- easy to buy
+- safe and discreet
+
+Do not make it look explicit, pornographic, or tacky.
+
+==================================================
+1. CORE FEATURE TO BUILD
+==================================================
+
+Build a guided “Create Your Story” personalisation flow embedded into the site.
+
+This flow should help a user create a personalised romantic audio story gift.
+
+The builder must feel premium and emotionally engaging, not like a boring form.
+
+It should be built as a multi-step guided flow with progress indication.
+
+Suggested primary CTA labels:
+- Create Your Story
+- Build Your Gift
+- Personalise This Story
+
+==================================================
+2. PRODUCT FLOW STRUCTURE
+==================================================
+
+Build a step-by-step story builder with the following steps:
+
+STEP 1 — Who is this for?
+Options:
+- For me
+- For my partner
+- As a gift for us
+- Anniversary / birthday / special occasion
+
+STEP 2 — Story style / mood
+Options:
+- Romantic
+- Intimate
+- Slow burn
+- Playful
+- Deeply emotional
+- Passionate
+- Comforting / bedtime romance
+
+STEP 3 — Personal details
+Fields:
+- Your name
+- Partner’s name
+- Optional nickname / term of endearment
+- Optional relationship detail
+- Optional special memory or meaningful detail
+
+STEP 4 — Setting / atmosphere
+Options:
+- Luxury hotel
+- Beach at night
+- Rainy city evening
+- Candlelit apartment
+- Weekend getaway
+- Private dinner
+- Custom setting
+
+If custom selected, show text input.
+
+STEP 5 — Voice preference
+Options:
+- Female voice
+- Male voice
+- Soft British tone
+- Warm neutral tone
+- Deep soothing tone
+
+If voice preview is possible later, structure for that.
+
+STEP 6 — Story length
+Options:
+- Short (5–7 mins)
+- Standard (10–12 mins)
+- Deluxe (15–20 mins)
+
+STEP 7 — Add-ons / upsells
+Options as toggles or cards:
+- Priority delivery
+- Background music
+- Extra personalised scene
+- Alternate version
+- Gift message intro
+- Downloadable keepsake cover image
+- Couple bundle / second story
+
+STEP 8 — Review summary
+Show a premium summary card of:
+- who it is for
+- names used
+- style
+- setting
+- voice
+- length
+- add-ons
+- total price
+
+STEP 9 — CTA to purchase
+Button:
+- Continue to Checkout
+or
+- Purchase Your Story
+
+==================================================
+3. PRODUCT / GIFT POSITIONING
+==================================================
+
+This must be framed clearly as a premium giftable experience.
+
+Add supporting site sections or product modules for:
+
+A. Gift positioning
+Examples:
+- A unique gift for your partner
+- A personalised anniversary surprise
+- A romantic keepsake in audio form
+- Something more meaningful than flowers
+
+B. Occasion tags
+Examples:
+- Anniversary
+- Birthday
+- Valentine’s
+- Just because
+- Long-distance relationship
+- Date night surprise
+
+C. Gift message option
+Allow the user to add an optional message that can appear:
+- in the order summary
+- or as a premium add-on for an intro line in the audio
+
+==================================================
+4. PRICING SYSTEM
+==================================================
+
+Build a clean, premium pricing structure into the flow.
+
+Suggested base tiers:
+- Short Story
+- Standard Story
+- Deluxe Story
+
+Example structure:
+Short: base price
+Standard: higher price
+Deluxe: highest price
+
+Do not hard-code ugly tables only. Also show pricing as elegant selectable cards.
+
+Then add dynamic pricing for add-ons.
+
+The total price must update live when the user changes:
+- story length
+- add-ons
+- gift extras
+
+Add a “Most Popular” visual anchor on the middle option.
+
+==================================================
+5. UX / INTERACTION REQUIREMENTS
+==================================================
+
+The builder must feel guided and premium.
+
+Requirements:
+- multi-step
+- progress bar or progress indicator
+- validation for required fields
+- clean transitions between steps
+- mobile-first
+- easy to edit previous choices
+- sticky summary on desktop if appropriate
+- condensed order summary on mobile
+
+Do NOT make it feel like an admin form.
+
+Use:
+- cards
+- pill selectors
+- elegant input states
+- subtle hover/focus states
+- clear hierarchy
+
+==================================================
+6. ORDER SUMMARY / CART MODULE
+==================================================
+
+Build a premium order summary component.
+
+It should display:
+- selected package
+- chosen style
+- chosen voice
+- chosen setting
+- personalisation details
+- add-ons
+- final total
+
+Needs:
+- live update
+- edit links
+- clean formatting
+- gift-oriented tone
+
+Optional microcopy:
+- Crafted for you
+- Personalised to your details
+- Delivered discreetly
+
+==================================================
+7. SAMPLE PREVIEW SECTION
+==================================================
+
+Add a section for short sample previews.
+
+This does not need real generation yet, but must be structured properly.
+
+Create sample cards for:
+- Romantic
+- Slow Burn
+- Intimate
+- Comforting Night Story
+
+Each card should include:
+- title
+- short description
+- play preview button
+- duration
+- mood tag
+
+Use placeholder audio files or dummy audio structure if needed.
+
+==================================================
+8. TRUST / REASSURANCE MODULES
+==================================================
+
+Add trust components relevant to this product.
+
+Need sections or trust strips for:
+- Private and discreet
+- Personalised for your relationship
+- Premium audio experience
+- Thoughtful digital gift
+- Secure checkout
+- Delivered digitally
+
+Add a discreet billing reassurance somewhere near checkout area:
+- Discreet and private experience
+- Secure payment
+- Your story details stay private
+
+==================================================
+9. FAQ SECTION FOR THE PRODUCT ARM
+==================================================
+
+Add or expand FAQ with questions such as:
+- How personalised is the story?
+- Is this a good gift for a partner?
+- How long does delivery take?
+- Can I choose the tone and setting?
+- Is the billing discreet?
+- Will I receive an audio file?
+- Can I request changes?
+- Can I buy this for an anniversary or birthday?
+
+==================================================
+10. DATA STRUCTURE / CODE ORGANISATION
+==================================================
+
+Implement the builder with clean structure so it can later connect to backend generation.
+
+Create a clear data model for:
+- recipient type
+- occasion
+- names
+- memory details
+- mood
+- setting
+- voice
+- duration
+- add-ons
+- pricing total
+
+Keep this modular so later it can connect to:
+- OpenAI for story generation
+- ElevenLabs for voice generation
+- image generation for a cover image
+- Stripe for checkout
+
+==================================================
+11. CHECKOUT READINESS
+==================================================
+
+Even if Stripe is not fully connected yet, structure the flow so checkout integration is easy.
+
+Need:
+- final payload object
+- order summary object
+- selected configuration object
+- clear place to trigger Stripe checkout
+
+CTA logic:
+When the user finishes the builder, create a clean payload with all selected story data.
+
+==================================================
+12. ADMIN / OPERATIONS READINESS
+==================================================
+
+Add a hidden or simple internal-ready structure so later we can see:
+- customer selections
+- selected mood
+- names
+- setting
+- story package
+- add-ons
+- delivery status placeholder
+
+This does not need to be fully built as a dashboard yet, but the frontend should be coded with a future dashboard/API in mind.
+
+==================================================
+13. COPY TONE
+==================================================
+
+All copy should feel:
+- intimate
+- premium
+- emotionally persuasive
+- tasteful
+- giftable
+- modern
+
+Avoid:
+- childish language
+- overly sexual crude language
+- generic corporate SaaS wording
+- cheesy romance clichés
+
+==================================================
+14. CTAS TO ADD ACROSS THE SITE
+==================================================
+
+Use these strategically:
+- Create Your Story
+- Build Your Gift
+- Personalise Your Story
+- Give Something More Meaningful
+- Start Your Romantic Story
+- Continue Personalising
+
+==================================================
+15. SPECIFIC DELIVERABLE
+==================================================
+
+Using the existing site design, add:
+1. a full working multi-step personalisation builder
+2. dynamic pricing and add-ons
+3. a gift-focused order summary
+4. sample preview section
+5. trust and reassurance modules
+6. upgraded FAQ for gifting and personalisation
+7. code structure ready for backend AI generation and Stripe
+
+Do NOT redesign the site from scratch.
+Do NOT replace the current visual identity.
+Do NOT simplify this into just one contact form.
+
+Build this as a real premium personalised product purchase flow inside the current experience.

@@ -55,43 +55,84 @@ export const storiesStore = {
   },
 
   async set(id: string, story: StoredStory): Promise<void> {
+    const values = {
+      id,
+      ownerUserId: (story.ownerUserId as string | null) ?? null,
+      title: (story.title as string) ?? "",
+      description: (story.description as string) ?? "",
+      mood: (story.mood as string) ?? "",
+      duration: (story.duration as string) ?? "",
+      audioUrl: (story.audioUrl as string) ?? "",
+      scenes: (story.scenes ?? []) as unknown[],
+      images: (story.images ?? {}) as Record<string, unknown>,
+      brief: (story.brief ?? {}) as Record<string, unknown>,
+      requestHash: (story.requestHash as string | null) ?? (story.id as string | null) ?? null,
+      variantType: (story.variant_type as string | null) ?? null,
+      parentStoryId: (story.parent_story_id as string | null) ?? null,
+      recommendationTags: (story.recommendation_tags ?? []) as unknown[],
+      qc: (story.qc ?? null) as Record<string, unknown> | null,
+      categoryId: (story.categoryId as string | null) ?? null,
+      subthemeId: (story.subthemeId as string | null) ?? null,
+      isLibraryStory: (story.isLibraryStory as boolean) ?? false,
+      status: (story.status as string) ?? "published",
+      storyDna: (story.storyDna ?? null) as Record<string, unknown> | null,
+    };
+    const updateSet = {
+      title: values.title,
+      description: values.description,
+      mood: values.mood,
+      duration: values.duration,
+      audioUrl: values.audioUrl,
+      scenes: values.scenes,
+      images: values.images,
+      brief: values.brief,
+      requestHash: values.requestHash,
+      variantType: values.variantType,
+      parentStoryId: values.parentStoryId,
+      recommendationTags: values.recommendationTags,
+      qc: values.qc,
+      categoryId: values.categoryId,
+      subthemeId: values.subthemeId,
+      isLibraryStory: values.isLibraryStory,
+      status: values.status,
+      storyDna: values.storyDna,
+    };
     await db
       .insert(generatedStories)
-      .values({
-        id,
-        ownerUserId: (story.ownerUserId as string | null) ?? null,
-        title: (story.title as string) ?? "",
-        description: (story.description as string) ?? "",
-        mood: (story.mood as string) ?? "",
-        duration: (story.duration as string) ?? "",
-        audioUrl: (story.audioUrl as string) ?? "",
-        scenes: (story.scenes ?? []) as unknown[],
-        images: (story.images ?? {}) as Record<string, unknown>,
-        brief: (story.brief ?? {}) as Record<string, unknown>,
-        requestHash: (story.requestHash as string | null) ?? (story.id as string | null) ?? null,
-        variantType: (story.variant_type as string | null) ?? null,
-        parentStoryId: (story.parent_story_id as string | null) ?? null,
-        recommendationTags: (story.recommendation_tags ?? []) as unknown[],
-        qc: (story.qc ?? null) as Record<string, unknown> | null,
-      })
-      .onConflictDoUpdate({
-        target: generatedStories.id,
-        set: {
-          title: (story.title as string) ?? "",
-          description: (story.description as string) ?? "",
-          mood: (story.mood as string) ?? "",
-          duration: (story.duration as string) ?? "",
-          audioUrl: (story.audioUrl as string) ?? "",
-          scenes: (story.scenes ?? []) as unknown[],
-          images: (story.images ?? {}) as Record<string, unknown>,
-          brief: (story.brief ?? {}) as Record<string, unknown>,
-          requestHash: (story.requestHash as string | null) ?? (story.id as string | null) ?? null,
-          variantType: (story.variant_type as string | null) ?? null,
-          parentStoryId: (story.parent_story_id as string | null) ?? null,
-          recommendationTags: (story.recommendation_tags ?? []) as unknown[],
-          qc: (story.qc ?? null) as Record<string, unknown> | null,
-        },
-      });
+      .values(values)
+      .onConflictDoUpdate({ target: generatedStories.id, set: updateSet });
+  },
+
+  async updateStatus(id: string, status: "draft" | "published" | "skipped"): Promise<void> {
+    await db
+      .update(generatedStories)
+      .set({ status })
+      .where(eq(generatedStories.id, id));
+  },
+
+  async getLibraryStories(status?: string): Promise<StoredStory[]> {
+    const rows = await db
+      .select()
+      .from(generatedStories)
+      .where(
+        status
+          ? and(eq(generatedStories.isLibraryStory, true), eq(generatedStories.status, status))
+          : eq(generatedStories.isLibraryStory, true)
+      )
+      .orderBy(generatedStories.createdAt);
+    return rows.map(rowToStoredStory);
+  },
+
+  async getRecentDna(limit = 20): Promise<Record<string, unknown>[]> {
+    const rows = await db
+      .select({ storyDna: generatedStories.storyDna })
+      .from(generatedStories)
+      .where(eq(generatedStories.isLibraryStory, true))
+      .orderBy(generatedStories.createdAt)
+      .limit(limit);
+    return rows
+      .map((r) => r.storyDna as Record<string, unknown> | null)
+      .filter((d): d is Record<string, unknown> => d != null);
   },
 };
 
@@ -112,6 +153,11 @@ function rowToStoredStory(row: typeof generatedStories.$inferSelect): StoredStor
     parent_story_id: row.parentStoryId,
     recommendation_tags: row.recommendationTags,
     qc: row.qc,
+    categoryId: row.categoryId,
+    subthemeId: row.subthemeId,
+    isLibraryStory: row.isLibraryStory,
+    status: row.status,
+    storyDna: row.storyDna,
     createdAt: row.createdAt?.toISOString(),
   };
 }

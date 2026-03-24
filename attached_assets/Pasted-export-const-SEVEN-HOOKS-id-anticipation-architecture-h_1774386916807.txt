@@ -1,0 +1,37 @@
+export const SEVEN_HOOKS = [
+  {
+    id: "anticipation_architecture",
+    hook: "Anticipation Architecture",
+    what_it_does: "Delay the payoff deliberately and structurally. The buildup is not the path to the product — it IS the product. Every almost-touch, every loaded pause, every moment of restrained desire is worth more than premature release. The listener should be held at the edge of want for as long as possible before anything is given. This is the difference between content consumed once and content replayed seventeen times."
+  },
+  {
+    id: "radical_second_person_immersion",
+    hook: "Radical Second Person Immersion",
+    what_it_does: "She is not reading about someone else's experience. She IS the experience. Every 'you' pulls her deeper into the story and makes it impossible to maintain observer distance. The listener doesn't watch desire happen — she feels it happening to her, in real time, right now. This is the most powerful tool in audio erotica and must never be broken."
+  },
+  {
+    id: "sensory_specificity",
+    hook: "Sensory Specificity",
+    what_it_does: "Not 'he touched her' — but exactly where, with exactly how much pressure, moving in exactly which direction, feeling like exactly what. Generic sensation produces no sensation. Specific sensation produces physical response. The difference between 'he kissed her' and the precise description of warmth, pressure, breath, and intention is the difference between a story someone finishes and a story someone cannot put down."
+  },
+  {
+    id: "emotional_truth",
+    hook: "Emotional Truth Beneath the Physical",
+    what_it_does: "Explicit content without emotional depth feels hollow after the first minute. The listener needs to feel that something real is at stake — that this encounter matters, that these two people have history or tension or unspoken truth between them. Physical desire layered over emotional complexity is exponentially more powerful than physical desire alone. She should feel something in her chest, not just her body."
+  },
+  {
+    id: "cliff_edge_ending",
+    hook: "The Cliff-Edge Ending",
+    what_it_does: "Every episode must end at the exact wrong moment — just before a peak, just after a revelation, or on a single line that opens a question that cannot go unanswered. Netflix built an empire on this. The story does not conclude — it suspends. The listener's need to know what happens next should feel almost physically uncomfortable. This is the mechanism that turns a single listen into a series addiction."
+  },
+  {
+    id: "his_desire_feels_specific",
+    hook: "His Desire Feels Specific To Her",
+    what_it_does: "The most powerful thing an erotic story can do is make the listener feel specifically, precisely, overwhelmingly wanted — not generically attractive but exactly herself, in this moment, desired for qualities that feel personal and real. He doesn't want a woman. He wants her. This distinction is everything. Generic desire produces generic response. Targeted, specific, almost uncomfortably precise desire produces obsession."
+  },
+  {
+    id: "she_discovers_herself",
+    hook: "She Discovers Something About Herself",
+    what_it_does: "The best stories leave the listener slightly changed. She should learn something about what she wants, what she's capable of feeling, what she didn't know she needed. This is what transforms a story from entertainment into an experience she has to process, return to, and share. Content that only titillates is forgotten. Content that reveals something true about desire — her desire — becomes part of how she understands herself."
+  }
+];

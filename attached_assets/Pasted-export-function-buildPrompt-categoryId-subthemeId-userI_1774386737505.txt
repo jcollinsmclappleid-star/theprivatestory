@@ -1,0 +1,128 @@
+export function buildPrompt(categoryId, subthemeId, userInput = null, options = {}) {
+  const category = STORY_CATEGORIES.find(c => c.id === categoryId);
+  if (!category) return null;
+
+  const subtheme = category.subthemes.find(s => s.id === subthemeId);
+  if (!subtheme) return null;
+
+  let storyPrompt = subtheme.prompt;
+  if (subtheme.is_custom && userInput) {
+    storyPrompt = storyPrompt.replace('[USER_INPUT]', userInput);
+  }
+
+  // Intensity modifier — scales explicit level
+  const intensityLayer = buildIntensityLayer(
+    options.intensity || subtheme.intensity
+  );
+
+  // Series layer — adds cliffhanger instruction if part of series
+  const seriesLayer = options.episodeNumber ? buildSeriesLayer(
+    options.episodeNumber, 
+    options.totalEpisodes, 
+    options.seriesArc
+  ) : '';
+
+  return {
+    system: `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}`,
+    user: `${storyPrompt}\n\n${intensityLayer}\n\n${seriesLayer}`,
+    metadata: {
+      category: category.name,
+      subtheme: subtheme.name,
+      mood: category.mood,
+      explicit_level: category.explicit_level,
+      duration_range: subtheme.duration_range,
+      intensity: subtheme.intensity,
+      tags: subtheme.tags
+    }
+  };
+}
+
+function buildIntensityLayer(intensity) {
+  const layers = {
+    1: `INTENSITY LEVEL — TENDER: 
+        Keep content romantic and emotionally charged. 
+        Physical content implied rather than explicit. 
+        Focus on longing, proximity, and almost-touch.`,
+
+    2: `INTENSITY LEVEL — WARM: 
+        Allow suggestive content with clear physical awareness. 
+        Kisses, touch, closeness — described with sensory detail. 
+        Leave the most explicit moments to imagination but don't shy from heat.`,
+
+    3: `INTENSITY LEVEL — HOT: 
+        Explicit emotional and physical content. 
+        Describe desire and physical response clearly and specifically. 
+        The story should feel genuinely arousing as well as emotionally engaging.`,
+
+    4: `INTENSITY LEVEL — EXPLICIT: 
+        Fully explicit adult content. 
+        Physical scenes described with literary precision and genuine heat. 
+        Do not fade to black — stay present through explicit moments. 
+        Emotional depth must match physical explicitness.`,
+
+    5: `INTENSITY LEVEL — MAXIMUM: 
+        Unapologetically explicit adult content. 
+        Every physical scene fully rendered with complete sensory and 
+        emotional presence. 
+        The story should be genuinely, powerfully arousing from 
+        first paragraph to last. 
+        No restraint — only literary quality and emotional truth as limits.`
+  };
+  return layers[intensity] || layers[3];
+}
+
+function buildSeriesLayer(episodeNum, totalEpisodes, seriesArc = '') {
+  return `
+SERIES POSITION: Episode ${episodeNum} of ${totalEpisodes}
+${seriesArc ? `SERIES ARC: ${seriesArc}` : ''}
+
+EPISODE REQUIREMENTS:
+- Open with a direct callback to something 
+  unresolved from the previous episode
+- This episode must shift the relationship dynamic 
+  in one specific, irreversible way
+- Introduce one new dimension of the male lead 
+  that recontextualises what came before
+- The explicit content in this episode should go 
+  one degree further than the previous episode
+- End on an unresolved moment — 
+  emotional, physical, or psychological
+- The final line must make the listener 
+  immediately need the next episode
+
+EPISODE ${episodeNum} SPECIFIC TENSION: 
+${getEpisodeTension(episodeNum, totalEpisodes)}
+  `;
+}
+
+function getEpisodeTension(n, total) {
+  const position = n / total;
+  if (position <= 0.2) return `
+    Establishment episode. 
+    Plant three unresolved threads. 
+    The attraction should feel inevitable but not yet acted on. 
+    End with the first moment something almost happens.`;
+  if (position <= 0.4) return `
+    Escalation episode. 
+    One thread from episode one pays off partially. 
+    Introduce a complication that makes the central desire 
+    more complicated. 
+    End with the first moment of genuine physical connection.`;
+  if (position <= 0.6) return `
+    Turning point episode. 
+    Something irrevocable happens. 
+    The relationship cannot go back to what it was. 
+    This is the most explicitly charged episode so far. 
+    End with an emotional revelation that reframes everything.`;
+  if (position <= 0.8) return `
+    Crisis episode. 
+    The central desire is both most fulfilled and most threatened. 
+    Maximum explicit content with maximum emotional stakes. 
+    End with genuine uncertainty about whether this continues.`;
+  return `
+    Resolution episode. 
+    Every thread pays off. 
+    The most explicit and emotionally complete episode of the series. 
+    End with satisfaction but leave one door open — 
+    the listener should want a sequel series.`;
+}

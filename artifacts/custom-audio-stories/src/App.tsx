@@ -15,26 +15,32 @@ import StoryDetail from "@/pages/StoryDetail";
 import Create from "@/pages/Create";
 import Gift from "@/pages/Gift";
 import Library from "@/pages/Library";
+import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
 function Router() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/browse" component={Browse} />
-        <Route path="/series" component={SeriesList} />
-        <Route path="/series/:id" component={SeriesDetail} />
-        <Route path="/search" component={Search} />
-        <Route path="/story/:id" component={StoryDetail} />
-        <Route path="/create" component={Create} />
-        <Route path="/gift" component={Gift} />
-        <Route path="/library" component={Library} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      <Route path="/admin" component={Admin} />
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/browse" component={Browse} />
+            <Route path="/series" component={SeriesList} />
+            <Route path="/series/:id" component={SeriesDetail} />
+            <Route path="/search" component={Search} />
+            <Route path="/story/:id" component={StoryDetail} />
+            <Route path="/create" component={Create} />
+            <Route path="/gift" component={Gift} />
+            <Route path="/library" component={Library} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 

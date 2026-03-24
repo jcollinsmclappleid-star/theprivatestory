@@ -1,0 +1,358 @@
+STORY VARIATION SYSTEM — PREVENT 70 STORIES FROM FEELING THE SAME
+
+IMPORTANT:
+Keep the 10–12 minute structure and sensual quality rules, BUT do NOT generate every story with the same emotional rhythm, opening style, pacing, setting type, dialogue density, or ending mood.
+
+The 6-part structure remains:
+1. Hook
+2. Setup
+3. Build-up / tension rise
+4. Main romantic / sensual scene
+5. Emotional payoff / connection
+6. Soft ending / last line
+
+However, every story must also generate a unique STORY DNA before writing.
+
+-----------------------------------
+STORY DNA FIELDS (REQUIRED)
+-----------------------------------
+
+Before writing the story, generate and lock these fields:
+
+category:
+subtheme:
+setting_type:
+setting_details:
+time_of_day:
+relationship_dynamic:
+power_dynamic:
+emotional_engine:
+tension_style:
+narrative_perspective:
+voice_style:
+pacing_style:
+dialogue_density:
+sensory_palette:
+romantic_arc:
+ending_mood:
+visual_motif:
+signature_object:
+
+-----------------------------------
+RULES FOR STORY DNA
+-----------------------------------
+
+1. category
+Choose from:
+- Roleplay Fantasy
+- Forbidden Desire
+- Late Night Encounters
+- Slow Burn Romance
+- Luxury Fantasy
+- Emotional Reunion
+- Dark Romance
+- What If Fantasy
+- First Time Energy
+- Cinematic Scenarios
+
+2. setting_type
+Vary heavily. Do not overuse bedrooms, hotels, or candles.
+Rotate across:
+- office at night
+- penthouse
+- rainy train station
+- black car in city rain
+- private balcony
+- beach house
+- airport lounge
+- hidden library
+- rooftop bar
+- art gallery after hours
+- candlelit restaurant
+- snowy cabin
+- luxury hotel corridor
+- backstage dressing room
+- private jet
+- garden party at night
+- elevator
+- late night kitchen
+- yacht deck
+- quiet hallway outside an event
+
+3. time_of_day
+Rotate between:
+- golden hour
+- dusk
+- midnight
+- early morning
+- rainy evening
+- stormy night
+- sunrise after no sleep
+
+4. relationship_dynamic
+Vary relationship energy:
+- strangers with instant chemistry
+- unresolved exes
+- old friends crossing a line
+- assistant and boss
+- bodyguard and client
+- celebrity and admirer
+- powerful woman and curious outsider
+- neighbors with hidden tension
+- long-distance lovers reunited
+- two people pretending not to want each other
+
+5. power_dynamic
+Vary the tension:
+- balanced chemistry
+- soft dominance
+- teasing control
+- mutual restraint
+- emotionally guarded
+- confident pursuit
+- forbidden pull
+- delayed surrender
+
+6. emotional_engine
+Each story must have a different emotional driver:
+- longing
+- temptation
+- jealousy
+- curiosity
+- reunion ache
+- emotional surrender
+- first-time nervousness
+- obsession held in restraint
+- comfort turning dangerous
+- playful temptation
+- regret and return
+- one-night intensity
+
+7. tension_style
+Choose one primary tension style:
+- verbal tension
+- proximity tension
+- forbidden tension
+- delayed confession
+- interrupted intimacy
+- roleplay tension
+- emotional vulnerability
+- nearly-missed connection
+- unresolved attraction
+- power reversal
+
+8. narrative_perspective
+Rotate between:
+- second person (“you”)
+- close third person
+- alternating close perspective
+Do not use the same perspective more than 3 stories in a row.
+
+9. voice_style
+Rotate tone:
+- soft and luxurious
+- intense and breathless
+- emotionally restrained
+- playful and teasing
+- dark and magnetic
+- warm and aching
+- elegant and slow
+
+10. pacing_style
+Choose one:
+- slow burn
+- immediate tension then slow build
+- emotionally heavy build
+- flirtation-heavy build
+- fast external action, slow intimate payoff
+- reunion build with delayed release
+
+11. dialogue_density
+Vary between:
+- minimal dialogue
+- moderate dialogue
+- dialogue-led chemistry
+Avoid using exactly the same style repeatedly.
+
+12. sensory_palette
+Each story must emphasize a different sensory identity:
+- rain and cold glass
+- silk and warm skin
+- candlelight and shadows
+- perfume and velvet
+- city lights and night air
+- salt air and bare feet
+- leather seats and low music
+- snow, wool, and warmth
+- marble, champagne, and quiet footsteps
+- coffee, morning light, and softness
+
+13. romantic_arc
+Choose the arc:
+- temptation to surrender
+- reunion to reconnection
+- emotional walls to softness
+- flirtation to intimacy
+- distance to closeness
+- denial to confession
+- power tension to vulnerability
+- ache to release
+
+14. ending_mood
+Rotate endings:
+- soft afterglow
+- promise of more
+- unresolved temptation
+- quiet possession
+- emotional relief
+- dangerous longing
+- tender safety
+- addictive uncertainty
+
+15. visual_motif
+Each story should have one recurring image motif:
+- rain on glass
+- a loosened tie
+- champagne on lips
+- a hand at the waist
+- city lights below
+- silk slipping from a shoulder
+- snow in hair
+- warm kitchen light
+- elevator mirror reflection
+- candle flame moving in the dark
+
+16. signature_object
+Give each story one memorable object:
+- train ticket
+- wine glass
+- hotel keycard
+- silk robe
+- leather gloves
+- lipstick mark
+- umbrella
+- cufflink
+- handwritten note
+- necklace clasp
+- boarding pass
+- record player
+- camera
+- scarf
+- book left behind
+
+-----------------------------------
+ANTI-REPETITION RULES
+-----------------------------------
+
+1. Do not reuse the same exact opening device in consecutive stories.
+Rotate hooks between:
+- held gaze
+- unexpected touch
+- a door closing
+- hearing their voice first
+- seeing them after time apart
+- being alone together unexpectedly
+- being interrupted then resumed
+- a confession nearly spoken
+- a tense invitation
+- a dangerous private moment
+
+2. Do not reuse the same setting more than 2 times in a batch of 20 stories.
+
+3. Do not reuse the same emotional_engine + setting_type + relationship_dynamic combination.
+
+4. Do not use the same signature phrases repeatedly.
+Avoid repeating lines like:
+- “the room seemed to narrow”
+- “a breath she didn’t realise she was holding”
+- “heat between them”
+- “lingering gaze”
+Any phrase used in one story should be varied or avoided in the next 5 stories.
+
+5. Do not make every story peak the same way.
+Vary the main sensual scene:
+- dialogue-heavy intensity
+- silence and body language
+- reunion closeness
+- roleplay power tension
+- emotional confession before intimacy
+- interrupted moment resumed later
+- public restraint / private release
+
+6. Do not make every ending soft and tender.
+Rotate endings so some feel:
+- warm
+- unresolved
+- dangerous
+- addictive
+- emotionally healing
+- quietly possessive
+
+-----------------------------------
+BATCH GENERATION RULES FOR 70 STORIES
+-----------------------------------
+
+When generating a batch of stories, maintain a story registry.
+
+For each story, store:
+- title
+- category
+- subtheme
+- setting_type
+- relationship_dynamic
+- emotional_engine
+- tension_style
+- narrative_perspective
+- pacing_style
+- ending_mood
+- visual_motif
+- signature_object
+
+Before writing a new story, compare against the registry and avoid repeating the same overall combination.
+
+Target diversity across every 10 stories:
+- at least 5 different settings
+- at least 4 different emotional engines
+- at least 3 different narrative perspectives / voice combinations
+- at least 4 different ending moods
+- at least 4 different relationship dynamics
+
+-----------------------------------
+WRITING RULE
+-----------------------------------
+
+Use the sensual story structure as the base, but let the STORY DNA determine:
+- how the hook feels
+- how quickly tension builds
+- what kind of chemistry dominates
+- what sensory details are emphasized
+- how the emotional payoff lands
+- what kind of ending lingers
+
+The result should feel like the same premium brand, but not the same story template repeated.
+
+-----------------------------------
+BRAND CONSISTENCY RULE
+-----------------------------------
+
+All stories should still feel:
+- premium
+- cinematic
+- sensual
+- emotionally immersive
+- tasteful
+- adult
+- replayable
+
+Do NOT make them feel identical.
+They should feel like different films inside the same universe.
+
+-----------------------------------
+SIMPLE IMPLEMENTATION RULE
+-----------------------------------
+
+For every story:
+1. Generate STORY DNA first
+2. Check against prior story registry
+3. Adjust if too similar
+4. Then write the 10–12 minute story using that DNA

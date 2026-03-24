@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -27,6 +28,11 @@ export const generatedStories = pgTable("generated_stories", {
   parentStoryId: text("parent_story_id"),
   recommendationTags: jsonb("recommendation_tags").notNull().default([]),
   qc: jsonb("qc"),
+  categoryId: text("category_id"),
+  subthemeId: text("subtheme_id"),
+  isLibraryStory: boolean("is_library_story").notNull().default(false),
+  status: text("status").notNull().default("published"),
+  storyDna: jsonb("story_dna"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -613,6 +613,77 @@ export default function Admin() {
         )}
       </div>
     </div>
+
+    {/* ── MODAL — Draft Detail View ────────────────────────────────────────── */}
+    {selectedDraftId && drafts.find(d => d.storyId === selectedDraftId) && (
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        {(() => {
+          const draft = drafts.find(d => d.storyId === selectedDraftId)!;
+          return (
+            <div className="bg-black border border-white/20 rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex-shrink-0">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-2xl mb-1">{draft.title}</h2>
+                    <p className="text-white/60 text-sm">{draft.description}</p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedDraftId(null)}
+                    className="text-white/50 hover:text-white text-2xl -mt-1 -mr-2 flex-shrink-0"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {/* Story Text */}
+              <ScrollArea className="flex-1 overflow-hidden">
+                <div className="p-6">
+                  {draft.scenes && draft.scenes[0]?.text ? (
+                    <div className="prose prose-invert max-w-none">
+                      <div className="text-white/80 leading-relaxed whitespace-pre-wrap text-base font-light">
+                        {draft.scenes[0].text}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-white/40 text-center py-8">Story text not available</div>
+                  )}
+                </div>
+              </ScrollArea>
+
+              {/* Actions Footer */}
+              <div className="px-6 py-4 border-t border-white/10 bg-white/5 flex-shrink-0 flex gap-3">
+                <button
+                  onClick={() => {
+                    updateDraftStatus(draft.storyId, "published");
+                    setSelectedDraftId(null);
+                  }}
+                  className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-3 rounded-lg font-medium transition"
+                >
+                  ✓ Publish
+                </button>
+                <button
+                  onClick={() => {
+                    updateDraftStatus(draft.storyId, "skipped");
+                    setSelectedDraftId(null);
+                  }}
+                  className="flex-1 bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 text-sm py-3 rounded-lg font-medium transition"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => setSelectedDraftId(null)}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-sm py-3 rounded-lg font-medium transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+    )}
   );
 }
 

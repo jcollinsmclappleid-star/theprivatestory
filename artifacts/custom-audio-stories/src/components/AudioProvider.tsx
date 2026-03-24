@@ -95,6 +95,22 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isPlaying, currentStory]);
 
+  // Attempt to start ambient audio (called both on mode change and on user gesture)
+  const tryStartAmbient = () => {
+    const el = ambientRef.current;
+    if (!el || ambientStartedRef.current) return;
+    const src = el.getAttribute("data-src");
+    if (!src) return;
+    if (!el.src || !el.src.endsWith(src)) {
+      el.src = src;
+      el.loop = true;
+      el.volume = useAudioPlayer.getState().ambientVolume;
+    }
+    el.play()
+      .then(() => { ambientStartedRef.current = true; })
+      .catch(() => { ambientStartedRef.current = false; });
+  };
+
   // Ambient audio control — loops INDEPENDENTLY of narration
   // Ambient plays whenever an ambientMode is selected, regardless of narration state.
   // It only stops if the user removes ambient mode entirely.
@@ -105,17 +121,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const option = AMBIENT_OPTIONS.find((o) => o.id === ambientMode);
 
     if (!option) {
-      // No ambient selected — stop and clear
       el.pause();
       el.removeAttribute("src");
+      el.removeAttribute("data-src");
       el.load();
       ambientStartedRef.current = false;
       return;
     }
 
     const newUrl = option.url;
+    el.setAttribute("data-src", newUrl);
 
-    if (el.src !== newUrl) {
+    if (!el.src || !el.src.endsWith(newUrl)) {
       el.src = newUrl;
       el.loop = true;
       el.volume = ambientVolume;
@@ -123,16 +140,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       ambientStartedRef.current = false;
     }
 
-    // Play immediately (ambient loops regardless of narration state)
-    if (!ambientStartedRef.current) {
-      el.play()
-        .then(() => { ambientStartedRef.current = true; })
-        .catch(() => {
-          // Autoplay may be blocked; will retry on next user gesture
-          ambientStartedRef.current = false;
-        });
-    }
+    tryStartAmbient();
   }, [ambientMode]);
+
+  // Retry ambient start on narration play/pause (user gesture unblocks autoplay)
+  useEffect(() => {
+    if (isPlaying && !ambientStartedRef.current) {
+      tryStartAmbient();
+    }
+  }, [isPlaying]);
 
   // Ambient volume sync (independent effect so it doesn't restart the track)
   useEffect(() => {

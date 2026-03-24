@@ -85,8 +85,8 @@ function Footer() {
               {link.label}
             </Link>
           ))}
-          <span className="hover:text-primary cursor-pointer transition-colors">Privacy</span>
-          <span className="hover:text-primary cursor-pointer transition-colors">Terms</span>
+          <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
         </div>
         <p className="text-xs text-muted-foreground/50">Designed for private, immersive listening.</p>
       </div>

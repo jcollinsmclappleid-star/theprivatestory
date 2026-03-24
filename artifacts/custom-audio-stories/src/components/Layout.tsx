@@ -18,10 +18,10 @@ function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-36 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-72 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center">
-            <Logo height={136} />
+            <Logo height={272} />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
@@ -140,7 +140,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <AuthModal />
       <Navbar />
-      <main className="pt-36 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-72 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

@@ -27,6 +27,7 @@ interface GeneratedDraft {
   subthemeId: string;
   dna: Record<string, string>;
   status: "draft" | "published" | "skipped";
+  scenes?: Array<{ id: number; text: string; heading: string }>;
 }
 
 interface GenerationLog {
@@ -562,6 +563,18 @@ export default function Admin() {
                       </div>
                       <ScrollArea className="flex-1">
                         <div className="p-6 space-y-6">
+                          {/* Full story text */}
+                          {draft.scenes && draft.scenes[0]?.text && (
+                            <div>
+                              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3 sticky top-0 bg-black/50 py-2">Full Story</h3>
+                              <div className="prose prose-invert max-w-none">
+                                <div className="text-white/80 leading-relaxed whitespace-pre-wrap text-sm font-light">
+                                  {draft.scenes[0].text}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Story DNA */}
                           {Object.keys(draft.dna).length > 0 && (
                             <div>
@@ -578,14 +591,6 @@ export default function Admin() {
                               </div>
                             </div>
                           )}
-                          
-                          {/* Full story text note */}
-                          <div className="bg-white/10 border border-white/20 rounded-lg p-4">
-                            <div className="text-xs font-semibold text-white/60 mb-2">Full Story Text</div>
-                            <div className="text-xs text-white/50">
-                              The complete story text is being prepared. Check the audio preview to hear the full narration, or click Publish to add this story to the library.
-                            </div>
-                          </div>
                         </div>
                       </ScrollArea>
                     </>

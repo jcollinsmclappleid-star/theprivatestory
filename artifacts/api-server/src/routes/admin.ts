@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { storiesStore } from "../lib/storage.js";
 import { buildPrompt, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getNonCustomSubthemes, STORY_CATEGORIES } from "../lib/storyCategories.js";
-import { getStoryName, getStoryDescription } from "../lib/storyNames.js";
+import { getStoryName } from "../lib/storyNames.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
@@ -132,10 +132,17 @@ router.post("/generate-one", async (req, res) => {
       return;
     }
 
+    // Look up title BEFORE generation so GPT writes a story that earns it
+    const categoryName = STORY_CATEGORIES.find(c => c.id === categoryId)?.name ?? prompt.metadata.category;
+    const title = getStoryName(categoryId, subthemeId, categoryName);
+
+    // Inject title into system prompt so the story is written to match it
+    const systemWithTitle = `${prompt.system}\n\nSTORY TITLE: "${title}"\nYou are writing a story with this exact title. Every scene, character choice, and emotional beat must earn this title. The story should feel like it could only ever have this name.`;
+
     send("status", {
       phase: "prompt_ready",
       storyId,
-      system_prompt: prompt.system,
+      system_prompt: systemWithTitle,
       user_prompt: prompt.user,
       metadata: prompt.metadata,
     });
@@ -148,7 +155,7 @@ router.post("/generate-one", async (req, res) => {
       temperature: 0.9,
       max_tokens: 4000,
       messages: [
-        { role: "system", content: prompt.system },
+        { role: "system", content: systemWithTitle },
         { role: "user", content: prompt.user },
       ],
     });
@@ -166,12 +173,19 @@ router.post("/generate-one", async (req, res) => {
       }
     }
 
-    // Use predefined story name and description
-    const categoryName = STORY_CATEGORIES.find(c => c.id === categoryId)?.name ?? prompt.metadata.category;
-    const title = getStoryName(categoryId, subthemeId, categoryName);
-    const description = getStoryDescription(categoryName, subthemeId);
+    // Extract [HOOK]...[/HOOK] — becomes the description listeners see before pressing play
+    let description = "";
+    const hookMatch = rawStoryText.match(/\[HOOK\]([\s\S]*?)\[\/HOOK\]/i);
+    if (hookMatch) {
+      description = hookMatch[1].trim();
+    }
 
-    send("status", { phase: "story_written", title, dna: storyDna });
+    // Strip the [HOOK] block from the story text used for TTS and read-along
+    const cleanStoryText = rawStoryText
+      .replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/i, "")
+      .trim();
+
+    send("status", { phase: "story_written", title, description, dna: storyDna });
 
     // ── Step 2: Cover image ───────────────────────────────────────────────
     send("status", { phase: "generating_cover", message: "Generating cover image…" });
@@ -209,7 +223,7 @@ router.post("/generate-one", async (req, res) => {
 
     let audioUrl = "";
     try {
-      const audioText = rawStoryText
+      const audioText = cleanStoryText
         .replace(/\{[\s\S]*?\}/g, "")
         .replace(/^#{1,6}.*/gm, "")
         .replace(/\*+/g, "")
@@ -247,7 +261,7 @@ router.post("/generate-one", async (req, res) => {
         {
           id: 1,
           heading: title,
-          text: rawStoryText,
+          text: cleanStoryText,
           visualPrompt: "",
           durationEstimate: 0,
         },

@@ -179,4 +179,19 @@ what sensory details are emphasised, how the emotional payoff lands, and what en
 
 All stories must feel: premium | cinematic | sensual | emotionally immersive | adult | replayable
 They should feel like different films inside the same universe — not the same story template repeated.
+
+AFTER THE STORY — WRITE THE HOOK BLOCK
+
+After the final sentence of the story, output exactly this block:
+
+[HOOK]
+Write 2–3 short, punchy sentences that a listener would read before pressing play.
+Rules:
+- Second person ("you", "he") — always
+- Body-forward and specific — name the touch, the heat, the act
+- Create physical anticipation, not vague intrigue
+- Never summarise what happens — make her feel what's coming
+- Match the tone of the specific story you just wrote
+Example: "He locks the door before you've said a word. His hand finds the back of your neck and he tilts your face up to his. You both know exactly why you stayed late."
+[/HOOK]
 `;

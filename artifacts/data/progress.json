@@ -6,5 +6,13 @@
       "updatedAt": "2026-03-24T04:03:12.381Z",
       "storyId": "story-1"
     }
+  },
+  "guest-61839211-768c-4136-99d7-2df12b0e749d": {
+    "s1": {
+      "audioProgressSeconds": 27,
+      "sceneIndex": 0,
+      "updatedAt": "2026-03-24T09:22:59.928Z",
+      "storyId": "s1"
+    }
   }
 }

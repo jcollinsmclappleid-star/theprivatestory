@@ -56,14 +56,18 @@ export default function Admin() {
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? "";
+  const [accessDenied, setAccessDenied] = useState(false);
 
   // ── Load categories ────────────────────────────────────────────────────────
   useEffect(() => {
     if (!user) return;
     fetch(`${API_BASE}/api/admin/categories`, { credentials: "include" })
-      .then((r) => r.json())
+      .then((r) => {
+        if (r.status === 403) { setAccessDenied(true); return null; }
+        return r.json();
+      })
       .then((data) => {
+        if (!data) return;
         const items: SubthemeItem[] = data.items ?? [];
         setSubthemes(items);
         setQueue(items.map((item) => ({ item, status: "pending", logs: [] })));
@@ -220,6 +224,16 @@ export default function Admin() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-white/60 text-sm">Sign in to access admin.</div>
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+        <div className="text-white/80 text-sm font-medium">Access denied.</div>
+        <div className="text-white/40 text-xs">This page is for admin accounts only.</div>
+        <div className="text-white/30 text-xs font-mono">{user.email}</div>
       </div>
     );
   }

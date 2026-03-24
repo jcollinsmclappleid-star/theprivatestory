@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Gift, Home, Library, BookOpen } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -20,11 +20,15 @@ function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? "";
+  const isAdmin = !!user && !!adminEmail && user.email?.toLowerCase() === adminEmail.toLowerCase();
+
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Series", href: "/series", icon: <Library className="w-4 h-4" /> },
     { label: "My Library", href: "/library", icon: <BookOpen className="w-4 h-4" /> },
+    ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
   return (

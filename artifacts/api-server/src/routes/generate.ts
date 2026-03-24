@@ -131,13 +131,13 @@ const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
 // ---------------------------------------------------------------------------
 
 function getPublicImagesDir(): string {
-  const dir = path.resolve(__dirname, "../../public/images");
+  const dir = path.resolve(__dirname, "../public/images");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
 
 function getPublicAudioDir(): string {
-  const dir = path.resolve(__dirname, "../../public/audio");
+  const dir = path.resolve(__dirname, "../public/audio");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   return dir;
 }

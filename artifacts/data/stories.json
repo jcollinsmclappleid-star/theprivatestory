@@ -1,0 +1,548 @@
+{
+  "063c7d154c5b10313a4b32572a84891f": {
+    "id": "063c7d154c5b10313a4b32572a84891f",
+    "title": "A Weather Between Us",
+    "description": "A stolen weekend by the sea draws two former lovers into a tender and complicated pull they can’t quite escape.",
+    "mood": "Tender",
+    "audioUrl": "",
+    "duration": "5 min",
+    "brief": {
+      "emotional_arc": "uncertainty → closeness → unresolved pull",
+      "relationship_dynamic": "former lovers crossing paths again",
+      "conflict_type": "wrong timing, right connection",
+      "pacing_style": "slow build with magnetic undertones",
+      "ending_type": "bittersweet — something gained, something left behind",
+      "sensory_palette": [
+        "rain against glass",
+        "warm candlelight",
+        "the muted roar of distant waves"
+      ],
+      "point_of_view": "second person",
+      "voice_tone": "magnetic, tender, intimately cinematic",
+      "scene_count": 5,
+      "scene_plan": [
+        {
+          "scene_number": 1,
+          "goal": "establish atmosphere and introduce the stolen weekend context",
+          "emotional_shift": "uncertainty begins to simmer",
+          "visual_focus": "storm clouds rolling in over the sea, a small cottage with lit windows"
+        },
+        {
+          "scene_number": 2,
+          "goal": "surface mutual hesitation and buried connection",
+          "emotional_shift": "tentative warmth emerges",
+          "visual_focus": "the soft glow of kitchen lights, steam rising from tea cups"
+        },
+        {
+          "scene_number": 3,
+          "goal": "heighten intimacy and shared vulnerability during a quiet moment",
+          "emotional_shift": "closeness grows undeniable",
+          "visual_focus": "rain streaks on windows, the flicker of candles casting shadows"
+        },
+        {
+          "scene_number": 4,
+          "goal": "explore the tangled emotions of why they shouldn't be here",
+          "emotional_shift": "a magnetic ache takes hold",
+          "visual_focus": "firelight reflecting on faces, damp jackets hanging in the room"
+        },
+        {
+          "scene_number": 5,
+          "goal": "leave the story with a tender but unresolved moment between them",
+          "emotional_shift": "a bittersweet pull — something gained but the future unclear",
+          "visual_focus": "the sound of waves retreating, one person glancing out the window while the other lingers"
+        }
+      ],
+      "recurring_motif": "the pull of forbidden moments amidst fleeting escapes",
+      "title_direction": "lyrical, evocative, with an edge of longing",
+      "image_style_direction": "cinematic adult animation, muted coastal tones, warm painterly textures, with lingering shadow and light interplay",
+      "recommendation_tags": [
+        "Coastal Retreat",
+        "Magnetic Tension",
+        "Bittersweet Connection",
+        "Rain-soaked Intimacy"
+      ],
+      "quality_target": "A story that feels like holding someone's gaze just a moment too long in a twilight space that you were never supposed to share."
+    },
+    "scenes": [
+      {
+        "id": 1,
+        "heading": "Storm on the Horizon",
+        "text": "The sea is restless tonight, its muted roar humming through the air, pressing against the edges of thought. You’ve just arrived. The cottage isn’t large, but its windows gleam softly, lantern-like, as the storm rolls in behind you. Clouds bruise the sky, heavy and low. Around you, the landscape folds into itself—wild grasses shiver in the wind, slick stones shine in the damp, and somewhere, just beyond the visible, the tide twists. You hesitate at the door, hand hovering above the latch. This place was meant to be an escape. A reprieve. But as the rain begins to fall, pattering against your coat, you can’t ignore the hum of nerves beneath your skin. She is here. Waiting inside. And as you step through, there’s a warmth that greets you… the kind that tugs at memories, unbidden. Maybe this was a mistake. Maybe it wasn’t. For just a moment, you linger in the threshold, caught between the storm outside and the uncertainty within.",
+        "visualPrompt": "The restless sea churns under a storm-dimmed twilight, muted coastal tones blending sky and water into a seamless gradient of uncertainty. A figure stands just inside the shelter of an old, weathered porch, the edge of their silhouette illuminated faintly by the reflection of distant lightning. Rain falls steadily, soft in its painterly texture, dripping from the edges of the roof as the muted roar of the waves hums in the air. Shadow and light interplay subtly across the wooden slats, framing the figure lost in thought, their expression cloaked in half-light.",
+        "durationEstimate": 60,
+        "emotionalShift": "curiosity gives way to something harder to name",
+        "image": "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-0.png"
+      },
+      {
+        "id": 2,
+        "heading": "Unspoken Accord",
+        "text": "She’s in the kitchen when you find her, sleeves rolled up, fingertips brushing the rim of a tea cup. Steam rises in quiet spirals, curling toward the muted light above. You don’t speak right away, letting the moment hang in the air like the scent of steeping herbs—soft, delicate, unfinished. The last time you saw her, there wasn’t time for small things like this. For the whispered intimacy of a shared silence. And yet here you are. Her glance flicks toward you, quick and guarded, her eyes catching the light like dark water touched by the moon. You murmur something—an awkward greeting—but her response is a smile, small and careful, like a truce. The waves outside recede and return, steady as breathing, and already, the hesitation between you feels different. Calmer. Warmer. Fragile, but real. You’re not sure how to hold it yet, so you don’t. Not exactly. Instead, you settle into the quiet… letting the shape of it draw itself.",
+        "visualPrompt": "In the warmth of a simple kitchen, soft candlelight casts flickering shadows across the muted coastal palette of the room. A woman stands by the counter, her sleeves rolled up, her back straight yet relaxed. Her fingertips graze the rim of a steaming teacup, the gentle curl of vapor rising like an ethereal thread. The rain’s muted patter against a nearby window amplifies the intimate quiet. Light touches her profile with painterly warmth, while soft shadows pool gently in the corners, evoking the heavy stillness of unspoken words and shared history.",
+        "durationEstimate": 65,
+        "emotionalShift": "tentative warmth emerges",
+        "image": "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-1.png"
+      },
+      {
+        "id": 3,
+        "heading": "The Rain Between Words",
+        "text": "Later, you sit across from her in the living room. The rain has gathered strength, drumming against the windows in long, streaking currents, while candlelight flickers between you. There are shadows on her face—soft-edged and shifting—like something held back just under the surface. “I didn’t think you’d come,” she says, and her voice catches briefly on the edge of the admission. You could tell her why you did. How impossible it felt, staying away. But the words sit heavy in your chest, unformed. Instead, you let the sound of the rain fill the space between you, drawing closer in quiet. It’s almost unbearable, the tenderness spilling in these stolen moments. Her laugh carries a bitter edge when she tells you, “It’s strange being here with you.” Strange, yes. But also magnetic, undeniable. You study her as she leans forward, the light catching her wrists, the curve of her collarbone... and you wonder what it means to want something you shouldn’t. Or someone.",
+        "visualPrompt": "The living room is bathed in softened hues of flickering candlelight and the muted gray tones of rain-heavy dusk. The sound of rain drumming against the glass takes subtle precedence, layering the space with quiet intensity. Two figures sit across from each other, their body language open yet cautious, a low table between them. Warm painterly textures soften the edges of the moment, while lingering shadows curve along the contours of the room. Steam rises faintly from untouched mugs, the distance and the tension between them alive within the play of light and shadow.",
+        "durationEstimate": 75,
+        "emotionalShift": "closeness grows undeniable",
+        "image": "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-2.png"
+      },
+      {
+        "id": 4,
+        "heading": "Harder Truths",
+        "text": "The fire crackles in the hearth, its light spilling across the room in warm, restless flickers. Her voice softens as she speaks, lower now, more hesitant, the space around her words framed by pauses that feel deliberate. You don’t mean to ask the question, but it slips out anyway: “Why now?” Her look shifts, like something fragile breaking under your gaze. The frayed edge of time hangs between you, thick and unyielding. “Because it’s easier to miss you when you’re not here,” she answers, her tone quiet but anchored by something heavier, sharper. You understand it—too well, perhaps. The weight of the wrongness, the timing, the tangled reasons why leaving her behind should’ve been final. The damp jackets hang by the door, untouched, as though no one intends to leave… at least, not yet. And still, the ache stirs deep inside, unrelenting. You catch her eyes in the shifting firelight, but neither of you moves. Close enough to touch. To break. But you don’t.",
+        "visualPrompt": "The hearth glows with a restless energy, casting the room in warm, flickering light. One figure sits forward on the edge of a chair, her hands gesturing ever so slightly as her voice softens, the weight of her words forming shapes in the firelit shadows. Across the room, the second figure leans back, half in shadow, their gaze steady yet softened, listening intently. The room is rendered in deep, muted coastal tones, textured by painterly strokes of light and shadow that anchor the emotional gravity. The shared honesty fills the space like the warmth of the fire.",
+        "durationEstimate": 80,
+        "emotionalShift": "a magnetic ache takes hold",
+        "image": "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-3.png"
+      },
+      {
+        "id": 5,
+        "heading": "The Sound of Departure",
+        "text": "Morning comes slowly, the air pale and heavy with sea fog. You stand by the window, watching the waves fold onto the shore, their retreat steady and unhurried. The room behind you feels hollow now, like an echo of something delicate that couldn’t hold. She hasn’t left yet; you can sense her presence, lingering in the softness of the space. This isn’t how it ends—not definitively. But nothing here survives clarity. You glance back, catching her as she ties her scarf, her movements careful, almost ceremonial. There’s a pull in this fragile goodbye, an ache that threads through the stolen hours you shared. Her eyes meet yours one last time, and the look they give steals something from you… and offers something else in return. Something wordless, bittersweet. The waves withdraw again outside. She pauses at the door as though expecting you to stop her. But you don’t. Not this time. Instead, you let her go, carrying the moment with her.",
+        "visualPrompt": "In the pale morning light, sea fog blankets the coastline, folding endlessly into itself. A figure stands by the window, their silhouette caught between the soft shadow of the room and the faint outside light filtering through the glass. The muted hues of the ocean beyond ripple faintly, their movement unseen but deeply felt. The room carries the lingering warmth of the fire from the night before, though the air now trembles with a chill of departure. Warm painterly textures and careful interplay of light and shadow create an atmosphere where parting feels both inevitable and unresolved.",
+        "durationEstimate": 70,
+        "emotionalShift": "a bittersweet pull — something gained but the future unclear",
+        "image": "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-4.png"
+      }
+    ],
+    "images": {
+      "cover": "/api/images/cover-2898cc980d4c7dc8e7b1c2fa00e2e9cc.png",
+      "scenes": [
+        "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-0.png",
+        "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-1.png",
+        "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-2.png",
+        "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-3.png",
+        "/api/images/scene-2898cc980d4c7dc8e7b1c2fa00e2e9cc-4.png"
+      ]
+    },
+    "qc": {
+      "passed": true,
+      "score_total": 8.2,
+      "sub_scores": {
+        "emotional_depth": 8,
+        "specificity": 8,
+        "pacing": 8,
+        "scene_progression": 8,
+        "originality": 7,
+        "sensory_detail": 9,
+        "ending_strength": 8
+      },
+      "issues": [],
+      "rewrite_strategy": null
+    },
+    "recommendation_tags": [
+      "Coastal Retreat",
+      "Magnetic Tension",
+      "Bittersweet Connection",
+      "Rain-soaked Intimacy"
+    ],
+    "cached": false
+  },
+  "063c7d154c5b10313a4b32572a84891f-cont-raise_stakes-1774327300888": {
+    "id": "063c7d154c5b10313a4b32572a84891f-cont-raise_stakes-1774327300888",
+    "title": "An Echo, Somewhere Soft",
+    "description": "The pull between you sharpens—fragile and magnetic—until something inside cracks irreversibly.",
+    "mood": "Tender",
+    "audioUrl": "",
+    "duration": "5 min",
+    "brief": {
+      "emotional_arc": "uncertainty → closeness → unresolved pull",
+      "relationship_dynamic": "former lovers crossing paths again",
+      "conflict_type": "wrong timing, right connection",
+      "pacing_style": "slow build with magnetic undertones",
+      "ending_type": "bittersweet — something gained, something left behind",
+      "sensory_palette": [
+        "rain against glass",
+        "warm candlelight",
+        "the muted roar of distant waves"
+      ],
+      "point_of_view": "second person",
+      "voice_tone": "magnetic, tender, intimately cinematic",
+      "scene_count": 5,
+      "scene_plan": [
+        {
+          "scene_number": 1,
+          "goal": "establish atmosphere and introduce the stolen weekend context",
+          "emotional_shift": "uncertainty begins to simmer",
+          "visual_focus": "storm clouds rolling in over the sea, a small cottage with lit windows"
+        },
+        {
+          "scene_number": 2,
+          "goal": "surface mutual hesitation and buried connection",
+          "emotional_shift": "tentative warmth emerges",
+          "visual_focus": "the soft glow of kitchen lights, steam rising from tea cups"
+        },
+        {
+          "scene_number": 3,
+          "goal": "heighten intimacy and shared vulnerability during a quiet moment",
+          "emotional_shift": "closeness grows undeniable",
+          "visual_focus": "rain streaks on windows, the flicker of candles casting shadows"
+        },
+        {
+          "scene_number": 4,
+          "goal": "explore the tangled emotions of why they shouldn't be here",
+          "emotional_shift": "a magnetic ache takes hold",
+          "visual_focus": "firelight reflecting on faces, damp jackets hanging in the room"
+        },
+        {
+          "scene_number": 5,
+          "goal": "leave the story with a tender but unresolved moment between them",
+          "emotional_shift": "a bittersweet pull — something gained but the future unclear",
+          "visual_focus": "the sound of waves retreating, one person glancing out the window while the other lingers"
+        }
+      ],
+      "recurring_motif": "the pull of forbidden moments amidst fleeting escapes",
+      "title_direction": "lyrical, evocative, with an edge of longing",
+      "image_style_direction": "cinematic adult animation, muted coastal tones, warm painterly textures, with lingering shadow and light interplay",
+      "recommendation_tags": [
+        "Coastal Retreat",
+        "Magnetic Tension",
+        "Bittersweet Connection",
+        "Rain-soaked Intimacy"
+      ],
+      "quality_target": "A story that feels like holding someone's gaze just a moment too long in a twilight space that you were never supposed to share."
+    },
+    "scenes": [
+      {
+        "id": 1,
+        "heading": "Between Absences",
+        "text": "The cottage seems quieter now, impossibly so, as though her presence lingers just beneath the surface of things. It’s been days since her departure, and yet the air holds her—her voice, her movement, the taste of something unspoken. Outside, the waves flash silver against the horizon, restless under a bruised sky that carries the salt of distant rain. You pace without direction, drawn toward the door but unable to cross its threshold. There’s something unfinished, gnawing at the edges of thought, of feeling. You shouldn’t still be here. The solitude cuts deeper than it should, the wrongness of it. But then, even stillness finds ways to ache, doesn’t it? Something shifts in the room—a knock? No, the faint sound of footsteps outside, muted against the wind. You freeze, hand gripping the empty ceramic mug beside you. This moment hums like a wire under tension, sharp and uncertain, as you move toward the window. Could it be? Would she return?",
+        "visualPrompt": "Cinematic animated illustration of a dimly lit coastal cottage interior, a chair slightly askew beside a rain-flecked window. The muted daylight filters through the gray storm clouds, adding a soft glow to the worn wooden floorboards. A single book rests open on the table, as though someone left in haste, and the objects around the room carry the subtle weight of absence. Shadows and light interplay delicately, all in toned-down coastal hues of foggy gray, pale beige, and faint candlelight warmth.",
+        "durationEstimate": 60,
+        "emotionalShift": "hollow → uncertain pull",
+        "image": "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-0.png"
+      },
+      {
+        "id": 2,
+        "heading": "A Fragile Collision",
+        "text": "You open the door, rain streaking the air, and there she is—her scarf tangled, damp hair tucked behind her ears, breath rising in faint clouds. Her eyes find yours immediately, and the weight of your shared past presses into the silence. You don’t ask why. Not yet. The air between you vibrates with unfinished sentences, questions neither of you can afford to ask. She steps inside, her movements hesitant in a way that feels disparate from the storm curling behind her. “I didn’t mean to…” her voice falters. But you already know this wasn’t planned—not deliberately. You could turn her away, force the moment into something fleeting once again. Instead, you guide her toward the fire, the ache building sharp and raw where closeness burns. While the rain thrashes against the glass, you fight the instinct to reach for her, to break the fragile distance that stretches between your bodies. You stay still. Too still. Even as it unravels.",
+        "visualPrompt": "Cinematic animated illustration of a doorway being opened during a rainstorm, revealing her standing there, scarf slightly windblown and damp, hair loosely tucked behind her ears. The rain behind her forms a misty veil against the muted tones of the coastal background. Warm golden light spills outward from the interior of the cottage, contrasting with the stormy grays and deep teals outside. The scene captures the charged intimacy of a hesitant reunion, with painterly textures enhancing the raindrops and warm shadows.",
+        "durationEstimate": 75,
+        "emotionalShift": "hesitant → magnetic, charged",
+        "image": "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-1.png"
+      },
+      {
+        "id": 3,
+        "heading": "The Edge of This",
+        "text": "By the firelight, her presence reshapes the room. The crackling shadows twist across her face, catching the desperate glint in her gaze—the kind you saw once before, long ago. “I stayed too long last time,” she murmurs, her tone broken. There’s no accusation, only the smallest thread of regret, trembling between her words. You want to say something—anything—but your response catches like rain trapped in an old window frame, unable to fall. Her hand brushes the back of the armchair, fingers curling like she’s trying to hold herself steady. You murmur back, “And yet you came.” It’s too easy for her to falter under this truth. Her body shifts in your direction, the weight of your connection pulling taut, painful. You don’t remember moving closer, but suddenly you feel the heat of her—the line of her almost touching your own. Her breathing fills the fragile space just before collision. Light breaks differently across her cheek, but you still don’t touch her.",
+        "visualPrompt": "Cinematic animated illustration of a fireside moment in the cottage. The crackling firelight casts warm, flickering shadows across the room, illuminating her face as she sits down, her expression caught between vulnerability and resolve. The muted oranges of the firelight interplay beautifully with the deep coastal blues and soft grays of the cottage’s textures, capturing an atmosphere of intimacy. The painterly effect enhances the depth and warmth, the fire a symbolic contrast to the unresolved emotions in the scene.",
+        "durationEstimate": 90,
+        "emotionalShift": "tense → unbearable restraint",
+        "image": "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-2.png"
+      },
+      {
+        "id": 4,
+        "heading": "Where Ruin Begins",
+        "text": "She stills, her voice trembling when she finally speaks. “We’re only hurting ourselves by this. By wanting...” It cracks something sharp inside you—not enough to break, but enough to sting against the existence of restraint. The admission isn’t new; you both knew what this was from the beginning. But hearing it aloud binds you tighter, locking you deeper into the pull of inevitability. You reach for her, allowing your fingers to brush hers—delicate and trembling—but that moment alone feels irreversible. There’s warmth there, a memory that rushes into the space like wildfire. The storm outside grumbles low against the land as she presses her forehead to yours, her breath shallow. Every break inside her pulls against your own, and still, the two of you sit tangled in silence, forbidden yet undeniable. You should stop now. You won’t. “Tell me you didn’t mean to,” you whisper, but something in her gaze betrays even the possibility of a lie.",
+        "visualPrompt": "Cinematic animated illustration of a tense, emotionally charged moment in the dimly lit cottage. She stands still, her face partially in shadow, the tension visible in the slope of her shoulders. The rain outside has faded to a faint patter against the window, while the warm glow of the candlelight emphasizes the uneven details of her trembling hand resting on the table. Hues of muted coastal midnight blues, shadowy grays, and soft golds enhance the emotional pull of the scene, with painterly textures giving it a raw, intimate quality.",
+        "durationEstimate": 90,
+        "emotionalShift": "raw → unstoppable",
+        "image": "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-3.png"
+      },
+      {
+        "id": 5,
+        "heading": "Ashes at Dawn",
+        "text": "The storm has exhausted itself by morning, leaving fog and damp calm in its wake. You wake early, but you don’t feel awake—not really. She’s there, seated by the window, her gaze fixed on the horizon where waves lap at the shore. Her scarf is draped across the chair, forgotten, like something left behind intentionally. You step closer, the floor creaking faintly underfoot, as though trying not to disturb the fragile stillness she’s built around herself. “I shouldn’t stay this time,” she says without looking at you. The inevitability of her words rings hollow now—a truth you’ve already lived too many times to escape. She stands slowly, her shadow stretching long against the wall, and your breath stumbles when her fingertips linger on the doorframe. The goodbye is already there before she speaks again. You say nothing, only step toward her, wanting, unthinking—but you stop inches too far. Something shatters in the space left behind.",
+        "visualPrompt": "Cinematic animated illustration of early dawn breaking over the quiet coastline, a soft fog rolling in from the sea. Outside the cottage window, the earth is damp, and the storm’s remnants linger in muted blues and grays. Through the window, hints of a bedroom’s soft warm interior light suggest a morning stirred but unfulfilled. The textured interplay of lingering fog, pale morning light, and the quiet hum of unresolved emotions make the scene both tender and introspective, embodying the title's bittersweet resonance.",
+        "durationEstimate": 75,
+        "emotionalShift": "aching → irrevocable loss",
+        "image": "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-4.png"
+      }
+    ],
+    "images": {
+      "cover": "/api/images/cover-bea70ea5b3fcfb47f5c350c28b0a74d7.png",
+      "scenes": [
+        "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-0.png",
+        "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-1.png",
+        "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-2.png",
+        "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-3.png",
+        "/api/images/scene-bea70ea5b3fcfb47f5c350c28b0a74d7-4.png"
+      ]
+    },
+    "qc": {
+      "passed": true,
+      "score_total": 8.2,
+      "sub_scores": {
+        "emotional_depth": 8,
+        "specificity": 8,
+        "pacing": 8,
+        "scene_progression": 8,
+        "originality": 7,
+        "sensory_detail": 9,
+        "ending_strength": 8
+      },
+      "issues": [],
+      "rewrite_strategy": null
+    },
+    "recommendation_tags": [
+      "Coastal Retreat",
+      "Magnetic Tension",
+      "Bittersweet Connection",
+      "Rain-soaked Intimacy"
+    ],
+    "cached": false,
+    "parent_story_id": "063c7d154c5b10313a4b32572a84891f"
+  },
+  "a5b8ec06df6493262e85ea82e59554e7": {
+    "id": "a5b8ec06df6493262e85ea82e59554e7",
+    "title": "Not Quite the Same Rain",
+    "description": "An encounter thickened by unspoken words, the weight of memory, and the sound of a door that may never open.",
+    "mood": "Slow Burn",
+    "audioUrl": "",
+    "duration": "3 min",
+    "brief": {
+      "emotional_arc": "uncertainty → closeness → unresolved pull",
+      "relationship_dynamic": "former lovers crossing paths again",
+      "conflict_type": "wrong timing, right connection",
+      "pacing_style": "slow and intimate",
+      "ending_type": "lingering and unresolved",
+      "sensory_palette": [
+        "rain against glass",
+        "warm interior light",
+        "lowered voices"
+      ],
+      "point_of_view": "second person",
+      "voice_tone": "soft, cinematic, intimate",
+      "scene_count": 4,
+      "scene_plan": [
+        {
+          "scene_number": 1,
+          "goal": "create anticipation and sensory immersion",
+          "emotional_shift": "uncertainty begins",
+          "visual_focus": "rain-soaked city view framed by the hotel room window, dim amber lighting inside"
+        },
+        {
+          "scene_number": 2,
+          "goal": "introduce subtle tension and memory",
+          "emotional_shift": "a cautious closeness begins",
+          "visual_focus": "the hotel's sparse decor, a chair pulled slightly toward the door"
+        },
+        {
+          "scene_number": 3,
+          "goal": "intimate connection between sound and expectation",
+          "emotional_shift": "closeness deepens",
+          "visual_focus": "a knock at the door, the weight of paused breath in the stillness"
+        },
+        {
+          "scene_number": 4,
+          "goal": "linger in the unresolved tension of presence and absence",
+          "emotional_shift": "an unresolved pull takes hold",
+          "visual_focus": "rain casting patterns of blurred light on the walls, an unopened door"
+        }
+      ],
+      "recurring_motif": "the sound and hesitance of the knock at the door",
+      "title_direction": "poetic, emotionally charged, premium",
+      "image_style_direction": "cinematic adult animation, warm tones, painterly, moody lighting, tasteful intimacy",
+      "recommendation_tags": [
+        "Rainy Evening",
+        "Anticipation",
+        "Emotional Tension",
+        "Bittersweet"
+      ],
+      "quality_target": "The story must feel like standing on the edge of connection, with every moment thickened by atmosphere and emotional weight."
+    },
+    "scenes": [
+      {
+        "id": 1,
+        "heading": "Rain Against Glass",
+        "text": "It begins with the rain, streaking across the hotel window in endless trails. You watch, face close to the cold pane, as the city sways behind it—neon bleeding into amber shadows, reflections sliding like brief ghosts. Inside, a single lamp burns, its glow low and steady, pooling warmth over the polished wood and threadbare carpet. You touch the window, your fingertips barely brushing the glass, as if by mimicry you could touch what waits beyond. The sigh of the air conditioning hums steady against the silence. And yet… you feel it—a presence cutting through the quiet. Is it in the rain, or the soft press of memory? Behind you, the room stretches out untouched, impersonal, yet heavy with possibility. You turn toward the door instinctively. Uncertainty threads between your thoughts, tangled in old echoes. What if you’re holding your breath for nothing? What if you’re not?",
+        "visualPrompt": "A cinematic animated illustration of a solemn figure standing closely by a rain-streaked hotel window. Their face, partially reflected in the glass, is bathed in the cold tones of the stormy light outside, while the room behind glows warmly with muted amber light. The rain blurs the outside world into abstract shapes, creating a quiet, emotionally contemplative atmosphere. The lighting balances the chill of the rain against the warmth of the interior, with a painterly, moody softness.",
+        "durationEstimate": 60,
+        "emotionalShift": "curiosity gives way to something harder to name",
+        "image": "/api/images/scene-66191c994095f98437bcde38be209a5a-0.png"
+      },
+      {
+        "id": 2,
+        "heading": "A Door Left Slightly Open",
+        "text": "The chair shouldn’t be where it is. Pulled toward the door, slightly askew, it warps the clean lines of the room like an unfinished sentence. You glance down, noticing damp footprints—barely there, smaller than they should be. Someone was here, or perhaps they were only passing through. The rain beats harder now, muted but insistent. The air feels heavy inside, like you’ve slid into someone else’s story. You sit carefully in the chair, its legs creaking, the sound startling in the hush. You wonder if they—if *you*—ever made anything feel permanent. The edges of an old argument hang in the air like static. Warm light drapes across your skin; your shadow flickers faintly against the wall. You almost speak aloud—their name catches in your throat—but the silence presses its finger against your lips. If they’re close, they wouldn’t knock now. They wouldn’t hesitate. Would they?",
+        "visualPrompt": "A cinematic animated composition centered on a hotel room interior, framed by warm, moody lighting. In the foreground, a chair sits slightly askew near a door left slightly open, disrupting the symmetry of the otherwise orderly space. The door is cracked just enough to allow faint light to pour through a shadowed hallway beyond. There is an emotional tension in the composition, with subtle details suggesting recent movement. The lighting creates soft gradients of warm amber and deepened shadow along the scene, heightening the intimacy.",
+        "durationEstimate": 60,
+        "emotionalShift": "a cautious closeness begins",
+        "image": "/api/images/scene-66191c994095f98437bcde38be209a5a-1.png"
+      },
+      {
+        "id": 3,
+        "heading": "The Knock",
+        "text": "It happens as you exhale—soft, deliberate. You pause mid-movement, head tilting slightly toward the door. The knock is gentle… hesitant. Two beats, then silence so sharp it cuts through you. It’s them, isn’t it? You don’t rise immediately, your breath slow and uneven, the pulse in your throat rising on its own. You close your eyes, listening for something beneath that knock—the cadence of hesitation, the weight of unspoken words. The rain breaks into patterns now, its rhythm translucent against the glass. When you stand, blood pricks at your fingertips, your muscles resisting the distance. Would it be so simple? To cross the room? To unlock every mistake and every want behind that door? You take one step… then another. Your hand rests on the polished brass. Your heart betrays the stillness. You inhale sharply—but stay frozen. On the other side, the silence stretches, waiting.",
+        "visualPrompt": "A close, intimate cinematic shot of a partially opened hotel door with softly diffused light spilling in, illuminating the figure of someone pausing mid-movement. Their profile is faint but expressive, captured in the moody, painterly lighting that plays off warm skin tones and deep shadows. Outside, rain patterns streak across the faintly visible window in the background, tying the sensory palette together. The knock is implied in the tension of their stillness, with soft lighting emphasizing the emotional pause in the moment.",
+        "durationEstimate": 60,
+        "emotionalShift": "closeness deepens",
+        "image": "/api/images/scene-66191c994095f98437bcde38be209a5a-2.png"
+      },
+      {
+        "id": 4,
+        "heading": "The Unopened Door",
+        "text": "Your hand slips away without turning the knob. The knock doesn’t come again. Instead, the rain takes over, its rhythm scattered across the room—blurring projections of light that crawl along the walls like memories you don’t trust. You step back slowly, watching the brass curve of the doorknob as if it might ignite. The past feels strange here, alive but distant, its warmth trembling against the cold of the present. You lower yourself back into the chair, your body soft with resignation. You thought you’d feel lighter, choosing stillness over risk, but there’s only weight—heavy and sharp against your chest. Somewhere, footsteps trail away too quietly. Or maybe the rain has simply swallowed them whole. The unresolved pull tangles tightly, something left unspoken between your ribs. As the dim amber light softens the edges of the room, you wonder: will they ever knock again?",
+        "visualPrompt": "A cinematic animated illustration of a rain-soaked hotel window from inside the room, seen at a slight angle. The foreground shows a hand retreating from a door left closed, only partially visible in the frame. The dim golden ambience of the interior contrasts with the cold, blurred streaks of rain dominating the scene. Outside, the city hums faintly in muted grays and blues while the rain’s rhythmically abstract texture fills the composition. The mood is heavy and unresolved, with warm painterly tones balancing the melancholic intimacy.",
+        "durationEstimate": 60,
+        "emotionalShift": "an unresolved pull takes hold",
+        "image": "/api/images/scene-66191c994095f98437bcde38be209a5a-3.png"
+      }
+    ],
+    "images": {
+      "cover": "/api/images/cover-66191c994095f98437bcde38be209a5a.png",
+      "scenes": [
+        "/api/images/scene-66191c994095f98437bcde38be209a5a-0.png",
+        "/api/images/scene-66191c994095f98437bcde38be209a5a-1.png",
+        "/api/images/scene-66191c994095f98437bcde38be209a5a-2.png",
+        "/api/images/scene-66191c994095f98437bcde38be209a5a-3.png"
+      ]
+    },
+    "qc": {
+      "passed": true,
+      "score_total": 8.2,
+      "sub_scores": {
+        "emotional_depth": 8,
+        "specificity": 8,
+        "pacing": 8,
+        "scene_progression": 8,
+        "originality": 7,
+        "sensory_detail": 9,
+        "ending_strength": 8
+      },
+      "issues": [],
+      "rewrite_strategy": null
+    },
+    "recommendation_tags": [
+      "Rainy Evening",
+      "Anticipation",
+      "Emotional Tension",
+      "Bittersweet"
+    ],
+    "cached": false
+  },
+  "a5b8ec06df6493262e85ea82e59554e7-cont-keep_same_mood-1774327629927": {
+    "id": "a5b8ec06df6493262e85ea82e59554e7-cont-keep_same_mood-1774327629927",
+    "title": "The Space Between the Knocks",
+    "description": "What grows in the silence left unresolved: a mirror, a magnet, a distance so fragile it feels alive.",
+    "mood": "Slow Burn",
+    "audioUrl": "",
+    "duration": "3 min",
+    "brief": {
+      "emotional_arc": "uncertainty → closeness → unresolved pull",
+      "relationship_dynamic": "former lovers crossing paths again",
+      "conflict_type": "wrong timing, right connection",
+      "pacing_style": "slow and intimate",
+      "ending_type": "lingering and unresolved",
+      "sensory_palette": [
+        "rain against glass",
+        "warm interior light",
+        "lowered voices"
+      ],
+      "point_of_view": "second person",
+      "voice_tone": "soft, cinematic, intimate",
+      "scene_count": 4,
+      "scene_plan": [
+        {
+          "scene_number": 1,
+          "goal": "create anticipation and sensory immersion",
+          "emotional_shift": "uncertainty begins",
+          "visual_focus": "rain-soaked city view framed by the hotel room window, dim amber lighting inside"
+        },
+        {
+          "scene_number": 2,
+          "goal": "introduce subtle tension and memory",
+          "emotional_shift": "a cautious closeness begins",
+          "visual_focus": "the hotel's sparse decor, a chair pulled slightly toward the door"
+        },
+        {
+          "scene_number": 3,
+          "goal": "intimate connection between sound and expectation",
+          "emotional_shift": "closeness deepens",
+          "visual_focus": "a knock at the door, the weight of paused breath in the stillness"
+        },
+        {
+          "scene_number": 4,
+          "goal": "linger in the unresolved tension of presence and absence",
+          "emotional_shift": "an unresolved pull takes hold",
+          "visual_focus": "rain casting patterns of blurred light on the walls, an unopened door"
+        }
+      ],
+      "recurring_motif": "the sound and hesitance of the knock at the door",
+      "title_direction": "poetic, emotionally charged, premium",
+      "image_style_direction": "cinematic adult animation, warm tones, painterly, moody lighting, tasteful intimacy",
+      "recommendation_tags": [
+        "Rainy Evening",
+        "Anticipation",
+        "Emotional Tension",
+        "Bittersweet"
+      ],
+      "quality_target": "The story must feel like standing on the edge of connection, with every moment thickened by atmosphere and emotional weight."
+    },
+    "scenes": [
+      {
+        "id": 1,
+        "heading": "Echoes in Amber",
+        "text": "The rain hasn’t stopped. It slides in restless ribbons down the window as the room settles back into its muted rhythm. You sit in the chair still, elbows resting on your knees, head bent just slightly as though bracing for something. The amber light pools again, softer even now, casting a glow that feels almost liquid. You tell yourself to let go—but your pulse won’t listen. There’s a faint chill where your hand hovered on the doorknob, like the metal stole something from you. In the quiet, a distant hum rises—barely audible, but insistent. It could be the air conditioning, or it might be the remnants of someone else's movement far down the hall. You don’t know what you expect to hear, only that you’re waiting for it. That knock—the one that started it all—has become a tremor in the back of your mind. Something you didn’t answer. Didn’t face. You blink hard, then push your hands back through your hair, like the motion might untangle you. The rain breathes on, slow and steady.",
+        "visualPrompt": "A quiet room illuminated by the soft amber glow of a small lamp, its light pooling over a wooden table. Outside the rain streaks the window, creating restless, flowing patterns of light and shadow across the walls. A woman sits in the foreground, her back partially turned toward the viewer, her posture tense yet thoughtful. The painterly texture renders every detail with cinematic subtlety—her loose hair catching the warm light, her fingertips tracing the rim of a ceramic cup. The deep shadows and muted colors give the space a moody, intimate tone, underscored by the rhythm of rain against glass.",
+        "durationEstimate": 60,
+        "emotionalShift": "lingering → introspective",
+        "image": "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-0.png"
+      },
+      {
+        "id": 2,
+        "heading": "Between the Silence",
+        "text": "There’s a mark on the carpet. Just faint enough to evade certainty, but it holds your gaze—and keeps it. Something not quite right in the fabric, a vague smudge where damp shoes may have pressed. It wasn’t there when you arrived. Your eyes narrow, tracing its edges. Every sound in the room feels amplified now: the creak of your chair, the whisper of fabric against wood, the rain gripping glass like fingertips reaching for more than they can ever hold. You imagine stepping further, toward the door again, retracing their steps. But something about that feels wrong. Feels… heavy. Instead, you find yourself sitting still, staring down at that place on the carpet as the moment stretches out longer than you want. The knock won’t come again, will it? The thought shakes you—softly, like a tide brushing the shore but never raging. You close your eyes, but behind the lids you see only the door, closed just as tightly.",
+        "visualPrompt": "A close-up view of the faint mark on a soft, textured carpet, the subtle imperfection framed by gentle shadows cast from dim ambient lighting. A pair of shoes, slightly out of focus, lingers just near the edge of the frame, hinting at a larger moment yet keeping the viewer’s focus on the carpet’s enigmatic detail. The warm tones from the surrounding room fade softly into haze, and the rain-streaked window beyond faintly suggests the shape of someone standing motionless, deep in thought. The overall mood is quiet, introspective, and rich in subtle texture.",
+        "durationEstimate": 75,
+        "emotionalShift": "curious → unsettled",
+        "image": "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-1.png"
+      },
+      {
+        "id": 3,
+        "heading": "Almost Again",
+        "text": "You almost miss it. The sound is smaller than before. Lighter, as though hesitation itself had melted down to its core. It’s a single knock this time—like a question stripped of its layers. You freeze again, but this stillness doesn’t feel like yours anymore. It feels borrowed, invaded. The knock hangs between the walls like a thread pulled taut. One motion. One word. And all of it could unravel. Your breath catches, sharp enough to sting, and your heart reminds you of its impatient rhythm. Your legs twitch toward movement—but you don’t rise yet. You sit there, suspended in the aching space of almost. It shouldn’t feel sharper than before, but it does. Memory floods faster now, swarming your pulse, every beat pulling you closer to imbalance. The rain shifts against the window, sounds blurring like voices lost in static. One knock. No other sound. You can feel it like gravity—the piece of you it pulls—but you stay marooned, waiting.",
+        "visualPrompt": "A dimly lit space with soft, layered shadows and a rain-flecked window shaping patterns of light on the floor. In the foreground, a door is slightly ajar, light spilling faintly through the crack and breaking up the muted, painterly tones of the room. Two hands, almost touching but suspended in an unresolved moment of hesitance, dominate the composition. The faded outline of rain-patterned glass beyond the doorway catches warm, diffuse light, creating an emotionally charged atmosphere of possibility and hesitation.",
+        "durationEstimate": 75,
+        "emotionalShift": "hesitant → strained pull",
+        "image": "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-2.png"
+      },
+      {
+        "id": 4,
+        "heading": "The Space Between",
+        "text": "Time unravels strangely here. Seconds evaporate, folding into minutes without reaching clarity. You rise, slowly, barely noticing yourself moving. The air feels thinner than before, pressing lightly but incessantly against your chest. You stand in front of the door, your shadow faint but trembling with the amber glow. The knob doesn’t burn under your fingertips this time—but the cold of it lingers all the same. No sound follows that last knock, yet it echoes somewhere deeper, somewhere you can’t track but feel out of reach. Whatever waits on the other side isn’t rushing. You turn the knob halfway, the creak of brass filling the room—and then stop again. Your pulse jumps unevenly, pulling at the edges of your hesitation. You want to say their name, but the syllables curl somewhere caught in your throat. You release the door handle, letting it click softly back into place. That final motion splinters through the quiet like a thread finally snapping. And still, you can’t tell if you’ve missed them—or if they’re just beginning to linger.",
+        "visualPrompt": "A softly lit room where time feels abstracted—a single figure stands slowly, their silhouette framed against the blurred glow of an amber-drenched window. The light catches in the gentle folds of their sweater and the curve of their profile, imbuing the scene with tender humanity. The rain has softened to a misty wash on the glass, blurring the outside world into nothingness. The composition is quiet but emotionally resonant, with muted shadows stretching across the floor, drawing the viewer's eye between the figure and the golden light beyond. The air feels heavy with unspoken words lingering in the moment.",
+        "durationEstimate": 90,
+        "emotionalShift": "strained → unresolved pull",
+        "image": "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-3.png"
+      }
+    ],
+    "images": {
+      "cover": "/api/images/cover-5c0dfc8d06d3274f6c9bfb795f8b377f.png",
+      "scenes": [
+        "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-0.png",
+        "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-1.png",
+        "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-2.png",
+        "/api/images/scene-5c0dfc8d06d3274f6c9bfb795f8b377f-3.png"
+      ]
+    },
+    "qc": {
+      "passed": true,
+      "score_total": 8.2,
+      "sub_scores": {
+        "emotional_depth": 8,
+        "specificity": 8,
+        "pacing": 8,
+        "scene_progression": 8,
+        "originality": 7,
+        "sensory_detail": 9,
+        "ending_strength": 8
+      },
+      "issues": [],
+      "rewrite_strategy": null
+    },
+    "recommendation_tags": [
+      "Rainy Evening",
+      "Anticipation",
+      "Emotional Tension",
+      "Bittersweet"
+    ],
+    "cached": false,
+    "parent_story_id": "a5b8ec06df6493262e85ea82e59554e7"
+  }
+}

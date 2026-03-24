@@ -683,7 +683,7 @@ export default function Create() {
                 className="flex items-center justify-center gap-2 bg-card border border-border/50 text-foreground py-4 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <BookOpen className="w-4 h-4" />
-                Continue This Story
+                Create Your Next Chapter
               </button>
             </div>
           </motion.div>
@@ -767,8 +767,8 @@ export default function Create() {
             >
               <div className="p-6 border-b border-border/30 flex items-start justify-between">
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground">Continue this story</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Continue the emotional thread and generate the next chapter.</p>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Create your next chapter</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Choose how you want the story to continue.</p>
                 </div>
                 <button
                   onClick={() => setContinueModalOpen(false)}
@@ -800,7 +800,7 @@ export default function Create() {
                   onClick={handleGenerateContinuation}
                   className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-glow"
                 >
-                  Continue Story
+                  Generate Next Chapter
                 </button>
               </div>
             </motion.div>

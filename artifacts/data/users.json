@@ -8,5 +8,27 @@
     "preferredEndings": {},
     "preferredIntensity": {},
     "preferredVoiceFeel": {}
+  },
+  "guest-61839211-768c-4136-99d7-2df12b0e749d": {
+    "savedStories": [],
+    "generatedStories": [
+      "a5b8ec06df6493262e85ea82e59554e7-cont-keep_same_mood-1774327629927",
+      "a5b8ec06df6493262e85ea82e59554e7",
+      "063c7d154c5b10313a4b32572a84891f-cont-raise_stakes-1774327300888",
+      "063c7d154c5b10313a4b32572a84891f"
+    ],
+    "tasteProfile": {
+      "Tender": 2,
+      "Slow Burn": 2
+    },
+    "preferredEndings": {},
+    "preferredIntensity": {
+      "Magnetic": 1,
+      "Warm": 3
+    },
+    "preferredVoiceFeel": {
+      "Soft Voice": 4
+    },
+    "preferredRelationshipDynamics": {}
   }
 }

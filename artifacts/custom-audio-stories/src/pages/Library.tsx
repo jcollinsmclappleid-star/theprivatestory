@@ -299,9 +299,19 @@ export default function Library() {
               generated.length === 0 ? (
                 <EmptyState tab="generated" />
               ) : (
-                generated.map((story) => (
-                  <StoryCard key={story.id} story={story as Story} />
-                ))
+                generated.map((story) => {
+                  const s = story as Story & { parent_story_id?: string };
+                  return (
+                    <div key={s.id} className="relative">
+                      {s.parent_story_id && (
+                        <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium border border-primary/30">
+                          Continued
+                        </div>
+                      )}
+                      <StoryCard story={s as Story} />
+                    </div>
+                  );
+                })
               )
             )}
 

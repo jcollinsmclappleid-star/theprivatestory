@@ -995,9 +995,14 @@ components:
           type: array
           items:
             type: object
+        variations:
+          type: array
+          items:
+            type: object
       required:
         - saved
         - generated
+        - variations
 
     RecommendationsResponse:
       type: object

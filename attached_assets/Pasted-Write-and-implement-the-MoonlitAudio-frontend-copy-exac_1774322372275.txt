@@ -1,0 +1,716 @@
+Write and implement the MoonlitAudio frontend copy exactly with this tone and structure.
+
+IMPORTANT TONE RULES:
+- premium
+- intimate
+- cinematic
+- emotionally immersive
+- tasteful
+- adult but not explicit
+- elegant, not cheesy
+- emotionally suggestive, not pornographic
+- simple language with strong atmosphere
+- never sound robotic or over-marketed
+
+Avoid:
+- cringe romance clichés
+- “spicy” wording
+- explicit sexual language
+- cheap erotica tone
+- overly technical AI language
+- startup buzzwords
+
+The product should sound like:
+- a luxury audio experience
+- a private story world
+- something designed for headphones, late evenings, and emotional immersion
+
+==================================================
+1. GLOBAL BRAND POSITIONING
+==================================================
+
+Brand name:
+MoonlitAudio
+
+Core brand line:
+Personalised audio stories, shaped around you.
+
+Alternative short brand lines:
+- Stories that feel like they’re happening to you.
+- Audio-first storytelling, made personal.
+- Intimate, cinematic, and created for the moment.
+
+Use the first as the main default:
+“Personalised audio stories, shaped around you.”
+
+==================================================
+2. HOME PAGE COPY
+==================================================
+
+----------------------------------
+A. HERO SECTION
+----------------------------------
+
+Eyebrow badge:
+Personalised Audio Stories
+
+Hero headline:
+Create your own immersive audio story
+
+Hero subheadline:
+A premium audio experience shaped by mood, scenario, and feeling — with cinematic visuals, intimate pacing, and stories that feel made for the moment.
+
+Primary CTA:
+Start Creating
+
+Secondary CTA:
+Explore Series
+
+Supporting microcopy under CTA:
+Best experienced alone, with headphones.
+
+Alternative supporting microcopy options:
+- Made for quiet nights and full attention.
+- Press play and let the world narrow.
+- Start with a mood. We’ll shape the rest.
+
+Use this default:
+Best experienced alone, with headphones.
+
+Hero trust / feature strip:
+- Personalised
+- Audio-first
+- Cinematic visuals
+- Private library
+
+----------------------------------
+B. CONTINUE LISTENING
+----------------------------------
+
+Section eyebrow:
+Resume
+
+Section title:
+Continue Listening
+
+Section subtitle:
+Pick up exactly where you left off.
+
+Card label:
+Continue
+
+Card CTA:
+Resume
+
+Progress microcopy:
+- 65% complete
+- Scene 2 of 4
+- 7 min left
+
+----------------------------------
+C. CREATE YOUR STORY PROMO BLOCK
+----------------------------------
+
+Eyebrow:
+Made for you
+
+Headline:
+A story shaped around your mood, your pace, your moment
+
+Body copy:
+Give us a feeling, a scenario, and a little direction. MoonlitAudio builds the emotional arc, the narration, and the visual world around it.
+
+Feature bullets:
+- Minimal input, richer story depth
+- Narrated audio with cinematic pacing
+- Scene-based visuals that unfold as you listen
+
+CTA:
+Create Your Story
+
+Secondary microcopy:
+A sentence is enough. We’ll shape the rest.
+
+----------------------------------
+D. CONTENT ROWS
+----------------------------------
+
+Use these subtitles under each row title:
+
+Tonight’s Picks
+Curated for this exact mood
+
+Late Night
+Made for after midnight
+
+Slow Burn
+Worth the wait
+
+Forbidden
+The line is there for a reason
+
+First Encounter
+The electric beginning
+
+5 Minute Escapes
+Short-form, still immersive
+
+Emotional
+Beautifully heavy
+
+New This Week
+Fresh arrivals
+
+See all button:
+See all
+
+----------------------------------
+E. FEATURED SERIES BLOCK
+----------------------------------
+
+Eyebrow:
+Serialised stories
+
+Headline:
+Stay with the tension a little longer
+
+Body copy:
+Multi-part stories built for emotional build, replayability, and the kind of endings that don’t leave quickly.
+
+CTA:
+Begin Series
+
+==================================================
+3. CREATE YOUR STORY PAGE COPY
+==================================================
+
+Page eyebrow:
+Personalised Engine
+
+Page headline:
+Create a story shaped around you
+
+Page subheadline:
+Start with a mood, a scenario, and a little emotional direction. We’ll build the structure, narration, and atmosphere behind the scenes.
+
+----------------------------------
+A. FORM LABELS
+----------------------------------
+
+Field labels:
+- Listener Name
+- Mood / Genre
+- Intensity
+- Voice Feel
+- Story Length
+- Scenario Prompt
+
+Placeholder examples:
+
+Listener Name
+e.g. Ava
+
+Scenario Prompt
+e.g. a late night hotel bar conversation that turns emotionally charged
+
+Alternative scenario placeholders to rotate:
+- old school friends meeting again after years apart
+- a missed connection that feels strangely familiar
+- a quiet evening that turns more intimate than expected
+
+Toggle labels:
+- More cinematic visuals
+- More emotional focus
+
+Helper text under form:
+A few details are enough. The rest is shaped behind the scenes.
+
+Primary CTA:
+Create My Story
+
+Secondary CTA:
+Use Sample
+
+Optional tertiary ghost CTA:
+How it works
+
+----------------------------------
+B. LOADING STATE COPY
+----------------------------------
+
+Main loading headline:
+Creating your story…
+
+Loading subheadline:
+Building the emotional arc, visual atmosphere, and narration.
+
+Rotating loading steps:
+- Shaping the emotional arc
+- Writing the first scene
+- Building the visual world
+- Refining the ending
+- Preparing narration
+- Finalising your story
+
+Loading reassurance line:
+This usually takes a moment.
+
+Alternative:
+Good things sound better when they’re built with care.
+
+==================================================
+4. GENERATED STORY RESULT COPY
+==================================================
+
+Result badge:
+Your Story Is Ready
+
+Headline fallback:
+A story shaped for this moment
+
+Description intro line:
+Built from your mood, pacing, and scenario.
+
+Primary buttons:
+- Play
+- Save Story
+- Regenerate Variation
+- Continue This Story
+
+Secondary buttons:
+- Create Another
+- Download Audio
+
+Microcopy under player:
+Scene visuals shift as the story unfolds.
+
+Alternative:
+The visuals follow the emotional rhythm of the story.
+
+==================================================
+5. STORY PLAYER COPY
+==================================================
+
+Mini player labels:
+- Now Playing
+- Continue Listening
+- Resume Story
+
+Scene rail heading:
+Story Chapters
+
+Scene labels:
+- Scene 1
+- Scene 2
+- Scene 3
+- Scene 4
+- Scene 5
+- Scene 6
+
+Ambient toggle label:
+Ambient Layer
+
+Ambient options:
+- Rain
+- City at Night
+- Train
+- Firelight
+- Ocean
+- Quiet Room
+
+Ambient helper text:
+A subtle atmosphere beneath the voice.
+
+==================================================
+6. VARIATION MODAL COPY
+==================================================
+
+Modal title:
+Regenerate this story
+
+Modal subtitle:
+Keep the emotional core, shift the shape.
+
+Variation options:
+- Softer
+- Darker
+- Slower
+- More Emotional
+- New Ending
+- New Setting
+- Continue the Chemistry
+
+Variation descriptions:
+
+Softer
+More tenderness, less tension.
+
+Darker
+Heavier atmosphere, deeper pull.
+
+Slower
+Longer pauses, more emotional build.
+
+More Emotional
+More vulnerability, more emotional weight.
+
+New Ending
+Keep the story, change the final note.
+
+New Setting
+Keep the chemistry, move the world around it.
+
+Continue the Chemistry
+Carry the emotional thread forward.
+
+Primary button:
+Generate Variation
+
+Secondary button:
+Cancel
+
+==================================================
+7. CONTINUE THIS STORY MODAL COPY
+==================================================
+
+Modal title:
+Continue this story
+
+Modal subtitle:
+Carry the emotional thread into the next chapter.
+
+Options:
+- Keep the same mood
+- Raise the emotional stakes
+- Softer continuation
+- Lingering continuation
+
+Primary CTA:
+Continue Story
+
+Secondary CTA:
+Not now
+
+==================================================
+8. STORY CARD MICROCOPY
+==================================================
+
+Use mood labels like:
+- Slow Burn
+- Late Night
+- Emotional
+- Forbidden
+- Tender
+- First Encounter
+
+Additional tags:
+- 5 min
+- Soft Voice
+- New
+- Series
+- Most Played
+
+Series badge:
+5-Part Series
+
+Locked badge:
+Premium
+
+Saved badge:
+Saved
+
+Hover CTA visual only:
+Play
+
+Optional bottom text on locked cards:
+Unlock to listen
+
+==================================================
+9. SERIES DETAIL PAGE COPY
+==================================================
+
+Back button:
+All Series
+
+Hero badge:
+5-Part Series
+
+Primary CTA:
+Begin
+
+Secondary CTA:
+Save Series
+
+Episodes heading:
+Episodes
+
+Episode states:
+- Play
+- Resume
+- Locked
+
+Locked microcopy:
+Unlock to continue
+
+Availability line:
+2 of 5 episodes available
+
+Alternative:
+Continue the series with full access
+
+==================================================
+10. STORY DETAIL PAGE COPY
+==================================================
+
+Back button:
+Back to Browse
+
+Primary CTA:
+Play Story
+
+Secondary CTA:
+Save Story
+
+Related section heading:
+More like this
+
+Optional subheading:
+Keep the mood going.
+
+==================================================
+11. SEARCH PAGE COPY
+==================================================
+
+Page eyebrow:
+Discover
+
+Page headline:
+Search
+
+Search placeholder:
+Search by title, mood, or feeling…
+
+Mood quick filter heading:
+Browse by mood
+
+No results headline:
+Nothing matched that search
+
+No results body:
+Try a different mood, a broader feeling, or create something new instead.
+
+No results CTA:
+Create Your Story
+
+==================================================
+12. BROWSE PAGE COPY
+==================================================
+
+Page eyebrow:
+Library
+
+Page headline:
+Browse
+
+Filter labels:
+- All
+- Slow Burn
+- Emotional
+- Late Night
+- Forbidden
+- First Encounter
+- 5 Min
+- New
+
+Section helper line:
+Curated stories, ready to play.
+
+==================================================
+13. MY LIBRARY PAGE COPY
+==================================================
+
+Page eyebrow:
+Private Collection
+
+Page headline:
+My Library
+
+Tabs:
+- Saved
+- Generated
+- Continue
+- Variations
+
+Section headings:
+- Saved Stories
+- Generated For You
+- Continue Listening
+- Recent Variations
+- Continued Stories
+
+Empty states:
+
+Saved Stories empty:
+Nothing saved yet.
+
+Saved Stories helper:
+When something stays with you, save it here.
+
+Generated empty:
+You haven’t created a story yet.
+
+Generated helper:
+Start with a mood and let us build the rest.
+
+Continue Listening empty:
+You’re all caught up.
+
+Continue helper:
+Your in-progress stories will appear here.
+
+Primary empty CTA:
+Create Your Story
+
+Secondary empty CTA:
+Browse Library
+
+==================================================
+14. LOCKED / PREMIUM COPY
+==================================================
+
+Locked card badge:
+Premium
+
+Premium CTA options:
+- Unlock Full Story
+- Start Free Trial
+- Get More Story Credits
+
+Premium modal title:
+Unlock the full experience
+
+Premium modal body:
+Continue the story, unlock premium episodes, and generate more stories shaped around you.
+
+Primary CTA:
+Start Free Trial
+
+Secondary CTA:
+Get Story Credits
+
+Alternative premium body:
+More stories. More continuations. More personalised listening.
+
+==================================================
+15. FOOTER COPY
+==================================================
+
+Footer brand line:
+Personalised audio stories, shaped around you.
+
+Footer links:
+- Home
+- Create
+- Browse
+- Series
+- My Library
+- Privacy
+- Terms
+
+Optional footer microcopy:
+Designed for private, immersive listening.
+
+==================================================
+16. ERROR / RECOVERY COPY
+==================================================
+
+Generation error title:
+Something interrupted the story
+
+Generation error body:
+The story didn’t finish building properly. Try again in a moment.
+
+Retry CTA:
+Try Again
+
+Save error:
+Couldn’t save right now
+
+Save error helper:
+Try again in a moment.
+
+Playback error:
+Playback unavailable
+
+Playback helper:
+The audio didn’t load correctly. Please retry.
+
+==================================================
+17. RECOMMENDATION / PERSONALISATION COPY
+==================================================
+
+Section titles:
+- For You
+- Because You Liked Emotional
+- More in Slow Burn
+- Picked for Tonight
+- Based on Your Listening
+
+Keep recommendation copy subtle.
+Do not make it sound invasive.
+
+==================================================
+18. BRAND LANGUAGE RULES
+==================================================
+
+Always prefer:
+- intimate
+- immersive
+- cinematic
+- private
+- emotional
+- lingering
+- warm
+- shaped around you
+
+Avoid:
+- sexy
+- spicy
+- naughty
+- porn
+- explicit
+- hot content
+- dirty
+- NSFW language
+
+==================================================
+19. CTA PRIORITY RULES
+==================================================
+
+Primary CTA across product:
+Create Your Story
+
+Primary listening CTA:
+Play
+
+Primary retention CTA:
+Resume
+
+Primary monetisation CTA:
+Unlock Full Story
+
+==================================================
+20. FINAL COPY GOAL
+==================================================
+
+Every word on the site should make the product feel:
+- premium
+- emotionally intelligent
+- private
+- replayable
+- story-first
+- beautifully restrained
+
+Do not write the copy like a generic AI app.
+Do not over-explain the technology.
+Sell the feeling and the experience, not the infrastructure.

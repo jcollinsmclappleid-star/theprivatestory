@@ -1,0 +1,784 @@
+Build the MoonlitAudio UI exactly with the following page structure, hierarchy, components, and behaviors.
+
+IMPORTANT:
+- This spec is only for the frontend design / UX structure.
+- It should sit on top of the backend generation architecture already defined.
+- Keep the interface premium, dark, cinematic, emotionally immersive, and mobile responsive.
+- The experience should feel like a luxury streaming product, not a form tool.
+
+==================================================
+1. GLOBAL DESIGN SYSTEM
+==================================================
+
+A. Visual Theme
+- Backgrounds: deep black / charcoal / midnight tones
+- Accent colours: plum, burgundy, muted wine, soft gold
+- Highlight colour: warm gold for premium emphasis
+- Card surfaces: soft translucent dark panels with subtle borders
+- Hover glow: plum/gold subtle shadow
+- Use gradients sparingly but elegantly
+
+B. Typography
+- Headings: serif, elegant, cinematic
+- Body text: clean sans-serif, lightly spaced
+- Small UI labels: uppercase, letter-spaced, premium feel
+- Do not use loud or cheap typography
+
+C. Motion
+- Smooth fades
+- Soft hover scale
+- Image fade transitions
+- Gentle panel rise on load
+- No aggressive animations
+
+D. Spacing
+- Generous white space
+- Strong visual hierarchy
+- Consistent vertical rhythm
+
+E. Buttons
+Primary CTA:
+- rounded or softly rounded
+- plum / burgundy gradient
+- subtle glow
+- white text
+- hover lift
+
+Secondary CTA:
+- dark glass button
+- light border
+- subtle hover fill
+
+Ghost CTA:
+- text button with slight underline or shimmer
+
+==================================================
+2. NAVIGATION
+==================================================
+
+Desktop top nav:
+- fixed header
+- translucent dark background on scroll
+- left: logo / brand mark
+- center/right nav links:
+  - Home
+  - Create Your Story
+  - Browse
+  - Series
+  - Search
+  - My Library
+- far right:
+  - profile icon / saved icon / future account button
+
+Mobile nav:
+- fixed bottom nav
+- 5 icons max
+  - Home
+  - Create
+  - Browse
+  - Series
+  - Library
+- Search can live as icon inside header or Browse page
+
+Header behavior:
+- transparent over hero
+- becomes blurred/darker after scroll
+
+==================================================
+3. HOME PAGE
+==================================================
+
+The homepage must feel like a premium streaming app landing page.
+
+----------------------------------
+HOME SECTION ORDER
+----------------------------------
+
+A. Hero Section
+Purpose:
+- immediately communicate premium feel
+- establish mood
+- drive play and creation
+
+Layout:
+- large cinematic background image
+- dark gradient overlay
+- left-aligned text block
+- optional right-side featured artwork on desktop
+
+Content:
+- small premium badge:
+  “Personalised Audio Stories”
+- large headline:
+  “Create your own immersive audio story”
+- subheadline:
+  emotionally framed, premium, not technical
+- primary CTA:
+  “Start Creating”
+- secondary CTA:
+  “Explore Series”
+
+Below CTA:
+- short trust/format line:
+  “Audio-first. Cinematic visuals. Personalised for you.”
+
+Optional microcopy:
+- “Best experienced alone, with headphones.”
+
+----------------------------------
+
+B. Continue Listening
+Purpose:
+- retention
+- habit loop
+- quick resume
+
+Layout:
+- section title + subtitle
+- horizontal cards on desktop / stacked cards on mobile
+
+Card design:
+- thumbnail left
+- title + subtitle
+- progress bar
+- small resume CTA
+- duration / scene marker
+
+----------------------------------
+
+C. Create Your Story Promo Block
+Purpose:
+- make generation feel like the hero feature
+
+Layout:
+- two-column block
+- left: copy
+- right: visual mock or mini result card
+
+Content:
+- heading:
+  “A story shaped around you”
+- bullets:
+  - your mood
+  - your scenario
+  - your pacing
+  - your audio experience
+- CTA:
+  “Create Your Story”
+
+Optional detail:
+- show 3-step flow:
+  1. Choose the mood
+  2. Set the scenario
+  3. Press play
+
+----------------------------------
+
+D. Content Rows
+Use Netflix-style horizontal rows.
+
+Rows:
+- Tonight’s Picks
+- Late Night
+- Slow Burn
+- Forbidden
+- First Encounter
+- 5 Minute Escapes
+- Emotional
+- New This Week
+
+Each row:
+- section eyebrow
+- section title
+- “See all” button
+- horizontal scrolling story cards
+
+----------------------------------
+
+E. Featured Series Row
+Purpose:
+- show bingeable content
+- improve perceived product depth
+
+Layout:
+- larger cards than standard story cards
+- 2–3 visible on desktop
+- stacked on mobile
+
+Each series card:
+- wide artwork
+- title
+- mood tag
+- description
+- “5-Part Series” badge
+- “Begin” CTA
+
+----------------------------------
+
+F. Footer
+Include:
+- brand
+- short brand line
+- links:
+  - Browse
+  - Series
+  - Create
+  - Privacy
+  - Terms
+- muted premium styling
+
+==================================================
+4. STORY CARD DESIGN
+==================================================
+
+Use one standard card system for library stories.
+
+Card structure:
+- portrait image
+- gradient overlay bottom
+- title
+- short description (1–2 lines)
+- mood tags
+- play affordance on hover
+- optional saved icon
+
+Hover behavior:
+- slight scale up
+- border highlight
+- image zoom
+- central play button fade in
+
+States:
+- normal
+- hovered
+- saved
+- locked
+- currently playing
+
+Card tags examples:
+- Slow Burn
+- 5 min
+- Soft Voice
+- Emotional
+
+==================================================
+5. SERIES CARD DESIGN
+==================================================
+
+Use a wider, more cinematic layout.
+
+Structure:
+- wide banner image
+- dark overlay
+- top-left badge:
+  “5-Part Series”
+- title
+- short description
+- mood tag
+- footer row:
+  episode count
+  begin CTA
+
+Hover:
+- slight lift
+- subtle glow
+- image zoom
+
+==================================================
+6. CREATE YOUR STORY PAGE
+==================================================
+
+This is the main monetisable feature and must feel special.
+
+----------------------------------
+PAGE LAYOUT
+----------------------------------
+
+Desktop:
+- two-column
+- left: intake form
+- right: live preview / generated story result panel
+
+Mobile:
+- stacked
+- form first
+- result panel below
+
+----------------------------------
+
+A. Page Header
+- eyebrow:
+  “Personalised Engine”
+- headline:
+  “Create a story shaped around you”
+- short supporting copy
+- premium, emotionally framed
+
+----------------------------------
+
+B. Intake Form Card
+Wrap in premium glass/dark card.
+
+Fields:
+1. Listener Name
+2. Mood / Genre
+3. Intensity
+4. Voice Feel
+5. Story Length
+6. Scenario Prompt
+7. Optional toggles
+
+Form behavior:
+- large inputs
+- generous spacing
+- premium labels
+- placeholder examples
+- clear hierarchy
+
+Buttons:
+- primary:
+  “Create My Story”
+- secondary:
+  “Use Sample”
+
+Optional helper text:
+- “A sentence is enough. We’ll shape the rest.”
+
+----------------------------------
+
+C. Loading State Card
+When generation starts:
+- show dedicated loading panel
+- not just button spinner
+
+Display:
+- heading:
+  “Creating your story…”
+- short line:
+  “Building the emotional arc, visuals, and narration.”
+- animated bars or waveform
+- optional scene-building progress messages:
+  - Planning emotional arc
+  - Writing scenes
+  - Generating visuals
+  - Rendering narration
+
+Must feel premium and reassuring.
+
+----------------------------------
+
+D. Generated Result Panel
+This should feel like a reveal.
+
+Structure:
+- large cover image
+- gradient overlay
+- mood badge
+- generated title
+- generated description
+- tag pills
+- scene image area
+- audio player
+- action buttons
+
+Actions:
+- Play
+- Save
+- Regenerate Variation
+- Continue This Story
+- Download audio (optional)
+- Create another
+
+Optional hidden area:
+- “View generation details”
+  - brief summary
+  - image style direction
+Do not surface technical prompts prominently.
+
+==================================================
+7. GENERATED STORY PLAYER
+==================================================
+
+The player must feel like a premium mini streaming experience.
+
+----------------------------------
+PLAYER LAYOUT
+----------------------------------
+
+A. Main Story Panel
+- cover image at top
+- current scene image beneath or beside depending on screen size
+- title and subtitle
+- audio controls
+- tags
+- action buttons
+
+B. Controls
+- play/pause
+- progress bar
+- elapsed / total time
+- back 15 / forward 15
+- ambient sound toggle
+- volume control
+- save button
+
+C. Waveform / Animated Bars
+- subtle visual movement during playback
+- paused state when stopped
+
+D. Scene Sync Panel
+- current scene image
+- scene heading
+- optional one-line scene teaser
+- fade transition when scene changes
+
+E. Chapter Rail
+Optional but recommended:
+- Scene 1
+- Scene 2
+- Scene 3
+- Scene 4
+Highlight current scene.
+Can be non-clickable in V1 if needed.
+
+==================================================
+8. STORY DETAIL PAGE
+==================================================
+
+For curated single stories.
+
+Layout:
+- large hero artwork
+- title
+- description
+- tag cluster
+- embedded player card
+- related stories row
+
+Buttons:
+- Play
+- Save
+- More like this
+
+==================================================
+9. SERIES PAGE
+==================================================
+
+Purpose:
+- showcase bingeable content
+- make product feel deep and premium
+
+Layout:
+- page header
+- grid of wide series cards
+
+Optional sort:
+- New
+- Most Played
+- Emotional
+- Late Night
+
+==================================================
+10. SERIES DETAIL PAGE
+==================================================
+
+This should feel like a streaming show detail page.
+
+----------------------------------
+STRUCTURE
+----------------------------------
+
+A. Hero Banner
+- full-width image
+- gradient overlay
+- back button
+- series badge
+- title
+- description
+- mood tag
+- Begin button
+
+B. Episode List
+Each episode card:
+- episode number
+- title
+- short description
+- duration
+- state:
+  - playable
+  - locked
+  - in progress
+- CTA:
+  Play / Resume / Locked
+
+C. Related Series row
+Optional:
+- 3 related series
+
+==================================================
+11. SEARCH PAGE
+==================================================
+
+Layout:
+- premium page header
+- large search field
+- mood quick filters
+- results grid
+
+Search input:
+- wide, clean, premium
+- strong placeholder text
+
+Quick filter pills:
+- Slow Burn
+- Emotional
+- Forbidden
+- Late Night
+- Tender
+
+Results:
+- use standard story cards
+
+Empty state:
+- tasteful, not plain
+- suggest a mood filter or Create Your Story CTA
+
+==================================================
+12. BROWSE PAGE
+==================================================
+
+Layout:
+- page title
+- filter pills
+- story grid
+
+Filters:
+- All
+- Slow Burn
+- Emotional
+- Late Night
+- Forbidden
+- First Encounter
+- 5 Min
+- New
+
+Story grid:
+- responsive
+- 2 columns on mobile
+- 4–6 on desktop depending on width
+
+==================================================
+13. MY LIBRARY PAGE
+==================================================
+
+This page is critical for retention.
+
+Create sections:
+- Saved Stories
+- Generated For You
+- Continue Listening
+- Variations
+- Continued Stories
+
+Use tabs or segmented controls:
+- Saved
+- Generated
+- Continue
+- Variations
+
+Each item should show:
+- image
+- title
+- mood
+- progress if relevant
+- save state
+- resume/open CTA
+
+Empty states should encourage:
+- create your first story
+- browse library
+- save favorites
+
+==================================================
+14. VARIATIONS UX
+==================================================
+
+When user clicks “Regenerate Variation”, open a premium modal or drawer.
+
+Variation options:
+- Softer
+- Darker
+- Slower
+- More Emotional
+- New Ending
+- New Setting
+- Continue the Chemistry
+
+Modal layout:
+- title
+- short explanation
+- option cards
+- confirm button
+
+After generation:
+- show new version in same result area
+- allow compare / replace / save both
+
+==================================================
+15. CONTINUE THIS STORY UX
+==================================================
+
+When user clicks “Continue This Story”:
+- open a confirm modal
+- copy:
+  “Continue the emotional thread and generate the next chapter.”
+
+Options:
+- keep same mood
+- raise emotional stakes
+- softer continuation
+- unresolved continuation
+
+Then create new chapter and save in library as linked story.
+
+==================================================
+16. STORY MEMORY UX
+==================================================
+
+Do not make this too visible.
+
+Use subtle personalization on home:
+- “For You”
+- “Because you liked Emotional”
+- “More in Slow Burn”
+
+Optional mini profile panel:
+- preferred mood
+- recent styles
+
+This should feel quietly intelligent, not creepy.
+
+==================================================
+17. AMBIENT SOUND UX
+==================================================
+
+Player should include ambient toggle.
+
+Ambient options:
+- rain
+- city at night
+- train
+- firelight
+- ocean
+- quiet room
+
+UI:
+- small icon button opens ambient drawer
+- choose ambience
+- set ambience volume separately
+
+Default behavior:
+- if no ambience selected, suggest one based on mood
+
+==================================================
+18. LOCKED / PREMIUM STATES
+==================================================
+
+Design locked content elegantly.
+
+Locked card treatment:
+- slightly dimmed image
+- lock badge
+- subtle premium border
+
+Locked CTA examples:
+- Unlock Full Story
+- Start Free Trial
+- Get More Story Credits
+
+Do not make locked states feel broken.
+They should feel aspirational.
+
+==================================================
+19. MOBILE BEHAVIOR
+==================================================
+
+Must be properly designed, not just shrunk.
+
+Mobile priorities:
+- strong hero still works
+- stacked create flow
+- fixed bottom nav
+- thumb-friendly buttons
+- horizontal content rows remain smooth
+- player remains usable
+- generated story result feels premium on small screen
+
+==================================================
+20. LOADING / EMPTY / ERROR STATES
+==================================================
+
+Every state must be designed.
+
+A. Loading
+- shimmer cards
+- loading bars
+- premium copy
+
+B. Empty library
+- clean illustration or gradient block
+- CTA to create story
+
+C. No search results
+- suggest another mood
+- CTA to browse or create
+
+D. Generation error
+- elegant error card
+- retry button
+- fallback copy:
+  “Something interrupted the story. Try again.”
+
+==================================================
+21. COMPONENT LIST TO BUILD
+==================================================
+
+Build reusable components for:
+
+- Navbar
+- Mobile Nav
+- Hero
+- Story Card
+- Series Card
+- Continue Listening Card
+- Filter Pills
+- Create Form Card
+- Loading Card
+- Generated Result Card
+- Story Player
+- Floating Mini Player
+- Chapter / Scene Rail
+- Save Button
+- Variation Modal
+- Continue Story Modal
+- Locked State Card
+- Footer
+
+==================================================
+22. FINAL UI OUTCOME
+==================================================
+
+The finished UI should feel like:
+- a premium streaming product
+- emotionally immersive
+- beautifully controlled
+- ready for a real consumer launch
+
+It should NOT feel like:
+- a generic AI form
+- a rough prototype
+- a dev tool
+- a porn site
+- a cheap generator
+
+The product must feel elegant, private, adult, cinematic, and replayable.

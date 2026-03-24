@@ -1,0 +1,922 @@
+Build MoonlitAudio as a premium AI-powered personalised audio story platform.
+
+IMPORTANT PRODUCT POSITIONING:
+- adult, intimate, cinematic, emotionally immersive
+- sensual but NOT explicit pornography
+- premium consumer product, not a toy generator
+- audio-first with scene-based visuals
+- minimal user input, strong hidden story architecture
+
+==================================================
+0. CORE PRODUCT PRINCIPLE
+==================================================
+
+The user should NOT need to provide lots of detail.
+
+The product should feel effortless.
+
+So the engine must use:
+
+VISIBLE INPUT (simple)
+→ HIDDEN STORY PLANNER (rich internal brief)
+→ STORY WRITER
+→ QUALITY CONTROL
+→ IMAGE PROMPT ENGINE
+→ AUDIO GENERATION
+→ VISUAL SYNC + SAVE + VARIATIONS
+
+The hidden architecture is what guarantees depth.
+
+==================================================
+1. APP STRUCTURE
+==================================================
+
+Build these views:
+
+1. Home
+2. Create Your Story
+3. Browse
+4. Search
+5. Series
+6. Series Detail
+7. Story Detail
+8. Generated Story Result
+9. My Library
+10. Continue Listening
+
+==================================================
+2. DESIGN SYSTEM
+==================================================
+
+Theme:
+- dark premium UI
+- black / charcoal base
+- plum / burgundy / wine accents
+- soft gold highlights
+- cinematic gradients
+- elegant serif headings
+- clean sans-serif body text
+
+Feel:
+- luxurious
+- intimate
+- soft
+- private
+- immersive
+- modern streaming product
+
+Interaction style:
+- smooth fades
+- hover scale on cards
+- glassmorphism in selected areas
+- subtle motion only
+- no clutter
+
+Reference feel:
+- Netflix x Calm x Spotify
+- tasteful adult animation styling
+- premium private experience
+
+==================================================
+3. USER-FACING INTAKE
+==================================================
+
+Create a guided intake form with exactly these fields:
+
+A. Listener Name
+- text input
+- optional
+
+B. Mood / Genre
+- dropdown
+Options:
+- Slow Burn
+- Late Night
+- Emotional
+- Forbidden
+- First Encounter
+- Tender
+
+C. Intensity
+- dropdown
+Options:
+- Soft
+- Warm
+- Magnetic
+
+D. Story Length
+- dropdown
+Options:
+- 3 min
+- 5 min
+- 10 min
+
+E. Scenario Prompt
+- textarea
+- one sentence or short paragraph
+- placeholder examples
+
+F. Optional toggles
+- More cinematic visuals
+- More emotional focus
+
+Keep the form elegant, low-friction, and mobile friendly.
+
+==================================================
+4. BACKEND ARCHITECTURE
+==================================================
+
+Use:
+- Node.js
+- Express
+- JSON file storage initially or SQLite / Supabase if easier
+- modular services folder
+
+Recommended folders:
+
+/server
+  /routes
+  /services
+    plannerService.js
+    writerService.js
+    qcService.js
+    imagePromptService.js
+    imageService.js
+    audioService.js
+    variationService.js
+    seriesService.js
+    memoryService.js
+  /data
+  /utils
+
+==================================================
+5. DATA MODELS
+==================================================
+
+Create the following core objects.
+
+A. UserProfile
+{
+  id,
+  preferred_moods: [],
+  preferred_intensity,
+  preferred_voice_feel,
+  favorite_endings: [],
+  saved_story_ids: [],
+  generated_story_ids: [],
+  continue_listening: [
+    {
+      story_id,
+      audio_progress_seconds,
+      scene_index,
+      updated_at
+    }
+  ],
+  created_at,
+  updated_at
+}
+
+B. StoryBrief (hidden internal object)
+{
+  id,
+  input: {
+    name,
+    mood,
+    intensity,
+    length,
+    scenario,
+    cinematic_visuals,
+    emotional_focus
+  },
+  emotional_arc,
+  relationship_dynamic,
+  conflict_type,
+  pacing_style,
+  ending_type,
+  sensory_palette: [],
+  point_of_view,
+  voice_tone,
+  scene_count,
+  scene_plan: [
+    {
+      scene_number,
+      goal,
+      emotional_shift,
+      visual_focus
+    }
+  ],
+  recurring_motif,
+  title_direction,
+  image_style_direction,
+  quality_target
+}
+
+C. GeneratedStory
+{
+  id,
+  title,
+  description,
+  mood,
+  intensity,
+  length,
+  prompt_seed,
+  brief_id,
+  story_text_full,
+  scenes: [
+    {
+      id,
+      heading,
+      text,
+      duration_estimate,
+      emotional_shift,
+      visual_prompt,
+      start_time_estimate
+    }
+  ],
+  images: {
+    cover,
+    scenes: [
+      { scene_id, url }
+    ]
+  },
+  audio: {
+    url,
+    duration_seconds,
+    voice_feel
+  },
+  qc: {
+    passed,
+    score_total,
+    sub_scores: {
+      emotional_depth,
+      specificity,
+      pacing,
+      scene_progression,
+      originality,
+      sensory_detail,
+      ending_strength
+    },
+    issues: []
+  },
+  saved_by_user: false,
+  source_type: "generated" | "curated" | "series",
+  parent_story_id: null,
+  variant_type: null,
+  created_at
+}
+
+D. Series
+{
+  id,
+  title,
+  description,
+  mood,
+  cover_image,
+  episode_ids: [],
+  is_curated: true
+}
+
+==================================================
+6. API ROUTES
+==================================================
+
+Build these routes:
+
+POST /api/plan-story
+POST /api/generate-story
+POST /api/qc-story
+POST /api/generate-image-prompts
+POST /api/generate-images
+POST /api/generate-audio
+POST /api/generate-full-story
+
+POST /api/generate-variation
+POST /api/continue-story
+POST /api/save-story
+POST /api/update-progress
+GET  /api/library
+GET  /api/story/:id
+GET  /api/series
+GET  /api/series/:id
+GET  /api/recommendations
+
+==================================================
+7. HIDDEN STORY PLANNER (MOST IMPORTANT)
+==================================================
+
+This is the key engine.
+
+The user input must first be expanded into a strong internal brief.
+
+Route:
+POST /api/plan-story
+
+Use OpenAI.
+
+PROMPT:
+
+SYSTEM:
+You are a premium story architect for an intimate, cinematic audio storytelling platform.
+Your job is to turn minimal user input into a rich hidden internal story brief that guarantees emotional depth, pacing, and substance.
+Do NOT write the final story.
+Return only structured JSON.
+
+USER:
+Take this user input and turn it into a hidden internal story brief.
+
+User Input:
+- Name: {{name}}
+- Mood: {{mood}}
+- Intensity: {{intensity}}
+- Length: {{length}}
+- Scenario: {{scenario}}
+- Visual Emphasis: {{cinematic_visuals}}
+- Emotional Emphasis: {{emotional_focus}}
+
+You must infer and return:
+- emotional_arc
+- relationship_dynamic
+- conflict_type
+- pacing_style
+- ending_type
+- sensory_palette
+- point_of_view
+- voice_tone
+- scene_count
+- scene_plan
+- recurring_motif
+- title_direction
+- image_style_direction
+- quality_target
+
+Rules:
+- The story must feel emotionally immersive.
+- It must be adult in tone, sensual but not explicit.
+- Prioritise subtext, atmosphere, vulnerability, anticipation.
+- Avoid generic plots and clichés.
+- Even if user input is vague, infer a compelling emotional setup.
+- Make the story feel like it is happening to the listener.
+- Create a scene plan that guarantees build and payoff.
+
+Return JSON exactly like:
+
+{
+  "emotional_arc": "curiosity → vulnerability → longing",
+  "relationship_dynamic": "old friends reconnecting after years apart",
+  "conflict_type": "too much left unsaid in the past",
+  "pacing_style": "slow and intimate",
+  "ending_type": "lingering and unresolved",
+  "sensory_palette": ["warm lamplight", "quiet night air", "the softness of paused breath"],
+  "point_of_view": "second person",
+  "voice_tone": "soft, cinematic, intimate",
+  "scene_count": 4,
+  "scene_plan": [
+    {
+      "scene_number": 1,
+      "goal": "hook and atmosphere",
+      "emotional_shift": "curiosity begins",
+      "visual_focus": "night setting, first look"
+    },
+    {
+      "scene_number": 2,
+      "goal": "tension deepens",
+      "emotional_shift": "familiarity becomes charged",
+      "visual_focus": "close body language, warm light"
+    },
+    {
+      "scene_number": 3,
+      "goal": "vulnerability / reveal",
+      "emotional_shift": "guard drops",
+      "visual_focus": "stillness, eye contact, intimate distance"
+    },
+    {
+      "scene_number": 4,
+      "goal": "payoff / lingering ending",
+      "emotional_shift": "longing remains",
+      "visual_focus": "quiet aftermath, lingering closeness"
+    }
+  ],
+  "recurring_motif": "the feeling of almost saying too much",
+  "title_direction": "poetic, emotionally charged, premium",
+  "image_style_direction": "cinematic adult animation, warm tones, moody, tasteful, soft lighting",
+  "quality_target": "high emotional depth, low cliché, strong ending"
+}
+
+==================================================
+8. STORY WRITER
+==================================================
+
+Route:
+POST /api/generate-story
+
+Input:
+{
+  brief
+}
+
+Use OpenAI.
+
+PROMPT:
+
+SYSTEM:
+You write premium audio stories for a luxury personalised storytelling app.
+The tone must be cinematic, emotionally immersive, intimate, sensual but not explicit, and ideal for narration.
+Use controlled, elegant prose.
+
+USER:
+Using the internal story brief below, write the final story.
+
+{{brief_json}}
+
+Rules:
+- Use the specified point_of_view.
+- The story must feel like it is happening to the listener.
+- Write in clearly separated scenes.
+- Each scene must serve the planned emotional function.
+- Include one strong sensory image per scene.
+- Include at least one moment of vulnerability.
+- Build emotional tension gradually.
+- Avoid generic exposition.
+- Avoid clichés.
+- Avoid melodrama.
+- Avoid explicit sexual detail.
+- Use language that feels premium and voice-friendly.
+- End with emotional resonance, not a flat stop.
+
+Return JSON only in this format:
+
+{
+  "title": "...",
+  "description": "...",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "...",
+      "text": "...",
+      "duration_estimate": 60,
+      "emotional_shift": "..."
+    }
+  ]
+}
+
+==================================================
+9. QUALITY CONTROL ENGINE
+==================================================
+
+This must be a real engine, not just an idea.
+
+After story generation, run a QC evaluation before passing output forward.
+
+Route:
+POST /api/qc-story
+
+Input:
+{
+  brief,
+  story
+}
+
+Use OpenAI or internal rules.
+
+QC must score the story on:
+- emotional_depth
+- specificity
+- pacing
+- scene_progression
+- originality
+- sensory_detail
+- ending_strength
+
+Return:
+
+{
+  "passed": true,
+  "score_total": 8.4,
+  "sub_scores": {
+    "emotional_depth": 8,
+    "specificity": 9,
+    "pacing": 8,
+    "scene_progression": 8,
+    "originality": 7,
+    "sensory_detail": 9,
+    "ending_strength": 8
+  },
+  "issues": []
+}
+
+Hard rules:
+- if score_total < 7.5 → regenerate
+- if ending_strength < 7 → regenerate ending only
+- if specificity < 7 → rewrite generic lines
+- if originality < 6.5 → force variation prompt and regenerate
+
+Create a rewrite path:
+- /api/qc-story can return a corrected prompt for targeted rewrite
+- do not always regenerate from zero
+- if only one part is weak, fix only that part
+
+==================================================
+10. STORY BIBLE / CONTROLLED VARIETY
+==================================================
+
+Build internal reusable pools to avoid repetitive output.
+
+Create internal arrays for:
+
+A. emotional_arcs
+- curiosity → trust → longing
+- distance → warmth → ache
+- tension → softness → vulnerability
+- uncertainty → closeness → unresolved pull
+
+B. relationship_dynamics
+- old friends reconnecting
+- strangers with instant familiarity
+- former lovers crossing paths
+- missed connection becoming real
+- one person holding back
+- an unexpected protector dynamic
+
+C. conflict_types
+- too much left unsaid
+- wrong timing
+- fear of closeness
+- emotional hesitation
+- one night that feels larger than it should
+- the risk of saying the truth
+
+D. ending_types
+- lingering and unresolved
+- soft but hopeful
+- bittersweet
+- open-hearted pause
+- emotionally incomplete in a satisfying way
+
+E. sensory_palettes
+- rain against glass, warm interior light, lowered voices
+- late-night city glow, quiet footsteps, cold air
+- summer dusk, skin warmth, held breath
+- train vibration, passing lights, shared stillness
+
+Use these as controlled variation pools.
+Rotate them intelligently.
+Do NOT let every story sound the same.
+
+==================================================
+11. IMAGE PROMPT ENGINE
+==================================================
+
+Route:
+POST /api/generate-image-prompts
+
+Input:
+{
+  brief,
+  story
+}
+
+Generate:
+- 1 cover prompt
+- 1 prompt per scene
+
+Use this base style in every prompt:
+“cinematic animated illustration, adult romance tone, tasteful intimacy, soft lighting, warm shadows, elegant composition, premium streaming artwork, not explicit”
+
+Rules:
+- consistent style across story
+- tasteful adult animation style
+- warm, moody, cinematic
+- not explicit
+- scene prompts should reflect each scene’s emotional focus
+- cover should feel like premium streaming poster art
+
+Return:
+
+{
+  "cover_prompt": "...",
+  "scene_prompts": [
+    {
+      "scene_id": 1,
+      "prompt": "..."
+    }
+  ]
+}
+
+==================================================
+12. IMAGE GENERATION
+==================================================
+
+Route:
+POST /api/generate-images
+
+Generate:
+- 1 cover image
+- 1 image per scene
+
+Important:
+- no per-minute image generation
+- only per scene
+- maximum 6 scene images per story
+
+Return:
+{
+  "cover": "url",
+  "scenes": [
+    { "scene_id": 1, "url": "..." }
+  ]
+}
+
+==================================================
+13. AUDIO GENERATION
+==================================================
+
+Route:
+POST /api/generate-audio
+
+Input:
+{
+  story,
+  voiceFeel
+}
+
+Combine all scene text into one narration script.
+
+Use ElevenLabs.
+
+Recommended voice settings:
+- stability: 0.6
+- similarity_boost: 0.7
+- style: 0.8
+
+Return:
+{
+  "audio_url": "...",
+  "duration_seconds": 320
+}
+
+==================================================
+14. FULL PIPELINE
+==================================================
+
+Route:
+POST /api/generate-full-story
+
+Flow:
+1. accept user intake
+2. call /api/plan-story
+3. call /api/generate-story
+4. call /api/qc-story
+5. if QC fails, apply targeted rewrite and re-run QC
+6. call /api/generate-image-prompts
+7. call /api/generate-images
+8. call /api/generate-audio
+9. save output
+10. return final generated story object
+
+==================================================
+15. GENERATED STORY VIEW
+==================================================
+
+Build a premium generated result page with:
+
+- large cover image
+- generated title
+- generated description
+- tags
+- audio player
+- current scene image panel
+- smooth image transitions during playback
+- regenerate variation button
+- save story button
+- continue this story button
+
+==================================================
+16. SCENE SYNC ENGINE
+==================================================
+
+As audio plays:
+- detect progress
+- map progress to scene index
+- change image when scene changes
+
+If exact timestamps unavailable:
+- divide duration by scene count
+
+Pseudo logic:
+
+const progress = audio.currentTime / audio.duration;
+const sceneIndex = Math.floor(progress * story.scenes.length);
+
+Add fade transition on image swap.
+
+==================================================
+17. STORY MEMORY ENGINE
+==================================================
+
+Build user taste tracking.
+
+Track:
+- moods selected
+- endings preferred
+- intensity selected
+- most replayed stories
+- saved stories
+
+Use this to influence future planning.
+
+Route:
+GET /api/recommendations
+
+Return personalised recommendations based on:
+- preferred mood
+- recent listening
+- saved story patterns
+
+==================================================
+18. VARIATIONS ENGINE
+==================================================
+
+Build a real variations system.
+
+Route:
+POST /api/generate-variation
+
+Input:
+{
+  story_id,
+  variation_type
+}
+
+variation_type options:
+- softer
+- darker
+- slower
+- more emotional
+- new ending
+- new setting
+- continue chemistry
+
+This should NOT regenerate blindly from scratch.
+
+Use original brief + story + variation instruction.
+
+Examples:
+- keep same emotional core, rewrite ending only
+- keep same story but shift setting
+- keep characters, create alternate emotional tone
+
+==================================================
+19. CONTINUE THIS STORY / SERIES ENGINE
+==================================================
+
+Build:
+POST /api/continue-story
+
+Input:
+{
+  story_id
+}
+
+Logic:
+- use original brief
+- preserve dynamic and emotional thread
+- generate next chapter
+- slightly raise emotional stakes
+- maintain continuity
+- return new story object linked to parent_story_id
+
+This allows generated stories to become personal series.
+
+==================================================
+20. MY LIBRARY
+==================================================
+
+Build a My Library page with:
+- Saved Stories
+- Generated Stories
+- Continue Listening
+- Recently Played
+- Story Variations
+- Continued Stories
+
+Allow users to:
+- save / unsave
+- reopen stories
+- continue listening from saved progress
+
+==================================================
+21. CONTINUE LISTENING ENGINE
+==================================================
+
+Track:
+- current audio time
+- scene index
+- last played timestamp
+
+Route:
+POST /api/update-progress
+
+Update local storage and backend if user system exists.
+
+Home page should show:
+- continue listening cards
+- progress bar
+- quick resume button
+
+==================================================
+22. AMBIENT SOUND LAYER
+==================================================
+
+Add optional ambient sound modes.
+
+Ambient options:
+- rain
+- city at night
+- train
+- firelight
+- ocean
+- quiet room tone
+
+Allow this as:
+- toggle in player
+- low-volume layer under narration
+- separate volume control
+
+Match ambience to mood if user does not choose manually.
+
+==================================================
+23. SEARCH / BROWSE / SERIES
+==================================================
+
+Build:
+- Browse page with mood filters
+- Search page with keyword and mood pills
+- Series page with curated series
+- Series detail page with episode cards
+- Locked episode support for future monetisation
+
+==================================================
+24. MONETISATION PREP
+==================================================
+
+Do not fully implement payments yet, but build support for:
+- locked stories
+- locked episodes
+- future trial modal
+- premium CTA area
+- story credits model
+- monthly plan with limited generations
+
+Placeholder CTA copy:
+- Unlock full story
+- Start free trial
+- Get more custom story credits
+
+==================================================
+25. COST CONTROL
+==================================================
+
+Implement:
+- caching of completed generations
+- no repeated image generation for same story
+- no per-minute visuals
+- targeted rewrites instead of full regenerations
+- save everything after first successful generation
+
+==================================================
+26. QUALITY RULES (NON-NEGOTIABLE)
+==================================================
+
+Every final story must have:
+- clear emotional arc
+- relationship dynamic
+- scene progression
+- at least one moment of vulnerability
+- one strong sensory image per scene
+- meaningful ending
+- controlled pacing
+- low cliché writing
+
+If user input is weak, the hidden planner must compensate.
+
+==================================================
+27. FINAL DELIVERABLE
+==================================================
+
+Deliver a working MoonlitAudio app with:
+- premium dark UI
+- elegant intake form
+- hidden planner engine
+- story writer engine
+- QC engine
+- image prompt engine
+- image generation
+- ElevenLabs audio generation
+- synced playback visuals
+- story memory
+- saved library
+- variations engine
+- continue-this-story engine
+- ambient sound support
+- search / browse / series
+- strong architecture for future monetisation

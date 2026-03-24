@@ -1,0 +1,675 @@
+Implement MoonlitAudio using the following exact project structure and step-by-step build order.
+
+IMPORTANT:
+- Follow this structure closely.
+- Keep code modular.
+- Build in phases so the product is stable at each step.
+- Prioritise working end-to-end flow before polishing secondary features.
+- Use the premium UI / prompt / schema specs already provided.
+
+==================================================
+1. RECOMMENDED PROJECT STRUCTURE
+==================================================
+
+moonlitaudio/
+│
+├── package.json
+├── .env
+├── .gitignore
+├── README.md
+│
+├── server.js
+│
+├── /public
+│   ├── index.html
+│   ├── styles.css
+│   ├── app.js
+│   ├── /assets
+│   │   ├── /icons
+│   │   ├── /ambient
+│   │   │   ├── rain.mp3
+│   │   │   ├── city-night.mp3
+│   │   │   ├── train.mp3
+│   │   │   ├── firelight.mp3
+│   │   │   ├── ocean.mp3
+│   │   │   └── quiet-room.mp3
+│   │   └── /placeholders
+│   │       ├── cover-1.jpg
+│   │       ├── cover-2.jpg
+│   │       └── scene-1.jpg
+│
+├── /routes
+│   ├── storyRoutes.js
+│   ├── userRoutes.js
+│   ├── libraryRoutes.js
+│   └── seriesRoutes.js
+│
+├── /services
+│   ├── plannerService.js
+│   ├── writerService.js
+│   ├── qcService.js
+│   ├── rewriteService.js
+│   ├── imagePromptService.js
+│   ├── imageService.js
+│   ├── audioService.js
+│   ├── variationService.js
+│   ├── continuationService.js
+│   ├── recommendationService.js
+│   ├── memoryService.js
+│   └── storageService.js
+│
+├── /prompts
+│   ├── plannerPrompt.js
+│   ├── writerPrompt.js
+│   ├── qcPrompt.js
+│   ├── rewritePrompt.js
+│   ├── imagePromptGenerator.js
+│   ├── variationPrompt.js
+│   └── continuationPrompt.js
+│
+├── /data
+│   ├── users.json
+│   ├── stories.json
+│   ├── series.json
+│   ├── curatedStories.json
+│   ├── generatedCache.json
+│   └── progress.json
+│
+├── /schemas
+│   ├── storyBriefSchema.js
+│   ├── storySchema.js
+│   ├── qcSchema.js
+│   └── userSchema.js
+│
+├── /utils
+│   ├── normalizeInput.js
+│   ├── hashRequest.js
+│   ├── sceneTiming.js
+│   ├── validators.js
+│   ├── safeJsonParse.js
+│   ├── logger.js
+│   └── id.js
+│
+└── /middleware
+    ├── errorHandler.js
+    └── validateRequest.js
+
+==================================================
+2. ENV VARIABLES
+==================================================
+
+Use .env variables for:
+
+OPENAI_API_KEY=
+ELEVENLABS_API_KEY=
+ELEVENLABS_VOICE_ID_SOFT=
+ELEVENLABS_VOICE_ID_DEEP=
+ELEVENLABS_VOICE_ID_BREATHY=
+ELEVENLABS_VOICE_ID_CONFIDENT=
+PORT=3000
+
+Optional later:
+SUPABASE_URL=
+SUPABASE_KEY=
+
+==================================================
+3. PACKAGE DEPENDENCIES
+==================================================
+
+Install these first:
+
+npm install express cors dotenv axios nanoid
+
+Optional:
+npm install nodemon
+
+If using schema validation:
+npm install zod
+
+==================================================
+4. RESPONSIBILITY OF EACH FILE
+==================================================
+
+----------------------------------
+server.js
+----------------------------------
+- boot express app
+- serve static frontend from /public
+- mount routes
+- apply middleware
+- start server
+
+----------------------------------
+/routes/storyRoutes.js
+----------------------------------
+Own these endpoints:
+- POST /api/plan-story
+- POST /api/generate-story
+- POST /api/qc-story
+- POST /api/rewrite-story
+- POST /api/generate-image-prompts
+- POST /api/generate-images
+- POST /api/generate-audio
+- POST /api/generate-full-story
+- POST /api/generate-variation
+- POST /api/continue-story
+- GET /api/story/:id
+
+----------------------------------
+/routes/userRoutes.js
+----------------------------------
+Own:
+- GET /api/recommendations/:userId
+- POST /api/update-progress
+
+----------------------------------
+/routes/libraryRoutes.js
+----------------------------------
+Own:
+- POST /api/save-story
+- GET /api/library/:userId
+
+----------------------------------
+/routes/seriesRoutes.js
+----------------------------------
+Own:
+- GET /api/series
+- GET /api/series/:id
+
+----------------------------------
+/services/plannerService.js
+----------------------------------
+- call planner prompt
+- turn normalised intake into hidden brief
+- validate output against schema
+
+----------------------------------
+/services/writerService.js
+----------------------------------
+- call writer prompt
+- produce story json
+- validate output
+
+----------------------------------
+/services/qcService.js
+----------------------------------
+- call QC prompt
+- score story
+- return pass/fail + rewrite strategy
+
+----------------------------------
+/services/rewriteService.js
+----------------------------------
+- apply targeted rewrite if QC fails
+- preserve story identity
+
+----------------------------------
+/services/imagePromptService.js
+----------------------------------
+- generate cover + scene prompts from brief + story
+
+----------------------------------
+/services/imageService.js
+----------------------------------
+- call image API
+- generate cover + scene images
+- cache results
+
+----------------------------------
+/services/audioService.js
+----------------------------------
+- combine scenes into narration script
+- select ElevenLabs voice
+- generate audio
+- return audio URL / file data
+
+----------------------------------
+/services/variationService.js
+----------------------------------
+- generate softer / darker / slower / more emotional / new ending / new setting / continue chemistry versions
+
+----------------------------------
+/services/continuationService.js
+----------------------------------
+- create next chapter from existing story
+
+----------------------------------
+/services/recommendationService.js
+----------------------------------
+- use user taste profile + saves + listens to recommend stories
+
+----------------------------------
+/services/memoryService.js
+----------------------------------
+- update taste profile
+- track moods, endings, replays, saves, intensities
+
+----------------------------------
+/services/storageService.js
+----------------------------------
+- read/write json files for MVP
+- abstract storage so DB can be swapped in later
+
+----------------------------------
+/prompts/*
+----------------------------------
+Store all prompt strings in separate files.
+Do not hardcode prompts directly inside routes.
+
+----------------------------------
+/data/*
+----------------------------------
+Use JSON files for MVP persistence.
+
+==================================================
+5. BUILD ORDER (VERY IMPORTANT)
+==================================================
+
+Build in this exact sequence.
+
+----------------------------------
+PHASE 1 — FOUNDATION
+----------------------------------
+
+Step 1:
+Set up Express server, static frontend, route files, basic JSON storage.
+
+Step 2:
+Create frontend shell:
+- navbar
+- page containers
+- home page structure
+- create page structure
+- browse page structure
+- series page structure
+- search page structure
+- library page structure
+- floating player container
+
+Goal:
+The app should render with mock content before AI is added.
+
+----------------------------------
+PHASE 2 — STATIC CONTENT EXPERIENCE
+----------------------------------
+
+Step 3:
+Populate curated mock content:
+- 20–30 story cards
+- 3–5 series
+- continue listening cards
+- browse/search filters
+
+Step 4:
+Implement page navigation and state switching.
+- home
+- create
+- browse
+- series
+- search
+- library
+- story detail
+- series detail
+
+Goal:
+You now have a believable premium frontend product shell.
+
+----------------------------------
+PHASE 3 — CREATE FLOW UI
+----------------------------------
+
+Step 5:
+Build Create Your Story intake form.
+- listener name
+- mood
+- intensity
+- voice feel
+- story length
+- scenario prompt
+- cinematic visuals toggle
+- emotional focus toggle
+
+Step 6:
+Build loading state card.
+- animated status
+- rotating progress messages
+
+Step 7:
+Build generated result panel.
+- cover image
+- title
+- description
+- tags
+- scene image area
+- audio player shell
+- variation button
+- continue story button
+- save button
+
+Goal:
+The flow works with mock responses before live generation.
+
+----------------------------------
+PHASE 4 — ENGINE CORE
+----------------------------------
+
+Step 8:
+Implement normalizeInput utility.
+
+Step 9:
+Implement plannerService + planner prompt.
+
+Step 10:
+Implement writerService + writer prompt.
+
+Step 11:
+Implement schemas and validation.
+
+Test:
+- submit form
+- generate hidden brief
+- generate story JSON
+- return to frontend
+
+Goal:
+Live story text generation works.
+
+----------------------------------
+PHASE 5 — QUALITY CONTROL
+----------------------------------
+
+Step 12:
+Implement qcService.
+
+Step 13:
+Implement rewriteService.
+
+Step 14:
+Wire QC into full pipeline:
+- story generated
+- QC checked
+- if weak, targeted rewrite
+- final story returned
+
+Goal:
+Outputs are more reliable before adding expensive media.
+
+----------------------------------
+PHASE 6 — VISUAL ENGINE
+----------------------------------
+
+Step 15:
+Implement imagePromptService.
+
+Step 16:
+Implement imageService.
+- generate 1 cover
+- generate 1 image per scene
+- cache images using request hash
+
+Step 17:
+Return images to frontend result card.
+
+Goal:
+Generated stories now have visuals.
+
+----------------------------------
+PHASE 7 — AUDIO ENGINE
+----------------------------------
+
+Step 18:
+Implement audioService.
+- join scene text
+- map voiceFeel to ElevenLabs voice
+- generate audio
+- return audio URL or base64 data
+
+Step 19:
+Wire audio into player.
+
+Step 20:
+Implement scene sync logic:
+- progress / duration
+- map to scene index
+- swap displayed scene image with fade transition
+
+Goal:
+Generated stories are fully playable with synced visuals.
+
+----------------------------------
+PHASE 8 — SAVE / MEMORY / PROGRESS
+----------------------------------
+
+Step 21:
+Implement save-story route and My Library.
+
+Step 22:
+Implement update-progress route.
+- save current time
+- save scene index
+- return to continue listening
+
+Step 23:
+Implement memoryService.
+Track:
+- moods selected
+- saves
+- replays
+- endings preferred
+- intensity patterns
+- preferred voice feel
+
+Step 24:
+Implement recommendations.
+
+Goal:
+The app now has a retention loop.
+
+----------------------------------
+PHASE 9 — VARIATIONS / CONTINUATIONS
+----------------------------------
+
+Step 25:
+Implement variationService.
+Variation types:
+- softer
+- darker
+- slower
+- more emotional
+- new ending
+- new setting
+- continue chemistry
+
+Step 26:
+Implement continuationService.
+Modes:
+- keep_same_mood
+- raise_stakes
+- softer_continuation
+- unresolved_continuation
+
+Step 27:
+Add variation modal UI and continue-story modal UI.
+
+Goal:
+The product now feels replayable and personal.
+
+----------------------------------
+PHASE 10 — POLISH
+----------------------------------
+
+Step 28:
+Add ambient sound layer.
+- rain
+- city at night
+- train
+- firelight
+- ocean
+- quiet room
+
+Step 29:
+Add empty / loading / error states.
+
+Step 30:
+Add final polish:
+- hover states
+- mobile responsiveness
+- image transitions
+- mini player persistence
+- recommendation rows on home
+- “For You” row
+- “Because you liked…” row
+
+==================================================
+6. FRONTEND STATE MODEL
+==================================================
+
+In app.js, manage:
+
+state = {
+  currentPage: 'home',
+  currentUserId: 'demo-user',
+  currentStory: null,
+  currentSeries: null,
+  currentSceneIndex: 0,
+  audioProgress: 0,
+  savedStories: [],
+  generatedStories: [],
+  recommendations: [],
+  continueListening: [],
+  isGenerating: false,
+  ambientMode: null,
+  ambientVolume: 0.2
+}
+
+==================================================
+7. REQUEST HASH / CACHING
+==================================================
+
+Use hashRequest.js to create deterministic signature for generation requests.
+
+Hash input:
+name + mood + intensity + length + scenario + cinematic_visuals + emotional_focus + voice_feel
+
+Before generating:
+- check generatedCache.json
+- if matching completed story exists, return cached version
+- only regenerate if user requested variation or continuation
+
+==================================================
+8. MVP STORAGE STRATEGY
+==================================================
+
+Use JSON files first.
+
+stories.json
+- all curated + generated stories
+
+users.json
+- taste profile + saved stories + generated story ids
+
+progress.json
+- current listening progress per user/story
+
+generatedCache.json
+- request hash → story id
+
+Later you can swap to DB without changing service logic much.
+
+==================================================
+9. ERROR HANDLING RULES
+==================================================
+
+Every route should:
+- validate input
+- catch API errors
+- return structured error json
+
+Error response shape:
+{
+  "error": true,
+  "message": "Something interrupted the story generation."
+}
+
+On frontend:
+- show elegant error card
+- allow retry
+
+==================================================
+10. DEFINITION OF DONE PER PHASE
+==================================================
+
+Phase complete only if:
+
+Phase 1 complete:
+- app shell loads locally
+
+Phase 2 complete:
+- all pages render with static content
+
+Phase 3 complete:
+- create flow visually works with mock result
+
+Phase 4 complete:
+- story JSON generates from real input
+
+Phase 5 complete:
+- QC rejects weak story and improves it
+
+Phase 6 complete:
+- cover + scene images generate and display
+
+Phase 7 complete:
+- audio plays and visuals sync to playback
+
+Phase 8 complete:
+- save, progress, library, continue listening work
+
+Phase 9 complete:
+- variations and continuations generate correctly
+
+Phase 10 complete:
+- polished, premium, mobile-friendly MVP
+
+==================================================
+11. WHAT TO BUILD FIRST IF TIME IS LIMITED
+==================================================
+
+If build time is constrained, prioritise:
+
+1. Home page
+2. Create Your Story page
+3. Planner + Story Writer
+4. QC
+5. Audio generation
+6. Cover image + scene images
+7. Scene sync player
+8. Save + library
+
+Do NOT spend too long on:
+- complex auth
+- perfect ambient system
+- advanced analytics
+- payment integration
+until the core loop works.
+
+==================================================
+12. FINAL PRODUCT GOAL
+==================================================
+
+By the end, MoonlitAudio must function like a real MVP:
+
+- premium streaming-style homepage
+- elegant story intake
+- hidden planning engine
+- high-quality generated story output
+- image-backed scenes
+- narrated audio
+- synced playback visuals
+- save / continue listening
+- private library
+- recommendations
+- story variations
+- continuation engine
+
+The product should feel polished, intimate, and commercially usable.

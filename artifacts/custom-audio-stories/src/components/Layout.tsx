@@ -55,7 +55,7 @@ function Navbar() {
             </Link>
 
             <Link
-              href="/gift"
+              href="/create"
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4" />
@@ -144,10 +144,10 @@ function Navbar() {
           {/* Gift CTA */}
           <div className="px-4 pb-3">
             <Link
-              href="/gift"
+              href="/create"
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-3 rounded-xl font-semibold text-sm"
             >
-              <Gift className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               Create Your Story
             </Link>
           </div>

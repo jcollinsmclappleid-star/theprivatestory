@@ -1,33 +1,33 @@
 export const STORY_NAMES = [
   // ─── FORBIDDEN DESIRE ────────────────────────────────────────────
-  { category: "Forbidden Desire", subtheme: "Office Tension", story_name: "After the Meeting" },
-  { category: "Forbidden Desire", subtheme: "Best Friend's Partner", story_name: "The One I Shouldn't Want" },
-  { category: "Forbidden Desire", subtheme: "Engaged but Tempted", story_name: "The Week Before the Wedding" },
-  { category: "Forbidden Desire", subtheme: "Age Gap (Consensual Adults)", story_name: "Everything He Knows" },
-  { category: "Forbidden Desire", subtheme: "Secret Affair", story_name: "Only in the Dark" },
-  { category: "Forbidden Desire", subtheme: "Professional Boundaries", story_name: "The Last Session" },
-  { category: "Forbidden Desire", subtheme: "Close Proximity Temptation", story_name: "Thirty-Seven Floors" },
-  { category: "Forbidden Desire", subtheme: "Hidden Relationship", story_name: "What Nobody Knows" },
-  { category: "Forbidden Desire", subtheme: "Unexpected Attraction", story_name: "I Wasn't Looking For You" },
-  { category: "Forbidden Desire", subtheme: "Create Your Own Forbidden Scenario", story_name: "My Forbidden" },
+  { category: "Forbidden Desire", subtheme: "Office Tension", story_name: "After the Meeting", description: "The meeting ends. Everyone leaves. You stay. He closes the door. The electricity between you becomes inescapable." },
+  { category: "Forbidden Desire", subtheme: "Best Friend's Partner", story_name: "The One I Shouldn't Want", description: "You weren't supposed to want him. He wasn't supposed to notice. But every time he looks at you, something shifts—dangerous, undeniable, impossible to ignore." },
+  { category: "Forbidden Desire", subtheme: "Engaged but Tempted", story_name: "The Week Before the Wedding", description: "Seven days until forever. But something feels unfinished—like a question that needs answering before you say yes to anyone else." },
+  { category: "Forbidden Desire", subtheme: "Age Gap (Consensual Adults)", story_name: "Everything He Knows", description: "He's older. Practiced. He moves with the certainty of someone who knows exactly what he wants. And tonight, he's looking at you like you're all of it." },
+  { category: "Forbidden Desire", subtheme: "Secret Affair", story_name: "Only in the Dark", description: "This exists only in the spaces nobody sees. Stolen moments. Careful touches. The kind of desire that has nowhere to exist but everywhere to hide." },
+  { category: "Forbidden Desire", subtheme: "Professional Boundaries", story_name: "The Last Session", description: "The professional boundaries are about to shatter. And he's been waiting for this moment longer than either of you wants to admit." },
+  { category: "Forbidden Desire", subtheme: "Close Proximity Temptation", story_name: "Thirty-Seven Floors", description: "Trapped in an elevator with him. Forty-five seconds of eternity. The air is thick. Everything unsaid is finally impossible to ignore." },
+  { category: "Forbidden Desire", subtheme: "Hidden Relationship", story_name: "What Nobody Knows", description: "To the world, you're strangers. Behind closed doors, he moves like he knows every part of you. Tonight, the pretending ends." },
+  { category: "Forbidden Desire", subtheme: "Unexpected Attraction", story_name: "I Wasn't Looking For You", description: "He wasn't supposed to be here. You weren't looking. But the moment he appears, wanting becomes the only thing that makes sense." },
+  { category: "Forbidden Desire", subtheme: "Create Your Own Forbidden Scenario", story_name: "My Forbidden", description: "Your forbidden desire. Your rules. What's the line you've been afraid to cross?" },
 
   // ─── DARK ROMANCE ─────────────────────────────────────────────────
-  { category: "Dark Romance", subtheme: "Mysterious Stranger", story_name: "No Last Name" },
-  { category: "Dark Romance", subtheme: "Morally Grey Hero", story_name: "He Never Apologises" },
-  { category: "Dark Romance", subtheme: "Obsessive Attraction", story_name: "You Are All I Think About" },
-  { category: "Dark Romance", subtheme: "Possessive Energy", story_name: "Mine" },
-  { category: "Dark Romance", subtheme: "Dangerous Attraction", story_name: "The Kind of Man You Don't Recover From" },
-  { category: "Dark Romance", subtheme: "Emotional Walls", story_name: "Every Wall Has a Door" },
-  { category: "Dark Romance", subtheme: "Hidden Identity", story_name: "The Man Behind the Name" },
-  { category: "Dark Romance", subtheme: "Create Your Own Dark Romance", story_name: "My Dark" },
+  { category: "Dark Romance", subtheme: "Mysterious Stranger", story_name: "No Last Name", description: "He won't tell you his name. He won't tell you anything. But the way he touches you like he owns you—that says everything." },
+  { category: "Dark Romance", subtheme: "Morally Grey Hero", story_name: "He Never Apologises", description: "He's done things. Bad things. But when he looks at you, there's no apology in his eyes—only inevitability." },
+  { category: "Dark Romance", subtheme: "Obsessive Attraction", story_name: "You Are All I Think About", description: "He's obsessed. Completely consumed. The thought of you controls everything he does. And he needs you to know it." },
+  { category: "Dark Romance", subtheme: "Possessive Energy", story_name: "Mine", description: "He doesn't share. He doesn't negotiate. You belong to him, and tonight he's going to make sure you never forget it." },
+  { category: "Dark Romance", subtheme: "Dangerous Attraction", story_name: "The Kind of Man You Don't Recover From", description: "He's the kind of dangerous that feels like coming home. The kind that ruins you for anyone else." },
+  { category: "Dark Romance", subtheme: "Emotional Walls", story_name: "Every Wall Has a Door", description: "Every wall he's built is cracking. Tonight, you're going to find the way through." },
+  { category: "Dark Romance", subtheme: "Hidden Identity", story_name: "The Man Behind the Name", description: "Who he is in public is a lie. Who he becomes behind closed doors with you—that's the only truth that matters." },
+  { category: "Dark Romance", subtheme: "Create Your Own Dark Romance", story_name: "My Dark", description: "Your dark fantasy. The version of desire you only admit to in the dark." },
 
   // ─── SLOW BURN ────────────────────────────────────────────────────
-  { category: "Slow Burn Romance", subtheme: "Friends to Lovers", story_name: "The Night Everything Changed" },
-  { category: "Slow Burn Romance", subtheme: "Colleagues Over Time", story_name: "Two Hundred Days" },
-  { category: "Slow Burn Romance", subtheme: "Almost Moments", story_name: "Almost, Almost, Finally" },
-  { category: "Slow Burn Romance", subtheme: "Unspoken Feelings", story_name: "Everything I Didn't Say" },
-  { category: "Slow Burn Romance", subtheme: "Childhood Friends Reconnect", story_name: "Who You've Become" },
-  { category: "Slow Burn Romance", subtheme: "Create Your Own Slow Burn", story_name: "My Slow Burn" },
+  { category: "Slow Burn Romance", subtheme: "Friends to Lovers", story_name: "The Night Everything Changed", description: "He's always been there. Safe. Familiar. But tonight, something shifts—and suddenly, you can't unsee what you've always wanted." },
+  { category: "Slow Burn Romance", subtheme: "Colleagues Over Time", story_name: "Two Hundred Days", description: "Two hundred days of stolen glances. Two hundred days of almost. Tonight, the waiting ends." },
+  { category: "Slow Burn Romance", subtheme: "Almost Moments", story_name: "Almost, Almost, Finally", description: "Almost-kisses. Almost-touches. Almost-confessions. Until finally, there's nothing left to wait for." },
+  { category: "Slow Burn Romance", subtheme: "Unspoken Feelings", story_name: "Everything I Didn't Say", description: "Every word you didn't say is written all over your body. Tonight, he reads every one." },
+  { category: "Slow Burn Romance", subtheme: "Childhood Friends Reconnect", story_name: "Who You've Become", description: "He knew you as a girl. He's meeting the woman you've become for the first time tonight—and he can't look away." },
+  { category: "Slow Burn Romance", subtheme: "Create Your Own Slow Burn", story_name: "My Slow Burn", description: "Your slow burn story. The anticipation that's been building for so long." },
 
   // ─── ROLEPLAY FANTASY ─────────────────────────────────────────────
   { category: "Roleplay Fantasy", subtheme: "Boss & Employee", story_name: "Stay After Everyone Leaves" },
@@ -127,4 +127,11 @@ export function getStoryName(categoryId: string, subthemeId: string, categoryNam
     (s) => s.category === categoryName && s.subtheme === subthemeId
   );
   return entry?.story_name || `${categoryName}: ${subthemeId}`;
+}
+
+export function getStoryDescription(categoryName: string, subthemeId: string): string {
+  const entry = STORY_NAMES.find(
+    (s) => s.category === categoryName && s.subtheme === subthemeId
+  );
+  return entry?.description || "A premium audio erotic story designed to immerse you in desire.";
 }

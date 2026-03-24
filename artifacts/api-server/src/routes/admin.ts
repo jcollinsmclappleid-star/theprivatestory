@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { storiesStore } from "../lib/storage.js";
 import { buildPrompt, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getNonCustomSubthemes, STORY_CATEGORIES } from "../lib/storyCategories.js";
-import { getStoryName } from "../lib/storyNames.js";
+import { getStoryName, getStoryDescription } from "../lib/storyNames.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
@@ -166,17 +166,10 @@ router.post("/generate-one", async (req, res) => {
       }
     }
 
-    // Use predefined story name, fallback to generated name if not found
+    // Use predefined story name and description
     const categoryName = STORY_CATEGORIES.find(c => c.id === categoryId)?.name ?? prompt.metadata.category;
     const title = getStoryName(categoryId, subthemeId, categoryName);
-
-    // Extract description — first non-heading paragraph
-    const paragraphs = rawStoryText.split(/\n\n+/).filter((p) => p.trim().length > 30);
-    const description =
-      paragraphs
-        .find((p) => !p.startsWith("#") && !p.startsWith("{"))
-        ?.replace(/[*_`]/g, "")
-        .slice(0, 220) ?? "";
+    const description = getStoryDescription(categoryName, subthemeId);
 
     send("status", { phase: "story_written", title, dna: storyDna });
 

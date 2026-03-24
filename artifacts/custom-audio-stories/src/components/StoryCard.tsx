@@ -59,12 +59,20 @@ export function StoryCard({ story, className = "", showProgress, progress }: Sto
             )}
           </div>
 
-          {/* Content */}
+          {/* Title & Description Overlay */}
           <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col justify-end">
             <p className="text-xs font-medium text-primary mb-1 tracking-wide">{story.mood}</p>
             <h3 className="text-lg font-display font-semibold text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors">
               {story.title}
             </h3>
+            
+            {/* Hooking Description - Shows on hover */}
+            {story.description && (
+              <p className="text-xs text-foreground/70 mt-2 line-clamp-2 group-hover:line-clamp-3 transition-all">
+                {story.description}
+              </p>
+            )}
+            
             <p className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
               <span>{story.duration}</span>
               <span className="w-1 h-1 rounded-full bg-border" />

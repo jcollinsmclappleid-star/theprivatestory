@@ -96,8 +96,8 @@ export default function StoryDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 md:bg-gradient-to-r md:from-transparent md:to-background to-transparent" />
       </div>
 
-      {/* Controls Panel (Right side on desktop, bottom on mobile) */}
-      <div className="relative w-full md:w-2/5 h-[50vh] md:h-screen flex flex-col justify-end md:justify-center p-8 md:p-16 z-10">
+      {/* Controls & Read-Along Panel */}
+      <div className="relative w-full md:w-2/5 h-[50vh] md:h-screen flex flex-col md:justify-center p-8 md:p-16 z-10 overflow-y-auto">
         <button 
           onClick={() => window.history.back()} 
           className="absolute top-8 right-8 text-muted-foreground hover:text-foreground transition-colors"
@@ -105,7 +105,8 @@ export default function StoryDetail() {
           Close
         </button>
 
-        <div className="max-w-md w-full mx-auto">
+        {/* Header & Controls */}
+        <div className="max-w-md w-full mx-auto flex-shrink-0 mb-8">
           <div className="mb-8">
             <span className="text-primary font-medium tracking-widest uppercase text-xs mb-3 block">
               {story.mood}
@@ -113,7 +114,7 @@ export default function StoryDetail() {
             <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4 leading-tight">
               {story.title}
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base mb-6 line-clamp-3">
+            <p className="text-muted-foreground text-sm md:text-base mb-6">
               {story.description}
             </p>
           </div>
@@ -182,6 +183,20 @@ export default function StoryDetail() {
             </button>
           </div>
         </div>
+
+        {/* Read-Along Text */}
+        {story.scenes && story.scenes.length > 0 && (
+          <div className="flex-1 mt-12 pt-8 border-t border-white/10">
+            <div className="text-xs font-medium text-primary uppercase tracking-widest mb-4">
+              Read Along
+            </div>
+            <div className="prose prose-invert max-w-none text-sm leading-relaxed text-muted-foreground">
+              <p className="whitespace-pre-wrap text-foreground/80">
+                {story.scenes[0]?.text || story.description}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

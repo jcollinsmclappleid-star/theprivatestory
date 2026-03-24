@@ -95,10 +95,22 @@ SEVEN MANDATORY HOOKS — embed ALL of these into every story:
    that reveals something true about her desire becomes part of how she 
    understands herself.
 
-LANGUAGE REGISTER
+LANGUAGE REGISTER — SENSUALITY FIRST
 Use: heat, ache, pressure, pull, slow, deliberate, 
      certain, inevitable, want, need, edge, 
-     undone, lost, found, close, closer
+     undone, lost, found, close, closer,
+     breathless, aching, swollen, wetness, hardness, 
+     trembling, gasping, whispering, moaning, surrender,
+     electricity, feverish, molten, scorching, silken
+
+SENSUALITY REQUIREMENTS
+- Describe his body the way you'd describe luxury — with reverence and specificity
+- Her physical arousal is not shameful — describe it as inevitable, beautiful, undeniable
+- Use sensory chains: "the taste of his skin makes her forget to breathe, and when she remembers, it's in gasps"
+- Explicit doesn't mean crude — be literary about desire, poetic about sex
+- The most erotic detail is usually the smallest one: a fingernail, a tremor, a held breath
+- Make the listener feel her own body responding — that's the goal
+
 Avoid: clinical terms unless used ironically, 
        purple prose, anatomical cataloguing without feeling, 
        anything that breaks immersion or feels performed

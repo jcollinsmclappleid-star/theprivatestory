@@ -21,7 +21,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center">
-            <Logo size={32} />
+            <Logo height={56} />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
@@ -109,8 +109,8 @@ function Footer() {
   return (
     <footer className="border-t border-border/40 bg-background/50 py-12 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
-        <div className="mb-3">
-          <Logo size={38} />
+        <div className="mb-4">
+          <Logo height={160} />
         </div>
         <p className="text-muted-foreground text-sm max-w-md mb-6">
           Personalised audio stories, shaped around you.

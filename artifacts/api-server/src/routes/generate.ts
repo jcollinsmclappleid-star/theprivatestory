@@ -455,20 +455,19 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
 
   const passed = scoreTotal >= 7.5 && subScores.ending_strength >= 7;
 
+  // Hard rules for targeted rewrite strategies — applied independently of pass status.
+  // The pipeline decides whether to regenerate (score_total < 7.5) or targeted-rewrite.
+  // "regenerate" is intentionally NOT a valid rewrite_strategy value here; it is
+  // handled as pipeline control logic in generate-full-story based on score_total.
   let rewriteStrategy: string | null = null;
-  if (!passed) {
-    if (scoreTotal < 6.0) {
-      // Story is fundamentally weak — full regeneration required
-      rewriteStrategy = "regenerate";
-    } else if (subScores.originality < 6.5) {
-      rewriteStrategy = "rotate_dynamic_or_setting";
-    } else if (subScores.specificity < 7) {
-      rewriteStrategy = "increase_specificity";
-    } else if (subScores.ending_strength < 7) {
-      rewriteStrategy = "rewrite_ending";
-    } else {
-      rewriteStrategy = parsed.rewrite_strategy ?? "rewrite_ending";
-    }
+  if (subScores.ending_strength < 7) {
+    rewriteStrategy = "rewrite_ending";
+  } else if (subScores.specificity < 7) {
+    rewriteStrategy = "increase_specificity";
+  } else if (subScores.originality < 6.5) {
+    rewriteStrategy = "rotate_dynamic_or_setting";
+  } else if (!passed) {
+    rewriteStrategy = parsed.rewrite_strategy ?? "rewrite_ending";
   }
 
   return {
@@ -844,15 +843,24 @@ router.post("/generate-full-story", async (req, res) => {
     // Step 5: QC evaluation
     let qcResult = await qcStory(brief, story);
 
-    // Step 6: Fix QC failures — max one correction pass
-    if (!qcResult.passed && qcResult.rewrite_strategy) {
-      if (qcResult.rewrite_strategy === "regenerate") {
-        // Full regeneration: re-plan with a fresh brief and re-write from scratch
+    // Step 6: Apply hard rules — max one correction pass.
+    // Hard rules (per spec):
+    //   score_total < 7.5           → full regeneration (re-plan + re-write)
+    //   ending_strength < 7         → targeted rewrite_ending
+    //   specificity < 7             → targeted increase_specificity
+    //   originality < 6.5           → targeted rotate_dynamic_or_setting
+    // All four rules are checked independently (not only when story "fails").
+    const needsRegenerate = qcResult.score_total < 7.5;
+    const needsTargetedFix = !needsRegenerate && qcResult.rewrite_strategy !== null;
+
+    if (needsRegenerate || needsTargetedFix) {
+      if (needsRegenerate) {
+        // Full regeneration: fresh plan + fresh write from scratch
         brief = await planStory(intake);
         story = await writeStoryFromBrief(brief, intake.listenerName);
       } else {
         // Targeted rewrite of the weakest dimension only
-        story = await rewriteStory(brief, story, qcResult.rewrite_strategy);
+        story = await rewriteStory(brief, story, qcResult.rewrite_strategy!);
       }
       // Re-run QC once after correction (result reflects final quality)
       qcResult = await qcStory(brief, story);

@@ -530,86 +530,16 @@ export default function Admin() {
             </div>
           </div>
         ) : (
-          <>
-            {selectedDraftId && drafts.find(d => d.storyId === selectedDraftId) ? (
-              <>
-                {/* Draft review header */}
-                {(() => {
-                  const draft = drafts.find(d => d.storyId === selectedDraftId)!;
-                  return (
-                    <>
-                      <div className="px-6 py-4 border-b border-white/10 flex-shrink-0 bg-white/5">
-                        <h2 className="font-semibold text-lg mb-1">{draft.title}</h2>
-                        <p className="text-white/60 text-sm mb-3">{draft.description}</p>
-                        {draft.hasAudio && (
-                          <Badge variant="outline" className="text-xs border-emerald-500/40 text-emerald-400 mb-3">
-                            ✓ Audio ready
-                          </Badge>
-                        )}
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => updateDraftStatus(draft.storyId, "published")}
-                            className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-2 rounded-lg font-medium"
-                          >
-                            ✓ Publish
-                          </button>
-                          <button
-                            onClick={() => updateDraftStatus(draft.storyId, "skipped")}
-                            className="flex-1 bg-white/10 hover:bg-white/15 text-white/70 text-sm py-2 rounded-lg"
-                          >
-                            Skip
-                          </button>
-                        </div>
-                      </div>
-                      <ScrollArea className="flex-1">
-                        <div className="p-6 space-y-6">
-                          {/* Full story text */}
-                          {draft.scenes && draft.scenes[0]?.text && (
-                            <div>
-                              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3 sticky top-0 bg-black/50 py-2">Full Story</h3>
-                              <div className="prose prose-invert max-w-none">
-                                <div className="text-white/80 leading-relaxed whitespace-pre-wrap text-sm font-light">
-                                  {draft.scenes[0].text}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Story DNA */}
-                          {Object.keys(draft.dna).length > 0 && (
-                            <div>
-                              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3">Story DNA</h3>
-                              <div className="grid grid-cols-2 gap-2">
-                                {Object.entries(draft.dna)
-                                  .filter(([k]) => !["category", "subtheme", "story_text"].includes(k))
-                                  .map(([k, v]) => (
-                                    <div key={k} className="bg-white/5 rounded px-3 py-2">
-                                      <div className="text-white/40 text-[10px] font-semibold">{k.replace(/_/g, " ").toUpperCase()}</div>
-                                      <div className="text-white/80 text-xs truncate mt-1">{String(v)}</div>
-                                    </div>
-                                  ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </>
-                  );
-                })()}
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center text-white/30">
-                  <div className="text-4xl mb-3">📚</div>
-                  <div className="text-sm">
-                    {drafts.length > 0
-                      ? "Click a draft on the left to review its full story."
-                      : "No drafts yet. Go to Generate tab and run stories."}
-                  </div>
-                </div>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/30">
+              <div className="text-4xl mb-3">📚</div>
+              <div className="text-sm">
+                {drafts.length > 0
+                  ? "Click a draft on the left to review its full story."
+                  : "No drafts yet. Go to Generate tab and run stories."}
               </div>
-            )}
-          </>
+            </div>
+          </div>
         )}
       </div>
     </div>

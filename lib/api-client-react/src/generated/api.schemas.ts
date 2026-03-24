@@ -121,6 +121,8 @@ export interface GenerateStoryRequest {
   scenarioPrompt: string;
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
+  /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
+  bypassCache?: boolean;
 }
 
 export interface GenerateStoryFromBriefRequest {

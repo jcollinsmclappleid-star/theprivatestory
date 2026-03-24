@@ -24,6 +24,7 @@ interface GenerateStoryRequest {
   scenarioPrompt: string;
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
+  bypassCache?: boolean;
 }
 
 interface ScenePlan {
@@ -151,10 +152,14 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
 
   const rawScenario = raw.scenarioPrompt?.trim() ?? "";
   const meaningfulWords = rawScenario.split(/\s+/).filter((w) => w.length > 2);
-  const scenarioPrompt =
-    meaningfulWords.length < 6
-      ? "an unexpected late evening encounter that becomes emotionally charged"
-      : rawScenario;
+  let scenarioPrompt: string;
+  if (meaningfulWords.length === 0) {
+    scenarioPrompt = "an unexpected late evening encounter that becomes emotionally charged";
+  } else if (meaningfulWords.length < 6) {
+    scenarioPrompt = `${rawScenario} — ${mood.toLowerCase()} atmosphere, ${intensity.toLowerCase()} emotional tone`;
+  } else {
+    scenarioPrompt = rawScenario;
+  }
 
   return {
     listenerName: raw.listenerName?.trim() ?? "",
@@ -452,7 +457,10 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
 
   let rewriteStrategy: string | null = null;
   if (!passed) {
-    if (subScores.originality < 6.5) {
+    if (scoreTotal < 6.0) {
+      // Story is fundamentally weak — full regeneration required
+      rewriteStrategy = "regenerate";
+    } else if (subScores.originality < 6.5) {
       rewriteStrategy = "rotate_dynamic_or_setting";
     } else if (subScores.specificity < 7) {
       rewriteStrategy = "increase_specificity";
@@ -809,14 +817,16 @@ router.post("/generate-full-story", async (req, res) => {
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
 
-  // Step 2: Create request hash and check persistent cache
+  // Step 2: Create request hash and check persistent cache (bypass for variations/continuations)
   const requestHash = makeRequestHash(intake);
-  const cachedStoryId = generatedCacheStore.get(requestHash);
-  if (cachedStoryId) {
-    const cachedStory = storiesStore.get(cachedStoryId);
-    if (cachedStory) {
-      res.json({ ...cachedStory, cached: true });
-      return;
+  if (!rawIntake.bypassCache) {
+    const cachedStoryId = generatedCacheStore.get(requestHash);
+    if (cachedStoryId) {
+      const cachedStory = storiesStore.get(cachedStoryId);
+      if (cachedStory) {
+        res.json({ ...cachedStory, cached: true });
+        return;
+      }
     }
   }
 
@@ -824,7 +834,7 @@ router.post("/generate-full-story", async (req, res) => {
 
   const pipeline = async () => {
     // Step 3: Plan
-    const brief = await planStory(intake);
+    let brief = await planStory(intake);
     const planKey = getCacheKey({ intake });
     briefCache.set(planKey, brief);
 
@@ -834,10 +844,17 @@ router.post("/generate-full-story", async (req, res) => {
     // Step 5: QC evaluation
     let qcResult = await qcStory(brief, story);
 
-    // Step 6: Targeted rewrite if QC failed (max one rewrite)
+    // Step 6: Fix QC failures — max one correction pass
     if (!qcResult.passed && qcResult.rewrite_strategy) {
-      story = await rewriteStory(brief, story, qcResult.rewrite_strategy);
-      // Re-run QC once after rewrite
+      if (qcResult.rewrite_strategy === "regenerate") {
+        // Full regeneration: re-plan with a fresh brief and re-write from scratch
+        brief = await planStory(intake);
+        story = await writeStoryFromBrief(brief, intake.listenerName);
+      } else {
+        // Targeted rewrite of the weakest dimension only
+        story = await rewriteStory(brief, story, qcResult.rewrite_strategy);
+      }
+      // Re-run QC once after correction (result reflects final quality)
       qcResult = await qcStory(brief, story);
     }
 

@@ -550,6 +550,9 @@ components:
           type: boolean
         emotionalFocus:
           type: boolean
+        bypassCache:
+          type: boolean
+          description: When true, skips request-hash cache lookup (used for variation and continuation requests)
       required:
         - listenerName
         - mood

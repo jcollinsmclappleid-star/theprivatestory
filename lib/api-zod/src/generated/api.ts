@@ -155,6 +155,12 @@ export const PlanStoryBody = zod.object({
   scenarioPrompt: zod.string(),
   cinematicVisuals: zod.boolean().optional(),
   emotionalFocus: zod.boolean().optional(),
+  bypassCache: zod
+    .boolean()
+    .optional()
+    .describe(
+      "When true, skips request-hash cache lookup (used for variation and continuation requests)",
+    ),
 });
 
 export const PlanStoryResponse = zod.object({
@@ -409,6 +415,12 @@ export const GenerateFullStoryBody = zod.object({
   scenarioPrompt: zod.string(),
   cinematicVisuals: zod.boolean().optional(),
   emotionalFocus: zod.boolean().optional(),
+  bypassCache: zod
+    .boolean()
+    .optional()
+    .describe(
+      "When true, skips request-hash cache lookup (used for variation and continuation requests)",
+    ),
 });
 
 export const GenerateFullStoryResponse = zod.object({

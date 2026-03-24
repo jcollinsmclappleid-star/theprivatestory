@@ -83,20 +83,23 @@ export default function Admin() {
     if (!user) return;
     fetch(`${API_BASE}/api/admin/library?status=draft`, { credentials: "include" })
       .then((r) => r.json())
-      .then((data) => setDrafts(data.stories ?? []))
+      .then((data) => {
+        const normalized: GeneratedDraft[] = (data.stories ?? []).map((s: Record<string, unknown>) => ({
+          storyId: (s.storyId ?? s.id) as string,
+          title: (s.title ?? "") as string,
+          description: (s.description ?? "") as string,
+          coverImageUrl: (s.coverImageUrl ?? (s.images as Record<string, unknown>)?.cover ?? "") as string,
+          hasAudio: !!(s.audioUrl),
+          categoryId: (s.categoryId ?? "") as string,
+          subthemeId: (s.subthemeId ?? "") as string,
+          dna: (s.dna ?? s.storyDna ?? {}) as Record<string, string>,
+          status: (s.status ?? "draft") as "draft" | "published" | "skipped",
+          scenes: (s.scenes ?? []) as Array<{ id: number; text: string; heading: string }>,
+        }));
+        setDrafts(normalized);
+      })
       .catch(() => {});
   }, [user]);
-
-  useEffect(() => {
-    loadDrafts();
-  }, [loadDrafts]);
-
-  // ── Load full story text when draft is selected ────────────────────────────
-  useEffect(() => {
-    if (!selectedDraftId) return;
-    // Story text is already loaded if it was just generated, otherwise it will show fallback
-    // In a real app, you'd fetch the full story from an API endpoint here
-  }, [selectedDraftId]);
 
   // ── Run generation for one item via SSE ───────────────────────────────────
   const generateOne = useCallback(
@@ -221,6 +224,18 @@ export default function Admin() {
     loadDrafts();
   };
 
+  const clearAllDrafts = async () => {
+    await Promise.all(drafts.map((d) =>
+      fetch(`${API_BASE}/api/admin/stories/${d.storyId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ status: "skipped" }),
+      })
+    ));
+    loadDrafts();
+  };
+
   // ── Access guard ───────────────────────────────────────────────────────────
   if (isLoading) {
     return (
@@ -257,7 +272,7 @@ export default function Admin() {
     <>
     <div className="flex h-screen bg-[#0a0a0a] text-white overflow-hidden">
       {/* ── LEFT PANEL — Queue ──────────────────────────────────────────────── */}
-      <div className="w-80 flex-shrink-0 border-r border-white/10 flex flex-col">
+      <div className="w-full md:w-80 flex-shrink-0 border-r border-white/10 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center justify-between mb-1">
@@ -345,41 +360,51 @@ export default function Admin() {
             </div>
           </ScrollArea>
         ) : (
-          <ScrollArea className="flex-1">
-            <div className="p-2 space-y-2">
-              {drafts.length === 0 && (
-                <div className="text-white/40 text-xs p-3 text-center">No drafts yet. Generate stories first.</div>
-              )}
-              {drafts.map((draft) => (
-                <div
-                  key={draft.storyId}
-                  onClick={() => setSelectedDraftId(draft.storyId)}
-                  className={`border rounded-lg overflow-hidden cursor-pointer transition-all ${
-                    selectedDraftId === draft.storyId
-                      ? "border-rose-500/50 bg-rose-500/10"
-                      : "border-white/10 hover:border-white/20 hover:bg-white/5"
-                  }`}
+          <>
+            {drafts.length > 0 && (
+              <div className="px-3 py-2 border-b border-white/10 flex items-center justify-between flex-shrink-0">
+                <span className="text-xs text-white/50">{drafts.length} draft{drafts.length !== 1 ? "s" : ""}</span>
+                <button
+                  onClick={clearAllDrafts}
+                  className="text-xs text-rose-400 hover:text-rose-300 font-medium"
                 >
-                  {draft.coverImageUrl && (
-                    <img
-                      src={draft.coverImageUrl}
-                      alt={draft.title}
-                      className="w-full h-20 object-cover"
-                    />
-                  )}
-                  <div className="p-2">
-                    <div className="font-medium text-xs leading-tight mb-1">{draft.title}</div>
-                    <div className="text-white/50 text-xs line-clamp-2 mb-2">{draft.description}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+                  Clear All
+                </button>
+              </div>
+            )}
+            <ScrollArea className="flex-1">
+              <div className="p-3 space-y-3">
+                {drafts.length === 0 && (
+                  <div className="text-white/40 text-sm p-6 text-center">No drafts yet. Generate stories first.</div>
+                )}
+                {drafts.map((draft) => (
+                  <button
+                    key={draft.storyId}
+                    onClick={() => setSelectedDraftId(draft.storyId)}
+                    className="w-full text-left border border-white/10 rounded-xl overflow-hidden hover:border-white/30 active:scale-[0.99] transition-all"
+                  >
+                    {draft.coverImageUrl && (
+                      <img
+                        src={draft.coverImageUrl}
+                        alt={draft.title}
+                        className="w-full h-32 object-cover"
+                      />
+                    )}
+                    <div className="p-3">
+                      <div className="font-semibold text-sm leading-snug mb-1">{draft.title}</div>
+                      <div className="text-white/50 text-xs leading-relaxed line-clamp-2">{draft.description}</div>
+                      <div className="mt-2 text-xs text-rose-400 font-medium">Tap to read →</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </>
         )}
       </div>
 
-      {/* ── RIGHT PANEL — Prompt Transparency + Live Log ─────────────────────── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* ── RIGHT PANEL — Prompt Transparency + Live Log (desktop only) ────── */}
+      <div className="hidden md:flex flex-1 flex-col overflow-hidden">
         {activeView === "generate" && selectedItem ? (
           <>
             {/* Story header */}
@@ -547,21 +572,21 @@ export default function Admin() {
 
     {/* ── MODAL — Draft Detail View ────────────────────────────────────────── */}
     {selectedDraftId && drafts.find(d => d.storyId === selectedDraftId) && (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4 md:bg-black/80 md:backdrop-blur-sm">
         {(() => {
           const draft = drafts.find(d => d.storyId === selectedDraftId)!;
           return (
-            <div className="bg-black border border-white/20 rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="bg-[#0f0f0f] border-t md:border border-white/20 w-full md:max-w-2xl h-[95vh] md:max-h-[90vh] md:rounded-xl flex flex-col overflow-hidden">
               {/* Header */}
-              <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex-shrink-0">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-2xl mb-1">{draft.title}</h2>
-                    <p className="text-white/60 text-sm">{draft.description}</p>
+              <div className="px-5 pt-5 pb-4 border-b border-white/10 flex-shrink-0">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-semibold text-xl leading-tight mb-1">{draft.title}</h2>
+                    <p className="text-white/50 text-sm leading-relaxed">{draft.description}</p>
                   </div>
                   <button
                     onClick={() => setSelectedDraftId(null)}
-                    className="text-white/50 hover:text-white text-2xl -mt-1 -mr-2 flex-shrink-0"
+                    className="text-white/40 hover:text-white text-2xl flex-shrink-0 -mt-0.5"
                   >
                     ×
                   </button>
@@ -569,28 +594,26 @@ export default function Admin() {
               </div>
 
               {/* Story Text */}
-              <ScrollArea className="flex-1 overflow-hidden">
-                <div className="p-6">
+              <div className="flex-1 overflow-y-auto">
+                <div className="px-5 py-6">
                   {draft.scenes && draft.scenes[0]?.text ? (
-                    <div className="prose prose-invert max-w-none">
-                      <div className="text-white/80 leading-relaxed whitespace-pre-wrap text-base font-light">
-                        {draft.scenes[0].text}
-                      </div>
-                    </div>
+                    <p className="text-white/80 leading-loose text-base font-light whitespace-pre-wrap">
+                      {draft.scenes[0].text}
+                    </p>
                   ) : (
-                    <div className="text-white/40 text-center py-8">Story text not available</div>
+                    <p className="text-white/40 text-center py-12">Story text not available</p>
                   )}
                 </div>
-              </ScrollArea>
+              </div>
 
               {/* Actions Footer */}
-              <div className="px-6 py-4 border-t border-white/10 bg-white/5 flex-shrink-0 flex gap-3">
+              <div className="px-5 py-4 pb-8 md:pb-4 border-t border-white/10 flex-shrink-0 flex gap-3">
                 <button
                   onClick={() => {
                     updateDraftStatus(draft.storyId, "published");
                     setSelectedDraftId(null);
                   }}
-                  className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-3 rounded-lg font-medium transition"
+                  className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-3.5 rounded-xl font-semibold transition"
                 >
                   ✓ Publish
                 </button>
@@ -599,15 +622,15 @@ export default function Admin() {
                     updateDraftStatus(draft.storyId, "skipped");
                     setSelectedDraftId(null);
                   }}
-                  className="flex-1 bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 text-sm py-3 rounded-lg font-medium transition"
+                  className="flex-1 bg-white/10 hover:bg-white/15 text-white/70 text-sm py-3.5 rounded-xl font-medium transition"
                 >
                   Delete
                 </button>
                 <button
                   onClick={() => setSelectedDraftId(null)}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-sm py-3 rounded-lg font-medium transition"
+                  className="px-5 bg-white/5 hover:bg-white/10 text-white/50 text-sm py-3.5 rounded-xl transition"
                 >
-                  Close
+                  ←
                 </button>
               </div>
             </div>

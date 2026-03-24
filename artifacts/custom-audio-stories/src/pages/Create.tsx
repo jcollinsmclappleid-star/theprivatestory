@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const formSchema = z.object({
   listenerName: z.string().optional().default(""),
@@ -48,7 +50,35 @@ export default function Create() {
   const [step, setStep] = useState<"form" | "generating" | "result">("form");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
+  const [resultSaved, setResultSaved] = useState(false);
+  const [savePending, setSavePending] = useState(false);
   const { play, isPlaying, togglePlay, progress, currentStory } = useAudioPlayer();
+
+  const handleResultSave = useCallback(async () => {
+    if (!result || savePending) return;
+    setSavePending(true);
+    const userId = getUserId();
+    const nextSaved = !resultSaved;
+    setResultSaved(nextSaved);
+    try {
+      await fetch(`${API_BASE}/api/save-story`, {
+        method: nextSaved ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, storyId: result.id }),
+      });
+      if (nextSaved) {
+        fetch(`${API_BASE}/api/update-taste`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, mood: result.mood, event: "saved" }),
+        }).catch(() => {});
+      }
+    } catch {
+      setResultSaved(!nextSaved);
+    } finally {
+      setSavePending(false);
+    }
+  }, [result, resultSaved, savePending]);
 
   const generateMutation = useGenerateFullStory({
     mutation: {
@@ -458,6 +488,18 @@ export default function Create() {
                       Connect ElevenLabs for audio narration
                     </div>
                   )}
+                  <button
+                    onClick={handleResultSave}
+                    disabled={savePending}
+                    className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
+                      resultSaved
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    }`}
+                    title={resultSaved ? "Saved to library" : "Save to library"}
+                  >
+                    <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
+                  </button>
                   <span className="text-muted-foreground text-sm">
                     {result.duration} · {result.scenes.length} scenes
                   </span>

@@ -152,6 +152,10 @@ router.post("/update-taste", (req, res) => {
   if (endingType) {
     profile.preferredEndings[endingType] = (profile.preferredEndings[endingType] ?? 0) + weight;
   }
+  if (relationshipDynamic) {
+    if (!profile.preferredRelationshipDynamics) profile.preferredRelationshipDynamics = {};
+    profile.preferredRelationshipDynamics[relationshipDynamic] = (profile.preferredRelationshipDynamics[relationshipDynamic] ?? 0) + weight;
+  }
 
   usersStore.set(userId, profile);
   res.json({ updated: true });

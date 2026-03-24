@@ -47,6 +47,7 @@ function useRecommendations() {
 function ContinueCard({ story }: { story: Story & { progress?: Record<string, unknown> } }) {
   const { play } = useAudioPlayer();
   const progressSeconds = (story.progress?.audioProgressSeconds as number) ?? 0;
+  const sceneIndex = (story.progress?.sceneIndex as number) ?? 0;
   const sceneCount = story.scenes?.length ?? 1;
   const progressFraction = Math.min(progressSeconds / 300, 1);
 
@@ -72,7 +73,10 @@ function ContinueCard({ story }: { story: Story & { progress?: Record<string, un
               style={{ width: `${progressFraction * 100}%` }}
             />
           </div>
-          <p className="text-xs text-white/50 mt-1">Resume →</p>
+          <div className="flex items-center justify-between mt-1">
+            <p className="text-xs text-white/50">Scene {sceneIndex + 1} of {sceneCount}</p>
+            <p className="text-xs text-primary font-medium">Resume →</p>
+          </div>
         </div>
       </motion.div>
     </Link>
@@ -81,7 +85,6 @@ function ContinueCard({ story }: { story: Story & { progress?: Record<string, un
 
 export default function Home() {
   const { data: stories } = useStoriesFallback();
-  const { currentStory } = useAudioPlayer();
   const continueListening = useContinueListening();
   const recs = useRecommendations();
 
@@ -90,7 +93,7 @@ export default function Home() {
   const lateNight = stories?.filter(s => s.mood === "Late Night") || [];
   const slowBurn = stories?.filter(s => s.mood === "Slow Burn") || [];
 
-  const showContinue = continueListening.length > 0 || !!currentStory;
+  const showContinue = continueListening.length > 0;
 
   return (
     <motion.div 
@@ -154,15 +157,13 @@ export default function Home() {
                 See all →
               </Link>
             </div>
-            {continueListening.length > 0 ? (
+            {continueListening.length > 0 && (
               <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
                 {continueListening.map((s) => (
                   <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
                 ))}
               </div>
-            ) : currentStory ? (
-              <RowSlider title="" stories={[currentStory]} />
-            ) : null}
+            )}
           </section>
         )}
 

@@ -52,6 +52,7 @@ export type UserProfile = {
   preferredEndings: Record<string, number>;
   preferredIntensity: Record<string, number>;
   preferredVoiceFeel: Record<string, number>;
+  preferredRelationshipDynamics: Record<string, number>;
 };
 
 const defaultProfile = (): UserProfile => ({
@@ -61,6 +62,7 @@ const defaultProfile = (): UserProfile => ({
   preferredEndings: {},
   preferredIntensity: {},
   preferredVoiceFeel: {},
+  preferredRelationshipDynamics: {},
 });
 
 export const usersStore = {

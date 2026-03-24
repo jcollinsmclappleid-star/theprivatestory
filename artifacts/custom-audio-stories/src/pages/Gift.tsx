@@ -14,6 +14,26 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 // Types
 // ---------------------------------------------------------------------------
 
+export interface GiftOrderPayload {
+  recipientType: string;
+  occasion: string;
+  yourName: string;
+  partnerName: string;
+  nickname: string;
+  relationshipDetail: string;
+  specialMemory: string;
+  mood: string;
+  setting: string;
+  customSetting: string;
+  voicePreference: string;
+  storyLength: string;
+  addons: string[];
+  giftMessage: string;
+  basePrice: number;
+  addonTotal: number;
+  finalPrice: number;
+}
+
 export interface GiftBuilderState {
   recipientType: string;
   occasion: string;
@@ -133,7 +153,7 @@ function StepHeader({ step, title, subtitle }: { step: number; title: string; su
   return (
     <div className="mb-8">
       <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">
-        Step {step} of 8
+        Step {step} of 9
       </p>
       <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">{title}</h2>
       <p className="text-muted-foreground">{subtitle}</p>
@@ -577,7 +597,7 @@ function Step7({
 }
 
 // ---------------------------------------------------------------------------
-// Step 8: Review Summary
+// Step 8: Review Summary (pure review, no submit)
 // ---------------------------------------------------------------------------
 
 function ReviewRow({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) {
@@ -603,16 +623,10 @@ function Step8({
   state,
   pricing,
   goToStep,
-  onSubmit,
-  isSubmitting,
-  error,
 }: {
   state: GiftBuilderState;
   pricing: { basePrice: number; addonTotal: number; finalTotal: number };
   goToStep: (n: number) => void;
-  onSubmit: () => void;
-  isSubmitting: boolean;
-  error: string | null;
 }) {
   const recipientLabel = RECIPIENT_OPTIONS.find((o) => o.id === state.recipientType)?.label ?? state.recipientType;
   const addonsLabel =
@@ -622,7 +636,7 @@ function Step8({
 
   return (
     <div className="space-y-6">
-      <StepHeader step={8} title="Your story, reviewed." subtitle="Everything looks right? Continue to secure your order." />
+      <StepHeader step={8} title="Your story, reviewed." subtitle="Check each detail below — use the edit links to change anything before confirming." />
 
       <div className="glass-panel rounded-2xl p-6 space-y-1">
         <ReviewRow label="This story is for" value={recipientLabel} onEdit={() => goToStep(0)} />
@@ -644,7 +658,7 @@ function Step8({
         </div>
         {pricing.addonTotal > 0 && (
           <div className="flex items-center justify-between text-sm mb-3">
-            <span className="text-muted-foreground">Add-ons</span>
+            <span className="text-muted-foreground">Add-ons ({state.addons.length})</span>
             <span className="text-foreground">+£{pricing.addonTotal.toFixed(2)}</span>
           </div>
         )}
@@ -652,6 +666,56 @@ function Step8({
           <span className="font-semibold text-foreground text-lg">Total</span>
           <span className="font-display font-bold text-primary text-3xl">£{pricing.finalTotal.toFixed(2)}</span>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Step 9: Checkout CTA (confirm & submit)
+// ---------------------------------------------------------------------------
+
+function Step9({
+  state,
+  pricing,
+  goToStep,
+  onSubmit,
+  isSubmitting,
+  error,
+}: {
+  state: GiftBuilderState;
+  pricing: { basePrice: number; addonTotal: number; finalTotal: number };
+  goToStep: (n: number) => void;
+  onSubmit: () => void;
+  isSubmitting: boolean;
+  error: string | null;
+}) {
+  const addonsCount = state.addons.length;
+
+  return (
+    <div className="space-y-6">
+      <StepHeader step={9} title="Ready to confirm?" subtitle="Your story is waiting. Place your order and we'll start crafting it immediately." />
+
+      <div className="glass-panel rounded-2xl p-6 space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-foreground">{state.storyLength} Story</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {[state.yourName, state.partnerName].filter(Boolean).join(" & ")} · {state.mood}
+              {addonsCount > 0 && ` · ${addonsCount} add-on${addonsCount > 1 ? "s" : ""}`}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-display font-bold text-primary text-3xl">£{pricing.finalTotal.toFixed(2)}</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => goToStep(7)}
+          className="text-xs text-primary hover:text-primary/80 transition-colors"
+        >
+          ← Review your details
+        </button>
       </div>
 
       <div className="p-4 rounded-2xl bg-card/40 border border-border/30 flex items-start gap-3">
@@ -682,10 +746,14 @@ function Step8({
         ) : (
           <>
             <Heart className="w-5 h-5" />
-            Continue to Checkout
+            Confirm Order · £{pricing.finalTotal.toFixed(2)}
           </>
         )}
       </button>
+
+      <p className="text-center text-xs text-muted-foreground/50">
+        By confirming you agree to our terms. Your story will be delivered digitally.
+      </p>
     </div>
   );
 }
@@ -749,6 +817,7 @@ function canAdvance(step: number, state: GiftBuilderState): boolean {
     case 4: return !!state.voicePreference;
     case 5: return !!state.storyLength;
     case 6: return true;
+    case 7: return true;
     default: return true;
   }
 }
@@ -757,7 +826,7 @@ function canAdvance(step: number, state: GiftBuilderState): boolean {
 // Main Gift component
 // ---------------------------------------------------------------------------
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 9;
 
 export default function Gift() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -796,7 +865,7 @@ export default function Gift() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const payload = {
+      const payload: GiftOrderPayload = {
         recipientType: state.recipientType,
         occasion: state.occasion,
         yourName: state.yourName,
@@ -880,6 +949,13 @@ export default function Gift() {
               state={state}
               pricing={pricing}
               goToStep={goToStep}
+            />
+          )}
+          {currentStep === 8 && (
+            <Step9
+              state={state}
+              pricing={pricing}
+              goToStep={goToStep}
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
               error={submitError}
@@ -888,8 +964,8 @@ export default function Gift() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation */}
-      {currentStep < 7 && (
+      {/* Navigation — shown for steps 0–7 (config + review); Step9 has its own submit */}
+      {currentStep < 8 && (
         <div className="mt-8 flex items-center justify-between gap-4">
           {currentStep > 0 ? (
             <button
@@ -914,21 +990,8 @@ export default function Gift() {
                 : "bg-muted text-muted-foreground cursor-not-allowed",
             )}
           >
-            Continue
+            {currentStep === 7 ? "Looks right — continue" : "Continue"}
             <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
-      {currentStep === 7 && (
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={back}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back to add-ons
           </button>
         </div>
       )}

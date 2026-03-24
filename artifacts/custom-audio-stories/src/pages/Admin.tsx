@@ -254,6 +254,7 @@ export default function Admin() {
   const selectedItem = selected !== null ? queue[selected] : null;
 
   return (
+    <>
     <div className="flex h-screen bg-[#0a0a0a] text-white overflow-hidden">
       {/* ── LEFT PANEL — Queue ──────────────────────────────────────────────── */}
       <div className="w-80 flex-shrink-0 border-r border-white/10 flex flex-col">
@@ -614,6 +615,7 @@ export default function Admin() {
         })()}
       </div>
     )}
+    </>
   );
 }
 

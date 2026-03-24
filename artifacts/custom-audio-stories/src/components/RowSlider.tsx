@@ -3,16 +3,20 @@ import type { Story } from "@workspace/api-client-react";
 
 interface RowSliderProps {
   title: string;
+  subtitle?: string;
   stories: Story[];
 }
 
-export function RowSlider({ title, stories }: RowSliderProps) {
+export function RowSlider({ title, subtitle, stories }: RowSliderProps) {
   if (!stories.length) return null;
 
   return (
     <section className="py-6">
-      <div className="px-4 md:px-8 flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-display font-semibold text-foreground">{title}</h2>
+      <div className="px-4 md:px-8 flex items-start justify-between mb-4">
+        <div>
+          {title && <h2 className="text-2xl font-display font-semibold text-foreground">{title}</h2>}
+          {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        </div>
       </div>
       <div className="flex gap-4 overflow-x-auto pb-8 pt-2 px-4 md:px-8 snap-x snap-mandatory hide-scrollbar">
         {stories.map(story => (

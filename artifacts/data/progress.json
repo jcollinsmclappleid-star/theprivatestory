@@ -1,0 +1,10 @@
+{
+  "test-user": {
+    "story-1": {
+      "audioProgressSeconds": 45,
+      "sceneIndex": 1,
+      "updatedAt": "2026-03-24T04:03:12.381Z",
+      "storyId": "story-1"
+    }
+  }
+}

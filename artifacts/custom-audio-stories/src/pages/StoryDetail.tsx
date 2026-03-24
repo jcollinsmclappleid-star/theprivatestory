@@ -1,24 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "wouter";
 import { Play, Pause, FastForward, Rewind, Heart } from "lucide-react";
 import { useStoryFallback } from "@/hooks/use-api-fallbacks";
-import { useAudioPlayer } from "@/store/use-audio-player";
+import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
 import { Slider } from "@/components/ui/slider";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function StoryDetail() {
   const { id } = useParams();
   const { data: story } = useStoryFallback(id || "");
   const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress } = useAudioPlayer();
-  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savePending, setSavePending] = useState(false);
 
   // Auto-play on mount if it's a new story
   useEffect(() => {
     if (story && currentStory?.id !== story.id) {
-      // Small delay to let animations start smoothly
       setTimeout(() => play(story), 500);
     }
   }, [story, currentStory?.id, play]);
+
+  const handleSave = useCallback(async () => {
+    if (!story || savePending) return;
+    setSavePending(true);
+    const userId = getUserId();
+    const nextSaved = !saved;
+    setSaved(nextSaved);
+    try {
+      await fetch(`${API_BASE}/api/save-story`, {
+        method: nextSaved ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, storyId: story.id }),
+      });
+      if (nextSaved) {
+        fetch(`${API_BASE}/api/update-taste`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, mood: story.mood, event: "saved" }),
+        }).catch(() => {});
+      }
+    } catch {
+      setSaved(!nextSaved);
+    } finally {
+      setSavePending(false);
+    }
+  }, [story, saved, savePending]);
 
   if (!story) return null;
 
@@ -125,10 +153,12 @@ export default function StoryDetail() {
           {/* Controls */}
           <div className="flex items-center justify-center gap-8">
             <button 
-              onClick={() => setLiked(!liked)}
-              className={`p-3 rounded-full transition-colors ${liked ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              onClick={handleSave}
+              disabled={savePending}
+              className={`p-3 rounded-full transition-colors ${saved ? 'text-primary' : 'text-muted-foreground hover:text-foreground'} disabled:opacity-50`}
+              title={saved ? "Unsave story" : "Save story"}
             >
-              <Heart className={`w-6 h-6 ${liked ? 'fill-current' : ''}`} />
+              <Heart className={`w-6 h-6 ${saved ? 'fill-current' : ''}`} />
             </button>
             
             <button className="text-muted-foreground hover:text-foreground transition-colors">

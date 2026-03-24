@@ -1,18 +1,96 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { Link } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
-import { useAudioPlayer } from "@/store/use-audio-player";
+import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
+import type { Story } from "@workspace/api-client-react";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function useContinueListening() {
+  const [items, setItems] = useState<Story[]>([]);
+
+  useEffect(() => {
+    const userId = getUserId();
+    fetch(`${API_BASE}/api/continue-listening?userId=${encodeURIComponent(userId)}`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => setItems((data as Story[]).slice(0, 8)))
+      .catch(() => {});
+  }, []);
+
+  return items;
+}
+
+function useRecommendations() {
+  const [recs, setRecs] = useState<{
+    for_you: Story[];
+    because_you_liked: Story[];
+    because_you_liked_mood: string | null;
+    has_taste_profile: boolean;
+  }>({ for_you: [], because_you_liked: [], because_you_liked_mood: null, has_taste_profile: false });
+
+  useEffect(() => {
+    const userId = getUserId();
+    fetch(`${API_BASE}/api/recommendations/${encodeURIComponent(userId)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setRecs(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  return recs;
+}
+
+function ContinueCard({ story }: { story: Story & { progress?: Record<string, unknown> } }) {
+  const { play } = useAudioPlayer();
+  const progressSeconds = (story.progress?.audioProgressSeconds as number) ?? 0;
+  const sceneCount = story.scenes?.length ?? 1;
+  const progressFraction = Math.min(progressSeconds / 300, 1);
+
+  return (
+    <Link href={`/story/${story.id}`}>
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        className="relative flex-shrink-0 w-52 rounded-2xl overflow-hidden border border-border/30 bg-card/40 cursor-pointer group"
+        onClick={(e) => { e.preventDefault(); play(story); }}
+      >
+        <img
+          src={story.coverImage}
+          alt={story.title}
+          className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/90 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <p className="text-xs text-primary font-medium tracking-widest uppercase mb-0.5">{story.mood}</p>
+          <p className="text-sm font-semibold text-white line-clamp-1">{story.title}</p>
+          <div className="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-full"
+              style={{ width: `${progressFraction * 100}%` }}
+            />
+          </div>
+          <p className="text-xs text-white/50 mt-1">Resume →</p>
+        </div>
+      </motion.div>
+    </Link>
+  );
+}
 
 export default function Home() {
   const { data: stories } = useStoriesFallback();
   const { currentStory } = useAudioPlayer();
+  const continueListening = useContinueListening();
+  const recs = useRecommendations();
 
   const featured = stories?.[0];
   const tonightPicks = stories?.slice(1, 9) || [];
   const lateNight = stories?.filter(s => s.mood === "Late Night") || [];
   const slowBurn = stories?.filter(s => s.mood === "Slow Burn") || [];
+
+  const showContinue = continueListening.length > 0 || !!currentStory;
 
   return (
     <motion.div 
@@ -22,7 +100,6 @@ export default function Home() {
     >
       {/* Hero Section */}
       <section className="relative w-full h-[70vh] min-h-[500px] flex items-end pb-24">
-        {/* dark cinematic hero background */}
         <div className="absolute inset-0 z-0">
           <img 
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
@@ -64,16 +141,55 @@ export default function Home() {
 
       {/* Content Rows */}
       <div className="relative z-20 -mt-12 space-y-4">
-        {currentStory && (
-          <RowSlider title="Continue Listening" stories={[currentStory]} />
+
+        {/* Continue Listening — real API data + fallback to in-player story */}
+        {showContinue && (
+          <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="font-display text-xl font-bold text-foreground">Continue Listening</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Pick up exactly where you left off.</p>
+              </div>
+              <Link href="/library?tab=continue" className="text-xs text-primary hover:text-primary/80 transition-colors">
+                See all →
+              </Link>
+            </div>
+            {continueListening.length > 0 ? (
+              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                {continueListening.map((s) => (
+                  <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
+                ))}
+              </div>
+            ) : currentStory ? (
+              <RowSlider title="" stories={[currentStory]} />
+            ) : null}
+          </section>
         )}
+
+        {/* For You row — personalised when taste profile exists */}
+        {recs.for_you.length > 0 && (
+          <RowSlider
+            title="For You"
+            subtitle="Picked for tonight"
+            stories={recs.for_you as Story[]}
+          />
+        )}
+
         <RowSlider title="Tonight's Picks" stories={tonightPicks} />
+
+        {/* Because You Liked — only when taste profile exists */}
+        {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
+          <RowSlider
+            title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}
+            stories={recs.because_you_liked as Story[]}
+          />
+        )}
+
         <RowSlider title="Late Night Intimacy" stories={lateNight} />
         
         {/* Create CTA Banner */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-3xl p-8 md:p-16 text-center border border-primary/20 bg-card/40 backdrop-blur-md flex flex-col items-center justify-center">
-            {/* abstract warm light stock */}
             <img 
               src="https://images.unsplash.com/photo-1499914485622-a88fac536970?w=1200&q=80" 
               alt="Atmosphere"

@@ -16,6 +16,8 @@ tags:
     description: Series library operations
   - name: generate
     description: AI story generation operations
+  - name: library
+    description: User library, saves, progress and recommendations
 paths:
   /healthz:
     get:
@@ -266,6 +268,149 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FullGeneratedStory"
+
+  /save-story:
+    post:
+      operationId: saveStory
+      tags: [library]
+      summary: Save a story to user's library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveStoryRequest"
+      responses:
+        "200":
+          description: Save status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveStoryResponse"
+    delete:
+      operationId: unsaveStory
+      tags: [library]
+      summary: Unsave a story from user's library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveStoryRequest"
+      responses:
+        "200":
+          description: Save status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveStoryResponse"
+
+  /update-progress:
+    post:
+      operationId: updateProgress
+      tags: [library]
+      summary: Save listening progress for a story
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProgressRequest"
+      responses:
+        "200":
+          description: Progress updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: boolean
+                required:
+                  - updated
+
+  /library:
+    get:
+      operationId: getLibrary
+      tags: [library]
+      summary: Get user's library (saved and generated stories)
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Library content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryResponse"
+
+  /continue-listening:
+    get:
+      operationId: getContinueListening
+      tags: [library]
+      summary: Get in-progress stories sorted by most recent
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: In-progress stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /update-taste:
+    post:
+      operationId: updateTaste
+      tags: [library]
+      summary: Update user taste profile after an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTasteRequest"
+      responses:
+        "200":
+          description: Taste updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: boolean
+                required:
+                  - updated
+
+  /recommendations/{userId}:
+    get:
+      operationId: getRecommendations
+      tags: [library]
+      summary: Get personalised story recommendations for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Personalised recommendations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationsResponse"
 
 components:
   schemas:
@@ -553,6 +698,9 @@ components:
         bypassCache:
           type: boolean
           description: When true, skips request-hash cache lookup (used for variation and continuation requests)
+        userId:
+          type: string
+          description: Guest userId from localStorage — used to track generated story in user profile
       required:
         - listenerName
         - mood
@@ -707,3 +855,102 @@ components:
         - duration
         - scenes
         - images
+
+    SaveStoryRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        storyId:
+          type: string
+      required:
+        - userId
+        - storyId
+
+    SaveStoryResponse:
+      type: object
+      properties:
+        saved:
+          type: boolean
+      required:
+        - saved
+
+    UpdateProgressRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        storyId:
+          type: string
+        audioProgressSeconds:
+          type: number
+        sceneIndex:
+          type: number
+      required:
+        - userId
+        - storyId
+        - audioProgressSeconds
+        - sceneIndex
+
+    UpdateTasteRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        mood:
+          type: string
+        intensity:
+          type: string
+        voiceFeel:
+          type: string
+        endingType:
+          type: string
+        relationshipDynamic:
+          type: string
+        event:
+          type: string
+          enum: [generated, replayed, saved, completed]
+      required:
+        - userId
+        - event
+
+    LibraryResponse:
+      type: object
+      properties:
+        saved:
+          type: array
+          items:
+            type: object
+        generated:
+          type: array
+          items:
+            type: object
+      required:
+        - saved
+        - generated
+
+    RecommendationsResponse:
+      type: object
+      properties:
+        for_you:
+          type: array
+          items:
+            type: object
+        because_you_liked:
+          type: array
+          items:
+            type: object
+        because_you_liked_mood:
+          type: string
+          nullable: true
+        continue_the_mood:
+          type: array
+          items:
+            type: object
+        has_taste_profile:
+          type: boolean
+      required:
+        - for_you
+        - because_you_liked
+        - continue_the_mood
+        - has_taste_profile

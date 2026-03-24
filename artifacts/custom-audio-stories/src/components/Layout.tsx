@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu } from "lucide-react";
+import { Search, Sparkles, Menu, BookOpen } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 
 function Navbar() {
@@ -9,6 +9,7 @@ function Navbar() {
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
     { label: "Series", href: "/series" },
+    { label: "My Library", href: "/library" },
   ];
 
   return (
@@ -35,6 +36,9 @@ function Navbar() {
         <div className="flex items-center gap-4">
           <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors p-2">
             <Search className="w-5 h-5" />
+          </Link>
+          <Link href="/library" className="text-muted-foreground hover:text-primary transition-colors p-2 md:hidden">
+            <BookOpen className="w-5 h-5" />
           </Link>
           <Link 
             href="/create" 
@@ -63,6 +67,7 @@ function Footer() {
           Immersive, cinematic audio experiences crafted for your quietest moments.
         </p>
         <div className="flex gap-6 text-sm text-muted-foreground">
+          <Link href="/library" className="hover:text-primary transition-colors">My Library</Link>
           <span className="hover:text-primary cursor-pointer transition-colors">Privacy</span>
           <span className="hover:text-primary cursor-pointer transition-colors">Terms</span>
           <span className="hover:text-primary cursor-pointer transition-colors">Contact</span>

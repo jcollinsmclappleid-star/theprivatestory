@@ -123,6 +123,8 @@ export interface GenerateStoryRequest {
   emotionalFocus?: boolean;
   /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
   bypassCache?: boolean;
+  /** Guest userId from localStorage — used to track generated story in user profile */
+  userId?: string;
 }
 
 export interface GenerateStoryFromBriefRequest {
@@ -179,7 +181,88 @@ export interface FullGeneratedStory {
   cached?: boolean;
 }
 
+export interface SaveStoryRequest {
+  userId: string;
+  storyId: string;
+}
+
+export interface SaveStoryResponse {
+  saved: boolean;
+}
+
+export interface UpdateProgressRequest {
+  userId: string;
+  storyId: string;
+  audioProgressSeconds: number;
+  sceneIndex: number;
+}
+
+export type UpdateTasteRequestEvent =
+  (typeof UpdateTasteRequestEvent)[keyof typeof UpdateTasteRequestEvent];
+
+export const UpdateTasteRequestEvent = {
+  generated: "generated",
+  replayed: "replayed",
+  saved: "saved",
+  completed: "completed",
+} as const;
+
+export interface UpdateTasteRequest {
+  userId: string;
+  mood?: string;
+  intensity?: string;
+  voiceFeel?: string;
+  endingType?: string;
+  relationshipDynamic?: string;
+  event: UpdateTasteRequestEvent;
+}
+
+export type LibraryResponseSavedItem = { [key: string]: unknown };
+
+export type LibraryResponseGeneratedItem = { [key: string]: unknown };
+
+export interface LibraryResponse {
+  saved: LibraryResponseSavedItem[];
+  generated: LibraryResponseGeneratedItem[];
+}
+
+export type RecommendationsResponseForYouItem = { [key: string]: unknown };
+
+export type RecommendationsResponseBecauseYouLikedItem = {
+  [key: string]: unknown;
+};
+
+export type RecommendationsResponseContinueTheMoodItem = {
+  [key: string]: unknown;
+};
+
+export interface RecommendationsResponse {
+  for_you: RecommendationsResponseForYouItem[];
+  because_you_liked: RecommendationsResponseBecauseYouLikedItem[];
+  because_you_liked_mood?: string | null;
+  continue_the_mood: RecommendationsResponseContinueTheMoodItem[];
+  has_taste_profile: boolean;
+}
+
 export type GetStoriesParams = {
   mood?: string;
   search?: string;
+};
+
+export type UpdateProgress200 = {
+  updated: boolean;
+};
+
+export type GetLibraryParams = {
+  userId: string;
+};
+
+export type GetContinueListeningParams = {
+  userId: string;
+};
+
+export type GetContinueListening200Item = { [key: string]: unknown };
+
+export type UpdateTaste200 = {
+  updated: boolean;
 };

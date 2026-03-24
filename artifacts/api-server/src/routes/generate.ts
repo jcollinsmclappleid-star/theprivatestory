@@ -6,6 +6,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
+import { trackGeneratedStory } from "./library.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,6 +26,7 @@ interface GenerateStoryRequest {
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
   bypassCache?: boolean;
+  userId?: string;
 }
 
 interface ScenePlan {
@@ -909,6 +911,11 @@ router.post("/generate-full-story", async (req, res) => {
     storiesStore.set(storyId, result as unknown as Record<string, unknown>);
     if (!rawIntake.bypassCache) {
       generatedCacheStore.set(requestHash, storyId);
+    }
+
+    // Step 11: Track in user profile (taste + generated stories list)
+    if (rawIntake.userId) {
+      trackGeneratedStory(rawIntake.userId, storyId, intake.mood, intake.intensity, intake.voiceFeel);
     }
 
     return result;

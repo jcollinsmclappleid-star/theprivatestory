@@ -1,0 +1,12 @@
+{
+  "test-user": {
+    "savedStories": [],
+    "generatedStories": [],
+    "tasteProfile": {
+      "Late Night": 3
+    },
+    "preferredEndings": {},
+    "preferredIntensity": {},
+    "preferredVoiceFeel": {}
+  }
+}

@@ -13,6 +13,7 @@ import SeriesDetail from "@/pages/SeriesDetail";
 import Search from "@/pages/Search";
 import StoryDetail from "@/pages/StoryDetail";
 import Create from "@/pages/Create";
+import Library from "@/pages/Library";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ function Router() {
         <Route path="/search" component={Search} />
         <Route path="/story/:id" component={StoryDetail} />
         <Route path="/create" component={Create} />
+        <Route path="/library" component={Library} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

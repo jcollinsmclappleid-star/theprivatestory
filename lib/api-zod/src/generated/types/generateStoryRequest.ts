@@ -17,4 +17,6 @@ export interface GenerateStoryRequest {
   emotionalFocus?: boolean;
   /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
   bypassCache?: boolean;
+  /** Guest userId from localStorage — used to track generated story in user profile */
+  userId?: string;
 }

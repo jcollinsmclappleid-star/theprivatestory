@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
-import { useAudioPlayer } from "@/store/use-audio-player";
+import { useAudioPlayer, getUserId } from "@/store/use-audio-player";
 
 const formSchema = z.object({
   listenerName: z.string().optional().default(""),
@@ -119,6 +119,7 @@ export default function Create() {
           scenarioPrompt: data.scenarioPrompt,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
+          userId: getUserId(),
         },
       });
     } finally {

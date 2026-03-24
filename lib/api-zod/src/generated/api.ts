@@ -161,6 +161,12 @@ export const PlanStoryBody = zod.object({
     .describe(
       "When true, skips request-hash cache lookup (used for variation and continuation requests)",
     ),
+  userId: zod
+    .string()
+    .optional()
+    .describe(
+      "Guest userId from localStorage — used to track generated story in user profile",
+    ),
 });
 
 export const PlanStoryResponse = zod.object({
@@ -421,6 +427,12 @@ export const GenerateFullStoryBody = zod.object({
     .describe(
       "When true, skips request-hash cache lookup (used for variation and continuation requests)",
     ),
+  userId: zod
+    .string()
+    .optional()
+    .describe(
+      "Guest userId from localStorage — used to track generated story in user profile",
+    ),
 });
 
 export const GenerateFullStoryResponse = zod.object({
@@ -483,4 +495,98 @@ export const GenerateFullStoryResponse = zod.object({
     .optional(),
   recommendation_tags: zod.array(zod.string()).optional(),
   cached: zod.boolean().optional(),
+});
+
+/**
+ * @summary Save a story to user's library
+ */
+export const SaveStoryBody = zod.object({
+  userId: zod.string(),
+  storyId: zod.string(),
+});
+
+export const SaveStoryResponse = zod.object({
+  saved: zod.boolean(),
+});
+
+/**
+ * @summary Unsave a story from user's library
+ */
+export const UnsaveStoryBody = zod.object({
+  userId: zod.string(),
+  storyId: zod.string(),
+});
+
+export const UnsaveStoryResponse = zod.object({
+  saved: zod.boolean(),
+});
+
+/**
+ * @summary Save listening progress for a story
+ */
+export const UpdateProgressBody = zod.object({
+  userId: zod.string(),
+  storyId: zod.string(),
+  audioProgressSeconds: zod.number(),
+  sceneIndex: zod.number(),
+});
+
+export const UpdateProgressResponse = zod.object({
+  updated: zod.boolean(),
+});
+
+/**
+ * @summary Get user's library (saved and generated stories)
+ */
+export const GetLibraryQueryParams = zod.object({
+  userId: zod.coerce.string(),
+});
+
+export const GetLibraryResponse = zod.object({
+  saved: zod.array(zod.object({}).passthrough()),
+  generated: zod.array(zod.object({}).passthrough()),
+});
+
+/**
+ * @summary Get in-progress stories sorted by most recent
+ */
+export const GetContinueListeningQueryParams = zod.object({
+  userId: zod.coerce.string(),
+});
+
+export const GetContinueListeningResponseItem = zod.object({}).passthrough();
+export const GetContinueListeningResponse = zod.array(
+  GetContinueListeningResponseItem,
+);
+
+/**
+ * @summary Update user taste profile after an event
+ */
+export const UpdateTasteBody = zod.object({
+  userId: zod.string(),
+  mood: zod.string().optional(),
+  intensity: zod.string().optional(),
+  voiceFeel: zod.string().optional(),
+  endingType: zod.string().optional(),
+  relationshipDynamic: zod.string().optional(),
+  event: zod.enum(["generated", "replayed", "saved", "completed"]),
+});
+
+export const UpdateTasteResponse = zod.object({
+  updated: zod.boolean(),
+});
+
+/**
+ * @summary Get personalised story recommendations for a user
+ */
+export const GetRecommendationsParams = zod.object({
+  userId: zod.coerce.string(),
+});
+
+export const GetRecommendationsResponse = zod.object({
+  for_you: zod.array(zod.object({}).passthrough()),
+  because_you_liked: zod.array(zod.object({}).passthrough()),
+  because_you_liked_mood: zod.string().nullish(),
+  continue_the_mood: zod.array(zod.object({}).passthrough()),
+  has_taste_profile: zod.boolean(),
 });

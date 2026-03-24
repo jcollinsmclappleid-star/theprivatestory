@@ -900,10 +900,10 @@ async function runDerivedPipeline(
     ...(variantType ? { variant_type: variantType } : {}),
   };
 
-  storiesStore.set(storyId, result);
+  await storiesStore.set(storyId, result);
 
   if (userId) {
-    trackGeneratedStory(userId, storyId, mood, "Warm", voiceFeel);
+    await trackGeneratedStory(userId, storyId, mood, "Warm", voiceFeel, variantType);
   }
 
   return result;
@@ -1065,9 +1065,9 @@ router.post("/generate-full-story", async (req, res) => {
   // Step 2: Create request hash and check persistent cache (bypass for variations/continuations)
   const requestHash = makeRequestHash(intake);
   if (!rawIntake.bypassCache) {
-    const cachedStoryId = generatedCacheStore.get(requestHash);
+    const cachedStoryId = await generatedCacheStore.get(requestHash);
     if (cachedStoryId) {
-      const cachedStory = storiesStore.get(cachedStoryId);
+      const cachedStory = await storiesStore.get(cachedStoryId);
       if (cachedStory) {
         res.json({ ...cachedStory, cached: true });
         return;
@@ -1147,19 +1147,19 @@ router.post("/generate-full-story", async (req, res) => {
       cached: false,
     };
 
-    // Step 10: Persist to JSON storage.
+    // Step 10: Persist to database.
     // bypassCache (variation/continuation) requests get a unique story ID so they
     // never overwrite an existing story stored under the same normalised hash.
     const storyId = rawIntake.bypassCache
       ? `${requestHash}-var-${Date.now()}`
       : requestHash;
-    storiesStore.set(storyId, result as unknown as Record<string, unknown>);
+    await storiesStore.set(storyId, { ...result as unknown as Record<string, unknown>, ownerUserId: req.user.id });
     if (!rawIntake.bypassCache) {
-      generatedCacheStore.set(requestHash, storyId);
+      await generatedCacheStore.set(requestHash, storyId);
     }
 
     // Step 11: Track in user profile (taste + generated stories list)
-    trackGeneratedStory(req.user.id, storyId, intake.mood, intake.intensity, intake.voiceFeel);
+    await trackGeneratedStory(req.user.id, storyId, intake.mood, intake.intensity, intake.voiceFeel);
 
     return result;
   };
@@ -1205,7 +1205,7 @@ router.post("/generate-variation", async (req, res) => {
     return;
   }
 
-  const original = storiesStore.get(storyId) as Record<string, unknown>;
+  const original = await storiesStore.get(storyId) as Record<string, unknown> | undefined;
   if (!original) {
     res.status(404).json({ error: "Story not found" });
     return;
@@ -1271,7 +1271,7 @@ router.post("/continue-story", async (req, res) => {
     return;
   }
 
-  const original = storiesStore.get(storyId) as Record<string, unknown>;
+  const original = await storiesStore.get(storyId) as Record<string, unknown> | undefined;
   if (!original) {
     res.status(404).json({ error: "Story not found" });
     return;

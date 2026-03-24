@@ -113,17 +113,26 @@ The API server at `/api/generate-full-story` runs a fully hidden pipeline:
 7. **buildImagePrompts()** — cohesive image prompt generation for cover + all scenes
 8. **Parallel**: generateAllImages() + generateAudioFile() — images via OpenAI, audio via ElevenLabs
 
-Generated stories persisted to `artifacts/api-server/data/stories.json`. Cache entries in `data/generatedCache.json`.
+Generated stories are persisted to the PostgreSQL `generated_stories` table. Deduplication cache in `generated_cache` table.
 
 ### `artifacts/api-server/src/lib/storage.ts`
 
-JSON file persistence layer for all server-side data. Files live at `artifacts/api-server/data/`:
-- `stories.json` — all generated stories by ID
-- `generatedCache.json` — request hash → story ID for deduplication
-- `users.json` — taste profiles + saved/generated story IDs per userId (used in Task #4+)
-- `progress.json` — listening progress per userId/storyId (used in Task #4+)
+Database-backed (Drizzle + PostgreSQL) persistence layer. All user-specific data is now stored in the DB (not JSON files).
 
-Exports: `storiesStore`, `usersStore`, `progressStore`, `generatedCacheStore` — each with typed get/set/getAll methods. Atomic writes via temp file + rename.
+Tables:
+- `generated_stories` — AI-generated stories with scenes, audio, images, brief, QC data; keyed by story ID
+- `user_library` — (userId, storyId, type: 'saved'|'generated'|'variation') with unique constraint per user+story
+- `user_progress` — listening progress (audioProgressSeconds, sceneIndex) per userId/storyId PK
+- `user_taste` — taste profile JSONB columns (tasteProfile, preferredIntensity, preferredVoiceFeel, preferredEndings, preferredRelationshipDynamics) per userId
+- `generated_cache` — request hash → story ID for deduplication (survives restarts)
+
+Exports (all async):
+- `storiesStore` — `getAll()`, `get(id)`, `set(id, story)` — upsert-based
+- `libraryStore` — `getSavedStoryIds`, `getGeneratedStoryIds`, `addSaved`, `removeSaved`, `addGenerated`
+- `tasteStore` — `get(userId)`, `upsert(userId, taste)`
+- `progressStore` — `get`, `set`, `delete`, `getUserProgress`
+- `generatedCacheStore` — `get(hash)`, `set(hash, storyId)`
+- `usersStore` — backwards-compat aggregated profile fetch (combines taste + library)
 
 ### `scripts` (`@workspace/scripts`)
 

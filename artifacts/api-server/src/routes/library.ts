@@ -1,5 +1,10 @@
 import { Router, type Request, type Response } from "express";
-import { usersStore, progressStore, storiesStore } from "../lib/storage.js";
+import {
+  libraryStore,
+  tasteStore,
+  progressStore,
+  storiesStore,
+} from "../lib/storage.js";
 
 const router = Router();
 
@@ -19,7 +24,7 @@ const EDITORIAL_PICKS = ["story-1", "story-2", "story-3", "story-4", "story-5"];
 // ---------------------------------------------------------------------------
 // POST /save-story
 // ---------------------------------------------------------------------------
-router.post("/save-story", (req, res) => {
+router.post("/save-story", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -29,18 +34,14 @@ router.post("/save-story", (req, res) => {
     return;
   }
 
-  const profile = usersStore.get(userId);
-  if (!profile.savedStories.includes(storyId)) {
-    profile.savedStories = [storyId, ...profile.savedStories];
-    usersStore.set(userId, profile);
-  }
+  await libraryStore.addSaved(userId, storyId);
   res.json({ saved: true });
 });
 
 // ---------------------------------------------------------------------------
 // DELETE /save-story
 // ---------------------------------------------------------------------------
-router.delete("/save-story", (req, res) => {
+router.delete("/save-story", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -50,16 +51,14 @@ router.delete("/save-story", (req, res) => {
     return;
   }
 
-  const profile = usersStore.get(userId);
-  profile.savedStories = profile.savedStories.filter((id) => id !== storyId);
-  usersStore.set(userId, profile);
+  await libraryStore.removeSaved(userId, storyId);
   res.json({ saved: false });
 });
 
 // ---------------------------------------------------------------------------
 // POST /update-progress
 // ---------------------------------------------------------------------------
-router.post("/update-progress", (req, res) => {
+router.post("/update-progress", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -74,7 +73,7 @@ router.post("/update-progress", (req, res) => {
     return;
   }
 
-  progressStore.set(userId, storyId, {
+  await progressStore.set(userId, storyId, {
     audioProgressSeconds: audioProgressSeconds ?? 0,
     sceneIndex: sceneIndex ?? 0,
     updatedAt: new Date().toISOString(),
@@ -87,33 +86,40 @@ router.post("/update-progress", (req, res) => {
 // ---------------------------------------------------------------------------
 // GET /library
 // ---------------------------------------------------------------------------
-router.get("/library", (req, res) => {
+router.get("/library", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
-  const profile = usersStore.get(userId);
-  const allStories = storiesStore.getAll();
+  const [savedIds, generatedRows] = await Promise.all([
+    libraryStore.getSavedStoryIds(userId),
+    libraryStore.getGeneratedStoryIds(userId),
+  ]);
 
-  const saved = profile.savedStories
-    .map((id) => allStories[id])
-    .filter(Boolean);
+  // Fetch story objects for saved story IDs
+  const savedStories = await Promise.all(
+    savedIds.map((id) => storiesStore.get(id))
+  );
+  const saved = savedStories.filter(Boolean) as Record<string, unknown>[];
 
-  const allGenerated = profile.generatedStories
-    .map((id) => allStories[id])
-    .filter(Boolean) as Array<Record<string, unknown>>;
+  // Fetch story objects for generated/variation IDs
+  const generatedStories = await Promise.all(
+    generatedRows.map(async (r) => {
+      const s = await storiesStore.get(r.storyId);
+      return s ? { ...s, _libType: r.type } : null;
+    })
+  );
+  const allGenerated = generatedStories.filter(Boolean) as Array<Record<string, unknown>>;
 
-  // Split: variations have variant_type, continuations have parent_story_id but no variant_type
-  const generated = allGenerated.filter((s) => !s.variant_type);
-  const variations = allGenerated.filter((s) => Boolean(s.variant_type));
+  const generated = allGenerated.filter((s) => s._libType === "generated");
+  const variations = allGenerated.filter((s) => s._libType === "variation");
 
-  // Continued stories (parent_story_id set, no variant_type) show in Generated with "Continued" badge
   res.json({ saved, generated, variations });
 });
 
 // ---------------------------------------------------------------------------
 // GET /progress — fetch stored position for a single story
 // ---------------------------------------------------------------------------
-router.get("/progress", (req, res) => {
+router.get("/progress", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -122,14 +128,14 @@ router.get("/progress", (req, res) => {
     res.status(400).json({ error: "storyId is required" });
     return;
   }
-  const entry = progressStore.get(userId, storyId);
+  const entry = await progressStore.get(userId, storyId);
   res.json(entry ?? null);
 });
 
 // ---------------------------------------------------------------------------
 // DELETE /progress — mark story complete by removing its progress entry
 // ---------------------------------------------------------------------------
-router.delete("/progress", (req, res) => {
+router.delete("/progress", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -138,38 +144,40 @@ router.delete("/progress", (req, res) => {
     res.status(400).json({ error: "storyId is required" });
     return;
   }
-  progressStore.delete(userId, storyId);
+  await progressStore.delete(userId, storyId);
   res.json({ deleted: true });
 });
 
 // ---------------------------------------------------------------------------
 // GET /continue-listening
 // ---------------------------------------------------------------------------
-router.get("/continue-listening", (req, res) => {
+router.get("/continue-listening", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
-  const userProgress = progressStore.getUserProgress(userId);
-  const allStories = storiesStore.getAll();
+  const userProgressMap = await progressStore.getUserProgress(userId);
 
   // Only include stories with meaningful progress (> 5 seconds in)
-  const inProgress = Object.values(userProgress)
+  const inProgress = Object.values(userProgressMap)
     .filter((entry) => entry.audioProgressSeconds > 5)
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .map((entry) => {
-      const story = allStories[entry.storyId];
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+  // Fetch story objects
+  const storiesWithProgress = await Promise.all(
+    inProgress.map(async (entry) => {
+      const story = await storiesStore.get(entry.storyId);
       if (!story) return null;
       return { ...story, progress: entry };
     })
-    .filter(Boolean);
+  );
 
-  res.json(inProgress);
+  res.json(storiesWithProgress.filter(Boolean));
 });
 
 // ---------------------------------------------------------------------------
 // POST /update-taste
 // ---------------------------------------------------------------------------
-router.post("/update-taste", (req, res) => {
+router.post("/update-taste", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
 
@@ -183,74 +191,80 @@ router.post("/update-taste", (req, res) => {
   };
 
   const weight = event === "saved" ? 3 : event === "completed" ? 2 : 1;
-  const profile = usersStore.get(userId);
+  const taste = await tasteStore.get(userId);
 
   if (mood) {
-    profile.tasteProfile[mood] = (profile.tasteProfile[mood] ?? 0) + weight;
+    taste.tasteProfile[mood] = (taste.tasteProfile[mood] ?? 0) + weight;
   }
   if (intensity) {
-    profile.preferredIntensity[intensity] = (profile.preferredIntensity[intensity] ?? 0) + weight;
+    taste.preferredIntensity[intensity] = (taste.preferredIntensity[intensity] ?? 0) + weight;
   }
   if (voiceFeel) {
-    profile.preferredVoiceFeel[voiceFeel] = (profile.preferredVoiceFeel[voiceFeel] ?? 0) + weight;
+    taste.preferredVoiceFeel[voiceFeel] = (taste.preferredVoiceFeel[voiceFeel] ?? 0) + weight;
   }
   if (endingType) {
-    profile.preferredEndings[endingType] = (profile.preferredEndings[endingType] ?? 0) + weight;
+    taste.preferredEndings[endingType] = (taste.preferredEndings[endingType] ?? 0) + weight;
   }
   if (relationshipDynamic) {
-    if (!profile.preferredRelationshipDynamics) profile.preferredRelationshipDynamics = {};
-    profile.preferredRelationshipDynamics[relationshipDynamic] = (profile.preferredRelationshipDynamics[relationshipDynamic] ?? 0) + weight;
+    taste.preferredRelationshipDynamics[relationshipDynamic] =
+      (taste.preferredRelationshipDynamics[relationshipDynamic] ?? 0) + weight;
   }
 
-  usersStore.set(userId, profile);
+  await tasteStore.upsert(userId, taste);
   res.json({ updated: true });
 });
 
 // ---------------------------------------------------------------------------
-// POST /update-taste/generated — called from generate-full-story route
+// trackGeneratedStory — called from generate.ts after successful generation
 // ---------------------------------------------------------------------------
-export function trackGeneratedStory(userId: string, storyId: string, mood: string, intensity: string, voiceFeel: string): void {
+export async function trackGeneratedStory(
+  userId: string,
+  storyId: string,
+  mood: string,
+  intensity: string,
+  voiceFeel: string,
+  variantType?: string | null,
+): Promise<void> {
   if (!userId) return;
-  const profile = usersStore.get(userId);
 
-  if (!profile.generatedStories.includes(storyId)) {
-    profile.generatedStories = [storyId, ...profile.generatedStories];
-  }
-  profile.tasteProfile[mood] = (profile.tasteProfile[mood] ?? 0) + 1;
-  profile.preferredIntensity[intensity] = (profile.preferredIntensity[intensity] ?? 0) + 1;
-  profile.preferredVoiceFeel[voiceFeel] = (profile.preferredVoiceFeel[voiceFeel] ?? 0) + 1;
+  // Persist to user library
+  await libraryStore.addGenerated(userId, storyId, variantType);
 
-  usersStore.set(userId, profile);
+  // Update taste profile
+  const taste = await tasteStore.get(userId);
+  taste.tasteProfile[mood] = (taste.tasteProfile[mood] ?? 0) + 1;
+  taste.preferredIntensity[intensity] = (taste.preferredIntensity[intensity] ?? 0) + 1;
+  taste.preferredVoiceFeel[voiceFeel] = (taste.preferredVoiceFeel[voiceFeel] ?? 0) + 1;
+  await tasteStore.upsert(userId, taste);
 }
 
 // ---------------------------------------------------------------------------
 // GET /recommendations — personalised for the authenticated user
 // ---------------------------------------------------------------------------
-router.get("/recommendations", (req, res) => {
-  const allStories = storiesStore.getAll();
-  const storyList = Object.values(allStories);
-
-  const editorialFallback = EDITORIAL_PICKS
-    .map((id) => allStories[id])
-    .filter(Boolean);
-
+router.get("/recommendations", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.status(401).json({ error: "Authentication required" });
     return;
   }
 
   const userId = req.user.id;
-  const profile = usersStore.get(userId);
+  const allStories = await storiesStore.getAll();
+  const storyList = Object.values(allStories);
 
-  const hasProfile = Object.keys(profile.tasteProfile).length > 0;
+  const editorialFallback = EDITORIAL_PICKS
+    .map((id) => allStories[id])
+    .filter(Boolean);
+
+  const taste = await tasteStore.get(userId);
+  const hasProfile = Object.keys(taste.tasteProfile).length > 0;
 
   // Top mood by score
-  const sortedMoods = Object.entries(profile.tasteProfile).sort(([, a], [, b]) => b - a);
+  const sortedMoods = Object.entries(taste.tasteProfile).sort(([, a], [, b]) => b - a);
   const topMood = sortedMoods[0]?.[0];
 
   // Recent mood from progress
-  const userProgress = progressStore.getUserProgress(userId);
-  const mostRecent = Object.values(userProgress).sort(
+  const userProgressMap = await progressStore.getUserProgress(userId);
+  const mostRecent = Object.values(userProgressMap).sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   )[0];
   const recentMood = mostRecent
@@ -262,7 +276,11 @@ router.get("/recommendations", (req, res) => {
 
   const forYou = hasProfile && topMood ? matchMood(topMood) : editorialFallback;
   const becauseYouLiked = hasProfile && topMood ? matchMood(topMood).slice(0, 6) : [];
-  const continueTheMood = recentMood ? matchMood(recentMood).slice(0, 6) : (hasProfile ? forYou.slice(0, 4) : []);
+  const continueTheMood = recentMood
+    ? matchMood(recentMood).slice(0, 6)
+    : hasProfile
+    ? forYou.slice(0, 4)
+    : [];
 
   res.json({
     for_you: forYou,

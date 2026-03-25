@@ -41,6 +41,7 @@ export interface StoryRegistryEntry {
   sensory_palette?: string;
   romantic_arc?: string;
   dialogue_density?: string;
+  emotional_colour_word?: string;
 }
 
 // ── All available options for each forced DNA field ────────────────────────────
@@ -187,7 +188,7 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
 
   // ── Registry context for anti-repetition ─────────────────────────────────
   const registryContext = options.priorStoryRegistry?.length
-    ? `\nPRIOR STORY REGISTRY (never reuse setting_type, emotional_engine+relationship_dynamic combos, or ending_mood from these):\n${JSON.stringify(
+    ? `\nPRIOR STORY REGISTRY (never reuse setting_type, emotional_engine+relationship_dynamic combos, ending_mood, or emotional_colour_word from the prior two stories):\n${JSON.stringify(
         options.priorStoryRegistry.map((r) => ({
           setting_type: r.setting_type,
           relationship_dynamic: r.relationship_dynamic,
@@ -197,6 +198,7 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
           power_dynamic: r.power_dynamic,
           sensory_palette: r.sensory_palette,
           narrative_perspective: r.narrative_perspective,
+          emotional_colour_word: r.emotional_colour_word,
         })),
         null,
         2

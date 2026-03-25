@@ -26,8 +26,15 @@ Every story must include all five:
 - Sight: described through her perspective in precise visual detail
 - Taste: where relevant — always specific, never generic
 
+WORLD-GROUNDING — MANDATORY
+Every story must be rooted in a specific, real-feeling place with cultural identity:
+- Name the city or neighbourhood. Not "a city" — London's Mayfair, lower Manhattan, Montmartre, Notting Hill, the Meatpacking District, Positano, Hong Kong, Malibu, Tuscany, Tokyo, Madrid, Sydney.
+- Give the setting two or three details that only someone who has been there would notice. Not the grand version — the specific version. The particular quality of the light. The smell of the street outside. The sound the building makes at night.
+- The listener should feel transported, not staged. A place they've been to, or that they've always wanted to be.
+- The setting is a character, not a backdrop.
+
 EROTIC ARCHITECTURE — THE MANDATORY STRUCTURE
-1. ESTABLISH (10%) — ground the listener in a fully realised world
+1. ESTABLISH (10%) — ground the listener in a fully realised world with specific place and atmosphere
 2. SIMMER (25%) — build tension through restraint, proximity, implication
 3. CRACK (15%) — the moment something shifts, a line is crossed or approached
 4. IGNITE (30%) — explicit, immersive, sensory, emotionally present
@@ -37,14 +44,29 @@ Each phase must be fully written. Do not compress. Do not skip.
 The ESTABLISH alone must be at least 3 substantial paragraphs.
 The SIMMER must contain at least 4 distinct beats of rising tension.
 
+IGNITE PHASE — WHAT LITERARY SENSUALITY MEANS:
+Literary sensuality is body-present, specific, and heated — not clinical, not euphemistic.
+- Name the exact part of her body he touches. Name the pressure: firm or feather-light, insistent or tentative.
+- Name the direction the touch moves. Name what she feels in response — not just that she feels something, but what that specific thing feels like.
+- Name what he says in that moment, or what he breathes against her skin, or what sound he makes.
+- Stay present. Do not summarise. Do not skip over what happens with implication and a paragraph break.
+- FADING TO BLACK AT THE IGNITE PHASE IS A FAILURE OF THE STORY'S OBLIGATION TO THE LISTENER.
+- The IGNITE phase must be fully rendered, sustained, and specific from first moment to last.
+
+RESONATE PHASE — WHAT EMOTIONAL REVELATION MEANS:
+The RESONATE phase is not just warmth and softness after intensity. It must contain genuine revelation:
+- Something specific the listener now knows about herself that she didn't before — about what she wants, what she's capable of, what she needed and didn't know.
+- Something she now knows about him that changes the meaning of everything that came before.
+- The feeling should linger like a physical trace — not a summary of what happened, but the imprint it leaves.
+
 EXPLICIT CONTENT GUIDELINES
-- Be specific, not euphemistic — literary explicitness not clinical language
+- Be specific, not euphemistic — literary explicitness, not clinical language
 - Desire should feel mutual and overwhelming on both sides
 - His desire for her specifically should be described in detail
 - Physical responses should feel real and specific
-- Never rush through explicit content — it deserves the same
-  literary attention as any other part of the story
+- Never rush through explicit content — it deserves the same literary attention as any other part of the story
 - Explicit scenes should have emotional subtext running beneath them
+- Emotional truth and physical explicitness are not in competition — let both build simultaneously
 
 SEVEN MANDATORY HOOKS — embed ALL of these into every story:
 
@@ -94,6 +116,23 @@ SCENE ENTRY — ROTATE THROUGH THESE APPROACHES (pick the one that fits your DNA
 - An ending of something else (a meeting finishing, a party winding down — transition into intimacy)
 - A private moment interrupted (she's alone, something she didn't expect happens)
 
+VARIETY FORCING — every story must have all three:
+1. EMOTIONAL COLOUR WORD — choose one word that defines this story's specific desire and return to it
+   (choose one only): hunger / ache / possession / desperation / tenderness / need / pull / heat / obsession / longing / want / surrender
+   This word should appear 3–5 times at key moments. It is the story's emotional signature.
+
+2. NAMED SENSORY ANCHOR — give the story one hyper-specific sensory detail unique to this telling:
+   - A specific perfume by name or note (Chanel No. 5, sandalwood and smoke, something with bergamot)
+   - A specific sound that belongs only to this setting (the precise rattle of an old Eurostar window, the hum of traffic on a specific street, the creak of a particular floorboard)
+   - A specific texture or material (the weight of a specific fabric, the grain of old oak, the cold of marble at 2am)
+   This anchor must appear at the ESTABLISH phase and echo at the RESONATE phase.
+
+3. SENTENCE RHYTHM MATCH — the rhythm of your prose must match the story's emotional engine:
+   - Obsession / possession / hunger: shorter sentences, more fragments. Sharp. Staccato. Like a held breath.
+   - Tenderness / longing / ache: longer, more languid sentences that fold into themselves, unhurried, full of subordinate clauses.
+   - Desperation / urgency: sentences that accelerate then suddenly stop. Stillness in the middle of speed.
+   - Temptation / curiosity: sentences that circle the thing they want without landing directly on it. Approach and withdraw.
+
 BANNED WORDS — never use these in the story text:
 murmur / murmurs / murmured
 inevitable / inevitably
@@ -126,22 +165,24 @@ for any field marked [USE FORCED VALUE]. Fill in the rest yourself.
 {
   "category": "[the category name]",
   "subtheme": "[the subtheme name]",
-  "setting_type": "[USE FORCED VALUE if provided, else choose from: office at night | penthouse | rainy train station | black car in city rain | private balcony | beach house | airport lounge | hidden library | rooftop bar | art gallery after hours | candlelit restaurant | snowy cabin | luxury hotel corridor | backstage dressing room | private jet | garden party at night | elevator | late night kitchen | yacht deck | quiet hallway outside an event]",
-  "setting_details": "[3-4 specific sensory details that make this setting real and unique — avoid generic descriptions]",
-  "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep]",
-  "relationship_dynamic": "[choose from: strangers with instant chemistry | unresolved exes | old friends crossing a line | assistant and boss | bodyguard and client | celebrity and admirer | powerful woman and curious outsider | neighbors with hidden tension | long-distance lovers reunited | two people pretending not to want each other]",
+  "setting_type": "[USE FORCED VALUE if provided, else choose from: private members' club in Mayfair after hours | first-class railway carriage between London and Paris | rooftop bar above the Lower East Side, Manhattan | Notting Hill townhouse kitchen at 1am | late-night raw bar in the Meatpacking District | suite at the Chateau Marmont, West Hollywood | hillside villa terrace above Positano | candlelit table at a Montmartre bistro | private beach club in Marbella at dusk | Park Avenue apartment the morning after a gala | black cab crawling through Soho in the rain | lobby bar of the Rosewood, Hong Kong | Tuscan farmhouse in August, last light | Hamptons beach house in October | penthouse overlooking Central Park on New Year's Eve | Chelsea townhouse study lined with first editions | private screening room above a Mayfair club | Bond Street gallery on closing night | boutique hotel suite in the Marais, Paris | cliffside restaurant in Santorini at sunset | a rented villa in Ibiza, off-season | the last carriage of a night train through the Alps | a borrowed beach house in Malibu in January | a rooftop onsen in Tokyo at midnight | a back booth in a jazz bar in New Orleans | a flooded piazza in Venice in November | an empty restaurant kitchen after service | a private charter cabin on a transatlantic flight | a glass-walled apartment in Singapore at night | an art house hotel in Buenos Aires | a whitewashed flat above the Aegean in Mykonos | a locked office suite overlooking the Thames at night | a mountain cabin above Lake Tahoe in a snowstorm | a boutique riad in Marrakech at dusk | the back terrace of a Barcelona townhouse at 3am]",
+  "setting_details": "[3-4 specific sensory details that make this setting real and unique — include the city/neighbourhood name, one sound unique to this place, one smell, one visual detail most people wouldn't notice]",
+  "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep | 3am when the city goes quiet | the blue hour between dark and dawn]",
+  "relationship_dynamic": "[choose from: strangers with instant chemistry | unresolved exes | old friends crossing a line | assistant and boss | bodyguard and client | celebrity and admirer | powerful woman and curious outsider | neighbors with hidden tension | long-distance lovers reunited | two people pretending not to want each other | colleagues after one too many drinks | a man she was warned about | two strangers stuck together by circumstance | a man who knew her before she knew herself]",
   "power_dynamic": "[USE FORCED VALUE]",
   "emotional_engine": "[USE FORCED VALUE]",
-  "tension_style": "[choose from: verbal tension | proximity tension | forbidden tension | delayed confession | interrupted intimacy | roleplay tension | emotional vulnerability | nearly-missed connection | unresolved attraction | power reversal]",
+  "tension_style": "[choose from: verbal tension | proximity tension | forbidden tension | delayed confession | interrupted intimacy | roleplay tension | emotional vulnerability | nearly-missed connection | unresolved attraction | power reversal | the almost that becomes the finally]",
   "narrative_perspective": "[USE FORCED VALUE]",
   "voice_style": "[USE FORCED VALUE]",
   "pacing_style": "[USE FORCED VALUE]",
   "dialogue_density": "[USE FORCED VALUE]",
   "sensory_palette": "[USE FORCED VALUE]",
   "romantic_arc": "[USE FORCED VALUE]",
-  "ending_mood": "[choose from: soft afterglow | promise of more | unresolved temptation | quiet possession | emotional relief | dangerous longing | tender safety | addictive uncertainty]",
-  "visual_motif": "[choose from: rain on glass | a loosened tie | champagne on lips | a hand at the waist | city lights below | silk slipping from a shoulder | snow in hair | warm kitchen light | elevator mirror reflection | candle flame moving in the dark]",
-  "signature_object": "[choose from: train ticket | wine glass | hotel keycard | silk robe | leather gloves | lipstick mark | umbrella | cufflink | handwritten note | necklace clasp | boarding pass | record player | camera | scarf | book left behind]"
+  "ending_mood": "[choose from: soft afterglow | promise of more | unresolved temptation | quiet possession | emotional relief | dangerous longing | tender safety | addictive uncertainty | the knowledge that nothing will be the same]",
+  "visual_motif": "[choose from: rain on glass | a loosened tie | champagne on lips | a hand at the waist | city lights below | silk slipping from a shoulder | snow in hair | warm kitchen light | elevator mirror reflection | candle flame moving in the dark | a coat slipping from her shoulders | his hands on the table, still | the light from a phone screen in the dark | an open window and the sound of a street below]",
+  "signature_object": "[choose from: train ticket | wine glass | hotel keycard | silk robe | leather gloves | lipstick mark | umbrella | cufflink | handwritten note | necklace clasp | boarding pass | record player | camera | scarf | book left behind | a room key on a hook | a half-drunk glass he left | a jacket still warm from him]",
+  "emotional_colour_word": "[choose the single emotional colour word for this story from: hunger / ache / possession / desperation / tenderness / need / pull / heat / obsession / longing / want / surrender — this word must appear 3-5 times at key moments]",
+  "named_sensory_anchor": "[choose one hyper-specific sensory detail that belongs only to this story: a named perfume or its notes, a sound unique to this specific setting, or a precise texture or material — this must appear in ESTABLISH and echo in RESONATE]"
 }
 
 ══════════════════════════════════════════
@@ -167,6 +208,7 @@ ANTI-REPETITION:
 - Do not use the same sensation word more than twice in the entire story
 - Use at least 3 different verbs for touch throughout the story
 - Use at least 3 different verbs for dialogue/speech throughout the story
+- Do not use the same emotional_colour_word as the prior two stories
 
 ══════════════════════════════════════════
 PART 3 — HOOK (output after the story, exactly in this format)

@@ -670,31 +670,33 @@ export default function Profile() {
           </div>
           <div className="space-y-2">
             {(() => {
-              const stories = library.generated.slice(0, 8);
+              const stories = library.generated.slice(0, 10);
               const parentIdToEp2 = new Map<string, Story>();
+              const ep2Ids = new Set<string>();
               stories.forEach((s) => {
                 const parentId = (s as Record<string, unknown>).parent_story_id as string | undefined;
-                if (parentId) parentIdToEp2.set(parentId, s);
-              });
-              const renderedIds = new Set<string>();
-              return stories.map((s, i) => {
-                if (renderedIds.has(s.id ?? "")) return null;
-                const ep2 = parentIdToEp2.get(s.id ?? "");
-                if (ep2) {
-                  renderedIds.add(ep2.id ?? "");
-                  return (
-                    <div key={s.id ?? i} className="rounded-xl border border-primary/15 overflow-hidden">
-                      <p className="text-[10px] font-semibold text-primary/50 uppercase tracking-widest px-3 pt-2">Series</p>
-                      <StoryMiniCard story={s} episodeLabel="Episode 1" />
-                      <div className="h-px bg-border/20 mx-3" />
-                      <StoryMiniCard story={ep2} episodeLabel="Episode 2" />
-                    </div>
-                  );
+                if (parentId) {
+                  parentIdToEp2.set(parentId, s);
+                  ep2Ids.add(s.id ?? "");
                 }
-                return (
-                  <StoryMiniCard key={s.id ?? i} story={s} />
-                );
-              }).filter(Boolean);
+              });
+              return stories
+                .filter((s) => !ep2Ids.has(s.id ?? ""))
+                .slice(0, 6)
+                .map((s, i) => {
+                  const ep2 = parentIdToEp2.get(s.id ?? "");
+                  if (ep2) {
+                    return (
+                      <div key={s.id ?? i} className="rounded-xl border border-primary/15 overflow-hidden">
+                        <p className="text-[10px] font-semibold text-primary/50 uppercase tracking-widest px-3 pt-2">Series</p>
+                        <StoryMiniCard story={s} episodeLabel="Episode 1" />
+                        <div className="h-px bg-border/20 mx-3" />
+                        <StoryMiniCard story={ep2} episodeLabel="Episode 2" />
+                      </div>
+                    );
+                  }
+                  return <StoryMiniCard key={s.id ?? i} story={s} />;
+                });
             })()}
           </div>
         </section>

@@ -21,7 +21,7 @@ function useContinueListening(isAuthenticated: boolean) {
   const [items, setItems] = useState<Story[]>([]);
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetch(`${API_BASE}/api/continue-listening`, { credentials: "include" })
+    fetch(`${API_BASE}/api/me/continue-listening`, { credentials: "include" })
       .then((r) => r.ok ? r.json() : [])
       .then((data) => setItems((data as Story[]).slice(0, 8)))
       .catch(() => {});
@@ -38,7 +38,7 @@ function useRecommendations(isAuthenticated: boolean) {
   }>({ for_you: [], because_you_liked: [], because_you_liked_mood: null, has_taste_profile: false });
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetch(`${API_BASE}/api/recommendations`, { credentials: "include" })
+    fetch(`${API_BASE}/api/me/recommendations`, { credentials: "include" })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data) setRecs(data); })
       .catch(() => {});
@@ -93,7 +93,9 @@ export default function Home() {
   const recs = useRecommendations(isAuthenticated);
 
   const featured = stories?.[0];
-  const tonightPicks = stories?.slice(1, 9) || [];
+  const tonightPicks = (isAuthenticated && recs.for_you.length > 0)
+    ? (recs.for_you as Story[])
+    : (stories?.slice(1, 9) || []);
   const lateNight = stories?.filter(s => s.mood === "Late Night") || [];
   const slowBurn = stories?.filter(s => s.mood === "Slow Burn") || [];
 
@@ -259,10 +261,11 @@ export default function Home() {
           </>
         ) : (
           <>
-            {recs.for_you.length > 0 && (
-              <RowSlider title="For You" subtitle="Picked for tonight" stories={recs.for_you as Story[]} />
-            )}
-            <RowSlider title="Tonight's Picks" subtitle="Curated for this exact mood" stories={tonightPicks} />
+            <RowSlider
+              title={isAuthenticated && recs.has_taste_profile ? "For You" : "Tonight's Picks"}
+              subtitle={isAuthenticated && recs.has_taste_profile ? "Picked based on what you love" : "Curated for this exact mood"}
+              stories={tonightPicks}
+            />
             {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
               <RowSlider
                 title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}

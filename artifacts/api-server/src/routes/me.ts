@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { tasteStore } from "../lib/storage.js";
+import { tasteStore, storiesStore, progressStore } from "../lib/storage.js";
 
 const router = Router();
 
@@ -11,6 +11,9 @@ function getUserId(req: Request, res: Response): string | null {
   return req.user.id;
 }
 
+// ---------------------------------------------------------------------------
+// GET /api/me/taste — full taste profile + streak
+// ---------------------------------------------------------------------------
 router.get("/taste", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
@@ -31,6 +34,9 @@ router.get("/taste", async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// POST /api/me/taste — deep-merge increments across all taste dimensions
+// ---------------------------------------------------------------------------
 router.post("/taste", async (req, res) => {
   const userId = getUserId(req, res);
   if (!userId) return;
@@ -112,6 +118,112 @@ router.post("/taste", async (req, res) => {
     res.json({ ok: true, streakDays: current.streakDays });
   } catch {
     res.status(500).json({ error: "Failed to update taste profile" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/recommendations — multi-factor personalised recommendations
+// ---------------------------------------------------------------------------
+router.get("/recommendations", async (req, res) => {
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  try {
+    const [taste, allStoriesMap] = await Promise.all([
+      tasteStore.get(userId),
+      storiesStore.getAll(),
+    ]);
+
+    const storyList = Object.values(allStoriesMap) as Array<Record<string, unknown>>;
+    const hasProfile =
+      Object.keys(taste.tasteProfile).length > 0 ||
+      Object.keys(taste.preferredIntensity).length > 0;
+
+    const topMoods = Object.entries(taste.tasteProfile)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([k]) => k);
+
+    const topIntensity = Object.entries(taste.preferredIntensity)
+      .sort(([, a], [, b]) => b - a)
+      .map(([k]) => k)[0] ?? null;
+
+    const topTags = new Set(topMoods);
+
+    function scoreStory(story: Record<string, unknown>): number {
+      let score = 0;
+      const storyMood = story.mood as string | undefined;
+      const storyTags = (story.recommendation_tags as string[] | undefined) ?? [];
+
+      if (storyMood && taste.tasteProfile[storyMood]) {
+        score += taste.tasteProfile[storyMood] * 3;
+      }
+
+      for (const tag of storyTags) {
+        if (taste.tasteProfile[tag]) score += taste.tasteProfile[tag] * 2;
+        if (topTags.has(tag)) score += 1;
+      }
+
+      const brief = story.brief as Record<string, unknown> | undefined;
+      const storyDna = story.storyDna as Record<string, unknown> | undefined;
+      const intensityVal = (brief?.intensity ?? storyDna?.intensity) as string | undefined;
+      if (intensityVal && topIntensity && intensityVal === topIntensity) {
+        score += taste.preferredIntensity[topIntensity] ?? 1;
+      }
+
+      return score;
+    }
+
+    const libraryStories = storyList.filter(
+      (s) => s.isLibraryStory === true && s.status === "published",
+    );
+
+    const sorted = hasProfile
+      ? [...libraryStories].sort((a, b) => scoreStory(b) - scoreStory(a))
+      : libraryStories;
+
+    const topMood = topMoods[0] ?? null;
+    const forYou = sorted.slice(0, 8);
+    const becauseYouLiked = hasProfile && topMood
+      ? sorted.filter((s) => (s.mood as string | undefined) === topMood).slice(0, 6)
+      : [];
+
+    res.json({
+      for_you: forYou,
+      because_you_liked: becauseYouLiked,
+      because_you_liked_mood: topMood,
+      has_taste_profile: hasProfile,
+    });
+  } catch {
+    res.status(500).json({ error: "Failed to generate recommendations" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/continue-listening
+// ---------------------------------------------------------------------------
+router.get("/continue-listening", async (req, res) => {
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  try {
+    const userProgressMap = await progressStore.getUserProgress(userId);
+
+    const inProgress = Object.values(userProgressMap)
+      .filter((entry) => entry.audioProgressSeconds > 5)
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    const storiesWithProgress = await Promise.all(
+      inProgress.map(async (entry) => {
+        const story = await storiesStore.get(entry.storyId);
+        if (!story) return null;
+        return { ...story, progress: entry };
+      }),
+    );
+
+    res.json(storiesWithProgress.filter(Boolean));
+  } catch {
+    res.status(500).json({ error: "Failed to load continue-listening" });
   }
 });
 

@@ -1270,6 +1270,11 @@ router.post("/generate-full-story", async (req, res) => {
       intake.voiceFeel,
       null,
       intake.experienceTags,
+      {
+        whoIsHe: intake.whoIsHe,
+        dynamic: intake.dynamic,
+        ending: intake.ending,
+      },
     );
 
     return result;

@@ -225,6 +225,7 @@ export async function trackGeneratedStory(
   voiceFeel: string,
   variantType?: string | null,
   experienceTags?: string[],
+  casting?: { whoIsHe?: string; dynamic?: string; ending?: string },
 ): Promise<void> {
   if (!userId) return;
 
@@ -237,10 +238,25 @@ export async function trackGeneratedStory(
   taste.preferredIntensity[intensity] = (taste.preferredIntensity[intensity] ?? 0) + 1;
   taste.preferredVoiceFeel[voiceFeel] = (taste.preferredVoiceFeel[voiceFeel] ?? 0) + 1;
 
+  // Save experience tags (StoryTagStudio selections)
   if (experienceTags && experienceTags.length > 0) {
     for (const tag of experienceTags) {
       taste.tasteProfile[tag] = (taste.tasteProfile[tag] ?? 0) + 1;
     }
+  }
+
+  // Save casting choices (archetype, power dynamic, ending)
+  if (casting?.whoIsHe) {
+    taste.preferredRelationshipDynamics[casting.whoIsHe] =
+      (taste.preferredRelationshipDynamics[casting.whoIsHe] ?? 0) + 1;
+  }
+  if (casting?.dynamic) {
+    taste.preferredRelationshipDynamics[casting.dynamic] =
+      (taste.preferredRelationshipDynamics[casting.dynamic] ?? 0) + 1;
+  }
+  if (casting?.ending) {
+    taste.preferredEndings[casting.ending] =
+      (taste.preferredEndings[casting.ending] ?? 0) + 1;
   }
 
   await tasteStore.upsert(userId, taste);

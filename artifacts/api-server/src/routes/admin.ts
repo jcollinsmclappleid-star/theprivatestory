@@ -17,15 +17,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
+const ADMIN_API_KEY = process.env.ADMIN_API_KEY ?? "";
 
 function isAdmin(req: any): boolean {
   if (!ADMIN_EMAIL) return false;
-  // Session-based auth
+  // Session-based auth (web UI)
   const user = req.user as { email?: string } | undefined;
   if (user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
-  // Header-based auth for scripts (passes ADMIN_EMAIL as X-Admin-Token)
+  // Header-based auth for scripts — requires a real secret key, not the email
+  if (!ADMIN_API_KEY) return false;
   const token = req.headers["x-admin-token"] as string | undefined;
-  return token === ADMIN_EMAIL;
+  return !!token && token === ADMIN_API_KEY;
 }
 
 function getPublicAudioDir(): string {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon, Flame } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -159,13 +159,13 @@ function Navbar({ streakDays }: { streakDays: number }) {
               isAuthenticated && user ? (
                 <div className="flex items-center gap-2">
                   {streakDays >= 2 && (
-                    <div
-                      className="hidden md:flex items-center gap-1 px-2 py-1 rounded-full border border-primary/30 bg-primary/8"
+                    <span
+                      className="hidden md:inline text-[10px] font-semibold tracking-wide px-2 py-1 rounded-full border border-primary/30 bg-primary/8"
+                      style={{ color: "#c9a227" }}
                       title={`${streakDays} evenings in a row`}
                     >
-                      <Flame className="w-3 h-3 text-primary" />
-                      <span className="text-[10px] font-semibold text-primary">{streakDays} evenings</span>
-                    </div>
+                      {streakDays} evenings
+                    </span>
                   )}
                   {user.profileImageUrl || user.image ? (
                     <img
@@ -291,12 +291,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
                       <p className="text-sm font-medium text-foreground">
                         {user.firstName ?? user.name ?? "Account"}
                       </p>
-                      {streakDays >= 2 && (
-                        <p className="text-[10px] text-primary flex items-center gap-1">
-                          <Flame className="w-3 h-3" />
-                          {streakDays} evenings in a row
-                        </p>
-                      )}
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
                   </div>
                   <button

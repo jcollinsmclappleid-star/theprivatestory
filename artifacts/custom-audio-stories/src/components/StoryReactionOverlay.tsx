@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REACTIONS = [
-  { emoji: "❤️", label: "Felt that", tag: "Felt that" },
-  { emoji: "🔥", label: "More like this", tag: "More like this" },
-  { emoji: "✨", label: "Surprised me", tag: "Surprised me" },
-  { emoji: "🌙", label: "Needed that", tag: "Needed that" },
+  { emoji: "❤️", label: "Felt that", tags: ["Felt that", "Adored", "Seen"] },
+  { emoji: "🔥", label: "More like this", tags: ["More like this", "Electric", "Desired"] },
+  { emoji: "✨", label: "Surprised me", tags: ["Surprised me", "Instant Chemistry", "Undone"] },
+  { emoji: "🌙", label: "Needed that", tags: ["Needed that", "Tender", "Safe"] },
 ];
 
 interface Props {
@@ -28,26 +28,33 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood }: Props) {
     }
     const timer = setTimeout(() => {
       if (!dismissed) handleDismiss([]);
-    }, 5000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, [visible, dismissed]);
 
   function handleDismiss(tags: string[]) {
     setDismissed(true);
     if (tags.length > 0) {
+      const tasteUpdate: Record<string, number> = {};
+      for (const tag of tags) {
+        tasteUpdate[tag] = (tasteUpdate[tag] ?? 0) + 1;
+      }
+      if (storyMood) {
+        tasteUpdate[storyMood] = (tasteUpdate[storyMood] ?? 0) + 1;
+      }
       fetch(`${API_BASE}/api/me/taste`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ reactionTags: tags }),
+        body: JSON.stringify({ tasteProfile: tasteUpdate }),
       }).catch(() => {});
     }
     onDismiss();
   }
 
-  function handleReaction(tag: string) {
-    setSelected(tag);
-    setTimeout(() => handleDismiss([tag]), 400);
+  function handleReaction(reaction: typeof REACTIONS[number]) {
+    setSelected(reaction.label);
+    setTimeout(() => handleDismiss(reaction.tags), 350);
   }
 
   return (
@@ -68,10 +75,10 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood }: Props) {
             <div className="grid grid-cols-4 gap-2">
               {REACTIONS.map((r) => (
                 <button
-                  key={r.tag}
-                  onClick={() => handleReaction(r.tag)}
+                  key={r.label}
+                  onClick={() => handleReaction(r)}
                   className={`flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-all ${
-                    selected === r.tag
+                    selected === r.label
                       ? "border-primary/60 bg-primary/10"
                       : "border-white/8 bg-white/4 hover:bg-white/8 hover:border-white/16"
                   }`}

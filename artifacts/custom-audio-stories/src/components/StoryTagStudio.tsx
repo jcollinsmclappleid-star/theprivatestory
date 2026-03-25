@@ -114,12 +114,12 @@ export function StoryTagStudio({
       .then((data) => {
         if (data?.tasteProfile) {
           const freq = data.tasteProfile as Record<string, number>;
-          const frequent = new Set(
-            Object.entries(freq)
-              .filter(([, count]) => count > 0)
-              .map(([tag]) => tag)
-          );
-          setUsualTags(frequent);
+          const top5 = Object.entries(freq)
+            .filter(([, count]) => count > 0)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 5)
+            .map(([tag]) => tag);
+          setUsualTags(new Set(top5));
         }
       })
       .catch(() => {});
@@ -147,34 +147,36 @@ export function StoryTagStudio({
               const selected = selectedTags.includes(tag);
               const isUsual = usualTags.has(tag) && !selected;
               return (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => onTagToggle(tag)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                    selected
-                      ? "border-transparent text-black"
-                      : isUsual
-                      ? "border-primary/40 text-foreground/80 hover:border-primary/60"
-                      : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
-                  }`}
-                  style={
-                    selected
-                      ? { background: accentColor, borderColor: accentColor }
-                      : isUsual
-                      ? { background: `${accentColor}12` }
-                      : undefined
-                  }
-                  title={isUsual ? "Your usual" : undefined}
-                >
-                  {tag}
+                <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => onTagToggle(tag)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      selected
+                        ? "border-transparent text-black"
+                        : isUsual
+                        ? "border-primary/40 text-foreground hover:border-primary/60"
+                        : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                    }`}
+                    style={
+                      selected
+                        ? { background: accentColor, borderColor: accentColor }
+                        : isUsual
+                        ? { background: `${accentColor}14` }
+                        : undefined
+                    }
+                  >
+                    {tag}
+                  </button>
                   {isUsual && (
                     <span
-                      className="absolute -top-1 -right-1 w-2 h-2 rounded-full border border-background"
-                      style={{ background: accentColor }}
-                    />
+                      className="text-[8px] font-semibold uppercase tracking-widest px-1.5 leading-tight"
+                      style={{ color: accentColor, opacity: 0.85 }}
+                    >
+                      Your Usual
+                    </span>
                   )}
-                </button>
+                </span>
               );
             })}
           </div>

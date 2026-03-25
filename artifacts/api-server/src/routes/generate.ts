@@ -1262,7 +1262,15 @@ router.post("/generate-full-story", async (req, res) => {
     }
 
     // Step 11: Track in user profile (taste + generated stories list)
-    await trackGeneratedStory(req.user.id, storyId, intake.mood, intake.intensity, intake.voiceFeel);
+    await trackGeneratedStory(
+      req.user.id,
+      storyId,
+      intake.mood,
+      intake.intensity,
+      intake.voiceFeel,
+      null,
+      intake.experienceTags,
+    );
 
     return result;
   };

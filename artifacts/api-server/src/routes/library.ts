@@ -224,6 +224,7 @@ export async function trackGeneratedStory(
   intensity: string,
   voiceFeel: string,
   variantType?: string | null,
+  experienceTags?: string[],
 ): Promise<void> {
   if (!userId) return;
 
@@ -235,6 +236,13 @@ export async function trackGeneratedStory(
   taste.tasteProfile[mood] = (taste.tasteProfile[mood] ?? 0) + 1;
   taste.preferredIntensity[intensity] = (taste.preferredIntensity[intensity] ?? 0) + 1;
   taste.preferredVoiceFeel[voiceFeel] = (taste.preferredVoiceFeel[voiceFeel] ?? 0) + 1;
+
+  if (experienceTags && experienceTags.length > 0) {
+    for (const tag of experienceTags) {
+      taste.tasteProfile[tag] = (taste.tasteProfile[tag] ?? 0) + 1;
+    }
+  }
+
   await tasteStore.upsert(userId, taste);
 }
 

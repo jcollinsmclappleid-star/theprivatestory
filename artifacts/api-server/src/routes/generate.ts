@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
+import { openaiDirect } from "../lib/openai-direct.js";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
@@ -718,24 +719,49 @@ async function generateAudioFile(
   cacheKey: string
 ): Promise<string> {
   const voice = voiceMap[voiceFeel] ?? voiceMap["Soft Voice"];
-  const fullText = scenes.map((s) => s.text).join("\n\n");
+  const TTS_CHAR_LIMIT = 4000;
 
-  try {
-    const speechResponse = await openai.audio.speech.create({
-      model: "tts-1",
-      voice,
-      input: fullText,
-      response_format: "mp3",
-    });
-
-    const audioDir = getPublicAudioDir();
-    const filename = `audio-${cacheKey}.mp3`;
-    const buffer = Buffer.from(await speechResponse.arrayBuffer());
-    fs.writeFileSync(path.join(audioDir, filename), buffer);
-    return `/api/audio/${filename}`;
-  } catch {
-    return "";
+  // Build chunks that respect the TTS character limit, splitting at scene boundaries
+  const chunks: string[] = [];
+  let current = "";
+  for (const scene of scenes) {
+    const sceneText = scene.text.trim();
+    if (current.length + sceneText.length + 2 > TTS_CHAR_LIMIT) {
+      if (current.length > 0) {
+        chunks.push(current.trim());
+        current = "";
+      }
+      // If a single scene exceeds the limit, split it mid-text
+      if (sceneText.length > TTS_CHAR_LIMIT) {
+        for (let i = 0; i < sceneText.length; i += TTS_CHAR_LIMIT) {
+          chunks.push(sceneText.slice(i, i + TTS_CHAR_LIMIT));
+        }
+      } else {
+        current = sceneText;
+      }
+    } else {
+      current += (current.length > 0 ? "\n\n" : "") + sceneText;
+    }
   }
+  if (current.length > 0) chunks.push(current.trim());
+
+  // Generate TTS for each chunk in parallel, then concatenate
+  const buffers = await Promise.all(
+    chunks.map(async (chunk) => {
+      const res = await openaiDirect.audio.speech.create({
+        model: "tts-1",
+        voice,
+        input: chunk,
+        response_format: "mp3",
+      });
+      return Buffer.from(await res.arrayBuffer());
+    })
+  );
+
+  const audioDir = getPublicAudioDir();
+  const filename = `audio-${cacheKey}.mp3`;
+  fs.writeFileSync(path.join(audioDir, filename), Buffer.concat(buffers));
+  return `/api/audio/${filename}`;
 }
 
 // ---------------------------------------------------------------------------

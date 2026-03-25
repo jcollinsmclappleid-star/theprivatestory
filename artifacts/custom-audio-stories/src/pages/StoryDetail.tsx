@@ -187,13 +187,32 @@ export default function StoryDetail() {
         {/* Read-Along Text */}
         {story.scenes && story.scenes.length > 0 && (
           <div className="flex-1 mt-12 pt-8 border-t border-white/10">
-            <div className="text-xs font-medium text-primary uppercase tracking-widest mb-4">
+            <div className="text-xs font-medium text-primary uppercase tracking-widest mb-6">
               Read Along
             </div>
-            <div className="prose prose-invert max-w-none text-sm leading-relaxed text-muted-foreground">
-              <p className="whitespace-pre-wrap text-foreground/80">
-                {story.scenes[0]?.text || story.description}
-              </p>
+            <div className="rounded-xl overflow-hidden">
+              <div
+                className="max-h-[50vh] overflow-y-auto"
+                style={story.coverImage ? {
+                  backgroundImage: `url(${story.coverImage})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundAttachment: "local",
+                } : {}}
+              >
+                <div className="p-6 space-y-8 bg-black/80">
+                  {story.scenes.map((scene: { id?: number; heading?: string; text?: string }, i: number) => (
+                    <div key={scene.id ?? i}>
+                      <p className="text-xs font-medium text-primary/70 uppercase tracking-widest mb-2">
+                        {scene.heading ?? `Scene ${i + 1}`}
+                      </p>
+                      <p className="text-sm leading-[1.9] text-white/90 font-light whitespace-pre-wrap">
+                        {scene.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}

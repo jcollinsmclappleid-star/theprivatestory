@@ -8,8 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 
-const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
-
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
 
@@ -361,34 +359,60 @@ function ScenarioCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: selected ? 1 : 1.02 }}
       whileTap={{ scale: 0.97 }}
-      className={`relative overflow-hidden rounded-2xl border text-left flex-shrink-0 transition-all ${
+      animate={{ width: selected ? 260 : 220 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className={`relative overflow-hidden rounded-2xl border text-left flex-shrink-0 transition-colors ${
         selected
-          ? "border-white/25 shadow-[0_0_20px_rgba(192,57,43,0.18)]"
-          : "border-white/6 hover:border-white/14"
+          ? "border-white/30 shadow-[0_0_24px_rgba(192,57,43,0.22)]"
+          : "border-white/6 hover:border-white/16"
       }`}
-      style={{ width: "220px", minHeight: "140px" }}
+      style={{ minHeight: "140px" }}
     >
       <div className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient}`} />
       <motion.div
-        animate={{ opacity: selected ? [0.35, 0.6, 0.35] : [0.1, 0.22, 0.1] }}
+        animate={{ opacity: selected ? [0.4, 0.7, 0.4] : [0.1, 0.2, 0.1] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="absolute inset-0 rounded-2xl"
         style={{
-          background: `radial-gradient(ellipse at 70% 35%, ${scenario.accent}30 0%, transparent 65%)`,
+          background: `radial-gradient(ellipse at 70% 35%, ${scenario.accent}35 0%, transparent 65%)`,
         }}
       />
       <div className="relative z-10 p-4 flex flex-col gap-2 h-full">
         <div className="flex items-start justify-between gap-2">
-          <p className={`font-bold text-white text-sm leading-snug flex-1 ${selected ? "text-white" : "text-white/90"}`}>
+          <p className="font-bold text-white text-sm leading-snug flex-1">
             {scenario.label}
           </p>
           {selected && (
-            <div className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse flex-shrink-0 mt-1" />
+            <div className="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse flex-shrink-0 mt-1" />
           )}
         </div>
-        <p className="text-white/50 text-xs leading-snug">{scenario.sub}</p>
+        <AnimatePresence mode="wait">
+          {selected ? (
+            <motion.p
+              key="full"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-white/70 text-xs leading-relaxed"
+            >
+              {scenario.sub}
+            </motion.p>
+          ) : (
+            <motion.p
+              key="preview"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="text-white/45 text-xs leading-snug line-clamp-2"
+            >
+              {scenario.sub}
+            </motion.p>
+          )}
+        </AnimatePresence>
         <div className="mt-auto">
           <DarknessBadge level={scenario.darkness} />
         </div>

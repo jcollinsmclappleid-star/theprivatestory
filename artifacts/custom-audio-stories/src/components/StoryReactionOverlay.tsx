@@ -14,9 +14,10 @@ interface Props {
   visible: boolean;
   onDismiss: () => void;
   storyMood?: string;
+  storyTags?: string[];
 }
 
-export function StoryReactionOverlay({ visible, onDismiss, storyMood }: Props) {
+export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -32,16 +33,28 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood }: Props) {
     return () => clearTimeout(timer);
   }, [visible, dismissed]);
 
-  function handleDismiss(tags: string[]) {
+  function handleDismiss(reactionTags: string[]) {
     setDismissed(true);
-    if (tags.length > 0) {
+    if (reactionTags.length > 0) {
       const tasteUpdate: Record<string, number> = {};
-      for (const tag of tags) {
+
+      // Reaction-specific synthetic labels
+      for (const tag of reactionTags) {
         tasteUpdate[tag] = (tasteUpdate[tag] ?? 0) + 1;
       }
+
+      // Story's own mood (taste reinforcement)
       if (storyMood) {
         tasteUpdate[storyMood] = (tasteUpdate[storyMood] ?? 0) + 1;
       }
+
+      // Story's own recommendation_tags (direct taste signal)
+      if (storyTags && storyTags.length > 0) {
+        for (const tag of storyTags) {
+          tasteUpdate[tag] = (tasteUpdate[tag] ?? 0) + 1;
+        }
+      }
+
       fetch(`${API_BASE}/api/me/taste`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

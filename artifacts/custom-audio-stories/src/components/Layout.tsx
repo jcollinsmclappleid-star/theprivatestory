@@ -34,29 +34,33 @@ function StoryLifecycleManager({
   const { currentStory, progress, isPlaying } = useAudioPlayer();
   const [reactionVisible, setReactionVisible] = useState(false);
   const lastStoryId = useRef<string | null>(null);
-  const streakFiredForStory = useRef<string | null>(null);
+  const lastStreakFiredAt = useRef<number>(0);
+  const wasPlaying = useRef<boolean>(false);
   const reactionFiredForStory = useRef<string | null>(null);
 
+  // Fire streak increment on every play-start transition (false → true).
+  // Client rate-limits to 5 minutes so accidental double-fires are prevented;
+  // the server does same-day deduplication so day-boundary is safe.
   useEffect(() => {
-    if (!currentStory) return;
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !currentStory) return;
+    const playStarted = isPlaying && !wasPlaying.current;
+    wasPlaying.current = isPlaying;
+    if (!playStarted) return;
 
-    if (
-      isPlaying &&
-      currentStory.id !== streakFiredForStory.current
-    ) {
-      streakFiredForStory.current = currentStory.id;
-      fetch(`${API_BASE}/api/me/taste`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ incrementStreak: true }),
-      })
-        .then((r) => r.ok ? r.json() : null)
-        .then((data) => { if (data?.streakDays) onStreakIncrement(data.streakDays); })
-        .catch(() => {});
-    }
-  }, [currentStory?.id, isPlaying, isAuthenticated]);
+    const now = Date.now();
+    if (now - lastStreakFiredAt.current < 5 * 60 * 1000) return;
+    lastStreakFiredAt.current = now;
+
+    fetch(`${API_BASE}/api/me/taste`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ incrementStreak: true }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.streakDays) onStreakIncrement(data.streakDays); })
+      .catch(() => {});
+  }, [isPlaying, currentStory?.id, isAuthenticated]);
 
   useEffect(() => {
     if (!currentStory) return;
@@ -80,6 +84,7 @@ function StoryLifecycleManager({
     <StoryReactionOverlay
       visible={reactionVisible}
       storyMood={currentStory?.mood}
+      storyTags={(currentStory as Record<string, unknown> | undefined)?.recommendation_tags as string[] | undefined}
       onDismiss={() => setReactionVisible(false)}
     />
   );

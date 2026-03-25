@@ -112,7 +112,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         <div className="p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-6 gap-1.5">
-            <Logo size={60} />
+            <Logo height={60} />
             <p className="text-xs text-muted-foreground/40 tracking-widest">
               Private · No social · No history shared
             </p>

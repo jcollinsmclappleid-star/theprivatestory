@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import { storiesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
 import { generatedStories } from "@workspace/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, like, asc, and, sql } from "drizzle-orm";
 import { buildPrompt, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getNonCustomSubthemes, STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { getStoryName } from "../lib/storyNames.js";
@@ -225,6 +225,73 @@ router.get("/categories", (req, res) => {
     tags: subtheme.tags,
   }));
   res.json({ items, total: items.length });
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/verify-library — live verification of 40-story library invariants
+// ---------------------------------------------------------------------------
+
+router.get("/verify-library", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  const rows = await db
+    .select({
+      id: generatedStories.id,
+      categoryId: generatedStories.categoryId,
+      subthemeId: generatedStories.subthemeId,
+      title: generatedStories.title,
+      status: generatedStories.status,
+      storyDna: generatedStories.storyDna,
+      sceneChars: sql<number>`length(${generatedStories.scenes}::text)`,
+    })
+    .from(generatedStories)
+    .where(and(like(generatedStories.id, "lib-%"), eq(generatedStories.isLibraryStory, true)))
+    .orderBy(asc(generatedStories.categoryId), asc(generatedStories.subthemeId));
+
+  const expected = getNonCustomSubthemes();
+  const foundSubthemes = new Set(rows.map(r => `${r.categoryId}/${r.subthemeId}`));
+  const missingSubthemes = expected
+    .filter(e => !foundSubthemes.has(`${e.category.id}/${e.subtheme.id}`))
+    .map(e => `${e.category.id}/${e.subtheme.id}`);
+
+  const allPublished = rows.every(r => r.status === "published");
+
+  const MIN_CHARS = 10_000;
+  const underMinLength = rows.filter(r => r.sceneChars < MIN_CHARS).map(r => ({
+    id: r.id, chars: r.sceneChars,
+  }));
+
+  let dnaAdjacencyViolations = 0;
+  const violations: Array<{ a: string; b: string; dna: string }> = [];
+  for (let i = 0; i < rows.length - 1; i++) {
+    const a = rows[i], b = rows[i + 1];
+    const aDna = a.storyDna as Record<string, string> | null;
+    const bDna = b.storyDna as Record<string, string> | null;
+    const aPD = aDna?.power_dynamic, aEE = aDna?.emotional_engine;
+    const bPD = bDna?.power_dynamic, bEE = bDna?.emotional_engine;
+    if (aPD && bPD && aPD === bPD && aEE === bEE) {
+      dnaAdjacencyViolations++;
+      violations.push({ a: a.id, b: b.id, dna: `${aPD}+${aEE}` });
+    }
+  }
+
+  const pass = rows.length === expected.length && allPublished && missingSubthemes.length === 0
+    && underMinLength.length === 0 && dnaAdjacencyViolations === 0;
+
+  res.json({
+    pass,
+    totalStories: rows.length,
+    expectedStories: expected.length,
+    allPublished,
+    missingSubthemes,
+    underMinLength,
+    dnaAdjacencyViolations,
+    violations,
+    verifiedAt: new Date().toISOString(),
+  });
 });
 
 // ---------------------------------------------------------------------------

@@ -73,6 +73,8 @@ function extractStoryParts(rawText: string): {
   clean = clean.replace(/```json[\s\S]*?```/gi, "");
   // Strip any other code fences
   clean = clean.replace(/```[\s\S]*?```/gi, "");
+  // Strip bare JSON DNA blocks — { "category": ... } spanning multiple lines
+  clean = clean.replace(/\{\s*"category"\s*:[\s\S]*?\n\}/m, "");
   // Strip [HOOK] blocks
   clean = clean.replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/gi, "");
   // Strip **STORY DNA** and similar markdown section headers
@@ -288,6 +290,10 @@ router.post("/generate-one", async (req, res) => {
     });
 
     const rawStoryText = storyCompletion.choices[0]?.message?.content ?? "";
+    const finishReason = storyCompletion.choices[0]?.finish_reason;
+    const usage = storyCompletion.usage;
+    console.error(`[GENERATION] finish_reason=${finishReason} | input=${usage?.prompt_tokens} tokens | output=${usage?.completion_tokens} tokens | chars=${rawStoryText.length}`);
+    console.error(`[GENERATION] Raw preview (first 300 chars): ${rawStoryText.slice(0, 300)}`);
 
     // Extract DNA, description (HOOK), and clean story text
     const { cleanText: cleanStoryText, description: extractedDescription, dna: storyDna } =

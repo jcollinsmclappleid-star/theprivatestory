@@ -125,9 +125,9 @@ The API server at `/api/generate-full-story` runs a fully hidden pipeline:
 1. **normaliseIntake()** — validates and enriches raw user input before anything else
 2. **Request hash caching** — deterministic hash(name+mood+intensity+length+scenario+...) checked against `data/generatedCache.json` for instant repeat-request returns
 3. **planStory()** — hidden GPT-4o story architect with Story Bible pools (4 emotional arcs, 6 relationship dynamics, 5 conflict types, 5 ending types, 4 sensory palettes) for controlled variety. Returns brief with `recommendation_tags` and `quality_target`.
-4. **writeStoryFromBrief()** — GPT-4o story writer producing scenes with `emotionalShift` per scene
+4. **writeStoryFromBrief()** — **Mistral Large** (`mistralai/mistral-large-2512` via OpenRouter) story writer producing scenes with `emotionalShift` per scene. Uses `OPENROUTER_API_KEY`. Mistral is used here because it allows explicit adult content between adults without over-refusals.
 5. **qcStory()** — 7-dimension quality evaluation (emotional_depth, specificity, pacing, scene_progression, originality, sensory_detail, ending_strength). Threshold 7.5 average, ending_strength >= 7
-6. **rewriteStory()** — targeted rewrite (max one pass) using one of 5 strategies: rewrite_ending, increase_specificity, tighten_scene_flow, increase_vulnerability, rotate_dynamic_or_setting
+6. **rewriteStory() / rewriteStoryAsVariation()** — targeted rewrite (max one pass) also via **Mistral Large** on OpenRouter; uses 5 strategies: rewrite_ending, increase_specificity, tighten_scene_flow, increase_vulnerability, rotate_dynamic_or_setting
 7. **buildImagePrompts()** — cohesive image prompt generation for cover + all scenes
 8. **Parallel**: generateAllImages() + generateAudioFile() — images via OpenAI, audio via ElevenLabs
 

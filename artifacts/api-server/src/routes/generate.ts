@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
+import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
@@ -420,9 +421,9 @@ Return JSON only in this exact format — no markdown, no explanation:
   ]
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_completion_tokens: 8192,
+  const completion = await openrouter.chat.completions.create({
+    model: MISTRAL_MODEL,
+    max_tokens: 8192,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
@@ -578,9 +579,9 @@ Return the improved story in this exact JSON shape:
   ]
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_completion_tokens: 8192,
+  const completion = await openrouter.chat.completions.create({
+    model: MISTRAL_MODEL,
+    max_tokens: 8192,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
@@ -788,9 +789,9 @@ Return the varied story in this exact JSON shape (same number of scenes as origi
   ]
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_completion_tokens: 8192,
+  const completion = await openrouter.chat.completions.create({
+    model: MISTRAL_MODEL,
+    max_tokens: 8192,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },

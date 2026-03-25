@@ -1,5 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
-import { tasteStore, storiesStore, progressStore } from "../lib/storage.js";
+import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore } from "../lib/storage.js";
 
 const router = Router();
 
@@ -239,6 +239,147 @@ router.get("/continue-listening", async (req, res) => {
     res.json(storiesWithProgress.filter(Boolean));
   } catch {
     res.status(500).json({ error: "Failed to load continue-listening" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/presets
+// ---------------------------------------------------------------------------
+router.get("/presets", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const presets = await presetsStore.getAll(userId);
+    res.json(presets);
+  } catch {
+    res.status(500).json({ error: "Failed to load presets" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/me/presets
+// ---------------------------------------------------------------------------
+router.post("/presets", async (req, res) => {
+  const userId = getUserId(req);
+  const { name, castingData } = req.body as { name?: string; castingData?: Record<string, unknown> };
+
+  if (!name || !castingData) {
+    return res.status(400).json({ error: "name and castingData required" });
+  }
+
+  try {
+    const preset = await presetsStore.create(userId, name.slice(0, 80), castingData);
+    res.json(preset);
+  } catch {
+    res.status(500).json({ error: "Failed to save preset" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /api/me/presets/:id
+// ---------------------------------------------------------------------------
+router.delete("/presets/:id", async (req, res) => {
+  const userId = getUserId(req);
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+
+  try {
+    await presetsStore.delete(userId, id);
+    res.json({ ok: true });
+  } catch {
+    res.status(500).json({ error: "Failed to delete preset" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/library — user's saved + generated stories
+// ---------------------------------------------------------------------------
+router.get("/library", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const [savedIds, generatedRows] = await Promise.all([
+      libraryStore.getSavedStoryIds(userId),
+      libraryStore.getGeneratedStoryIds(userId),
+    ]);
+
+    const allIds = [...new Set([...savedIds, ...generatedRows.map((r) => r.storyId)])];
+
+    const storyMap: Record<string, Record<string, unknown>> = {};
+    await Promise.all(
+      allIds.map(async (id) => {
+        const s = await storiesStore.get(id);
+        if (s) storyMap[id] = s;
+      }),
+    );
+
+    const saved = savedIds.map((id) => storyMap[id]).filter(Boolean);
+    const generated = generatedRows
+      .filter((r) => r.type === "generated")
+      .map((r) => storyMap[r.storyId])
+      .filter(Boolean);
+
+    res.json({ saved, generated });
+  } catch {
+    res.status(500).json({ error: "Failed to load library" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/quick-create-params — converts taste profile → generation body
+// ---------------------------------------------------------------------------
+router.get("/quick-create-params", async (req, res) => {
+  const userId = getUserId(req);
+
+  try {
+    const taste = await tasteStore.get(userId);
+
+    const totalSignals =
+      Object.values(taste.tasteProfile).reduce((a, b) => a + b, 0) +
+      Object.values(taste.preferredIntensity).reduce((a, b) => a + b, 0);
+
+    if (totalSignals < 5) {
+      return res.status(204).json({ error: "Not enough taste data" });
+    }
+
+    const topMood = Object.entries(taste.tasteProfile)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Emotional";
+
+    const topIntensity = Object.entries(taste.preferredIntensity)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Heated";
+
+    const topVoice = Object.entries(taste.preferredVoiceFeel)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Soft Voice";
+
+    const topDynamic = Object.entries(taste.preferredRelationshipDynamics)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "";
+
+    const topEnding = Object.entries(taste.preferredEndings)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "";
+
+    const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
+    const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
+    const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
+
+    const mood = VALID_MOODS.includes(topMood) ? topMood : "Emotional";
+    const intensity = VALID_INTENSITIES.includes(topIntensity) ? topIntensity : "Heated";
+    const voiceFeel = VALID_VOICES.includes(topVoice) ? topVoice : "Soft Voice";
+
+    res.json({
+      mood,
+      intensity,
+      voiceFeel,
+      storyLength: "5 min",
+      scenarioPrompt: topDynamic
+        ? `A story with the energy of: ${topDynamic}. Make it feel intimate and surprising.`
+        : "An unexpected late-evening encounter that becomes emotionally charged.",
+      whoIsHe: topDynamic || "",
+      dynamic: topDynamic || "",
+      ending: topEnding || "",
+      cinematicVisuals: true,
+      emotionalFocus: false,
+      bypassCache: true,
+    });
+  } catch {
+    res.status(500).json({ error: "Failed to build quick-create params" });
   }
 });
 

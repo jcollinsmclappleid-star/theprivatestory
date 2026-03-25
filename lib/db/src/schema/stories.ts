@@ -83,8 +83,19 @@ export const generatedCache = pgTable("generated_cache", {
   storyId: text("story_id").notNull(),
 });
 
+export const userPresets = pgTable("user_presets", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  name: text("name").notNull().default(""),
+  castingData: jsonb("casting_data").notNull().default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type GeneratedStoryRow = typeof generatedStories.$inferSelect;
 export type UserLibraryRow = typeof userLibrary.$inferSelect;
 export type UserProgressRow = typeof userProgress.$inferSelect;
 export type UserTasteRow = typeof userTaste.$inferSelect;
 export type GeneratedCacheRow = typeof generatedCache.$inferSelect;
+export type UserPresetRow = typeof userPresets.$inferSelect;

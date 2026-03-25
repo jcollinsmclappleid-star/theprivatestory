@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
-  Play, Gift, Sparkles, Headphones, Wand2, BookOpen, Check, ChevronRight,
+  Play, Gift, Sparkles, Headphones, Wand2, BookOpen, Check, ChevronRight, Zap,
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
@@ -44,6 +44,27 @@ function useRecommendations(isAuthenticated: boolean) {
       .catch(() => {});
   }, [isAuthenticated]);
   return recs;
+}
+
+// ---------------------------------------------------------------------------
+// Quick Create — checks if user has enough taste data for 1-click generation
+// ---------------------------------------------------------------------------
+
+function useQuickCreate(isAuthenticated: boolean) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/taste`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data) return;
+        const sum = (m: Record<string, number>) => Object.values(m).reduce((a, b) => a + b, 0);
+        const signals = sum(data.tasteProfile ?? {}) + sum(data.preferredIntensity ?? {});
+        setReady(signals >= 5);
+      })
+      .catch(() => {});
+  }, [isAuthenticated]);
+  return ready;
 }
 
 // ---------------------------------------------------------------------------
@@ -91,6 +112,22 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const continueListening = useContinueListening(isAuthenticated);
   const recs = useRecommendations(isAuthenticated);
+  const quickCreateReady = useQuickCreate(isAuthenticated);
+  const [, navigate] = useLocation();
+  const [quickCreateLoading, setQuickCreateLoading] = useState(false);
+
+  const handleQuickCreate = useCallback(async () => {
+    setQuickCreateLoading(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/me/quick-create-params`, { credentials: "include" });
+      if (!r.ok) return;
+      const params = await r.json();
+      sessionStorage.setItem("quickCreateParams", JSON.stringify(params));
+      navigate("/create");
+    } finally {
+      setQuickCreateLoading(false);
+    }
+  }, [navigate]);
 
   const featured = stories?.[0];
   const tonightPicks = (isAuthenticated && recs.for_you.length > 0)
@@ -145,14 +182,30 @@ export default function Home() {
                 <Sparkles className="w-5 h-5" />
                 Write My Story
               </Link>
-              {/* SECONDARY: Browse */}
-              <Link
-                href="/browse"
-                className="flex items-center gap-2 px-6 py-4 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border/80 transition-all font-medium"
-              >
-                <Play className="w-4 h-4 fill-current" />
-                Browse Stories
-              </Link>
+              {/* Quick Create — for users with taste data */}
+              {quickCreateReady ? (
+                <button
+                  onClick={handleQuickCreate}
+                  disabled={quickCreateLoading}
+                  className="flex items-center gap-2 px-6 py-4 rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-all font-medium disabled:opacity-50"
+                >
+                  {quickCreateLoading ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-primary/40 border-t-primary animate-spin" />
+                  ) : (
+                    <Zap className="w-4 h-4" />
+                  )}
+                  Write One for Me
+                </button>
+              ) : (
+                /* SECONDARY: Browse */
+                <Link
+                  href="/browse"
+                  className="flex items-center gap-2 px-6 py-4 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border/80 transition-all font-medium"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  Browse Stories
+                </Link>
+              )}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-4 text-xs text-muted-foreground/60 tracking-wide">

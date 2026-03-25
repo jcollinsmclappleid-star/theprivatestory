@@ -357,6 +357,8 @@ export default function Create() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
+  const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
+  const [presetSaved, setPresetSaved] = useState(false);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -369,6 +371,42 @@ export default function Create() {
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const { play, isPlaying, togglePlay, progress, currentStory } = useAudioPlayer();
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      listenerName: "",
+      mood: "Emotional",
+      intensity: "Tender",
+      voiceFeel: "Soft Voice",
+      storyLength: "5 min",
+      scenarioPrompt: "",
+      cinematicVisuals: true,
+      emotionalFocus: false,
+      whoIsHe: "",
+      dynamic: "",
+      ending: "",
+      setting: "",
+      storyMode: "romance",
+      experienceTags: [],
+    },
+  });
+
+  const handleSavePreset = useCallback(async () => {
+    if (!lastCastingData || !isAuthenticated) return;
+    const archetype = lastCastingData.archetype as string ?? "";
+    const dynamic = lastCastingData.dynamic as string ?? "";
+    const name = [archetype, dynamic].filter(Boolean).join(" · ") || "My Cast";
+    try {
+      await fetch(`${API_BASE}/api/me/presets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, castingData: lastCastingData }),
+      });
+      setPresetSaved(true);
+    } catch { /* ignore */ }
+  }, [lastCastingData, isAuthenticated]);
 
   const handleResultSave = useCallback(async () => {
     if (!result || savePending) return;
@@ -452,6 +490,36 @@ export default function Create() {
     },
   });
 
+  // Pick up quickCreateParams or castingPreset injected by Profile page (runs once on mount)
+  useEffect(() => {
+    const qcp = sessionStorage.getItem("quickCreateParams");
+    if (qcp) {
+      sessionStorage.removeItem("quickCreateParams");
+      try {
+        const params = JSON.parse(qcp) as FormData;
+        Object.entries(params).forEach(([k, v]) => form.setValue(k as keyof FormData, v as never));
+        setStep("generating");
+        startLoadingPhase();
+        generateMutation.mutateAsync({ data: params }).finally(() => stopLoadingPhase());
+      } catch { /* ignore */ }
+      return;
+    }
+    const cp = sessionStorage.getItem("castingPreset");
+    if (cp) {
+      sessionStorage.removeItem("castingPreset");
+      try {
+        const casting = JSON.parse(cp) as Record<string, string>;
+        form.setValue("whoIsHe", casting.archetype ?? "");
+        form.setValue("dynamic", casting.dynamic ?? "");
+        form.setValue("intensity", casting.intensity ?? "");
+        form.setValue("mood", casting.mood ?? "Emotional");
+        form.setValue("storyMode", casting.storyMode ?? "romance");
+        setStep("form");
+      } catch { /* ignore */ }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleGenerateVariation = useCallback(async () => {
     if (!result || isGeneratingVariation) return;
     setVariationModalOpen(false);
@@ -510,31 +578,21 @@ export default function Create() {
     }
   }, [result, isGeneratingContinuation, selectedContinuation, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      listenerName: "",
-      mood: "Emotional",
-      intensity: "Tender",
-      voiceFeel: "Soft Voice",
-      storyLength: "5 min",
-      scenarioPrompt: "",
-      cinematicVisuals: true,
-      emotionalFocus: false,
-      whoIsHe: "",
-      dynamic: "",
-      ending: "",
-      setting: "",
-      storyMode: "romance",
-      experienceTags: [],
-    },
-  });
-
   const handleCastingComplete = useCallback(async (casting: CastingRoomResult) => {
     const allTags = [...(casting.customTags ?? [])];
     const scenarioWithFreeText = [casting.scenarioPrompt, casting.freeText]
       .filter(Boolean)
       .join(". ");
+
+    setLastCastingData({
+      archetype: casting.archetype,
+      dynamic: casting.dynamic,
+      setting: casting.setting,
+      intensity: casting.intensity,
+      mood: casting.mood,
+      storyMode: casting.storyMode,
+    });
+    setPresetSaved(false);
 
     form.setValue("scenarioPrompt", scenarioWithFreeText);
     form.setValue("whoIsHe", casting.archetype);
@@ -1159,6 +1217,25 @@ export default function Create() {
                     {result.duration} · {result.scenes.length} scenes
                   </span>
                 </div>
+
+                {/* Save casting combo as a preset */}
+                {isAuthenticated && lastCastingData && (
+                  <div className="flex items-center gap-2">
+                    {presetSaved ? (
+                      <p className="text-xs text-primary flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5" />
+                        Casting saved — find it in your profile
+                      </p>
+                    ) : (
+                      <button
+                        onClick={handleSavePreset}
+                        className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 underline-offset-2 hover:underline"
+                      >
+                        Save this casting combination
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 {isThisPlaying && (
                   <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">

@@ -17,6 +17,7 @@ import Gift from "@/pages/Gift";
 import Library from "@/pages/Library";
 import Admin from "@/pages/Admin";
 import AfterDark from "@/pages/AfterDark";
+import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ function Router() {
             <Route path="/gift" component={Gift} />
             <Route path="/library" component={Library} />
             <Route path="/after-dark" component={AfterDark} />
+            <Route path="/me" component={Profile} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

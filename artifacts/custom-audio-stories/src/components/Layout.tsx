@@ -112,7 +112,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Series", href: "/series", icon: <Library className="w-4 h-4" /> },
-    { label: "My Library", href: "/library", icon: <BookOpen className="w-4 h-4" /> },
+    { label: "My Library", href: isAuthenticated ? "/me" : "/library", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
@@ -175,17 +175,19 @@ function Navbar({ streakDays }: { streakDays: number }) {
                       {streakDays} evenings
                     </span>
                   )}
-                  {user.profileImageUrl || user.image ? (
-                    <img
-                      src={(user.profileImageUrl || user.image) ?? ""}
-                      alt={user.firstName ?? user.name ?? "User"}
-                      className="w-8 h-8 rounded-full object-cover border border-border/40"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
-                    </div>
-                  )}
+                  <Link href="/me" className="flex-shrink-0">
+                    {user.profileImageUrl || user.image ? (
+                      <img
+                        src={(user.profileImageUrl || user.image) ?? ""}
+                        alt={user.firstName ?? user.name ?? "User"}
+                        className="w-8 h-8 rounded-full object-cover border border-border/40 hover:border-primary/50 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center hover:border-primary/60 transition-colors">
+                        <User className="w-4 h-4 text-primary" />
+                      </div>
+                    )}
+                  </Link>
                   <button
                     onClick={logout}
                     className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"

@@ -5,6 +5,7 @@ import {
   userProgress,
   userTaste,
   generatedCache,
+  userPresets,
 } from "@workspace/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 
@@ -403,6 +404,52 @@ export const generatedCacheStore = {
         target: generatedCache.requestHash,
         set: { storyId },
       });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// presetsStore — backed by `user_presets` table
+// ---------------------------------------------------------------------------
+
+export type CastingPreset = {
+  id: number;
+  name: string;
+  castingData: Record<string, unknown>;
+  createdAt: string;
+};
+
+export const presetsStore = {
+  async getAll(userId: string): Promise<CastingPreset[]> {
+    const rows = await db
+      .select()
+      .from(userPresets)
+      .where(eq(userPresets.userId, userId))
+      .orderBy(userPresets.createdAt);
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      castingData: (r.castingData as Record<string, unknown>) ?? {},
+      createdAt: r.createdAt.toISOString(),
+    })).reverse();
+  },
+
+  async create(userId: string, name: string, castingData: Record<string, unknown>): Promise<CastingPreset> {
+    const [row] = await db
+      .insert(userPresets)
+      .values({ userId, name, castingData })
+      .returning();
+    return {
+      id: row.id,
+      name: row.name,
+      castingData: (row.castingData as Record<string, unknown>) ?? {},
+      createdAt: row.createdAt.toISOString(),
+    };
+  },
+
+  async delete(userId: string, id: number): Promise<void> {
+    await db
+      .delete(userPresets)
+      .where(and(eq(userPresets.id, id), eq(userPresets.userId, userId)));
   },
 };
 

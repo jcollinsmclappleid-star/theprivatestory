@@ -41,7 +41,10 @@ function isAdmin(req: any): boolean {
   if (!token) return false;
   const derived = deriveAdminApiKey();
   if (!derived) return false;
-  return crypto.timingSafeEqual(Buffer.from(token, "utf8"), Buffer.from(derived, "utf8"));
+  const tBuf = Buffer.from(token, "utf8");
+  const dBuf = Buffer.from(derived, "utf8");
+  if (tBuf.length !== dBuf.length) return false;
+  return crypto.timingSafeEqual(tBuf, dBuf);
 }
 
 function getPublicAudioDir(): string {

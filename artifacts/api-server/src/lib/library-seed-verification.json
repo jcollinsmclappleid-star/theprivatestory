@@ -1,0 +1,414 @@
+{
+  "summary": {
+    "generated": "2026-03-25T20:05:16.879Z",
+    "totalStories": 40,
+    "allPublished": true,
+    "minWordCount": 1455,
+    "maxWordCount": 4673,
+    "avgWordCount": 2733,
+    "categoriesPresent": 10,
+    "missingSubthemes": []
+  },
+  "stories": [
+    {
+      "id": "lib-dark_romance-claimed-a2d2e1ef1bbd",
+      "categoryId": "dark_romance",
+      "subthemeId": "claimed",
+      "title": "His to Keep",
+      "status": "published",
+      "wordCount": 2006,
+      "chars": 11145,
+      "generatedAt": "2026-03-25T19:45:40.911Z"
+    },
+    {
+      "id": "lib-dark_romance-dangerous_men-005260e3bab4",
+      "categoryId": "dark_romance",
+      "subthemeId": "dangerous_men",
+      "title": "Not the Safe Choice",
+      "status": "published",
+      "wordCount": 2869,
+      "chars": 16402,
+      "generatedAt": "2026-03-25T19:46:05.503Z"
+    },
+    {
+      "id": "lib-dark_romance-moral_grey-4d0efb699bbb",
+      "categoryId": "dark_romance",
+      "subthemeId": "moral_grey",
+      "title": "The Man I Shouldn't Understand",
+      "status": "published",
+      "wordCount": 2897,
+      "chars": 16833,
+      "generatedAt": "2026-03-25T19:46:11.403Z"
+    },
+    {
+      "id": "lib-dark_romance-obsession-b69ad8e69b60",
+      "categoryId": "dark_romance",
+      "subthemeId": "obsession",
+      "title": "He Watched Before He Spoke",
+      "status": "published",
+      "wordCount": 2931,
+      "chars": 16509,
+      "generatedAt": "2026-03-25T19:44:12.293Z"
+    },
+    {
+      "id": "lib-dominant_surrendered-edge_command-d7cfdb880c44",
+      "categoryId": "dominant_surrendered",
+      "subthemeId": "edge_command",
+      "title": "Stop Me If You Want",
+      "status": "published",
+      "wordCount": 3646,
+      "chars": 20369,
+      "generatedAt": "2026-03-25T19:37:18.857Z"
+    },
+    {
+      "id": "lib-dominant_surrendered-he_takes_control-819f0e430099",
+      "categoryId": "dominant_surrendered",
+      "subthemeId": "he_takes_control",
+      "title": "You Don't Have to Think",
+      "status": "published",
+      "wordCount": 2084,
+      "chars": 11635,
+      "generatedAt": "2026-03-25T19:35:06.238Z"
+    },
+    {
+      "id": "lib-dominant_surrendered-surrender-1a01b7bf75dc",
+      "categoryId": "dominant_surrendered",
+      "subthemeId": "surrender",
+      "title": "I Stopped Fighting It",
+      "status": "published",
+      "wordCount": 3157,
+      "chars": 17385,
+      "generatedAt": "2026-03-25T19:35:20.654Z"
+    },
+    {
+      "id": "lib-dominant_surrendered-the_arrangement-f50d1fa43dc2",
+      "categoryId": "dominant_surrendered",
+      "subthemeId": "the_arrangement",
+      "title": "Terms We Agreed To",
+      "status": "published",
+      "wordCount": 2258,
+      "chars": 12449,
+      "generatedAt": "2026-03-25T19:35:09.568Z"
+    },
+    {
+      "id": "lib-emotional_desire-aftermath_tenderness-94c21e323fc6",
+      "categoryId": "emotional_desire",
+      "subthemeId": "aftermath_tenderness",
+      "title": "After the Storm of It",
+      "status": "published",
+      "wordCount": 1989,
+      "chars": 11026,
+      "generatedAt": "2026-03-25T19:43:48.426Z"
+    },
+    {
+      "id": "lib-emotional_desire-being_seen-16778b536c39",
+      "categoryId": "emotional_desire",
+      "subthemeId": "being_seen",
+      "title": "He Noticed First",
+      "status": "published",
+      "wordCount": 2728,
+      "chars": 15468,
+      "generatedAt": "2026-03-25T19:44:08.608Z"
+    },
+    {
+      "id": "lib-emotional_desire-love_without_word-5cf5bf99cb79",
+      "categoryId": "emotional_desire",
+      "subthemeId": "love_without_word",
+      "title": "Not That Word Yet",
+      "status": "published",
+      "wordCount": 3267,
+      "chars": 18191,
+      "generatedAt": "2026-03-25T19:44:31.530Z"
+    },
+    {
+      "id": "lib-emotional_desire-vulnerability-4b8d1956d31d",
+      "categoryId": "emotional_desire",
+      "subthemeId": "vulnerability",
+      "title": "The Part I Don't Show",
+      "status": "published",
+      "wordCount": 2593,
+      "chars": 14614,
+      "generatedAt": "2026-03-25T19:42:40.942Z"
+    },
+    {
+      "id": "lib-explicit_collection-all_night-bca83541b637",
+      "categoryId": "explicit_collection",
+      "subthemeId": "all_night",
+      "title": "We Have Time",
+      "status": "published",
+      "wordCount": 4645,
+      "chars": 26421,
+      "generatedAt": "2026-03-25T19:39:16.019Z"
+    },
+    {
+      "id": "lib-explicit_collection-heat-bc3825ca86bf",
+      "categoryId": "explicit_collection",
+      "subthemeId": "heat",
+      "title": "Scorching",
+      "status": "published",
+      "wordCount": 2768,
+      "chars": 15474,
+      "generatedAt": "2026-03-25T19:40:41.502Z"
+    },
+    {
+      "id": "lib-explicit_collection-intensity-4ffef5c7f979",
+      "categoryId": "explicit_collection",
+      "subthemeId": "intensity",
+      "title": "Past the Point of Careful",
+      "status": "published",
+      "wordCount": 1647,
+      "chars": 9233,
+      "generatedAt": "2026-03-25T19:38:21.663Z"
+    },
+    {
+      "id": "lib-explicit_collection-raw_want-907f0db1ca19",
+      "categoryId": "explicit_collection",
+      "subthemeId": "raw_want",
+      "title": "Don't Make Me Ask Again",
+      "status": "published",
+      "wordCount": 1455,
+      "chars": 8144,
+      "generatedAt": "2026-03-25T19:38:13.943Z"
+    },
+    {
+      "id": "lib-first_time-awakening-075eba52e5cf",
+      "categoryId": "first_time",
+      "subthemeId": "awakening",
+      "title": "I Didn't Know It Could Feel Like That",
+      "status": "published",
+      "wordCount": 2296,
+      "chars": 13015,
+      "generatedAt": "2026-03-25T19:38:38.995Z"
+    },
+    {
+      "id": "lib-first_time-learning_each_other-3aea4e92ef49",
+      "categoryId": "first_time",
+      "subthemeId": "learning_each_other",
+      "title": "What You Like",
+      "status": "published",
+      "wordCount": 2327,
+      "chars": 13061,
+      "generatedAt": "2026-03-25T19:36:42.157Z"
+    },
+    {
+      "id": "lib-first_time-permission_trust-55d8d3d5e46c",
+      "categoryId": "first_time",
+      "subthemeId": "permission_trust",
+      "title": "Tell Me What You Want",
+      "status": "published",
+      "wordCount": 2305,
+      "chars": 12657,
+      "generatedAt": "2026-03-25T19:36:41.653Z"
+    },
+    {
+      "id": "lib-first_time-the_first_touch-ff0c8ea3830e",
+      "categoryId": "first_time",
+      "subthemeId": "the_first_touch",
+      "title": "How It Started",
+      "status": "published",
+      "wordCount": 2392,
+      "chars": 13355,
+      "generatedAt": "2026-03-25T19:36:40.866Z"
+    },
+    {
+      "id": "lib-forbidden_desire-complicated_feelings-096f7d11155d",
+      "categoryId": "forbidden_desire",
+      "subthemeId": "complicated_feelings",
+      "title": "I Tried Not To",
+      "status": "published",
+      "wordCount": 3315,
+      "chars": 18379,
+      "generatedAt": "2026-03-25T19:33:52.238Z"
+    },
+    {
+      "id": "lib-forbidden_desire-off_limits-f609fab2eaa6",
+      "categoryId": "forbidden_desire",
+      "subthemeId": "off_limits",
+      "title": "My Best Friend's Brother",
+      "status": "published",
+      "wordCount": 2467,
+      "chars": 13602,
+      "generatedAt": "2026-03-25T19:33:31.522Z"
+    },
+    {
+      "id": "lib-forbidden_desire-power_position-e6b51813c150",
+      "categoryId": "forbidden_desire",
+      "subthemeId": "power_position",
+      "title": "My Boss at the Conference",
+      "status": "published",
+      "wordCount": 2522,
+      "chars": 14239,
+      "generatedAt": "2026-03-25T19:33:34.038Z"
+    },
+    {
+      "id": "lib-forbidden_desire-the_other_life-fdd5d1652dc5",
+      "categoryId": "forbidden_desire",
+      "subthemeId": "the_other_life",
+      "title": "His Name in My Phone",
+      "status": "published",
+      "wordCount": 2019,
+      "chars": 11048,
+      "generatedAt": "2026-03-25T19:35:03.116Z"
+    },
+    {
+      "id": "lib-historical_romance-foreign_faraway-cd898761fc1b",
+      "categoryId": "historical_romance",
+      "subthemeId": "foreign_faraway",
+      "title": "A Summer in Siena",
+      "status": "published",
+      "wordCount": 2080,
+      "chars": 11618,
+      "generatedAt": "2026-03-25T19:49:20.335Z"
+    },
+    {
+      "id": "lib-historical_romance-regency-3d07dd7eebb2",
+      "categoryId": "historical_romance",
+      "subthemeId": "regency",
+      "title": "The Season's Worst Kept Secret",
+      "status": "published",
+      "wordCount": 2375,
+      "chars": 13353,
+      "generatedAt": "2026-03-25T19:47:31.158Z"
+    },
+    {
+      "id": "lib-historical_romance-victorian_desire-120dbcae9365",
+      "categoryId": "historical_romance",
+      "subthemeId": "victorian_desire",
+      "title": "Improper Hours",
+      "status": "published",
+      "wordCount": 3502,
+      "chars": 18781,
+      "generatedAt": "2026-03-25T19:49:53.006Z"
+    },
+    {
+      "id": "lib-historical_romance-war_longing-18529d178802",
+      "categoryId": "historical_romance",
+      "subthemeId": "war_longing",
+      "title": "The Night Before He Left",
+      "status": "published",
+      "wordCount": 2528,
+      "chars": 14106,
+      "generatedAt": "2026-03-25T19:49:34.624Z"
+    },
+    {
+      "id": "lib-late_night-after_hours-3c05bca68b3a",
+      "categoryId": "late_night",
+      "subthemeId": "after_hours",
+      "title": "The Last One in the Office",
+      "status": "published",
+      "wordCount": 2284,
+      "chars": 12765,
+      "generatedAt": "2026-03-25T19:26:53.707Z"
+    },
+    {
+      "id": "lib-late_night-home_alone-cf9912eec4c8",
+      "categoryId": "late_night",
+      "subthemeId": "home_alone",
+      "title": "While You Were Gone",
+      "status": "published",
+      "wordCount": 1899,
+      "chars": 10501,
+      "generatedAt": "2026-03-25T19:33:19.832Z"
+    },
+    {
+      "id": "lib-late_night-long_distance-1f92a3558b2f",
+      "categoryId": "late_night",
+      "subthemeId": "long_distance",
+      "title": "Three Time Zones Away",
+      "status": "published",
+      "wordCount": 3436,
+      "chars": 18346,
+      "generatedAt": "2026-03-25T19:32:05.121Z"
+    },
+    {
+      "id": "lib-late_night-strangers-3a0980f2fbbb",
+      "categoryId": "late_night",
+      "subthemeId": "strangers",
+      "title": "I Don't Know Your Name Yet",
+      "status": "published",
+      "wordCount": 3457,
+      "chars": 18664,
+      "generatedAt": "2026-03-25T19:32:05.872Z"
+    },
+    {
+      "id": "lib-second_chance-reunion-13fa7862012f",
+      "categoryId": "second_chance",
+      "subthemeId": "reunion",
+      "title": "Still There When I Looked",
+      "status": "published",
+      "wordCount": 2707,
+      "chars": 15254,
+      "generatedAt": "2026-03-25T19:46:07.070Z"
+    },
+    {
+      "id": "lib-second_chance-starting_again-96ab188b7a49",
+      "categoryId": "second_chance",
+      "subthemeId": "starting_again",
+      "title": "Not the Same, Better",
+      "status": "published",
+      "wordCount": 1815,
+      "chars": 10127,
+      "generatedAt": "2026-03-25T19:47:14.302Z"
+    },
+    {
+      "id": "lib-second_chance-what_was_left_unsaid-318a3f3dbbca",
+      "categoryId": "second_chance",
+      "subthemeId": "what_was_left_unsaid",
+      "title": "The Conversation We Never Had",
+      "status": "published",
+      "wordCount": 4267,
+      "chars": 23645,
+      "generatedAt": "2026-03-25T19:48:19.322Z"
+    },
+    {
+      "id": "lib-second_chance-why_it_ended-57354adf3fb2",
+      "categoryId": "second_chance",
+      "subthemeId": "why_it_ended",
+      "title": "Timing Was the Villain",
+      "status": "published",
+      "wordCount": 3215,
+      "chars": 17713,
+      "generatedAt": "2026-03-25T19:47:51.352Z"
+    },
+    {
+      "id": "lib-slow_burn-almost-f642d63bc347",
+      "categoryId": "slow_burn",
+      "subthemeId": "almost",
+      "title": "Three Times We Didn't",
+      "status": "published",
+      "wordCount": 4673,
+      "chars": 25019,
+      "generatedAt": "2026-03-25T19:41:17.383Z"
+    },
+    {
+      "id": "lib-slow_burn-enemies_to_lovers-709684791a4e",
+      "categoryId": "slow_burn",
+      "subthemeId": "enemies_to_lovers",
+      "title": "The Argument That Changed Everything",
+      "status": "published",
+      "wordCount": 2645,
+      "chars": 14817,
+      "generatedAt": "2026-03-25T19:40:43.674Z"
+    },
+    {
+      "id": "lib-slow_burn-tension-6e5bbbea1375",
+      "categoryId": "slow_burn",
+      "subthemeId": "tension",
+      "title": "The Way He Looks Away",
+      "status": "published",
+      "wordCount": 4092,
+      "chars": 22316,
+      "generatedAt": "2026-03-25T19:41:15.979Z"
+    },
+    {
+      "id": "lib-slow_burn-the_wait-146c1a39d2ae",
+      "categoryId": "slow_burn",
+      "subthemeId": "the_wait",
+      "title": "Worth Every Week of It",
+      "status": "published",
+      "wordCount": 1767,
+      "chars": 9976,
+      "generatedAt": "2026-03-25T19:42:24.213Z"
+    }
+  ]
+}

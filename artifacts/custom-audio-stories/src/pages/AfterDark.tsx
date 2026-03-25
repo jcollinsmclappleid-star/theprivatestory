@@ -181,7 +181,10 @@ export default function AfterDark() {
     startLoadingPhase();
 
     const scenarioContext = `${selectedScenario.label}: ${selectedScenario.sub}`;
-    const fullPrompt = [scenarioContext, casting.scenarioPrompt].filter(Boolean).join(" ");
+    const fullPrompt = [scenarioContext, casting.scenarioPrompt, casting.freeText]
+      .filter(Boolean)
+      .join(". ");
+    const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
 
     try {
       await generateMutation.mutateAsync({
@@ -197,7 +200,7 @@ export default function AfterDark() {
           whoIsHe: casting.archetype || undefined,
           dynamic: casting.dynamic || selectedScenario.tags[0] || undefined,
           storyMode: selectedScenario.storyMode,
-          experienceTags: selectedScenario.tags,
+          experienceTags: allTags,
         },
       });
     } finally {

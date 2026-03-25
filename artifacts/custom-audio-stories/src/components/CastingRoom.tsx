@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, ArrowLeft } from "lucide-react";
+import { StoryTagStudio } from "./StoryTagStudio";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your";
@@ -15,6 +16,8 @@ export interface CastingRoomResult {
   whoIsHe: string;
   dynamic: string;
   storyMode: string;
+  customTags?: string[];
+  freeText?: string;
 }
 
 interface Props {
@@ -105,7 +108,11 @@ const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: st
   { id: "Scorching", label: "Scorching", desc: "Maximum intensity",        color: "#ef4444" },
 ];
 
-const MOODS = ["Romantic", "Emotional", "Raw", "Playful", "Dark"];
+const MOODS = [
+  "Romantic", "Emotional", "Raw", "Playful", "Dark",
+  "Nostalgic", "Urgent", "Possessive", "Electric",
+  "Bittersweet", "Forbidden", "Vulnerable", "Healing", "Complicated",
+];
 
 /* ── Progress bar ─────────────────────────────────────────────────── */
 function StepBar({ current, total }: { current: number; total: number }) {
@@ -147,11 +154,19 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     intensity: afterDark ? "Explicit" : "Heated",
     mood: "Emotional",
   });
+  const [customTags, setCustomTags] = useState<string[]>([]);
+  const [freeText, setFreeText] = useState<string>("");
 
-  const TOTAL_STEPS = 5;
+  const TOTAL_STEPS = 6;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => ({ ...d, [key]: value }));
+  };
+
+  const toggleTag = (tag: string) => {
+    setCustomTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
   };
 
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
@@ -164,6 +179,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       case 2: return !!data.chemistry;
       case 3: return !!data.setting;
       case 4: return !!data.intensity && !!data.mood;
+      case 5: return true;
       default: return true;
     }
   };
@@ -174,11 +190,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const heritage = data.heritage ?? "";
     const setting = data.setting ?? "";
     const atmosphere = data.atmosphere ?? "";
-
-    const scenarioParts = [];
-    if (setting) scenarioParts.push(setting);
-    if (atmosphere) scenarioParts.push(atmosphere);
-    if (data.chemistry) scenarioParts.push(data.chemistry);
 
     const whoIsHe = archetype ? `${archetype}` : "";
     const dynamic = chemistryCfg?.dynamic ?? "";
@@ -202,6 +213,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       whoIsHe,
       dynamic,
       storyMode: afterDark ? "unrestrained" : (data.intensity === "Tender" || data.intensity === "Heated" ? "passionate" : "unrestrained"),
+      customTags,
+      freeText,
     };
     onComplete(result);
   };
@@ -364,13 +377,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Mood</p>
-            <div className="flex flex-wrap gap-2 mb-8">
+            <div className="flex flex-wrap gap-2 mb-6">
               {MOODS.map(m => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => update("mood", m)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                     data.mood === m
                       ? "bg-primary text-primary-foreground border-primary shadow-glow"
                       : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
@@ -386,6 +399,29 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Your story</p>
               <p className="text-foreground text-sm leading-relaxed italic">"{buildPreview(data)}"</p>
             </div>
+          </motion.div>
+        )}
+
+        {/* Step 5 — Tag Studio */}
+        {step === 5 && (
+          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your story, your way.</h2>
+                <p className="text-muted-foreground text-sm">
+                  Shape the details. Select as many or as few as you like — or skip entirely.
+                </p>
+              </div>
+            </div>
+
+            <StoryTagStudio
+              selectedTags={customTags}
+              onTagToggle={toggleTag}
+              freeText={freeText}
+              onFreeTextChange={setFreeText}
+              afterDark={afterDark}
+              accentColor={accentColor}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -406,18 +442,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
-          <button
-            onClick={handleFinish}
-            disabled={!canProceed()}
-            className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all ${
-              canProceed()
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
-                : "bg-card/40 text-muted-foreground cursor-not-allowed border border-border/30"
-            }`}
-          >
-            <Sparkles className="w-5 h-5" />
-            Write My Story
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={handleFinish}
+              className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
+              style={afterDark ? { background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 30px rgba(192,57,43,0.3)" } : {}}
+            >
+              <Sparkles className="w-5 h-5" />
+              Write My Story
+            </button>
+            {(customTags.length === 0 && !freeText) && (
+              <p className="text-center text-xs text-muted-foreground/60">
+                No selections needed — the story will be shaped by your earlier choices.
+              </p>
+            )}
+          </div>
         )}
       </div>
     </div>

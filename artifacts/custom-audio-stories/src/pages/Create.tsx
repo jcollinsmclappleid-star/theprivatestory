@@ -531,14 +531,19 @@ export default function Create() {
   });
 
   const handleCastingComplete = useCallback(async (casting: CastingRoomResult) => {
-    form.setValue("scenarioPrompt", casting.scenarioPrompt);
+    const allTags = [...(casting.customTags ?? [])];
+    const scenarioWithFreeText = [casting.scenarioPrompt, casting.freeText]
+      .filter(Boolean)
+      .join(". ");
+
+    form.setValue("scenarioPrompt", scenarioWithFreeText);
     form.setValue("whoIsHe", casting.archetype);
     form.setValue("dynamic", casting.dynamic);
     form.setValue("setting", casting.setting);
     form.setValue("intensity", casting.intensity);
     form.setValue("mood", casting.mood);
     form.setValue("storyMode", casting.storyMode);
-    form.setValue("experienceTags", []);
+    form.setValue("experienceTags", allTags);
 
     setStep("generating");
     startLoadingPhase();
@@ -551,14 +556,14 @@ export default function Create() {
           intensity: casting.intensity,
           voiceFeel: form.getValues("voiceFeel"),
           storyLength: form.getValues("storyLength"),
-          scenarioPrompt: casting.scenarioPrompt,
+          scenarioPrompt: scenarioWithFreeText,
           cinematicVisuals: true,
           emotionalFocus: casting.mood === "Emotional",
           whoIsHe: casting.archetype || undefined,
           dynamic: casting.dynamic || undefined,
           setting: casting.setting || undefined,
           storyMode: casting.storyMode || undefined,
-          experienceTags: [],
+          experienceTags: allTags.length ? allTags : undefined,
         },
       });
     } finally {

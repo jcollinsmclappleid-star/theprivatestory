@@ -822,4 +822,76 @@ export const STORY_CATEGORIES: StoryCategory[] = [
       },
     ],
   },
+
+  {
+    id: "what_if",
+    name: "What If",
+    description: "The choice not taken. The door left open. The story rewritten.",
+    icon: "💭",
+    mood: "fantasy",
+    explicit_level: "romantic_to_sensual",
+    system_prompt: "You are a narrator for what-if fantasy audio stories. Your voice carries the specific wistfulness and electricity of the road not taken. Stories explore alternate realities, different choices, imagined possibilities. Write in second person. These stories should feel both melancholy and electric — the sadness of what didn't happen combined with the thrill of imagining that it did. When the alternate reality contains desire, render it fully — the whole point is to experience what didn't happen, completely.",
+    subthemes: [
+      {
+        id: "what_if_stayed",
+        name: "What If You Stayed",
+        prompt: "Write a what-if audio story exploring the alternate reality in which someone who left did not leave — what that night would have looked like, how the morning would have been different, what life would have become. Write in second person. The story should feel like living inside a possibility. Make the alternate reality feel fully real and specifically better or more complicated than what actually happened. Ground the story in a specific, real-feeling place. Let what staying would have produced be physically and emotionally rendered.",
+        tags: ["stayed", "alternate", "possibility", "morning after"],
+        intensity: 3,
+      },
+      {
+        id: "what_if_custom",
+        name: "✍️ Create Your Own What If",
+        prompt: "Write a what-if audio story based on this alternate scenario: [USER_INPUT]. Write in second person. Whatever the specific alternate reality or different choice described, make it feel completely real — a fully inhabited possibility rather than a vague fantasy. The emotion of the what-if should be as real as the desire it contains. Render that desire completely.",
+        tags: ["custom", "what if", "user-defined"],
+        intensity: "variable",
+        is_custom: true,
+        custom_placeholder: "Describe your what-if scenario — what choice or moment you want to reimagine, what different decision you want to explore...",
+      },
+    ],
+  },
+
+  {
+    id: "five_minute_desire",
+    name: "5 Minute Desire",
+    description: "Intense. Complete. No time wasted.",
+    icon: "⏱️",
+    mood: "urgent",
+    explicit_level: "suggestive_to_explicit",
+    system_prompt: "You are a narrator for short-form intense desire audio stories. Your voice is immediate and efficient — no time wasted, no scene unnecessarily extended. These stories are complete in five to eight minutes and feel it. Write in second person. Every word must earn its place. The brevity should feel like a choice — complete satisfaction in a stolen moment rather than incomplete longer form. Render the physical moments completely — brevity doesn't mean restraint, it means precision.",
+    subthemes: [
+      {
+        id: "stolen_moment",
+        name: "The Stolen Moment",
+        prompt: "Write a five minute desire audio story about a moment stolen from ordinary life — between commitments, in an unexpected pause, in a space that appeared and will close again quickly. Write in second person. The time constraint should feel real within the story. Focus on intensity over length — complete desire and complete satisfaction in a very small window. Render it fully — every second should feel full and nothing should be left implicit.",
+        tags: ["stolen", "brief", "intense", "full"],
+        intensity: 5,
+      },
+      {
+        id: "fast_burn",
+        name: "Fast Burn",
+        prompt: "Write a five minute desire audio story that moves at the speed of want rather than the speed of seduction — two people who skip the preamble because they've been building to this for long enough and there's no time left for patience. Write in second person. The urgency should feel earned even though it's immediate. Fast doesn't mean shallow — it means nothing is being held back. Render what happens completely.",
+        tags: ["urgent", "immediate", "no preamble", "earned"],
+        intensity: 5,
+      },
+      {
+        id: "five_min_custom",
+        name: "✍️ Create Your Own 5 Minute Fantasy",
+        prompt: "Write an intense five to eight minute desire audio story based on this scenario: [USER_INPUT]. Write in second person. Whatever the scenario described, honour the short form — complete and satisfying within a tight window. Every word earns its place. The brevity is a feature not a limitation. Render what happens fully and without pulling back.",
+        tags: ["custom", "5 min", "user-defined"],
+        intensity: "variable",
+        is_custom: true,
+        custom_placeholder: "Describe your 5 minute fantasy — the scenario, the person, the urgency, what happens in the stolen time...",
+      },
+    ],
+  },
 ];
+
+export function getCategoryById(categoryId: string): StoryCategory | null {
+  return STORY_CATEGORIES.find((c) => c.id === categoryId) ?? null;
+}
+
+export function getSubthemeById(categoryId: string, subthemeId: string): Subtheme | null {
+  const cat = getCategoryById(categoryId);
+  return cat?.subthemes.find((s) => s.id === subthemeId) ?? null;
+}

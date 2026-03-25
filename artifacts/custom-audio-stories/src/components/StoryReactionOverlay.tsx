@@ -15,9 +15,11 @@ interface Props {
   onDismiss: () => void;
   storyMood?: string;
   storyTags?: string[];
+  storyId?: string;
+  storyTitle?: string;
 }
 
-export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags }: Props) {
+export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags, storyId, storyTitle }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -38,17 +40,14 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags 
     if (reactionTags.length > 0) {
       const tasteUpdate: Record<string, number> = {};
 
-      // Reaction-specific synthetic labels
       for (const tag of reactionTags) {
         tasteUpdate[tag] = (tasteUpdate[tag] ?? 0) + 1;
       }
 
-      // Story's own mood (taste reinforcement)
       if (storyMood) {
         tasteUpdate[storyMood] = (tasteUpdate[storyMood] ?? 0) + 1;
       }
 
-      // Story's own recommendation_tags (direct taste signal)
       if (storyTags && storyTags.length > 0) {
         for (const tag of storyTags) {
           tasteUpdate[tag] = (tasteUpdate[tag] ?? 0) + 1;
@@ -59,7 +58,12 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ tasteProfile: tasteUpdate }),
+        body: JSON.stringify({
+          tasteProfile: tasteUpdate,
+          reactionTags,
+          storyId,
+          storyTitle,
+        }),
       }).catch(() => {});
     }
     onDismiss();

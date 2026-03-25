@@ -6,8 +6,9 @@ import {
   userTaste,
   generatedCache,
   userPresets,
+  userReactionHistory,
 } from "@workspace/db/schema";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -450,6 +451,40 @@ export const presetsStore = {
     await db
       .delete(userPresets)
       .where(and(eq(userPresets.id, id), eq(userPresets.userId, userId)));
+  },
+};
+
+// ---------------------------------------------------------------------------
+// reactionHistoryStore — backed by `user_reaction_history` table
+// ---------------------------------------------------------------------------
+
+export type ReactionHistoryEntry = {
+  id: number;
+  storyId: string;
+  storyTitle: string;
+  tags: string[];
+  createdAt: string;
+};
+
+export const reactionHistoryStore = {
+  async addEntry(userId: string, storyId: string, storyTitle: string, tags: string[]): Promise<void> {
+    await db.insert(userReactionHistory).values({ userId, storyId, storyTitle, tags });
+  },
+
+  async getRecent(userId: string, limit = 5): Promise<ReactionHistoryEntry[]> {
+    const rows = await db
+      .select()
+      .from(userReactionHistory)
+      .where(eq(userReactionHistory.userId, userId))
+      .orderBy(desc(userReactionHistory.createdAt))
+      .limit(limit);
+    return rows.map((r) => ({
+      id: r.id,
+      storyId: r.storyId,
+      storyTitle: r.storyTitle,
+      tags: (r.tags as string[]) ?? [],
+      createdAt: r.createdAt.toISOString(),
+    }));
   },
 };
 

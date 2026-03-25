@@ -1,5 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
-import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore } from "../lib/storage.js";
+import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
 
 const router = Router();
 
@@ -53,6 +53,8 @@ router.post("/taste", async (req, res) => {
     preferredVoiceFeel,
     preferredEndings,
     preferredRelationshipDynamics,
+    storyId,
+    storyTitle,
   } = req.body as {
     reactionTags?: string[];
     incrementStreak?: boolean;
@@ -61,6 +63,8 @@ router.post("/taste", async (req, res) => {
     preferredVoiceFeel?: Record<string, number>;
     preferredEndings?: Record<string, number>;
     preferredRelationshipDynamics?: Record<string, number>;
+    storyId?: string;
+    storyTitle?: string;
   };
 
   try {
@@ -104,6 +108,10 @@ router.post("/taste", async (req, res) => {
     }
 
     await tasteStore.upsert(userId, current);
+
+    if (storyId && reactionTags && reactionTags.length > 0) {
+      reactionHistoryStore.addEntry(userId, storyId, storyTitle ?? "", reactionTags).catch(() => {});
+    }
 
     if (incrementStreak) {
       const { streakDays } = await tasteStore.incrementStreak(userId);
@@ -212,6 +220,19 @@ router.get("/recommendations", async (req, res) => {
     });
   } catch {
     res.status(500).json({ error: "Failed to generate recommendations" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/reaction-history — last 5 story reactions
+// ---------------------------------------------------------------------------
+router.get("/reaction-history", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const history = await reactionHistoryStore.getRecent(userId, 5);
+    res.json(history);
+  } catch {
+    res.status(500).json({ error: "Failed to load reaction history" });
   }
 });
 

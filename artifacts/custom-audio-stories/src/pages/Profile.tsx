@@ -99,6 +99,30 @@ function useLibrary(isAuthenticated: boolean) {
   return { data, loading };
 }
 
+type ReactionHistoryEntry = {
+  id: number;
+  storyId: string;
+  storyTitle: string;
+  tags: string[];
+  createdAt: string;
+};
+
+function useReactionHistory(isAuthenticated: boolean) {
+  const [items, setItems] = useState<ReactionHistoryEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isAuthenticated) { setLoading(false); return; }
+    fetch(`${API_BASE}/api/me/reaction-history`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : [])
+      .then((d) => setItems(d))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [isAuthenticated]);
+
+  return { items, loading };
+}
+
 function useContinueListening(isAuthenticated: boolean) {
   const [items, setItems] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -346,6 +370,7 @@ export default function Profile() {
   const { presets, loading: presetsLoading, deletePreset } = usePresets(isAuthenticated);
   const { data: library, loading: libraryLoading } = useLibrary(isAuthenticated);
   const { items: continueItems, loading: continueLoading } = useContinueListening(isAuthenticated);
+  const { items: reactionHistory } = useReactionHistory(isAuthenticated);
 
   const handleUsePreset = useCallback((preset: CastingPreset) => {
     sessionStorage.setItem("castingPreset", JSON.stringify(preset.castingData));
@@ -540,6 +565,45 @@ export default function Profile() {
           </div>
         )}
       </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Reaction History */}
+      {/* ------------------------------------------------------------------ */}
+      {reactionHistory.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Heart className="w-4 h-4 text-primary" />
+            <h2 className="font-display text-lg font-bold text-foreground">Recent Reactions</h2>
+          </div>
+          <div className="space-y-2">
+            {reactionHistory.map((entry) => (
+              <div
+                key={entry.id}
+                className="flex items-start gap-3 p-3 rounded-xl bg-card/60 border border-border/20"
+              >
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Heart className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  {entry.storyTitle && (
+                    <p className="text-xs text-muted-foreground mb-1.5 truncate">{entry.storyTitle}</p>
+                  )}
+                  <div className="flex flex-wrap gap-1.5">
+                    {entry.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex px-2 py-0.5 rounded-full bg-primary/10 border border-primary/15 text-[11px] text-primary font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ------------------------------------------------------------------ */}
       {/* Continue Listening */}

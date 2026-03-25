@@ -352,7 +352,7 @@ function OptionCard<T extends string>({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
-  const [step, setStep] = useState<"casting" | "form" | "generating" | "result">("casting");
+  const [step, setStep] = useState<"casting" | "preset-prompt" | "form" | "generating" | "result">("casting");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
@@ -367,6 +367,9 @@ export default function Create() {
   const [continueModalOpen, setContinueModalOpen] = useState(false);
   const [selectedContinuation, setSelectedContinuation] = useState<string>("keep_same_mood");
   const [isGeneratingContinuation, setIsGeneratingContinuation] = useState(false);
+
+  const [presetNameDraft, setPresetNameDraft] = useState("");
+  const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -578,20 +581,23 @@ export default function Create() {
     }
   }, [result, isGeneratingContinuation, selectedContinuation, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
-  const handleCastingComplete = useCallback(async (casting: CastingRoomResult) => {
+  const handleCastingComplete = useCallback((casting: CastingRoomResult) => {
     const allTags = [...(casting.customTags ?? [])];
     const scenarioWithFreeText = [casting.scenarioPrompt, casting.freeText]
       .filter(Boolean)
       .join(". ");
 
-    setLastCastingData({
+    const castingSnapshot = {
       archetype: casting.archetype,
       dynamic: casting.dynamic,
       setting: casting.setting,
       intensity: casting.intensity,
       mood: casting.mood,
       storyMode: casting.storyMode,
-    });
+    };
+
+    setLastCastingData(castingSnapshot);
+    setPendingCastingData(castingSnapshot);
     setPresetSaved(false);
 
     form.setValue("scenarioPrompt", scenarioWithFreeText);
@@ -603,11 +609,15 @@ export default function Create() {
     form.setValue("storyMode", casting.storyMode);
     form.setValue("experienceTags", allTags);
 
-    setStep("generating");
-    startLoadingPhase();
+    const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "My Cast";
+    setPresetNameDraft(suggestedName);
 
-    try {
-      await generateMutation.mutateAsync({
+    if (isAuthenticated) {
+      setStep("preset-prompt");
+    } else {
+      setStep("generating");
+      startLoadingPhase();
+      generateMutation.mutateAsync({
         data: {
           listenerName: form.getValues("listenerName") ?? "",
           mood: casting.mood,
@@ -623,11 +633,45 @@ export default function Create() {
           storyMode: casting.storyMode || undefined,
           experienceTags: allTags.length ? allTags : undefined,
         },
+      }).finally(() => stopLoadingPhase());
+    }
+  }, [form, generateMutation, isAuthenticated, startLoadingPhase, stopLoadingPhase]);
+
+  const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
+    if (savePreset && pendingCastingData && presetName.trim()) {
+      fetch(`${API_BASE}/api/me/presets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name: presetName.trim(), castingData: pendingCastingData }),
+      }).then(() => setPresetSaved(true)).catch(() => {});
+    }
+
+    setStep("generating");
+    startLoadingPhase();
+
+    try {
+      await generateMutation.mutateAsync({
+        data: {
+          listenerName: form.getValues("listenerName") ?? "",
+          mood: form.getValues("mood"),
+          intensity: form.getValues("intensity"),
+          voiceFeel: form.getValues("voiceFeel"),
+          storyLength: form.getValues("storyLength"),
+          scenarioPrompt: form.getValues("scenarioPrompt"),
+          cinematicVisuals: true,
+          emotionalFocus: form.getValues("mood") === "Emotional",
+          whoIsHe: form.getValues("whoIsHe") || undefined,
+          dynamic: form.getValues("dynamic") || undefined,
+          setting: form.getValues("setting") || undefined,
+          storyMode: form.getValues("storyMode") || undefined,
+          experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
+        },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, startLoadingPhase, stopLoadingPhase]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -783,6 +827,49 @@ export default function Create() {
               onComplete={handleCastingComplete}
               onSkip={() => setStep("form")}
             />
+          </motion.div>
+        )}
+
+        {step === "preset-prompt" && (
+          <motion.div
+            key="preset-prompt"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 max-w-md mx-auto"
+          >
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+              <Wand2 className="w-7 h-7 text-primary" />
+            </div>
+            <div className="text-center">
+              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Save this casting?</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Give your combination a name so you can reuse it in one tap from your profile.
+              </p>
+            </div>
+            <div className="w-full space-y-3">
+              <input
+                type="text"
+                value={presetNameDraft}
+                onChange={(e) => setPresetNameDraft(e.target.value)}
+                maxLength={80}
+                placeholder="e.g. CEO · Slow Burn"
+                className="w-full px-4 py-3 rounded-xl border border-border/40 bg-card/60 text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50"
+              />
+              <button
+                onClick={() => handleStartGenerating(true, presetNameDraft)}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow text-sm"
+              >
+                <Sparkles className="w-4 h-4" />
+                Save &amp; Write My Story
+              </button>
+              <button
+                onClick={() => handleStartGenerating(false, "")}
+                className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+              >
+                Skip — just write it
+              </button>
+            </div>
           </motion.div>
         )}
 

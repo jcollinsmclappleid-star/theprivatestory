@@ -11,7 +11,6 @@ const STANDARD_CATEGORIES: TagCategory[] = [
     tags: [
       "Desired", "Seen", "Powerful", "Safe", "Vulnerable",
       "Chosen", "Overwhelmed", "Undone", "Adored", "Electric",
-      "Aching", "Comforted",
     ],
   },
   {
@@ -29,7 +28,7 @@ const STANDARD_CATEGORIES: TagCategory[] = [
     tags: [
       "Commanding", "Quiet Intensity", "Gentle", "Protective",
       "Unpredictable", "Brooding", "Playful", "Restrained",
-      "Tender", "Obsessive", "Magnetic",
+      "Tender", "Obsessive",
     ],
   },
   {
@@ -149,27 +148,19 @@ export function StoryTagStudio({
 
       <div className="pt-2">
         <p
-          className="text-xs font-semibold uppercase tracking-widest mb-1"
+          className="text-xs font-semibold uppercase tracking-widest mb-3"
           style={{ color: accentColor }}
         >
-          Anything Specific?
-        </p>
-        <p className="text-xs text-muted-foreground mb-3">
-          One sentence is enough. Completely private.
+          Anything specific? One sentence is enough.
         </p>
         <textarea
           value={freeText}
           onChange={(e) => onFreeTextChange(e.target.value)}
           maxLength={200}
           rows={3}
-          placeholder="e.g. He's been watching her for weeks and tonight is the last chance…"
+          placeholder="e.g. He's been watching her for weeks…"
           className="w-full rounded-2xl bg-white/5 border border-white/10 text-sm text-foreground placeholder:text-muted-foreground/50 px-4 py-3 resize-none focus:outline-none focus:border-white/20 transition-colors leading-relaxed"
         />
-        {freeText.length > 0 && (
-          <p className="text-xs text-muted-foreground/50 mt-1 text-right">
-            {freeText.length}/200
-          </p>
-        )}
       </div>
     </div>
   );

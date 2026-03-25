@@ -409,9 +409,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               <div>
                 <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your story, your way.</h2>
                 <p className="text-muted-foreground text-sm">
-                  Shape the details. Select as many or as few as you like — or skip entirely.
+                  Shape the details. Select as many or as few as you like.
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={handleFinish}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ml-4 mt-1 flex-shrink-0"
+              >
+                Skip this step →
+              </button>
             </div>
 
             <StoryTagStudio
@@ -442,21 +449,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
-          <div className="space-y-3">
-            <button
-              onClick={handleFinish}
-              className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
-              style={afterDark ? { background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 30px rgba(192,57,43,0.3)" } : {}}
-            >
-              <Sparkles className="w-5 h-5" />
-              Write My Story
-            </button>
-            {(customTags.length === 0 && !freeText) && (
-              <p className="text-center text-xs text-muted-foreground/60">
-                No selections needed — the story will be shaped by your earlier choices.
-              </p>
-            )}
-          </div>
+          <button
+            onClick={handleFinish}
+            className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
+            style={afterDark ? { background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 30px rgba(192,57,43,0.3)" } : {}}
+          >
+            <Sparkles className="w-5 h-5" />
+            Write My Story
+          </button>
         )}
       </div>
     </div>

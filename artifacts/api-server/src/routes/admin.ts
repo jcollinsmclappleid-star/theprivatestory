@@ -298,51 +298,13 @@ router.post("/generate-one", async (req, res) => {
 
     send("status", { phase: "story_written", title, description, dna: storyDna });
 
-    // ── Step 2: Cover image ───────────────────────────────────────────────
-    send("status", { phase: "generating_cover", message: "Generating cover image…" });
+    // ── Step 2: Cover image — skipped during draft generation ────────────
+    // Images are generated only when a story is published (saves ~$0.08/story)
+    const coverImageUrl = "";
 
-    let coverImageUrl = "";
-    try {
-      const coverPromptText = [
-        "Cinematic, photographic cover image for a premium adult audio romance story.",
-        `Category: ${prompt.metadata.category}.`,
-        `Subtheme: ${prompt.metadata.subtheme}.`,
-        storyDna.setting_type ? `Setting: ${String(storyDna.setting_type)}.` : "",
-        storyDna.visual_motif ? `Visual motif: ${String(storyDna.visual_motif)}.` : "",
-        storyDna.time_of_day ? `Time of day: ${String(storyDna.time_of_day)}.` : "",
-        "Style: moody atmospheric premium editorial photography.",
-        "No nudity. Evocative, sophisticated, cinematic.",
-        "Dark rich colour palette. High production value.",
-      ]
-        .filter(Boolean)
-        .join(" ");
-
-      const imageRes = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: coverPromptText,
-        n: 1,
-        size: "1792x1024",
-        quality: "standard",
-      });
-      coverImageUrl = imageRes.data[0]?.url ?? "";
-    } catch {
-      send("warning", { message: "Cover image failed, continuing without it" });
-    }
-
-    // ── Step 3: Audio (TTS) — chunked for full-length stories ────────────
-    send("status", { phase: "generating_audio", message: "Generating audio narration…" });
-
-    let audioUrl = "";
-    try {
-      const audioDir = getPublicAudioDir();
-      const filename = `audio-${storyId}.mp3`;
-
-      const audioBuffer = await generateFullAudio(cleanStoryText);
-      fs.writeFileSync(path.join(audioDir, filename), audioBuffer);
-      audioUrl = `/api/audio/${filename}`;
-    } catch (err) {
-      send("warning", { message: `Audio generation failed: ${err instanceof Error ? err.message : "unknown error"}` });
-    }
+    // ── Step 3: Audio — skipped during draft generation ──────────────────
+    // Audio is generated only when a story is published (saves ~$0.40/story)
+    const audioUrl = "";
 
     // ── Step 4: Persist as draft ──────────────────────────────────────────
     send("status", { phase: "saving", message: "Saving draft…" });

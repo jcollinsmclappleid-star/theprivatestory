@@ -1096,6 +1096,22 @@ export default function Create() {
                   </span>
                 </div>
 
+                {isThisPlaying && (
+                  <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+                    <p className="text-xs font-medium text-primary uppercase tracking-widest mb-3">
+                      Reading Along
+                    </p>
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-base leading-relaxed text-foreground whitespace-pre-wrap font-light">
+                        {result.scenes[activeSceneIndex]?.text ?? ""}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Scene {activeSceneIndex + 1} of {result.scenes.length} · {result.scenes[activeSceneIndex]?.heading}
+                    </p>
+                  </div>
+                )}
+
                 <div className="space-y-3">
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
                     Story Scenes

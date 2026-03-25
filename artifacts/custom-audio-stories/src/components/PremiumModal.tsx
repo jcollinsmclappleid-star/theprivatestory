@@ -38,7 +38,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
             </div>
 
             <h2 className="text-2xl font-display font-bold text-foreground text-center mb-3">
-              Your private library is waiting.
+              Your private library is waiting
             </h2>
             <p className="text-muted-foreground text-center text-sm leading-relaxed mb-2">
               You've found your kind of story. There are 40 more, written for exactly this.

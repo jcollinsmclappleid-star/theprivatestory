@@ -130,7 +130,31 @@ router.get("/recommendations", async (req, res) => {
       Object.keys(taste.tasteProfile).length > 0 ||
       Object.keys(taste.preferredIntensity).length > 0;
 
+    // Known story mood values — used to avoid confusing reaction labels with moods
+    const KNOWN_MOODS = new Set([
+      "Late Night", "Slow Burn", "Quick Fix", "Slow Burn", "Morning",
+      "Passionate", "Tender", "Playful", "Intense", "Romantic", "Dark",
+      "Fantasy", "Soft Dom", "After Dark",
+    ]);
+
+    // Collect all story moods from the library so we only promote keys that are real moods
+    const libraryMoodSet = new Set(
+      storyList
+        .filter((s) => s.isLibraryStory === true && s.status === "published")
+        .map((s) => s.mood as string | undefined)
+        .filter(Boolean),
+    ) as Set<string>;
+
+    // Top tags (generic — used for scoring overlap)
+    const topTags = Object.entries(taste.tasteProfile)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 8)
+      .map(([k]) => k);
+    const topTagSet = new Set(topTags);
+
+    // Top moods — restricted to keys that actually match a library story mood
     const topMoods = Object.entries(taste.tasteProfile)
+      .filter(([k]) => KNOWN_MOODS.has(k) || libraryMoodSet.has(k))
       .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([k]) => k);
@@ -138,8 +162,6 @@ router.get("/recommendations", async (req, res) => {
     const topIntensity = Object.entries(taste.preferredIntensity)
       .sort(([, a], [, b]) => b - a)
       .map(([k]) => k)[0] ?? null;
-
-    const topTags = new Set(topMoods);
 
     function scoreStory(story: Record<string, unknown>): number {
       let score = 0;
@@ -152,7 +174,7 @@ router.get("/recommendations", async (req, res) => {
 
       for (const tag of storyTags) {
         if (taste.tasteProfile[tag]) score += taste.tasteProfile[tag] * 2;
-        if (topTags.has(tag)) score += 1;
+        if (topTagSet.has(tag)) score += 1;
       }
 
       const brief = story.brief as Record<string, unknown> | undefined;

@@ -1172,6 +1172,19 @@ router.post("/generate-full-story", async (req, res) => {
     if (cachedStoryId) {
       const cachedStory = await storiesStore.get(cachedStoryId);
       if (cachedStory) {
+        // Track even on cache hit so library + taste stay in sync
+        if (req.isAuthenticated()) {
+          trackGeneratedStory(
+            req.user.id,
+            cachedStoryId,
+            intake.mood,
+            intake.intensity,
+            intake.voiceFeel,
+            null,
+            intake.experienceTags,
+            { whoIsHe: intake.whoIsHe, dynamic: intake.dynamic, ending: intake.ending },
+          ).catch(() => {});
+        }
         res.json({ ...cachedStory, cached: true });
         return;
       }

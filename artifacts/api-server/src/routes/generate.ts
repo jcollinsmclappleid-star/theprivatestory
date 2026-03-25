@@ -714,11 +714,14 @@ async function generateAllImages(
 }
 
 async function generateAudioFile(
-  scenes: Scene[],
-  voiceFeel: string,
-  cacheKey: string
+  _scenes: Scene[],
+  _voiceFeel: string,
+  _cacheKey: string
 ): Promise<string> {
-  const voice = voiceMap[voiceFeel] ?? voiceMap["Soft Voice"];
+  // Audio generation temporarily disabled — re-enable when TTS is ready
+  return "";
+
+  const voice = voiceMap[_voiceFeel] ?? voiceMap["Soft Voice"];
   const TTS_CHAR_LIMIT = 4000;
 
   // Build chunks that respect the TTS character limit, splitting at scene boundaries

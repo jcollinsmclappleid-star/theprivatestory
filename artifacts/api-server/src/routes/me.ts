@@ -99,21 +99,12 @@ router.post("/taste", async (req, res) => {
       }
     }
 
-    if (incrementStreak) {
-      const today = new Date().toISOString().slice(0, 10);
-      if (!current.lastActiveDate) {
-        current.streakDays = 1;
-        current.lastActiveDate = today;
-      } else if (current.lastActiveDate !== today) {
-        const last = new Date(current.lastActiveDate);
-        const now = new Date(today);
-        const diffDays = Math.round((now.getTime() - last.getTime()) / 86_400_000);
-        current.streakDays = diffDays === 1 ? current.streakDays + 1 : 1;
-        current.lastActiveDate = today;
-      }
-    }
-
     await tasteStore.upsert(userId, current);
+
+    if (incrementStreak) {
+      const { streakDays } = await tasteStore.incrementStreak(userId);
+      return res.json({ ok: true, streakDays });
+    }
 
     res.json({ ok: true, streakDays: current.streakDays });
   } catch {

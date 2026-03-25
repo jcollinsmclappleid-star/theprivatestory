@@ -34,22 +34,22 @@ function StoryLifecycleManager({
   const { currentStory, progress, isPlaying } = useAudioPlayer();
   const [reactionVisible, setReactionVisible] = useState(false);
   const lastStoryId = useRef<string | null>(null);
-  const lastStreakFiredAt = useRef<number>(0);
+  const lastStreakFiredDate = useRef<string>("");
   const wasPlaying = useRef<boolean>(false);
   const reactionFiredForStory = useRef<string | null>(null);
 
   // Fire streak increment on every play-start transition (false → true).
-  // Client rate-limits to 5 minutes so accidental double-fires are prevented;
-  // the server does same-day deduplication so day-boundary is safe.
+  // Client skips if already fired today (to avoid session chatter); the server
+  // also deduplicates by calendar date so cross-midnight plays are handled correctly.
   useEffect(() => {
     if (!isAuthenticated || !currentStory) return;
     const playStarted = isPlaying && !wasPlaying.current;
     wasPlaying.current = isPlaying;
     if (!playStarted) return;
 
-    const now = Date.now();
-    if (now - lastStreakFiredAt.current < 5 * 60 * 1000) return;
-    lastStreakFiredAt.current = now;
+    const today = new Date().toISOString().slice(0, 10);
+    if (lastStreakFiredDate.current === today) return;
+    lastStreakFiredDate.current = today;
 
     fetch(`${API_BASE}/api/me/taste`, {
       method: "POST",
@@ -84,7 +84,10 @@ function StoryLifecycleManager({
     <StoryReactionOverlay
       visible={reactionVisible}
       storyMood={currentStory?.mood}
-      storyTags={(currentStory as Record<string, unknown> | undefined)?.recommendation_tags as string[] | undefined}
+      storyTags={[
+        ...((currentStory as Record<string, unknown> | undefined)?.tags as string[] ?? []),
+        ...((currentStory as Record<string, unknown> | undefined)?.recommendation_tags as string[] ?? []),
+      ]}
       onDismiss={() => setReactionVisible(false)}
     />
   );

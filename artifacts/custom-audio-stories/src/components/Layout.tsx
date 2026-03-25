@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -31,6 +31,8 @@ function Navbar() {
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
+  const isAfterDark = location === "/after-dark";
+
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
@@ -50,6 +52,13 @@ function Navbar() {
                   {item.label}
                 </Link>
               ))}
+              <Link
+                href="/after-dark"
+                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isAfterDark ? "text-[#c0392b]" : "text-muted-foreground/70 hover:text-[#c0392b]"}`}
+              >
+                <Moon className="w-3.5 h-3.5" />
+                After Dark
+              </Link>
             </div>
           </div>
 
@@ -145,7 +154,20 @@ function Navbar() {
             ))}
           </div>
 
-          {/* Gift CTA */}
+          {/* After Dark mobile link */}
+          <div className="px-2 pb-1">
+            <Link
+              href="/after-dark"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                isAfterDark ? "bg-[#c0392b]/10 text-[#c0392b]" : "text-muted-foreground hover:text-[#c0392b] hover:bg-[#c0392b]/5"
+              }`}
+            >
+              <Moon className="w-4 h-4" />
+              After Dark
+            </Link>
+          </div>
+
+          {/* Create CTA */}
           <div className="px-4 pb-3">
             <Link
               href="/create"

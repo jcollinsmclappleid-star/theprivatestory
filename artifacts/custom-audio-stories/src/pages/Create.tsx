@@ -8,6 +8,8 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { CastingRoom } from "@/components/CastingRoom";
+import type { CastingRoomResult } from "@/components/CastingRoom";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -350,7 +352,7 @@ function OptionCard<T extends string>({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
-  const [step, setStep] = useState<"form" | "generating" | "result">("form");
+  const [step, setStep] = useState<"casting" | "form" | "generating" | "result">("casting");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
@@ -528,6 +530,42 @@ export default function Create() {
     },
   });
 
+  const handleCastingComplete = useCallback(async (casting: CastingRoomResult) => {
+    form.setValue("scenarioPrompt", casting.scenarioPrompt);
+    form.setValue("whoIsHe", casting.archetype);
+    form.setValue("dynamic", casting.dynamic);
+    form.setValue("setting", casting.setting);
+    form.setValue("intensity", casting.intensity);
+    form.setValue("mood", casting.mood);
+    form.setValue("storyMode", casting.storyMode);
+    form.setValue("experienceTags", []);
+
+    setStep("generating");
+    startLoadingPhase();
+
+    try {
+      await generateMutation.mutateAsync({
+        data: {
+          listenerName: form.getValues("listenerName") ?? "",
+          mood: casting.mood,
+          intensity: casting.intensity,
+          voiceFeel: form.getValues("voiceFeel"),
+          storyLength: form.getValues("storyLength"),
+          scenarioPrompt: casting.scenarioPrompt,
+          cinematicVisuals: true,
+          emotionalFocus: casting.mood === "Emotional",
+          whoIsHe: casting.archetype || undefined,
+          dynamic: casting.dynamic || undefined,
+          setting: casting.setting || undefined,
+          storyMode: casting.storyMode || undefined,
+          experienceTags: [],
+        },
+      });
+    } finally {
+      stopLoadingPhase();
+    }
+  }, [form, generateMutation, startLoadingPhase, stopLoadingPhase]);
+
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
 
@@ -668,8 +706,22 @@ export default function Create() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 w-full">
+    <div className="w-full">
       <AnimatePresence mode="wait">
+
+        {step === "casting" && (
+          <motion.div
+            key="casting"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <CastingRoom
+              onComplete={handleCastingComplete}
+              onSkip={() => setStep("form")}
+            />
+          </motion.div>
+        )}
 
         {step === "form" && (
           <motion.div
@@ -677,9 +729,16 @@ export default function Create() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="space-y-8"
+            className="max-w-3xl mx-auto px-4 py-8 space-y-8"
           >
             <div>
+              <button
+                onClick={() => setStep("casting")}
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Back to Casting Room
+              </button>
               <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
               <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
               <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
@@ -941,7 +1000,7 @@ export default function Create() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+            className="max-w-3xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[60vh] text-center"
           >
             <div className="relative mb-10">
               <div className="w-20 h-20 rounded-full border border-primary/20 flex items-center justify-center">
@@ -1001,10 +1060,10 @@ export default function Create() {
             key="result"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
+            className="max-w-3xl mx-auto px-4 py-8 space-y-8"
           >
             <button
-              onClick={() => setStep("form")}
+              onClick={() => setStep("casting")}
               className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
             >
               <ChevronLeft className="w-4 h-4" /> Create another

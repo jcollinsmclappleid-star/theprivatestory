@@ -152,6 +152,36 @@ Exports (all async):
 - `generatedCacheStore` — `get(hash)`, `set(hash, storyId)`
 - `usersStore` — backwards-compat aggregated profile fetch (combines taste + library)
 
+### Admin API & Library Seed Integrity
+
+The API server exposes admin endpoints under `/api/admin/*` protected by an HMAC-derived token:
+
+```bash
+# Generate admin token (requires OPENROUTER_API_KEY in environment)
+ADMIN_TOKEN=$(node -e "const c=require('crypto');console.log(c.createHmac('sha256',process.env.OPENROUTER_API_KEY).update('private-story-admin-v1').digest('hex'))")
+# Use as: -H "X-Admin-Token: $ADMIN_TOKEN"
+```
+
+Key admin endpoints:
+- `GET /api/admin/library` — list all library stories
+- `GET /api/admin/categories` — list categories
+- `POST /api/admin/generate-one-sync` — regenerate a single library story (body: `{categoryId, subthemeId}`)
+- `DELETE /api/admin/story/:id` — delete a story by ID
+
+**Library seed verification**: `artifacts/api-server/src/lib/library-seed-verification.json` tracks the 40-story library state. Key invariants:
+- `totalStories: 40` — one published story per non-custom subtheme (10 categories × 4 subthemes each)
+- `dnaAdjacencyViolations: 0` — no two alphabetically-adjacent stories share the same `story_dna.power_dynamic` + `story_dna.emotional_engine` combination
+- DNA is stored in `generated_stories.story_dna` JSONB column; query: `story_dna->>'power_dynamic'`
+
+After any reseed operation, run this to verify adjacency (alphabetical order matches the JSON):
+```bash
+psql "$DATABASE_URL" -t -A -c "SELECT story_dna->>'power_dynamic', story_dna->>'emotional_engine' FROM generated_stories WHERE id LIKE 'lib-%' AND is_library_story=true ORDER BY category_id, subtheme_id" | awk -F'|' 'prev==$1"|"$2{print "VIOLATION: " $0} {prev=$1"|"$2}'
+```
+
+**Library taxonomy** (frontend `Browse.tsx` ↔ backend `storyCategories.ts`):
+The 10 SEO categories must match exactly between frontend and backend:
+`forbidden_desire`, `dominant_surrendered`, `late_night`, `explicit_collection`, `slow_burn`, `emotional_desire`, `second_chance`, `dark_romance`, `historical_romance`, `first_time`
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.

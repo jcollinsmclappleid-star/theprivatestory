@@ -1,12 +1,91 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon, Flame } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
 import { useAuth } from "../hooks/useAuth";
+import { useAudioPlayer } from "@/store/use-audio-player";
+import { StoryReactionOverlay } from "./StoryReactionOverlay";
 
-function Navbar() {
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function useStreak(isAuthenticated: boolean) {
+  const [streakDays, setStreakDays] = useState(0);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/taste`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.streakDays) setStreakDays(data.streakDays); })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  return { streakDays, setStreakDays };
+}
+
+function StoryLifecycleManager({
+  isAuthenticated,
+  onStreakIncrement,
+}: {
+  isAuthenticated: boolean;
+  onStreakIncrement: (days: number) => void;
+}) {
+  const { currentStory, progress, isPlaying } = useAudioPlayer();
+  const [reactionVisible, setReactionVisible] = useState(false);
+  const lastStoryId = useRef<string | null>(null);
+  const streakFiredForStory = useRef<string | null>(null);
+  const reactionFiredForStory = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!currentStory) return;
+    if (!isAuthenticated) return;
+
+    if (
+      isPlaying &&
+      currentStory.id !== streakFiredForStory.current
+    ) {
+      streakFiredForStory.current = currentStory.id;
+      fetch(`${API_BASE}/api/me/taste`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ incrementStreak: true }),
+      })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => { if (data?.streakDays) onStreakIncrement(data.streakDays); })
+        .catch(() => {});
+    }
+  }, [currentStory?.id, isPlaying, isAuthenticated]);
+
+  useEffect(() => {
+    if (!currentStory) return;
+    if (!isAuthenticated) return;
+    if (reactionFiredForStory.current === currentStory.id) return;
+
+    if (progress >= 0.97) {
+      reactionFiredForStory.current = currentStory.id;
+      setReactionVisible(true);
+    }
+  }, [progress, currentStory?.id, isAuthenticated]);
+
+  useEffect(() => {
+    if (currentStory?.id !== lastStoryId.current) {
+      lastStoryId.current = currentStory?.id ?? null;
+      setReactionVisible(false);
+    }
+  }, [currentStory?.id]);
+
+  return (
+    <StoryReactionOverlay
+      visible={reactionVisible}
+      storyMood={currentStory?.mood}
+      onDismiss={() => setReactionVisible(false)}
+    />
+  );
+}
+
+function Navbar({ streakDays }: { streakDays: number }) {
   const [location] = useLocation();
   const { user, isLoading, isAuthenticated, openSignIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -79,6 +158,15 @@ function Navbar() {
             {!isLoading && (
               isAuthenticated && user ? (
                 <div className="flex items-center gap-2">
+                  {streakDays >= 2 && (
+                    <div
+                      className="hidden md:flex items-center gap-1 px-2 py-1 rounded-full border border-primary/30 bg-primary/8"
+                      title={`${streakDays} evenings in a row`}
+                    >
+                      <Flame className="w-3 h-3 text-primary" />
+                      <span className="text-[10px] font-semibold text-primary">{streakDays} evenings</span>
+                    </div>
+                  )}
                   {user.profileImageUrl || user.image ? (
                     <img
                       src={(user.profileImageUrl || user.image) ?? ""}
@@ -203,7 +291,12 @@ function Navbar() {
                       <p className="text-sm font-medium text-foreground">
                         {user.firstName ?? user.name ?? "Account"}
                       </p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                      {streakDays >= 2 && (
+                        <p className="text-[10px] text-primary flex items-center gap-1">
+                          <Flame className="w-3 h-3" />
+                          {streakDays} evenings in a row
+                        </p>
+                      )}
                     </div>
                   </div>
                   <button
@@ -265,6 +358,9 @@ function Footer() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  const { streakDays, setStreakDays } = useStreak(isAuthenticated);
+
   return (
     <div className="relative min-h-screen bg-background font-sans text-foreground selection:bg-primary/30">
       <div
@@ -273,7 +369,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       />
 
       <AuthModal />
-      <Navbar />
+      <Navbar streakDays={streakDays} />
+      <StoryLifecycleManager
+        isAuthenticated={isAuthenticated}
+        onStreakIncrement={setStreakDays}
+      />
       <main className="pt-24 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />

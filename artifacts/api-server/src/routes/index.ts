@@ -6,6 +6,7 @@ import libraryRouter from "./library.js";
 import authRouter from "./auth.js";
 import giftRouter from "./gift.js";
 import adminRouter from "./admin.js";
+import meRouter from "./me.js";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(libraryRouter);
 router.use(authRouter);
 router.use("/gift", giftRouter);
 router.use("/admin", adminRouter);
+router.use("/me", meRouter);
 
 export default router;

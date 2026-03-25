@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 interface TagCategory {
   heading: string;
   sub?: string;
@@ -102,6 +106,25 @@ export function StoryTagStudio({
   afterDark = false,
   accentColor = "#c9a227",
 }: Props) {
+  const [usualTags, setUsualTags] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/me/taste`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.tasteProfile) {
+          const freq = data.tasteProfile as Record<string, number>;
+          const frequent = new Set(
+            Object.entries(freq)
+              .filter(([, count]) => count > 0)
+              .map(([tag]) => tag)
+          );
+          setUsualTags(frequent);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const categories = afterDark
     ? [...STANDARD_CATEGORIES, ...AFTER_DARK_EXTRA_CATEGORIES]
     : STANDARD_CATEGORIES;
@@ -122,23 +145,35 @@ export function StoryTagStudio({
           <div className="flex flex-wrap gap-2">
             {cat.tags.map((tag) => {
               const selected = selectedTags.includes(tag);
+              const isUsual = usualTags.has(tag) && !selected;
               return (
                 <button
                   key={tag}
                   type="button"
                   onClick={() => onTagToggle(tag)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                     selected
                       ? "border-transparent text-black"
+                      : isUsual
+                      ? "border-primary/40 text-foreground/80 hover:border-primary/60"
                       : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
                   }`}
                   style={
                     selected
                       ? { background: accentColor, borderColor: accentColor }
+                      : isUsual
+                      ? { background: `${accentColor}12` }
                       : undefined
                   }
+                  title={isUsual ? "Your usual" : undefined}
                 >
                   {tag}
+                  {isUsual && (
+                    <span
+                      className="absolute -top-1 -right-1 w-2 h-2 rounded-full border border-background"
+                      style={{ background: accentColor }}
+                    />
+                  )}
                 </button>
               );
             })}

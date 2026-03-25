@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   unique,
+  date,
 } from "drizzle-orm/pg-core";
 import { usersTable } from "./auth";
 
@@ -73,6 +74,8 @@ export const userTaste = pgTable("user_taste", {
   preferredVoiceFeel: jsonb("preferred_voice_feel").notNull().default({}),
   preferredEndings: jsonb("preferred_endings").notNull().default({}),
   preferredRelationshipDynamics: jsonb("preferred_relationship_dynamics").notNull().default({}),
+  lastActiveDate: date("last_active_date"),
+  streakDays: integer("streak_days").notNull().default(0),
 });
 
 export const generatedCache = pgTable("generated_cache", {

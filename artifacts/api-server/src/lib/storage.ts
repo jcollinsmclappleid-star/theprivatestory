@@ -228,6 +228,8 @@ export type TasteProfile = {
   preferredVoiceFeel: Record<string, number>;
   preferredEndings: Record<string, number>;
   preferredRelationshipDynamics: Record<string, number>;
+  lastActiveDate: string | null;
+  streakDays: number;
 };
 
 const defaultTaste = (): TasteProfile => ({
@@ -236,7 +238,24 @@ const defaultTaste = (): TasteProfile => ({
   preferredVoiceFeel: {},
   preferredEndings: {},
   preferredRelationshipDynamics: {},
+  lastActiveDate: null,
+  streakDays: 0,
 });
+
+function todayDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function computeStreak(currentStreak: number, lastActive: string | null): { streakDays: number; lastActiveDate: string } {
+  const today = todayDateString();
+  if (!lastActive) return { streakDays: 1, lastActiveDate: today };
+  if (lastActive === today) return { streakDays: currentStreak, lastActiveDate: today };
+  const last = new Date(lastActive);
+  const now = new Date(today);
+  const diffDays = Math.round((now.getTime() - last.getTime()) / 86_400_000);
+  if (diffDays === 1) return { streakDays: currentStreak + 1, lastActiveDate: today };
+  return { streakDays: 1, lastActiveDate: today };
+}
 
 export const tasteStore = {
   async get(userId: string): Promise<TasteProfile> {
@@ -251,6 +270,8 @@ export const tasteStore = {
       preferredVoiceFeel: (row.preferredVoiceFeel as Record<string, number>) ?? {},
       preferredEndings: (row.preferredEndings as Record<string, number>) ?? {},
       preferredRelationshipDynamics: (row.preferredRelationshipDynamics as Record<string, number>) ?? {},
+      lastActiveDate: row.lastActiveDate ?? null,
+      streakDays: row.streakDays ?? 0,
     };
   },
 
@@ -264,6 +285,8 @@ export const tasteStore = {
         preferredVoiceFeel: taste.preferredVoiceFeel,
         preferredEndings: taste.preferredEndings,
         preferredRelationshipDynamics: taste.preferredRelationshipDynamics,
+        lastActiveDate: taste.lastActiveDate ?? null,
+        streakDays: taste.streakDays ?? 0,
       })
       .onConflictDoUpdate({
         target: userTaste.userId,
@@ -273,8 +296,26 @@ export const tasteStore = {
           preferredVoiceFeel: taste.preferredVoiceFeel,
           preferredEndings: taste.preferredEndings,
           preferredRelationshipDynamics: taste.preferredRelationshipDynamics,
+          lastActiveDate: taste.lastActiveDate ?? null,
+          streakDays: taste.streakDays ?? 0,
         },
       });
+  },
+
+  async incrementStreak(userId: string): Promise<{ streakDays: number }> {
+    const current = await this.get(userId);
+    const { streakDays, lastActiveDate } = computeStreak(current.streakDays, current.lastActiveDate);
+    await this.upsert(userId, { ...current, streakDays, lastActiveDate });
+    return { streakDays };
+  },
+
+  async mergeReaction(userId: string, reactionTags: string[]): Promise<void> {
+    const current = await this.get(userId);
+    const profile = { ...current.tasteProfile };
+    for (const tag of reactionTags) {
+      profile[tag] = (profile[tag] ?? 0) + 1;
+    }
+    await this.upsert(userId, { ...current, tasteProfile: profile });
   },
 };
 

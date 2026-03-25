@@ -379,6 +379,7 @@ router.get("/quick-create-params", async (req, res) => {
     const voiceFeel = VALID_VOICES.includes(topVoice) ? topVoice : "Soft Voice";
 
     res.json({
+      eligible: true,
       mood,
       intensity,
       voiceFeel,

@@ -17,17 +17,31 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
-const ADMIN_API_KEY = process.env.ADMIN_API_KEY ?? "";
+
+/**
+ * Derives the admin API key from the existing OPENROUTER_API_KEY secret via
+ * HMAC-SHA256.  This means no additional plaintext secret lives in source or
+ * env files — the key is computable only by anyone who already holds the
+ * OPENROUTER_API_KEY.  Scripts can compute the same value with:
+ *   node -e "const c=require('crypto');console.log(c.createHmac('sha256',process.env.OPENROUTER_API_KEY).update('private-story-admin-v1').digest('hex'))"
+ */
+function deriveAdminApiKey(): string {
+  const base = process.env.OPENROUTER_API_KEY ?? "";
+  if (!base) return "";
+  return crypto.createHmac("sha256", base).update("private-story-admin-v1").digest("hex");
+}
 
 function isAdmin(req: any): boolean {
   if (!ADMIN_EMAIL) return false;
   // Session-based auth (web UI)
   const user = req.user as { email?: string } | undefined;
   if (user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
-  // Header-based auth for scripts — requires a real secret key, not the email
-  if (!ADMIN_API_KEY) return false;
+  // Header-based auth for scripts — token must be HMAC-derived, never the email itself
   const token = req.headers["x-admin-token"] as string | undefined;
-  return !!token && token === ADMIN_API_KEY;
+  if (!token) return false;
+  const derived = deriveAdminApiKey();
+  if (!derived) return false;
+  return crypto.timingSafeEqual(Buffer.from(token, "utf8"), Buffer.from(derived, "utf8"));
 }
 
 function getPublicAudioDir(): string {
@@ -505,7 +519,7 @@ router.post("/generate-one-sync", async (req, res) => {
       categoryId,
       subthemeId,
       isLibraryStory: true,
-      status: "draft",
+      status: "published",
       storyDna,
       ownerUserId: null,
     });

@@ -22,6 +22,7 @@ type TasteProfile = {
   preferredRelationshipDynamics: Record<string, number>;
   preferredEndings: Record<string, number>;
   streakDays: number;
+  reactionHistory?: Array<{ storyId: string; reactions: string[]; createdAt: string }>;
 };
 
 type CastingPreset = {
@@ -96,6 +97,22 @@ function useLibrary(isAuthenticated: boolean) {
   }, [isAuthenticated]);
 
   return { data, loading };
+}
+
+function useContinueListening(isAuthenticated: boolean) {
+  const [items, setItems] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isAuthenticated) { setLoading(false); return; }
+    fetch(`${API_BASE}/api/me/continue-listening`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : [])
+      .then((d) => setItems(d.slice(0, 5)))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [isAuthenticated]);
+
+  return { items, loading };
 }
 
 // ---------------------------------------------------------------------------
@@ -328,6 +345,7 @@ export default function Profile() {
   const { data: taste, loading: tasteLoading } = useTaste(isAuthenticated);
   const { presets, loading: presetsLoading, deletePreset } = usePresets(isAuthenticated);
   const { data: library, loading: libraryLoading } = useLibrary(isAuthenticated);
+  const { items: continueItems, loading: continueLoading } = useContinueListening(isAuthenticated);
 
   const handleUsePreset = useCallback((preset: CastingPreset) => {
     sessionStorage.setItem("castingPreset", JSON.stringify(preset.castingData));
@@ -434,6 +452,32 @@ export default function Profile() {
         ) : taste ? (
           <>
             <TasteSummaryText taste={taste} />
+
+            {/* Top moods / reaction summary */}
+            {(() => {
+              const moodEntries = Object.entries(taste.tasteProfile)
+                .filter(([, v]) => v > 0)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 5);
+              if (!moodEntries.length) return null;
+              return (
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">What you've been drawn to:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {moodEntries.map(([mood, count]) => (
+                      <span
+                        key={mood}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs text-foreground"
+                      >
+                        <span className="text-primary font-medium">{mood}</span>
+                        {count > 1 && <span className="text-muted-foreground/60">×{count}</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
             {taste && totalSignals(taste) >= 5 && (
               <QuickCreateBanner taste={taste} />
             )}
@@ -498,7 +542,55 @@ export default function Profile() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Generated stories */}
+      {/* Continue Listening */}
+      {/* ------------------------------------------------------------------ */}
+      {!continueLoading && continueItems.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Play className="w-4 h-4 text-primary" />
+              <h2 className="font-display text-lg font-bold text-foreground">Continue Listening</h2>
+            </div>
+            <Link href="/library" className="text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+              Library <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {continueItems.map((s, i) => {
+              const progressSeconds = (s.progress?.audioProgressSeconds as number) ?? 0;
+              const duration = s.duration ?? "5 min";
+              const durationSec = parseInt(duration) * 60 || 300;
+              const pct = Math.min(Math.round((progressSeconds / durationSec) * 100), 99);
+              return (
+                <div key={s.id ?? i} className="flex items-center gap-3 p-3 rounded-xl bg-card/60 border border-border/20">
+                  {s.coverImage ? (
+                    <img src={s.coverImage} alt={s.title} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Play className="w-5 h-5 text-primary/50" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex-1 h-1 bg-border/30 rounded-full">
+                        <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+                      </div>
+                      <p className="text-xs text-muted-foreground flex-shrink-0">{pct}%</p>
+                    </div>
+                  </div>
+                  <Link href={`/story/${s.id}`} className="p-1.5 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all flex-shrink-0">
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Generated stories with Episode 1/2 pairing */}
       {/* ------------------------------------------------------------------ */}
       {!libraryLoading && library.generated.length > 0 && (
         <section className="space-y-4">
@@ -512,16 +604,33 @@ export default function Profile() {
             </Link>
           </div>
           <div className="space-y-2">
-            {library.generated.slice(0, 5).map((s, i) => {
-              const hasParent = !!(s as Record<string, unknown>).parent_story_id;
-              return (
-                <StoryMiniCard
-                  key={s.id ?? i}
-                  story={s}
-                  episodeLabel={hasParent ? "Episode 2" : undefined}
-                />
-              );
-            })}
+            {(() => {
+              const stories = library.generated.slice(0, 8);
+              const parentIdToEp2 = new Map<string, Story>();
+              stories.forEach((s) => {
+                const parentId = (s as Record<string, unknown>).parent_story_id as string | undefined;
+                if (parentId) parentIdToEp2.set(parentId, s);
+              });
+              const renderedIds = new Set<string>();
+              return stories.map((s, i) => {
+                if (renderedIds.has(s.id ?? "")) return null;
+                const ep2 = parentIdToEp2.get(s.id ?? "");
+                if (ep2) {
+                  renderedIds.add(ep2.id ?? "");
+                  return (
+                    <div key={s.id ?? i} className="rounded-xl border border-primary/15 overflow-hidden">
+                      <p className="text-[10px] font-semibold text-primary/50 uppercase tracking-widest px-3 pt-2">Series</p>
+                      <StoryMiniCard story={s} episodeLabel="Episode 1" />
+                      <div className="h-px bg-border/20 mx-3" />
+                      <StoryMiniCard story={ep2} episodeLabel="Episode 2" />
+                    </div>
+                  );
+                }
+                return (
+                  <StoryMiniCard key={s.id ?? i} story={s} />
+                );
+              }).filter(Boolean);
+            })()}
           </div>
         </section>
       )}

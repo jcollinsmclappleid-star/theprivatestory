@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronLeft, ArrowLeft, Moon } from "lucide-react";
+import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, BookOpen } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -421,6 +421,8 @@ function ScenarioCard({
   );
 }
 
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
@@ -429,6 +431,9 @@ export default function AfterDark() {
   const [scenarioSeed, setScenarioSeed] = useState<string>("");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
+  const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
+  const [presetSaved, setPresetSaved] = useState(false);
+  const [isGeneratingEp2, setIsGeneratingEp2] = useState(false);
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const { play } = useAudioPlayer();
@@ -492,9 +497,60 @@ export default function AfterDark() {
     },
   });
 
+  const handleSavePreset = useCallback(async () => {
+    if (!lastCastingData || !isAuthenticated) return;
+    const archetype = lastCastingData.archetype as string ?? "";
+    const dynamic = lastCastingData.dynamic as string ?? "";
+    const name = [archetype, dynamic].filter(Boolean).join(" · ") || "My After Dark Cast";
+    try {
+      await fetch(`${API_BASE}/api/me/presets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, castingData: lastCastingData }),
+      });
+      setPresetSaved(true);
+    } catch { /* ignore */ }
+  }, [lastCastingData, isAuthenticated]);
+
+  const handleWriteEpisode2 = useCallback(async () => {
+    if (!result || isGeneratingEp2) return;
+    setIsGeneratingEp2(true);
+    setPhase("generating");
+    startLoadingPhase();
+    try {
+      const res = await fetch(`${API_BASE}/api/continue-story`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ storyId: result.id, continuation_mode: "keep_same_mood" }),
+      });
+      if (!res.ok) throw new Error("Episode 2 failed");
+      const data = await res.json() as FullGeneratedStory;
+      stopLoadingPhase();
+      setResult(data);
+      setPhase("result");
+      applyResultToPlayer(data);
+    } catch {
+      stopLoadingPhase();
+      setPhase("result");
+    } finally {
+      setIsGeneratingEp2(false);
+    }
+  }, [result, isGeneratingEp2, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
+
   const handleCastingComplete = useCallback(
     async (casting: CastingRoomResult) => {
       if (!selectedScenario) return;
+
+      setLastCastingData({
+        archetype: casting.archetype,
+        dynamic: casting.dynamic,
+        intensity: casting.intensity,
+        storyMode: selectedScenario.storyMode,
+      });
+      setPresetSaved(false);
+
       setPhase("generating");
       startLoadingPhase();
 
@@ -932,6 +988,25 @@ export default function AfterDark() {
               </div>
 
               <div className="p-8 space-y-6">
+                {/* Preset save */}
+                {isAuthenticated && lastCastingData && (
+                  <div>
+                    {presetSaved ? (
+                      <p className="text-xs flex items-center gap-1.5" style={{ color: "#c0392b" }}>
+                        <Check className="w-3.5 h-3.5" />
+                        Casting saved to your profile
+                      </p>
+                    ) : (
+                      <button
+                        onClick={handleSavePreset}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors underline-offset-2 hover:underline"
+                      >
+                        Save this casting combination
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <div className="prose prose-invert max-w-none">
                   {result.scenes.map((scene, i) => (
                     <div key={scene.id ?? i} className="mb-8">
@@ -949,6 +1024,21 @@ export default function AfterDark() {
                 </div>
               </div>
             </div>
+
+            {/* Episode 2 CTA */}
+            <button
+              onClick={handleWriteEpisode2}
+              disabled={isGeneratingEp2}
+              className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/60 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ background: "rgba(192,57,43,0.15)", border: "1px solid rgba(192,57,43,0.4)" }}
+            >
+              {isGeneratingEp2 ? (
+                <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+              ) : (
+                <BookOpen className="w-4 h-4" />
+              )}
+              Write Episode 2 →
+            </button>
 
             <button
               onClick={() => {

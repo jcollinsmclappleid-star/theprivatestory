@@ -1345,6 +1345,20 @@ export default function Create() {
               </div>
             )}
 
+            {/* Write Episode 2 — single tap continuation */}
+            <button
+              onClick={handleGenerateContinuation}
+              disabled={isGeneratingContinuation}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-all shadow-glow disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {isGeneratingContinuation ? (
+                <span className="w-4 h-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
+              ) : (
+                <BookOpen className="w-4 h-4" />
+              )}
+              Write Episode 2 →
+            </button>
+
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setVariationModalOpen(true)}
@@ -1360,7 +1374,7 @@ export default function Create() {
                 className="flex items-center justify-center gap-2 bg-card border border-border/50 text-foreground py-4 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <BookOpen className="w-4 h-4" />
-                Create Your Next Chapter
+                More Continuation Options
               </button>
             </div>
           </motion.div>

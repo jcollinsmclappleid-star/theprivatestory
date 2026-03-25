@@ -65,6 +65,7 @@ export function StoryReactionOverlay({ visible, onDismiss, storyMood, storyTags,
           storyTitle,
         }),
       }).catch(() => {});
+
     }
     onDismiss();
   }

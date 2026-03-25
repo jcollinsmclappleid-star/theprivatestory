@@ -445,7 +445,7 @@ export default function Profile() {
         <StatBadge
           icon={<Flame className="w-5 h-5 text-primary" />}
           label="Evening streak"
-          value={streakDays >= 1 ? `${streakDays} ${streakDays === 1 ? "eve" : "eves"}` : "—"}
+          value={streakDays >= 1 ? `${streakDays} ${streakDays === 1 ? "evening" : "evenings"}` : "—"}
         />
         <StatBadge
           icon={<Sparkles className="w-5 h-5 text-primary" />}

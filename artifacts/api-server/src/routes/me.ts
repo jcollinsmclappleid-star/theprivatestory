@@ -70,12 +70,6 @@ router.post("/taste", async (req, res) => {
   try {
     const current = await tasteStore.get(userId);
 
-    if (reactionTags && reactionTags.length > 0) {
-      for (const tag of reactionTags) {
-        current.tasteProfile[tag] = (current.tasteProfile[tag] ?? 0) + 1;
-      }
-    }
-
     if (tasteProfile) {
       for (const [key, val] of Object.entries(tasteProfile)) {
         current.tasteProfile[key] = (current.tasteProfile[key] ?? 0) + val;

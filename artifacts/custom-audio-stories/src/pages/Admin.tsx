@@ -234,6 +234,28 @@ export default function Admin() {
     loadDrafts();
   };
 
+  const regenerateFailed = useCallback(async (draft: GeneratedDraft) => {
+    await fetch(`${API_BASE}/api/admin/stories/${draft.storyId}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ status: "skipped" }),
+    });
+    setSelectedDraftId(null);
+    loadDrafts();
+    const idx = queue.findIndex(
+      (q) => q.item.categoryId === draft.categoryId && q.item.subthemeId === draft.subthemeId
+    );
+    if (idx !== -1) {
+      setActiveView("generate");
+      setSelected(idx);
+      setQueue((q) => q.map((qi, i) => i === idx ? { ...qi, status: "pending", logs: [] } : qi));
+      setTimeout(() => generateOne(idx), 100);
+    } else {
+      setActiveView("generate");
+    }
+  }, [queue, generateOne, loadDrafts]);
+
   const clearAllDrafts = async () => {
     await Promise.all(drafts.map((d) =>
       fetch(`${API_BASE}/api/admin/stories/${d.storyId}/status`, {
@@ -666,13 +688,19 @@ export default function Admin() {
                 {draft.status === "failed" ? (
                   <>
                     <button
+                      onClick={() => regenerateFailed(draft)}
+                      className="flex-1 bg-rose-700 hover:bg-rose-600 text-white text-sm py-3.5 rounded-xl font-semibold transition"
+                    >
+                      ↻ Regenerate
+                    </button>
+                    <button
                       onClick={() => {
                         updateDraftStatus(draft.storyId, "skipped");
                         setSelectedDraftId(null);
                       }}
-                      className="flex-1 bg-red-900/40 hover:bg-red-900/60 text-red-300 text-sm py-3.5 rounded-xl font-medium transition"
+                      className="flex-1 bg-white/8 hover:bg-white/12 text-white/50 text-sm py-3.5 rounded-xl font-medium transition"
                     >
-                      Delete record
+                      Delete
                     </button>
                     <button
                       onClick={() => setSelectedDraftId(null)}

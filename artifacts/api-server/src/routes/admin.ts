@@ -386,6 +386,7 @@ router.post("/generate-one", async (req, res) => {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Generation failed";
+    console.error("[generate-one] Fatal error:", err);
     send("error", { message });
   }
 

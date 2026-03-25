@@ -352,13 +352,31 @@ export default function Admin() {
                     </div>
                   </button>
                   {selected === idx && (
-                    <div className="px-3 pb-2 pt-0">
+                    <div className="px-3 pb-2 pt-0 space-y-1.5">
+                      {qi.status === "error" && (() => {
+                        const errLog = [...qi.logs].reverse().find(l => l.event === "error");
+                        const msg = errLog?.data?.message as string | undefined;
+                        return msg ? (
+                          <div className="text-red-400 text-xs bg-red-950/40 rounded px-2 py-1.5 leading-snug break-words">
+                            {msg}
+                          </div>
+                        ) : null;
+                      })()}
                       <button
-                        onClick={(e) => { e.stopPropagation(); generateOne(idx); }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (qi.status === "error") {
+                            setQueue(q => q.map((item, i) => i === idx ? { ...item, status: "pending", logs: [] } : item));
+                            await new Promise(r => setTimeout(r, 50));
+                            generateOne(idx);
+                          } else {
+                            generateOne(idx);
+                          }
+                        }}
                         className="w-full bg-rose-600 hover:bg-rose-500 text-white text-xs py-1.5 rounded font-medium disabled:opacity-50"
-                        disabled={isRunning || qi.status !== "pending"}
+                        disabled={isRunning || (qi.status !== "pending" && qi.status !== "error")}
                       >
-                        {isRunning ? "Generating…" : qi.status === "done" ? "Done" : qi.status === "error" ? "Error" : "Generate"}
+                        {qi.status === "generating" ? "Generating…" : qi.status === "done" ? "✓ Done" : qi.status === "error" ? "↺ Retry" : "Generate"}
                       </button>
                     </div>
                   )}

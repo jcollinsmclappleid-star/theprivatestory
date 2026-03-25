@@ -645,7 +645,7 @@ Sensory palette: ${brief.sensory_palette?.join(", ")}
 
 Generate a structured visual extraction for:
 1. A COVER image that captures the emotional essence of the whole story (not a single scene moment — a symbolic or atmospheric composition)
-${story.scenes.map((s, i) => `${i + 2}. Scene ${i + 1} — "${s.heading}": ${s.text.slice(0, 220)}`).join("\n")}
+${story.scenes.map((s, i) => `${i + 2}. Scene ${i + 1} — "${s.heading}"`).join("\n")}
 
 Return JSON only in exactly this shape:
 {

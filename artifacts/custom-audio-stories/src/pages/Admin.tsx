@@ -60,10 +60,12 @@ export default function Admin() {
   const [storyTexts, setStoryTexts] = useState<Record<string, string>>({});
 
   const [accessDenied, setAccessDenied] = useState(false);
+  const categoriesLoadedRef = useRef(false);
 
-  // ── Load categories ────────────────────────────────────────────────────────
+  // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id || categoriesLoadedRef.current) return;
+    categoriesLoadedRef.current = true;
     fetch(`${API_BASE}/api/admin/categories`, { credentials: "include" })
       .then((r) => {
         if (r.status === 403) { setAccessDenied(true); return null; }
@@ -76,11 +78,11 @@ export default function Admin() {
         setQueue(items.map((item) => ({ item, status: "pending", logs: [] })));
       })
       .catch(() => {});
-  }, [user]);
+  }, [user?.id]);
 
   // ── Load existing drafts ───────────────────────────────────────────────────
   const loadDrafts = useCallback(() => {
-    if (!user) return;
+    if (!user?.id) return;
     fetch(`${API_BASE}/api/admin/library?status=draft`, { credentials: "include" })
       .then((r) => r.json())
       .then((data) => {
@@ -99,7 +101,12 @@ export default function Admin() {
         setDrafts(normalized);
       })
       .catch(() => {});
-  }, [user]);
+  }, [user?.id]);
+
+  // ── Load drafts when switching to the review tab ───────────────────────────
+  useEffect(() => {
+    if (activeView === "review") loadDrafts();
+  }, [activeView, loadDrafts]);
 
   // ── Run generation for one item via SSE ───────────────────────────────────
   const generateOne = useCallback(

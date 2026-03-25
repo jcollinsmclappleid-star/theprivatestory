@@ -295,6 +295,36 @@ router.post("/generate-one", async (req, res) => {
     console.error(`[GENERATION] finish_reason=${finishReason} | input=${usage?.prompt_tokens} tokens | output=${usage?.completion_tokens} tokens | chars=${rawStoryText.length}`);
     console.error(`[GENERATION] Raw preview (first 300 chars): ${rawStoryText.slice(0, 300)}`);
 
+    // ── Detect content filter refusals ────────────────────────────────────
+    const isRefusal =
+      (usage?.completion_tokens ?? 0) < 30 &&
+      /^(I'?m sorry|I'?m unable|I cannot|I can'?t|Unfortunately,?\s+I)/i.test(rawStoryText.trim());
+
+    if (isRefusal) {
+      console.error(`[GENERATION] Content filter refusal detected for ${categoryId}/${subthemeId}`);
+      send("error", {
+        phase: "content_refused",
+        message: `OpenAI declined to generate this story category. Try a different subtheme, or retry — refusals are sometimes intermittent.`,
+        categoryId,
+        subthemeId,
+        storyId,
+      });
+      return;
+    }
+
+    // ── Guard against very short / failed outputs ─────────────────────────
+    if (rawStoryText.length < 500) {
+      console.error(`[GENERATION] Story too short (${rawStoryText.length} chars) — likely a partial failure`);
+      send("error", {
+        phase: "generation_incomplete",
+        message: `Story generation returned incomplete content (${rawStoryText.length} chars). Please retry.`,
+        categoryId,
+        subthemeId,
+        storyId,
+      });
+      return;
+    }
+
     // Extract DNA, description (HOOK), and clean story text
     const { cleanText: cleanStoryText, description: extractedDescription, dna: storyDna } =
       extractStoryParts(rawStoryText);

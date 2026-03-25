@@ -26,7 +26,7 @@ interface GeneratedDraft {
   categoryId: string;
   subthemeId: string;
   dna: Record<string, string>;
-  status: "draft" | "published" | "skipped";
+  status: "draft" | "published" | "skipped" | "failed";
   scenes?: Array<{ id: number; text: string; heading: string }>;
 }
 
@@ -83,10 +83,11 @@ export default function Admin() {
   // ── Load existing drafts ───────────────────────────────────────────────────
   const loadDrafts = useCallback(() => {
     if (!user?.id) return;
-    fetch(`${API_BASE}/api/admin/library?status=draft`, { credentials: "include" })
-      .then((r) => r.json())
-      .then((data) => {
-        const normalized: GeneratedDraft[] = (data.stories ?? []).map((s: Record<string, unknown>) => ({
+    Promise.all([
+      fetch(`${API_BASE}/api/admin/library?status=draft`, { credentials: "include" }).then(r => r.json()),
+      fetch(`${API_BASE}/api/admin/library?status=failed`, { credentials: "include" }).then(r => r.json()),
+    ]).then(([draftData, failedData]) => {
+        const normalize = (stories: Record<string, unknown>[]) => stories.map((s) => ({
           storyId: (s.storyId ?? s.id) as string,
           title: (s.title ?? "") as string,
           description: (s.description ?? "") as string,
@@ -95,10 +96,12 @@ export default function Admin() {
           categoryId: (s.categoryId ?? "") as string,
           subthemeId: (s.subthemeId ?? "") as string,
           dna: (s.dna ?? s.storyDna ?? {}) as Record<string, string>,
-          status: (s.status ?? "draft") as "draft" | "published" | "skipped",
+          status: (s.status ?? "draft") as "draft" | "published" | "skipped" | "failed",
           scenes: (s.scenes ?? []) as Array<{ id: number; text: string; heading: string }>,
         }));
-        setDrafts(normalized);
+        const failed = normalize(failedData.stories ?? []);
+        const drafts = normalize(draftData.stories ?? []);
+        setDrafts([...failed, ...drafts]);
       })
       .catch(() => {});
   }, [user?.id]);
@@ -388,7 +391,12 @@ export default function Admin() {
           <>
             {drafts.length > 0 && (
               <div className="px-3 py-2 border-b border-white/10 flex items-center justify-between flex-shrink-0">
-                <span className="text-xs text-white/50">{drafts.length} draft{drafts.length !== 1 ? "s" : ""}</span>
+                <span className="text-xs text-white/50">
+                {drafts.filter(d => d.status !== "failed").length} draft{drafts.filter(d => d.status !== "failed").length !== 1 ? "s" : ""}
+                {drafts.filter(d => d.status === "failed").length > 0 && (
+                  <span className="text-red-400 ml-2">· {drafts.filter(d => d.status === "failed").length} failed</span>
+                )}
+              </span>
                 <button
                   onClick={clearAllDrafts}
                   className="text-xs text-rose-400 hover:text-rose-300 font-medium"
@@ -406,7 +414,11 @@ export default function Admin() {
                   <button
                     key={draft.storyId}
                     onClick={() => setSelectedDraftId(draft.storyId)}
-                    className="w-full text-left border border-white/10 rounded-xl overflow-hidden hover:border-white/30 active:scale-[0.99] transition-all"
+                    className={`w-full text-left rounded-xl overflow-hidden active:scale-[0.99] transition-all border ${
+                      draft.status === "failed"
+                        ? "border-red-500/40 hover:border-red-400/60"
+                        : "border-white/10 hover:border-white/30"
+                    }`}
                   >
                     {draft.coverImageUrl && (
                       <img
@@ -416,9 +428,16 @@ export default function Admin() {
                       />
                     )}
                     <div className="p-3">
+                      {draft.status === "failed" && (
+                        <div className="text-[10px] text-red-400 font-semibold uppercase tracking-widest mb-1">
+                          ✗ Generation failed — needs retry
+                        </div>
+                      )}
                       <div className="font-semibold text-sm leading-snug mb-1">{draft.title}</div>
                       <div className="text-white/50 text-xs leading-relaxed line-clamp-2">{draft.description}</div>
-                      <div className="mt-2 text-xs text-rose-400 font-medium">Tap to read →</div>
+                      {draft.status !== "failed" && (
+                        <div className="mt-2 text-xs text-rose-400 font-medium">Tap to read →</div>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -621,7 +640,18 @@ export default function Admin() {
               {/* Story Text */}
               <div className="flex-1 overflow-y-auto">
                 <div className="px-5 py-6">
-                  {draft.scenes && draft.scenes[0]?.text ? (
+                  {draft.status === "failed" ? (
+                    <div className="text-center py-12">
+                      <div className="text-5xl mb-4">✗</div>
+                      <div className="text-red-400 font-semibold mb-2">Generation Failed</div>
+                      <div className="text-white/40 text-sm leading-relaxed max-w-xs mx-auto">
+                        This story did not generate successfully. Go to the <strong className="text-white/60">Generate tab</strong>, find this category, and tap Retry to generate a new version.
+                      </div>
+                      <div className="mt-4 text-white/30 text-xs">
+                        {draft.title}
+                      </div>
+                    </div>
+                  ) : draft.scenes && draft.scenes[0]?.text ? (
                     <p className="text-white/80 leading-loose text-base font-light whitespace-pre-wrap">
                       {draft.scenes[0].text}
                     </p>
@@ -633,30 +663,52 @@ export default function Admin() {
 
               {/* Actions Footer */}
               <div className="px-5 py-4 pb-8 md:pb-4 border-t border-white/10 flex-shrink-0 flex gap-3">
-                <button
-                  onClick={() => {
-                    updateDraftStatus(draft.storyId, "published");
-                    setSelectedDraftId(null);
-                  }}
-                  className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-3.5 rounded-xl font-semibold transition"
-                >
-                  ✓ Publish
-                </button>
-                <button
-                  onClick={() => {
-                    updateDraftStatus(draft.storyId, "skipped");
-                    setSelectedDraftId(null);
-                  }}
-                  className="flex-1 bg-white/10 hover:bg-white/15 text-white/70 text-sm py-3.5 rounded-xl font-medium transition"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => setSelectedDraftId(null)}
-                  className="px-5 bg-white/5 hover:bg-white/10 text-white/50 text-sm py-3.5 rounded-xl transition"
-                >
-                  ←
-                </button>
+                {draft.status === "failed" ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        updateDraftStatus(draft.storyId, "skipped");
+                        setSelectedDraftId(null);
+                      }}
+                      className="flex-1 bg-red-900/40 hover:bg-red-900/60 text-red-300 text-sm py-3.5 rounded-xl font-medium transition"
+                    >
+                      Delete record
+                    </button>
+                    <button
+                      onClick={() => setSelectedDraftId(null)}
+                      className="px-5 bg-white/5 hover:bg-white/10 text-white/50 text-sm py-3.5 rounded-xl transition"
+                    >
+                      ←
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        updateDraftStatus(draft.storyId, "published");
+                        setSelectedDraftId(null);
+                      }}
+                      className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-3.5 rounded-xl font-semibold transition"
+                    >
+                      ✓ Publish
+                    </button>
+                    <button
+                      onClick={() => {
+                        updateDraftStatus(draft.storyId, "skipped");
+                        setSelectedDraftId(null);
+                      }}
+                      className="flex-1 bg-white/10 hover:bg-white/15 text-white/70 text-sm py-3.5 rounded-xl font-medium transition"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setSelectedDraftId(null)}
+                      className="px-5 bg-white/5 hover:bg-white/10 text-white/50 text-sm py-3.5 rounded-xl transition"
+                    >
+                      ←
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           );

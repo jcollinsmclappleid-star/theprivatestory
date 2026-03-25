@@ -703,25 +703,13 @@ async function generateAllImages(
 ): Promise<{ cover: string; scenes: string[] }> {
   const imagesDir = getPublicImagesDir();
 
-  const allBuffers: Buffer[] = await Promise.all([
-    generateImageBuffer(prompts.coverPrompt, "1024x1024"),
-    ...prompts.scenePrompts.map((sp) => generateImageBuffer(sp.prompt, "1024x1024")),
-  ]);
-
-  const coverBuffer = allBuffers[0];
-  const sceneBuffers = allBuffers.slice(1);
+  const coverBuffer = await generateImageBuffer(prompts.coverPrompt, "1024x1024");
 
   const coverFilename = `cover-${cacheKey}.png`;
   fs.writeFileSync(path.join(imagesDir, coverFilename), coverBuffer);
   const coverUrl = `/api/images/${coverFilename}`;
 
-  const sceneUrls: string[] = sceneBuffers.map((buf: Buffer, i: number) => {
-    const filename = `scene-${cacheKey}-${i}.png`;
-    fs.writeFileSync(path.join(imagesDir, filename), buf);
-    return `/api/images/${filename}`;
-  });
-
-  return { cover: coverUrl, scenes: sceneUrls };
+  return { cover: coverUrl, scenes: [] };
 }
 
 async function generateAudioFile(
@@ -965,10 +953,8 @@ async function runDerivedPipeline(
   ]);
 
   // Assemble scenes
-  const scenesWithImages = finalStory.scenes.map((scene, i) => ({
+  const scenesWithImages = finalStory.scenes.map((scene) => ({
     ...scene,
-    visualPrompt: imagePrompts.scenePrompts[i]?.prompt ?? "",
-    image: images.scenes[i],
   }));
 
   const result: Record<string, unknown> = {

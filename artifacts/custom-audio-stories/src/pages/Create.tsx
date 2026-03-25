@@ -13,7 +13,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const formSchema = z.object({
   listenerName: z.string().optional().default(""),
-  mood: z.string().min(1, "Select a mood"),
+  mood: z.string().min(1),
   intensity: z.string(),
   voiceFeel: z.string(),
   storyLength: z.string(),
@@ -24,11 +24,112 @@ const formSchema = z.object({
   dynamic: z.string().optional().default(""),
   ending: z.string().optional().default(""),
   setting: z.string().optional().default(""),
+  storyMode: z.string().default("romance"),
+  experienceTags: z.array(z.string()).default([]),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-const MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
+const STORY_PATHS = [
+  {
+    id: "romance",
+    label: "Romance",
+    tagline: "Connection before everything",
+    description: "A story led by feeling. Intimacy is a natural consequence of chemistry — unhurried and real.",
+    suggestedIntensity: "Tender",
+    highlightIntensities: ["Tender", "Heated"],
+    mood: "Emotional",
+  },
+  {
+    id: "slow_burn",
+    label: "Slow Burn",
+    tagline: "The almost is everything",
+    description: "What is held back matters as much as what is given. The space between you is the story.",
+    suggestedIntensity: "Tender",
+    highlightIntensities: ["Tender", "Heated"],
+    mood: "Slow Burn",
+  },
+  {
+    id: "passionate",
+    label: "Passionate",
+    tagline: "Feeling and desire, equally",
+    description: "Emotion doesn't restrain desire — it deepens it. Both are fully, unapologetically present.",
+    suggestedIntensity: "Heated",
+    highlightIntensities: ["Heated", "Explicit"],
+    mood: "Emotional",
+  },
+  {
+    id: "forbidden",
+    label: "Forbidden",
+    tagline: "The wanting is complicated",
+    description: "There are reasons you shouldn't. None of them are persuasive enough.",
+    suggestedIntensity: "Heated",
+    highlightIntensities: ["Heated", "Explicit", "Scorching"],
+    mood: "Forbidden",
+  },
+  {
+    id: "unrestrained",
+    label: "Unrestrained",
+    tagline: "Nothing withheld",
+    description: "Desire as the complete story. Every moment written with full presence and no restraint.",
+    suggestedIntensity: "Explicit",
+    highlightIntensities: ["Explicit", "Scorching"],
+    mood: "Late Night",
+  },
+];
+
+const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
+  romance: [
+    "Old feelings finding new words",
+    "Chemistry without agenda",
+    "Vulnerable and completely seen",
+    "Tenderness as the whole story",
+    "A love forming in the quiet",
+    "Safe enough to want",
+    "Two people who finally say it",
+    "Closeness that took a long time coming",
+  ],
+  slow_burn: [
+    "The anticipation is everything",
+    "Restraint as a form of desire",
+    "Every glance carries meaning",
+    "The patience before the moment",
+    "He waits for you to decide",
+    "Wanting without reaching yet",
+    "A tension that keeps building",
+    "Almost — again and again",
+  ],
+  passionate: [
+    "The moment it finally tips",
+    "Something real between you",
+    "No longer holding back",
+    "Equal wanting, equal intensity",
+    "Deep attraction breaking open",
+    "A feeling that becomes physical",
+    "Raw and completely present",
+    "Desire that surprises you both",
+  ],
+  forbidden: [
+    "He shouldn't, and neither should you",
+    "Power alive in the room",
+    "Something with edges",
+    "The risk is part of the pull",
+    "Control held, then released",
+    "Complicated wanting",
+    "A line that keeps moving",
+    "The danger makes it real",
+  ],
+  unrestrained: [
+    "Complete presence, nothing held back",
+    "He knows exactly what you need",
+    "Pure, unmediated desire",
+    "Every moment fully written",
+    "Total surrender",
+    "The space between wanting and having, erased",
+    "Nothing implied where it can be named",
+    "Desire without apology",
+  ],
+};
 
 const INTENSITIES = [
   { id: "Tender", label: "Tender", desc: "Emotional, slow burn, almost-touch" },
@@ -411,8 +512,8 @@ export default function Create() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       listenerName: "",
-      mood: "Slow Burn",
-      intensity: "Heated",
+      mood: "Emotional",
+      intensity: "Tender",
       voiceFeel: "Soft Voice",
       storyLength: "5 min",
       scenarioPrompt: "",
@@ -422,8 +523,30 @@ export default function Create() {
       dynamic: "",
       ending: "",
       setting: "",
+      storyMode: "romance",
+      experienceTags: [],
     },
   });
+
+  const selectedMode = form.watch("storyMode");
+  const selectedTags = form.watch("experienceTags") ?? [];
+
+  const handlePathSelect = (pathId: string) => {
+    const path = STORY_PATHS.find(p => p.id === pathId);
+    if (!path) return;
+    form.setValue("storyMode", pathId);
+    form.setValue("intensity", path.suggestedIntensity);
+    form.setValue("mood", path.mood);
+    form.setValue("experienceTags", []);
+  };
+
+  const toggleExperienceTag = (tag: string) => {
+    const current = form.getValues("experienceTags") ?? [];
+    const next = current.includes(tag)
+      ? current.filter(t => t !== tag)
+      : [...current, tag];
+    form.setValue("experienceTags", next);
+  };
 
   const onSubmit = async (data: FormData) => {
     setStep("generating");
@@ -444,6 +567,8 @@ export default function Create() {
           dynamic: data.dynamic || undefined,
           ending: data.ending || undefined,
           setting: data.setting || undefined,
+          storyMode: data.storyMode || undefined,
+          experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
         },
       });
     } finally {
@@ -502,6 +627,9 @@ export default function Create() {
     );
   };
 
+  const currentPath = STORY_PATHS.find(p => p.id === selectedMode) ?? STORY_PATHS[0];
+  const currentTags = PATH_EXPERIENCE_TAGS[selectedMode] ?? [];
+
   const isThisPlaying = isPlaying && currentStory?.id === result?.id;
   const activeSceneIndex = result
     ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
@@ -554,10 +682,89 @@ export default function Create() {
             <div>
               <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
               <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
-              <p className="text-muted-foreground">Set the emotional tone and let us craft something intimate and personal.</p>
+              <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
             </div>
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+              {/* Story Experience — Path Selector */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-1">Your Experience</label>
+                <p className="text-xs text-muted-foreground mb-5">What kind of story do you want to step into?</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {STORY_PATHS.map((path) => {
+                    const isSelected = selectedMode === path.id;
+                    return (
+                      <button
+                        key={path.id}
+                        type="button"
+                        onClick={() => handlePathSelect(path.id)}
+                        className={`text-left p-4 rounded-2xl border transition-all ${
+                          isSelected
+                            ? "border-primary bg-primary/10 shadow-glow"
+                            : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                          <p className={`font-bold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                            {path.label}
+                          </p>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />}
+                        </div>
+                        <p className={`text-xs font-medium mb-1.5 ${isSelected ? "text-primary/70" : "text-muted-foreground"}`}>
+                          {path.tagline}
+                        </p>
+                        <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                          {path.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Experience Tags — path-specific multi-select */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedMode}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className="glass-panel rounded-2xl p-6"
+                >
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Shape this story
+                  </label>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Select the feelings and elements you want woven into the narrative — choose as many as resonate.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {currentTags.map((tag) => {
+                      const isSelected = selectedTags.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleExperienceTag(tag)}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                            isSelected
+                              ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                              : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {selectedTags.length > 0 && (
+                    <p className="text-xs text-primary/60 mt-3">
+                      {selectedTags.length} {selectedTags.length === 1 ? "element" : "elements"} selected
+                    </p>
+                  )}
+                </motion.div>
+              </AnimatePresence>
 
               {/* Your Name */}
               <div className="glass-panel rounded-2xl p-6">
@@ -619,34 +826,34 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Mood */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-4">Mood</label>
-                <div className="flex flex-wrap gap-2">
-                  {MOODS.map((mood) => (
-                    <OptionPill key={mood} label={mood} field="mood" value={mood} />
-                  ))}
-                </div>
-              </div>
-
               {/* Intensity */}
               <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-4">Intensity</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Intensity</label>
+                <p className="text-xs text-muted-foreground mb-4">
+                  How far does the story go?
+                  {currentPath.highlightIntensities.length < 4 && (
+                    <span className="text-primary/60"> · Suggested for {currentPath.label}: {currentPath.highlightIntensities.join(", ")}</span>
+                  )}
+                </p>
                 <div className="grid grid-cols-2 gap-3">
                   {INTENSITIES.map((item) => {
                     const isSelected = form.watch("intensity") === item.id;
+                    const isHighlighted = currentPath.highlightIntensities.includes(item.id);
+                    const isMuted = !isHighlighted;
                     return (
                       <button
                         key={item.id}
                         type="button"
                         onClick={() => form.setValue("intensity", item.id)}
-                        className={`p-4 rounded-2xl border transition-all text-left ${
+                        className={`p-4 rounded-2xl border transition-all text-left relative ${
                           isSelected
                             ? "border-primary bg-primary/10 shadow-glow"
-                            : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                            : isMuted
+                              ? "border-border/20 bg-card/20 hover:border-primary/20 hover:bg-primary/3 opacity-60 hover:opacity-80"
+                              : "border-border/40 bg-card/40 hover:border-primary/30 hover:bg-primary/5"
                         }`}
                       >
-                        <p className={`font-semibold text-sm mb-0.5 ${isSelected ? "text-primary" : "text-foreground"}`}>
+                        <p className={`font-semibold text-sm mb-0.5 ${isSelected ? "text-primary" : isMuted ? "text-muted-foreground" : "text-foreground"}`}>
                           {item.label}
                         </p>
                         <p className="text-xs text-muted-foreground leading-snug">{item.desc}</p>

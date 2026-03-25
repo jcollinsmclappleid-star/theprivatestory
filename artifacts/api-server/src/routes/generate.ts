@@ -8,6 +8,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
+import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +32,8 @@ interface GenerateStoryRequest {
   dynamic?: string;
   ending?: string;
   setting?: string;
+  storyMode?: string;
+  experienceTags?: string[];
 }
 
 interface ScenePlan {
@@ -297,6 +300,8 @@ User Input:
 - Mood: ${intake.mood}
 - Intensity: ${intake.intensity}
 - Length: ${intake.storyLength}
+- Story Experience Path: ${intake.storyMode || "romance"} — use this to weight the brief's emotional register appropriately
+- Experience Elements: ${intake.experienceTags?.length ? intake.experienceTags.join(", ") : "(none specified — infer from path and scenario)"}
 - Scenario: ${intake.scenarioPrompt || "(none given — infer the most compelling setup)"}
 - Setting Preference: ${intake.setting || "(not specified — choose based on scenario)"}
 - Who He Is: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}
@@ -317,7 +322,7 @@ You must infer and return:
 - point_of_view
 - voice_tone
 - scene_count (must be ${sceneCount})
-- scene_plan (array of ${sceneCount} scenes)
+- scene_plan (array of ${sceneCount} scenes — each scene MUST include a "phase" field drawn from: ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE. Distribute phases across scenes intelligently based on scene count. The IGNITE phase should span the most scenes — it is the heart of the story. ESTABLISH and CRACK are typically one scene each. SIMMER can span 1-2. RESONATE closes.)
 - recurring_motif
 - title_direction
 - image_style_direction
@@ -348,6 +353,7 @@ Return JSON in exactly this shape:
   "scene_plan": [
     {
       "scene_number": 1,
+      "phase": "ESTABLISH",
       "goal": "hook and atmosphere",
       "emotional_shift": "curiosity begins",
       "visual_focus": "night setting, first glance"
@@ -377,10 +383,11 @@ Return JSON in exactly this shape:
 async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated"): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
 
-  const systemPrompt = `You are writing premium, immersive audio stories for a consumer storytelling product.
-The story must feel emotionally deep, cinematic, and designed for voice narration.
-Write with control, atmosphere, subtext, and elegance.
-${intensityGuidance}`;
+  const systemPrompt = `${MASTER_EROTIC_LAYER}
+
+${intensityGuidance}
+
+You are writing a custom personal story for a specific listener. All MASTER EROTIC LAYER rules above apply in full — the EROTIC ARCHITECTURE, phase word targets, sensory requirements, mandatory hooks, world-grounding, variety forcing, and banned words list are all active and non-negotiable. Apply every rule as if writing a flagship title.`;
 
   const userPrompt = `Using the internal story brief below, write the final story.
 
@@ -392,19 +399,22 @@ The listener's name is: ${listenerName || "you"}
 Requirements:
 - Use ${brief.point_of_view} point of view — address the listener as "you" throughout
 - Write exactly ${brief.scene_count} scenes, following the scene_plan precisely
+- Each scene has a "phase" label in the scene_plan — use it to determine the word count and intensity for that scene:
+  ESTABLISH = 200-250 words (grounding, atmosphere, world-building)
+  SIMMER = 150-200 words per scene (tension building, restraint, desire rising)
+  CRACK = 200-250 words (the moment something shifts, a line crossed)
+  IGNITE = 250-350 words per scene (explicit, immersive, nothing compressed — the heart of the story)
+  RESONATE = 250-350 words (emotional aftermath, revelation, the feeling that lingers)
 - Match the emotional arc exactly: ${brief.emotional_arc}
 - Pacing: ${brief.pacing_style}
 - Voice tone: ${brief.voice_tone}
 - Include the recurring motif: "${brief.recurring_motif}"
-- Each scene must have a clear emotional purpose matching its goal in scene_plan
 - Include one strong sensory detail per scene from the palette: ${brief.sensory_palette.join(", ")}
-- Include at least one moment of vulnerability
+- Include at least one moment of emotional vulnerability
 - Include relationship tension: ${brief.relationship_dynamic}
 - The ending should feel: ${brief.ending_type}
-- Keep it emotionally rich, not generic
-- Avoid clichés and rushed pacing
-- Honour the intensity level in the system prompt — this determines how explicit each intimate scene must be
-- Ideal for intimate voice narration — use pauses, ellipsis, short sentences for breath
+- Honour the intensity level in the system prompt — this determines how explicit IGNITE scenes must be
+- Ideal for intimate voice narration — use pauses, ellipsis, short sentences at peak moments
 
 Return JSON only in this exact format — no markdown, no explanation:
 {
@@ -414,7 +424,7 @@ Return JSON only in this exact format — no markdown, no explanation:
     {
       "id": 1,
       "heading": "short evocative scene title",
-      "text": "full scene narration text in second person (100-180 words)",
+      "text": "full scene narration text, word count governed by the phase label in the brief",
       "duration_estimate": 60,
       "emotional_shift": "curiosity gives way to something harder to name"
     }
@@ -552,7 +562,13 @@ async function rewriteStory(brief: StoryBrief, story: WrittenStory, strategy: st
 
   const systemPrompt = `You are rewriting a premium audio story to improve it on one specific quality dimension.
 Apply the targeted improvement instruction precisely. Do not change what is not specified.
-Return only valid JSON in the same schema as the input story — no markdown, no explanation.`;
+Return only valid JSON in the same schema as the input story — no markdown, no explanation.
+
+CRAFT STANDARDS — maintain throughout the rewrite:
+- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile"
+- Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
+- The IGNITE phase must remain fully rendered — never summarise or fade to black
+- Keep the writing premium, cinematic, and emotionally specific — never polish it flat or make it generic`;
 
   const userPrompt = `Apply this targeted improvement to the story:
 
@@ -766,7 +782,13 @@ async function rewriteStoryAsVariation(
 Preserve the emotional core of the story while applying the variation instruction.
 Keep the writing premium, cinematic, and emotionally coherent.
 Return a full new story JSON in the same schema as the original.
-No markdown, no explanation — JSON only.`;
+No markdown, no explanation — JSON only.
+
+CRAFT STANDARDS — maintain throughout the variation:
+- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile"
+- Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
+- The IGNITE phase must remain fully rendered — never summarise or fade to black
+- Emotionally specific and physically present — never vague or generic`;
 
   const userPrompt = `Apply this variation to the story: "${instruction}"
 

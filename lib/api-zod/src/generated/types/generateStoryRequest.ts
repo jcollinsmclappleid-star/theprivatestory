@@ -21,4 +21,8 @@ export interface GenerateStoryRequest {
   dynamic?: string;
   ending?: string;
   setting?: string;
+  /** Story experience path: romance | slow_burn | passionate | forbidden | unrestrained */
+  storyMode?: string;
+  /** User-selected experience tags that shape the story's emotional register */
+  experienceTags?: string[];
 }

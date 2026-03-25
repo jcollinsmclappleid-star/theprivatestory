@@ -514,14 +514,23 @@ router.post("/generate-one-sync", async (req, res) => {
       const parts = extractStoryParts(rawStoryText);
       const partWords = parts.cleanText.split(/\s+/).filter(Boolean).length;
 
-      if (partWords >= MIN_WORDS || attempt === MAX_ATTEMPTS) {
+      if (partWords >= MIN_WORDS) {
         cleanStoryText = parts.cleanText;
         extractedDescription = parts.description;
         storyDna = parts.dna;
-        if (partWords < MIN_WORDS) {
-          console.error(`[seed] Warning: still under ${MIN_WORDS}w after ${MAX_ATTEMPTS} attempts (${partWords}w)`);
-        }
         break;
+      }
+
+      console.error(`[seed] attempt=${attempt} too short (${partWords}w < ${MIN_WORDS}w), retrying...`);
+
+      if (attempt === MAX_ATTEMPTS) {
+        console.error(`[seed] Hard fail: still under ${MIN_WORDS}w after ${MAX_ATTEMPTS} attempts (${partWords}w)`);
+        res.status(500).json({
+          error: `Story too short after ${MAX_ATTEMPTS} attempts`,
+          finalWords: partWords,
+          minRequired: MIN_WORDS,
+        });
+        return;
       }
     }
 

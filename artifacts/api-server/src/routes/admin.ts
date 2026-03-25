@@ -26,6 +26,133 @@ function getPublicAudioDir(): string {
   return dir;
 }
 
+// ── Robust story text extraction ────────────────────────────────────────────
+// GPT wraps the DNA in ```json ... ``` blocks preceded by **STORY DNA** headers.
+// This function strips all preamble/metadata and returns only the narrative prose.
+function extractStoryParts(rawText: string): {
+  cleanText: string;
+  description: string;
+  dna: Record<string, unknown>;
+} {
+  let dna: Record<string, unknown> = {};
+  let description = "";
+
+  // 1. Extract DNA from ```json ... ``` block
+  const codeFencedJson = rawText.match(/```json\s*([\s\S]*?)\s*```/i);
+  if (codeFencedJson) {
+    try {
+      dna = JSON.parse(codeFencedJson[1]);
+    } catch {
+      // Try the bare JSON fallback below
+    }
+  }
+
+  // 2. Bare JSON fallback — finds the first {...} block containing "category"
+  if (Object.keys(dna).length === 0) {
+    // Match a JSON object spanning multiple lines
+    const bareJson = rawText.match(/\{\s*"category"\s*:[\s\S]*?\n\}/m);
+    if (bareJson) {
+      try {
+        dna = JSON.parse(bareJson[0]);
+      } catch {
+        // DNA parse failed — continue without structured DNA
+      }
+    }
+  }
+
+  // 3. Extract [HOOK]...[/HOOK]
+  const hookMatch = rawText.match(/\[HOOK\]([\s\S]*?)\[\/HOOK\]/i);
+  if (hookMatch) {
+    description = hookMatch[1].trim();
+  }
+
+  // 4. Strip everything that is not narrative prose
+  let clean = rawText;
+
+  // Strip ```json ... ``` blocks (DNA)
+  clean = clean.replace(/```json[\s\S]*?```/gi, "");
+  // Strip any other code fences
+  clean = clean.replace(/```[\s\S]*?```/gi, "");
+  // Strip [HOOK] blocks
+  clean = clean.replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/gi, "");
+  // Strip **STORY DNA** and similar markdown section headers
+  clean = clean.replace(/\*{1,2}STORY DNA\*{1,2}[^\n]*/gi, "");
+  // Strip **FULL STORY:** / **[Story begins...]** / **[Generating DNA...]** headers
+  clean = clean.replace(/\*{1,2}\[?(?:FULL STORY|Story begins|Generating DNA)[^\n]*\*{1,2}[^\n]*/gi, "");
+  // Strip standalone **STORY TITLE: ...** lines
+  clean = clean.replace(/\*{1,2}STORY TITLE[^\n]*\*{1,2}[^\n]*/gi, "");
+  // Strip lines that are purely markdown bold headers (e.g. **Something:**)
+  clean = clean.replace(/^\s*\*{1,2}[A-Z][^*\n]{0,60}\*{1,2}\s*:?\s*$/gm, "");
+  // Strip "Understood. Generating..." or "Generating the STORY DNA first:" preambles
+  clean = clean.replace(/^[^\n]*(?:Generating|Understood)[^\n]*(?:DNA|story)[^\n]*/gim, "");
+  // Strip --- horizontal rules
+  clean = clean.replace(/^-{3,}\s*$/gm, "");
+  // Collapse excess blank lines
+  clean = clean.replace(/\n{3,}/g, "\n\n").trim();
+
+  return { cleanText: clean, description, dna };
+}
+
+// ── TTS: Split long text into ≤4096-char chunks, narrate each, concatenate ──
+// Splits on sentence boundaries so the narrator doesn't cut off mid-sentence.
+function splitIntoTtsChunks(text: string, maxChars = 4000): string[] {
+  const chunks: string[] = [];
+  let remaining = text.trim();
+
+  while (remaining.length > 0) {
+    if (remaining.length <= maxChars) {
+      chunks.push(remaining);
+      break;
+    }
+
+    // Try to split at a sentence end within the window
+    const window = remaining.slice(0, maxChars);
+    const lastBreak = Math.max(
+      window.lastIndexOf(". "),
+      window.lastIndexOf(".\n"),
+      window.lastIndexOf("! "),
+      window.lastIndexOf("?\n"),
+      window.lastIndexOf("? ")
+    );
+
+    const splitAt = lastBreak > maxChars * 0.5 ? lastBreak + 1 : maxChars;
+    chunks.push(remaining.slice(0, splitAt).trim());
+    remaining = remaining.slice(splitAt).trim();
+  }
+
+  return chunks;
+}
+
+// Prepare story text for TTS — strip all markdown formatting
+function prepareForTts(text: string): string {
+  return text
+    .replace(/^#{1,6}\s*/gm, "")  // Strip heading markers
+    .replace(/\*{1,3}([^*]+)\*{1,3}/g, "$1")  // Strip bold/italic, keep text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")   // Strip links, keep label
+    .replace(/^\s*[-*+]\s+/gm, "")            // Strip bullet points
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function generateFullAudio(text: string): Promise<Buffer> {
+  const prepared = prepareForTts(text);
+  const chunks = splitIntoTtsChunks(prepared, 4000);
+
+  const buffers: Buffer[] = [];
+  for (const chunk of chunks) {
+    const response = await openai.audio.speech.create({
+      model: "tts-1-hd",
+      voice: "nova",
+      input: chunk,
+      response_format: "mp3",
+      speed: 0.92,
+    });
+    buffers.push(Buffer.from(await response.arrayBuffer()));
+  }
+
+  return Buffer.concat(buffers);
+}
+
 // ---------------------------------------------------------------------------
 // GET /admin/categories — all non-custom subthemes for batch queue
 // ---------------------------------------------------------------------------
@@ -153,7 +280,7 @@ router.post("/generate-one", async (req, res) => {
     const storyCompletion = await openai.chat.completions.create({
       model: "gpt-4o",
       temperature: 0.9,
-      max_tokens: 4000,
+      max_tokens: 8000,
       messages: [
         { role: "system", content: systemWithTitle },
         { role: "user", content: prompt.user },
@@ -162,31 +289,12 @@ router.post("/generate-one", async (req, res) => {
 
     const rawStoryText = storyCompletion.choices[0]?.message?.content ?? "";
 
-    // Extract STORY DNA JSON block
-    let storyDna: Record<string, unknown> = {};
-    const dnaMatch = rawStoryText.match(/\{[^{}]*"category"[^{}]*\}/s);
-    if (dnaMatch) {
-      try {
-        storyDna = JSON.parse(dnaMatch[0]);
-      } catch {
-        // DNA parse failed — continue without structured DNA
-      }
-    }
+    // Extract DNA, description (HOOK), and clean story text
+    const { cleanText: cleanStoryText, description: extractedDescription, dna: storyDna } =
+      extractStoryParts(rawStoryText);
 
-    // Extract [HOOK]...[/HOOK] — becomes the description listeners see before pressing play
-    // Falls back to a category-specific teaser if GPT doesn't emit the block
-    let description = "";
-    const hookMatch = rawStoryText.match(/\[HOOK\]([\s\S]*?)\[\/HOOK\]/i);
-    if (hookMatch) {
-      description = hookMatch[1].trim();
-    } else {
-      description = `A ${categoryName.toLowerCase()} story. Press play.`;
-    }
-
-    // Strip the [HOOK] block from the story text used for TTS and read-along
-    const cleanStoryText = rawStoryText
-      .replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/i, "")
-      .trim();
+    // Fall back description if GPT didn't emit a [HOOK] block
+    const description = extractedDescription || `A ${categoryName.toLowerCase()} story. Press play.`;
 
     send("status", { phase: "story_written", title, description, dna: storyDna });
 
@@ -221,33 +329,19 @@ router.post("/generate-one", async (req, res) => {
       send("warning", { message: "Cover image failed, continuing without it" });
     }
 
-    // ── Step 3: Audio (TTS) ───────────────────────────────────────────────
+    // ── Step 3: Audio (TTS) — chunked for full-length stories ────────────
     send("status", { phase: "generating_audio", message: "Generating audio narration…" });
 
     let audioUrl = "";
     try {
-      const audioText = cleanStoryText
-        .replace(/\{[\s\S]*?\}/g, "")
-        .replace(/^#{1,6}.*/gm, "")
-        .replace(/\*+/g, "")
-        .trim()
-        .slice(0, 4096);
-
-      const speechResponse = await openai.audio.speech.create({
-        model: "tts-1-hd",
-        voice: "nova",
-        input: audioText,
-        response_format: "mp3",
-        speed: 0.92,
-      });
-
       const audioDir = getPublicAudioDir();
       const filename = `audio-${storyId}.mp3`;
-      const buffer = Buffer.from(await speechResponse.arrayBuffer());
-      fs.writeFileSync(path.join(audioDir, filename), buffer);
+
+      const audioBuffer = await generateFullAudio(cleanStoryText);
+      fs.writeFileSync(path.join(audioDir, filename), audioBuffer);
       audioUrl = `/api/audio/${filename}`;
-    } catch {
-      send("warning", { message: "Audio generation failed, continuing without it" });
+    } catch (err) {
+      send("warning", { message: `Audio generation failed: ${err instanceof Error ? err.message : "unknown error"}` });
     }
 
     // ── Step 4: Persist as draft ──────────────────────────────────────────

@@ -36,6 +36,119 @@ export interface StoryRegistryEntry {
   ending_mood: string;
   visual_motif: string;
   signature_object: string;
+  power_dynamic?: string;
+  voice_style?: string;
+  sensory_palette?: string;
+  romantic_arc?: string;
+  dialogue_density?: string;
+}
+
+// ── All available options for each forced DNA field ────────────────────────────
+const DNA_OPTIONS: Record<string, string[]> = {
+  power_dynamic: [
+    "balanced chemistry",
+    "soft dominance",
+    "teasing control",
+    "mutual restraint",
+    "emotionally guarded",
+    "confident pursuit",
+    "forbidden pull",
+    "delayed surrender",
+  ],
+  voice_style: [
+    "soft and luxurious",
+    "intense and breathless",
+    "emotionally restrained",
+    "playful and teasing",
+    "dark and magnetic",
+    "warm and aching",
+    "elegant and slow",
+  ],
+  pacing_style: [
+    "slow burn",
+    "immediate tension then slow build",
+    "emotionally heavy build",
+    "flirtation-heavy build",
+    "fast external action slow intimate payoff",
+    "reunion build with delayed release",
+  ],
+  emotional_engine: [
+    "longing",
+    "temptation",
+    "jealousy",
+    "curiosity",
+    "reunion ache",
+    "emotional surrender",
+    "first-time nervousness",
+    "obsession held in restraint",
+    "comfort turning dangerous",
+    "playful temptation",
+    "regret and return",
+    "one-night intensity",
+  ],
+  narrative_perspective: [
+    "second person (you)",
+    "close third person",
+    "alternating close perspective",
+  ],
+  sensory_palette: [
+    "rain and cold glass",
+    "silk and warm skin",
+    "candlelight and shadows",
+    "perfume and velvet",
+    "city lights and night air",
+    "salt air and bare feet",
+    "leather seats and low music",
+    "snow wool and warmth",
+    "marble champagne and quiet footsteps",
+    "coffee morning light and softness",
+  ],
+  romantic_arc: [
+    "temptation to surrender",
+    "reunion to reconnection",
+    "emotional walls to softness",
+    "flirtation to intimacy",
+    "distance to closeness",
+    "denial to confession",
+    "power tension to vulnerability",
+    "ache to release",
+  ],
+  dialogue_density: [
+    "minimal dialogue",
+    "moderate dialogue",
+    "dialogue-led chemistry",
+  ],
+};
+
+// ── Pick options that haven't been used in recent stories ─────────────────────
+function selectForcedDnaFields(registry: StoryRegistryEntry[]): Record<string, string> {
+  const recent = registry.slice(-5);
+  const forced: Record<string, string> = {};
+
+  for (const [field, options] of Object.entries(DNA_OPTIONS)) {
+    const recentlyUsed = new Set(
+      recent
+        .map((r) => r[field as keyof StoryRegistryEntry] as string | undefined)
+        .filter((v): v is string => !!v)
+    );
+
+    // Filter out recently used options; fall back to full list if all used
+    const available = options.filter((opt) => !recentlyUsed.has(opt));
+    const pool = available.length > 0 ? available : options;
+
+    // Weighted random — slightly prefer options not seen in last 10
+    const allRecent = new Set(
+      registry.slice(-10)
+        .map((r) => r[field as keyof StoryRegistryEntry] as string | undefined)
+        .filter((v): v is string => !!v)
+    );
+    const preferred = pool.filter((opt) => !allRecent.has(opt));
+    const finalPool = preferred.length > 0 ? preferred : pool;
+
+    forced[field] = finalPool[Math.floor(Math.random() * finalPool.length)];
+  }
+
+  return forced;
 }
 
 export function buildPrompt(
@@ -61,12 +174,39 @@ export function buildPrompt(
     ? buildSeriesLayer(options.episodeNumber, options.totalEpisodes ?? 3, options.seriesArc ?? "")
     : "";
 
+  // ── Force-rotate DNA fields based on what's been used recently ────────────
+  const forcedFields = selectForcedDnaFields(options.priorStoryRegistry ?? []);
+  const forcedFieldsBlock = `
+FORCED DNA FIELDS — you MUST use these exact values in the DNA block and throughout the story:
+${JSON.stringify(forcedFields, null, 2)}
+
+These are not suggestions. They are locked. The story must be built around them.
+If "narrative_perspective" is "close third person", refer to the protagonist as "she" throughout.
+If "narrative_perspective" is "alternating close perspective", begin in third person then shift to second person at the CRACK moment.
+`;
+
+  // ── Registry context for anti-repetition ─────────────────────────────────
   const registryContext = options.priorStoryRegistry?.length
-    ? `\n\nPRIOR STORY REGISTRY (avoid repeating these combinations):\n${JSON.stringify(options.priorStoryRegistry, null, 2)}`
+    ? `\nPRIOR STORY REGISTRY (never reuse setting_type, emotional_engine+relationship_dynamic combos, or ending_mood from these):\n${JSON.stringify(
+        options.priorStoryRegistry.map((r) => ({
+          setting_type: r.setting_type,
+          relationship_dynamic: r.relationship_dynamic,
+          emotional_engine: r.emotional_engine,
+          ending_mood: r.ending_mood,
+          voice_style: r.voice_style,
+          power_dynamic: r.power_dynamic,
+          sensory_palette: r.sensory_palette,
+          narrative_perspective: r.narrative_perspective,
+        })),
+        null,
+        2
+      )}`
     : "";
 
-  const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}\n\n${STORY_DNA_INSTRUCTION}${registryContext}`;
-  const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}`;
+  const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}`;
+  const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
+
+REMINDER: Write at least 2,000 words of story text. Do not stop early. Complete all five structural phases fully.`;
 
   return {
     system,

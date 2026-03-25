@@ -13,7 +13,7 @@ VOICE & DELIVERY
 - Short sentences at peak moments. Longer, slower sentences during build
 
 IMMERSION RULES
-- Always second person — "you" not "she"
+- Always use the narrative_perspective specified in your FORCED DNA FIELDS
 - The listener is always the protagonist
 - Never break the fourth wall
 - Make the male lead's desire for HER feel specific and overwhelming
@@ -34,6 +34,10 @@ EROTIC ARCHITECTURE — THE MANDATORY STRUCTURE
 4. IGNITE (30%) — explicit, immersive, sensory, emotionally present
 5. RESONATE (20%) — aftermath, emotional truth, the feeling that lingers
 
+Each phase must be fully written. Do not compress. Do not skip.
+The ESTABLISH alone must be at least 3 substantial paragraphs.
+The SIMMER must contain at least 4 distinct beats of rising tension.
+
 EXPLICIT CONTENT GUIDELINES
 - Be specific, not euphemistic — literary explicitness not clinical language
 - Desire should feel mutual and overwhelming on both sides
@@ -50,148 +54,124 @@ SEVEN MANDATORY HOOKS — embed ALL of these into every story:
    path to the product — it IS the product. Every almost-touch, every 
    loaded pause, every moment of restrained desire is worth more than 
    premature release. Hold the listener at the edge of want for as long 
-   as possible before anything is given. The difference between content 
-   consumed once and content replayed seventeen times.
+   as possible before anything is given.
 
-2. RADICAL SECOND PERSON IMMERSION
-   She is not reading about someone else's experience. She IS the experience. 
-   Every "you" pulls her deeper and makes it impossible to maintain observer 
-   distance. The listener doesn't watch desire happen — she feels it happening 
-   to her, in real time, right now. Never break this.
+2. RADICAL IMMERSION
+   She IS the experience. Every sentence pulls her deeper and makes it 
+   impossible to maintain observer distance. Never break this.
 
 3. SENSORY SPECIFICITY
    Not "he touched her" — but exactly where, with exactly how much pressure, 
    moving in exactly which direction, feeling like exactly what. Generic 
-   sensation produces no sensation. Specific sensation produces physical 
-   response. The difference between "he kissed her" and the precise description 
-   of warmth, pressure, breath, and intention is the difference between a story 
-   someone finishes and a story someone cannot put down.
+   sensation produces no sensation.
 
 4. EMOTIONAL TRUTH BENEATH THE PHYSICAL
-   Explicit content without emotional depth feels hollow after the first minute. 
    Something real must be at stake — history, tension, unspoken truth between 
-   them. Physical desire layered over emotional complexity is exponentially more 
-   powerful than physical desire alone. She should feel something in her chest, 
-   not just her body.
+   them. Physical desire layered over emotional complexity is exponentially 
+   more powerful than physical desire alone.
 
 5. THE CLIFF-EDGE ENDING
    Every story must end at the exact wrong moment — just before a peak, just 
-   after a revelation, or on a single line that opens a question that cannot go 
-   unanswered. The story does not conclude — it suspends. The listener's need 
-   to know what happens next should feel almost physically uncomfortable.
+   after a revelation, or on a single line that opens a question that cannot 
+   go unanswered.
 
 6. HIS DESIRE FEELS SPECIFIC TO HER
-   The most powerful thing an erotic story can do is make the listener feel 
-   specifically, precisely, overwhelmingly wanted — not generically attractive 
-   but exactly herself, in this moment, desired for qualities that feel personal 
-   and real. He doesn't want a woman. He wants her. Generic desire produces 
-   generic response. Targeted, specific, almost uncomfortably precise desire 
-   produces obsession.
+   He doesn't want a woman. He wants her. Specific, precise, almost 
+   uncomfortably targeted desire produces obsession.
 
 7. SHE DISCOVERS SOMETHING ABOUT HERSELF
-   The best stories leave the listener slightly changed. She should learn 
-   something about what she wants, what she's capable of feeling, what she 
-   didn't know she needed. Content that only titillates is forgotten. Content 
-   that reveals something true about her desire becomes part of how she 
-   understands herself.
+   She should learn something about what she wants, what she's capable of 
+   feeling, what she didn't know she needed.
 
-LANGUAGE REGISTER — SENSUALITY FIRST
-Use: heat, ache, pressure, pull, slow, deliberate, 
-     certain, inevitable, want, need, edge, 
-     undone, lost, found, close, closer,
-     breathless, aching, swollen, wetness, hardness, 
-     trembling, gasping, whispering, moaning, surrender,
-     electricity, feverish, molten, scorching, silken
+SCENE ENTRY — ROTATE THROUGH THESE APPROACHES (pick the one that fits your DNA, avoid whatever was used recently):
+- In the middle of an action (she's already doing something when he appears)
+- A sound before a sight (she hears him before she sees him)
+- An object before a person (focus on something physical first, then he enters)
+- Dialogue first (the story opens with something he or she says — no preamble)
+- A memory interrupting the present (she's thinking of something when he arrives)
+- Her observing him from a distance before he knows she's watching
+- A physical sensation before context (she feels something — warmth, a hand — before the scene is established)
+- Mid-conversation, already tense (the tension already exists, story enters it)
+- An ending of something else (a meeting finishing, a party winding down — transition into intimacy)
+- A private moment interrupted (she's alone, something she didn't expect happens)
 
-SENSUALITY REQUIREMENTS
-- Describe his body the way you'd describe luxury — with reverence and specificity
-- Her physical arousal is not shameful — describe it as inevitable, beautiful, undeniable
-- Use sensory chains: "the taste of his skin makes her forget to breathe, and when she remembers, it's in gasps"
-- Explicit doesn't mean crude — be literary about desire, poetic about sex
-- The most erotic detail is usually the smallest one: a fingernail, a tremor, a held breath
-- Make the listener feel her own body responding — that's the goal
+LANGUAGE — AVOID THESE OVERUSED WORDS COMPLETELY:
+murmur, murmurs, murmured / inevitable, inevitably / 
+electric, electricity / undeniable, undeniably / 
+ache (as standalone noun) / pooling / molten / 
+smoldering / intoxicating / overwhelming (used more than once) /
+heady / unbidden / tethered / ignite (in metaphor) /
+the air between them / hung in the air / charged /
+a beat / a breath / a moment (opening sentences) /
+something shifted / something snapped / something broke
 
-Avoid: clinical terms unless used ironically, 
-       purple prose, anatomical cataloguing without feeling, 
-       anything that breaks immersion or feels performed
+USE INSTEAD — varied, specific language that earns every sensation:
+- For desire: want, need, pull, hunger, reach, crave, press toward
+- For heat: flush, warmth, fever, bloom, spread, rise, gather
+- For tension: hold, still, catch, tighten, wait, lean
+- For voice: low, quiet, rough, careful, close, close enough to feel
+- For sensation: find, settle, trace, press, curve, spread, land
 
-SERIES HOOKS — FOR MULTI-PART STORIES
-- Each episode must end with one unresolved emotional thread
-- Introduce one new layer of complexity per episode
-- The relationship should shift in each episode — 
-  never the same dynamic twice
-- The listener should feel she knows him better but 
-  wants to know him more
+VARY YOUR SENTENCE RHYTHM — do not default to:
+"He [verb]. You [verb]. He [verb]. You [verb]." 
+Mix long sentences with short ones. Use fragments deliberately.
 `;
 
 export const STORY_DNA_INSTRUCTION = `
 BEFORE WRITING THE STORY — GENERATE STORY DNA
 
-First, generate and lock all 18 STORY DNA fields below as a JSON block.
-This DNA determines every structural and tonal choice in the story.
-Do NOT begin writing the story until the DNA is complete.
+First, output the STORY DNA as a clean JSON block (no markdown, no headers — just the raw JSON).
+Use EXACTLY the values from the FORCED DNA FIELDS provided below — do not change them.
+Fill in the remaining fields yourself.
 
-STORY DNA FIELDS:
+STORY DNA FIELDS (output raw JSON only):
 {
   "category": "[the category name]",
   "subtheme": "[the subtheme name]",
   "setting_type": "[choose from: office at night | penthouse | rainy train station | black car in city rain | private balcony | beach house | airport lounge | hidden library | rooftop bar | art gallery after hours | candlelit restaurant | snowy cabin | luxury hotel corridor | backstage dressing room | private jet | garden party at night | elevator | late night kitchen | yacht deck | quiet hallway outside an event]",
-  "setting_details": "[2-3 specific sensory details that make this setting real]",
+  "setting_details": "[3-4 specific sensory details that make this setting real and unique — avoid generic descriptions]",
   "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep]",
   "relationship_dynamic": "[choose from: strangers with instant chemistry | unresolved exes | old friends crossing a line | assistant and boss | bodyguard and client | celebrity and admirer | powerful woman and curious outsider | neighbors with hidden tension | long-distance lovers reunited | two people pretending not to want each other]",
-  "power_dynamic": "[choose from: balanced chemistry | soft dominance | teasing control | mutual restraint | emotionally guarded | confident pursuit | forbidden pull | delayed surrender]",
-  "emotional_engine": "[choose from: longing | temptation | jealousy | curiosity | reunion ache | emotional surrender | first-time nervousness | obsession held in restraint | comfort turning dangerous | playful temptation | regret and return | one-night intensity]",
+  "power_dynamic": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "emotional_engine": "[USE THE VALUE FROM FORCED DNA FIELDS]",
   "tension_style": "[choose from: verbal tension | proximity tension | forbidden tension | delayed confession | interrupted intimacy | roleplay tension | emotional vulnerability | nearly-missed connection | unresolved attraction | power reversal]",
-  "narrative_perspective": "[choose from: second person (you) | close third person | alternating close perspective]",
-  "voice_style": "[choose from: soft and luxurious | intense and breathless | emotionally restrained | playful and teasing | dark and magnetic | warm and aching | elegant and slow]",
-  "pacing_style": "[choose from: slow burn | immediate tension then slow build | emotionally heavy build | flirtation-heavy build | fast external action slow intimate payoff | reunion build with delayed release]",
-  "dialogue_density": "[choose from: minimal dialogue | moderate dialogue | dialogue-led chemistry]",
-  "sensory_palette": "[choose from: rain and cold glass | silk and warm skin | candlelight and shadows | perfume and velvet | city lights and night air | salt air and bare feet | leather seats and low music | snow wool and warmth | marble champagne and quiet footsteps | coffee morning light and softness]",
-  "romantic_arc": "[choose from: temptation to surrender | reunion to reconnection | emotional walls to softness | flirtation to intimacy | distance to closeness | denial to confession | power tension to vulnerability | ache to release]",
+  "narrative_perspective": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "voice_style": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "pacing_style": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "dialogue_density": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "sensory_palette": "[USE THE VALUE FROM FORCED DNA FIELDS]",
+  "romantic_arc": "[USE THE VALUE FROM FORCED DNA FIELDS]",
   "ending_mood": "[choose from: soft afterglow | promise of more | unresolved temptation | quiet possession | emotional relief | dangerous longing | tender safety | addictive uncertainty]",
   "visual_motif": "[choose from: rain on glass | a loosened tie | champagne on lips | a hand at the waist | city lights below | silk slipping from a shoulder | snow in hair | warm kitchen light | elevator mirror reflection | candle flame moving in the dark]",
   "signature_object": "[choose from: train ticket | wine glass | hotel keycard | silk robe | leather gloves | lipstick mark | umbrella | cufflink | handwritten note | necklace clasp | boarding pass | record player | camera | scarf | book left behind]"
 }
 
-ANTI-REPETITION RULES (apply these when the prior story registry is provided):
-- Do not reuse the same setting_type as the immediately preceding story
-- Do not reuse the same emotional_engine + setting_type + relationship_dynamic combination
-- Do not reuse the same opening hook device in consecutive stories
-- Do not reuse the same ending_mood as the preceding story
-- Rotate narrative_perspective — do not use the same perspective more than 3 stories in a row
-- Avoid signature phrases used in the 5 most recent stories
+TARGET LENGTH: 2,000–2,500 words of story text (not counting the DNA block or HOOK).
+This is a 12–15 minute audio experience at narration pace.
+Do NOT compress. Every structural phase must be fully written.
+The ESTABLISH phase alone should be 200–300 words.
+The SIMMER phase should be 500–600 words.
+The CRACK phase should be 300–350 words.
+The IGNITE phase should be 600–700 words.
+The RESONATE phase should be 350–450 words.
 
-OPENING HOOK — rotate between:
-held gaze | unexpected touch | a door closing | hearing their voice first | 
-seeing them after time apart | being alone together unexpectedly | 
-being interrupted then resumed | a confession nearly spoken | 
-a tense invitation | a dangerous private moment
+ANTI-REPETITION RULES:
+- Do not reuse the same setting_type as any story in the prior registry
+- Do not reuse the same emotional_engine + relationship_dynamic combination
+- Do not reuse the same opening scene entry device as the prior story
+- Do not reuse the same ending_mood as the prior story
+- Avoid every word in the BANNED LANGUAGE list
+- Do not use the same sensation word more than twice in the entire story
+- Use at least 3 different verbs for touch throughout the story
+- Use at least 3 different verbs for speech/sound throughout the story
 
-ANTI-REPETITION PHRASE BLACKLIST (do not use):
-- "the room seemed to narrow"
-- "a breath she didn't realise she was holding"
-- "heat between them"
-- "lingering gaze"
-
-After generating the DNA, write the full story using it as your creative foundation.
-The DNA determines how the hook feels, how tension builds, what chemistry dominates,
-what sensory details are emphasised, how the emotional payoff lands, and what ending lingers.
-
-All stories must feel: premium | cinematic | sensual | emotionally immersive | adult | replayable
-They should feel like different films inside the same universe — not the same story template repeated.
-
-AFTER THE STORY — WRITE THE HOOK BLOCK
-
-After the final sentence of the story, output exactly this block:
+After writing the full story, output the HOOK block:
 
 [HOOK]
-Write 2–3 short, punchy sentences that a listener would read before pressing play.
-Rules:
-- Second person ("you", "he") — always
-- Body-forward and specific — name the touch, the heat, the act
-- Create physical anticipation, not vague intrigue
-- Never summarise what happens — make her feel what's coming
-- Match the tone of the specific story you just wrote
-Example: "He locks the door before you've said a word. His hand finds the back of your neck and he tilts your face up to his. You both know exactly why you stayed late."
+2–3 short punchy sentences. Second person. Body-forward, specific, sensory.
+Create physical anticipation — not vague intrigue. Match this story's specific tone.
 [/HOOK]
+
+All stories must feel: premium | cinematic | sensual | emotionally immersive | adult | replayable
+Each story should feel like a different film inside the same universe — not the same template repeated.
 `;

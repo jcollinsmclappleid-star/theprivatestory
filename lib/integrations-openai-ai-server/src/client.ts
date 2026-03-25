@@ -1,18 +1,20 @@
 import OpenAI from "openai";
 
-if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
+const userApiKey = process.env.OPENAI_API_KEY;
+const replitApiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+const replitBaseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
+
+if (!userApiKey && !replitApiKey) {
   throw new Error(
-    "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?",
+    "No OpenAI API key found. Set OPENAI_API_KEY in Secrets.",
   );
 }
 
-if (!process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
-  throw new Error(
-    "AI_INTEGRATIONS_OPENAI_API_KEY must be set. Did you forget to provision the OpenAI AI integration?",
-  );
-}
-
-export const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+export const openai = userApiKey
+  ? new OpenAI({
+      apiKey: userApiKey,
+    })
+  : new OpenAI({
+      apiKey: replitApiKey,
+      baseURL: replitBaseUrl,
+    });

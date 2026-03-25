@@ -1163,7 +1163,7 @@ router.post("/generate-full-story", async (req, res) => {
     }
   }
 
-  const TIMEOUT_MS = 150_000;
+  const TIMEOUT_MS = 300_000; // 5 minutes for full pipeline (plan + write + images)
 
   const pipeline = async () => {
     // Step 3: Plan
@@ -1253,7 +1253,7 @@ router.post("/generate-full-story", async (req, res) => {
   };
 
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Generation timed out after 150 seconds")), TIMEOUT_MS)
+    setTimeout(() => reject(new Error("Generation timed out after 300 seconds")), TIMEOUT_MS)
   );
 
   try {
@@ -1312,7 +1312,7 @@ router.post("/generate-variation", async (req, res) => {
 
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
 
-  const TIMEOUT_MS = 150_000;
+  const TIMEOUT_MS = 300_000; // 5 minutes for variation pipeline
 
   const pipeline = async () => {
     const variedStory = await rewriteStoryAsVariation(brief, originalStory, variation_type);
@@ -1378,7 +1378,7 @@ router.post("/continue-story", async (req, res) => {
 
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
 
-  const TIMEOUT_MS = 150_000;
+  const TIMEOUT_MS = 300_000; // 5 minutes for continuation pipeline
 
   const pipeline = async () => {
     const continuation = await writeStoryContinuation(brief, originalStory, continuation_mode);

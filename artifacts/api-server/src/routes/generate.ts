@@ -26,6 +26,10 @@ interface GenerateStoryRequest {
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
   bypassCache?: boolean;
+  whoIsHe?: string;
+  dynamic?: string;
+  ending?: string;
+  setting?: string;
 }
 
 interface ScenePlan {
@@ -146,9 +150,19 @@ const voiceMap: Record<string, "nova" | "onyx" | "shimmer" | "echo"> = {
 // ---------------------------------------------------------------------------
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
-const VALID_INTENSITIES = ["Soft", "Warm", "Magnetic"];
+const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
 const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
 const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
+
+function buildCustomIntensityGuidance(intensity: string): string {
+  const map: Record<string, string> = {
+    Tender: `CONTENT LEVEL — TENDER: Focus on emotional tension, longing, and almost-touch. Physical content is poetic and implied. The body is present but desire is expressed through restraint, proximity, and anticipation rather than explicit description.`,
+    Heated: `CONTENT LEVEL — HEATED: Desire should feel physically real and building. Describe physical awareness, warmth, closeness, and kisses with heat and specificity. The most intimate moments have clear physical presence — touching, holding, wanting — and are written with genuine heat without clinical detail.`,
+    Explicit: `CONTENT LEVEL — EXPLICIT: This story requires fully explicit adult content. Name anatomy. Describe physical acts as they happen. Do not fade to black or summarise intimate moments — describe them in full. His desire and hers must both be rendered specifically and physically. Stay present through intimate scenes from first moment to last.`,
+    Scorching: `CONTENT LEVEL — SCORCHING: Maximum explicit adult content. No qualifier. No restraint. Name anatomy directly. Name acts directly. Describe penetration, movement, friction, sensation as they occur. His arousal and hers must be described explicitly throughout. The story must be viscerally, physically arousing from its first scene to its last. Nothing euphemistic. Nothing implied where it can be named.`,
+  };
+  return map[intensity] ?? map["Heated"];
+}
 
 // ---------------------------------------------------------------------------
 // Directory helpers
@@ -172,7 +186,7 @@ function getPublicAudioDir(): string {
 
 function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
-  const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Warm";
+  const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Heated";
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
 
@@ -196,6 +210,10 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     scenarioPrompt,
     cinematicVisuals: raw.cinematicVisuals ?? true,
     emotionalFocus: raw.emotionalFocus ?? false,
+    whoIsHe: raw.whoIsHe?.trim() || undefined,
+    dynamic: raw.dynamic?.trim() || undefined,
+    ending: raw.ending?.trim() || undefined,
+    setting: raw.setting?.trim() || undefined,
   };
 }
 
@@ -269,6 +287,8 @@ Return only structured JSON — no markdown, no explanation.
 
 ${STORY_BIBLE}`;
 
+  const intensityGuidance = buildCustomIntensityGuidance(intake.intensity);
+
   const userPrompt = `Take this user input and turn it into a hidden internal story brief.
 
 User Input:
@@ -277,15 +297,21 @@ User Input:
 - Intensity: ${intake.intensity}
 - Length: ${intake.storyLength}
 - Scenario: ${intake.scenarioPrompt || "(none given — infer the most compelling setup)"}
+- Setting Preference: ${intake.setting || "(not specified — choose based on scenario)"}
+- Who He Is: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}
+- Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}
+- Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
 - Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}
 
+${intensityGuidance}
+
 You must infer and return:
 - emotional_arc (from the variety pools above — choose intelligently)
-- relationship_dynamic (from the variety pools above)
+- relationship_dynamic (from the variety pools above — honour "Who He Is" and "Power Dynamic" if specified)
 - conflict_type (from the variety pools above)
 - pacing_style
-- ending_type (from the variety pools above)
+- ending_type (from the variety pools above — honour "Preferred Ending" if specified)
 - sensory_palette (from the variety pools above)
 - point_of_view
 - voice_tone
@@ -299,8 +325,8 @@ You must infer and return:
 
 Rules:
 - The story must feel intimate, cinematic, emotionally immersive, and adult in tone.
-- Sensual is allowed, but do NOT make it explicit.
-- Prioritise emotional tension, atmosphere, vulnerability, and anticipation.
+- Honour the intensity level directive above — it determines how explicit the final story will be.
+- Prioritise specificity over abstraction: name the setting, name the dynamic, name the feeling.
 - Avoid generic plots and clichés.
 - Ensure the story has depth even if the user input is simple.
 - The story should feel like it is happening to the listener.
@@ -347,10 +373,13 @@ Return JSON in exactly this shape:
   return JSON.parse(cleaned) as StoryBrief;
 }
 
-async function writeStoryFromBrief(brief: StoryBrief, listenerName: string): Promise<WrittenStory> {
+async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated"): Promise<WrittenStory> {
+  const intensityGuidance = buildCustomIntensityGuidance(intensity);
+
   const systemPrompt = `You are writing premium, immersive audio stories for a consumer storytelling product.
-The story must feel emotionally deep, cinematic, sensual but not explicit, and designed for voice narration.
-Write with control, atmosphere, subtext, and elegance.`;
+The story must feel emotionally deep, cinematic, and designed for voice narration.
+Write with control, atmosphere, subtext, and elegance.
+${intensityGuidance}`;
 
   const userPrompt = `Using the internal story brief below, write the final story.
 
@@ -373,7 +402,7 @@ Requirements:
 - The ending should feel: ${brief.ending_type}
 - Keep it emotionally rich, not generic
 - Avoid clichés and rushed pacing
-- Avoid explicit sexual detail
+- Honour the intensity level in the system prompt — this determines how explicit each intimate scene must be
 - Ideal for intimate voice narration — use pauses, ellipsis, short sentences for breath
 
 Return JSON only in this exact format — no markdown, no explanation:
@@ -967,7 +996,7 @@ router.post("/plan-story", async (req, res) => {
 });
 
 router.post("/generate-story", async (req, res) => {
-  const { brief, listenerName } = req.body as { brief: StoryBrief; listenerName?: string };
+  const { brief, listenerName, intensity } = req.body as { brief: StoryBrief; listenerName?: string; intensity?: string };
   const cacheKey = getCacheKey({ brief, listenerName });
 
   if (storyCache.has(cacheKey)) {
@@ -976,7 +1005,7 @@ router.post("/generate-story", async (req, res) => {
   }
 
   try {
-    const story = await writeStoryFromBrief(brief, listenerName ?? "");
+    const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated");
     storyCache.set(cacheKey, story);
     res.json(story);
   } catch (err) {
@@ -1118,7 +1147,7 @@ router.post("/generate-full-story", async (req, res) => {
     briefCache.set(planKey, brief);
 
     // Step 4: Write story
-    let story = await writeStoryFromBrief(brief, intake.listenerName);
+    let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity);
 
     // Step 5: QC evaluation
     let qcResult = await qcStory(brief, story);
@@ -1137,7 +1166,7 @@ router.post("/generate-full-story", async (req, res) => {
       if (needsRegenerate) {
         // Full regeneration: fresh plan + fresh write from scratch
         brief = await planStory(intake);
-        story = await writeStoryFromBrief(brief, intake.listenerName);
+        story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity);
       } else {
         // Targeted rewrite of the weakest dimension only
         story = await rewriteStory(brief, story, qcResult.rewrite_strategy!);

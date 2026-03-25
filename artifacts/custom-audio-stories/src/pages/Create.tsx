@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -17,24 +17,124 @@ const formSchema = z.object({
   intensity: z.string(),
   voiceFeel: z.string(),
   storyLength: z.string(),
-  scenarioPrompt: z.string().min(5, "Please provide a brief prompt"),
+  scenarioPrompt: z.string().min(5, "Please describe a scenario"),
   cinematicVisuals: z.boolean(),
   emotionalFocus: z.boolean(),
+  whoIsHe: z.string().optional().default(""),
+  dynamic: z.string().optional().default(""),
+  ending: z.string().optional().default(""),
+  setting: z.string().optional().default(""),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 const MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
-const INTENSITIES = ["Soft", "Warm", "Magnetic"];
+
+const INTENSITIES = [
+  { id: "Tender", label: "Tender", desc: "Emotional, slow burn, almost-touch" },
+  { id: "Heated", label: "Heated", desc: "Desire building, physical presence" },
+  { id: "Explicit", label: "Explicit", desc: "Fully rendered, nothing held back" },
+  { id: "Scorching", label: "Scorching", desc: "Maximum intensity, no restraint" },
+];
+
+const WHO_IS_HE_OPTIONS = [
+  "A stranger I'll never see again",
+  "Someone I've wanted for a long time",
+  "My ex",
+  "Someone I shouldn't want",
+  "My boss",
+  "A bodyguard with orders not to touch me",
+  "An old friend who finally says it",
+  "Someone who wants only me",
+];
+
+const DYNAMIC_OPTIONS = [
+  "He pursues, I decide",
+  "I take what I want",
+  "Equal desire, equal intensity",
+  "He's completely in control",
+  "I'm completely in control",
+];
+
+const ENDING_OPTIONS = [
+  "Left wanting more",
+  "Fully satisfied",
+  "Tender afterglow",
+  "Unresolved and open",
+];
+
 const VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
 const LENGTHS = ["3 min", "5 min", "10 min"];
 
-const SAMPLE_PROMPTS = [
-  "A rainy evening in a Tokyo hotel room, waiting for a knock at the door.",
-  "A late night drive through empty city streets, the radio low, the air between you electric.",
-  "A stolen weekend at a coastal cottage, two people who shouldn't be here.",
-  "A chance reunion at a rooftop bar, someone you thought you'd never see again.",
-  "An overnight train through mountains, a stranger in the seat across from you.",
+const SCENARIO_GROUPS = [
+  {
+    heading: "Settings & Places",
+    items: [
+      "A Tokyo hotel room, midnight, rain on the window",
+      "A private members' club in Mayfair, after hours",
+      "The last carriage of a night train through the Alps",
+      "A borrowed beach house in January, nobody else for miles",
+      "A rooftop apartment in Paris at 2am",
+      "A Chateau Marmont suite, West Hollywood, past midnight",
+      "A late-night raw bar in lower Manhattan",
+      "A flooded piazza in Venice in November",
+      "A glass-walled apartment in Singapore, city lights below",
+      "A hillside villa terrace above Positano at dusk",
+      "A boutique hotel in Marrakech, the city noise below",
+      "A private charter cabin on a transatlantic flight",
+    ],
+  },
+  {
+    heading: "Who He Is",
+    items: [
+      "Your ex, here without warning or explanation",
+      "Your boss who has been watching you for weeks",
+      "A stranger on a flight you almost missed",
+      "Someone you were specifically warned about",
+      "A bodyguard with strict orders not to touch you",
+      "An old friend who finally says what he means",
+      "Someone who makes you want things you don't say aloud",
+      "A man who has known you longer than you've known yourself",
+      "Someone famous who has no business looking at you like that",
+    ],
+  },
+  {
+    heading: "The Situation",
+    items: [
+      "One last night before everything changes between you",
+      "You've been pretending not to want each other for months",
+      "Weeks of messages and this is the first time you've actually met",
+      "You walked into the wrong room, and he was already in it",
+      "A work trip that became something neither of you planned",
+      "A dare that went further than either of you intended",
+      "A reunion that was supposed to be simple and uncomplicated",
+      "Stuck together by circumstance with nowhere else to go",
+    ],
+  },
+  {
+    heading: "The Tension",
+    items: [
+      "Something between you that should be forbidden",
+      "He has a specific kind of power over you and both of you know it",
+      "Years of unfinished business, one night to settle it",
+      "He knows exactly what you want and is making you wait",
+      "A secret you've both been keeping about how you feel",
+      "He's seen something in you that no one else has noticed",
+      "A boundary that has been bending for months",
+    ],
+  },
+  {
+    heading: "The Feeling",
+    items: [
+      "Being completely undone by someone who knows how",
+      "Feeling safe enough to want what you actually want",
+      "The specific pleasure of giving in, completely",
+      "Being wanted without any reservation or condition",
+      "The surrender of being truly seen by someone",
+      "Being the only thing he is thinking about",
+      "A boundary you didn't know you had, slowly dissolving",
+    ],
+  },
 ];
 
 const LOADING_PHASES = [
@@ -63,6 +163,60 @@ const CONTINUATION_OPTIONS = [
   { id: "softer_continuation", label: "Softer continuation", description: "Move to a quieter, more intimate register." },
   { id: "unresolved_continuation", label: "Lingering continuation", description: "More unresolved. Even more charged." },
 ];
+
+function ScenarioDropdown({ onSelect }: { onSelect: (text: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    if (open) document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative mt-3">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1.5 text-xs text-primary/80 hover:text-primary transition-colors font-medium"
+      >
+        <Shuffle className="w-3.5 h-3.5" />
+        Browse inspiration
+      </button>
+      {open && (
+        <div className="absolute z-30 left-0 right-0 mt-2 max-h-96 overflow-y-auto rounded-2xl border border-border/60 bg-background/98 backdrop-blur-sm shadow-2xl">
+          <div className="p-4 space-y-5">
+            {SCENARIO_GROUPS.map((group) => (
+              <div key={group.heading}>
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2 px-1">
+                  {group.heading}
+                </p>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => {
+                        onSelect(item);
+                        setOpen(false);
+                      }}
+                      className="w-full text-left text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 px-3 py-2 rounded-xl transition-colors leading-snug"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function OptionCard<T extends string>({
   option,
@@ -258,12 +412,16 @@ export default function Create() {
     defaultValues: {
       listenerName: "",
       mood: "Slow Burn",
-      intensity: "Warm",
+      intensity: "Heated",
       voiceFeel: "Soft Voice",
       storyLength: "5 min",
       scenarioPrompt: "",
       cinematicVisuals: true,
       emotionalFocus: false,
+      whoIsHe: "",
+      dynamic: "",
+      ending: "",
+      setting: "",
     },
   });
 
@@ -282,6 +440,10 @@ export default function Create() {
           scenarioPrompt: data.scenarioPrompt,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
+          whoIsHe: data.whoIsHe || undefined,
+          dynamic: data.dynamic || undefined,
+          ending: data.ending || undefined,
+          setting: data.setting || undefined,
         },
       });
     } finally {
@@ -303,6 +465,32 @@ export default function Create() {
       <button
         type="button"
         onClick={() => form.setValue(field, value as never)}
+        className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+          isSelected
+            ? "bg-primary text-primary-foreground border-primary shadow-glow"
+            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+        }`}
+      >
+        {label}
+      </button>
+    );
+  };
+
+  const OptionalPill = ({
+    label,
+    field,
+    value,
+  }: {
+    label: string;
+    field: keyof FormData;
+    value: string;
+  }) => {
+    const current = form.watch(field) as string;
+    const isSelected = current === value;
+    return (
+      <button
+        type="button"
+        onClick={() => form.setValue(field, (isSelected ? "" : value) as never)}
         className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
           isSelected
             ? "bg-primary text-primary-foreground border-primary shadow-glow"
@@ -369,7 +557,9 @@ export default function Create() {
               <p className="text-muted-foreground">Set the emotional tone and let us craft something intimate and personal.</p>
             </div>
 
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+              {/* Your Name */}
               <div className="glass-panel rounded-2xl p-6">
                 <label className="block text-sm font-medium text-foreground mb-3">
                   Your Name <span className="text-muted-foreground font-normal">(optional)</span>
@@ -381,6 +571,55 @@ export default function Create() {
                 />
               </div>
 
+              {/* Your Scenario */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-3">Your Scenario</label>
+                <textarea
+                  {...form.register("scenarioPrompt")}
+                  rows={4}
+                  placeholder="Describe a setting, a feeling, or a situation…"
+                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                />
+                {form.formState.errors.scenarioPrompt && (
+                  <p className="text-xs text-red-400 mt-1">{form.formState.errors.scenarioPrompt.message}</p>
+                )}
+                <ScenarioDropdown onSelect={(text) => form.setValue("scenarioPrompt", text)} />
+
+                <div className="mt-5 pt-5 border-t border-border/20">
+                  <label className="block text-xs font-medium text-muted-foreground mb-2">
+                    Where does it take place? <span className="text-muted-foreground/60 font-normal">(optional)</span>
+                  </label>
+                  <input
+                    {...form.register("setting")}
+                    placeholder="e.g. Tokyo, Paris, a private yacht…"
+                    className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Who is He? */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-1">Who is He?</label>
+                <p className="text-xs text-muted-foreground mb-4">Optional — tap to select, tap again to clear</p>
+                <div className="flex flex-wrap gap-2">
+                  {WHO_IS_HE_OPTIONS.map((opt) => (
+                    <OptionalPill key={opt} label={opt} field="whoIsHe" value={opt} />
+                  ))}
+                </div>
+              </div>
+
+              {/* The Dynamic */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-1">The Dynamic</label>
+                <p className="text-xs text-muted-foreground mb-4">Optional — how does the power sit between you?</p>
+                <div className="flex flex-wrap gap-2">
+                  {DYNAMIC_OPTIONS.map((opt) => (
+                    <OptionalPill key={opt} label={opt} field="dynamic" value={opt} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Mood */}
               <div className="glass-panel rounded-2xl p-6">
                 <label className="block text-sm font-medium text-foreground mb-4">Mood</label>
                 <div className="flex flex-wrap gap-2">
@@ -390,15 +629,46 @@ export default function Create() {
                 </div>
               </div>
 
-              <div className="glass-panel rounded-2xl p-6 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">Intensity</label>
-                  <div className="flex gap-2">
-                    {INTENSITIES.map((i) => (
-                      <OptionPill key={i} label={i} field="intensity" value={i} />
-                    ))}
-                  </div>
+              {/* Intensity */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-4">Intensity</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {INTENSITIES.map((item) => {
+                    const isSelected = form.watch("intensity") === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => form.setValue("intensity", item.id)}
+                        className={`p-4 rounded-2xl border transition-all text-left ${
+                          isSelected
+                            ? "border-primary bg-primary/10 shadow-glow"
+                            : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                        }`}
+                      >
+                        <p className={`font-semibold text-sm mb-0.5 ${isSelected ? "text-primary" : "text-foreground"}`}>
+                          {item.label}
+                        </p>
+                        <p className="text-xs text-muted-foreground leading-snug">{item.desc}</p>
+                      </button>
+                    );
+                  })}
                 </div>
+              </div>
+
+              {/* How does it end? */}
+              <div className="glass-panel rounded-2xl p-6">
+                <label className="block text-sm font-medium text-foreground mb-1">How does it end?</label>
+                <p className="text-xs text-muted-foreground mb-4">Optional — tap to select, tap again to clear</p>
+                <div className="flex flex-wrap gap-2">
+                  {ENDING_OPTIONS.map((opt) => (
+                    <OptionalPill key={opt} label={opt} field="ending" value={opt} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Voice, Length, Enhancements */}
+              <div className="glass-panel rounded-2xl p-6 space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-3">Narrator Voice</label>
                   <div className="flex flex-wrap gap-2">
@@ -415,60 +685,34 @@ export default function Create() {
                     ))}
                   </div>
                 </div>
-              </div>
-
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-3">Your Scenario</label>
-                <textarea
-                  {...form.register("scenarioPrompt")}
-                  rows={4}
-                  placeholder="Describe a setting, a feeling, or a situation…"
-                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors resize-none"
-                />
-                {form.formState.errors.scenarioPrompt && (
-                  <p className="text-xs text-red-400 mt-1">{form.formState.errors.scenarioPrompt.message}</p>
-                )}
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {SAMPLE_PROMPTS.slice(0, 3).map((prompt) => (
-                    <button
-                      key={prompt}
-                      type="button"
-                      onClick={() => form.setValue("scenarioPrompt", prompt)}
-                      className="text-xs text-muted-foreground border border-border/30 rounded-full px-3 py-1.5 hover:border-primary/30 hover:text-foreground transition-all"
-                    >
-                      {prompt.slice(0, 50)}…
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-4">Enhancements</label>
-                <div className="space-y-3">
-                  {[
-                    { field: "cinematicVisuals" as const, label: "Cinematic Visuals", sub: "AI-generated artwork for each scene" },
-                    { field: "emotionalFocus" as const, label: "Emotional Focus", sub: "Prioritise emotional depth and vulnerability" },
-                  ].map(({ field, label, sub }) => (
-                    <label key={field} className="flex items-center gap-4 cursor-pointer group">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          {...form.register(field)}
-                          className="sr-only"
-                        />
-                        <div
-                          className={`w-10 h-6 rounded-full transition-all ${form.watch(field) ? "bg-primary" : "bg-border/50"}`}
-                          onClick={() => form.setValue(field, !form.watch(field))}
-                        >
-                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${form.watch(field) ? "left-5" : "left-1"}`} />
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-4">Enhancements</label>
+                  <div className="space-y-3">
+                    {[
+                      { field: "cinematicVisuals" as const, label: "Cinematic Visuals", sub: "AI-generated artwork for each scene" },
+                      { field: "emotionalFocus" as const, label: "Emotional Focus", sub: "Prioritise emotional depth and vulnerability" },
+                    ].map(({ field, label, sub }) => (
+                      <label key={field} className="flex items-center gap-4 cursor-pointer group">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            {...form.register(field)}
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-10 h-6 rounded-full transition-all ${form.watch(field) ? "bg-primary" : "bg-border/50"}`}
+                            onClick={() => form.setValue(field, !form.watch(field))}
+                          >
+                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${form.watch(field) ? "left-5" : "left-1"}`} />
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{label}</p>
-                        <p className="text-xs text-muted-foreground">{sub}</p>
-                      </div>
-                    </label>
-                  ))}
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                          <p className="text-xs text-muted-foreground">{sub}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
 

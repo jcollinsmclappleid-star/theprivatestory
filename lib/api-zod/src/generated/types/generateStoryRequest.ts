@@ -17,4 +17,8 @@ export interface GenerateStoryRequest {
   emotionalFocus?: boolean;
   /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
   bypassCache?: boolean;
+  whoIsHe?: string;
+  dynamic?: string;
+  ending?: string;
+  setting?: string;
 }

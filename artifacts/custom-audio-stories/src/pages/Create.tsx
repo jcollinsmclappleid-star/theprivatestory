@@ -1170,6 +1170,40 @@ export default function Create() {
               </div>
             </div>
 
+            {/* Full Story Read-Along Section */}
+            {result.images?.cover && (
+              <div className="rounded-2xl overflow-hidden border border-border/30">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border/20 bg-card/60">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                    Full Story
+                  </p>
+                  <p className="text-xs text-muted-foreground">{result.scenes.length} scenes</p>
+                </div>
+                <div
+                  className="relative max-h-[70vh] overflow-y-auto"
+                  style={{
+                    backgroundImage: `url(${result.images.cover})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundAttachment: "local",
+                  }}
+                >
+                  <div className="p-8 space-y-10 bg-black/75">
+                    {result.scenes.map((scene, i) => (
+                      <div key={scene.id ?? i}>
+                        <p className="text-xs font-medium text-primary/70 uppercase tracking-widest mb-3">
+                          {scene.heading ?? `Scene ${i + 1}`}
+                        </p>
+                        <p className="text-base leading-[1.9] text-white/90 font-light whitespace-pre-wrap">
+                          {scene.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setVariationModalOpen(true)}

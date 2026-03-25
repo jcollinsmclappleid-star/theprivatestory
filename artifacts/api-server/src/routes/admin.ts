@@ -75,8 +75,32 @@ function extractStoryParts(rawText: string): {
   clean = clean.replace(/```[\s\S]*?```/gi, "");
   // Strip bare JSON DNA blocks — { "category": ... } spanning multiple lines
   clean = clean.replace(/\{\s*"category"\s*:[\s\S]*?\n\}/m, "");
+  // Strip bare JSON registry blocks — { "stories": [...] } or similar arrays/objects from prior registry
+  clean = clean.replace(/\{\s*"stories"\s*:[\s\S]*?\n\}/m, "");
   // Strip [HOOK] blocks
   clean = clean.replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/gi, "");
+
+  // ── NEW: Strip prompt structural markers echoed back by GPT ──
+
+  // Strip ══ separator lines (any line that is mostly or entirely ═ characters)
+  clean = clean.replace(/^[═\s]{3,}$/gm, "");
+  // Strip PART 1/2/3 — labels (with or without bold markers)
+  clean = clean.replace(/^\s*\*{0,2}PART\s+[123]\s*[—–-][^\n]*\*{0,2}\s*$/gim, "");
+  // Strip phase headers: ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE (standalone lines)
+  clean = clean.replace(/^\s*\*{0,2}(?:ESTABLISH|SIMMER|CRACK|IGNITE|RESONATE)\s*[:\-—]?\s*\*{0,2}\s*$/gim, "");
+  // Strip INTENSITY LEVEL N — lines
+  clean = clean.replace(/^\s*\*{0,2}INTENSITY LEVEL\s+\d+\s*[—–\-][^\n]*\*{0,2}\s*$/gim, "");
+  // Strip FORCED DNA FIELDS blocks — find the header and strip through the closing brace
+  clean = clean.replace(/FORCED DNA FIELDS[\s\S]*?\n\}/gi, "");
+  // Strip PRIOR STORY REGISTRY blocks
+  clean = clean.replace(/PRIOR STORY REGISTRY[\s\S]*?\n\}/gi, "");
+  // Strip WORLD-GROUNDING / VARIETY FORCING / ANTI-REPETITION / SEVEN MANDATORY HOOKS / SCENE ENTRY — section headers
+  clean = clean.replace(/^\s*(?:WORLD-GROUNDING|VARIETY FORCING|ANTI-REPETITION|SEVEN MANDATORY|SCENE ENTRY|EROTIC ARCHITECTURE|IMMERSION RULES|SENSORY REQUIREMENTS|EXPLICIT CONTENT|BANNED WORDS|VOICE & DELIVERY)[^\n]*/gim, "");
+  // Strip lines that are ALL-CAPS standalone headers (4+ uppercase words with no lowercase, ending in : or —)
+  clean = clean.replace(/^\s*[A-Z][A-Z\s\-–—&\/]{8,}(?:[:—–])\s*$/gm, "");
+
+  // ── Existing structural header stripping ──
+
   // Strip **STORY DNA** and similar markdown section headers
   clean = clean.replace(/\*{1,2}STORY DNA\*{1,2}[^\n]*/gi, "");
   // Strip **FULL STORY:** / **[Story begins...]** / **[Generating DNA...]** headers
@@ -87,8 +111,8 @@ function extractStoryParts(rawText: string): {
   clean = clean.replace(/^\s*\*{1,2}[A-Z][^*\n]{0,60}\*{1,2}\s*:?\s*$/gm, "");
   // Strip "Understood. Generating..." or "Generating the STORY DNA first:" preambles
   clean = clean.replace(/^[^\n]*(?:Generating|Understood)[^\n]*(?:DNA|story)[^\n]*/gim, "");
-  // Strip --- horizontal rules
-  clean = clean.replace(/^-{3,}\s*$/gm, "");
+  // Strip --- or === horizontal rules
+  clean = clean.replace(/^[-=]{3,}\s*$/gm, "");
   // Collapse excess blank lines
   clean = clean.replace(/\n{3,}/g, "\n\n").trim();
 

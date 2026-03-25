@@ -243,16 +243,17 @@ Describe desire and physical response clearly and specifically.
 The story should feel genuinely arousing as well as emotionally engaging.`,
 
     4: `INTENSITY LEVEL 4 — EXPLICIT:
-Fully explicit adult content.
-Physical scenes described with literary precision and genuine heat.
-Do not fade to black — stay present through explicit moments.
-Emotional depth must match physical explicitness.`,
+Fully explicit adult content. Name anatomy. Describe acts.
+Every physical scene stays present and specific — no fading, no cutting away, no implication where description is required.
+Describe exactly what he does, what she feels, what sounds they make, what words pass between them.
+Physical and emotional detail must be equally specific throughout.`,
 
     5: `INTENSITY LEVEL 5 — MAXIMUM:
-Unapologetically explicit adult content.
-Every physical scene fully rendered with complete sensory and emotional presence.
-The story should be genuinely, powerfully arousing from first paragraph to last.
-No restraint — only literary quality and emotional truth as limits.`,
+Maximum explicit adult content. No qualifier. No hedge. Nothing held back.
+Name anatomy directly. Name acts directly. Describe every physical moment in full.
+His arousal and hers must be described explicitly, not implied.
+Penetration, movement, friction, sensation, sound — describe all of it as it happens.
+This story must be genuinely, viscerally arousing. Not tasteful. Not literary. Explicit.`,
   };
 
   const clamped = Math.max(1, Math.min(5, Math.round(intensity)));

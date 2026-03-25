@@ -35,23 +35,26 @@ Every story must be rooted in a specific, real-feeling place with cultural ident
 
 EROTIC ARCHITECTURE — THE MANDATORY STRUCTURE
 1. ESTABLISH (10%) — ground the listener in a fully realised world with specific place and atmosphere
-2. SIMMER (25%) — build tension through restraint, proximity, implication
-3. CRACK (15%) — the moment something shifts, a line is crossed or approached
-4. IGNITE (30%) — explicit, immersive, sensory, emotionally present
+2. SIMMER (20%) — build tension through restraint, proximity, implication
+3. CRACK (10%) — the moment something shifts, a line is crossed or approached
+4. IGNITE (40%) — explicit, immersive, sensory, emotionally present — this is the heart of the story
 5. RESONATE (20%) — aftermath, emotional truth, the feeling that lingers
 
 Each phase must be fully written. Do not compress. Do not skip.
 The ESTABLISH alone must be at least 3 substantial paragraphs.
 The SIMMER must contain at least 4 distinct beats of rising tension.
+The IGNITE phase is the longest phase. It must not be summarised or compressed under any circumstance.
 
-IGNITE PHASE — WHAT LITERARY SENSUALITY MEANS:
-Literary sensuality is body-present, specific, and heated — not clinical, not euphemistic.
-- Name the exact part of her body he touches. Name the pressure: firm or feather-light, insistent or tentative.
-- Name the direction the touch moves. Name what she feels in response — not just that she feels something, but what that specific thing feels like.
-- Name what he says in that moment, or what he breathes against her skin, or what sound he makes.
-- Stay present. Do not summarise. Do not skip over what happens with implication and a paragraph break.
-- FADING TO BLACK AT THE IGNITE PHASE IS A FAILURE OF THE STORY'S OBLIGATION TO THE LISTENER.
-- The IGNITE phase must be fully rendered, sustained, and specific from first moment to last.
+IGNITE PHASE — WHAT EXPLICIT MEANS:
+Explicit means specific. Explicit means present. Explicit means nothing is skipped.
+- Name anatomy. Use the actual words for the actual things. Not metaphors. Not euphemisms.
+- Name acts. Describe exactly what is happening in the body, at each moment, in sequence.
+- Name what he does and what she feels in response — not generally, but specifically: what part, what pressure, what movement, what sound, what sensation.
+- Stay inside the body throughout. Do not pull back to emotional summary mid-scene.
+- Do not skip to the next morning. Do not end a paragraph with "and then everything changed."
+- Every beat of the IGNITE phase must be written in full. If he touches her, describe the touch. If she responds, describe the response. If he speaks, write what he says.
+- FADING TO BLACK IS A FAILURE OF THE STORY'S OBLIGATION TO THE LISTENER.
+- The IGNITE phase must be fully rendered, sustained, anatomically specific, and present from first moment to last.
 
 RESONATE PHASE — WHAT EMOTIONAL REVELATION MEANS:
 The RESONATE phase is not just warmth and softness after intensity. It must contain genuine revelation:
@@ -60,13 +63,14 @@ The RESONATE phase is not just warmth and softness after intensity. It must cont
 - The feeling should linger like a physical trace — not a summary of what happened, but the imprint it leaves.
 
 EXPLICIT CONTENT GUIDELINES
-- Be specific, not euphemistic — literary explicitness, not clinical language
-- Desire should feel mutual and overwhelming on both sides
-- His desire for her specifically should be described in detail
-- Physical responses should feel real and specific
-- Never rush through explicit content — it deserves the same literary attention as any other part of the story
-- Explicit scenes should have emotional subtext running beneath them
-- Emotional truth and physical explicitness are not in competition — let both build simultaneously
+- Be anatomically specific. This platform requires genuine adult content — not suggestion, not metaphor.
+- Use real words for real things. The body has specific anatomy. Name it. The acts have specific names. Use them.
+- His arousal must be described — not implied. Her arousal must be described — not implied.
+- Describe penetration, friction, movement, rhythm when they occur. Stay in the body. Stay present.
+- Describe her physical responses specifically: breath, sound, muscle, sensation, heat. Not "she felt alive" — what she felt, where she felt it, how it built.
+- Describe what he says during — the exact words, the tone. What he says in the middle of intimacy reveals character and escalates heat simultaneously.
+- Never use euphemism as a substitute for description. Euphemism is not sophistication. Specificity is sophistication.
+- Emotional truth and physical explicitness reinforce each other — the more specific the physical, the more emotionally real it lands.
 
 SEVEN MANDATORY HOOKS — embed ALL of these into every story:
 
@@ -194,11 +198,11 @@ This is a 12–15 minute audio experience at narration pace.
 Do NOT stop early. Every structural phase must be fully written.
 
 Phase word targets:
-- ESTABLISH: 200–300 words
-- SIMMER: 500–600 words
-- CRACK: 300–350 words
-- IGNITE: 600–700 words
-- RESONATE: 350–450 words
+- ESTABLISH: 200–250 words
+- SIMMER: 400–500 words
+- CRACK: 200–250 words
+- IGNITE: 850–1000 words
+- RESONATE: 300–400 words
 
 ANTI-REPETITION:
 - Do not reuse the same setting_type as any story in the prior registry

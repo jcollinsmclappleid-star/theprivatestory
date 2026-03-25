@@ -671,17 +671,18 @@ export default function Profile() {
           <div className="space-y-2">
             {(() => {
               const stories = library.generated.slice(0, 10);
+              const allStoryIds = new Set(stories.map((s) => s.id ?? ""));
               const parentIdToEp2 = new Map<string, Story>();
-              const ep2Ids = new Set<string>();
+              const ep2WithParentInList = new Set<string>();
               stories.forEach((s) => {
                 const parentId = (s as Record<string, unknown>).parent_story_id as string | undefined;
-                if (parentId) {
+                if (parentId && allStoryIds.has(parentId)) {
                   parentIdToEp2.set(parentId, s);
-                  ep2Ids.add(s.id ?? "");
+                  ep2WithParentInList.add(s.id ?? "");
                 }
               });
               return stories
-                .filter((s) => !ep2Ids.has(s.id ?? ""))
+                .filter((s) => !ep2WithParentInList.has(s.id ?? ""))
                 .slice(0, 6)
                 .map((s, i) => {
                   const ep2 = parentIdToEp2.get(s.id ?? "");
@@ -695,7 +696,8 @@ export default function Profile() {
                       </div>
                     );
                   }
-                  return <StoryMiniCard key={s.id ?? i} story={s} />;
+                  const parentId = (s as Record<string, unknown>).parent_story_id as string | undefined;
+                  return <StoryMiniCard key={s.id ?? i} story={s} episodeLabel={parentId ? "Episode 2" : undefined} />;
                 });
             })()}
           </div>

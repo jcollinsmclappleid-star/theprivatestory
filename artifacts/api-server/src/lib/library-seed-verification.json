@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generated": "2026-03-25T20:20:37.635Z",
+    "generated": "2026-03-25T21:20:00.000Z",
     "totalStories": 40,
     "allPublished": true,
     "minWordCount": 2006,
@@ -9,18 +9,18 @@
     "storiesUnder2000w": 0,
     "categoriesPresent": 10,
     "missingSubthemes": [],
-    "dnaAdjacencyViolations": 1
+    "dnaAdjacencyViolations": 0
   },
   "stories": [
     {
-      "id": "lib-dark_romance-claimed-a2d2e1ef1bbd",
+      "id": "lib-dark_romance-claimed-239eb3f6c0a0",
       "categoryId": "dark_romance",
       "subthemeId": "claimed",
       "title": "His to Keep",
       "status": "published",
-      "wordCount": 2006,
-      "chars": 11145,
-      "dna_power_dynamic": "teasing control",
+      "wordCount": 3093,
+      "chars": 17011,
+      "dna_power_dynamic": "emotionally guarded",
       "dna_emotional_engine": "jealousy",
       "generatedAt": null
     },
@@ -145,15 +145,15 @@
       "generatedAt": null
     },
     {
-      "id": "lib-emotional_desire-vulnerability-4b8d1956d31d",
+      "id": "lib-emotional_desire-vulnerability-21feef5da493",
       "categoryId": "emotional_desire",
       "subthemeId": "vulnerability",
       "title": "The Part I Don't Show",
       "status": "published",
-      "wordCount": 2593,
-      "chars": 14614,
-      "dna_power_dynamic": "forbidden pull",
-      "dna_emotional_engine": "obsession held in restraint",
+      "wordCount": 3358,
+      "chars": 18467,
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "longing",
       "generatedAt": null
     },
     {
@@ -409,15 +409,15 @@
       "generatedAt": null
     },
     {
-      "id": "lib-second_chance-starting_again-1ebb1a9a9284",
+      "id": "lib-second_chance-starting_again-74f7ed613054",
       "categoryId": "second_chance",
       "subthemeId": "starting_again",
       "title": "Not the Same, Better",
       "status": "published",
-      "wordCount": 2814,
-      "chars": 15720,
-      "dna_power_dynamic": "teasing control",
-      "dna_emotional_engine": "longing",
+      "wordCount": 2862,
+      "chars": 15739,
+      "dna_power_dynamic": "mutual restraint",
+      "dna_emotional_engine": "comfort turning dangerous",
       "generatedAt": null
     },
     {
@@ -433,27 +433,27 @@
       "generatedAt": null
     },
     {
-      "id": "lib-second_chance-why_it_ended-57354adf3fb2",
+      "id": "lib-second_chance-why_it_ended-6cc37c9f7a9c",
       "categoryId": "second_chance",
       "subthemeId": "why_it_ended",
       "title": "Timing Was the Villain",
       "status": "published",
-      "wordCount": 3215,
-      "chars": 17713,
-      "dna_power_dynamic": "forbidden pull",
-      "dna_emotional_engine": "emotional surrender",
+      "wordCount": 3061,
+      "chars": 16837,
+      "dna_power_dynamic": "mutual restraint",
+      "dna_emotional_engine": "jealousy",
       "generatedAt": null
     },
     {
-      "id": "lib-slow_burn-almost-f642d63bc347",
+      "id": "lib-slow_burn-almost-1eb22dc70ce6",
       "categoryId": "slow_burn",
       "subthemeId": "almost",
       "title": "Three Times We Didn't",
       "status": "published",
-      "wordCount": 4673,
-      "chars": 25019,
-      "dna_power_dynamic": "forbidden pull",
-      "dna_emotional_engine": "obsession held in restraint",
+      "wordCount": 3293,
+      "chars": 18113,
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "playful temptation",
       "generatedAt": null
     },
     {

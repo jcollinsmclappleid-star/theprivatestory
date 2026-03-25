@@ -1,13 +1,15 @@
 {
   "summary": {
-    "generated": "2026-03-25T20:05:16.879Z",
+    "generated": "2026-03-25T20:20:37.635Z",
     "totalStories": 40,
     "allPublished": true,
-    "minWordCount": 1455,
+    "minWordCount": 2006,
     "maxWordCount": 4673,
-    "avgWordCount": 2733,
+    "avgWordCount": 2851,
+    "storiesUnder2000w": 0,
     "categoriesPresent": 10,
-    "missingSubthemes": []
+    "missingSubthemes": [],
+    "dnaAdjacencyViolations": 1
   },
   "stories": [
     {
@@ -18,7 +20,9 @@
       "status": "published",
       "wordCount": 2006,
       "chars": 11145,
-      "generatedAt": "2026-03-25T19:45:40.911Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-dark_romance-dangerous_men-005260e3bab4",
@@ -28,7 +32,9 @@
       "status": "published",
       "wordCount": 2869,
       "chars": 16402,
-      "generatedAt": "2026-03-25T19:46:05.503Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     },
     {
       "id": "lib-dark_romance-moral_grey-4d0efb699bbb",
@@ -38,7 +44,9 @@
       "status": "published",
       "wordCount": 2897,
       "chars": 16833,
-      "generatedAt": "2026-03-25T19:46:11.403Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-dark_romance-obsession-b69ad8e69b60",
@@ -48,7 +56,9 @@
       "status": "published",
       "wordCount": 2931,
       "chars": 16509,
-      "generatedAt": "2026-03-25T19:44:12.293Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     },
     {
       "id": "lib-dominant_surrendered-edge_command-d7cfdb880c44",
@@ -58,7 +68,9 @@
       "status": "published",
       "wordCount": 3646,
       "chars": 20369,
-      "generatedAt": "2026-03-25T19:37:18.857Z"
+      "dna_power_dynamic": "confident pursuit",
+      "dna_emotional_engine": "first-time nervousness",
+      "generatedAt": null
     },
     {
       "id": "lib-dominant_surrendered-he_takes_control-819f0e430099",
@@ -68,7 +80,9 @@
       "status": "published",
       "wordCount": 2084,
       "chars": 11635,
-      "generatedAt": "2026-03-25T19:35:06.238Z"
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "reunion ache",
+      "generatedAt": null
     },
     {
       "id": "lib-dominant_surrendered-surrender-1a01b7bf75dc",
@@ -78,7 +92,9 @@
       "status": "published",
       "wordCount": 3157,
       "chars": 17385,
-      "generatedAt": "2026-03-25T19:35:20.654Z"
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "playful temptation",
+      "generatedAt": null
     },
     {
       "id": "lib-dominant_surrendered-the_arrangement-f50d1fa43dc2",
@@ -88,17 +104,21 @@
       "status": "published",
       "wordCount": 2258,
       "chars": 12449,
-      "generatedAt": "2026-03-25T19:35:09.568Z"
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
-      "id": "lib-emotional_desire-aftermath_tenderness-94c21e323fc6",
+      "id": "lib-emotional_desire-aftermath_tenderness-329d8618affd",
       "categoryId": "emotional_desire",
       "subthemeId": "aftermath_tenderness",
       "title": "After the Storm of It",
       "status": "published",
-      "wordCount": 1989,
-      "chars": 11026,
-      "generatedAt": "2026-03-25T19:43:48.426Z"
+      "wordCount": 2681,
+      "chars": 15420,
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "longing",
+      "generatedAt": null
     },
     {
       "id": "lib-emotional_desire-being_seen-16778b536c39",
@@ -108,7 +128,9 @@
       "status": "published",
       "wordCount": 2728,
       "chars": 15468,
-      "generatedAt": "2026-03-25T19:44:08.608Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-emotional_desire-love_without_word-5cf5bf99cb79",
@@ -118,7 +140,9 @@
       "status": "published",
       "wordCount": 3267,
       "chars": 18191,
-      "generatedAt": "2026-03-25T19:44:31.530Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-emotional_desire-vulnerability-4b8d1956d31d",
@@ -128,7 +152,9 @@
       "status": "published",
       "wordCount": 2593,
       "chars": 14614,
-      "generatedAt": "2026-03-25T19:42:40.942Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "obsession held in restraint",
+      "generatedAt": null
     },
     {
       "id": "lib-explicit_collection-all_night-bca83541b637",
@@ -138,7 +164,9 @@
       "status": "published",
       "wordCount": 4645,
       "chars": 26421,
-      "generatedAt": "2026-03-25T19:39:16.019Z"
+      "dna_power_dynamic": "delayed surrender",
+      "dna_emotional_engine": "one-night intensity",
+      "generatedAt": null
     },
     {
       "id": "lib-explicit_collection-heat-bc3825ca86bf",
@@ -148,27 +176,33 @@
       "status": "published",
       "wordCount": 2768,
       "chars": 15474,
-      "generatedAt": "2026-03-25T19:40:41.502Z"
+      "dna_power_dynamic": "soft dominance",
+      "dna_emotional_engine": "reunion ache",
+      "generatedAt": null
     },
     {
-      "id": "lib-explicit_collection-intensity-4ffef5c7f979",
+      "id": "lib-explicit_collection-intensity-d986057b6e9c",
       "categoryId": "explicit_collection",
       "subthemeId": "intensity",
       "title": "Past the Point of Careful",
       "status": "published",
-      "wordCount": 1647,
-      "chars": 9233,
-      "generatedAt": "2026-03-25T19:38:21.663Z"
+      "wordCount": 2086,
+      "chars": 11911,
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "playful temptation",
+      "generatedAt": null
     },
     {
-      "id": "lib-explicit_collection-raw_want-907f0db1ca19",
+      "id": "lib-explicit_collection-raw_want-363dabe20a41",
       "categoryId": "explicit_collection",
       "subthemeId": "raw_want",
       "title": "Don't Make Me Ask Again",
       "status": "published",
-      "wordCount": 1455,
-      "chars": 8144,
-      "generatedAt": "2026-03-25T19:38:13.943Z"
+      "wordCount": 2066,
+      "chars": 11524,
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-first_time-awakening-075eba52e5cf",
@@ -178,7 +212,9 @@
       "status": "published",
       "wordCount": 2296,
       "chars": 13015,
-      "generatedAt": "2026-03-25T19:38:38.995Z"
+      "dna_power_dynamic": "balanced chemistry",
+      "dna_emotional_engine": "regret and return",
+      "generatedAt": null
     },
     {
       "id": "lib-first_time-learning_each_other-3aea4e92ef49",
@@ -188,7 +224,9 @@
       "status": "published",
       "wordCount": 2327,
       "chars": 13061,
-      "generatedAt": "2026-03-25T19:36:42.157Z"
+      "dna_power_dynamic": "confident pursuit",
+      "dna_emotional_engine": "curiosity",
+      "generatedAt": null
     },
     {
       "id": "lib-first_time-permission_trust-55d8d3d5e46c",
@@ -198,7 +236,9 @@
       "status": "published",
       "wordCount": 2305,
       "chars": 12657,
-      "generatedAt": "2026-03-25T19:36:41.653Z"
+      "dna_power_dynamic": "confident pursuit",
+      "dna_emotional_engine": "first-time nervousness",
+      "generatedAt": null
     },
     {
       "id": "lib-first_time-the_first_touch-ff0c8ea3830e",
@@ -208,7 +248,9 @@
       "status": "published",
       "wordCount": 2392,
       "chars": 13355,
-      "generatedAt": "2026-03-25T19:36:40.866Z"
+      "dna_power_dynamic": "confident pursuit",
+      "dna_emotional_engine": "curiosity",
+      "generatedAt": null
     },
     {
       "id": "lib-forbidden_desire-complicated_feelings-096f7d11155d",
@@ -218,7 +260,9 @@
       "status": "published",
       "wordCount": 3315,
       "chars": 18379,
-      "generatedAt": "2026-03-25T19:33:52.238Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-forbidden_desire-off_limits-f609fab2eaa6",
@@ -228,7 +272,9 @@
       "status": "published",
       "wordCount": 2467,
       "chars": 13602,
-      "generatedAt": "2026-03-25T19:33:31.522Z"
+      "dna_power_dynamic": "mutual restraint",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-forbidden_desire-power_position-e6b51813c150",
@@ -238,7 +284,9 @@
       "status": "published",
       "wordCount": 2522,
       "chars": 14239,
-      "generatedAt": "2026-03-25T19:33:34.038Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     },
     {
       "id": "lib-forbidden_desire-the_other_life-fdd5d1652dc5",
@@ -248,7 +296,9 @@
       "status": "published",
       "wordCount": 2019,
       "chars": 11048,
-      "generatedAt": "2026-03-25T19:35:03.116Z"
+      "dna_power_dynamic": "emotionally guarded",
+      "dna_emotional_engine": "playful temptation",
+      "generatedAt": null
     },
     {
       "id": "lib-historical_romance-foreign_faraway-cd898761fc1b",
@@ -258,7 +308,9 @@
       "status": "published",
       "wordCount": 2080,
       "chars": 11618,
-      "generatedAt": "2026-03-25T19:49:20.335Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     },
     {
       "id": "lib-historical_romance-regency-3d07dd7eebb2",
@@ -268,7 +320,9 @@
       "status": "published",
       "wordCount": 2375,
       "chars": 13353,
-      "generatedAt": "2026-03-25T19:47:31.158Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-historical_romance-victorian_desire-120dbcae9365",
@@ -278,7 +332,9 @@
       "status": "published",
       "wordCount": 3502,
       "chars": 18781,
-      "generatedAt": "2026-03-25T19:49:53.006Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "jealousy",
+      "generatedAt": null
     },
     {
       "id": "lib-historical_romance-war_longing-18529d178802",
@@ -288,7 +344,9 @@
       "status": "published",
       "wordCount": 2528,
       "chars": 14106,
-      "generatedAt": "2026-03-25T19:49:34.624Z"
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-late_night-after_hours-3c05bca68b3a",
@@ -298,17 +356,21 @@
       "status": "published",
       "wordCount": 2284,
       "chars": 12765,
-      "generatedAt": "2026-03-25T19:26:53.707Z"
+      "dna_power_dynamic": "confident pursuit",
+      "dna_emotional_engine": "regret and return",
+      "generatedAt": null
     },
     {
-      "id": "lib-late_night-home_alone-cf9912eec4c8",
+      "id": "lib-late_night-home_alone-f706fe53357b",
       "categoryId": "late_night",
       "subthemeId": "home_alone",
       "title": "While You Were Gone",
       "status": "published",
-      "wordCount": 1899,
-      "chars": 10501,
-      "generatedAt": "2026-03-25T19:33:19.832Z"
+      "wordCount": 2355,
+      "chars": 13250,
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "playful temptation",
+      "generatedAt": null
     },
     {
       "id": "lib-late_night-long_distance-1f92a3558b2f",
@@ -318,7 +380,9 @@
       "status": "published",
       "wordCount": 3436,
       "chars": 18346,
-      "generatedAt": "2026-03-25T19:32:05.121Z"
+      "dna_power_dynamic": "balanced chemistry",
+      "dna_emotional_engine": "one-night intensity",
+      "generatedAt": null
     },
     {
       "id": "lib-late_night-strangers-3a0980f2fbbb",
@@ -328,7 +392,9 @@
       "status": "published",
       "wordCount": 3457,
       "chars": 18664,
-      "generatedAt": "2026-03-25T19:32:05.872Z"
+      "dna_power_dynamic": "soft dominance",
+      "dna_emotional_engine": "temptation",
+      "generatedAt": null
     },
     {
       "id": "lib-second_chance-reunion-13fa7862012f",
@@ -338,17 +404,21 @@
       "status": "published",
       "wordCount": 2707,
       "chars": 15254,
-      "generatedAt": "2026-03-25T19:46:07.070Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     },
     {
-      "id": "lib-second_chance-starting_again-96ab188b7a49",
+      "id": "lib-second_chance-starting_again-1ebb1a9a9284",
       "categoryId": "second_chance",
       "subthemeId": "starting_again",
       "title": "Not the Same, Better",
       "status": "published",
-      "wordCount": 1815,
-      "chars": 10127,
-      "generatedAt": "2026-03-25T19:47:14.302Z"
+      "wordCount": 2814,
+      "chars": 15720,
+      "dna_power_dynamic": "teasing control",
+      "dna_emotional_engine": "longing",
+      "generatedAt": null
     },
     {
       "id": "lib-second_chance-what_was_left_unsaid-318a3f3dbbca",
@@ -358,7 +428,9 @@
       "status": "published",
       "wordCount": 4267,
       "chars": 23645,
-      "generatedAt": "2026-03-25T19:48:19.322Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-second_chance-why_it_ended-57354adf3fb2",
@@ -368,7 +440,9 @@
       "status": "published",
       "wordCount": 3215,
       "chars": 17713,
-      "generatedAt": "2026-03-25T19:47:51.352Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-slow_burn-almost-f642d63bc347",
@@ -378,7 +452,9 @@
       "status": "published",
       "wordCount": 4673,
       "chars": 25019,
-      "generatedAt": "2026-03-25T19:41:17.383Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "obsession held in restraint",
+      "generatedAt": null
     },
     {
       "id": "lib-slow_burn-enemies_to_lovers-709684791a4e",
@@ -388,7 +464,9 @@
       "status": "published",
       "wordCount": 2645,
       "chars": 14817,
-      "generatedAt": "2026-03-25T19:40:43.674Z"
+      "dna_power_dynamic": "soft dominance",
+      "dna_emotional_engine": "emotional surrender",
+      "generatedAt": null
     },
     {
       "id": "lib-slow_burn-tension-6e5bbbea1375",
@@ -398,17 +476,21 @@
       "status": "published",
       "wordCount": 4092,
       "chars": 22316,
-      "generatedAt": "2026-03-25T19:41:15.979Z"
+      "dna_power_dynamic": "forbidden pull",
+      "dna_emotional_engine": "obsession held in restraint",
+      "generatedAt": null
     },
     {
-      "id": "lib-slow_burn-the_wait-146c1a39d2ae",
+      "id": "lib-slow_burn-the_wait-a7c4ebad4798",
       "categoryId": "slow_burn",
       "subthemeId": "the_wait",
       "title": "Worth Every Week of It",
       "status": "published",
-      "wordCount": 1767,
-      "chars": 9976,
-      "generatedAt": "2026-03-25T19:42:24.213Z"
+      "wordCount": 3292,
+      "chars": 18388,
+      "dna_power_dynamic": "mutual restraint",
+      "dna_emotional_engine": "comfort turning dangerous",
+      "generatedAt": null
     }
   ]
 }

@@ -482,29 +482,53 @@ router.post("/generate-one-sync", async (req, res) => {
 
     const systemWithTitle = `${prompt.system}\n\nSTORY TITLE: "${title}"\nYou are writing a story with this exact title. Every scene, character choice, and emotional beat must earn this title. The story should feel like it could only ever have this name.`;
 
-    console.error(`[seed] Generating: ${categoryId}/${subthemeId} — "${title}"`);
+    const MIN_WORDS = 2000;
+    const MAX_ATTEMPTS = 3;
 
-    const storyCompletion = await openrouter.chat.completions.create({
-      model: MISTRAL_MODEL,
-      temperature: 0.9,
-      max_tokens: 8000,
-      messages: [
-        { role: "system", content: systemWithTitle },
-        { role: "user", content: prompt.user },
-      ],
-    });
+    let cleanStoryText = "";
+    let extractedDescription = "";
+    let storyDna: unknown = {};
 
-    const rawStoryText = storyCompletion.choices[0]?.message?.content ?? "";
-    const finishReason = storyCompletion.choices[0]?.finish_reason;
-    console.error(`[seed] finish_reason=${finishReason} chars=${rawStoryText.length}`);
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      console.error(`[seed] Attempt ${attempt}/${MAX_ATTEMPTS}: ${categoryId}/${subthemeId} — "${title}"`);
 
-    if (rawStoryText.length < 500) {
-      res.status(500).json({ error: "Story too short", chars: rawStoryText.length });
-      return;
+      const lengthReminder = attempt === 1
+        ? "\n\nYour story MUST be at least 2,000 words of narrative prose. Do not stop before completing all five phases."
+        : `\n\nCRITICAL: Your previous attempt was too short. This story MUST be 2,000+ words. Write each phase in full. Do not summarise or compress. Write slowly and fully.`;
+
+      const storyCompletion = await openrouter.chat.completions.create({
+        model: MISTRAL_MODEL,
+        temperature: 0.9,
+        max_tokens: 10000,
+        messages: [
+          { role: "system", content: systemWithTitle },
+          { role: "user", content: prompt.user + lengthReminder },
+        ],
+      });
+
+      const rawStoryText = storyCompletion.choices[0]?.message?.content ?? "";
+      const finishReason = storyCompletion.choices[0]?.finish_reason;
+      const words = rawStoryText.split(/\s+/).filter(Boolean).length;
+      console.error(`[seed] attempt=${attempt} finish_reason=${finishReason} words=${words}`);
+
+      const parts = extractStoryParts(rawStoryText);
+      const partWords = parts.cleanText.split(/\s+/).filter(Boolean).length;
+
+      if (partWords >= MIN_WORDS || attempt === MAX_ATTEMPTS) {
+        cleanStoryText = parts.cleanText;
+        extractedDescription = parts.description;
+        storyDna = parts.dna;
+        if (partWords < MIN_WORDS) {
+          console.error(`[seed] Warning: still under ${MIN_WORDS}w after ${MAX_ATTEMPTS} attempts (${partWords}w)`);
+        }
+        break;
+      }
     }
 
-    const { cleanText: cleanStoryText, description: extractedDescription, dna: storyDna } =
-      extractStoryParts(rawStoryText);
+    if (!cleanStoryText || cleanStoryText.length < 200) {
+      res.status(500).json({ error: "Story generation failed", chars: cleanStoryText.length });
+      return;
+    }
 
     const description = extractedDescription || `A ${categoryName.toLowerCase()} story. Press play.`;
 

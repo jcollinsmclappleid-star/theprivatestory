@@ -358,7 +358,7 @@ router.get("/quick-create-params", async (req, res) => {
       Object.values(taste.preferredIntensity).reduce((a, b) => a + b, 0);
 
     if (totalSignals < 5) {
-      return res.status(204).json({ error: "Not enough taste data" });
+      return res.status(200).json({ eligible: false, error: "Not enough taste data" });
     }
 
     const topMood = Object.entries(taste.tasteProfile)

@@ -122,6 +122,7 @@ export default function Home() {
       const r = await fetch(`${API_BASE}/api/me/quick-create-params`, { credentials: "include" });
       if (!r.ok) return;
       const params = await r.json();
+      if (params.eligible === false) return;
       sessionStorage.setItem("quickCreateParams", JSON.stringify(params));
       navigate("/create");
     } finally {

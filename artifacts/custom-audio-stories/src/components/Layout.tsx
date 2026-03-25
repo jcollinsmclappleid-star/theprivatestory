@@ -88,6 +88,8 @@ function StoryLifecycleManager({
         ...((currentStory as Record<string, unknown> | undefined)?.tags as string[] ?? []),
         ...((currentStory as Record<string, unknown> | undefined)?.recommendation_tags as string[] ?? []),
       ]}
+      storyId={currentStory?.id}
+      storyTitle={currentStory?.title}
       onDismiss={() => setReactionVisible(false)}
     />
   );

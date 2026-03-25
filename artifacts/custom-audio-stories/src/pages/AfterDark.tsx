@@ -426,7 +426,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
-  const [phase, setPhase] = useState<"scenario" | "seed" | "casting" | "generating" | "result">("scenario");
+  const [phase, setPhase] = useState<"scenario" | "seed" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [scenarioSeed, setScenarioSeed] = useState<string>("");
   const [loadingPhase, setLoadingPhase] = useState(0);
@@ -434,6 +434,12 @@ export default function AfterDark() {
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
   const [presetSaved, setPresetSaved] = useState(false);
   const [isGeneratingEp2, setIsGeneratingEp2] = useState(false);
+  const [presetNameDraft, setPresetNameDraft] = useState("");
+  const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
+    casting: CastingRoomResult;
+    fullPrompt: string;
+    allTags: string[];
+  } | null>(null);
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const { play } = useAudioPlayer();
@@ -540,25 +546,50 @@ export default function AfterDark() {
   }, [result, isGeneratingEp2, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
   const handleCastingComplete = useCallback(
-    async (casting: CastingRoomResult) => {
+    (casting: CastingRoomResult) => {
       if (!selectedScenario) return;
 
-      setLastCastingData({
+      const castingSnapshot = {
         archetype: casting.archetype,
         dynamic: casting.dynamic,
         intensity: casting.intensity,
         storyMode: selectedScenario.storyMode,
-      });
-      setPresetSaved(false);
+      };
 
-      setPhase("generating");
-      startLoadingPhase();
+      setLastCastingData(castingSnapshot);
+      setPresetSaved(false);
 
       const scenarioContext = `${selectedScenario.label}: ${selectedScenario.sub}`;
       const fullPrompt = [scenarioContext, scenarioSeed, casting.scenarioPrompt, casting.freeText]
         .filter(Boolean)
         .join(". ");
       const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
+
+      setPendingAfterDarkCast({ casting, fullPrompt, allTags });
+      const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "After Dark Cast";
+      setPresetNameDraft(suggestedName);
+
+      setPhase("preset-prompt");
+    },
+    [selectedScenario, scenarioSeed]
+  );
+
+  const handleAfterDarkStartGenerating = useCallback(
+    async (savePreset: boolean, presetName: string) => {
+      if (!pendingAfterDarkCast || !selectedScenario) return;
+      const { casting, fullPrompt, allTags } = pendingAfterDarkCast;
+
+      if (savePreset && presetName.trim() && lastCastingData) {
+        fetch(`${API_BASE}/api/me/presets`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ name: presetName.trim(), castingData: lastCastingData }),
+        }).then(() => setPresetSaved(true)).catch(() => {});
+      }
+
+      setPhase("generating");
+      startLoadingPhase();
 
       try {
         await generateMutation.mutateAsync({
@@ -581,7 +612,7 @@ export default function AfterDark() {
         stopLoadingPhase();
       }
     },
-    [selectedScenario, scenarioSeed, generateMutation, startLoadingPhase, stopLoadingPhase]
+    [pendingAfterDarkCast, selectedScenario, lastCastingData, generateMutation, startLoadingPhase, stopLoadingPhase]
   );
 
   if (authLoading) {
@@ -877,6 +908,55 @@ export default function AfterDark() {
               }
               afterDark={true}
             />
+          </motion.div>
+        )}
+
+        {/* ── Preset Name Prompt ──────────────────────────────────────── */}
+        {phase === "preset-prompt" && (
+          <motion.div
+            key="preset-prompt"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 max-w-md mx-auto"
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.35)" }}
+            >
+              <Moon className="w-7 h-7" style={{ color: "#c0392b" }} />
+            </div>
+            <div className="text-center">
+              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Save this casting?</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Give your combination a name so you can return to this energy in one tap.
+              </p>
+            </div>
+            <div className="w-full space-y-3">
+              <input
+                type="text"
+                value={presetNameDraft}
+                onChange={(e) => setPresetNameDraft(e.target.value)}
+                maxLength={80}
+                placeholder="e.g. CEO · Takes Charge"
+                className="w-full px-4 py-3 rounded-xl border bg-black/40 text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2"
+                style={{ borderColor: "rgba(192,57,43,0.3)", "--tw-ring-color": "rgba(192,57,43,0.4)" } as React.CSSProperties}
+              />
+              <button
+                onClick={() => handleAfterDarkStartGenerating(true, presetNameDraft)}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all hover:-translate-y-0.5"
+                style={{ background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 20px rgba(192,57,43,0.3)" }}
+              >
+                <Moon className="w-4 h-4" />
+                Save &amp; Write My Story
+              </button>
+              <button
+                onClick={() => handleAfterDarkStartGenerating(false, "")}
+                className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+              >
+                Skip — just write it
+              </button>
+            </div>
           </motion.div>
         )}
 

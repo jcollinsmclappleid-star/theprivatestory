@@ -38,13 +38,13 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
             </div>
 
             <h2 className="text-2xl font-display font-bold text-foreground text-center mb-3">
-              Unlock the full experience
+              Your private library is waiting.
             </h2>
             <p className="text-muted-foreground text-center text-sm leading-relaxed mb-2">
-              Continue the story, unlock premium episodes, and generate more stories shaped around you.
+              You've found your kind of story. There are 40 more, written for exactly this.
             </p>
-            <p className="text-muted-foreground/70 text-center text-xs leading-relaxed mb-8">
-              More stories. More continuations. More personalised listening.
+            <p className="text-muted-foreground/50 text-center text-xs leading-relaxed mb-8">
+              Private · No history shared · Only you can see what you listen to.
             </p>
 
             <div className="space-y-3">
@@ -56,7 +56,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
                 onClick={onClose}
                 className="w-full px-6 py-3 rounded-full border border-border/60 text-muted-foreground text-sm hover:text-foreground hover:border-border transition-colors"
               >
-                Get Story Credits
+                Listen to one more first
               </button>
             </div>
           </motion.div>

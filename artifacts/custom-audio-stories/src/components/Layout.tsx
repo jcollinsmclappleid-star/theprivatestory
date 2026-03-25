@@ -11,10 +11,8 @@ function Navbar() {
   const { user, isLoading, isAuthenticated, openSignIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [location]);
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -36,10 +34,10 @@ function Navbar() {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-36 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center">
-              <Logo height={136} />
+              <Logo height={72} />
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -63,6 +61,9 @@ function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
+            <p className="hidden lg:block text-[10px] text-muted-foreground/30 tracking-widest">
+              Private · No social · No history shared
+            </p>
             <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors p-2">
               <Search className="w-5 h-5" />
             </Link>
@@ -72,7 +73,7 @@ function Navbar() {
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4" />
-              Create Your Story
+              Write My Story
             </Link>
 
             {!isLoading && (
@@ -131,7 +132,7 @@ function Navbar() {
 
       {/* Mobile menu drawer */}
       <div
-        className={`fixed top-36 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed top-24 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
@@ -174,7 +175,7 @@ function Navbar() {
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-3 rounded-xl font-semibold text-sm"
             >
               <Sparkles className="w-4 h-4" />
-              Create Your Story
+              Write My Story
             </Link>
           </div>
 
@@ -219,7 +220,7 @@ function Navbar() {
                   className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-border/80 transition-all"
                 >
                   <LogIn className="w-4 h-4" />
-                  Sign In to Your Account
+                  Enter your private library
                 </button>
               )
             )}
@@ -243,10 +244,10 @@ function Footer() {
     <footer className="border-t border-border/40 bg-background/50 py-12 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
         <div className="mb-4">
-          <Logo height={160} />
+          <Logo height={80} />
         </div>
         <p className="text-muted-foreground text-sm max-w-md mb-6">
-          Immersive romantic audio stories crafted just for you.
+          Stories written for the parts of you that nobody else gets to know.
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mb-6">
           {footerLinks.map((link) => (
@@ -257,7 +258,7 @@ function Footer() {
           <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
         </div>
-        <p className="text-xs text-muted-foreground/50">Designed for private, immersive listening.</p>
+        <p className="text-xs text-muted-foreground/50">What you listen to here stays here. Always.</p>
       </div>
     </footer>
   );
@@ -273,7 +274,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <AuthModal />
       <Navbar />
-      <main className="pt-36 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-24 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

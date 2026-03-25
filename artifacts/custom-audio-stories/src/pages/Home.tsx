@@ -125,13 +125,13 @@ export default function Home() {
               The Private Story
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-4 leading-tight drop-shadow-xl">
-              A story made entirely for you.
+              Written for you.<br className="hidden md:block" /> Private to you.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-2">
-              Describe a mood, a moment, a fantasy. We write and narrate a cinematic romantic audio story — personalised, private, and ready in minutes.
+              Tell us your mood, your moment, your fantasy. The Private Story writes and narrates a cinematic audio story — shaped around you, seen only by you, ready in minutes.
             </p>
             <p className="text-sm text-muted-foreground/60 mb-8 italic">
-              Best experienced alone, with headphones.
+              No history shared. No social. Best experienced alone, with headphones.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap">
@@ -141,7 +141,7 @@ export default function Home() {
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
               >
                 <Sparkles className="w-5 h-5" />
-                Create Your Story
+                Write My Story
               </Link>
               {/* SECONDARY: Browse */}
               <Link
@@ -154,7 +154,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-4 text-xs text-muted-foreground/60 tracking-wide">
-              {["Free to create", "AI-written & narrated", "Cinematic audio", "Private library"].map((item) => (
+              {["Free to create", "AI-written & narrated", "Cinematic audio", "Completely private"].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
                   <span className="w-1 h-1 rounded-full bg-primary/40 inline-block" />
                   {item}
@@ -221,7 +221,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:-translate-y-0.5 shadow-[0_0_48px_-12px_hsl(37_42%_68%_/_0.45)]"
             >
               <Sparkles className="w-5 h-5" />
-              Start Creating — It's Free
+              Write My Story — It's Free
             </Link>
             <p className="text-xs text-muted-foreground/50 mt-3">No account required to create your first story.</p>
           </div>
@@ -413,19 +413,19 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="rounded-3xl border border-primary/20 bg-gradient-to-br from-card/60 to-background p-10 md:p-16 text-center">
-            <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Ready?</p>
+            <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Your private story is waiting.</p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-              Create your story now.
+              Written for you.<br className="hidden md:block" /> Kept for you.
             </h2>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-8">
-              It takes 60 seconds to describe. We do the rest.
+              60 seconds to describe your moment. Then we write it, narrate it, and keep it private. Always.
             </p>
             <Link
               href="/create"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 hover:-translate-y-0.5 shadow-[0_0_48px_-12px_hsl(37_42%_68%_/_0.45)]"
             >
               <Sparkles className="w-5 h-5" />
-              Create Your Story
+              Write My Story
             </Link>
           </div>
         </section>

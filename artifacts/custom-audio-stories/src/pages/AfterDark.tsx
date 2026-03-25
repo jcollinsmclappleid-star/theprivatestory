@@ -555,10 +555,12 @@ export default function AfterDark() {
           <p className="text-xs font-medium uppercase tracking-widest mb-2" style={{ color: "#c0392b" }}>
             After Dark
           </p>
-          <h2 className="font-display text-2xl font-bold text-foreground mb-3">Private access only</h2>
+          <h2 className="font-display text-2xl font-bold text-foreground mb-3">
+            Everything here is completely private. Always.
+          </h2>
           <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
-            You're in the right place. Nothing here leaves this room.
-            Sign in to continue — your stories stay completely private.
+            Nothing you read or listen to here is visible to anyone else.
+            No social features, no history shared. Sign in to enter.
           </p>
         </div>
         <button
@@ -566,7 +568,7 @@ export default function AfterDark() {
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white transition-all hover:-translate-y-0.5"
           style={{ background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 24px rgba(192,57,43,0.3)" }}
         >
-          Sign In to Continue
+          Enter your private library
         </button>
       </div>
     );

@@ -111,9 +111,17 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
 
         <div className="p-8">
           {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <Logo size={36} />
+          <div className="flex flex-col items-center mb-6 gap-1.5">
+            <Logo size={60} />
+            <p className="text-xs text-muted-foreground/40 tracking-widest">
+              Private · No social · No history shared
+            </p>
           </div>
+
+          {/* Context heading */}
+          <p className="text-center text-sm text-muted-foreground mb-4">
+            {tab === "signin" ? "Enter your private library" : "Create your private account"}
+          </p>
 
           {/* Tabs */}
           <div className="flex rounded-xl bg-white/5 p-1 mb-6">

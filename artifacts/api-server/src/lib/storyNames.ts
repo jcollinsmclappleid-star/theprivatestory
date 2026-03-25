@@ -1,125 +1,64 @@
+// Story names are keyed by (category display name, subtheme ID) to match getStoryName()
 export const STORY_NAMES = [
-  // ─── FORBIDDEN DESIRE ────────────────────────────────────────────
-  { category: "Forbidden Desire", subtheme: "Office Tension", story_name: "The Office Was Empty Except for Us" },
-  { category: "Forbidden Desire", subtheme: "Best Friend's Partner", story_name: "She Doesn't Know He Watches Me Like That" },
-  { category: "Forbidden Desire", subtheme: "Engaged but Tempted", story_name: "I'm Getting Married in a Week" },
-  { category: "Forbidden Desire", subtheme: "Age Gap (Consensual Adults)", story_name: "He's Older and He Knows Exactly What He Wants" },
-  { category: "Forbidden Desire", subtheme: "Secret Affair", story_name: "No One Can Know" },
-  { category: "Forbidden Desire", subtheme: "Professional Boundaries", story_name: "My Doctor Has Rules About Patients" },
-  { category: "Forbidden Desire", subtheme: "Close Proximity Temptation", story_name: "Thirty-Seven Floors Alone with Him" },
-  { category: "Forbidden Desire", subtheme: "Hidden Relationship", story_name: "In Public We're Strangers" },
-  { category: "Forbidden Desire", subtheme: "Unexpected Attraction", story_name: "I Didn't Come Here for This" },
-  { category: "Forbidden Desire", subtheme: "Create Your Own Forbidden Scenario", story_name: "My Forbidden Desire" },
+  // ─── LATE NIGHT STORIES ───────────────────────────────────────────────────
+  { category: "Late Night Stories", subtheme: "after_hours",   story_name: "The Last One in the Office" },
+  { category: "Late Night Stories", subtheme: "strangers",     story_name: "I Don't Know Your Name Yet" },
+  { category: "Late Night Stories", subtheme: "long_distance", story_name: "Three Time Zones Away" },
+  { category: "Late Night Stories", subtheme: "home_alone",    story_name: "While You Were Gone" },
 
-  // ─── DARK ROMANCE ─────────────────────────────────────────────────
-  { category: "Dark Romance", subtheme: "Mysterious Stranger", story_name: "He Never Told Me His Name" },
-  { category: "Dark Romance", subtheme: "Morally Grey Hero", story_name: "He Does Bad Things and I Want Him Anyway" },
-  { category: "Dark Romance", subtheme: "Obsessive Attraction", story_name: "He Can't Stop Thinking About Me" },
-  { category: "Dark Romance", subtheme: "Possessive Energy", story_name: "He Said Mine and I Stopped Arguing" },
-  { category: "Dark Romance", subtheme: "Dangerous Attraction", story_name: "I Knew Better. I Stayed Anyway." },
-  { category: "Dark Romance", subtheme: "Emotional Walls", story_name: "He Doesn't Let Anyone In — Except Tonight" },
-  { category: "Dark Romance", subtheme: "Hidden Identity", story_name: "The Man I've Been Seeing Has Another Name" },
-  { category: "Dark Romance", subtheme: "Create Your Own Dark Romance", story_name: "My Dark Fantasy" },
+  // ─── FORBIDDEN DESIRE ────────────────────────────────────────────────────
+  { category: "Forbidden Desire", subtheme: "off_limits",            story_name: "My Best Friend's Brother" },
+  { category: "Forbidden Desire", subtheme: "power_position",        story_name: "My Boss at the Conference" },
+  { category: "Forbidden Desire", subtheme: "complicated_feelings",  story_name: "I Tried Not To" },
+  { category: "Forbidden Desire", subtheme: "the_other_life",        story_name: "His Name in My Phone" },
 
-  // ─── SLOW BURN ────────────────────────────────────────────────────
-  { category: "Slow Burn Romance", subtheme: "Friends to Lovers", story_name: "Tonight My Best Friend Becomes Something Else" },
-  { category: "Slow Burn Romance", subtheme: "Colleagues Over Time", story_name: "Two Hundred Days of Wanting Him" },
-  { category: "Slow Burn Romance", subtheme: "Almost Moments", story_name: "He Almost Kissed Me a Hundred Times" },
-  { category: "Slow Burn Romance", subtheme: "Unspoken Feelings", story_name: "He Finally Says What He's Been Thinking" },
-  { category: "Slow Burn Romance", subtheme: "Childhood Friends Reconnect", story_name: "Some Things Take Twenty Years to Happen" },
-  { category: "Slow Burn Romance", subtheme: "Create Your Own Slow Burn", story_name: "My Slow Burn" },
+  // ─── DOMINANT & SURRENDERED ───────────────────────────────────────────────
+  { category: "Dominant & Surrendered", subtheme: "he_takes_control", story_name: "You Don't Have to Think" },
+  { category: "Dominant & Surrendered", subtheme: "the_arrangement",  story_name: "Terms We Agreed To" },
+  { category: "Dominant & Surrendered", subtheme: "surrender",        story_name: "I Stopped Fighting It" },
+  { category: "Dominant & Surrendered", subtheme: "edge_command",     story_name: "Stop Me If You Want" },
 
-  // ─── ROLEPLAY FANTASY ─────────────────────────────────────────────
-  { category: "Roleplay Fantasy", subtheme: "Boss & Employee", story_name: "My Boss Kept Me Late and Closed the Blinds" },
-  { category: "Roleplay Fantasy", subtheme: "Billionaire & Stranger", story_name: "He Has the Penthouse and He Wants Company" },
-  { category: "Roleplay Fantasy", subtheme: "Bodyguard & Client", story_name: "My Bodyguard Has Rules — I'm Breaking All of Them" },
-  { category: "Roleplay Fantasy", subtheme: "Celebrity Encounter", story_name: "He Doesn't Meet Fans. He Made an Exception." },
-  { category: "Roleplay Fantasy", subtheme: "Royalty & Commoner", story_name: "The King Chose Me" },
-  { category: "Roleplay Fantasy", subtheme: "Spy & Target", story_name: "His Cover Was Flawless Until It Wasn't" },
-  { category: "Roleplay Fantasy", subtheme: "Create Your Own Roleplay", story_name: "My Fantasy" },
+  // ─── FIRST TIME & DISCOVERY ───────────────────────────────────────────────
+  { category: "First Time & Discovery", subtheme: "the_first_touch",    story_name: "How It Started" },
+  { category: "First Time & Discovery", subtheme: "permission_trust",   story_name: "Tell Me What You Want" },
+  { category: "First Time & Discovery", subtheme: "learning_each_other",story_name: "What You Like" },
+  { category: "First Time & Discovery", subtheme: "awakening",          story_name: "I Didn't Know It Could Feel Like That" },
 
-  // ─── SENSUAL INTIMACY ─────────────────────────────────────────────
-  { category: "Sensual Intimacy", subtheme: "The Long Awaited Moment", story_name: "We've Been Building to This" },
-  { category: "Sensual Intimacy", subtheme: "Morning Light", story_name: "He's Still There When I Wake Up" },
-  { category: "Sensual Intimacy", subtheme: "Whispered Confessions", story_name: "He Whispers Exactly What He Wants to Do to Me" },
-  { category: "Sensual Intimacy", subtheme: "Slow Undoing", story_name: "He Undresses Me Like He Has All Night" },
-  { category: "Sensual Intimacy", subtheme: "Create Your Own Sensual Story", story_name: "My Intimacy" },
+  // ─── EXPLICIT COLLECTION ─────────────────────────────────────────────────
+  { category: "Explicit Collection", subtheme: "raw_want",   story_name: "Don't Make Me Ask Again" },
+  { category: "Explicit Collection", subtheme: "all_night",  story_name: "We Have Time" },
+  { category: "Explicit Collection", subtheme: "intensity",  story_name: "Past the Point of Careful" },
+  { category: "Explicit Collection", subtheme: "heat",       story_name: "Scorching" },
 
-  // ─── POWER & SURRENDER ───────────────────────────────────────────
-  { category: "Power and Surrender", subtheme: "Dominant Energy (Consensual)", story_name: "He Doesn't Ask. He Takes." },
-  { category: "Power and Surrender", subtheme: "Willing Surrender", story_name: "I Want to Give Him Everything" },
-  { category: "Power and Surrender", subtheme: "She Takes Control", story_name: "Tonight I'm in Charge" },
-  { category: "Power and Surrender", subtheme: "Aftercare", story_name: "After He Undoes Me, He Puts Me Back Together" },
-  { category: "Power and Surrender", subtheme: "Create Your Own Power Dynamic", story_name: "My Power" },
+  // ─── SLOW BURN ────────────────────────────────────────────────────────────
+  { category: "Slow Burn", subtheme: "enemies_to_lovers", story_name: "The Argument That Changed Everything" },
+  { category: "Slow Burn", subtheme: "almost",            story_name: "Three Times We Didn't" },
+  { category: "Slow Burn", subtheme: "tension",           story_name: "The Way He Looks Away" },
+  { category: "Slow Burn", subtheme: "the_wait",          story_name: "Worth Every Week of It" },
 
-  // ─── LATE NIGHT ENCOUNTERS ────────────────────────────────────────
-  { category: "Late Night Encounters", subtheme: "Hotel Room", story_name: "We Shared a Hotel Room and One of Us Made a Move" },
-  { category: "Late Night Encounters", subtheme: "Bar to Something More", story_name: "Last Call Turned Into Something Else" },
-  { category: "Late Night Encounters", subtheme: "One Night That Changes Everything", story_name: "We Said One Night and I Can't Stop Thinking About It" },
-  { category: "Late Night Encounters", subtheme: "Create Your Own Late Night Encounter", story_name: "My Night" },
+  // ─── EMOTIONAL DESIRE ────────────────────────────────────────────────────
+  { category: "Emotional Desire", subtheme: "vulnerability",        story_name: "The Part I Don't Show" },
+  { category: "Emotional Desire", subtheme: "being_seen",           story_name: "He Noticed First" },
+  { category: "Emotional Desire", subtheme: "love_without_word",    story_name: "Not That Word Yet" },
+  { category: "Emotional Desire", subtheme: "aftermath_tenderness", story_name: "After the Storm of It" },
 
-  // ─── SECOND CHANCES ──────────────────────────────────────────────
-  { category: "Second Chances", subtheme: "Ex Lovers Reunite", story_name: "My Ex Shows Up and I Let Him In" },
-  { category: "Second Chances", subtheme: "Closure Turns Into Desire", story_name: "This Was Supposed to Be Goodbye" },
-  { category: "Second Chances", subtheme: "One Last Night", story_name: "Just Tonight. One More Time." },
-  { category: "Second Chances", subtheme: "Create Your Own Second Chance Story", story_name: "My Second Chance" },
+  // ─── DARK ROMANCE ─────────────────────────────────────────────────────────
+  { category: "Dark Romance", subtheme: "obsession",       story_name: "He Watched Before He Spoke" },
+  { category: "Dark Romance", subtheme: "dangerous_men",   story_name: "Not the Safe Choice" },
+  { category: "Dark Romance", subtheme: "moral_grey",      story_name: "The Man I Shouldn't Understand" },
+  { category: "Dark Romance", subtheme: "claimed",         story_name: "His to Keep" },
 
-  // ─── FIRST TIME ──────────────────────────────────────────────────
-  { category: "First Time Energy", subtheme: "First Meeting Sparks", story_name: "I Knew I Wanted Him the Moment He Spoke" },
-  { category: "First Time Energy", subtheme: "Curiosity Turns to Desire", story_name: "I Noticed His Hands First" },
-  { category: "First Time Energy", subtheme: "Create Your Own First Time Story", story_name: "My First Time" },
+  // ─── SECOND CHANCE ROMANCE ───────────────────────────────────────────────
+  { category: "Second Chance Romance", subtheme: "reunion",              story_name: "Still There When I Looked" },
+  { category: "Second Chance Romance", subtheme: "what_was_left_unsaid", story_name: "The Conversation We Never Had" },
+  { category: "Second Chance Romance", subtheme: "starting_again",       story_name: "Not the Same, Better" },
+  { category: "Second Chance Romance", subtheme: "why_it_ended",         story_name: "Timing Was the Villain" },
 
-  // ─── LUXURY & DESIRE ─────────────────────────────────────────────
-  { category: "Luxury Fantasy", subtheme: "Penthouse Seduction", story_name: "He Has the Penthouse and He Wants Me In It" },
-  { category: "Luxury Fantasy", subtheme: "Create Your Own Luxury Fantasy", story_name: "My Luxury Fantasy" },
-
-  // ─── VOICE & WHISPER ─────────────────────────────────────────────
-  { category: "Voice and Whisper", subtheme: "Reading to You", story_name: "He Reads to Me Until I Can't Concentrate" },
-  { category: "Voice and Whisper", subtheme: "Phone Call Intimacy", story_name: "He Calls at Midnight and Tells Me What He's Imagining" },
-  { category: "Voice and Whisper", subtheme: "Create Your Own Voice Story", story_name: "Just His Voice" },
-
-  // ─── PSYCHOLOGICAL THRILLER ──────────────────────────────────────
-  { category: "Psychological Thriller Romance", subtheme: "The Unreliable Lover", story_name: "He Was Perfect — Too Perfect" },
-  { category: "Psychological Thriller Romance", subtheme: "The Unravelling", story_name: "I Knew He Was Dangerous and Went Back Anyway" },
-  { category: "Psychological Thriller Romance", subtheme: "The Setup", story_name: "Nothing About Our Meeting Was an Accident" },
-  { category: "Psychological Thriller Romance", subtheme: "He's Been Watching", story_name: "He Knows Everything About Me" },
-  { category: "Psychological Thriller Romance", subtheme: "Double Identity", story_name: "The Man I've Been Seeing Has Another Life" },
-  { category: "Psychological Thriller Romance", subtheme: "Create Your Own Psychological Thriller", story_name: "My Obsession" },
-
-  // ─── THRILLER & SUSPENSE ─────────────────────────────────────────
-  { category: "Thriller Romance", subtheme: "Wrong Place, Right Person", story_name: "He Saved My Life and I Owe Him Something" },
-  { category: "Thriller Romance", subtheme: "Under Protection", story_name: "My Bodyguard Is Breaking Every Protocol for Me" },
-  { category: "Thriller Romance", subtheme: "The Heist", story_name: "We're Criminals and We Share a Bed" },
-  { category: "Thriller Romance", subtheme: "On the Run", story_name: "Every City We Hide In, We End Up in the Same Bed" },
-  { category: "Thriller Romance", subtheme: "Create Your Own Thriller Romance", story_name: "My Danger" },
-
-  // ─── SCI-FI & FUTURISTIC ─────────────────────────────────────────
-  { category: "Sci-Fi Romance", subtheme: "The AI Who Feels", story_name: "My AI Learned to Want Me" },
-  { category: "Sci-Fi Romance", subtheme: "The Time Traveller", story_name: "He Came from the Future and He Came for Me" },
-  { category: "Sci-Fi Romance", subtheme: "Last Two Standing", story_name: "We're the Last Two People and We're Not Just Surviving" },
-  { category: "Sci-Fi Romance", subtheme: "Not Quite Human", story_name: "He Isn't Human and He Knows Exactly What I Need" },
-  { category: "Sci-Fi Romance", subtheme: "In the Simulation", story_name: "None of This Is Real but What He Does to Me Is" },
-  { category: "Sci-Fi Romance", subtheme: "Remember Me", story_name: "He Loved Me in Another Life and His Body Still Remembers" },
-  { category: "Sci-Fi Romance", subtheme: "Create Your Own Sci-Fi Romance", story_name: "My Universe" },
-
-  // ─── CINEMATIC MOMENTS ───────────────────────────────────────────
-  { category: "Cinematic Moments", subtheme: "Train Station Goodbye", story_name: "He Pulls Me Back Before I Board" },
-  { category: "Cinematic Moments", subtheme: "Midnight Rooftop", story_name: "He Finds Me on the Roof at Midnight" },
-  { category: "Cinematic Moments", subtheme: "Create Your Own Cinematic Scene", story_name: "My Scene" },
-
-  // ─── CONFESSIONAL ────────────────────────────────────────────────
-  { category: "Confessional", subtheme: "The Secret Fantasy", story_name: "He Tells Me What He's Been Imagining" },
-  { category: "Confessional", subtheme: "What I Never Told You", story_name: "I Finally Tell Him What I've Always Wanted" },
-  { category: "Confessional", subtheme: "Create Your Own Confession", story_name: "Tell Me" },
-
-  // ─── WHAT IF ─────────────────────────────────────────────────────
-  { category: "What If", subtheme: "What If You Stayed", story_name: "What If He Never Got on That Plane" },
-  { category: "What If", subtheme: "Create Your Own What If", story_name: "My What If" },
-
-  // ─── 5 MINUTE DESIRE ─────────────────────────────────────────────
-  { category: "Five Minute Desire", subtheme: "The Stolen Moment", story_name: "Five Minutes in a Locked Room" },
-  { category: "Five Minute Desire", subtheme: "Fast Burn", story_name: "We Don't Have Time for Slow" },
-  { category: "Five Minute Desire", subtheme: "Create Your Own 5 Minute Fantasy", story_name: "Right Now" },
+  // ─── HISTORICAL & PERIOD ROMANCE ─────────────────────────────────────────
+  { category: "Historical & Period Romance", subtheme: "regency",          story_name: "The Season's Worst Kept Secret" },
+  { category: "Historical & Period Romance", subtheme: "victorian_desire", story_name: "Improper Hours" },
+  { category: "Historical & Period Romance", subtheme: "war_longing",      story_name: "The Night Before He Left" },
+  { category: "Historical & Period Romance", subtheme: "foreign_faraway",  story_name: "A Summer in Siena" },
 ];
 
 export function getStoryName(categoryId: string, subthemeId: string, categoryName: string): string {

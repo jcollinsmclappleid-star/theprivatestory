@@ -9,24 +9,16 @@ type TileTheme = {
 };
 
 const TILE_THEMES: Record<string, TileTheme> = {
-  forbidden_desire:               { gradient: "from-[#2a0a0a] via-[#4a1010] to-[#1a0505]", accent: "#c0392b", pattern: "shards" },
-  dark_romance:                   { gradient: "from-[#0d0d1a] via-[#1a1028] to-[#0a0a15]", accent: "#8b5cf6", pattern: "geometric" },
-  slow_burn_romance:              { gradient: "from-[#1a0f00] via-[#3d2000] to-[#120c00]", accent: "#c8893c", pattern: "waves" },
-  roleplay_fantasy:               { gradient: "from-[#0a1a1a] via-[#0f2020] to-[#080f0f]", accent: "#2dd4bf", pattern: "deco" },
-  sensual_intimacy:               { gradient: "from-[#1a0a10] via-[#2a1018] to-[#120508]", accent: "#e879a0", pattern: "organic" },
-  power_and_surrender:            { gradient: "from-[#0d0a00] via-[#1f1800] to-[#0a0800]", accent: "#c9a227", pattern: "shards" },
-  late_night_encounters:          { gradient: "from-[#020510] via-[#060c22] to-[#020510]", accent: "#6b8cce", pattern: "dots" },
-  second_chances:                 { gradient: "from-[#150a00] via-[#2a1500] to-[#100800]", accent: "#c96c2a", pattern: "loops" },
-  first_time_energy:              { gradient: "from-[#0f0d00] via-[#1f1a00] to-[#0c0b00]", accent: "#e6c84a", pattern: "organic" },
-  luxury_fantasy:                 { gradient: "from-[#100d00] via-[#221c00] to-[#0d0a00]", accent: "#c9a227", pattern: "deco" },
-  voice_and_whisper:              { gradient: "from-[#0a0a14] via-[#12121e] to-[#080810]", accent: "#a78bfa", pattern: "waves" },
-  psychological_thriller_romance: { gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#14b8a6", pattern: "circuit" },
-  thriller_romance:               { gradient: "from-[#0a0a0a] via-[#181818] to-[#050505]", accent: "#94a3b8", pattern: "shards" },
-  sci_fi_romance:                 { gradient: "from-[#000a1e] via-[#001433] to-[#000510]", accent: "#3b82f6", pattern: "circuit" },
-  cinematic_moments:              { gradient: "from-[#140a00] via-[#281400] to-[#100800]", accent: "#f59e0b", pattern: "geometric" },
-  confessional:                   { gradient: "from-[#12000a] via-[#220014] to-[#0d0008]", accent: "#ec4899", pattern: "dots" },
-  what_if:                        { gradient: "from-[#08001a] via-[#12002e] to-[#050012]", accent: "#7c3aed", pattern: "loops" },
-  five_minute_desire:             { gradient: "from-[#12080a] via-[#261018] to-[#0e0608]", accent: "#f43f5e", pattern: "shards" },
+  forbidden_desire:    { gradient: "from-[#2a0a0a] via-[#4a1010] to-[#1a0505]", accent: "#c0392b", pattern: "shards" },
+  dark_romance:        { gradient: "from-[#0d0d1a] via-[#1a1028] to-[#0a0a15]", accent: "#8b5cf6", pattern: "geometric" },
+  slow_burn:           { gradient: "from-[#1a0f00] via-[#3d2000] to-[#120c00]", accent: "#c8893c", pattern: "waves" },
+  emotional_desire:    { gradient: "from-[#1a0a10] via-[#2a1018] to-[#120508]", accent: "#e879a0", pattern: "organic" },
+  dominant_surrendered:{ gradient: "from-[#0d0a00] via-[#1f1800] to-[#0a0800]", accent: "#c9a227", pattern: "shards" },
+  late_night:          { gradient: "from-[#020510] via-[#060c22] to-[#020510]", accent: "#6b8cce", pattern: "dots" },
+  second_chance:       { gradient: "from-[#150a00] via-[#2a1500] to-[#100800]", accent: "#c96c2a", pattern: "loops" },
+  first_time:          { gradient: "from-[#0f0d00] via-[#1f1a00] to-[#0c0b00]", accent: "#e6c84a", pattern: "organic" },
+  explicit_collection: { gradient: "from-[#12080a] via-[#261018] to-[#0e0608]", accent: "#f43f5e", pattern: "shards" },
+  historical_romance:  { gradient: "from-[#100d00] via-[#221c00] to-[#0d0a00]", accent: "#c9a227", pattern: "deco" },
 };
 
 function PatternSVG({ pattern, accent }: { pattern: TileTheme["pattern"]; accent: string }) {

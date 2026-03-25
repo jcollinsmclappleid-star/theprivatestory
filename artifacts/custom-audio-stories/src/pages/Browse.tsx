@@ -9,42 +9,26 @@ import { CategoryTile } from "@/components/CategoryTile";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const CATEGORIES = [
-  { id: "forbidden_desire",            label: "Forbidden Desire" },
-  { id: "dark_romance",                label: "Dark Romance" },
-  { id: "slow_burn_romance",           label: "Slow Burn" },
-  { id: "roleplay_fantasy",            label: "Roleplay & Fantasy" },
-  { id: "sensual_intimacy",            label: "Sensual Intimacy" },
-  { id: "power_and_surrender",         label: "Power & Surrender" },
-  { id: "late_night_encounters",       label: "Late Night" },
-  { id: "second_chances",              label: "Second Chances" },
-  { id: "first_time_energy",           label: "First Time" },
-  { id: "luxury_fantasy",              label: "Luxury & Desire" },
-  { id: "voice_and_whisper",           label: "Voice & Whisper" },
-  { id: "psychological_thriller_romance", label: "Psychological" },
-  { id: "thriller_romance",            label: "Thriller" },
-  { id: "sci_fi_romance",              label: "Sci-Fi" },
-  { id: "cinematic_moments",           label: "Cinematic" },
-  { id: "confessional",                label: "Confessional" },
-  { id: "what_if",                     label: "What If" },
-  { id: "five_minute_desire",          label: "5 Min Desire" },
+  { id: "forbidden_desire",    label: "Forbidden Desire" },
+  { id: "dominant_surrendered", label: "Power & Surrender" },
+  { id: "late_night",          label: "Late Night" },
+  { id: "explicit_collection", label: "Explicit" },
+  { id: "slow_burn",           label: "Slow Burn" },
+  { id: "emotional_desire",    label: "Emotional Desire" },
+  { id: "second_chance",       label: "Second Chances" },
+  { id: "dark_romance",        label: "Dark Romance" },
+  { id: "historical_romance",  label: "Historical Romance" },
+  { id: "first_time",          label: "First Time" },
 ];
 
 const BROWSE_SECTIONS = [
   {
     label: "Tonight's Heat",
-    categoryIds: ["forbidden_desire", "power_and_surrender", "late_night_encounters", "five_minute_desire"],
+    categoryIds: ["forbidden_desire", "dominant_surrendered", "late_night", "explicit_collection"],
   },
   {
-    label: "Deep Emotion",
-    categoryIds: ["slow_burn_romance", "dark_romance", "second_chances", "sensual_intimacy"],
-  },
-  {
-    label: "Fantasy & Escape",
-    categoryIds: ["luxury_fantasy", "roleplay_fantasy", "sci_fi_romance", "what_if"],
-  },
-  {
-    label: "Edge & Intrigue",
-    categoryIds: ["thriller_romance", "psychological_thriller_romance", "confessional", "cinematic_moments"],
+    label: "Deep Romance",
+    categoryIds: ["slow_burn", "emotional_desire", "second_chance", "dark_romance"],
   },
 ];
 

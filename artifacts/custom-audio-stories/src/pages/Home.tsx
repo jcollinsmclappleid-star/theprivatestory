@@ -122,7 +122,7 @@ export default function Home() {
             className="max-w-2xl"
           >
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-              Your Romantic Story
+              The Private Story
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-4 leading-tight drop-shadow-xl">
               A story made entirely for you.

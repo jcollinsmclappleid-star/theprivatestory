@@ -11,7 +11,7 @@ export const openrouter = new OpenAI({
   apiKey,
   defaultHeaders: {
     "HTTP-Referer": "https://yourromanticstory.com",
-    "X-Title": "Your Romantic Story",
+    "X-Title": "The Private Story",
   },
 });
 

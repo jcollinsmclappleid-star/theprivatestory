@@ -7,7 +7,7 @@ export function Logo({ height = 136, className = "" }: LogoProps) {
   return (
     <img
       src="/images/logo.png"
-      alt="Your Romantic Story"
+      alt="The Private Story"
       style={{
         height: `${height}px`,
         width: "auto",

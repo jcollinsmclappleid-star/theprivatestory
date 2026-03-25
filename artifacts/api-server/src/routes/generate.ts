@@ -489,9 +489,9 @@ Return JSON only:
 rewrite_strategy must be one of: "rewrite_ending", "increase_specificity", "tighten_scene_flow", "increase_vulnerability", "rotate_dynamic_or_setting", or null.
 Set it to the single most impactful fix needed, or null if the story passes.`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_completion_tokens: 1024,
+  const completion = await openrouter.chat.completions.create({
+    model: MISTRAL_MODEL,
+    max_tokens: 1024,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
@@ -609,9 +609,11 @@ Return the improved story in this exact JSON shape:
 async function buildImagePrompts(brief: StoryBrief, story: WrittenStory): Promise<ImagePrompts> {
   const systemPrompt = `Extract the scene visually from the story. Be specific and cinematic. Avoid generic words like 'beautiful', 'cinematic', or 'high quality'. Focus on physical details, lighting, motion, and emotion. The output must describe what is visibly happening in the scene.
 
+CRITICAL IMAGE SAFETY RULE: All image prompts must be tasteful and suitable for AI image generation. Regardless of how explicit the source story is, never describe nudity, exposed genitalia, explicit sexual acts, or graphic physical contact. Instead, focus on: atmospheric tension, implied intimacy (a hand on a shoulder, faces close together, a gaze), environment and lighting, emotional state, clothed or partially clothed figures, silhouettes, and compositional mood. Evocative and sensual is the ceiling — never explicit.
+
 Return only JSON — no markdown, no explanation. Every image entry must have exactly these fields:
-- scene_subject: who is in the scene (specific, physical)
-- scene_action: what they are physically doing (active, precise)
+- scene_subject: who is in the scene (specific, physical, always clothed or tastefully implied)
+- scene_action: what they are physically doing (suggestive of intimacy but never explicit — touching, leaning, holding, a charged glance)
 - environment: the physical location with specific sensory details
 - lighting: specific light sources, direction, color temperature, contrast
 - emotion: the felt emotional state — tension, longing, urgency, restraint, etc.

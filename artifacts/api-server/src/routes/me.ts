@@ -1,13 +1,19 @@
-import { Router, type Request, type Response } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { tasteStore, storiesStore, progressStore } from "../lib/storage.js";
 
 const router = Router();
 
-function getUserId(req: Request, res: Response): string | null {
+// Shared auth guard — all /api/me/* routes require authentication
+function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
-    res.status(401).json({ error: "Authentication required" });
-    return null;
+    return res.status(401).json({ error: "Authentication required" });
   }
+  next();
+}
+
+router.use(requireAuth);
+
+function getUserId(req: Request): string {
   return req.user.id;
 }
 
@@ -15,8 +21,7 @@ function getUserId(req: Request, res: Response): string | null {
 // GET /api/me/taste — full taste profile + streak
 // ---------------------------------------------------------------------------
 router.get("/taste", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  const userId = getUserId(req);
 
   try {
     const taste = await tasteStore.get(userId);
@@ -38,8 +43,7 @@ router.get("/taste", async (req, res) => {
 // POST /api/me/taste — deep-merge increments across all taste dimensions
 // ---------------------------------------------------------------------------
 router.post("/taste", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  const userId = getUserId(req);
 
   const {
     reactionTags,
@@ -116,8 +120,7 @@ router.post("/taste", async (req, res) => {
 // GET /api/me/recommendations — multi-factor personalised recommendations
 // ---------------------------------------------------------------------------
 router.get("/recommendations", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  const userId = getUserId(req);
 
   try {
     const [taste, allStoriesMap] = await Promise.all([
@@ -216,8 +219,7 @@ router.get("/recommendations", async (req, res) => {
 // GET /api/me/continue-listening
 // ---------------------------------------------------------------------------
 router.get("/continue-listening", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  const userId = getUserId(req);
 
   try {
     const userProgressMap = await progressStore.getUserProgress(userId);

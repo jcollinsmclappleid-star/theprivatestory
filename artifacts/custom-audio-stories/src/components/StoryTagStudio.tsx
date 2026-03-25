@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../hooks/useAuth.js";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -106,9 +107,11 @@ export function StoryTagStudio({
   afterDark = false,
   accentColor = "#c9a227",
 }: Props) {
+  const { isAuthenticated } = useAuth();
   const [usualTags, setUsualTags] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     fetch(`${API_BASE}/api/me/taste`, { credentials: "include" })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
@@ -123,7 +126,7 @@ export function StoryTagStudio({
         }
       })
       .catch(() => {});
-  }, []);
+  }, [isAuthenticated]);
 
   const categories = afterDark
     ? [...STANDARD_CATEGORIES, ...AFTER_DARK_EXTRA_CATEGORIES]

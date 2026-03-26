@@ -1,0 +1,114 @@
+You are redesigning and enhancing the homepage and privacy page for a premium adult audio storytelling web app called “The Private Story”.
+
+Your task is not just to improve visuals. Your task is to increase conversion by making the user feel completely safe, unseen, and understood. The commercial objective is frictionless conversion through reassurance.
+
+This is a premium, private, personalised product. The two strongest USPs are:
+
+1. Personalisation — every story is created specifically for the user
+2. Privacy — no one sees what they create, listen to, or explore
+
+We need to lead with those two ideas throughout the homepage and privacy page. The user is not only paying for content. They are paying for discretion, emotional safety, and secrecy. The design and copy must make that obvious without sounding defensive or sterile.
+
+The overall tone should feel:
+- premium
+- intimate
+- discreet
+- calm
+- luxurious
+- emotionally intelligent
+- private, not cheap
+- sensual but never tacky
+- reassuring without being clinical
+
+The site should feel like a private members experience, not a mass-market adult site.
+
+==================================================
+PRIMARY STRATEGIC GOAL
+==================================================
+
+Create a homepage and privacy page that make a first-time visitor think:
+
+“This feels safe.”
+“This feels made for me.”
+“No one else needs to know I’m here.”
+“This is private enough to trust.”
+“This is more than a library — it’s created just for me.”
+
+The privacy sell should be embedded throughout the experience, not isolated in one section.
+
+==================================================
+HOMEPAGE OBJECTIVE
+==================================================
+
+Redesign the homepage so privacy and personalisation are communicated immediately and repeatedly, in a premium way that reduces hesitation and embarrassment friction.
+
+The current homepage should be enhanced to create:
+- stronger emotional trust
+- stronger premium value perception
+- clearer differentiation from story libraries
+- higher confidence to click into create, sample, or sign up
+
+The homepage must feel intentionally designed for private use.
+
+==================================================
+HERO SECTION — REBUILD THIS STRATEGICALLY
+==================================================
+
+The hero must instantly communicate:
+- this is personal
+- this is private
+- this is for the user only
+- no one else sees it
+
+Create a premium cinematic hero section with elegant dark styling, restrained luxury, and a calm but intimate mood.
+
+Use headline direction similar to:
+- “A private story. Written only for you.”
+- “Created for your moment. Kept entirely yours.”
+- “Personalised audio stories, made for you and heard only by you.”
+
+The subheadline must reinforce both privacy and personalisation. It should communicate that the user describes their mood or moment, and the platform creates a cinematic personalised audio story that stays private.
+
+Add a compact reassurance strip directly under the hero CTA using short trust-led statements such as:
+- No feeds
+- No sharing
+- No public activity
+- Private listening
+- Created just for you
+
+Do not make this feel like legal copy. It should feel elegant and confidence-building.
+
+The CTA area should feel low-friction and safe. Buttons should focus on the private experience, such as:
+- Create My Private Story
+- Listen to a Private Sample
+- Start Privately
+
+==================================================
+ABOVE-THE-FOLD TRUST SIGNALS
+==================================================
+
+Add trust and reassurance immediately near the top of the page.
+
+We need premium privacy reassurance, not generic ecommerce badges.
+
+Potential trust language themes:
+- Your stories are visible only to you
+- No social features, no feeds, no discovery
+- Designed for private listening
+- Personalised from your input, not taken from a public catalogue
+- Your experience is discreet by design
+
+Design this section in a visually refined way, such as small icon-supported statements or a calm trust ribbon.
+
+==================================================
+CORE DIFFERENTIATION SECTION
+==================================================
+
+Add a high-importance section near the top of the homepage with a title similar to:
+- “This isn’t a library”
+- “Nothing here exists until you ask for it”
+- “Not chosen from a catalogue. Created for you.”
+
+This section must clearly explain:
+- stories are generated from the user’s prompt, mood, and preferences
+-

@@ -519,6 +519,8 @@ export default function Create() {
         form.setValue("intensity", casting.intensity ?? "");
         form.setValue("mood", casting.mood ?? "Emotional");
         form.setValue("storyMode", casting.storyMode ?? "romance");
+        if (casting.pairing) setCastingPairing(casting.pairing);
+        if (casting.partnerName) setCastingPartnerName(casting.partnerName);
         setStep("form");
       } catch { /* ignore */ }
     }

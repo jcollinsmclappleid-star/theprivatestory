@@ -98,8 +98,8 @@ const ARCHETYPES = [
   { id: "The Executive", label: "The Executive", sub: "Measured control, understated power", gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
   { id: "The Stranger", label: "The Stranger", sub: "No backstory. Only this moment.", gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
   { id: "The Artist", label: "The Artist", sub: "Sees everything, says very little", gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
-  { id: "The Protector", label: "The Protector", sub: "Steady, watchful, one thing undoes them", gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
-  { id: "The Bad One", label: "The Bad One", sub: "Dangerous to want. Impossible not to.", gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
+  { id: "The Protector", label: "The Protector", sub: "Steady, watchful, one thing undoes him", gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
+  { id: "The Bad Boy", label: "The Bad Boy", sub: "Dangerous to want. Impossible not to.", gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
   { id: "The Professor", label: "The Professor", sub: "Brilliant, reserved, undone by you", gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
 ];
 

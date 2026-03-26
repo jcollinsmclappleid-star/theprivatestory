@@ -353,6 +353,9 @@ function OptionCard<T extends string>({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const [ageConfirmed, setAgeConfirmed] = useState(() => {
+    try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
+  });
   const [step, setStep] = useState<"casting" | "preset-prompt" | "form" | "generating" | "result">("casting");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
@@ -830,6 +833,45 @@ export default function Create() {
     ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
     : 0;
   const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] ?? result?.images?.cover ?? "";
+
+  if (!ageConfirmed) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl px-4">
+        <div className="w-full max-w-md rounded-3xl border border-border/40 bg-card/80 shadow-2xl p-8 flex flex-col items-center text-center gap-6">
+          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-7 h-7 text-primary" />
+          </div>
+          <div>
+            <h2 className="font-display text-2xl font-bold text-foreground mb-3">Adults only</h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              This platform contains explicit adult content. By continuing, you confirm you are{" "}
+              <span className="text-foreground font-semibold">18 years of age or older</span>.
+            </p>
+          </div>
+          <div className="w-full flex flex-col gap-3">
+            <button
+              onClick={() => {
+                try { localStorage.setItem("age_confirmed", "true"); } catch { /* ignore */ }
+                setAgeConfirmed(true);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
+            >
+              I am 18 or older — continue
+            </button>
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              I'm under 18 — leave
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground/60 leading-relaxed">
+            This site uses a session cookie to remember your confirmation. No personal data is collected.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (authLoading) {
     return (

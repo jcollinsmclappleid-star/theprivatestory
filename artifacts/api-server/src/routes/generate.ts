@@ -9,13 +9,68 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
-import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
+import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
+import { isBlockedInput } from "../lib/contentBlocklist.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const router: IRouter = Router();
+
+// ---------------------------------------------------------------------------
+// Content moderation
+// ---------------------------------------------------------------------------
+
+interface ModerationResult {
+  blocked: boolean;
+  reason: string | null;
+  source: "blocklist" | "openai" | null;
+}
+
+async function moderateInput(text: string): Promise<ModerationResult> {
+  // Layer 1: synchronous keyword blocklist
+  const blocklistResult = isBlockedInput(text);
+  if (blocklistResult.blocked) {
+    return { blocked: true, reason: blocklistResult.reason, source: "blocklist" };
+  }
+
+  // Layer 2: OpenAI Moderation API
+  try {
+    const moderation = await openaiDirect.moderations.create({ input: text });
+    const result = moderation.results[0];
+    if (result?.flagged) {
+      const flaggedCategories = Object.entries(result.categories)
+        .filter(([, flagged]) => flagged)
+        .map(([cat]) => cat)
+        .join(", ");
+      return { blocked: true, reason: flaggedCategories, source: "openai" };
+    }
+  } catch (err) {
+    // Log and allow through if moderation API is unavailable — blocklist is still active
+    console.error("[moderation] OpenAI Moderation API error:", err);
+  }
+
+  return { blocked: false, reason: null, source: null };
+}
+
+function logBlockedRequest(
+  userId: string | undefined,
+  sessionId: string | undefined,
+  source: string | null,
+  reason: string | null,
+  inputText: string,
+): void {
+  const hash = crypto.createHash("sha256").update(inputText).digest("hex");
+  console.warn("[content-block]", JSON.stringify({
+    timestamp: new Date().toISOString(),
+    userId: userId ?? null,
+    sessionId: sessionId ?? null,
+    blockSource: source,
+    blockReason: reason,
+    inputHash: hash,
+  }));
+}
 
 // ---------------------------------------------------------------------------
 // Interfaces
@@ -628,7 +683,11 @@ SENSORY PALETTES (pick one):
 export async function planStory(intake: GenerateStoryRequest, opts?: GenerateStoryOptions): Promise<StoryBrief> {
   const sceneCount = { "3 min": 4, "5 min": 5, "10 min": 7, "12 min": 9 }[(intake.storyLength ?? "5 min")] ?? 5;
 
-  const systemPrompt = `You are a premium story architect for an intimate, cinematic audio storytelling product.
+  const systemPrompt = `${PROHIBITED_CONTENT_BLOCK}
+
+---
+
+You are a premium story architect for an intimate, cinematic audio storytelling product.
 Your job is to turn short user input into a rich internal story brief that guarantees emotional depth, pacing, and substance.
 Do not write the final story yet.
 Return only structured JSON — no markdown, no explanation.
@@ -1613,6 +1672,25 @@ router.post("/generate-full-story", async (req, res) => {
 
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
+
+  // Step 1b: Content moderation — blocklist + OpenAI Moderation API
+  const inputToModerate = [intake.scenarioPrompt, intake.whoIsHe, intake.userInput].filter(Boolean).join(" ");
+  if (inputToModerate.trim()) {
+    const mod = await moderateInput(inputToModerate);
+    if (mod.blocked) {
+      logBlockedRequest(
+        req.isAuthenticated() ? String(req.user.id) : undefined,
+        req.sessionID,
+        mod.source,
+        mod.reason,
+        inputToModerate,
+      );
+      res.status(422).json({
+        error: "Your request contains content that cannot be processed. Please revise and try again.",
+      });
+      return;
+    }
+  }
 
   // Step 2: Create request hash and check persistent cache (bypass for variations/continuations)
   const requestHash = makeRequestHash(intake);

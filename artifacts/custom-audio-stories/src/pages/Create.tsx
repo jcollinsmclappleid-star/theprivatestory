@@ -866,7 +866,7 @@ export default function Create() {
             </button>
           </div>
           <p className="text-xs text-muted-foreground/60 leading-relaxed">
-            This site uses a session cookie to remember your confirmation. No personal data is collected.
+            Your confirmation is stored locally on this device. No personal data is collected.
           </p>
         </div>
       </div>

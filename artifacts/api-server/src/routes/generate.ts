@@ -10,6 +10,8 @@ import { fileURLToPath } from "url";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
+import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
+import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -37,6 +39,14 @@ export interface GenerateStoryRequest {
   experienceTags?: string[];
   pairing?: string;
   partnerName?: string;
+  /** Story category from STORY_CATEGORIES (e.g. "late_night", "forbidden_desire") */
+  categoryId?: string;
+  /** Subtheme within the category (e.g. "office_tension") */
+  subthemeId?: string;
+  /** Free-text user input for custom subthemes (replaces [USER_INPUT] placeholder) */
+  userInput?: string;
+  /** Numeric intensity 1–5 (overrides the string intensity when categoryId is provided) */
+  numericIntensity?: number;
 }
 
 interface ScenePlan {
@@ -230,6 +240,18 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     scenarioPrompt = rawScenario;
   }
 
+  // Validate categoryId/subthemeId against known categories
+  const categoryId = raw.categoryId?.trim() || undefined;
+  const subthemeId = raw.subthemeId?.trim() || undefined;
+  const validCategory = categoryId ? getCategoryById(categoryId) : null;
+  const validSubtheme = validCategory && subthemeId ? getSubthemeById(categoryId!, subthemeId) : null;
+
+  // Clamp numeric intensity 1–5
+  const rawNumeric = raw.numericIntensity;
+  const numericIntensity = typeof rawNumeric === "number"
+    ? Math.max(1, Math.min(5, Math.round(rawNumeric)))
+    : undefined;
+
   return {
     listenerName: raw.listenerName?.trim() ?? "",
     mood,
@@ -245,6 +267,10 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     setting: raw.setting?.trim() || undefined,
     pairing: raw.pairing?.trim() || undefined,
     partnerName: raw.partnerName?.trim() || undefined,
+    categoryId: validCategory ? categoryId : undefined,
+    subthemeId: validSubtheme ? subthemeId : undefined,
+    userInput: raw.userInput?.trim().slice(0, 500) || undefined,
+    numericIntensity,
   };
 }
 
@@ -333,7 +359,7 @@ User Input:
 - Setting Preference: ${intake.setting || "(not specified — choose based on scenario)"}
 - Relationship Pairing: ${intake.pairing ? `${intake.pairing} (${derivePairingPronouns(intake.pairing)})` : "(not specified — default to Her & Him)"}
 - Who They Are: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}${intake.partnerName ? ` — their name is ${intake.partnerName}` : ""}
-- Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}
+- Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
 - Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}
@@ -415,6 +441,10 @@ interface OriginalUserInput {
   dynamic?: string;
   pairing?: string;
   partnerName?: string;
+  categoryId?: string;
+  subthemeId?: string;
+  userInput?: string;
+  numericIntensity?: number;
   /** For series episodes: the hook premise that must open the story's first charged beat */
   hookSentence?: string;
   /** For series episodes: the arc-defined word count target (e.g. "1,800 — 1,900 words") */
@@ -435,9 +465,22 @@ export async function writeStoryFromBrief(brief: StoryBrief, listenerName: strin
     ? `\nPOV — SERIES EPISODE (OVERRIDE):\nUse THIRD-PERSON CLOSE throughout. Never use "you" to address the listener.\nRefer to the female protagonist by her name at all times. Use she/her pronouns.\nStay tightly inside her perspective. His desire must be directed at HER specifically — by name, by specific quality, never generic.\n`
     : "";
 
-  const systemPrompt = `${MASTER_EROTIC_LAYER}
+  // When a category is provided, inject the category's system_prompt as an additional layer
+  let categorySystemLayer = "";
+  let numericIntensityLayer = "";
+  if (originalInput?.categoryId && originalInput?.subthemeId) {
+    const category = getCategoryById(originalInput.categoryId);
+    if (category) {
+      categorySystemLayer = `\n\nCATEGORY CONTEXT — ${category.name.toUpperCase()}:\n${category.system_prompt}`;
+    }
+    if (typeof originalInput.numericIntensity === "number") {
+      numericIntensityLayer = `\n\n${buildNumericIntensityLayer(originalInput.numericIntensity)}`;
+    }
+  }
 
-${intensityGuidance}
+  const systemPrompt = `${MASTER_EROTIC_LAYER}${categorySystemLayer}
+
+${intensityGuidance}${numericIntensityLayer}
 ${wordCountDirective}${povDirective}
 You are writing a custom personal story for a specific listener. All MASTER EROTIC LAYER rules above apply in full — the EROTIC ARCHITECTURE, phase word targets, sensory requirements, mandatory hooks, world-grounding, variety forcing, and banned words list are all active and non-negotiable. Apply every rule as if writing a flagship title.`;
 
@@ -462,6 +505,15 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     }
     if (originalInput.partnerName) {
       anchorRequirements.push(`${idx++}. REQUIRED — PARTNER NAME: The love interest must be named "${originalInput.partnerName}" throughout the entire story. Use this name consistently — never replace it with a pronoun alone. The name must appear in narration and dialogue throughout.`);
+    }
+    if (originalInput.categoryId && originalInput.subthemeId) {
+      const subtheme = getSubthemeById(originalInput.categoryId, originalInput.subthemeId);
+      if (subtheme) {
+        const subthemePromptText = subtheme.is_custom && originalInput.userInput
+          ? subtheme.prompt.replace("[USER_INPUT]", originalInput.userInput)
+          : subtheme.prompt;
+        anchorRequirements.push(`${idx++}. REQUIRED — STORY THEME: This story is in the "${getCategoryById(originalInput.categoryId)?.name}" category, subtheme "${subtheme.name}". The following thematic direction must be honoured throughout:\n${subthemePromptText}`);
+      }
     }
   }
 
@@ -1299,6 +1351,10 @@ router.post("/generate-full-story", async (req, res) => {
       dynamic: intake.dynamic,
       pairing: intake.pairing,
       partnerName: intake.partnerName,
+      categoryId: intake.categoryId,
+      subthemeId: intake.subthemeId,
+      userInput: intake.userInput,
+      numericIntensity: intake.numericIntensity,
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 
@@ -1537,6 +1593,23 @@ router.post("/continue-story", async (req, res) => {
     const message = err instanceof Error ? err.message : "Story continuation failed";
     res.status(500).json({ error: message });
   }
+});
+
+// ---------------------------------------------------------------------------
+// GET /story-categories — public endpoint to enumerate categories + subthemes
+// ---------------------------------------------------------------------------
+router.get("/story-categories", (_req, res) => {
+  const payload = STORY_CATEGORIES.map((cat) => ({
+    id: cat.id,
+    name: cat.name,
+    description: cat.description,
+    subthemes: cat.subthemes.map((s) => ({
+      id: s.id,
+      name: s.name,
+      is_custom: s.is_custom ?? false,
+    })),
+  }));
+  res.json(payload);
 });
 
 export default router;

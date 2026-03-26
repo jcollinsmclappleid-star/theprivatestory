@@ -1,5 +1,6 @@
 import { MASTER_EROTIC_LAYER, STORY_DNA_INSTRUCTION } from "./masterEroticLayer.js";
 import { STORY_CATEGORIES } from "./storyCategories.js";
+import { getArcStage, SERIES_POV_RULE } from "./seriesArc.js";
 
 /**
  * Per-category narrator identity layer injected into the system prompt.
@@ -301,32 +302,63 @@ This story must be genuinely, viscerally arousing. Not tasteful. Not literary. E
 }
 
 export function buildSeriesLayer(episodeNum: number, totalEpisodes: number, seriesArc: string): string {
-  return `
+  const arc = getArcStage(episodeNum);
+
+  if (!arc) {
+    return `
 SERIES POSITION: Episode ${episodeNum} of ${totalEpisodes}
 ${seriesArc ? `SERIES ARC: ${seriesArc}` : ""}
 
 EPISODE REQUIREMENTS:
 - Open with a direct callback to something unresolved from the previous episode
 - This episode must shift the relationship dynamic in one specific, irreversible way
-- Introduce one new dimension of the male lead that recontextualises what came before
-- The explicit content in this episode should go one degree further than the previous episode
-- End on an unresolved moment — emotional, physical, or psychological
-- The final line must make the listener immediately need the next episode
+- End on an unresolved moment — emotional, physical, or psychological`;
+  }
 
-EPISODE ${episodeNum} SPECIFIC TENSION: ${getEpisodeTension(episodeNum, totalEpisodes)}`;
-}
+  return `
+${SERIES_POV_RULE}
 
-function getEpisodeTension(n: number, total: number): string {
-  const position = n / total;
-  if (position <= 0.2)
-    return "Establishment episode. Plant three unresolved threads. The attraction should feel inevitable but not yet acted on. End with the first moment something almost happens.";
-  if (position <= 0.4)
-    return "Escalation episode. One thread from episode one pays off partially. Introduce a complication that makes the central desire more complicated. End with the first moment of genuine physical connection.";
-  if (position <= 0.6)
-    return "Turning point episode. Something irrevocable happens. The relationship cannot go back to what it was. This is the most explicitly charged episode so far. End with an emotional revelation that reframes everything.";
-  if (position <= 0.8)
-    return "Crisis episode. The central desire is both most fulfilled and most threatened. Maximum explicit content with maximum emotional stakes. End with genuine uncertainty about whether this continues.";
-  return "Resolution episode. Every thread pays off. The most explicit and emotionally complete episode of the series. End with satisfaction but leave one door open — the listener should want a sequel series.";
+SERIES POSITION: Episode ${episodeNum} of ${totalEpisodes}
+ARC STAGE: "${arc.name}"
+${seriesArc ? `SERIES ARC CONTEXT: ${seriesArc}` : ""}
+
+EPISODE FUNCTION:
+${arc.function}
+
+EMOTIONAL JOB:
+${arc.emotional_job}
+
+EXPLICIT LEVEL: ${arc.explicit_level}
+${arc.explicit_guidance}
+
+TARGET WORD COUNT: ${arc.word_count}
+
+MANDATORY CHECKLIST FOR THIS EPISODE:
+${arc.mandatory.map((m) => `- ${m}`).join("\n")}
+
+WHAT TO PLANT IN THIS EPISODE:
+${arc.what_to_plant.map((p) => `- ${p}`).join("\n")}
+
+WHAT TO AVOID IN THIS EPISODE:
+${arc.what_to_avoid.map((a) => `- ${a}`).join("\n")}
+
+CLIFFHANGER FORMULA:
+${arc.cliffhanger_formula}
+
+TARGET LISTENER FEELING AT END:
+${arc.listener_feeling_at_end}
+
+SERIES ARCHITECTURE RULES:
+- Every episode ends before complete resolution
+- Every episode opens with a callback to the previous cliffhanger
+- The male lead must reveal one new dimension per episode
+- The dynamic must shift in each episode — never static
+${episodeNum === 5 ? "- Episode five must leave one door open for series two" : ""}
+${episodeNum > 1 ? "- Open with a direct callback to the specific unresolved moment from the previous episode's cliffhanger" : ""}
+
+BUILDUP PHILOSOPHY:
+The buildup is not the path to the product. The buildup IS the product. Every episode should leave the listener more desperate than the last. Satisfaction is always one episode away — until episode four delivers everything, and episode five makes her want a second series.
+Never give the listener what she wants when she wants it. Give it to her exactly when she can no longer stand not having it.`;
 }
 
 export function getCategoryById(categoryId: string) {

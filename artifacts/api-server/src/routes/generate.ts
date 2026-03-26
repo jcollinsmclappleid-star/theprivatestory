@@ -13,6 +13,7 @@ import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterErot
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput } from "../lib/contentBlocklist.js";
+import { logger } from "../lib/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -35,7 +36,7 @@ async function moderateInput(text: string): Promise<ModerationResult> {
     return { blocked: true, reason: blocklistResult.reason, source: "blocklist" };
   }
 
-  // Layer 2: OpenAI Moderation API
+  // Layer 2: OpenAI Moderation API — fail-closed: if unavailable, block the request
   try {
     const moderation = await openaiDirect.moderations.create({ input: text });
     const result = moderation.results[0];
@@ -47,8 +48,8 @@ async function moderateInput(text: string): Promise<ModerationResult> {
       return { blocked: true, reason: flaggedCategories, source: "openai" };
     }
   } catch (err) {
-    // Log and allow through if moderation API is unavailable — blocklist is still active
-    console.error("[moderation] OpenAI Moderation API error:", err);
+    logger.error({ err }, "[moderation] OpenAI Moderation API unavailable — blocking request (fail-closed)");
+    return { blocked: true, reason: "moderation_api_unavailable", source: "openai" };
   }
 
   return { blocked: false, reason: null, source: null };
@@ -62,14 +63,15 @@ function logBlockedRequest(
   inputText: string,
 ): void {
   const hash = crypto.createHash("sha256").update(inputText).digest("hex");
-  console.warn("[content-block]", JSON.stringify({
+  logger.warn({
+    event: "content_blocked",
     timestamp: new Date().toISOString(),
     userId: userId ?? null,
     sessionId: sessionId ?? null,
     blockSource: source,
     blockReason: reason,
     inputHash: hash,
-  }));
+  }, "[content-block] Request blocked before generation");
 }
 
 // ---------------------------------------------------------------------------
@@ -1516,8 +1518,24 @@ async function runDerivedPipeline(
 
 router.post("/plan-story", async (req, res) => {
   const body = req.body as GenerateStoryRequest;
-  const cacheKey = getCacheKey(body);
 
+  const inputToModerate = [body.scenarioPrompt, body.whoIsHe, body.userInput].filter(Boolean).join(" ");
+  if (inputToModerate.trim()) {
+    const mod = await moderateInput(inputToModerate);
+    if (mod.blocked) {
+      logBlockedRequest(
+        req.isAuthenticated() ? String(req.user.id) : undefined,
+        req.sessionID,
+        mod.source,
+        mod.reason,
+        inputToModerate,
+      );
+      res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
+      return;
+    }
+  }
+
+  const cacheKey = getCacheKey(body);
   if (briefCache.has(cacheKey)) {
     res.json(briefCache.get(cacheKey));
     return;
@@ -1544,8 +1562,24 @@ router.post("/generate-story", async (req, res) => {
     dynamic?: string;
     mood?: string;
   };
-  const cacheKey = getCacheKey({ brief, listenerName });
 
+  const inputToModerate = [scenarioPrompt, whoIsHe].filter(Boolean).join(" ");
+  if (inputToModerate.trim()) {
+    const mod = await moderateInput(inputToModerate);
+    if (mod.blocked) {
+      logBlockedRequest(
+        req.isAuthenticated() ? String(req.user.id) : undefined,
+        req.sessionID,
+        mod.source,
+        mod.reason,
+        inputToModerate,
+      );
+      res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
+      return;
+    }
+  }
+
+  const cacheKey = getCacheKey({ brief, listenerName });
   if (storyCache.has(cacheKey)) {
     res.json(storyCache.get(cacheKey));
     return;

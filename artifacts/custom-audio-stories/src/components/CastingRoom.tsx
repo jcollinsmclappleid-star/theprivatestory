@@ -104,6 +104,14 @@ function derivePronouns(pairingId: string | undefined): { partner: PronounSet; p
   };
 }
 
+function getGenderedNoun(pronounString: string): string {
+  switch (pronounString) {
+    case "she/her": return "woman";
+    case "he/him":  return "man";
+    default:        return "person";
+  }
+}
+
 function conjugateTakes(subject: string) { return subject === "They" ? "They Take" : `${subject} Takes`; }
 function conjugateLeads(subject: string) { return subject === "They" ? "They Lead" : `${subject} Leads`; }
 function conjugateBreaks(subject: string) { return subject === "They" ? "they break" : `${subject.toLowerCase()} breaks`; }
@@ -194,43 +202,55 @@ const HERITAGES = [
   { id: "Ambiguous", label: "Ambiguous", sub: "Leave it open. Let imagination fill it.", gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af" },
 ];
 
-/* ── Archetypes with pronoun-aware descriptions ─────────────────── */
+/* ── Archetypes — pronoun-aware, 14 options ───────────────────────── */
 function buildArchetypes(pairingId: string | undefined) {
   const { partner: P } = derivePronouns(pairingId);
   const s = P.subject; const o = P.object; const p = P.possessive;
   return [
-    { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
-    { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                    gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
-    { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,      gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
-    { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
-    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
-    { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
-    { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185" },
-    { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                  gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d" },
+    { id: "The Executive",    label: "The Executive",    sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                      gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
+    { id: "The Stranger",     label: "The Stranger",     sub: `No backstory. No promises. Only this moment.`,                                               gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
+    { id: "The Artist",       label: "The Artist",       sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                  gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
+    { id: "The Protector",    label: "The Protector",    sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                            gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
+    { id: "The Bad One",      label: "The Bad One",      sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                                        gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
+    { id: "The Professor",    label: "The Professor",    sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                             gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
+    { id: "The Wanderer",     label: "The Wanderer",     sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                    gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185" },
+    { id: "The Old Friend",   label: "The Old Friend",   sub: `Years of knowing each other. Tonight something finally breaks.`,                              gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d" },
+    { id: "The Detective",    label: "The Detective",    sub: `${s} notices everything. Nothing slips past ${o}. That attention has a cost.`,                gradient: "from-[#040808] via-[#081010] to-[#020404]", accent: "#67e8f9" },
+    { id: "The Doctor",       label: "The Doctor",       sub: `Clinical precision. Unshakeable calm. Until ${s} isn't.`,                                    gradient: "from-[#00080a] via-[#000c10] to-[#000406]", accent: "#a3e635" },
+    { id: "The Musician",     label: "The Musician",     sub: `${s} plays like ${s.toLowerCase()} already knows how this ends. ${s} might.`,                 gradient: "from-[#0a0002] via-[#140004] to-[#050001]", accent: "#f9a8d4" },
+    { id: "The Athlete",      label: "The Athlete",      sub: `Physical command. Total focus. That discipline doesn't stop here.`,                           gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80" },
+    { id: "The Chef",         label: "The Chef",         sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                        gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c" },
+    { id: "The Soldier",      label: "The Soldier",      sub: `Discipline runs through ${o}. So does something much harder to control.`,                    gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264" },
   ];
 }
 
 /* ── Settings ─────────────────────────────────────────────────────── */
 const CONTEMPORARY_SETTINGS = [
-  { id: "Late Night City",         label: "Late Night City",         sub: "Streets wet, lights low, anything goes",  gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
-  { id: "Luxury Hotel",            label: "Luxury Hotel",            sub: "A room for one night only",                gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
-  { id: "European Villa",          label: "European Villa",          sub: "Heat, terraces, and no schedule",          gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
-  { id: "Private Yacht",           label: "Private Yacht",           sub: "Open water. No escape. No reason to leave", gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
-  { id: "Mountain Retreat",        label: "Mountain Retreat",        sub: "Snowbound. Firelit. Nowhere else to be",   gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
-  { id: "Penthouse Suite",         label: "Penthouse Suite",         sub: "City below. Nothing between you and glass", gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc" },
-  { id: "Art Gallery After Hours", label: "Art Gallery After Hours", sub: "Empty rooms. Something priceless at stake",  gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8" },
+  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
+  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
+  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
+  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
+  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
+  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc" },
+  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8" },
+  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8" },
+  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0" },
+  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8" },
+  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d" },
+  { id: "Train Journey",            label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c" },
+  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef" },
 ];
 
 const HISTORICAL_SETTINGS = [
-  { id: "Regency England (1810s)", label: "Regency England", sub: "1810s — letters never sent, country house urgency",     gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d" },
-  { id: "Victorian London (1880s)", label: "Victorian London", sub: "1880s — fog, corsets, what's unspeakable and felt",   gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af" },
-  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris", sub: "1900s — absinthe, salons, decadent evenings",   gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b" },
-  { id: "Roaring Twenties (1920s)", label: "Roaring Twenties", sub: "1920s — speakeasies, jazz, smoke and consequence",  gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6" },
-  { id: "Wartime (1940s)", label: "Wartime", sub: "1940s — last night together, everything at stake",                     gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac" },
-  { id: "Swinging Sixties (1960s)", label: "Swinging Sixties", sub: "1960s — revolution, hotel rooms, free desire",       gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
-  { id: "Disco & Velvet (1970s)", label: "Disco & Velvet", sub: "1970s — heat, mirror balls, all night long",             gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0" },
-  { id: "Neon Decade (1980s)", label: "Neon Decade", sub: "1980s — excess, power, after hours at the top",               gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
-  { id: "Ancient Mediterranean", label: "Ancient Mediterranean", sub: "Marble, olives, conquest, and the gods watching", gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24" },
+  { id: "Regency England (1810s)",    label: "Regency England",     sub: "1810s — letters never sent, country house urgency",     gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d" },
+  { id: "Victorian London (1880s)",   label: "Victorian London",    sub: "1880s — fog, corsets, what's unspeakable and felt",     gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af" },
+  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",  sub: "1900s — absinthe, salons, decadent evenings",          gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b" },
+  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",    sub: "1920s — speakeasies, jazz, smoke and consequence",     gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6" },
+  { id: "Wartime (1940s)",            label: "Wartime",             sub: "1940s — last night together, everything at stake",     gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac" },
+  { id: "Swinging Sixties (1960s)",   label: "Swinging Sixties",    sub: "1960s — revolution, hotel rooms, free desire",         gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
+  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",      sub: "1970s — heat, mirror balls, all night long",           gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0" },
+  { id: "Neon Decade (1980s)",        label: "Neon Decade",         sub: "1980s — excess, power, after hours at the top",       gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
+  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean", sub: "Marble, olives, conquest, and the gods watching",    gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24" },
 ];
 
 const ATMOSPHERES = [
@@ -271,14 +291,22 @@ function StepBar({ current, total }: { current: number; total: number }) {
 }
 
 /* ── Live preview sentence ────────────────────────────────────────── */
-function buildPreview(data: Partial<CastingRoomResult>): string {
+function buildPreview(data: Partial<CastingRoomResult>, customArchetype: string, customSetting: string): string {
   const parts: string[] = [];
   if (data.pairing) parts.push(data.pairing);
-  if (data.chemistry) parts.push(data.chemistry.toLowerCase());
-  if (data.heritage && data.archetype) parts.push(`featuring ${data.heritage.toLowerCase()} ${data.archetype.toLowerCase()}`);
-  else if (data.heritage) parts.push(`featuring a ${data.heritage.toLowerCase()} lead`);
-  else if (data.archetype) parts.push(`featuring ${data.archetype.toLowerCase()}`);
-  if (data.setting) parts.push(`set in ${data.setting.toLowerCase()}`);
+  const archetype = data.archetype || customArchetype.trim();
+  const setting   = data.setting   || customSetting.trim();
+  const heritage  = data.heritage;
+
+  if (heritage && heritage !== "Ambiguous" && archetype) {
+    parts.push(`featuring a ${heritage} ${archetype.replace(/^The\s+/i, "").toLowerCase()}`);
+  } else if (heritage && heritage !== "Ambiguous") {
+    parts.push(`featuring a ${heritage} love interest`);
+  } else if (archetype) {
+    parts.push(`featuring ${archetype.toLowerCase()}`);
+  }
+
+  if (setting) parts.push(`set in ${setting.toLowerCase()}`);
   if (data.atmosphere) parts.push(`at ${data.atmosphere.toLowerCase()}`);
   if (data.intensity) parts.push(`— ${data.intensity.toLowerCase()} intensity`);
 
@@ -298,6 +326,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [partnerName, setPartnerName] = useState<string>("");
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [freeText, setFreeText] = useState<string>("");
+  const [customArchetype, setCustomArchetype] = useState<string>("");
+  const [customSetting, setCustomSetting] = useState<string>("");
 
   const TOTAL_STEPS = 7;
 
@@ -318,9 +348,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     switch (step) {
       case 0: return !!data.perspective;
       case 1: return !!data.pairing;
-      case 2: return !!data.heritage && !!data.archetype;
+      case 2: return !!data.heritage && (!!data.archetype || !!customArchetype.trim());
       case 3: return !!data.chemistry;
-      case 4: return !!data.setting;
+      case 4: return !!data.setting || !!customSetting.trim();
       case 5: return !!data.intensity && !!data.mood;
       case 6: return true;
       default: return true;
@@ -329,19 +359,35 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const handleFinish = () => {
     const chemistryCfg = buildChemistries(data.pairing).find(c => c.id === data.chemistry);
-    const pairingCfg = PAIRINGS.find(p => p.id === data.pairing);
-    const archetype = data.archetype ?? "";
-    const heritage = data.heritage ?? "";
-    const setting = data.setting ?? "";
-    const atmosphere = data.atmosphere ?? "";
-    const name = partnerName.trim();
+    const pairingCfg   = PAIRINGS.find(p => p.id === data.pairing);
 
-    const whoIsHe = archetype ? `${archetype}` : "";
+    // Use tile selection OR free text — free text wins only if no tile is selected
+    const archetype  = data.archetype  || customArchetype.trim();
+    const setting    = data.setting    || customSetting.trim();
+    const heritage   = data.heritage   ?? "";
+    const atmosphere = data.atmosphere ?? "";
+    const name       = partnerName.trim();
+
+    const whoIsHe = archetype;
     const dynamic = chemistryCfg?.dynamic ?? "";
+
+    // Natural, respectful heritage phrasing with gendered noun from pairing pronouns
+    const partnerPronouns = pairingCfg?.partnerPronouns ?? "he/him";
+    const genderedNoun    = getGenderedNoun(partnerPronouns);
+    const heritagePhrase  = (() => {
+      if (!heritage) return "";
+      if (heritage === "Ambiguous") {
+        return archetype
+          ? `The love interest embodies the energy of ${archetype}.`
+          : "";
+      }
+      const energyClause = archetype ? ` with the presence of ${archetype}` : "";
+      return `The love interest is a ${heritage} ${genderedNoun}${energyClause}. Write them as genuinely, specifically attractive — authentic magnetism, nothing stereotyped or reductive.`;
+    })();
 
     const fullScenario = [
       pairingCfg ? `This is a ${pairingCfg.id} story. Protagonist pronouns: ${pairingCfg.protagonistPronouns}. Love interest pronouns: ${pairingCfg.partnerPronouns}.` : "",
-      archetype && heritage ? `The love interest is ${heritage} and embodies the energy of ${archetype}.` : "",
+      heritagePhrase,
       name ? `The love interest's name is ${name}.` : "",
       setting ? `The setting is ${setting}${atmosphere ? ` during ${atmosphere}` : ""}.` : "",
       data.chemistry ? `The dynamic between them: ${data.chemistry}.` : "",
@@ -370,15 +416,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const accentColor = afterDark ? "#c0392b" : "#c9a227";
 
-  // Derive pronouns from selected pairing for use in step headings / descriptions
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
-
-  // Partner heading pronoun: "Who is he?" / "Who is she?" / "Who are they?"
   const partnerHeadingVerb = partnerP.subject === "They" ? "Who are they?" : `Who is ${partnerP.object}?`;
-
-  // Build dynamic lists
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
+
+  const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 w-full">
@@ -406,15 +449,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
         <StepBar current={step} total={TOTAL_STEPS} />
 
-        <p className="text-xs font-medium uppercase tracking-widest mb-2"
-          style={{ color: accentColor }}
-        >
+        <p className="text-xs font-medium uppercase tracking-widest mb-2" style={{ color: accentColor }}>
           {afterDark ? "After Dark" : "The Casting Room"} · Step {step + 1} of {TOTAL_STEPS}
         </p>
       </div>
 
       <AnimatePresence mode="wait">
-        {/* Step 0 — Perspective */}
+
+        {/* ── Step 0 — Perspective ─────────────────────────────────── */}
         {step === 0 && (
           <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Whose story?</h2>
@@ -430,7 +472,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 1 — Pairing */}
+        {/* ── Step 1 — Pairing ─────────────────────────────────────── */}
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
@@ -446,7 +488,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 2 — Character (pronoun-aware heading) */}
+        {/* ── Step 2 — Character ───────────────────────────────────── */}
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
@@ -465,11 +507,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
-              {partnerP.possessive.charAt(0).toUpperCase() + partnerP.possessive.slice(1)} Energy
+              {capFirst(partnerP.possessive)} Energy
             </p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
+            <div className="grid grid-cols-2 gap-2.5 mb-4">
               {archetypes.map(a => (
-                <ArtTile key={a.id} gradient={a.gradient} accent={a.accent} selected={data.archetype === a.id} onClick={() => update("archetype", a.id)}>
+                <ArtTile
+                  key={a.id}
+                  gradient={a.gradient}
+                  accent={a.accent}
+                  selected={data.archetype === a.id && !customArchetype}
+                  onClick={() => {
+                    update("archetype", a.id);
+                    setCustomArchetype("");
+                  }}
+                >
                   <p className="font-semibold text-white text-sm">{a.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{a.sub}</p>
                 </ArtTile>
@@ -477,7 +528,25 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
-              {partnerP.possessive.charAt(0).toUpperCase() + partnerP.possessive.slice(1)} Name{" "}
+              Or describe {partnerP.possessive} own energy{" "}
+              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional if tile selected)</span>
+            </p>
+            <input
+              type="text"
+              value={customArchetype}
+              onChange={e => {
+                setCustomArchetype(e.target.value);
+                if (e.target.value.trim()) {
+                  setData(d => ({ ...d, archetype: undefined }));
+                }
+              }}
+              placeholder={`Describe ${partnerP.possessive} energy in your own words…`}
+              maxLength={120}
+              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mb-6"
+            />
+
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
+              {capFirst(partnerP.possessive)} Name{" "}
               <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
             </p>
             <input
@@ -491,7 +560,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 3 — Chemistry (pronoun-aware, 9 options) */}
+        {/* ── Step 3 — Chemistry ───────────────────────────────────── */}
         {step === 3 && (
           <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">
@@ -509,7 +578,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 4 — World (contemporary + historical eras) */}
+        {/* ── Step 4 — World ───────────────────────────────────────── */}
         {step === 4 && (
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your world.</h2>
@@ -518,7 +587,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
               {CONTEMPORARY_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile
+                  key={s.id}
+                  gradient={s.gradient}
+                  accent={s.accent}
+                  selected={data.setting === s.id && !customSetting}
+                  onClick={() => {
+                    update("setting", s.id);
+                    setCustomSetting("");
+                  }}
+                >
                   <p className="font-semibold text-white text-sm">{s.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
@@ -528,12 +606,39 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
               {HISTORICAL_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile
+                  key={s.id}
+                  gradient={s.gradient}
+                  accent={s.accent}
+                  selected={data.setting === s.id && !customSetting}
+                  onClick={() => {
+                    update("setting", s.id);
+                    setCustomSetting("");
+                  }}
+                >
                   <p className="font-semibold text-white text-sm">{s.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>
+
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
+              Or create your own world{" "}
+              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional if tile selected)</span>
+            </p>
+            <input
+              type="text"
+              value={customSetting}
+              onChange={e => {
+                setCustomSetting(e.target.value);
+                if (e.target.value.trim()) {
+                  setData(d => ({ ...d, setting: undefined }));
+                }
+              }}
+              placeholder="Describe your world — time, place, atmosphere…"
+              maxLength={200}
+              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mb-6"
+            />
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
@@ -557,7 +662,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 5 — Intensity + Mood (expanded) */}
+        {/* ── Step 5 — Intensity + Mood ────────────────────────────── */}
         {step === 5 && (
           <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
@@ -605,20 +710,18 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             {/* Story preview */}
             <div className="glass-panel rounded-2xl p-5 mb-4 border border-primary/20">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Your story</p>
-              <p className="text-foreground text-sm leading-relaxed italic">"{buildPreview(data)}"</p>
+              <p className="text-foreground text-sm leading-relaxed italic">"{buildPreview(data, customArchetype, customSetting)}"</p>
             </div>
           </motion.div>
         )}
 
-        {/* Step 6 — Tag Studio */}
+        {/* ── Step 6 — Tag Studio ──────────────────────────────────── */}
         {step === 6 && (
           <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your story, your way.</h2>
-                <p className="text-muted-foreground text-sm">
-                  Shape the details. Select as many or as few as you like.
-                </p>
+                <p className="text-muted-foreground text-sm">Shape the details. Select as many or as few as you like.</p>
               </div>
               <button
                 type="button"
@@ -639,6 +742,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             />
           </motion.div>
         )}
+
       </AnimatePresence>
 
       {/* Navigation */}

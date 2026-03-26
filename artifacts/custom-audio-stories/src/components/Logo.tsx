@@ -5,18 +5,28 @@ interface LogoProps {
 
 export function Logo({ height = 80, className = "" }: LogoProps) {
   return (
-    <img
-      src="/images/logo.png"
-      alt="The Private Story"
+    <span
       style={{
-        height: `${height}px`,
-        width: "auto",
-        mixBlendMode: "lighten",
-        display: "block",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "12px",
+        overflow: "hidden",
+        lineHeight: 0,
         flexShrink: 0,
       }}
       className={className}
-    />
+    >
+      <img
+        src="/images/logo.png"
+        alt="My Private Story"
+        style={{
+          height: `${height}px`,
+          width: "auto",
+          display: "block",
+        }}
+      />
+    </span>
   );
 }
 

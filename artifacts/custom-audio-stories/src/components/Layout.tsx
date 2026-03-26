@@ -123,10 +123,14 @@ function Navbar({ streakDays }: { streakDays: number }) {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center">
-              <Logo height={80} />
+            <Link href="/" className="flex items-center gap-3">
+              <Logo height={120} />
+              <div className="md:hidden flex flex-col">
+                <span className="text-sm font-bold tracking-wide text-foreground leading-tight">My Private Story</span>
+                <span className="text-[10px] text-muted-foreground/70 tracking-widest leading-tight mt-0.5">Written just for you.</span>
+              </div>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -232,7 +236,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
 
       {/* Mobile menu drawer */}
       <div
-        className={`fixed top-24 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed top-32 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
@@ -381,7 +385,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-24 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-32 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

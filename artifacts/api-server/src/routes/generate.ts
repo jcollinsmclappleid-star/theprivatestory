@@ -566,6 +566,15 @@ function makeRequestHash(intake: GenerateStoryRequest): string {
     intake.cinematicVisuals ? "1" : "0",
     intake.emotionalFocus ? "1" : "0",
     intake.voiceFeel,
+    // Form and casting fields that affect story content and image prompts
+    intake.storyMode ?? "",
+    intake.dynamic ?? "",
+    intake.whoIsHe ?? "",
+    intake.ending ?? "",
+    intake.pairing ?? "",
+    intake.heritage ?? "",
+    intake.atmosphere ?? "",
+    intake.chemistry ?? "",
   ].join("|");
   return crypto.createHash("md5").update(key).digest("hex");
 }

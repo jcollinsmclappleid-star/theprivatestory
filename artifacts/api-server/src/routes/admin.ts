@@ -1130,7 +1130,6 @@ router.post("/generate-series", async (req, res) => {
         const seriesOriginalInput = {
           scenarioPrompt: ep.scenarioPrompt,
           whoIsHe: seriesDef.maleLead,
-          setting: undefined as string | undefined,
           dynamic: ep.dynamic,
           hookSentence: ep.hook,
           wordCountTarget: arcStage?.word_count,

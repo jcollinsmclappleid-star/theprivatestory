@@ -47,6 +47,12 @@ export interface GenerateStoryRequest {
   userInput?: string;
   /** Numeric intensity 1–5 (overrides the string intensity when categoryId is provided) */
   numericIntensity?: number;
+  /** Heritage of the love interest from the casting wizard (e.g. "Black", "South Asian") */
+  heritage?: string;
+  /** Atmosphere from the casting wizard (e.g. "Midnight", "Golden Hour") */
+  atmosphere?: string;
+  /** Chemistry selection from the casting wizard (e.g. "Push & Pull", "Slow Surrender") */
+  chemistry?: string;
 }
 
 interface ScenePlan {
@@ -121,6 +127,107 @@ function buildFinalPrompt(visual: SceneVisual): string {
     visual.composition,
     visual.key_visual_details,
   ].join(", ");
+}
+
+// ---------------------------------------------------------------------------
+// Casting-based cover image prompt builder
+// Builds DALL-E prompts directly from structured casting selections —
+// no story text involved, so no explicit content can leak through.
+// ---------------------------------------------------------------------------
+
+const IMAGE_EXPLICIT_BLOCKLIST = [
+  "nude", "naked", "topless", "bottomless", "sex", "penis", "vagina", "genitals",
+  "genitalia", "breast", "nipple", "erection", "arousal", "aroused", "orgasm", "climax",
+  "ejaculate", "ejaculation", "pornographic", "xxx", "intercourse", "explicit",
+  "fornication", "penetration", "pussy", "cock", "dick", "phallus", "vulva",
+  "undressed", "undressing", "unclothed", "exposing", "exposed",
+];
+
+function sanitizeForImagePrompt(text: string): string {
+  if (!text) return "";
+  let result = text;
+  for (const word of IMAGE_EXPLICIT_BLOCKLIST) {
+    result = result.replace(new RegExp(`\\b${word}s?\\b`, "gi"), "");
+  }
+  return result.replace(/\s+/g, " ").trim();
+}
+
+function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
+  const pairing = (intake.pairing ?? "Her & Him").toLowerCase();
+
+  let protagonistNoun = "woman";
+  let loveInterestNoun = "man";
+  if (pairing.startsWith("her & him")) {
+    protagonistNoun = "woman"; loveInterestNoun = "man";
+  } else if (pairing.startsWith("her & her")) {
+    protagonistNoun = "woman"; loveInterestNoun = "woman";
+  } else if (pairing.startsWith("him & him")) {
+    protagonistNoun = "man"; loveInterestNoun = "man";
+  } else if (pairing.includes("them") || pairing.includes("they")) {
+    loveInterestNoun = "person";
+  }
+
+  const heritage = intake.heritage?.trim();
+  const subjectDesc = heritage && heritage !== "Ambiguous"
+    ? `a ${heritage} ${loveInterestNoun}`
+    : `a ${loveInterestNoun}`;
+
+  const archetype = sanitizeForImagePrompt(intake.whoIsHe ?? "");
+  const archetypeDesc = archetype
+    ? archetype.replace(/^The\s+/i, "").toLowerCase() + " presence"
+    : "";
+
+  const setting = sanitizeForImagePrompt(intake.setting ?? "");
+  const atmosphere = sanitizeForImagePrompt(intake.atmosphere ?? "");
+  let environment: string;
+  if (setting && atmosphere) {
+    environment = `${setting}, ${atmosphere}`;
+  } else if (setting) {
+    environment = setting;
+  } else if (atmosphere) {
+    environment = `${atmosphere} atmosphere`;
+  } else {
+    environment = "intimate interior";
+  }
+
+  const moodToneMap: Record<string, string> = {
+    "Forbidden": "forbidden longing, charged restraint",
+    "Late Night": "charged late-night intensity, electric quiet",
+    "Emotional": "deep emotional connection, tender closeness",
+    "Slow Burn": "simmering tension, restrained desire",
+    "First Encounter": "electric first meeting, magnetic pull",
+    "Tender": "tender warmth, soft intimacy",
+  };
+  const moodTone = moodToneMap[intake.mood ?? ""] ?? "intimate romantic tension";
+
+  const chemistry = sanitizeForImagePrompt(intake.chemistry ?? intake.dynamic ?? "");
+
+  const parts = [
+    `${subjectDesc}${archetypeDesc ? `, ${archetypeDesc}` : ""}`,
+    `with a ${protagonistNoun}`,
+    environment,
+    moodTone,
+    chemistry ? chemistry.toLowerCase() : "",
+    "fully clothed",
+    "faces close, charged moment",
+    "tasteful romantic composition, no nudity, no explicit content",
+  ].filter(Boolean);
+
+  return `${BASE_STYLE}, ${parts.join(", ")}`;
+}
+
+function buildCoverPromptFromBrief(brief: StoryBrief): string {
+  const style = brief.image_style_direction || "warm cinematic light, amber shadows";
+  const palette = (brief.sensory_palette ?? []).slice(0, 2).join(", ");
+  return [
+    BASE_STYLE,
+    style,
+    palette,
+    "two figures in close proximity",
+    "fully clothed",
+    "intimate emotional moment",
+    "tasteful romantic composition, no nudity, no explicit content",
+  ].filter(Boolean).join(", ");
 }
 
 interface QcSubScores {
@@ -1116,8 +1223,11 @@ async function runDerivedPipeline(
     qcResult = await qcStory(brief, finalStory);
   }
 
-  // Image prompts
-  const imagePrompts = await buildImagePrompts(brief, finalStory);
+  // Cover image prompt from brief style direction (derived stories don't carry original casting data)
+  const imagePrompts: ImagePrompts = {
+    coverPrompt: buildCoverPromptFromBrief(brief),
+    scenePrompts: [],
+  };
 
   // Images + audio in parallel
   const pipelineKey = getCacheKey({ storyId, ts: Date.now() });
@@ -1396,8 +1506,11 @@ router.post("/generate-full-story", async (req, res) => {
       qcResult = await qcStory(brief, story);
     }
 
-    // Step 7: Image prompts
-    const imagePrompts = await buildImagePrompts(brief, story);
+    // Step 7: Cover image prompt built directly from casting selections
+    const imagePrompts: ImagePrompts = {
+      coverPrompt: buildCoverPromptFromCasting(intake),
+      scenePrompts: [],
+    };
 
     // Step 8: Images + audio in parallel
     const storyHash = getCacheKey({ brief, story });

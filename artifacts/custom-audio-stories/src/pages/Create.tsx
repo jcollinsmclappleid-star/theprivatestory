@@ -372,6 +372,9 @@ export default function Create() {
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
   const [castingPairing, setCastingPairing] = useState<string | undefined>();
   const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
+  const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
+  const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
+  const [castingChemistry, setCastingChemistry] = useState<string | undefined>();
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -606,6 +609,9 @@ export default function Create() {
     setPendingCastingData(castingSnapshot);
     setCastingPairing(casting.pairing);
     setCastingPartnerName(casting.partnerName);
+    setCastingHeritage(casting.heritage || undefined);
+    setCastingAtmosphere(casting.atmosphere || undefined);
+    setCastingChemistry(casting.chemistry || undefined);
     setPresetSaved(false);
 
     form.setValue("scenarioPrompt", scenarioWithFreeText);
@@ -642,6 +648,9 @@ export default function Create() {
           experienceTags: allTags.length ? allTags : undefined,
           pairing: casting.pairing || undefined,
           partnerName: casting.partnerName || undefined,
+          heritage: casting.heritage || undefined,
+          atmosphere: casting.atmosphere || undefined,
+          chemistry: casting.chemistry || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -678,12 +687,15 @@ export default function Create() {
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
           pairing: castingPairing || undefined,
           partnerName: castingPartnerName || undefined,
+          heritage: castingHeritage || undefined,
+          atmosphere: castingAtmosphere || undefined,
+          chemistry: castingChemistry || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];

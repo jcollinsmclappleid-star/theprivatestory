@@ -1058,7 +1058,8 @@ export async function rewriteStory(brief: StoryBrief, story: WrittenStory, strat
 
   const instruction = strategyInstructions[strategy] ?? strategyInstructions.rewrite_ending;
 
-  const systemPrompt = `You are rewriting a premium audio story to improve it on one specific quality dimension.
+  const systemPrompt = `${PROHIBITED_CONTENT_BLOCK}
+You are rewriting a premium audio story to improve it on one specific quality dimension.
 Apply the targeted improvement instruction precisely. Do not change what is not specified.
 Return only valid JSON in the same schema as the input story — no markdown, no explanation.
 
@@ -1292,7 +1293,8 @@ async function rewriteStoryAsVariation(
 
   const instruction = variationInstructions[variationType] ?? variationInstructions.softer;
 
-  const systemPrompt = `You are rewriting a premium cinematic audio story to apply a specific variation.
+  const systemPrompt = `${PROHIBITED_CONTENT_BLOCK}
+You are rewriting a premium cinematic audio story to apply a specific variation.
 Preserve the emotional core of the story while applying the variation instruction.
 Keep the writing premium, cinematic, and emotionally coherent.
 Return a full new story JSON in the same schema as the original.
@@ -1373,7 +1375,8 @@ async function writeStoryContinuation(
   const instruction = modeInstructions[continuationMode] ?? modeInstructions.keep_same_mood;
   const sceneCount = brief.scene_count ?? 5;
 
-  const systemPrompt = `You are writing the next chapter of a premium cinematic audio story.
+  const systemPrompt = `${PROHIBITED_CONTENT_BLOCK}
+You are writing the next chapter of a premium cinematic audio story.
 Do not restart from zero. This is a direct continuation.
 Preserve the emotional logic, relationship dynamic, and tonal atmosphere of the original.
 Make the continuation feel earned and inevitable — not random.

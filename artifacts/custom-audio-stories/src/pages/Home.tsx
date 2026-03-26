@@ -171,7 +171,7 @@ export default function Home() {
               Tell us your mood, the person you want in the room, your moment. We write it. We narrate it in your chosen voice. And it stays entirely yours.
             </p>
 
-            <div className="flex items-center gap-4 flex-wrap mb-6">
+            <div className="flex items-center gap-4 flex-wrap mb-3">
               <Link
                 href="/create"
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
@@ -180,29 +180,31 @@ export default function Home() {
                 Begin your story
               </Link>
 
-              {quickCreateReady ? (
+              <Link
+                href="/browse"
+                className="flex items-center gap-2 px-6 py-4 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border/80 transition-all font-medium"
+              >
+                <Play className="w-4 h-4 fill-current" />
+                Listen privately
+              </Link>
+            </div>
+
+            {quickCreateReady && (
+              <div className="mb-3">
                 <button
                   onClick={handleQuickCreate}
                   disabled={quickCreateLoading}
-                  className="flex items-center gap-2 px-6 py-4 rounded-full border border-primary/40 text-primary hover:bg-primary/10 transition-all font-medium disabled:opacity-50"
+                  className="flex items-center gap-1.5 text-xs text-primary/60 hover:text-primary transition-colors disabled:opacity-50"
                 >
                   {quickCreateLoading ? (
-                    <span className="w-4 h-4 rounded-full border-2 border-primary/40 border-t-primary animate-spin" />
+                    <span className="w-3 h-3 rounded-full border border-primary/40 border-t-primary animate-spin" />
                   ) : (
-                    <Zap className="w-4 h-4" />
+                    <Zap className="w-3 h-3" />
                   )}
-                  Write one for me
+                  Write one for me based on my taste
                 </button>
-              ) : (
-                <Link
-                  href="/browse"
-                  className="flex items-center gap-2 px-6 py-4 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border/80 transition-all font-medium"
-                >
-                  <Play className="w-4 h-4 fill-current" />
-                  Listen privately
-                </Link>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Fear-specific micro trust strip */}
             <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground/50 tracking-wide">

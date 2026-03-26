@@ -124,25 +124,25 @@ export default function Privacy() {
           </div>
         </section>
 
-        {/* Third-party services */}
+        {/* Third-party processors */}
         <section>
           <div className="flex items-start gap-4 mb-5">
             <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
               <LinkIcon className="w-5 h-5 text-violet-500" />
             </div>
             <div>
-              <h2 className="font-display text-xl font-bold text-foreground mb-1">Third-party services we use</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Technical processors — not partners</h2>
             </div>
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              We use a small number of third-party services to make the product work. Each one is selected because they have strong privacy commitments:
+              We do not share your data with third parties. However, the product requires a small number of technical processors to function — companies that handle data on our behalf, under strict instructions, only to deliver the service. They cannot use your data for their own purposes.
             </p>
             <div className="space-y-2">
               {[
-                { name: "OpenAI", role: "Writes your story. Does not retain or train on your inputs by default under our API agreement." },
-                { name: "ElevenLabs", role: "Narrates your story in the voice you choose. Audio is generated and served; not retained for model training." },
-                { name: "Stripe (when payment is required)", role: "Handles payment. We never see your card number — it goes directly to Stripe." },
+                { name: "OpenAI", role: "Generates your story text from your inputs. Under our API agreement, inputs are not used to train OpenAI models." },
+                { name: "ElevenLabs", role: "Converts the story text to narrated audio in your chosen voice. Audio is generated for delivery only, not retained." },
+                { name: "Stripe", role: "Processes payment. Your card details go directly to Stripe — we never see them, store them, or have access to them." },
               ].map((s) => (
                 <div key={s.name} className="glass-panel rounded-xl p-4">
                   <p className="font-semibold text-foreground text-sm mb-1">{s.name}</p>

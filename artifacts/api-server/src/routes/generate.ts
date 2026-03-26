@@ -385,7 +385,14 @@ Return JSON in exactly this shape:
   return JSON.parse(cleaned) as StoryBrief;
 }
 
-export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated"): Promise<WrittenStory> {
+interface OriginalUserInput {
+  scenarioPrompt?: string;
+  whoIsHe?: string;
+  setting?: string;
+  dynamic?: string;
+}
+
+export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated", originalInput?: OriginalUserInput): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
 
   const systemPrompt = `${MASTER_EROTIC_LAYER}
@@ -394,8 +401,15 @@ ${intensityGuidance}
 
 You are writing a custom personal story for a specific listener. All MASTER EROTIC LAYER rules above apply in full — the EROTIC ARCHITECTURE, phase word targets, sensory requirements, mandatory hooks, world-grounding, variety forcing, and banned words list are all active and non-negotiable. Apply every rule as if writing a flagship title.`;
 
-  const userPrompt = `Using the internal story brief below, write the final story.
+  const anchorBlock = originalInput ? [
+    originalInput.scenarioPrompt ? `SCENARIO (HONOUR LITERALLY — do not abstract or substitute): ${originalInput.scenarioPrompt}` : "",
+    originalInput.whoIsHe ? `WHO HE IS (USE THIS EXACTLY): ${originalInput.whoIsHe}` : "",
+    originalInput.setting ? `SETTING (USE THIS EXPLICITLY): ${originalInput.setting}` : "",
+    originalInput.dynamic ? `POWER DYNAMIC (HONOUR THIS): ${originalInput.dynamic}` : "",
+  ].filter(Boolean).join("\n") : "";
 
+  const userPrompt = `Using the internal story brief below, write the final story.
+${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}
 Internal Brief:
 ${JSON.stringify(brief, null, 2)}
 
@@ -1040,7 +1054,15 @@ router.post("/plan-story", async (req, res) => {
 });
 
 router.post("/generate-story", async (req, res) => {
-  const { brief, listenerName, intensity } = req.body as { brief: StoryBrief; listenerName?: string; intensity?: string };
+  const { brief, listenerName, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput } = req.body as {
+    brief: StoryBrief;
+    listenerName?: string;
+    intensity?: string;
+    scenarioPrompt?: string;
+    whoIsHe?: string;
+    setting?: string;
+    dynamic?: string;
+  };
   const cacheKey = getCacheKey({ brief, listenerName });
 
   if (storyCache.has(cacheKey)) {
@@ -1049,7 +1071,8 @@ router.post("/generate-story", async (req, res) => {
   }
 
   try {
-    const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated");
+    const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput) ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput } : undefined;
+    const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated", originalInput);
     storyCache.set(cacheKey, story);
     res.json(story);
   } catch (err) {
@@ -1203,8 +1226,13 @@ router.post("/generate-full-story", async (req, res) => {
     const planKey = getCacheKey({ intake });
     briefCache.set(planKey, brief);
 
-    // Step 4: Write story
-    let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity);
+    // Step 4: Write story — pass original user input so specific details survive into the final text
+    let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, {
+      scenarioPrompt: intake.scenarioPrompt,
+      whoIsHe: intake.whoIsHe,
+      setting: intake.setting,
+      dynamic: intake.dynamic,
+    });
 
     // Step 5: QC evaluation
     let qcResult = await qcStory(brief, story);
@@ -1223,7 +1251,12 @@ router.post("/generate-full-story", async (req, res) => {
       if (needsRegenerate) {
         // Full regeneration: fresh plan + fresh write from scratch
         brief = await planStory(intake);
-        story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity);
+        story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, {
+          scenarioPrompt: intake.scenarioPrompt,
+          whoIsHe: intake.whoIsHe,
+          setting: intake.setting,
+          dynamic: intake.dynamic,
+        });
       } else {
         // Targeted rewrite of the weakest dimension only
         story = await rewriteStory(brief, story, qcResult.rewrite_strategy!);

@@ -1,6 +1,6 @@
 import { MASTER_EROTIC_LAYER, STORY_DNA_INSTRUCTION } from "./masterEroticLayer.js";
 import { STORY_CATEGORIES } from "./storyCategories.js";
-import { getArcStage, SERIES_POV_RULE } from "./seriesArc.js";
+import { getArcStage, SERIES_POV_RULE, FIVE_EPISODE_EROTIC_ARC } from "./seriesArc.js";
 
 /**
  * Per-category narrator identity layer injected into the system prompt.
@@ -333,7 +333,10 @@ ${arc.explicit_guidance}
 
 TARGET WORD COUNT: ${arc.word_count}
 
-MANDATORY CHECKLIST FOR THIS EPISODE:
+UNIVERSAL MANDATORY CHECKLIST — required in every episode (non-negotiable):
+${FIVE_EPISODE_EROTIC_ARC.guardrails.mandatory_per_episode.map((m) => `- ${m}`).join("\n")}
+
+EPISODE-SPECIFIC MANDATORY CHECKLIST:
 ${arc.mandatory.map((m) => `- ${m}`).join("\n")}
 
 WHAT TO PLANT IN THIS EPISODE:

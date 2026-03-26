@@ -352,9 +352,9 @@ export const FIVE_EPISODE_EROTIC_ARC = {
     mandatory_per_episode: [
       "One new character revelation not present in previous episodes",
       "One moment of physical or psychological explicit charge",
-      "One line of dialogue that reframes the dynamic",
+      "One line of dialogue that reframes the dynamic — the title-card line. This is the line the listener will remember as THE line from this episode. Make it earn that status.",
       "One unanswered question in the final 30 seconds",
-      "A callback to something from the previous episode",
+      "A callback to something from the previous episode — open on the unresolved thing",
     ],
 
     explicit_level_progression: {

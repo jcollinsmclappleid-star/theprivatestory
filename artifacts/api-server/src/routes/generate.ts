@@ -439,6 +439,7 @@ interface OriginalUserInput {
   whoIsHe?: string;
   setting?: string;
   dynamic?: string;
+  mood?: string;
   pairing?: string;
   partnerName?: string;
   categoryId?: string;
@@ -498,6 +499,9 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     }
     if (originalInput.dynamic) {
       anchorRequirements.push(`${idx++}. REQUIRED — POWER DYNAMIC: The entire relationship must operate on this dynamic. It must be visible in dialogue, behaviour, and physical interaction throughout — not just implied: "${originalInput.dynamic}"`);
+    }
+    if (originalInput.mood) {
+      anchorRequirements.push(`${idx++}. REQUIRED — MOOD: This story must carry a "${originalInput.mood}" emotional register throughout. The mood is not a suggestion — it must be the dominant tonal quality of every scene, from atmosphere to dialogue to internal experience. Do not default to a generic romantic tone if a specific mood has been named.`);
     }
     if (originalInput.pairing) {
       const pronounGuide = derivePairingPronouns(originalInput.pairing);
@@ -1355,6 +1359,7 @@ router.post("/generate-full-story", async (req, res) => {
       whoIsHe: intake.whoIsHe,
       setting: intake.setting,
       dynamic: intake.dynamic,
+      mood: intake.mood,
       pairing: intake.pairing,
       partnerName: intake.partnerName,
       categoryId: intake.categoryId,

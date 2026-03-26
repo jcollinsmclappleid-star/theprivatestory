@@ -232,7 +232,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
 
       {/* Mobile menu drawer */}
       <div
-        className={`fixed top-32 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed top-48 left-0 right-0 z-30 md:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
@@ -382,7 +382,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-32 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-48 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

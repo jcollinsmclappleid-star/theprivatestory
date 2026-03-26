@@ -123,10 +123,10 @@ function Navbar({ streakDays }: { streakDays: number }) {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center">
-              <Logo height={120} />
+              <Logo height={88} />
             </Link>
 
             <div className="hidden md:flex items-center gap-6">

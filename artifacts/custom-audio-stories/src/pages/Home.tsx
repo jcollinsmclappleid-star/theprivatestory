@@ -159,7 +159,7 @@ export default function Home() {
             className="max-w-2xl"
           >
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              The Private Story
+              Personalised Audio Story
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
@@ -168,10 +168,10 @@ export default function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              Tell us your mood, the person you want in the room, your moment. We write it. We narrate it in your chosen voice. And it stays entirely yours.
+              Tell us your mood, the person you want in the room, your moment. We write it and narrate it — a personalised audio story that exists only for you, heard only through your headphones.
             </p>
 
-            <div className="flex items-center gap-4 flex-wrap mb-3">
+            <div className="flex items-center gap-4 flex-wrap mb-4">
               <Link
                 href="/create"
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
@@ -190,7 +190,7 @@ export default function Home() {
             </div>
 
             {quickCreateReady && (
-              <div className="mb-3">
+              <div className="mb-4">
                 <button
                   onClick={handleQuickCreate}
                   disabled={quickCreateLoading}
@@ -206,14 +206,20 @@ export default function Home() {
               </div>
             )}
 
-            {/* Fear-specific micro trust strip */}
-            <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground/50 tracking-wide">
-              {["No feeds", "No history", "No trace", "Heard only by you"].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
-                  {item}
-                </span>
-              ))}
+            {/* Privacy statement + trust strip */}
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground/60 leading-relaxed max-w-sm">
+                <Lock className="w-3 h-3 inline-block mr-1.5 text-primary/40 -mt-0.5" />
+                Built so we can't share it — not even if asked. Your stories are yours alone.
+              </p>
+              <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground/40 tracking-wide">
+                {["No feeds", "No history", "No trace", "Heard only by you"].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

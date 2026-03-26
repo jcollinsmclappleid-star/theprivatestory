@@ -10,8 +10,6 @@ export function Logo({ height = 80, className = "" }: LogoProps) {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "12px",
-        overflow: "hidden",
         lineHeight: 0,
         flexShrink: 0,
       }}

@@ -29,6 +29,20 @@ interface ModerationResult {
   source: "blocklist" | "openai" | null;
 }
 
+/** Collect all user-supplied free-text fields from a generation request into one string for moderation. */
+function extractUserText(req: Partial<GenerateStoryRequest>): string {
+  return [
+    req.listenerName,
+    req.partnerName,
+    req.scenarioPrompt,
+    req.whoIsHe,
+    req.dynamic,
+    req.setting,
+    req.userInput,
+    ...(req.experienceTags ?? []),
+  ].filter(Boolean).join(" ");
+}
+
 async function moderateInput(text: string): Promise<ModerationResult> {
   // Layer 1: synchronous keyword blocklist
   const blocklistResult = isBlockedInput(text);
@@ -1522,7 +1536,7 @@ async function runDerivedPipeline(
 router.post("/plan-story", async (req, res) => {
   const body = req.body as GenerateStoryRequest;
 
-  const inputToModerate = [body.scenarioPrompt, body.whoIsHe, body.userInput].filter(Boolean).join(" ");
+  const inputToModerate = extractUserText(body);
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
@@ -1566,7 +1580,7 @@ router.post("/generate-story", async (req, res) => {
     mood?: string;
   };
 
-  const inputToModerate = [scenarioPrompt, whoIsHe].filter(Boolean).join(" ");
+  const inputToModerate = extractUserText({ listenerName, scenarioPrompt, whoIsHe, dynamic: dynamicInput, setting, mood });
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
@@ -1710,8 +1724,8 @@ router.post("/generate-full-story", async (req, res) => {
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
 
-  // Step 1b: Content moderation — blocklist + OpenAI Moderation API
-  const inputToModerate = [intake.scenarioPrompt, intake.whoIsHe, intake.userInput].filter(Boolean).join(" ");
+  // Step 1b: Content moderation — blocklist + OpenAI Moderation API (all user-supplied fields)
+  const inputToModerate = extractUserText(intake);
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {

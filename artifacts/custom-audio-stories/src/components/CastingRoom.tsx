@@ -377,12 +377,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const heritagePhrase  = (() => {
       if (!heritage) return "";
       if (heritage === "Ambiguous") {
-        return archetype
-          ? `The love interest embodies the energy of ${archetype}.`
-          : "";
+        const energyClause = archetype ? ` who carries the presence of ${archetype}` : "";
+        return `The love interest is someone${energyClause}. Write them as genuinely, specifically attractive — not reliant on stereotypes or clichés.`;
       }
-      const energyClause = archetype ? ` with the presence of ${archetype}` : "";
-      return `The love interest is a ${heritage} ${genderedNoun}${energyClause}. Write them as genuinely, specifically attractive — authentic magnetism, nothing stereotyped or reductive.`;
+      const energyClause = archetype ? ` who carries the presence of ${archetype}` : "";
+      return `The love interest is a ${heritage} ${genderedNoun}${energyClause}. Write them as genuinely, specifically attractive — not reliant on stereotypes or clichés.`;
     })();
 
     const fullScenario = [

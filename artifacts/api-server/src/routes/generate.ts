@@ -153,8 +153,14 @@ function sanitizeForImagePrompt(text: string): string {
 }
 
 function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
-  const pairing = (intake.pairing ?? "Her & Him").toLowerCase();
+  // IMPORTANT: This function must only use fields that are GUARANTEED to be
+  // structured casting selections — never free text. Each field is validated
+  // against an explicit whitelist so unrecognised values produce nothing.
+  // whoIsHe (archetype) and setting are intentionally excluded because they
+  // can carry user-typed free text.
 
+  // --- Pairing → gender nouns ---
+  const pairing = (intake.pairing ?? "Her & Him").toLowerCase();
   let protagonistNoun = "woman";
   let loveInterestNoun = "man";
   if (pairing.startsWith("her & him")) {
@@ -167,49 +173,76 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
     loveInterestNoun = "person";
   }
 
-  const heritage = intake.heritage?.trim();
-  const subjectDesc = heritage && heritage !== "Ambiguous"
-    ? `a ${heritage} ${loveInterestNoun}`
+  // --- Heritage → visual descriptor (whitelist only) ---
+  const HERITAGE_VISUAL: Record<string, string> = {
+    "Latina": "Latina",
+    "Black": "Black",
+    "South Asian": "South Asian",
+    "European": "European",
+    "East Asian": "East Asian",
+    "Middle Eastern": "Middle Eastern",
+    "Indigenous": "Indigenous",
+  };
+  const heritageKey = intake.heritage?.trim() ?? "";
+  const heritageLabel = HERITAGE_VISUAL[heritageKey];
+  const subjectDesc = heritageLabel
+    ? `a ${heritageLabel} ${loveInterestNoun}`
     : `a ${loveInterestNoun}`;
 
-  const archetype = sanitizeForImagePrompt(intake.whoIsHe ?? "");
-  const archetypeDesc = archetype
-    ? archetype.replace(/^The\s+/i, "").toLowerCase() + " presence"
-    : "";
+  // --- Atmosphere → lighting descriptor (whitelist only) ---
+  const ATMOSPHERE_VISUAL: Record<string, string> = {
+    "Stormy":      "stormy light, dramatic shadows",
+    "Candlelit":   "warm candlelight, intimate glow",
+    "Midnight":    "midnight, deep shadow and quiet",
+    "Golden Hour": "golden hour warmth, soft haze",
+    "Rain":        "rain-slicked silver light",
+    "Sun-Soaked":  "bright sun-soaked warmth",
+    "Foggy":       "soft foggy atmosphere",
+    "Firelit":     "firelit warmth, dancing shadows",
+    "Electric":    "electric urban glow",
+    "Languid":     "languid afternoon light, unhurried",
+  };
+  const atmosphereDesc = ATMOSPHERE_VISUAL[intake.atmosphere?.trim() ?? ""] ?? "";
 
-  const setting = sanitizeForImagePrompt(intake.setting ?? "");
-  const atmosphere = sanitizeForImagePrompt(intake.atmosphere ?? "");
-  let environment: string;
-  if (setting && atmosphere) {
-    environment = `${setting}, ${atmosphere}`;
-  } else if (setting) {
-    environment = setting;
-  } else if (atmosphere) {
-    environment = `${atmosphere} atmosphere`;
-  } else {
-    environment = "intimate interior";
+  // --- Mood → emotional tension (whitelist only) ---
+  const MOOD_VISUAL: Record<string, string> = {
+    "Forbidden":       "forbidden longing, charged restraint",
+    "Late Night":      "charged late-night intensity, electric quiet",
+    "Emotional":       "deep emotional connection, tender closeness",
+    "Slow Burn":       "simmering tension, restrained desire",
+    "First Encounter": "electric first meeting, magnetic pull",
+    "Tender":          "tender warmth, soft intimacy",
+  };
+  const moodTone = MOOD_VISUAL[intake.mood?.trim() ?? ""] ?? "intimate romantic tension";
+
+  // --- Chemistry → relational energy (pattern-matched against known IDs) ---
+  // Chemistry IDs are structured but some include pronouns ("He Takes Charge",
+  // "She Takes Charge"). Match by pattern, never pass the raw string.
+  const chemId = intake.chemistry?.trim() ?? "";
+  let chemDesc = "";
+  if (/takes charge/i.test(chemId) || /\bLeads\b/i.test(chemId)) {
+    chemDesc = "one figure commanding, the other drawn in";
+  } else if (chemId === "Equal Tension" || chemId === "Rivals") {
+    chemDesc = "equal matched energy, charged proximity";
+  } else if (chemId === "Push & Pull") {
+    chemDesc = "back-and-forth tension, charged proximity";
+  } else if (chemId === "Slow Surrender") {
+    chemDesc = "slow surrender, restrained closeness";
+  } else if (chemId === "Power Play") {
+    chemDesc = "clear power dynamic, electric tension";
+  } else if (chemId === "Forbidden Pull") {
+    chemDesc = "magnetic forbidden pull between them";
+  } else if (chemId === "Worship") {
+    chemDesc = "intense adoration, reverent closeness";
   }
 
-  const moodToneMap: Record<string, string> = {
-    "Forbidden": "forbidden longing, charged restraint",
-    "Late Night": "charged late-night intensity, electric quiet",
-    "Emotional": "deep emotional connection, tender closeness",
-    "Slow Burn": "simmering tension, restrained desire",
-    "First Encounter": "electric first meeting, magnetic pull",
-    "Tender": "tender warmth, soft intimacy",
-  };
-  const moodTone = moodToneMap[intake.mood ?? ""] ?? "intimate romantic tension";
-
-  const chemistry = sanitizeForImagePrompt(intake.chemistry ?? intake.dynamic ?? "");
-
   const parts = [
-    `${subjectDesc}${archetypeDesc ? `, ${archetypeDesc}` : ""}`,
-    `with a ${protagonistNoun}`,
-    environment,
+    `${subjectDesc} with a ${protagonistNoun}`,
+    atmosphereDesc,
     moodTone,
-    chemistry ? chemistry.toLowerCase() : "",
+    chemDesc,
     "fully clothed",
-    "faces close, charged moment",
+    "faces close, charged emotional moment",
     "tasteful romantic composition, no nudity, no explicit content",
   ].filter(Boolean);
 

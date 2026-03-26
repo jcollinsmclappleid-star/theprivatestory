@@ -15,6 +15,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const formSchema = z.object({
   listenerName: z.string().optional().default(""),
+  partnerName: z.string().optional().default(""),
   mood: z.string().min(1),
   intensity: z.string(),
   voiceFeel: z.string(),
@@ -370,6 +371,7 @@ export default function Create() {
 
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
+  const [perspective, setPerspective] = useState<"your" | "her" | "his">("your");
   const [castingPairing, setCastingPairing] = useState<string | undefined>();
   const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
@@ -384,6 +386,7 @@ export default function Create() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       listenerName: "",
+      partnerName: "",
       mood: "Emotional",
       intensity: "Tender",
       voiceFeel: "Soft Voice",
@@ -686,7 +689,7 @@ export default function Create() {
           storyMode: form.getValues("storyMode") || undefined,
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
           pairing: castingPairing || undefined,
-          partnerName: castingPartnerName || undefined,
+          partnerName: castingPartnerName || form.getValues("partnerName") || undefined,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
@@ -739,7 +742,7 @@ export default function Create() {
           storyMode: data.storyMode || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
           pairing: castingPairing || undefined,
-          partnerName: castingPartnerName || undefined,
+          partnerName: castingPartnerName || data.partnerName || undefined,
         },
       });
     } finally {
@@ -922,6 +925,73 @@ export default function Create() {
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
+              {/* Whose Story? — Perspective selector + name fields */}
+              <div className="glass-panel rounded-2xl p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Whose story is this?</label>
+                  <p className="text-xs text-muted-foreground mb-4">Choose the perspective the story is written from.</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["your", "her", "his"] as const).map((p) => {
+                      const labels = { your: "Your Story", her: "Her Story", his: "His Story" };
+                      const descs = { your: "Written as you", her: "Written as her", his: "Written as him" };
+                      const isSelected = perspective === p;
+                      return (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPerspective(p)}
+                          className={`flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl border text-center transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/10 shadow-glow"
+                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                          }`}
+                        >
+                          <span className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                            {labels[p]}
+                          </span>
+                          <span className="text-xs text-muted-foreground">{descs[p]}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-2">
+                      {perspective === "your" ? "Your name" : perspective === "her" ? "Her name" : "His name"}
+                      <span className="font-normal"> (optional)</span>
+                    </label>
+                    <input
+                      {...form.register("listenerName")}
+                      placeholder={
+                        perspective === "your"
+                          ? "How should the story address you?"
+                          : perspective === "her"
+                          ? "What is her name?"
+                          : "What is his name?"
+                      }
+                      className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-2">
+                      {perspective === "his" ? "Her name" : "His name"}
+                      <span className="font-normal"> — the love interest (optional)</span>
+                    </label>
+                    <input
+                      {...form.register("partnerName")}
+                      placeholder={
+                        perspective === "his"
+                          ? "What is her name?"
+                          : "What is his name?"
+                      }
+                      className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Story Experience — Path Selector */}
               <div className="glass-panel rounded-2xl p-6">
                 <label className="block text-sm font-medium text-foreground mb-1">Your Experience</label>
@@ -1000,18 +1070,6 @@ export default function Create() {
                   )}
                 </motion.div>
               </AnimatePresence>
-
-              {/* Your Name */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-3">
-                  Your Name <span className="text-muted-foreground font-normal">(optional)</span>
-                </label>
-                <input
-                  {...form.register("listenerName")}
-                  placeholder="How should the story address you?"
-                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
-                />
-              </div>
 
               {/* Your Scenario */}
               <div className="glass-panel rounded-2xl p-6">

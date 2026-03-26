@@ -1181,7 +1181,7 @@ router.post("/plan-story", async (req, res) => {
 });
 
 router.post("/generate-story", async (req, res) => {
-  const { brief, listenerName, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput } = req.body as {
+  const { brief, listenerName, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } = req.body as {
     brief: StoryBrief;
     listenerName?: string;
     intensity?: string;
@@ -1189,6 +1189,7 @@ router.post("/generate-story", async (req, res) => {
     whoIsHe?: string;
     setting?: string;
     dynamic?: string;
+    mood?: string;
   };
   const cacheKey = getCacheKey({ brief, listenerName });
 
@@ -1198,7 +1199,7 @@ router.post("/generate-story", async (req, res) => {
   }
 
   try {
-    const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput) ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput } : undefined;
+    const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput || mood) ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } : undefined;
     const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated", originalInput);
     storyCache.set(cacheKey, story);
     res.json(story);

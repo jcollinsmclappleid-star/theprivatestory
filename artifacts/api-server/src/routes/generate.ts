@@ -390,6 +390,10 @@ interface OriginalUserInput {
   whoIsHe?: string;
   setting?: string;
   dynamic?: string;
+  /** For series episodes: the hook sentence that must open the story beat */
+  hookSentence?: string;
+  /** For series episodes: the arc-defined word count target (e.g. "1,800 — 1,900 words") */
+  wordCountTarget?: string;
 }
 
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated", originalInput?: OriginalUserInput): Promise<WrittenStory> {
@@ -408,8 +412,16 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     originalInput.dynamic ? `POWER DYNAMIC (HONOUR THIS): ${originalInput.dynamic}` : "",
   ].filter(Boolean).join("\n") : "";
 
+  const hookDirective = originalInput?.hookSentence
+    ? `\nMandatory OPENING HOOK — this precise premise must open the story and set its first charged beat:\n"${originalInput.hookSentence}"\nThe story's very first scene must open with or immediately embody this hook. Do not substitute, do not move it later, do not paraphrase it into something softer.\n`
+    : "";
+
+  const wordCountDirective = originalInput?.wordCountTarget
+    ? `\nWORD COUNT TARGET: ${originalInput.wordCountTarget} total across all scenes. Distribute proportionally across scenes according to their phase. Stay within 5% of this target — do not compress, do not pad.\n`
+    : "";
+
   const userPrompt = `Using the internal story brief below, write the final story.
-${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}
+${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}${hookDirective}${wordCountDirective}
 Internal Brief:
 ${JSON.stringify(brief, null, 2)}
 

@@ -191,6 +191,9 @@ export function getArcStage(episodeNumber: number): EpisodeArcStage | undefined 
   return EPISODE_ARC_STAGES.find((s) => s.number === episodeNumber);
 }
 
+/** Alias matching the framework name used in product specification */
+export const FIVE_EPISODE_EROTIC_ARC = EPISODE_ARC_STAGES;
+
 export const SERIES_POV_RULE = `
 POV — SERIES EPISODES:
 These episodes use THIRD-PERSON CLOSE perspective throughout.

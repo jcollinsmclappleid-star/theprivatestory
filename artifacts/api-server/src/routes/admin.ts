@@ -1126,9 +1126,19 @@ router.post("/generate-series", async (req, res) => {
         send({ message: `Episode ${epNum}/${totalEps}: Building story architecture…`, episode: epNum });
         let brief = await planStory(intake, { seriesLayer });
 
+        // Build the original input anchor for writing — includes hook and word count from arc
+        const seriesOriginalInput = {
+          scenarioPrompt: ep.scenarioPrompt,
+          whoIsHe: seriesDef.maleLead,
+          setting: undefined as string | undefined,
+          dynamic: ep.dynamic,
+          hookSentence: ep.hook,
+          wordCountTarget: arcStage?.word_count,
+        };
+
         // Write
         send({ message: `Episode ${epNum}/${totalEps}: Writing narrative…`, episode: epNum });
-        let story = await writeStoryFromBrief(brief, "", ep.intensity);
+        let story = await writeStoryFromBrief(brief, "", resolvedIntensity, seriesOriginalInput);
 
         // QC
         send({ message: `Episode ${epNum}/${totalEps}: Quality review…`, episode: epNum });
@@ -1137,7 +1147,7 @@ router.post("/generate-series", async (req, res) => {
         if (qcResult.score_total < 7.5) {
           send({ message: `Episode ${epNum}/${totalEps}: Regenerating (QC score ${qcResult.score_total.toFixed(1)})…`, episode: epNum });
           brief = await planStory(intake, { seriesLayer });
-          story = await writeStoryFromBrief(brief, "", ep.intensity);
+          story = await writeStoryFromBrief(brief, "", resolvedIntensity, seriesOriginalInput);
           qcResult = await qcStory(brief, story);
         } else if (qcResult.rewrite_strategy) {
           send({ message: `Episode ${epNum}/${totalEps}: Refining (${qcResult.rewrite_strategy})…`, episode: epNum });

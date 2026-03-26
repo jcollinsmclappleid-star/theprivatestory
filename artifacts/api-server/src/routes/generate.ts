@@ -390,19 +390,30 @@ interface OriginalUserInput {
   whoIsHe?: string;
   setting?: string;
   dynamic?: string;
-  /** For series episodes: the hook sentence that must open the story beat */
+  /** For series episodes: the hook premise that must open the story's first charged beat */
   hookSentence?: string;
   /** For series episodes: the arc-defined word count target (e.g. "1,800 — 1,900 words") */
   wordCountTarget?: string;
+  /** True for series episodes — enforces third-person close POV instead of second-person */
+  isSeries?: boolean;
 }
 
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated", originalInput?: OriginalUserInput): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
+  const isSeries = originalInput?.isSeries === true;
+
+  const wordCountDirective = originalInput?.wordCountTarget
+    ? `\nWORD COUNT TARGET (MANDATORY): ${originalInput.wordCountTarget} total across all scenes. Distribute proportionally by scene phase. Stay within 5% of this target — do not compress, do not pad.\n`
+    : "";
+
+  const povDirective = isSeries
+    ? `\nPOV — SERIES EPISODE (OVERRIDE):\nUse THIRD-PERSON CLOSE throughout. Never use "you" to address the listener.\nRefer to the female protagonist by her name at all times. Use she/her pronouns.\nStay tightly inside her perspective. His desire must be directed at HER specifically — by name, by specific quality, never generic.\n`
+    : "";
 
   const systemPrompt = `${MASTER_EROTIC_LAYER}
 
 ${intensityGuidance}
-
+${wordCountDirective}${povDirective}
 You are writing a custom personal story for a specific listener. All MASTER EROTIC LAYER rules above apply in full — the EROTIC ARCHITECTURE, phase word targets, sensory requirements, mandatory hooks, world-grounding, variety forcing, and banned words list are all active and non-negotiable. Apply every rule as if writing a flagship title.`;
 
   const anchorBlock = originalInput ? [
@@ -416,19 +427,15 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     ? `\nMandatory OPENING HOOK — this precise premise must open the story and set its first charged beat:\n"${originalInput.hookSentence}"\nThe story's very first scene must open with or immediately embody this hook. Do not substitute, do not move it later, do not paraphrase it into something softer.\n`
     : "";
 
-  const wordCountDirective = originalInput?.wordCountTarget
-    ? `\nWORD COUNT TARGET: ${originalInput.wordCountTarget} total across all scenes. Distribute proportionally across scenes according to their phase. Stay within 5% of this target — do not compress, do not pad.\n`
-    : "";
-
   const userPrompt = `Using the internal story brief below, write the final story.
-${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}${hookDirective}${wordCountDirective}
+${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}${hookDirective}
 Internal Brief:
 ${JSON.stringify(brief, null, 2)}
 
 The listener's name is: ${listenerName || "you"}
 
 Requirements:
-- Use ${brief.point_of_view} point of view — address the listener as "you" throughout
+- ${isSeries ? `Use THIRD-PERSON CLOSE point of view — she/her pronouns, protagonist by name throughout. NEVER address the listener as "you" in series episodes.` : `Use ${brief.point_of_view} point of view — address the listener as "you" throughout`}
 - Write exactly ${brief.scene_count} scenes, following the scene_plan precisely
 - Each scene has a "phase" label in the scene_plan — use it to determine the word count and intensity for that scene:
   ESTABLISH = 200-250 words (grounding, atmosphere, world-building)

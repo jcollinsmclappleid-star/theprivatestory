@@ -1126,7 +1126,7 @@ router.post("/generate-series", async (req, res) => {
         send({ message: `Episode ${epNum}/${totalEps}: Building story architecture…`, episode: epNum });
         let brief = await planStory(intake, { seriesLayer });
 
-        // Build the original input anchor for writing — includes hook and word count from arc
+        // Build the original input anchor for writing — includes hook, word count, and series flag
         const seriesOriginalInput = {
           scenarioPrompt: ep.scenarioPrompt,
           whoIsHe: seriesDef.maleLead,
@@ -1134,6 +1134,7 @@ router.post("/generate-series", async (req, res) => {
           dynamic: ep.dynamic,
           hookSentence: ep.hook,
           wordCountTarget: arcStage?.word_count,
+          isSeries: true,
         };
 
         // Write

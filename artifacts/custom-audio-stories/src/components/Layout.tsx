@@ -162,7 +162,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4" />
-              Write My Story
+              Begin your story
             </Link>
 
             {!isLoading && (
@@ -275,7 +275,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-3 rounded-xl font-semibold text-sm"
             >
               <Sparkles className="w-4 h-4" />
-              Write My Story
+              Begin your story
             </Link>
           </div>
 
@@ -334,10 +334,11 @@ function Navbar({ streakDays }: { streakDays: number }) {
 function Footer() {
   const footerLinks = [
     { label: "Home", href: "/" },
-    { label: "Gift a Story", href: "/gift" },
     { label: "Browse", href: "/browse" },
     { label: "Series", href: "/series" },
+    { label: "After Dark", href: "/after-dark" },
     { label: "My Library", href: "/library" },
+    { label: "Gift a Story", href: "/gift" },
   ];
 
   return (

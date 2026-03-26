@@ -50,7 +50,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
             <div className="space-y-3">
               <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-400 text-background font-semibold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
                 <Sparkles className="w-4 h-4" />
-                Start Free Trial
+                Begin your private story
               </button>
               <button
                 onClick={onClose}

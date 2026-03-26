@@ -85,42 +85,158 @@ const PAIRINGS: PairingOption[] = [
   { id: "Them & Them", label: "Them & Them", sub: "Non-binary + non-binary",  gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af",  protagonistPronouns: "they/them", partnerPronouns: "they/them"},
 ];
 
+/* ── Pronoun helpers ─────────────────────────────────────────────── */
+interface PronounSet { subject: string; object: string; possessive: string; reflexive: string; }
+
+function getPronounSet(pronounString: string): PronounSet {
+  switch (pronounString) {
+    case "she/her": return { subject: "She", object: "her", possessive: "her", reflexive: "herself" };
+    case "he/him":  return { subject: "He",  object: "him", possessive: "his", reflexive: "himself" };
+    default:        return { subject: "They", object: "them", possessive: "their", reflexive: "themselves" };
+  }
+}
+
+function derivePronouns(pairingId: string | undefined): { partner: PronounSet; protagonist: PronounSet } {
+  const cfg = PAIRINGS.find(p => p.id === pairingId);
+  return {
+    partner:     getPronounSet(cfg?.partnerPronouns     ?? "he/him"),
+    protagonist: getPronounSet(cfg?.protagonistPronouns ?? "she/her"),
+  };
+}
+
+function conjugateTakes(subject: string) { return subject === "They" ? "They Take" : `${subject} Takes`; }
+function conjugateLeads(subject: string) { return subject === "They" ? "They Lead" : `${subject} Leads`; }
+function conjugateBreaks(subject: string) { return subject === "They" ? "they break" : `${subject.toLowerCase()} breaks`; }
+
+/* ── Chemistries — built dynamically with pronoun awareness ──────── */
+interface ChemistryOption {
+  id: string; label: string; sub: string; dynamic: string;
+  gradient: string; accent: string;
+}
+
+function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
+  const { partner: P, protagonist: ME } = derivePronouns(pairingId);
+  return [
+    {
+      id: `${P.subject} Takes Charge`,
+      label: `${conjugateTakes(P.subject)} Charge`,
+      sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Inevitable.`,
+      dynamic: "They pursue, I decide",
+      gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
+    },
+    {
+      id: "Equal Tension",
+      label: "Equal Tension",
+      sub: "Neither one yields. That's the whole story.",
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#080010] via-[#100020] to-[#040008]", accent: "#818cf8",
+    },
+    {
+      id: `${ME.subject} Leads`,
+      label: `${conjugateLeads(ME.subject)}`,
+      sub: `${ME.subject} decides the pace. ${P.subject} stays exactly where ${P.subject === "They" ? "they're" : `${P.subject.toLowerCase()}'s`} told.`,
+      dynamic: "I take what I want",
+      gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
+    },
+    {
+      id: "Push & Pull",
+      label: "Push & Pull",
+      sub: `Back and forth. Who ${conjugateBreaks(P.subject)} first?`,
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#100000] via-[#200000] to-[#080000]", accent: "#fb923c",
+    },
+    {
+      id: "Slow Surrender",
+      label: "Slow Surrender",
+      sub: "Resistance is part of the pleasure. It always was.",
+      dynamic: "They pursue, I decide",
+      gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8",
+    },
+    {
+      id: "Power Play",
+      label: "Power Play",
+      sub: `${P.subject} holds the advantage. Tonight ${P.subject === "They" ? "they use it" : `${P.possessive} using it`}.`,
+      dynamic: "Dominant and yielding",
+      gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
+    },
+    {
+      id: "Forbidden Pull",
+      label: "Forbidden Pull",
+      sub: "They shouldn't. They've been trying not to. They can't stop.",
+      dynamic: "Forbidden desire",
+      gradient: "from-[#08000a] via-[#120014] to-[#040008]", accent: "#9333ea",
+    },
+    {
+      id: "Worship",
+      label: "Worship",
+      sub: `${P.subject} makes ${ME.object} feel like the only thing in the room. The world.`,
+      dynamic: "Adoration and surrender",
+      gradient: "from-[#001010] via-[#001e1e] to-[#000a0a]", accent: "#2dd4bf",
+    },
+    {
+      id: "Rivals",
+      label: "Rivals",
+      sub: "They've always been at each other's throats. This is what that was.",
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#0a0800] via-[#121000] to-[#050600]", accent: "#84cc16",
+    },
+  ];
+}
+
 const HERITAGES = [
   { id: "Latina", label: "Latina", sub: "Warm, magnetic, fire beneath calm", gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840" },
   { id: "Black", label: "Black", sub: "Radiant, commanding presence", gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc" },
   { id: "South Asian", label: "South Asian", sub: "Layered beauty, quiet intensity", gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24" },
   { id: "European", label: "European", sub: "Refined edges, complicated wanting", gradient: "from-[#040814] via-[#081220] to-[#02060e]", accent: "#94a3b8" },
   { id: "East Asian", label: "East Asian", sub: "Elegant, precise, quietly devastating", gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#2dd4bf" },
+  { id: "Middle Eastern", label: "Middle Eastern", sub: "Striking depth, magnetic gravity", gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#f59e0b" },
+  { id: "Indigenous", label: "Indigenous", sub: "Rooted, fierce, unapologetically present", gradient: "from-[#060e02] via-[#0e1a04] to-[#030800]", accent: "#86efac" },
   { id: "Ambiguous", label: "Ambiguous", sub: "Leave it open. Let imagination fill it.", gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af" },
 ];
 
-const ARCHETYPES = [
-  { id: "The Executive", label: "The Executive", sub: "Measured control, understated power", gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
-  { id: "The Stranger", label: "The Stranger", sub: "No backstory. Only this moment.", gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
-  { id: "The Artist", label: "The Artist", sub: "Sees everything, says very little", gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
-  { id: "The Protector", label: "The Protector", sub: "Steady, watchful, one thing undoes him", gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
-  { id: "The Bad Boy", label: "The Bad Boy", sub: "Dangerous to want. Impossible not to.", gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
-  { id: "The Professor", label: "The Professor", sub: "Brilliant, reserved, undone by you", gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
+/* ── Archetypes with pronoun-aware descriptions ─────────────────── */
+function buildArchetypes(pairingId: string | undefined) {
+  const { partner: P } = derivePronouns(pairingId);
+  const s = P.subject; const o = P.object; const p = P.possessive;
+  return [
+    { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
+    { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                    gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
+    { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,      gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
+    { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
+    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
+    { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
+    { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185" },
+    { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                  gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d" },
+  ];
+}
+
+/* ── Settings ─────────────────────────────────────────────────────── */
+const CONTEMPORARY_SETTINGS = [
+  { id: "Late Night City",         label: "Late Night City",         sub: "Streets wet, lights low, anything goes",  gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
+  { id: "Luxury Hotel",            label: "Luxury Hotel",            sub: "A room for one night only",                gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
+  { id: "European Villa",          label: "European Villa",          sub: "Heat, terraces, and no schedule",          gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
+  { id: "Private Yacht",           label: "Private Yacht",           sub: "Open water. No escape. No reason to leave", gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
+  { id: "Mountain Retreat",        label: "Mountain Retreat",        sub: "Snowbound. Firelit. Nowhere else to be",   gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
+  { id: "Penthouse Suite",         label: "Penthouse Suite",         sub: "City below. Nothing between you and glass", gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc" },
+  { id: "Art Gallery After Hours", label: "Art Gallery After Hours", sub: "Empty rooms. Something priceless at stake",  gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8" },
 ];
 
-const CHEMISTRIES = [
-  { id: "He Takes Charge", label: "He Takes Charge", sub: "He knows what he wants. He's patient about it.", dynamic: "He pursues, I decide", gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227" },
-  { id: "Equal Tension", label: "Equal Tension", sub: "Neither one yields. That's the whole story.", dynamic: "Equal desire, equal intensity", gradient: "from-[#080010] via-[#100020] to-[#040008]", accent: "#818cf8" },
-  { id: "She Leads", label: "She Leads", sub: "She decides the pace. He stays ready.", dynamic: "I take what I want", gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6" },
-  { id: "Push & Pull", label: "Push & Pull", sub: "Back and forth. Who breaks first?", dynamic: "Equal desire, equal intensity", gradient: "from-[#100000] via-[#200000] to-[#080000]", accent: "#fb923c" },
-  { id: "Slow Surrender", label: "Slow Surrender", sub: "Resistance is part of the pleasure.", dynamic: "He pursues, I decide", gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8" },
+const HISTORICAL_SETTINGS = [
+  { id: "Regency England (1810s)", label: "Regency England", sub: "1810s — letters never sent, country house urgency",     gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d" },
+  { id: "Victorian London (1880s)", label: "Victorian London", sub: "1880s — fog, corsets, what's unspeakable and felt",   gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af" },
+  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris", sub: "1900s — absinthe, salons, decadent evenings",   gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b" },
+  { id: "Roaring Twenties (1920s)", label: "Roaring Twenties", sub: "1920s — speakeasies, jazz, smoke and consequence",  gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6" },
+  { id: "Wartime (1940s)", label: "Wartime", sub: "1940s — last night together, everything at stake",                     gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac" },
+  { id: "Swinging Sixties (1960s)", label: "Swinging Sixties", sub: "1960s — revolution, hotel rooms, free desire",       gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
+  { id: "Disco & Velvet (1970s)", label: "Disco & Velvet", sub: "1970s — heat, mirror balls, all night long",             gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0" },
+  { id: "Neon Decade (1980s)", label: "Neon Decade", sub: "1980s — excess, power, after hours at the top",               gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
+  { id: "Ancient Mediterranean", label: "Ancient Mediterranean", sub: "Marble, olives, conquest, and the gods watching", gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24" },
 ];
 
-const SETTINGS = [
-  { id: "Late Night City", label: "Late Night City", gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
-  { id: "Luxury Hotel", label: "Luxury Hotel", gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
-  { id: "European Villa", label: "European Villa", gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
-  { id: "Private Yacht", label: "Private Yacht", gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
-  { id: "Mountain Retreat", label: "Mountain Retreat", gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
-  { id: "Historical Era", label: "Historical Era", gradient: "from-[#120800] via-[#201200] to-[#0a0500]", accent: "#e07840" },
+const ATMOSPHERES = [
+  "Stormy", "Candlelit", "Midnight", "Golden Hour",
+  "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid",
 ];
-
-const ATMOSPHERES = ["Stormy", "Candlelit", "Midnight", "Golden Hour", "Rain", "Sun-Soaked"];
 
 const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: string; color: string }[] = [
   { id: "Tender",    label: "Tender",    desc: "Emotional, slow burn",     color: "#60a5fa" },
@@ -131,8 +247,11 @@ const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: st
 
 const MOODS = [
   "Romantic", "Emotional", "Raw", "Playful", "Dark",
-  "Nostalgic", "Urgent", "Possessive", "Electric",
-  "Bittersweet", "Forbidden", "Vulnerable", "Healing", "Complicated",
+  "Nostalgic", "Urgent", "Possessive", "Electric", "Bittersweet",
+  "Forbidden", "Vulnerable", "Healing", "Complicated", "Obsessive",
+  "Desperate", "Fevered", "Wicked", "Decadent", "Dangerous",
+  "Hungry", "Savage", "Aching", "Burning", "Shameless",
+  "Breathless", "Primal", "Reckless",
 ];
 
 /* ── Progress bar ─────────────────────────────────────────────────── */
@@ -209,7 +328,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   };
 
   const handleFinish = () => {
-    const chemistryCfg = CHEMISTRIES.find(c => c.id === data.chemistry);
+    const chemistryCfg = buildChemistries(data.pairing).find(c => c.id === data.chemistry);
     const pairingCfg = PAIRINGS.find(p => p.id === data.pairing);
     const archetype = data.archetype ?? "";
     const heritage = data.heritage ?? "";
@@ -250,6 +369,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   };
 
   const accentColor = afterDark ? "#c0392b" : "#c9a227";
+
+  // Derive pronouns from selected pairing for use in step headings / descriptions
+  const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
+
+  // Partner heading pronoun: "Who is he?" / "Who is she?" / "Who are they?"
+  const partnerHeadingVerb = partnerP.subject === "They" ? "Who are they?" : `Who is ${partnerP.object}?`;
+
+  // Build dynamic lists
+  const chemistries = buildChemistries(data.pairing);
+  const archetypes  = buildArchetypes(data.pairing);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 w-full">
@@ -317,11 +446,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 2 — Character */}
+        {/* Step 2 — Character (pronoun-aware heading) */}
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who are they?</h2>
-            <p className="text-muted-foreground text-sm mb-6">Choose their heritage and their energy.</p>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Choose {partnerP.possessive} heritage and the energy {partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.
+            </p>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
@@ -333,9 +464,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               ))}
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Their Energy</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
+              {partnerP.possessive.charAt(0).toUpperCase() + partnerP.possessive.slice(1)} Energy
+            </p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {ARCHETYPES.map(a => (
+              {archetypes.map(a => (
                 <ArtTile key={a.id} gradient={a.gradient} accent={a.accent} selected={data.archetype === a.id} onClick={() => update("archetype", a.id)}>
                   <p className="font-semibold text-white text-sm">{a.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{a.sub}</p>
@@ -344,7 +477,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
-              Their Name <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
+              {partnerP.possessive.charAt(0).toUpperCase() + partnerP.possessive.slice(1)} Name{" "}
+              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
             </p>
             <input
               type="text"
@@ -357,13 +491,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 3 — Chemistry */}
+        {/* Step 3 — Chemistry (pronoun-aware, 9 options) */}
         {step === 3 && (
           <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your chemistry.</h2>
-            <p className="text-muted-foreground text-sm mb-6">How does the power sit between you?</p>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
+              Between {protagonistP.object} and {partnerP.object}.
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
             <div className="grid gap-3">
-              {CHEMISTRIES.map(c => (
+              {chemistries.map(c => (
                 <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
                   <p className="font-semibold text-white text-base">{c.label}</p>
                   <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
@@ -373,21 +509,35 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 4 — World */}
+        {/* Step 4 — World (contemporary + historical eras) */}
         {step === 4 && (
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your world.</h2>
-            <p className="text-muted-foreground text-sm mb-6">Where does this happen?</p>
+            <p className="text-muted-foreground text-sm mb-6">Where — and when — does this happen?</p>
 
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {SETTINGS.map(s => (
+              {CONTEMPORARY_SETTINGS.map(s => (
                 <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                   <p className="font-semibold text-white text-sm">{s.label}</p>
+                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span></p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
+            <div className="grid grid-cols-2 gap-2.5 mb-6">
+              {HISTORICAL_SETTINGS.map(s => (
+                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                  <p className="font-semibold text-white text-sm">{s.label}</p>
+                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
+                </ArtTile>
+              ))}
+            </div>
+
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
+              Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
+            </p>
             <div className="flex flex-wrap gap-2">
               {ATMOSPHERES.map(atm => (
                 <button
@@ -407,7 +557,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 5 — Intensity */}
+        {/* Step 5 — Intensity + Mood (expanded) */}
         {step === 5 && (
           <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>

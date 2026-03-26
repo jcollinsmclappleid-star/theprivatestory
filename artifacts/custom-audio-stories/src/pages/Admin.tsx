@@ -47,13 +47,33 @@ interface QueueItem {
   userPrompt?: string;
 }
 
+interface SeriesCatalogItem {
+  id: string;
+  title: string;
+  description: string;
+  mood: string;
+  tags: string[];
+  episodeCount: number;
+  dbStatus: "not_generated" | "pending" | "generating" | "published" | "error";
+  coverImage: string;
+}
+
+interface SeriesGenerationState {
+  status: "idle" | "generating" | "complete" | "error";
+  currentEpisode: number;
+  totalEpisodes: number;
+  logs: string[];
+  episodesComplete: { episodeId: string; title: string; coverImage: string; episode: number }[];
+  error?: string;
+}
+
 export default function Admin() {
   const { user, isLoading } = useAuth();
   const [subthemes, setSubthemes] = useState<SubthemeItem[]>([]);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series">("generate");
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
@@ -61,6 +81,10 @@ export default function Admin() {
 
   const [accessDenied, setAccessDenied] = useState(false);
   const categoriesLoadedRef = useRef(false);
+
+  const [seriesCatalog, setSeriesCatalog] = useState<SeriesCatalogItem[]>([]);
+  const [seriesGenState, setSeriesGenState] = useState<Record<string, SeriesGenerationState>>({});
+  const seriesAbortRef = useRef<AbortController | null>(null);
 
   // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
@@ -79,6 +103,98 @@ export default function Admin() {
       })
       .catch(() => {});
   }, [user?.id]);
+
+  // ── Load series catalog when switching to series tab ───────────────────────
+  const loadSeriesCatalog = useCallback(() => {
+    if (!user?.id) return;
+    fetch(`${API_BASE}/api/admin/series-catalog`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        setSeriesCatalog(data.catalog ?? []);
+      })
+      .catch(() => {});
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (activeView === "series") loadSeriesCatalog();
+  }, [activeView, loadSeriesCatalog]);
+
+  // ── Generate a full series via SSE ─────────────────────────────────────────
+  const generateSeries = useCallback((seriesKey: string, totalEpisodes: number) => {
+    seriesAbortRef.current?.abort();
+    const abort = new AbortController();
+    seriesAbortRef.current = abort;
+
+    setSeriesGenState((prev) => ({
+      ...prev,
+      [seriesKey]: { status: "generating", currentEpisode: 0, totalEpisodes, logs: [], episodesComplete: [] },
+    }));
+
+    fetch(`${API_BASE}/api/admin/generate-series`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ seriesKey }),
+      signal: abort.signal,
+    })
+      .then(async (res) => {
+        const reader = res.body?.getReader();
+        const decoder = new TextDecoder();
+        if (!reader) return;
+        let buffer = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split("\n\n");
+          buffer = parts.pop() ?? "";
+          for (const part of parts) {
+            const eventLine = part.match(/^event: (.+)$/m)?.[1];
+            const dataLine = part.match(/^data: (.+)$/m)?.[1];
+            if (!dataLine) continue;
+            let parsed: Record<string, unknown> = {};
+            try { parsed = JSON.parse(dataLine); } catch { continue; }
+            const msg = parsed.message as string ?? "";
+            const ep = parsed.episode as number | undefined;
+            if (eventLine === "progress") {
+              setSeriesGenState((prev) => ({
+                ...prev,
+                [seriesKey]: {
+                  ...prev[seriesKey],
+                  currentEpisode: ep ?? prev[seriesKey]?.currentEpisode ?? 0,
+                  logs: [...(prev[seriesKey]?.logs ?? []), msg],
+                  ...(parsed.episodeId ? {
+                    episodesComplete: [
+                      ...(prev[seriesKey]?.episodesComplete ?? []),
+                      { episodeId: parsed.episodeId as string, title: parsed.title as string, coverImage: parsed.coverImage as string, episode: ep ?? 0 },
+                    ],
+                  } : {}),
+                },
+              }));
+            } else if (eventLine === "complete") {
+              setSeriesGenState((prev) => ({
+                ...prev,
+                [seriesKey]: { ...prev[seriesKey], status: "complete", logs: [...(prev[seriesKey]?.logs ?? []), msg] },
+              }));
+              loadSeriesCatalog();
+            } else if (eventLine === "error") {
+              setSeriesGenState((prev) => ({
+                ...prev,
+                [seriesKey]: { ...prev[seriesKey], status: "error", error: parsed.error as string },
+              }));
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setSeriesGenState((prev) => ({
+            ...prev,
+            [seriesKey]: { ...prev[seriesKey], status: "error", error: String(err) },
+          }));
+        }
+      });
+  }, [loadSeriesCatalog]);
 
   // ── Load existing drafts ───────────────────────────────────────────────────
   const loadDrafts = useCallback(() => {
@@ -322,6 +438,12 @@ export default function Admin() {
               >
                 Review ({drafts.length})
               </button>
+              <button
+                onClick={() => setActiveView("series")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "series" ? "bg-[#c9a227]/30 text-[#c9a227]" : "text-white/50 hover:text-white"}`}
+              >
+                Series
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -349,7 +471,7 @@ export default function Admin() {
           )}
         </div>
 
-        {/* Queue list or Review list */}
+        {/* Queue list / Series list / Review list */}
         {activeView === "generate" ? (
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-0.5">
@@ -407,6 +529,66 @@ export default function Admin() {
                   )}
                 </div>
               ))}
+            </div>
+          </ScrollArea>
+        ) : activeView === "series" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-3 space-y-3">
+              {seriesCatalog.length === 0 && (
+                <div className="text-white/40 text-xs p-4 text-center">Loading series catalog…</div>
+              )}
+              {seriesCatalog.map((s) => {
+                const gen = seriesGenState[s.id];
+                const isGenerating = gen?.status === "generating";
+                const isComplete = s.dbStatus === "published" || gen?.status === "complete";
+                const hasError = gen?.status === "error";
+                return (
+                  <div key={s.id} className={`rounded-xl border p-3 space-y-2 ${isComplete ? "border-[#c9a227]/30 bg-[#c9a227]/5" : hasError ? "border-red-500/30" : "border-white/10 bg-white/5"}`}>
+                    {s.coverImage && (
+                      <img src={s.coverImage} alt={s.title} className="w-full h-24 object-cover rounded-lg" />
+                    )}
+                    <div>
+                      <div className="font-medium text-sm text-white/90">{s.title}</div>
+                      <div className="text-white/40 text-xs mt-0.5 line-clamp-2">{s.description}</div>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {s.tags.slice(0, 3).map((t) => (
+                        <span key={t} className="text-[10px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded-full">{t}</span>
+                      ))}
+                    </div>
+                    {isGenerating && gen && (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[#c9a227]">Episode {gen.currentEpisode}/{gen.totalEpisodes}</span>
+                          <span className="text-white/40">{Math.round((gen.currentEpisode / gen.totalEpisodes) * 100)}%</span>
+                        </div>
+                        <div className="w-full bg-white/10 rounded-full h-1">
+                          <div className="bg-[#c9a227] h-1 rounded-full transition-all" style={{ width: `${(gen.currentEpisode / gen.totalEpisodes) * 100}%` }} />
+                        </div>
+                        <div className="text-[10px] text-white/40 line-clamp-1">{gen.logs[gen.logs.length - 1] ?? ""}</div>
+                      </div>
+                    )}
+                    {hasError && (
+                      <div className="text-red-400 text-xs">{gen?.error ?? "Generation failed"}</div>
+                    )}
+                    <button
+                      onClick={() => generateSeries(s.id, s.episodeCount)}
+                      disabled={isGenerating}
+                      className={`w-full text-xs py-2 rounded-lg font-medium transition ${
+                        isComplete
+                          ? "bg-[#c9a227]/20 text-[#c9a227] hover:bg-[#c9a227]/30"
+                          : hasError
+                          ? "bg-red-700 hover:bg-red-600 text-white"
+                          : isGenerating
+                          ? "bg-white/10 text-white/40 cursor-not-allowed"
+                          : "bg-[#c9a227] hover:bg-[#c9a227]/80 text-black"
+                      }`}
+                    >
+                      {isGenerating ? `Generating episode ${gen?.currentEpisode ?? 0}/${gen?.totalEpisodes ?? s.episodeCount}…` : isComplete ? "✓ Complete — Regenerate?" : hasError ? "↺ Retry" : `Generate ${s.episodeCount} Episodes`}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </ScrollArea>
         ) : (
@@ -611,6 +793,82 @@ export default function Admin() {
               </div>
             </div>
           </>
+        ) : activeView === "series" ? (
+          <div className="flex-1 flex flex-col">
+            <div className="px-4 py-2 border-b border-white/10 text-xs font-medium text-white/50 uppercase tracking-widest flex-shrink-0">
+              Series Generation Log
+            </div>
+            <ScrollArea className="flex-1">
+              <div className="p-4">
+                {(() => {
+                  const activeGen = Object.entries(seriesGenState).find(([, s]) => s.status === "generating" || (s.episodesComplete && s.episodesComplete.length > 0));
+                  if (!activeGen) {
+                    return (
+                      <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <div className="text-4xl mb-3">🎬</div>
+                        <div className="text-white/30 text-sm">Select a series and click Generate to start.</div>
+                        <div className="text-white/20 text-xs mt-2">Each series generates 5 episodes of 10-12 min each.</div>
+                      </div>
+                    );
+                  }
+                  const [seriesKey, gen] = activeGen;
+                  const catalog = seriesCatalog.find(s => s.id === seriesKey);
+                  return (
+                    <div className="space-y-4">
+                      {catalog && (
+                        <div className="flex items-center gap-3">
+                          {catalog.coverImage && (
+                            <img src={catalog.coverImage} alt={catalog.title} className="w-14 h-14 object-cover rounded-lg flex-shrink-0" />
+                          )}
+                          <div>
+                            <div className="font-semibold text-white/90">{catalog.title}</div>
+                            <div className={`text-xs font-medium mt-0.5 ${gen.status === "complete" ? "text-[#c9a227]" : gen.status === "error" ? "text-red-400" : "text-white/40"}`}>
+                              {gen.status === "generating" ? `Generating episode ${gen.currentEpisode} of ${gen.totalEpisodes}…` : gen.status === "complete" ? "✓ All episodes complete" : "Generation failed"}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {gen.status === "generating" && (
+                        <div className="w-full bg-white/10 rounded-full h-1.5">
+                          <div className="bg-[#c9a227] h-1.5 rounded-full transition-all" style={{ width: `${((gen.currentEpisode - 1) / gen.totalEpisodes) * 100}%` }} />
+                        </div>
+                      )}
+                      {/* Episodes complete */}
+                      {gen.episodesComplete && gen.episodesComplete.length > 0 && (
+                        <div className="space-y-2">
+                          <div className="text-xs font-semibold text-white/40 uppercase tracking-widest">Completed Episodes</div>
+                          {gen.episodesComplete.map((ep) => (
+                            <div key={ep.episodeId} className="flex items-center gap-3 bg-white/5 rounded-lg p-2">
+                              {ep.coverImage && (
+                                <img src={ep.coverImage} alt={ep.title} className="w-10 h-10 object-cover rounded flex-shrink-0" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium text-white/90 truncate">{ep.title}</div>
+                                <div className="text-xs text-white/40">Episode {ep.episode}</div>
+                              </div>
+                              <span className="text-[#c9a227] text-xs font-medium flex-shrink-0">✓</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Log feed */}
+                      <div className="space-y-1">
+                        <div className="text-xs font-semibold text-white/40 uppercase tracking-widest">Live Log</div>
+                        <div className="bg-black/30 rounded-lg p-3 space-y-1 max-h-64 overflow-y-auto">
+                          {gen.logs.map((log, i) => (
+                            <div key={i} className="text-xs text-white/60 font-mono leading-snug">{log}</div>
+                          ))}
+                          {gen.logs.length === 0 && (
+                            <div className="text-white/30 text-xs text-center py-3">Waiting for events…</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </ScrollArea>
+          </div>
         ) : activeView === "generate" ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center text-white/30">

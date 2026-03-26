@@ -7,6 +7,7 @@ import {
   generatedCache,
   userPresets,
   userReactionHistory,
+  series,
 } from "@workspace/db/schema";
 import { eq, and, inArray, desc } from "drizzle-orm";
 
@@ -78,6 +79,8 @@ export const storiesStore = {
       isLibraryStory: (story.isLibraryStory as boolean) ?? false,
       status: (story.status as string) ?? "published",
       storyDna: (story.storyDna ?? null) as Record<string, unknown> | null,
+      seriesId: (story.seriesId as string | null) ?? null,
+      seriesEpisode: (story.seriesEpisode as number | null) ?? null,
     };
     const updateSet = {
       title: values.title,
@@ -98,6 +101,8 @@ export const storiesStore = {
       isLibraryStory: values.isLibraryStory,
       status: values.status,
       storyDna: values.storyDna,
+      seriesId: values.seriesId,
+      seriesEpisode: values.seriesEpisode,
     };
     await db
       .insert(generatedStories)
@@ -160,9 +165,63 @@ function rowToStoredStory(row: typeof generatedStories.$inferSelect): StoredStor
     isLibraryStory: row.isLibraryStory,
     status: row.status,
     storyDna: row.storyDna,
+    seriesId: row.seriesId,
+    seriesEpisode: row.seriesEpisode,
     createdAt: row.createdAt?.toISOString(),
   };
 }
+
+// ---------------------------------------------------------------------------
+// seriesStore — backed by `series` table
+// ---------------------------------------------------------------------------
+
+export const seriesStore = {
+  async getAll(): Promise<typeof series.$inferSelect[]> {
+    return db.select().from(series).orderBy(series.createdAt);
+  },
+
+  async get(id: string): Promise<typeof series.$inferSelect | undefined> {
+    const [row] = await db.select().from(series).where(eq(series.id, id));
+    return row;
+  },
+
+  async set(s: {
+    id: string;
+    title: string;
+    description: string;
+    mood: string;
+    tags: string[];
+    coverImage: string;
+    episodeCount: number;
+    seriesArc: string;
+    status: string;
+  }): Promise<void> {
+    await db
+      .insert(series)
+      .values(s)
+      .onConflictDoUpdate({
+        target: series.id,
+        set: { title: s.title, description: s.description, mood: s.mood, tags: s.tags, coverImage: s.coverImage, episodeCount: s.episodeCount, seriesArc: s.seriesArc, status: s.status },
+      });
+  },
+
+  async updateStatus(id: string, status: string): Promise<void> {
+    await db.update(series).set({ status }).where(eq(series.id, id));
+  },
+
+  async updateCoverImage(id: string, coverImage: string): Promise<void> {
+    await db.update(series).set({ coverImage }).where(eq(series.id, id));
+  },
+
+  async getEpisodes(seriesId: string): Promise<StoredStory[]> {
+    const rows = await db
+      .select()
+      .from(generatedStories)
+      .where(eq(generatedStories.seriesId, seriesId))
+      .orderBy(generatedStories.seriesEpisode);
+    return rows.map(rowToStoredStory);
+  },
+};
 
 // ---------------------------------------------------------------------------
 // libraryStore — backed by `user_library` table

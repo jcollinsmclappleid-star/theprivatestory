@@ -13,6 +13,19 @@ import {
 } from "drizzle-orm/pg-core";
 import { usersTable } from "./auth";
 
+export const series = pgTable("series", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull().default(""),
+  description: text("description").notNull().default(""),
+  mood: text("mood").notNull().default(""),
+  tags: jsonb("tags").notNull().default([]),
+  coverImage: text("cover_image").notNull().default(""),
+  episodeCount: integer("episode_count").notNull().default(5),
+  seriesArc: text("series_arc").notNull().default(""),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const generatedStories = pgTable("generated_stories", {
   id: text("id").primaryKey(),
   ownerUserId: text("owner_user_id").references(() => usersTable.id, { onDelete: "cascade" }),
@@ -34,6 +47,8 @@ export const generatedStories = pgTable("generated_stories", {
   isLibraryStory: boolean("is_library_story").notNull().default(false),
   status: text("status").notNull().default("published"),
   storyDna: jsonb("story_dna"),
+  seriesId: text("series_id"),
+  seriesEpisode: integer("series_episode"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -111,3 +126,4 @@ export type UserTasteRow = typeof userTaste.$inferSelect;
 export type GeneratedCacheRow = typeof generatedCache.$inferSelect;
 export type UserPresetRow = typeof userPresets.$inferSelect;
 export type UserReactionHistoryRow = typeof userReactionHistory.$inferSelect;
+export type SeriesRow = typeof series.$inferSelect;

@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { mockStories, mockSeries } from "./mockData.js";
-import { storiesStore } from "../lib/storage.js";
+import { storiesStore, seriesStore } from "../lib/storage.js";
 
 const router: IRouter = Router();
 
@@ -123,14 +123,59 @@ router.get("/stories/:id", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// Series routes (still mock for now)
+// Series routes — DB-backed with mock fallback
 // ---------------------------------------------------------------------------
 
-router.get("/series", (_req, res) => {
+router.get("/series", async (_req, res) => {
+  try {
+    const dbSeries = await seriesStore.getAll();
+    const published = dbSeries.filter((s) => s.status === "published");
+    if (published.length > 0) {
+      res.json(published.map((s) => ({
+        id: s.id,
+        title: s.title,
+        description: s.description,
+        mood: s.mood,
+        coverImage: s.coverImage,
+        episodeCount: s.episodeCount,
+        tags: (s.tags as string[]) ?? [],
+      })));
+      return;
+    }
+  } catch {
+    // fall through to mock
+  }
   res.json(mockSeries);
 });
 
-router.get("/series/:id", (req, res) => {
+router.get("/series/:id", async (req, res) => {
+  try {
+    const dbSeries = await seriesStore.get(req.params.id);
+    if (dbSeries) {
+      const episodes = await seriesStore.getEpisodes(req.params.id);
+      res.json({
+        id: dbSeries.id,
+        title: dbSeries.title,
+        description: dbSeries.description,
+        mood: dbSeries.mood,
+        coverImage: dbSeries.coverImage,
+        episodeCount: dbSeries.episodeCount,
+        tags: (dbSeries.tags as string[]) ?? [],
+        episodes: episodes.map((ep) => ({
+          id: ep.id as string,
+          episodeNumber: ep.seriesEpisode as number,
+          title: ep.title as string,
+          description: ep.description as string,
+          duration: ep.duration as string,
+          coverImage: (ep.images as Record<string, unknown>)?.cover ?? "",
+          isLocked: false,
+        })),
+      });
+      return;
+    }
+  } catch {
+    // fall through
+  }
   const series = mockSeries.find((s) => s.id === req.params.id);
   if (!series) {
     res.status(404).json({ error: "Series not found" });

@@ -19,7 +19,7 @@ const router: IRouter = Router();
 // Interfaces
 // ---------------------------------------------------------------------------
 
-interface GenerateStoryRequest {
+export interface GenerateStoryRequest {
   listenerName: string;
   mood: string;
   intensity: string;
@@ -44,7 +44,7 @@ interface ScenePlan {
   visual_focus: string;
 }
 
-interface StoryBrief {
+export interface StoryBrief {
   emotional_arc: string;
   relationship_dynamic: string;
   conflict_type: string;
@@ -62,7 +62,7 @@ interface StoryBrief {
   quality_target?: string;
 }
 
-interface Scene {
+export interface Scene {
   id: number;
   heading: string;
   text: string;
@@ -71,10 +71,14 @@ interface Scene {
   emotionalShift?: string;
 }
 
-interface WrittenStory {
+export interface WrittenStory {
   title: string;
   description: string;
   scenes: Scene[];
+}
+
+export interface GenerateStoryOptions {
+  seriesLayer?: string;
 }
 
 interface ImagePrompts {
@@ -135,7 +139,7 @@ const imagePromptCache = new Map<string, ImagePrompts>();
 const audioCache = new Map<string, string>();
 const imageCache = new Map<string, { cover: string; scenes: string[] }>();
 
-function getCacheKey(data: object): string {
+export function getCacheKey(data: object): string {
   return crypto.createHash("md5").update(JSON.stringify(data)).digest("hex");
 }
 
@@ -282,15 +286,15 @@ SENSORY PALETTES (pick one):
 // Pipeline helpers
 // ---------------------------------------------------------------------------
 
-async function planStory(intake: GenerateStoryRequest): Promise<StoryBrief> {
-  const sceneCount = { "3 min": 4, "5 min": 5, "10 min": 7 }[intake.storyLength] ?? 5;
+export async function planStory(intake: GenerateStoryRequest, opts?: GenerateStoryOptions): Promise<StoryBrief> {
+  const sceneCount = { "3 min": 4, "5 min": 5, "10 min": 7, "12 min": 9 }[(intake.storyLength ?? "5 min")] ?? 5;
 
   const systemPrompt = `You are a premium story architect for an intimate, cinematic audio storytelling product.
 Your job is to turn short user input into a rich internal story brief that guarantees emotional depth, pacing, and substance.
 Do not write the final story yet.
 Return only structured JSON — no markdown, no explanation.
 
-${STORY_BIBLE}`;
+${STORY_BIBLE}${opts?.seriesLayer ? `\n\n${opts.seriesLayer}` : ""}`;
 
   const intensityGuidance = buildCustomIntensityGuidance(intake.intensity);
 
@@ -381,7 +385,7 @@ Return JSON in exactly this shape:
   return JSON.parse(cleaned) as StoryBrief;
 }
 
-async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated"): Promise<WrittenStory> {
+export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated"): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
 
   const systemPrompt = `${MASTER_EROTIC_LAYER}
@@ -459,7 +463,7 @@ Return JSON only in this exact format — no markdown, no explanation:
   };
 }
 
-async function qcStory(brief: StoryBrief, story: WrittenStory): Promise<QcResult> {
+export async function qcStory(brief: StoryBrief, story: WrittenStory): Promise<QcResult> {
   const systemPrompt = `You are a quality controller for a premium audio storytelling product.
 Evaluate stories against strict quality standards.
 Return only JSON — no explanation, no markdown.`;
@@ -545,7 +549,7 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   };
 }
 
-async function rewriteStory(brief: StoryBrief, story: WrittenStory, strategy: string): Promise<WrittenStory> {
+export async function rewriteStory(brief: StoryBrief, story: WrittenStory, strategy: string): Promise<WrittenStory> {
   const strategyInstructions: Record<string, string> = {
     rewrite_ending:
       "Keep everything except the final scene. Rewrite only the ending to be more emotionally resonant, earned, and true to the brief's ending_type. The final scene should linger.",
@@ -623,7 +627,7 @@ Return the improved story in this exact JSON shape:
   };
 }
 
-async function buildImagePrompts(brief: StoryBrief, story: WrittenStory): Promise<ImagePrompts> {
+export async function buildImagePrompts(brief: StoryBrief, story: WrittenStory): Promise<ImagePrompts> {
   const systemPrompt = `Extract the scene visually from the story. Be specific and cinematic. Avoid generic words like 'beautiful', 'cinematic', or 'high quality'. Focus on physical details, lighting, motion, and emotion. The output must describe what is visibly happening in the scene.
 
 CRITICAL IMAGE SAFETY RULE: All image prompts must be tasteful and suitable for AI image generation. Regardless of how explicit the source story is, never describe nudity, exposed genitalia, explicit sexual acts, or graphic physical contact. Instead, focus on: atmospheric tension, implied intimacy (a hand on a shoulder, faces close together, a gaze), environment and lighting, emotional state, clothed or partially clothed figures, silhouettes, and compositional mood. Evocative and sensual is the ceiling — never explicit.
@@ -698,7 +702,7 @@ Return JSON only in exactly this shape:
   };
 }
 
-async function generateAllImages(
+export async function generateAllImages(
   prompts: ImagePrompts,
   cacheKey: string
 ): Promise<{ cover: string; scenes: string[] }> {

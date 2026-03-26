@@ -355,7 +355,8 @@ function buildCoverPromptFromFormData(intake: GenerateStoryRequest): string {
 
   // --- Deterministic variation from structured fields only ---
   // Same selections always produce the same variation (reproducible, not random).
-  const hashSeed = `${intake.mood ?? ""}|${intake.storyMode ?? ""}|${intake.intensity ?? ""}|${intake.dynamic ?? ""}`;
+  // whoIsHe is included to improve visual variation across character archetypes.
+  const hashSeed = `${intake.mood ?? ""}|${intake.storyMode ?? ""}|${intake.intensity ?? ""}|${intake.dynamic ?? ""}|${intake.whoIsHe ?? ""}`;
   const h = Math.abs([...hashSeed].reduce((acc, c) => (Math.imul(31, acc) + c.charCodeAt(0)) | 0, 0));
 
   const COLOR_PALETTES = [

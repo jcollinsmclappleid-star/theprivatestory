@@ -370,6 +370,8 @@ export default function Create() {
 
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
+  const [castingPairing, setCastingPairing] = useState<string | undefined>();
+  const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -594,10 +596,14 @@ export default function Create() {
       intensity: casting.intensity,
       mood: casting.mood,
       storyMode: casting.storyMode,
+      pairing: casting.pairing,
+      partnerName: casting.partnerName,
     };
 
     setLastCastingData(castingSnapshot);
     setPendingCastingData(castingSnapshot);
+    setCastingPairing(casting.pairing);
+    setCastingPartnerName(casting.partnerName);
     setPresetSaved(false);
 
     form.setValue("scenarioPrompt", scenarioWithFreeText);
@@ -632,6 +638,8 @@ export default function Create() {
           setting: casting.setting || undefined,
           storyMode: casting.storyMode || undefined,
           experienceTags: allTags.length ? allTags : undefined,
+          pairing: casting.pairing || undefined,
+          partnerName: casting.partnerName || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -666,12 +674,14 @@ export default function Create() {
           setting: form.getValues("setting") || undefined,
           storyMode: form.getValues("storyMode") || undefined,
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
+          pairing: castingPairing || undefined,
+          partnerName: castingPartnerName || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -714,6 +724,8 @@ export default function Create() {
           setting: data.setting || undefined,
           storyMode: data.storyMode || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
+          pairing: castingPairing || undefined,
+          partnerName: castingPartnerName || undefined,
         },
       });
     } finally {

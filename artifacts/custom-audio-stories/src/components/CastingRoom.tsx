@@ -5,6 +5,8 @@ import { StoryTagStudio } from "./StoryTagStudio";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your";
+  pairing?: string;
+  partnerName?: string;
   heritage: string;
   archetype: string;
   chemistry: string;
@@ -64,6 +66,25 @@ const PERSPECTIVES = [
   { id: "his" as const, label: "His Story", sub: "Follow him. Feel everything.", gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce" },
 ];
 
+interface PairingOption {
+  id: string;
+  label: string;
+  sub: string;
+  gradient: string;
+  accent: string;
+  protagonistPronouns: string;
+  partnerPronouns: string;
+}
+
+const PAIRINGS: PairingOption[] = [
+  { id: "Her & Him",   label: "Her & Him",   sub: "Woman + man",              gradient: "from-[#1a0810] via-[#0a0818] to-[#060310]", accent: "#e879a0",  protagonistPronouns: "she/her",   partnerPronouns: "he/him"   },
+  { id: "Her & Her",   label: "Her & Her",   sub: "Woman + woman",            gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",  protagonistPronouns: "she/her",   partnerPronouns: "she/her"  },
+  { id: "Him & Him",   label: "Him & Him",   sub: "Man + man",                gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce",  protagonistPronouns: "he/him",    partnerPronouns: "he/him"   },
+  { id: "Her & Them",  label: "Her & Them",  sub: "Woman + non-binary",       gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227",  protagonistPronouns: "she/her",   partnerPronouns: "they/them"},
+  { id: "Him & Them",  label: "Him & Them",  sub: "Man + non-binary",         gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399",  protagonistPronouns: "he/him",    partnerPronouns: "they/them"},
+  { id: "Them & Them", label: "Them & Them", sub: "Non-binary + non-binary",  gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af",  protagonistPronouns: "they/them", partnerPronouns: "they/them"},
+];
+
 const HERITAGES = [
   { id: "Latina", label: "Latina", sub: "Warm, magnetic, fire beneath calm", gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840" },
   { id: "Black", label: "Black", sub: "Radiant, commanding presence", gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc" },
@@ -77,8 +98,8 @@ const ARCHETYPES = [
   { id: "The Executive", label: "The Executive", sub: "Measured control, understated power", gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
   { id: "The Stranger", label: "The Stranger", sub: "No backstory. Only this moment.", gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
   { id: "The Artist", label: "The Artist", sub: "Sees everything, says very little", gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
-  { id: "The Protector", label: "The Protector", sub: "Steady, watchful, one thing undoes him", gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
-  { id: "The Bad Boy", label: "The Bad Boy", sub: "Dangerous to want. Impossible not to.", gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
+  { id: "The Protector", label: "The Protector", sub: "Steady, watchful, one thing undoes them", gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
+  { id: "The Bad One", label: "The Bad One", sub: "Dangerous to want. Impossible not to.", gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
   { id: "The Professor", label: "The Professor", sub: "Brilliant, reserved, undone by you", gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
 ];
 
@@ -133,7 +154,8 @@ function StepBar({ current, total }: { current: number; total: number }) {
 /* ── Live preview sentence ────────────────────────────────────────── */
 function buildPreview(data: Partial<CastingRoomResult>): string {
   const parts: string[] = [];
-  if (data.chemistry) parts.push(data.chemistry);
+  if (data.pairing) parts.push(data.pairing);
+  if (data.chemistry) parts.push(data.chemistry.toLowerCase());
   if (data.heritage && data.archetype) parts.push(`featuring ${data.heritage.toLowerCase()} ${data.archetype.toLowerCase()}`);
   else if (data.heritage) parts.push(`featuring a ${data.heritage.toLowerCase()} lead`);
   else if (data.archetype) parts.push(`featuring ${data.archetype.toLowerCase()}`);
@@ -154,10 +176,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     intensity: afterDark ? "Explicit" : "Heated",
     mood: "Emotional",
   });
+  const [partnerName, setPartnerName] = useState<string>("");
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [freeText, setFreeText] = useState<string>("");
 
-  const TOTAL_STEPS = 6;
+  const TOTAL_STEPS = 7;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => ({ ...d, [key]: value }));
@@ -175,33 +198,40 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const canProceed = () => {
     switch (step) {
       case 0: return !!data.perspective;
-      case 1: return !!data.heritage && !!data.archetype;
-      case 2: return !!data.chemistry;
-      case 3: return !!data.setting;
-      case 4: return !!data.intensity && !!data.mood;
-      case 5: return true;
+      case 1: return !!data.pairing;
+      case 2: return !!data.heritage && !!data.archetype;
+      case 3: return !!data.chemistry;
+      case 4: return !!data.setting;
+      case 5: return !!data.intensity && !!data.mood;
+      case 6: return true;
       default: return true;
     }
   };
 
   const handleFinish = () => {
     const chemistryCfg = CHEMISTRIES.find(c => c.id === data.chemistry);
+    const pairingCfg = PAIRINGS.find(p => p.id === data.pairing);
     const archetype = data.archetype ?? "";
     const heritage = data.heritage ?? "";
     const setting = data.setting ?? "";
     const atmosphere = data.atmosphere ?? "";
+    const name = partnerName.trim();
 
     const whoIsHe = archetype ? `${archetype}` : "";
     const dynamic = chemistryCfg?.dynamic ?? "";
 
     const fullScenario = [
-      archetype && heritage ? `The lead character is ${heritage} and embodies the energy of ${archetype}.` : "",
+      pairingCfg ? `This is a ${pairingCfg.id} story. Protagonist pronouns: ${pairingCfg.protagonistPronouns}. Love interest pronouns: ${pairingCfg.partnerPronouns}.` : "",
+      archetype && heritage ? `The love interest is ${heritage} and embodies the energy of ${archetype}.` : "",
+      name ? `The love interest's name is ${name}.` : "",
       setting ? `The setting is ${setting}${atmosphere ? ` during ${atmosphere}` : ""}.` : "",
       data.chemistry ? `The dynamic between them: ${data.chemistry}.` : "",
     ].filter(Boolean).join(" ");
 
     const result: CastingRoomResult = {
       perspective: data.perspective ?? "her",
+      pairing: data.pairing,
+      partnerName: name || undefined,
       heritage,
       archetype,
       chemistry: data.chemistry ?? "",
@@ -271,10 +301,26 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 1 — Character */}
+        {/* Step 1 — Pairing */}
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's the lead?</h2>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
+            <p className="text-muted-foreground text-sm mb-6">Choose the pairing. This is hardcoded into your story.</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {PAIRINGS.map(p => (
+                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
+                  <p className="font-semibold text-white text-base">{p.label}</p>
+                  <p className="text-white/50 text-xs mt-0.5">{p.sub}</p>
+                </ArtTile>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 2 — Character */}
+        {step === 2 && (
+          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who are they?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose their heritage and their energy.</p>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
@@ -288,7 +334,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Their Energy</p>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 mb-6">
               {ARCHETYPES.map(a => (
                 <ArtTile key={a.id} gradient={a.gradient} accent={a.accent} selected={data.archetype === a.id} onClick={() => update("archetype", a.id)}>
                   <p className="font-semibold text-white text-sm">{a.label}</p>
@@ -296,12 +342,24 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 </ArtTile>
               ))}
             </div>
+
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
+              Their Name <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
+            </p>
+            <input
+              type="text"
+              value={partnerName}
+              onChange={e => setPartnerName(e.target.value)}
+              placeholder="Give them a name…"
+              maxLength={40}
+              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+            />
           </motion.div>
         )}
 
-        {/* Step 2 — Chemistry */}
-        {step === 2 && (
-          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* Step 3 — Chemistry */}
+        {step === 3 && (
+          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your chemistry.</h2>
             <p className="text-muted-foreground text-sm mb-6">How does the power sit between you?</p>
             <div className="grid gap-3">
@@ -315,9 +373,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 3 — World */}
-        {step === 3 && (
-          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* Step 4 — World */}
+        {step === 4 && (
+          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your world.</h2>
             <p className="text-muted-foreground text-sm mb-6">Where does this happen?</p>
 
@@ -349,9 +407,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 4 — Intensity */}
-        {step === 4 && (
-          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* Step 5 — Intensity */}
+        {step === 5 && (
+          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
             <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
 
@@ -402,9 +460,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* Step 5 — Tag Studio */}
-        {step === 5 && (
-          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* Step 6 — Tag Studio */}
+        {step === 6 && (
+          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your story, your way.</h2>

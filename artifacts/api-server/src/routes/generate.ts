@@ -35,6 +35,8 @@ export interface GenerateStoryRequest {
   setting?: string;
   storyMode?: string;
   experienceTags?: string[];
+  pairing?: string;
+  partnerName?: string;
 }
 
 interface ScenePlan {
@@ -190,6 +192,24 @@ function getPublicAudioDir(): string {
 }
 
 // ---------------------------------------------------------------------------
+// Pairing pronoun helper
+// ---------------------------------------------------------------------------
+
+function derivePairingPronouns(pairing: string): string {
+  const map: Record<string, { protagonist: string; partner: string }> = {
+    "Her & Him":   { protagonist: "she/her",   partner: "he/him"    },
+    "Her & Her":   { protagonist: "she/her",   partner: "she/her"   },
+    "Him & Him":   { protagonist: "he/him",    partner: "he/him"    },
+    "Her & Them":  { protagonist: "she/her",   partner: "they/them" },
+    "Him & Them":  { protagonist: "he/him",    partner: "they/them" },
+    "Them & Them": { protagonist: "they/them", partner: "they/them" },
+  };
+  const p = map[pairing];
+  if (!p) return "";
+  return `The protagonist uses ${p.protagonist} pronouns. The love interest uses ${p.partner} pronouns.`;
+}
+
+// ---------------------------------------------------------------------------
 // Input Normalisation
 // ---------------------------------------------------------------------------
 
@@ -223,6 +243,8 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     dynamic: raw.dynamic?.trim() || undefined,
     ending: raw.ending?.trim() || undefined,
     setting: raw.setting?.trim() || undefined,
+    pairing: raw.pairing?.trim() || undefined,
+    partnerName: raw.partnerName?.trim() || undefined,
   };
 }
 
@@ -309,7 +331,8 @@ User Input:
 - Experience Elements: ${intake.experienceTags?.length ? intake.experienceTags.join(", ") : "(none specified — infer from path and scenario)"}
 - Scenario: ${intake.scenarioPrompt || "(none given — infer the most compelling setup)"}
 - Setting Preference: ${intake.setting || "(not specified — choose based on scenario)"}
-- Who He Is: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}
+- Relationship Pairing: ${intake.pairing ? `${intake.pairing} (${derivePairingPronouns(intake.pairing)})` : "(not specified — default to Her & Him)"}
+- Who They Are: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}${intake.partnerName ? ` — their name is ${intake.partnerName}` : ""}
 - Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
@@ -390,6 +413,8 @@ interface OriginalUserInput {
   whoIsHe?: string;
   setting?: string;
   dynamic?: string;
+  pairing?: string;
+  partnerName?: string;
   /** For series episodes: the hook premise that must open the story's first charged beat */
   hookSentence?: string;
   /** For series episodes: the arc-defined word count target (e.g. "1,800 — 1,900 words") */
@@ -430,6 +455,13 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     }
     if (originalInput.dynamic) {
       anchorRequirements.push(`${idx++}. REQUIRED — POWER DYNAMIC: The entire relationship must operate on this dynamic. It must be visible in dialogue, behaviour, and physical interaction throughout — not just implied: "${originalInput.dynamic}"`);
+    }
+    if (originalInput.pairing) {
+      const pronounGuide = derivePairingPronouns(originalInput.pairing);
+      anchorRequirements.push(`${idx++}. REQUIRED — RELATIONSHIP PAIRING: This story is a "${originalInput.pairing}" pairing. ${pronounGuide} Use these pronouns consistently and exclusively throughout the entire story — no deviation, no defaulting to assumptions.`);
+    }
+    if (originalInput.partnerName) {
+      anchorRequirements.push(`${idx++}. REQUIRED — PARTNER NAME: The love interest must be named "${originalInput.partnerName}" throughout the entire story. Use this name consistently — never replace it with a pronoun alone. The name must appear in narration and dialogue throughout.`);
     }
   }
 
@@ -1260,12 +1292,15 @@ router.post("/generate-full-story", async (req, res) => {
     briefCache.set(planKey, brief);
 
     // Step 4: Write story — pass original user input so specific details survive into the final text
-    let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, {
+    const originalUserInput = {
       scenarioPrompt: intake.scenarioPrompt,
       whoIsHe: intake.whoIsHe,
       setting: intake.setting,
       dynamic: intake.dynamic,
-    });
+      pairing: intake.pairing,
+      partnerName: intake.partnerName,
+    };
+    let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 
     // Step 5: QC evaluation
     let qcResult = await qcStory(brief, story);
@@ -1284,12 +1319,7 @@ router.post("/generate-full-story", async (req, res) => {
       if (needsRegenerate) {
         // Full regeneration: fresh plan + fresh write from scratch
         brief = await planStory(intake);
-        story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, {
-          scenarioPrompt: intake.scenarioPrompt,
-          whoIsHe: intake.whoIsHe,
-          setting: intake.setting,
-          dynamic: intake.dynamic,
-        });
+        story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
       } else {
         // Targeted rewrite of the weakest dimension only
         story = await rewriteStory(brief, story, qcResult.rewrite_strategy!);

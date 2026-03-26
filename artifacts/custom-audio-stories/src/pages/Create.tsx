@@ -659,6 +659,21 @@ export default function Create() {
     }
   }, [form, generateMutation, isAuthenticated, startLoadingPhase, stopLoadingPhase]);
 
+  const buildPerspectiveOverrides = useCallback((baseScenario: string) => {
+    const povPrefix =
+      perspective === "her"
+        ? "[Third-person close: write from her perspective using she/her throughout — never 'you'] "
+        : perspective === "his"
+        ? "[Third-person close: write from his perspective using he/him throughout — never 'you'] "
+        : "";
+    const pairing =
+      perspective === "his" ? "Him & Her" : "Her & Him";
+    return {
+      scenarioPrompt: (povPrefix + baseScenario).trim(),
+      pairing,
+    };
+  }, [perspective]);
+
   const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
     if (savePreset && pendingCastingData && presetName.trim()) {
       fetch(`${API_BASE}/api/me/presets`, {
@@ -672,6 +687,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
+    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(form.getValues("scenarioPrompt"));
+
     try {
       await generateMutation.mutateAsync({
         data: {
@@ -680,7 +697,7 @@ export default function Create() {
           intensity: form.getValues("intensity"),
           voiceFeel: form.getValues("voiceFeel"),
           storyLength: form.getValues("storyLength"),
-          scenarioPrompt: form.getValues("scenarioPrompt"),
+          scenarioPrompt: scenarioWithPov,
           cinematicVisuals: true,
           emotionalFocus: form.getValues("mood") === "Emotional",
           whoIsHe: form.getValues("whoIsHe") || undefined,
@@ -688,7 +705,7 @@ export default function Create() {
           setting: form.getValues("setting") || undefined,
           storyMode: form.getValues("storyMode") || undefined,
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
-          pairing: castingPairing || undefined,
+          pairing: castingPairing || perspectivePairing,
           partnerName: castingPartnerName || form.getValues("partnerName") || undefined,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
@@ -698,7 +715,7 @@ export default function Create() {
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, buildPerspectiveOverrides]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -724,6 +741,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
+    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(data.scenarioPrompt);
+
     try {
       await generateMutation.mutateAsync({
         data: {
@@ -732,7 +751,7 @@ export default function Create() {
           intensity: data.intensity,
           voiceFeel: data.voiceFeel,
           storyLength: data.storyLength,
-          scenarioPrompt: data.scenarioPrompt,
+          scenarioPrompt: scenarioWithPov,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
           whoIsHe: data.whoIsHe || undefined,
@@ -741,7 +760,7 @@ export default function Create() {
           setting: data.setting || undefined,
           storyMode: data.storyMode || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
-          pairing: castingPairing || undefined,
+          pairing: castingPairing || perspectivePairing,
           partnerName: castingPartnerName || data.partnerName || undefined,
         },
       });

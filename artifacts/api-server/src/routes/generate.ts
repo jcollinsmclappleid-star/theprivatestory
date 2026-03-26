@@ -547,6 +547,11 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     subthemeId: validSubtheme ? subthemeId : undefined,
     userInput: raw.userInput?.trim().slice(0, 500) || undefined,
     numericIntensity,
+    // Casting-wizard and form-path image routing fields — preserved as-is
+    storyMode: raw.storyMode?.trim() || undefined,
+    heritage: raw.heritage?.trim() || undefined,
+    atmosphere: raw.atmosphere?.trim() || undefined,
+    chemistry: raw.chemistry?.trim() || undefined,
   };
 }
 

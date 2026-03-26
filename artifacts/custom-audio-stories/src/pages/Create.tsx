@@ -608,9 +608,7 @@ export default function Create() {
       partnerName: casting.partnerName,
     };
 
-    if (casting.listenerName) {
-      form.setValue("listenerName", casting.listenerName);
-    }
+    form.setValue("listenerName", casting.listenerName ?? "");
 
     setLastCastingData(castingSnapshot);
     setPendingCastingData(castingSnapshot);

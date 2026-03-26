@@ -292,6 +292,113 @@ function buildCoverPromptFromBrief(brief: StoryBrief): string {
   ].filter(Boolean).join(", ");
 }
 
+// ---------------------------------------------------------------------------
+// Form-path cover image prompt builder
+// Used when no casting-specific fields are present (heritage/atmosphere/chemistry).
+// Draws only from whitelisted structured form selections — no free text allowed.
+// scenarioPrompt, setting (text field), and listenerName are intentionally excluded.
+// ---------------------------------------------------------------------------
+
+function buildCoverPromptFromFormData(intake: GenerateStoryRequest): string {
+  // --- Mood → emotional tone (whitelist) ---
+  const MOOD_VISUAL: Record<string, string> = {
+    "Forbidden":       "forbidden longing, charged restraint",
+    "Late Night":      "charged late-night intensity, electric quiet",
+    "Emotional":       "deep emotional connection, tender closeness",
+    "Slow Burn":       "simmering tension, restrained desire",
+    "First Encounter": "electric first meeting, magnetic pull",
+    "Tender":          "tender warmth, soft intimacy",
+  };
+  const moodTone = MOOD_VISUAL[intake.mood?.trim() ?? ""] ?? "intimate romantic tension";
+
+  // --- storyMode → narrative energy (whitelist) ---
+  const STORYMODE_VISUAL: Record<string, string> = {
+    "romance":      "tender romantic pull",
+    "slow_burn":    "restrained longing, almost-touch energy",
+    "passionate":   "passionate emotional heat",
+    "forbidden":    "dangerous forbidden draw",
+    "unrestrained": "raw unchecked desire",
+  };
+  const storyModeDesc = STORYMODE_VISUAL[intake.storyMode?.trim() ?? ""] ?? "";
+
+  // --- Intensity → lighting atmosphere (whitelist) ---
+  const INTENSITY_VISUAL: Record<string, string> = {
+    "Tender":    "soft diffused light, delicate shadow",
+    "Heated":    "warm amber light, building shadow contrast",
+    "Explicit":  "deep contrast, intense shadow play",
+    "Scorching": "high-contrast dramatic shadow, electric tension",
+  };
+  const intensityDesc = INTENSITY_VISUAL[intake.intensity?.trim() ?? ""] ?? "";
+
+  // --- Dynamic (exact pill values from DYNAMIC_OPTIONS) → relational energy ---
+  const DYNAMIC_VISUAL: Record<string, string> = {
+    "He pursues, I decide":          "one figure yearning forward, the other holding the decision",
+    "I take what I want":            "one figure reaching and claiming, the other yielding",
+    "Equal desire, equal intensity": "equal matched energy between them, neither yielding",
+    "He's completely in control":    "commanding figure, the other drawn entirely in",
+    "I'm completely in control":     "protagonist commanding, the other completely present",
+  };
+  const dynamicDesc = DYNAMIC_VISUAL[intake.dynamic?.trim() ?? ""] ?? "";
+
+  // --- whoIsHe (exact pill values from WHO_IS_HE_OPTIONS) → character energy ---
+  const WHO_VISUAL: Record<string, string> = {
+    "A stranger I'll never see again":          "a magnetic stranger",
+    "Someone I've wanted for a long time":      "a long-desired figure finally close",
+    "My ex":                                    "a familiar figure from the past",
+    "Someone I shouldn't want":                 "a compelling, forbidden figure",
+    "My boss":                                  "a powerful, commanding figure",
+    "A bodyguard with orders not to touch me":  "a protective restrained figure",
+    "An old friend who finally says it":        "a warm familiar figure breaking through",
+    "Someone who wants only me":                "a figure of focused adoration",
+  };
+  const whoDesc = WHO_VISUAL[intake.whoIsHe?.trim() ?? ""] ?? "";
+
+  // --- Deterministic variation from structured fields only ---
+  // Same selections always produce the same variation (reproducible, not random).
+  const hashSeed = `${intake.mood ?? ""}|${intake.storyMode ?? ""}|${intake.intensity ?? ""}|${intake.dynamic ?? ""}`;
+  const h = Math.abs([...hashSeed].reduce((acc, c) => (Math.imul(31, acc) + c.charCodeAt(0)) | 0, 0));
+
+  const COLOR_PALETTES = [
+    "warm amber and rose tones",
+    "deep blue and silver moonlight",
+    "golden and burgundy warmth",
+    "violet and deep obsidian",
+    "cool jade and shadow",
+  ];
+  const SETTING_ARCHETYPES = [
+    "intimate urban interior",
+    "elevated city view, glass and low light",
+    "warm private room, candlelight low",
+    "grand architectural space, long shadows",
+    "natural open setting, quiet and still",
+  ];
+  const COMPOSITIONS = [
+    "close intimate portrait framing",
+    "wide shot, two figures in the space",
+    "silhouette against ambient light",
+  ];
+
+  const palette = COLOR_PALETTES[h % COLOR_PALETTES.length];
+  const settingArch = SETTING_ARCHETYPES[(h >> 3) % SETTING_ARCHETYPES.length];
+  const composition = COMPOSITIONS[(h >> 6) % COMPOSITIONS.length];
+
+  const parts = [
+    "a man and a woman",
+    whoDesc,
+    settingArch,
+    palette,
+    moodTone,
+    storyModeDesc,
+    intensityDesc,
+    dynamicDesc,
+    composition,
+    "fully clothed",
+    "tasteful romantic composition, no nudity, no explicit content",
+  ].filter(Boolean);
+
+  return `${BASE_STYLE}, ${parts.join(", ")}`;
+}
+
 interface QcSubScores {
   emotional_depth: number;
   specificity: number;
@@ -1568,11 +1675,15 @@ router.post("/generate-full-story", async (req, res) => {
       qcResult = await qcStory(brief, story);
     }
 
-    // Step 7: Cover image prompt built directly from casting selections
-    const imagePrompts: ImagePrompts = {
-      coverPrompt: buildCoverPromptFromCasting(intake),
-      scenePrompts: [],
-    };
+    // Step 7: Cover image prompt
+    // Route to the casting-based builder when casting fields are present,
+    // otherwise use the form-data builder (structured form selections only).
+    const isCastingBased = !!(intake.heritage || intake.atmosphere || intake.chemistry);
+    const coverPrompt = isCastingBased
+      ? buildCoverPromptFromCasting(intake)
+      : buildCoverPromptFromFormData(intake);
+    console.log(`[cover-prompt] casting=${isCastingBased}`, coverPrompt);
+    const imagePrompts: ImagePrompts = { coverPrompt, scenePrompts: [] };
 
     // Step 8: Images + audio in parallel
     const storyHash = getCacheKey({ brief, story });

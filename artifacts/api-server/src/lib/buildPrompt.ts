@@ -246,7 +246,17 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
     : "";
 
   const narratorVoice = NARRATOR_VOICE[categoryId] ?? "";
-  const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}${narratorVoice ? `\n\n${narratorVoice}` : ""}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}`;
+
+  // When building a series episode, append an explicit system-level override that
+  // supersedes the generic "2,000–2,500 words" floor in STORY_DNA_INSTRUCTION.
+  // The arc specification (TARGET WORD COUNT in the user prompt) is the single
+  // authoritative source of truth for episode length.
+  const episodeArc = options.episodeNumber ? getArcStage(options.episodeNumber) : undefined;
+  const seriesLengthOverride = options.episodeNumber && episodeArc
+    ? `\n\nSERIES EPISODE WORD COUNT OVERRIDE — SUPERSEDES ALL OTHER LENGTH INSTRUCTIONS:\nThe "TARGET LENGTH: 2,000–2,500 words" instruction in PART 2 does NOT apply to series episodes.\nFor this episode (Episode ${options.episodeNumber}), the authoritative target is: ${episodeArc.word_count}.\nDo not exceed the top of that range by padding. Do not compress below the bottom of that range by cutting. Write within it with quality as the goal.\nIf the prose becomes repetitive, looping, or generic before the target is reached — stop. Quality determines length, the range provides the envelope.`
+    : "";
+
+  const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}${narratorVoice ? `\n\n${narratorVoice}` : ""}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}${seriesLengthOverride}`;
   const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
 
 REMINDER: Complete all structural phases fully as specified above. Do not stop early. Honour the episode-specific word count range exactly (shown above under TARGET WORD COUNT). Do not pad to reach any generic floor — and do not compress to fit under any floor. The episode word count target is authoritative. Quality within that range is the standard, not length alone. If you find yourself repeating phrases, looping descriptions, or adding filler to hit a number, stop — the quality drops before the count matters.`;

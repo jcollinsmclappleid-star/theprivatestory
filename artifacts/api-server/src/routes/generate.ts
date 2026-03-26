@@ -189,6 +189,34 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
     ? `a ${heritageLabel} ${loveInterestNoun}`
     : `a ${loveInterestNoun}`;
 
+  // --- Setting → environment descriptor (whitelist of known tile IDs only) ---
+  // Custom/free-text settings are excluded — only structured tile selections pass through.
+  const SETTING_VISUAL: Record<string, string> = {
+    "Late Night City":          "rain-wet city streets at night",
+    "Luxury Hotel":             "a luxury hotel room",
+    "European Villa":           "a sun-drenched European villa",
+    "Private Yacht":            "aboard a private yacht on open water",
+    "Mountain Retreat":         "a snowbound mountain retreat",
+    "Penthouse Suite":          "a penthouse with city views through glass",
+    "Art Gallery After Hours":  "an empty art gallery after hours",
+    "Office After Hours":       "a dimly lit office after everyone has left",
+    "Rooftop Bar":              "a rooftop bar above the city",
+    "Beach House":              "a beach house with salt air and ocean light",
+    "Private Members Club":     "a candlelit private members club",
+    "Train Journey":            "an intimate train carriage moving through the night",
+    "Concert Backstage":        "a backstage corridor pulsing with adrenaline",
+    "Regency England (1810s)":  "a Regency-era English country house",
+    "Victorian London (1880s)": "foggy Victorian London gaslight streets",
+    "Belle Époque Paris (1900s)": "a Belle Époque Parisian salon",
+    "Roaring Twenties (1920s)": "a jazz-age speakeasy in the 1920s",
+    "Wartime (1940s)":          "a wartime setting, 1940s golden light",
+    "Swinging Sixties (1960s)": "a swinging sixties hotel room",
+    "Disco & Velvet (1970s)":   "a velvet-draped 1970s interior",
+    "Neon Decade (1980s)":      "a neon-lit 1980s penthouse",
+    "Ancient Mediterranean":    "an ancient Mediterranean marble setting",
+  };
+  const settingDesc = SETTING_VISUAL[intake.setting?.trim() ?? ""] ?? "";
+
   // --- Atmosphere → lighting descriptor (whitelist only) ---
   const ATMOSPHERE_VISUAL: Record<string, string> = {
     "Stormy":      "stormy light, dramatic shadows",
@@ -238,6 +266,7 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
 
   const parts = [
     `${subjectDesc} with a ${protagonistNoun}`,
+    settingDesc,
     atmosphereDesc,
     moodTone,
     chemDesc,

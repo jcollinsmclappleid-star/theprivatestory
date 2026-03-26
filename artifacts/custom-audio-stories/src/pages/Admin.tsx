@@ -426,6 +426,11 @@ export default function Admin() {
         signal: abort.signal,
       });
 
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "Request failed");
+        throw new Error(`Server error ${res.status}: ${errText}`);
+      }
+
       const reader = res.body?.getReader();
       if (!reader) throw new Error("No readable stream");
       const decoder = new TextDecoder();

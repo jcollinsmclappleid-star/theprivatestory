@@ -1,0 +1,359 @@
+export const FIVE_EPISODE_EROTIC_ARC = {
+
+  framework: {
+    name: "The Five Episode Erotic Arc — The Slow Seduction Model",
+    philosophy: "The buildup is not the path to the product. The buildup IS the product. Every episode should leave the listener more desperate than the last. Satisfaction is always one episode away — until episode four delivers everything, and episode five makes her want a second series.",
+    golden_rule: "Never give the listener what she wants when she wants it. Give it to her exactly when she can no longer stand not having it."
+  },
+
+  episodes: [
+
+    {
+      number: 1,
+      name: "The Collision",
+      function: "Establish the world, the characters, and the central tension in a single episode that ends before anything happens — and makes that feel unbearable.",
+      emotional_job: "Curiosity shading into immediate, undeniable pull. She should finish this episode wanting to know everything about him and already slightly annoyed that she does.",
+      explicit_level: "2 out of 5",
+      explicit_guidance: "No physical contact. Pure psychological and sensory arousal. The desire lives entirely in language, attention, and the specific charge of two people recognising something in each other. The tension IS the explicit content.",
+      word_count: "1,800 — 1,900 words",
+      duration: "11 — 12 minutes",
+
+      structure: {
+        opening_hook: {
+          length: "First 50 words",
+          job: "Drop the listener into the middle of a moment already charged. No preamble. No setup. She should feel the tension before she understands it.",
+          rule: "He must be present or imminent within the first three sentences."
+        },
+        establishment: {
+          length: "300 words",
+          job: "Ground the world in specific, sensory detail. Make the setting feel real enough to live in. Introduce him through her perception — what she notices first, what she tries not to notice second.",
+          rule: "One physical detail about him that she files away and tries to forget."
+        },
+        tension_build: {
+          length: "900 words",
+          job: "The central dynamic established through interaction. Power tested, intelligence met, character revealed. Every exchange should carry subtext. Every professional surface should have something personal underneath it.",
+          rule: "One line of dialogue from him that could mean two things. She knows which meaning she heard."
+        },
+        peak_moment: {
+          length: "400 words",
+          job: "The moment something almost happens — or the moment she realises something has already happened that she didn't notice occurring. Not a physical event. A psychological one.",
+          rule: "End this beat with her physically alone. The peak is internal."
+        },
+        cliff_edge_close: {
+          length: "150 — 200 words",
+          job: "Land the episode on a specific physical sensation or involuntary thought that tells the emotional truth. She should be unable to stop thinking about one specific thing.",
+          rule: "End mid-thought. Cut before she finishes it. The unfinished thought is the cliffhanger."
+        }
+      },
+
+      what_to_plant: [
+        "One physical detail about him that will pay off in episode three",
+        "One thing he knows about her that he shouldn't yet — show it, don't explain it",
+        "One unresolved question she has about him that demands an answer",
+        "One moment where his composure does something unexpected — even if only for a second"
+      ],
+
+      what_to_avoid: [
+        "Any physical contact — not even accidental",
+        "Either character admitting or acknowledging attraction",
+        "Resolving any tension — only create it",
+        "Explaining the dynamic — show it entirely through action and subtext"
+      ],
+
+      cliffhanger_formula: "She is alone. She is replaying one specific moment — a word, a look, a detail she noticed. She tells herself it means nothing. The telling herself is the problem.",
+
+      listener_feeling_at_end: "Restless. Slightly irritated at herself. Already planning to listen to episode two."
+    },
+
+    {
+      number: 2,
+      name: "The Crack",
+      function: "Something shifts. A wall develops its first fracture. The first real breach of the space between them — not full contact, but the unmistakable approach of it.",
+      emotional_job: "Want admitted to herself for the first time. Something crosses — not a line, but a threshold. She should finish this episode knowing, for the first time, that this is going somewhere.",
+      explicit_level: "3 out of 5",
+      explicit_guidance: "First physical contact — but not what she wants yet. A hand, proximity, an accidental or deliberate touch that is fully, completely rendered in sensory detail. Minimum 100 words on the first real touch. The contact should feel more significant than anything explicit in most other content.",
+      word_count: "1,900 — 2,000 words",
+      duration: "12 minutes",
+
+      structure: {
+        opening_hook: {
+          length: "First 50 words",
+          job: "Open with the tension of episode one still present and already higher. She's been thinking about him. She shouldn't have to say so — the reader should feel it.",
+          rule: "Callback to the specific unfinished thought from episode one's cliffhanger."
+        },
+        establishment: {
+          length: "300 words",
+          job: "A new context — different setting or situation from episode one, raising the intimacy level. Less public, more private, or public in a way that requires performance of closeness.",
+          rule: "The new context should make proximity unavoidable."
+        },
+        tension_build: {
+          length: "800 words",
+          job: "Escalation through conversation, situation, and the accumulation of small charged moments. The dynamic from episode one tightened. He reveals one thing he didn't in episode one. She responds to something she didn't mean to.",
+          rule: "One moment where his professional mask slips — briefly, undeniably, and then it's back."
+        },
+        peak_moment: {
+          length: "500 words",
+          job: "The first touch. Describe it completely — location, pressure, temperature, duration, intention. Both of them know this is more than the situation requires. Neither acknowledges it. The not-acknowledging is everything.",
+          rule: "Minimum 100 words on the physical sensation of the first touch alone."
+        },
+        cliff_edge_close: {
+          length: "200 words",
+          job: "She's alone again. The touch is still present as physical memory. Something he said or didn't say sits unresolved. She is closer to naming what this is and not ready to name it.",
+          rule: "End on the physical memory of the touch. Her body remembers what her mind is still negotiating."
+        }
+      },
+
+      what_to_plant: [
+        "The first touch — make it matter enough to replay",
+        "One honest thing he says that surprises her with its accuracy about her",
+        "One moment she almost says something real and doesn't",
+        "One detail about his life outside this dynamic that makes him more dimensional"
+      ],
+
+      what_to_avoid: [
+        "Any kiss or explicitly sexual contact — that comes later and it must be earned",
+        "Either character fully acknowledging the dynamic",
+        "Resolving the tension with humour or deflection",
+        "Moving too fast — episode two's restraint is what makes episode four devastating"
+      ],
+
+      cliffhanger_formula: "She is alone. She can still feel exactly where he touched her — the precise location, the precise pressure. She is thinking about one thing he said. She knows what it meant. She is not ready for what her response to that meaning is.",
+
+      listener_feeling_at_end: "Warm. Slightly breathless. Aware that she has been moved and not entirely sure when it happened."
+    },
+
+    {
+      number: 3,
+      name: "The Negotiation",
+      function: "The dynamic becomes explicit in language before it becomes explicit in action. Power is tested, terms are set, and something irrevocable is said or done that cannot be taken back.",
+      emotional_job: "Psychological peak. She should feel the specific vertigo of being at the edge of a decision — the desire pulling forward, the mind still calculating. She should finish this episode knowing that episode four is inevitable.",
+      explicit_level: "4 out of 5",
+      explicit_guidance: "First real kiss or equivalent first significant physical moment — fully rendered in complete sensory detail. Minimum 300 words on this moment. Then a stop. The stopping should feel as erotic as the starting. His reason for stopping must increase rather than decrease desire.",
+      word_count: "2,000 — 2,100 words",
+      duration: "12 minutes",
+
+      structure: {
+        opening_hook: {
+          length: "First 50 words",
+          job: "The tension has been building since episode one. Open at a pressure point — something that makes the unspoken dynamic impossible to continue ignoring.",
+          rule: "This episode should feel slightly more urgent than the previous two from the first line."
+        },
+        establishment: {
+          length: "250 words",
+          job: "Set the scene with specific attention to intimacy of setting — fewer people, later hour, a context that creates either permission or danger for what's about to happen.",
+          rule: "The setting should do work — it should make what happens feel more inevitable."
+        },
+        tension_build: {
+          length: "700 words",
+          job: "The dynamic spoken — either directly or in language that only functions as directness. He tells her what he wants, or she names what this is, or the conversation goes somewhere that makes pretending impossible.",
+          rule: "One line of dialogue in this section that the listener will remember as the line from the entire series."
+        },
+        peak_moment: {
+          length: "600 words",
+          job: "The first significant physical escalation. Fully rendered. Every sense engaged. His specific physicality described in detail. The emotional charge equal to the physical. Then — the stop.",
+          rule: "The stop must come from him. His reason must feel like power, not rejection."
+        },
+        cliff_edge_close: {
+          length: "200 words",
+          job: "She leaves or he leaves. She is alone carrying the physical memory of what just happened and the psychological weight of what's coming. She knows what episode four is. She's already decided.",
+          rule: "She has made the decision. She hasn't acted on it yet. End there."
+        }
+      },
+
+      what_to_plant: [
+        "The central physical moment — minimum 300 words, fully sensory",
+        "His specific reason for stopping — it must make her want him more",
+        "One moment of vulnerability from him that reframes everything before it",
+        "Her internal decision — she knows what she's going to do in episode four"
+      ],
+
+      what_to_avoid: [
+        "Going further than a first significant physical moment — episode four earns the full payoff",
+        "A stop that feels like rejection — it must feel like power and anticipation",
+        "Any ambiguity about where this is going — episode three ends in certainty",
+        "Rushing — this episode should feel long and charged, not efficient"
+      ],
+
+      cliffhanger_formula: "She is alone with the physical memory of what just happened. He stopped. She knows why. She knows what comes next. The worst part is that the stopping made it worse. She has already made the decision. She just hasn't told him yet.",
+
+      listener_feeling_at_end: "Frustrated in the most exquisite way. Completely certain of what episode four contains. Unable to wait for it."
+    },
+
+    {
+      number: 4,
+      name: "The Breaking",
+      function: "Everything held back across three episodes releases. This is the full payoff — explicit, immersive, emotionally present, completely earned. The episode every listener has been building toward.",
+      emotional_job: "Physical and emotional peak simultaneously. She should feel both the explicit satisfaction and the emotional significance of what this means. This should change something. She should be different at the end of this episode than she was at the start.",
+      explicit_level: "5 out of 5",
+      explicit_guidance: "Full explicit content. No fade to black. No euphemism. Literary, precise, emotionally present throughout. His desire for her specifically — not a woman, her — must be stated and demonstrated. Her experience must be fully rendered. The emotional truth must run beneath every physical moment. This is not just sex. This is the most honest either of them has been.",
+      word_count: "2,100 — 2,200 words",
+      duration: "12 minutes",
+
+      structure: {
+        opening_hook: {
+          length: "First 50 words",
+          job: "She has made the decision. She acts on it. Open at the moment of crossing — the door opening, the call made, the decision becoming action.",
+          rule: "No second-guessing in the opening. She decided in episode three. Episode four is execution."
+        },
+        establishment: {
+          length: "200 words",
+          job: "His response to her arrival or her decision. What he says or doesn't say. The specific quality of his looking at her when she crosses the threshold.",
+          rule: "His first response must feel worth the three episodes of waiting."
+        },
+        tension_build: {
+          length: "400 words",
+          job: "The final approach — the last beats before the full release. Charged, deliberate, completely certain on both sides. This is not foreplay — this is the last act of the buildup. Make it specific and sensory.",
+          rule: "Both desire and emotional truth present from the first touch."
+        },
+        peak_moment: {
+          length: "900 words",
+          job: "The full explicit payoff. Every physical moment rendered with literary precision. His desire for her specifically — overwhelming, detailed, personal. Her experience — fully present, fully sensory, emotionally complex. This scene earns its length.",
+          rule: "Minimum 900 words. His desire for HER specifically must be stated. The emotional subtext must run beneath every physical moment."
+        },
+        cliff_edge_close: {
+          length: "350 words",
+          job: "The after. Not resolution — revelation. She is changed. He is changed. The dynamic has shifted in a way that creates episode five's tension. One specific detail in the after that she files as dangerous information.",
+          rule: "End on something unresolved — not the physical, but the emotional. What does this mean. That question, unanswered, is the cliffhanger."
+        }
+      },
+
+      what_to_plant: [
+        "His desire for her specifically — make it feel personal and overwhelming",
+        "One moment of unexpected vulnerability or softness from him in the after",
+        "Her internal shift — she is not the same person who walked in",
+        "One unresolved question that episode five must answer"
+      ],
+
+      what_to_avoid: [
+        "Fading to black or summarising the explicit content — stay present throughout",
+        "Physical content without emotional subtext — they must run together",
+        "A completely resolved emotional arc — episode four satisfies physically, episode five resolves emotionally",
+        "Generic desire — his want must be specifically for her, detailed and overwhelming"
+      ],
+
+      cliffhanger_formula: "She is still with him — or just left. She is carrying what just happened. Not just physically. Something has changed that cannot be unchanged. She doesn't know yet what it costs. She will find out in episode five. She thinks: this changes things. She doesn't finish the thought. She doesn't need to.",
+
+      listener_feeling_at_end: "Satisfied, changed, and immediately aware that episode five exists and contains something she still needs."
+    },
+
+    {
+      number: 5,
+      name: "The Aftermath",
+      function: "Resolution that opens a new question. The emotional truth of everything that happened across four episodes named, claimed, and complicated by what comes next. This episode closes the series and opens the door to a second one.",
+      emotional_job: "Satisfied but wanting more. The physical arc is complete. The emotional arc reaches its peak here — more complex, more honest, more real than anything in the previous four episodes. She should feel the series end as both complete and the beginning of something.",
+      explicit_level: "4 out of 5",
+      explicit_guidance: "Explicit but intimate — different in quality from episode four. Less urgency, more knowing. Both people fully aware of each other. The power dynamic should feel equalised or transformed. This is intimacy, not just desire. Emotionally the most complex explicit scene of the series.",
+      word_count: "1,900 — 2,000 words",
+      duration: "12 minutes",
+
+      structure: {
+        opening_hook: {
+          length: "First 50 words",
+          job: "Open in the aftermath of episode four — time has passed but not much. Something has changed. Neither of them has named it.",
+          rule: "The unnamedness should feel present and slightly pressurised from the first line."
+        },
+        establishment: {
+          length: "300 words",
+          job: "The new normal — or the absence of one. What has changed in how they are together since episode four. What neither of them has said. The specific weight of the unnamed thing between them.",
+          rule: "Show the change through behaviour, not statement."
+        },
+        tension_build: {
+          length: "600 words",
+          job: "The naming — someone forces the question. What is this. He answers honestly for the first time without management or strategy. Or she does. The most vulnerable exchange of the series. One person says the real thing.",
+          rule: "His real answer must show something of him she hasn't seen before. It must cost him visibly."
+        },
+        peak_moment: {
+          length: "700 words",
+          job: "A final intimate scene that is different in quality from episode four — slower, more equal, more known to each other. The power dynamic transformed. Both choosing fully. The intimacy of people who have already been completely honest with each other.",
+          rule: "Different quality from episode four. The explicit content here is intimate rather than dominant. Both equally present, equally choosing."
+        },
+        cliff_edge_close: {
+          length: "300 words",
+          job: "Something is established — unnamed, but real. Neither uses the word but both know what they've agreed to. End on a gesture, a look, or a single line that tells the whole story. Leave one door open — professional, logistical, or emotional — that a second series would walk through.",
+          rule: "Final line must make the listener immediately want a second series."
+        }
+      },
+
+      what_to_plant: [
+        "His real answer — the first fully unmanaged thing he's said",
+        "One gesture that replaces a word neither of them is ready to say",
+        "The open door — a complication, question, or situation that a second series inherits",
+        "Her final internal thought — settled, but curious about what comes next"
+      ],
+
+      what_to_avoid: [
+        "Fully resolving everything — one thread must remain open",
+        "A generic happy ending — the resolution should feel specific and earned",
+        "Losing the complexity of the characters in the warmth of resolution",
+        "A final line that closes rather than opens — end on a beginning"
+      ],
+
+      cliffhanger_formula: "Something is decided without being said. She knows what it is. He knows what it is. The series ends on her certainty — about him, about this, about what comes next. She doesn't know exactly what comes next. That is the only good kind of not-knowing.",
+
+      listener_feeling_at_end: "Complete. Warm. Immediately aware that a second series exists and she needs it. The characters should feel like people she knows and will miss. That missing is the product."
+    }
+
+  ],
+
+  guardrails: {
+    word_counts: {
+      episode_1: "1,800 — 1,900 words",
+      episode_2: "1,900 — 2,000 words",
+      episode_3: "2,000 — 2,100 words",
+      episode_4: "2,100 — 2,200 words",
+      episode_5: "1,900 — 2,000 words",
+      note: "Episodes build in length to episode four then pull back slightly for the intimate resolution of five"
+    },
+
+    audio_duration: {
+      target: "10 — 12 minutes per episode",
+      words_per_minute: 160,
+      note: "Slightly slower than average speech pace — intimate audio narration breathes"
+    },
+
+    mandatory_per_episode: [
+      "One new character revelation not present in previous episodes",
+      "One moment of physical or psychological explicit charge",
+      "One line of dialogue that reframes the dynamic",
+      "One unanswered question in the final 30 seconds",
+      "A callback to something from the previous episode"
+    ],
+
+    explicit_level_progression: {
+      rule: "Each episode must feel one degree more explicit than the last until episode four",
+      episode_1: "Psychological tension only — no contact",
+      episode_2: "First physical contact — charged, specific, restrained",
+      episode_3: "First significant physical escalation — fully rendered, then stopped",
+      episode_4: "Full explicit payoff — nothing withheld",
+      episode_5: "Intimate explicit — different quality, equally present",
+      warning: "Jumping levels too fast destroys the architecture. The buildup IS the product."
+    },
+
+    pov_rules: [
+      "Always second person — the listener IS the protagonist",
+      "Never break immersion with third person reflection",
+      "His desire must always be directed at HER specifically — never generic",
+      "Her experience must be fully rendered — she is not a passive recipient",
+      "Internal monologue is as important as action — her psychology is half the story"
+    ],
+
+    series_hooks: [
+      "Every episode ends before complete resolution",
+      "Every episode opens with a callback to the previous cliffhanger",
+      "The male lead must reveal one new dimension per episode",
+      "The dynamic must shift in each episode — never static",
+      "Episode five must leave one door open for series two"
+    ],
+
+    the_seven_hooks_applied: {
+      anticipation_architecture: "Episodes 1, 2, and 3 are entirely this — do not rush them",
+      radical_second_person: "Never break — every word in second person, every time",
+      sensory_specificity: "Every physical moment: location, pressure, temperature, sound, scent",
+      emotional_truth: "The subtext must run beneath every explicit moment — what does this mean to her",
+      cliff_edge_ending: "Every episode ends mid-thought, mid-feeling, or mid-decision",
+      his_desire_specific: "He wants HER — name the specific qualities, moments, details that he cannot stop thinking about",
+      she_discovers_herself: "By episode five she knows something about herself she didn't know in episode one"
+    }
+  }
+
+};

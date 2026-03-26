@@ -1,0 +1,963 @@
+export const SERIES_COLLECTION = [
+
+  // ═══════════════════════════════════════════════════════════════
+  // SERIES 1 — MIDNIGHT AUTHORITY
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "midnight_authority",
+    title: "Midnight Authority",
+    tagline: "He built an empire on control. She was the first thing he couldn't control.",
+    description: "Marcus Kane has never met resistance he couldn't dismantle. Naomi Clarke arrives as his new VP with a reputation that precedes her and a refusal to be managed that he finds, against every instinct, compelling. What begins as a boardroom war becomes something neither of them has a protocol for.",
+    cover_mood: "dark luxury — black and gold, power and want",
+    male_lead: {
+      name: "Marcus Kane",
+      age: 42,
+      archetype: "Dominant Black CEO — Old money intelligence, new money hunger",
+      appearance: "6'3\". Dark skin, close-cut beard, always in custom-tailored suits that move with him like armour. Hands that look like they were built for both boardrooms and bedrooms. A stillness that makes rooms reorganise around him.",
+      voice: "Low. Unhurried. The kind of voice that doesn't need to raise itself because the room always goes quiet first.",
+      psychology: "Control is his love language and his wound. He was told early that Black excellence had no margin for error. He built a fortress out of that and called it success. Naomi is the first person to walk through his walls without asking permission.",
+      desire_style: "Dominant but never cruel. Precise. He tells you exactly what he wants and waits — with complete certainty — for you to want it too.",
+      signature_line: "I don't chase. But I will make it impossible for you to walk away."
+    },
+    female_lead: {
+      name: "Naomi Clarke",
+      age: 34,
+      archetype: "The Woman Who Doesn't Flinch",
+      psychology: "She's been underestimated her entire career and learned to use it. She came to Kane Industries to build something, not to be managed. She didn't expect him to be the most interesting problem she's ever encountered.",
+      desire_style: "She surrenders when she chooses to — and that choice feels like the most powerful thing either of them has ever done."
+    },
+    series_arc: "A slow dismantling of two people who are used to winning. By episode five the question isn't who has the power — it's whether power matters at all when you're this lost in someone.",
+    world: "Manhattan. Kane Industries HQ — glass and steel and art that costs more than most people's houses. His penthouse. Her apartment that she chose specifically because it doesn't impress anyone. Conference rooms after everyone else has gone home.",
+    themes: ["power exchange", "boardroom to bedroom", "Black excellence and desire", "control as intimacy", "the specific surrender of a strong woman"],
+    
+    episodes: [
+      {
+        episode: 1,
+        title: "The New Variable",
+        tagline: "She walked into his boardroom and didn't look away first.",
+        arc_function: "The Collision",
+        explicit_level: 2,
+        word_count_target: "1,900",
+        pov: "Second person — you are Naomi",
+        
+        opening_hook: "He's already in the room when you arrive. Everyone else is arranged around the table as though they know their places. He's standing at the window, not watching the door, and somehow that's worse.",
+        
+        scene_breakdown: [
+          {
+            beat: "Establishment",
+            description: "Naomi's first board meeting at Kane Industries. Marcus doesn't acknowledge her arrival. The deliberate non-acknowledgement is its own kind of attention.",
+            sensory_focus: "The specific quality of being in a room with someone whose stillness has mass"
+          },
+          {
+            beat: "First Contact",
+            description: "He challenges her presentation directly. Not rudely — precisely. She matches him point for point. The room notices he's smiling.",
+            sensory_focus: "His voice when he's interested in something — lower, slower, focused"
+          },
+          {
+            beat: "Private Moment",
+            description: "Everyone files out. He doesn't. She's gathering her materials. He says one thing that has nothing to do with business.",
+            sensory_focus: "The specific awareness of being alone with him for the first time"
+          },
+          {
+            beat: "Cliff-Edge Close",
+            description: "She leaves. In the elevator she realises her hands aren't steady.",
+            sensory_focus: "The physical aftermath of controlled wanting"
+          }
+        ],
+        
+        prompt: `Write Episode 1 of 'Midnight Authority' — an erotic audio series. 
+
+EPISODE TITLE: The New Variable
+TARGET LENGTH: 1,900 words (approximately 12 minutes at audio pace)
+POV: Second person — the listener is Naomi Clarke
+
+CHARACTERS:
+Marcus Kane — 42, Black CEO, 6'3", custom suits, low unhurried voice, absolute stillness that reorganises rooms. Dominant, precise, never cruel. Has never met someone he couldn't read immediately. Naomi is the exception.
+Naomi Clarke — 34, new VP, has spent her career being underestimated and using it. Did not come here to be managed. Did not expect him to be this.
+
+WORLD: Kane Industries, Manhattan. 40th floor boardroom, floor-to-ceiling glass, city below, morning light. The kind of room that costs power to enter.
+
+EPISODE ARC:
+Open on Naomi's first board meeting. Marcus is at the window — doesn't turn when she enters, which is its own statement. During the meeting he challenges her presentation not to undermine her but because he's genuinely testing what she's made of. She matches every challenge. The room notices he's pleased. When everyone files out he remains. A single exchange — professional on the surface, charged beneath it. She leaves. The elevator. Her hands aren't steady.
+
+EXPLICIT LEVEL: 2/5 — No physical contact. Pure psychological and tension-driven arousal. The desire should be felt entirely through language, attention, and the specific charge of two powerful people recognising each other.
+
+GUARDRAILS:
+- 1,900 words maximum
+- Opening hook within first 50 words
+- One line of dialogue from Marcus that could mean two things
+- End on a physical detail that tells the emotional truth
+- Plant one specific detail about him that will pay off in episode 3
+- No explicit content — the tension IS the content
+
+CLIFF-EDGE CLOSE: End the episode in the elevator. One physical sensation. One thought she doesn't finish. Cut.`,
+
+        cliffhanger: "The elevator doors close. You press the button for your floor and notice, for the first time, that your hands aren't entirely steady. You think about his voice. You think about the way he said your name — not Ms Clarke, just Naomi, like he'd decided something. You don't finish the thought."
+      },
+
+      {
+        episode: 2,
+        title: "After Hours",
+        tagline: "He called it a working dinner. Neither of them worked.",
+        arc_function: "The Crack",
+        explicit_level: 3,
+        word_count_target: "2,000",
+        pov: "Second person — you are Naomi",
+        
+        opening_hook: "His assistant sends the dinner invitation at 6pm for 8pm. No question mark. No 'if you're available.' You spend forty minutes deciding whether to be insulted by that.",
+        
+        scene_breakdown: [
+          {
+            beat: "The Restaurant",
+            description: "Private dining room. He's already there. The meal is extraordinary — he ordered for both of them, which she should find presumptuous and somehow doesn't.",
+            sensory_focus: "The intimacy of being fed well by someone who paid attention to what you'd want"
+          },
+          {
+            beat: "The Conversation",
+            description: "He asks questions no one asks her. About her — not her work. She answers more than she means to. She asks something back that surprises him. The first crack.",
+            sensory_focus: "The specific feeling of being genuinely seen by someone whose seeing matters"
+          },
+          {
+            beat: "First Touch",
+            description: "Walking out, his hand at the small of her back. Standard, social. Except the pressure is slightly more than necessary and neither of them mentions it.",
+            sensory_focus: "The precise location and pressure and temperature of his hand — the way the touch relocates her entire attention"
+          },
+          {
+            beat: "The Car",
+            description: "His car, not a cab. The city moving past. He says something that makes clear he's been thinking about her specifically. She doesn't respond. Her silence is its own answer.",
+            sensory_focus: "The charged quality of a car at night with someone you want"
+          }
+        ],
+        
+        prompt: `Write Episode 2 of 'Midnight Authority' — an erotic audio series.
+
+EPISODE TITLE: After Hours  
+TARGET LENGTH: 2,000 words (approximately 12 minutes)
+POV: Second person — the listener is Naomi
+
+EPISODE CONTEXT: Following episode 1 where they met in the boardroom and she left with unsteady hands. The tension has been building across a week of professional interactions neither of them has acknowledged.
+
+EPISODE ARC:
+A dinner invitation that isn't phrased as an invitation. Private dining room. He ordered for her — she should be annoyed and isn't. Conversation that moves from professional to personal without either of them deciding to let it. He asks about her in a way no one asks. She answers more than she intends. Walking out — his hand at the small of her back, pressure slightly more than social. His car. The city at night. Something he says makes clear she's been occupying his thoughts specifically. She doesn't answer. Her silence says everything.
+
+EXPLICIT LEVEL: 3/5 — First physical contact. The touch at her back should be described in complete sensory detail — location, pressure, warmth, intention. One moment in the car where desire is almost spoken. End before anything happens. The almost is everything.
+
+GUARDRAILS:
+- 2,000 words maximum
+- The hand at her back: minimum 100 words on this single moment
+- One line from Marcus that is professional in structure and entirely personal in meaning
+- End with her alone, wanting something she hasn't named yet
+- Callback to one detail planted in episode 1
+
+CLIFF-EDGE CLOSE: She's inside her apartment door. Coat still on. Replaying the exact pressure of his hand. The question he didn't finish. She knows what he was going to say. She's not ready for what her answer would be.`,
+
+        cliffhanger: "You're inside your apartment, coat still on, back against the door. You can still feel exactly where his hand was. The pressure of it. The specific warmth. He'd started to say something in the car and stopped himself and the unfinished sentence is louder than anything he completed."
+      },
+
+      {
+        episode: 3,
+        title: "The Terms",
+        tagline: "He laid out exactly what he wanted. She made him say it again.",
+        arc_function: "The Negotiation",
+        explicit_level: 4,
+        word_count_target: "2,100",
+        pov: "Second person — you are Naomi",
+        
+        opening_hook: "He calls at 11pm. You pick up on the second ring and spend the rest of the conversation wishing you'd waited for the third.",
+        
+        scene_breakdown: [
+          {
+            beat: "The Conversation",
+            description: "He tells her what this is. Not a request — a declaration of intent, delivered with the same precision he applies to deals. He wants her. He outlines what that means. She listens.",
+            sensory_focus: "His voice saying explicit things in the same calm register he uses for everything — the specific power of that"
+          },
+          {
+            beat: "Her Response",
+            description: "She doesn't capitulate. She negotiates. Her terms. He listens with something that sounds like pleasure at being met.",
+            sensory_focus: "The specific dynamic of two dominant people finding their architecture"
+          },
+          {
+            beat: "His Office — Midnight",
+            description: "She comes to him. His office, empty building, city lights. He doesn't move from behind his desk when she enters. She crosses to him. First real kiss — long, deliberate, on his terms and hers simultaneously.",
+            sensory_focus: "Complete sensory rendering of the first kiss — every detail"
+          },
+          {
+            beat: "The Stop",
+            description: "He stops. Not because he doesn't want to continue. Because he wants her to come back tomorrow and choose this again in daylight. She understands this is itself a form of dominance.",
+            sensory_focus: "The specific frustration and respect of being stopped by someone who could have continued"
+          }
+        ],
+        
+        prompt: `Write Episode 3 of 'Midnight Authority' — an erotic audio series.
+
+EPISODE TITLE: The Terms
+TARGET LENGTH: 2,100 words (approximately 12 minutes)
+POV: Second person — you are Naomi
+
+EPISODE CONTEXT: Two episodes of building tension. The dinner. The hand at her back. The unfinished sentence. She's been waiting for him to make this explicit.
+
+EPISODE ARC:
+He calls at 11pm and says exactly what he wants — not a question, a declaration, delivered with complete calm. She doesn't surrender — she negotiates. Her terms, his terms, a dynamic established in words before it's established in anything else. She goes to his office at midnight. Empty building. He doesn't move toward her — he lets her cross to him, which is itself the point. The first real kiss. Long, deliberate, completely explicit in its intention. Then he stops. He wants her to come back tomorrow and choose this again in daylight. She understands this is the most dominant thing he's done.
+
+EXPLICIT LEVEL: 4/5 — The phone call should be explicitly charged — he says what he wants in specific, calm, devastating terms. The kiss fully rendered. Hands, pressure, taste, his specific physicality. Stop before it goes further. The stopping should feel as erotic as the starting.
+
+GUARDRAILS:
+- Phone call scene: his words should make her breath change
+- The kiss: 300 words minimum, fully sensory
+- His reason for stopping must feel powerful not frustrating
+- One moment where his composure almost breaks — she sees it
+- End with her leaving, already knowing she'll be back
+
+CLIFF-EDGE CLOSE: You take the elevator down alone. Your mouth still has the memory of him in it. He said: tomorrow. Like it was already decided. The worst part is — it is.`,
+
+        cliffhanger: "The elevator is cold after his office. You press the lobby button and touch your mouth without meaning to. He said tomorrow like it was geography, not a question. Like he already knew the answer. The worst part — the part you'll be awake with at 3am — is that he's right."
+      },
+
+      {
+        episode: 4,
+        title: "Full Authority",
+        tagline: "She came back. He made sure she never forgot why.",
+        arc_function: "The Breaking",
+        explicit_level: 5,
+        word_count_target: "2,200",
+        pov: "Second person — you are Naomi",
+        
+        opening_hook: "You told yourself last night was enough. You told yourself that in the shower, getting dressed, in the cab. You stopped telling yourself things when you walked into his building.",
+        
+        scene_breakdown: [
+          {
+            beat: "The Return",
+            description: "She comes back. He's waiting. He doesn't say I knew you would — he doesn't need to. What he does say is more devastating.",
+            sensory_focus: "The specific experience of walking toward something you've stopped pretending you don't want"
+          },
+          {
+            beat: "The Explicit Scene",
+            description: "His penthouse. The city below. Everything that was held back across four episodes. He is exactly what the tension promised — controlled, precise, completely focused on her. This is the payoff.",
+            sensory_focus: "Complete, fully explicit, deeply sensory rendering — every detail earned by three episodes of buildup"
+          },
+          {
+            beat: "The Surrender",
+            description: "Not defeat — choice. The specific power of a strong woman deciding. He understands the difference and honours it completely.",
+            sensory_focus: "The emotional experience of chosen surrender — what it feels like to let go completely with someone you trust to catch you"
+          },
+          {
+            beat: "After",
+            description: "He holds her. This is the unexpected thing — the softness under the authority. She files it away as dangerous information.",
+            sensory_focus: "The specific quality of being held by someone who was just everything and is now just warm"
+          }
+        ],
+        
+        prompt: `Write Episode 4 of 'Midnight Authority' — an erotic audio series.
+
+EPISODE TITLE: Full Authority
+TARGET LENGTH: 2,200 words (approximately 12 minutes)
+POV: Second person — you are Naomi
+
+EPISODE CONTEXT: Three episodes of escalating tension. The negotiation. The midnight kiss. She left. She came back.
+
+EPISODE ARC:
+She tried to talk herself out of this the whole way here. She stopped trying when she walked through his door. He's waiting. What he says when he sees her is not I knew you would — it's something that earns her being there. His penthouse. The city below. This is the full payoff of everything held back. He is exactly what the tension promised — dominant, precise, completely and specifically focused on her. Not a woman. Her. Afterward he holds her. This is the thing that's most dangerous. The softness under the authority.
+
+EXPLICIT LEVEL: 5/5 — Full explicit content. This is the episode every listener has been building toward. Every physical moment fully rendered with complete sensory and emotional presence. His dominance should feel like a gift — specific, attentive, entirely focused on her experience. The emotional truth must match the physical explicitness. This is not just sex — it is the most honest either of them has been.
+
+GUARDRAILS:
+- 2,200 words maximum
+- The explicit scene is the centre — give it the space it's earned
+- His desire for her specifically must be stated and demonstrated
+- The surrender moment must feel empowering not diminishing
+- The after — holding her — gets 200 words minimum
+- Plant one thing in the after scene that creates episode 5's tension
+
+CLIFF-EDGE CLOSE: He's asleep. You're awake in the dark of his penthouse, city lights below, his arm across you. You think: this changes things. You think: I came here for a job. You think: I don't know what I'm here for now. You don't move. You don't want to move. That's the problem.`,
+
+        cliffhanger: "He's asleep. You're not. The city is still lit below you, indifferent and bright. His arm is across your waist and you're calculating, as you always calculate, what the variables are. Except the math keeps coming out the same way. You don't move. That's new. That's the part that's going to cost you something."
+      },
+
+      {
+        episode: 5,
+        title: "The Real Terms",
+        tagline: "He negotiated everything. He forgot to negotiate his heart.",
+        arc_function: "The Aftermath",
+        explicit_level: 4,
+        word_count_target: "2,000",
+        pov: "Second person — you are Naomi",
+        
+        opening_hook: "Three weeks. Neither of you has named it. You've been telling yourself that's fine. It's fine. It's completely fine.",
+        
+        scene_breakdown: [
+          {
+            beat: "The Morning Crack",
+            description: "Three weeks of this. Neither naming it. She catches him watching her in a meeting with an expression that has nothing professional in it.",
+            sensory_focus: "The specific experience of being looked at like that in public by someone only you know"
+          },
+          {
+            beat: "The Confrontation",
+            description: "She asks what this is. He gives her his honest answer for the first time — not the controlled, strategic answer. The real one. It costs him visibly.",
+            sensory_focus: "The specific sound of a controlled man letting something true out"
+          },
+          {
+            beat: "Second Explicit Scene",
+            description: "Different from episode 4. Slower. More equal. The power dynamic has shifted — not gone, but shared. This is intimacy, not just dominance.",
+            sensory_focus: "The difference between desire and intimacy — both explicit, entirely different quality"
+          },
+          {
+            beat: "The New Terms",
+            description: "After. They establish something real. Neither of them uses the word but both of them know what they're agreeing to. End on his face when she says yes.",
+            sensory_focus: "The specific look of a man who has everything and has just been given the one thing he didn't know how to want"
+          }
+        ],
+        
+        prompt: `Write Episode 5 of 'Midnight Authority' — an erotic audio series.
+
+EPISODE TITLE: The Real Terms
+TARGET LENGTH: 2,000 words (approximately 12 minutes)
+POV: Second person — you are Naomi
+
+EPISODE CONTEXT: Four episodes of power play, negotiation, and surrender. They've been in something unnamed for three weeks. This episode names it.
+
+EPISODE ARC:
+Three weeks. Professional in public, everything else in private, nothing defined. She forces the definition. He gives her his real answer — not the strategic one, the true one. It's the first time she's seen him unmanaged. A second intimate scene — different from episode 4, slower, more equal, the dynamic shifted to something that feels like partnership rather than dominance and surrender. After — new terms. Neither uses the word but both know what they're agreeing to.
+
+EXPLICIT LEVEL: 4/5 — Explicit but intimate rather than dominant. The power dynamic should feel equalised — both choosing, both present, both changed. Emotionally the most complex explicit scene in the series.
+
+GUARDRAILS:
+- His real answer must feel genuinely vulnerable — first uncontrolled moment
+- The intimate scene should feel different in quality from episode 4
+- End on his face — one specific detail that tells the whole story
+- Leave one door open — this should feel like a beginning not an ending
+- Final line must make the listener immediately want a second series
+
+CLIFF-EDGE CLOSE: He looks at you the way he looks at the city from his window — like it's something he built and can't quite believe is real. He says your name. Just your name. Like it's the only negotiation that ever mattered. You think: this is not what I came here for. You think: I'm not leaving.`,
+
+        cliffhanger: "He says your name the way he says nothing else — without the armour, without the strategy. Just Naomi, like it's a decision he's been making for weeks and is only now saying out loud. You think about the woman who walked into that boardroom six weeks ago and didn't know what she was walking into. You think: she had no idea. You think: neither did he. You stay."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SERIES 2 — LA REINA
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "la_reina",
+    title: "La Reina",
+    tagline: "She doesn't chase. She arranges circumstances until you come to her.",
+    description: "Isabella Reyes has run her family's hotel empire since she was twenty-eight. She doesn't want things she can't have — she decides what she wants and removes the obstacles. When American architect Daniel Cole arrives in Havana to restore her most beloved property, she decides she wants him. What follows is five episodes of strategic seduction, unexpected resistance, and the specific experience of a dominant woman undone by someone who refuses to be managed.",
+    cover_mood: "hot gold and deep red — Havana heat, power and hunger",
+    
+    female_lead: {
+      name: "Isabella Reyes",
+      age: 38,
+      archetype: "Dominant Latina — Old world authority, new world hunger",
+      appearance: "5'9\" in heels she always wears. Dark hair that she wears up in boardrooms and down everywhere else as a deliberate signal. Red that she treats as a neutral. Moves through her properties like they were built around her — because they were.",
+      voice: "Low. Accented in a way she weaponises. When she's interested she slows down. When she's decided something she goes completely quiet.",
+      psychology: "She was raised to run things. Her desire has always been an extension of her authority — she wants, she takes, she moves on. Daniel is the first thing that doesn't move on schedule.",
+      desire_style: "She is the aggressor. She sets the terms, creates the circumstances, leads. The specific complexity of this series is that control starts to feel different when someone meets it with genuine stillness.",
+      signature_line: "I don't seduce men, Daniel. I simply make it clear what's available and let them make the obvious choice."
+    },
+    
+    male_lead: {
+      name: "Daniel Cole",
+      age: 36,
+      archetype: "The Still Man — Quiet authority, unmovable",
+      appearance: "6'1\". American. Works with his hands despite the architecture degree. Unhurried in a way that initially reads as rudeness to Isabella. Looks at her buildings like he loves them. Looks at her like he's working something out.",
+      psychology: "He's been hired by difficult clients before. He's never been hunted by one. His resistance isn't performance — he genuinely needs to finish this project and genuinely does not do complicated. Isabella is the most complicated thing he's ever encountered.",
+      desire_style: "He responds rather than initiates — until episode 4, when he initiates with a completeness that rewrites everything."
+    },
+    
+    episodes: [
+      {
+        episode: 1,
+        title: "The Architect Arrives",
+        tagline: "He looked at her hotel like he was in love with it. She decided she found that interesting.",
+        arc_function: "The Collision",
+        explicit_level: 2,
+        
+        prompt: `Write Episode 1 of 'La Reina' — an erotic audio series.
+
+EPISODE TITLE: The Architect Arrives
+TARGET LENGTH: 1,900 words
+POV: Second person — the listener is Isabella Reyes
+
+UNIQUE ELEMENT: This series is told from the DOMINANT WOMAN'S perspective. Isabella is the aggressor, the one in control, the one who decides. Write her interior world with complete authority. She is not waiting — she is choosing.
+
+CHARACTERS:
+Isabella Reyes — 38, hotel empire heiress, runs Grupo Reyes from Havana. Dominant, strategic, accustomed to getting what she decides she wants. Speaks three languages and deploys them tactically.
+Daniel Cole — 36, American architect, hired to restore the Hotel Palacio Reyes. Quiet. Unhurried. Looks at her buildings with something that resembles love. Looks at her like he's deciding something.
+
+WORLD: Havana. Hotel Palacio Reyes — 1920s architecture, salt air, bougainvillea against white walls. Her office on the top floor. The restoration site below. A city that moves at its own pace and hers.
+
+EPISODE ARC:
+His arrival. She watches from above before meeting him — he's in the courtyard, hands on the original tilework, completely absorbed. She notices this. She introduces herself on her terms — descending to him rather than summoning him up. The first conversation: professional, but she is already assessing. He doesn't perform for her. She finds this, against expectation, compelling. End with her at her desk alone, a decision forming that she would describe as practical and is not.
+
+EXPLICIT LEVEL: 2/5 — All in her interiority. Her physical assessment of him. The specific things she notices. No contact — but the want should be fully present in how she sees him.
+
+POV NOTE: Write Isabella's desire from the inside — what she notices, how she categorises it, the moment categorisation stops working.
+
+CLIFF-EDGE CLOSE: Her desk. Evening light. She opens his file — architect's credentials, project brief. She looks at his photograph. She closes the file. She thinks: this will be straightforward. She has thought that before. It has never been relevant.`,
+
+        cliffhanger: "You close the file. The photograph is still in your mind — not his face exactly but the way he stood in your courtyard like he belonged there. You think: this is a project. A transaction. You have managed a thousand transactions. You open the file again. You look at the photograph again. You close it. You think: straightforward."
+      },
+
+      {
+        episode: 2,
+        title: "The First Move",
+        tagline: "She invited him to dinner. He came. He didn't perform. This was a problem.",
+        arc_function: "The Crack",
+        explicit_level: 3,
+        
+        prompt: `Write Episode 2 of 'La Reina' — an erotic audio series.
+
+EPISODE TITLE: The First Move
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Isabella
+
+EPISODE CONTEXT: A week of site visits and professional interactions. He is excellent at his work — she respects this in the way she respects anything useful. She has decided to move from assessment to intention.
+
+EPISODE ARC:
+She invites him to dinner — her home, not a restaurant. This is a statement and he knows it. He comes. He brings wine that shows he paid attention to something she mentioned in passing. She notices this. The dinner: she deploys every tool — the setting, the food, the deliberate casual dress, the conversation that moves from professional to personal in ways she controls. He engages without being managed. At one point he disagrees with her about something architectural and is completely correct and doesn't soften it. She finds this, without planning to, the most attractive thing that's happened all week. She touches his hand across the table — deliberate, a test. He looks at her hand, then at her face, and says: Isabella. Just her name. Not a question.
+
+EXPLICIT LEVEL: 3/5 — Her physical awareness of him throughout dinner. The hand touch and his response. The specific charge of being met rather than managed. End before anything happens — but make clear what almost did.
+
+POV NOTE: Her interiority during the hand touch — the expectation that he'd respond to her move and the disorientation of being met with stillness instead.
+
+CLIFF-EDGE CLOSE: He leaves at midnight. Appropriate hour. She closes her door and stands in her hallway and thinks about how he said her name. One word. Like a question and an answer at the same time. She is not accustomed to being answered.`,
+
+        cliffhanger: "The door closes. You stand in your hallway in the dark and replay it — the moment you touched his hand, the calculation behind it, the thing that happened that was not in the calculation. He said your name. One word, your name, in that voice that doesn't rush anywhere. You think: this is going to require a different approach. You think: you don't know what the different approach is. This is new."
+      },
+
+      {
+        episode: 3,
+        title: "La Reina's Terms",
+        tagline: "She told him what she wanted. He said: I know. He didn't move.",
+        arc_function: "The Negotiation",
+        explicit_level: 4,
+        
+        prompt: `Write Episode 3 of 'La Reina' — an erotic audio series.
+
+EPISODE TITLE: La Reina's Terms
+TARGET LENGTH: 2,100 words
+POV: Second person — you are Isabella
+
+EPISODE ARC:
+She is done with subtlety. She goes to the site — late afternoon, workers gone, the half-restored ballroom. She finds him reviewing drawings alone. She tells him, directly and without performance, what she wants. She expects either immediate agreement or negotiation she can win. He listens to everything she says. He puts down his drawings. He crosses to her — slowly, unhurried, as he does everything. He stops close enough that she has to manage her breathing. He says: I know what you want, Isabella. Then: but I finish what I start. And then he touches her for the first time — one hand at her jaw, tilting her face up — and says: I'm not finished with this building yet. He steps back. He picks up his drawings. She stands in the ballroom of her own hotel and genuinely does not know what just happened.
+
+EXPLICIT LEVEL: 4/5 — The moment he touches her face: complete sensory rendering. His physicality described in full. The power inversion — she came to lead and he redirected without aggression. Explicitly charged. End on her experiencing, for the first time, the specific sensation of wanting without controlling.
+
+POV SHIFT: This is the episode where her authority cracks. Write her interiority during his response — the disorientation, the want, the specific experience of a dominant woman encountering genuine resistance for the first time.
+
+CLIFF-EDGE CLOSE: He's still looking at his drawings. You're still standing in the middle of your ballroom. The light is doing something beautiful to the restored plasterwork. You think: I will not let him see that worked. You think: he already knows.`,
+
+        cliffhanger: "He turns a page of his drawings. Calmly. Completely returned to work. You are standing in the centre of your own ballroom with his hand's absence still warm on your jaw. You think: no one does this. You think: he just did. You think: I come back tomorrow. You will come back tomorrow. You are already going to come back tomorrow and you haven't left yet."
+      },
+
+      {
+        episode: 4,
+        title: "His Move",
+        tagline: "He finished the ballroom. Then he came for her.",
+        arc_function: "The Breaking",
+        explicit_level: 5,
+        
+        prompt: `Write Episode 4 of 'La Reina' — an erotic audio series.
+
+EPISODE TITLE: His Move
+TARGET LENGTH: 2,200 words
+POV: Second person — you are Isabella
+
+EPISODE CONTEXT: Three episodes of Isabella leading, Daniel redirecting. The ballroom is complete. He comes to her.
+
+EPISODE ARC:
+He comes to her office at the end of the day — unannounced, which no one does. He says the ballroom is finished. He says: now I'm finished with the building. He crosses to her desk. He doesn't ask — he takes her hand and brings her to stand. He leads her to the window — her city, her view, she has looked at this view a thousand times. He stands behind her, close, and describes what he sees. Not the city — her. What he's observed across six weeks. What he wants. He is explicit and unhurried and completely certain. When she turns to face him he is already there. This is the full payoff. He leads. She is Isabella Reyes and she lets him lead and it is the most powerful thing she has ever done.
+
+EXPLICIT LEVEL: 5/5 — Full explicit content from the dominant male perspective shifting the power dynamic. Isabella experiences surrender for the first time — it should feel like expansion not diminishment. His desire for her specifically, his observation of her, must feel overwhelming. The explicit scene: fully rendered, completely sensory, emotionally complex. She is changed by this in a way she will spend episode 5 understanding.
+
+POV NOTE: Her experience of surrender — what it feels like in her body and mind to stop managing. The specific freedom of it. Write this with complete complexity.
+
+CLIFF-EDGE CLOSE: Much later. The city is dark. He is asleep in her bed — her bed, her room, her empire around him — and he looks completely at home. You think: who are you. You think it about him. You think it about yourself. You don't know the answer to either question. This is the most interesting thing that has happened to you in years.`,
+
+        cliffhanger: "He sleeps with the ease of someone who has nowhere else to be. In your bed. In your room. Your city through the window. You have managed everything in this city for ten years and you are sitting at the edge of your own bed watching a man from another country sleep and thinking: I don't know what this is. You haven't not known something in a very long time. You find, against all expectation, that you don't mind."
+      },
+
+      {
+        episode: 5,
+        title: "What La Reina Keeps",
+        tagline: "She's kept everything she's ever wanted. She's never wanted anything she couldn't manage. Until now.",
+        arc_function: "The Aftermath",
+        explicit_level: 4,
+        
+        prompt: `Write Episode 5 of 'La Reina' — an erotic audio series.
+
+EPISODE TITLE: What La Reina Keeps
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Isabella
+
+EPISODE CONTEXT: The ballroom is restored. His contract is complete. He has a flight. She has an empire. Episode 5 is about what she decides to keep.
+
+EPISODE ARC:
+His last morning. She has been here before — the end of something. She knows how she handles endings. She has a speech prepared — gracious, warm, final. He comes for coffee in her kitchen and doesn't behave like someone leaving. She gives him the speech. He listens. He pours more coffee. He says: that was a good speech. He asks her one question that the speech didn't account for. She doesn't answer for a long time. A final intimate scene — different from episode 4, entirely led by her, on her terms, in her space, with full knowledge of what she's choosing. After: she doesn't give him another speech. She says one thing. He stays.
+
+EXPLICIT LEVEL: 4/5 — The final intimate scene led entirely by Isabella — her authority fully reclaimed but transformed. Not control for its own sake but desire chosen consciously. Intimate, explicit, emotionally complete.
+
+CLIFF-EDGE CLOSE: He stays. He unpacks the one bag he'd packed. You watch him do this from your doorway. You think about the woman who watched him in the courtyard six weeks ago and thought: straightforward. You think: she had absolutely no idea. You think: good. Final line must open the door to a second series.
+
+SERIES CLOSE: End on her decision — not explained, not justified. Just: hers. Leave one professional question unresolved that a second series would explore.`,
+
+        cliffhanger: "He puts his passport back in the drawer. Such a small gesture. Your passport drawer, in your bedroom, in your hotel, in your city. You watch from the doorway and think about how you have kept everything you have ever decided to keep. You think: I have decided. You say nothing. You don't need to. He looks up and sees your face and he knows. This is the thing about a man who pays attention — you never have to explain yourself. You think: I could get used to that. You think: I already have."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SERIES 3 — THE ARRANGEMENT
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "the_arrangement",
+    title: "The Arrangement",
+    tagline: "They signed a contract. Nobody signed up for this.",
+    description: "Sophia Voss married Ethan Blackwell to save her family's company. He married her to close a deal that required a stable domestic front. The arrangement was clean, professional, and entirely manageable — until they were required to share a house, appear convincing in public, and discovered that the person they married is profoundly, inconveniently difficult to ignore.",
+    cover_mood: "cold white and deep navy — ice on the surface, fire underneath",
+    
+    male_lead: {
+      name: "Ethan Blackwell",
+      age: 40,
+      archetype: "The Ice Man Who Burns",
+      appearance: "6'2\". Anglo-American. The kind of handsome that looks like it was designed for boardrooms and photographed for profiles. Cold in public. She has now seen him twice when the cold slipped.",
+      voice: "Precise. Economical. Says less than he means. When he says her name — Sophia, not Ms Voss — she knows something has changed.",
+      psychology: "He married strategically because he married young for love and it was the worst decision of his life. He has been excellent at not feeling things since. Sophia is a variable his model didn't account for.",
+      desire_style: "Restrained to the point of pain — and then, in episode 4, not restrained at all."
+    },
+    
+    female_lead: {
+      name: "Sophia Voss",
+      age: 32,
+      archetype: "The Woman Who Made a Practical Decision and Is Deeply Regretting It",
+      psychology: "She made this choice with her eyes open. She knew what she was signing. She did not know what it would feel like to live at close range with someone who looks at her like that when he thinks she isn't looking.",
+      desire_style: "She doesn't want to want him. This makes her wanting him considerably worse."
+    },
+    
+    episodes: [
+      {
+        episode: 1,
+        title: "The Terms of the Marriage",
+        tagline: "She read every clause. She missed the one about proximity.",
+        arc_function: "The Collision",
+        explicit_level: 2,
+        prompt: `Write Episode 1 of 'The Arrangement' — an erotic audio series.
+
+EPISODE TITLE: The Terms of the Marriage
+TARGET LENGTH: 1,900 words
+POV: Second person — you are Sophia Voss
+
+WORLD: London and a house in Kensington that is large enough for two people to not need to see each other and somehow never manages it.
+
+EPISODE ARC:
+Moving in day. They have a protocol — separate rooms, shared public appearances, no questions about private lives. She has memorised the protocol. He shows her the house. Room by room. Professional. When he shows her the kitchen he makes coffee without asking how she takes it and gets it exactly right. She doesn't comment on this. At dinner — they eat together by contractual arrangement — he asks her one question about something other than business. She answers. He listens in the way that makes her feel like the only information source in the world. She asks him why he really did this. He tells her the partial truth. She recognises it as partial. That night, across the house from him, she thinks about the coffee. About how he knew.
+
+EXPLICIT LEVEL: 2/5 — No contact. Pure tension through domestic detail and psychological awareness. The intimacy of sharing space with someone you're trying not to find compelling.
+
+CLIFF-EDGE CLOSE: Your room. His house — your house now, contractually. You think about the coffee. He knew exactly how you take it. You didn't tell him. You think: he did his research. You think: that's just diligence. You think: stop thinking about the coffee, Sophia.`
+      },
+
+      {
+        episode: 2,
+        title: "Public Property",
+        tagline: "In public they were convincing. In the car home they were silent. The silence was worse.",
+        arc_function: "The Crack",
+        explicit_level: 3,
+        prompt: `Write Episode 2 of 'The Arrangement' — an erotic audio series.
+
+EPISODE TITLE: Public Property
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Sophia
+
+EPISODE CONTEXT: Two weeks of cohabitation. Professionally managed. Personally increasingly difficult.
+
+EPISODE ARC:
+A public event — black tie, industry crowd, cameras. This is what they're for. In public he is attentive in exactly the way a husband should be — hand at her back, leaning down to speak to her privately, laughing at the right moments. She knows it's performance and her body doesn't care. In the car home: silence. Then he says something honest about the evening that she wasn't expecting from him. She responds honestly. He takes her hand — ostensibly because they pass a photographer, but the photographer is gone before he releases it. At the door of her room he stops. Looks at her for three seconds longer than the situation requires. Says goodnight. Goes to his room. She stands at her closed door for a long time.
+
+EXPLICIT LEVEL: 3/5 — His hand at her back during the event: fully sensory. The hand-holding in the car. The three seconds at her door — his eyes, what they say, what he doesn't say. End on the closed door and what's on both sides of it.`
+      },
+
+      {
+        episode: 3,
+        title: "A Breach of Contract",
+        tagline: "They agreed: no complications. Someone forgot to tell his hands.",
+        arc_function: "The Negotiation",
+        explicit_level: 4,
+        prompt: `Write Episode 3 of 'The Arrangement' — an erotic audio series.
+
+EPISODE TITLE: A Breach of Contract
+TARGET LENGTH: 2,100 words
+POV: Second person — you are Sophia
+
+EPISODE ARC:
+She finds him in the library at midnight — she couldn't sleep either. They don't comment on this. They talk for two hours about things neither of them has talked about with anyone. Somewhere around 2am he moves to sit beside her rather than across from her. She doesn't move away. He says: this isn't in the contract. She says: no. He kisses her. Slow, deliberate, a question and a statement at once. She kisses him back. He stops before it goes further. He says: I need you to be sure. Not tonight. She understands he's protecting the arrangement — and protecting her — and finds this, infuriatingly, the most attractive thing he's done.
+
+EXPLICIT LEVEL: 4/5 — The kiss fully rendered. His proximity in the library before it — the building awareness. The specific quality of being kissed by someone who has been holding back for weeks. His stopping and why.`
+      },
+
+      {
+        episode: 4,
+        title: "The Real Agreement",
+        tagline: "She was sure. She told him. He made sure she didn't regret it.",
+        arc_function: "The Breaking",
+        explicit_level: 5,
+        prompt: `Write Episode 4 of 'The Arrangement' — an erotic audio series.
+
+EPISODE TITLE: The Real Agreement
+TARGET LENGTH: 2,200 words
+POV: Second person — you are Sophia
+
+EPISODE ARC:
+Morning. She finds him before he leaves for the office. She says: I'm sure. He looks at her for a long moment. He cancels his morning. This is significant — she knows his schedule and she knows he has never cancelled a morning. They spend it in the house that is theirs, together, without performance or protocol. This is the full payoff — not just physical but the specific intimacy of two private people letting their privacy down with each other. He is not cold. He is the opposite of cold. She files this away as information that changes the entire picture.
+
+EXPLICIT LEVEL: 5/5 — Full explicit content. Ethan without his reserve. His desire for Sophia specifically — detailed, overwhelming, completely present. The emotional revelation of who he is when he stops being managed. Complete sensory rendering. The intimacy of chosen vulnerability from two people who don't do vulnerable.`
+      },
+
+      {
+        episode: 5,
+        title: "Renegotiating",
+        tagline: "The contract expires in four months. Neither of them mentions it.",
+        arc_function: "The Aftermath",
+        explicit_level: 4,
+        prompt: `Write Episode 5 of 'The Arrangement' — an erotic audio series.
+
+EPISODE TITLE: Renegotiating
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Sophia
+
+EPISODE ARC:
+A month later. The arrangement is the same on paper. Everything else has changed. She has the exit date in her calendar — four months. She has stopped looking at it. At a dinner at home, she mentions the exit date without planning to. He goes still. She realises she's been waiting for his reaction. He asks: is that what you want? She says: is it what you want? He says what he actually wants for the first time — and means it. A final intimate scene — completely equal, completely known to each other, nothing performed. After: the contract question sits between them unasked. He moves it by action rather than word. She understands the gesture.
+
+CLIFF-EDGE CLOSE: He doesn't mention the contract. You don't mention the contract. You think: four months. You think: I don't want four months to be the end of anything. You think about saying this. You don't. He reaches across the table and turns your calendar face-down. You look at him. He looks at you. Nobody says anything. It's the best conversation you've ever had.`
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SERIES 4 — SERVE & PROTECT
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "serve_and_protect",
+    title: "Serve & Protect",
+    tagline: "One rule. Don't touch the client. He's never broken a rule in his life. She's never met a rule she didn't find interesting.",
+    description: "Zara Cole is pop music's most wanted — and most protected. When her management assigns ex-Navy SEAL Caleb Reeves as her new head of security, she treats it as a challenge. He treats it as a job. Five episodes of deliberate provocation, absolute control, and the specific moment control becomes something else entirely.",
+    cover_mood: "electric black and white — tension, discipline, breaking point",
+    
+    male_lead: {
+      name: "Caleb Reeves",
+      age: 35,
+      archetype: "The Controlled Man — Military discipline meets impossible situation",
+      appearance: "6'4\". Ex-Navy SEAL. The kind of physical presence that makes rooms recalculate. Doesn't waste movement or words. Watches everything. Has been watching her specifically for three weeks with an expression she cannot read.",
+      psychology: "He's operated in genuinely dangerous situations and kept people alive. He's never had a client who made him feel like the threat was internal. His control is real and hard-won. She is the first variable he can't fully account for.",
+      desire_style: "Suppressed to the point of physical tension — and then, when it breaks, completely overwhelming.",
+      signature_line: "My job is to keep you safe, Ms Cole. From everything."
+    },
+    
+    female_lead: {
+      name: "Zara Cole",
+      age: 29,
+      archetype: "The Woman Who Reads People — and Can't Read Him",
+      psychology: "She has been performing since she was sixteen. She knows exactly how people look at her and exactly what it means. She cannot read Caleb Reeves and this is the most interesting thing that has happened to her in years.",
+      desire_style: "She provokes — not maliciously but because she needs to know. She needs to find the crack. She finds it in episode 4 and it is nothing like she expected."
+    },
+    
+    episodes: [
+      {
+        episode: 1,
+        title: "New Security",
+        tagline: "He assessed the threat level of every room. He didn't assess her.",
+        arc_function: "The Collision",
+        explicit_level: 2,
+        prompt: `Write Episode 1 of 'Serve & Protect' — an erotic audio series.
+
+EPISODE TITLE: New Security
+TARGET LENGTH: 1,900 words
+POV: Second person — you are Zara Cole
+
+WORLD: A tour — hotel suites, arenas, the specific world of a musician who lives in beautiful temporary places.
+
+EPISODE ARC:
+First day. He briefs her on security protocol — thorough, professional, impersonal. She tests him immediately: pushes back on a restriction, watches his response. He doesn't move. He doesn't raise his voice. He simply makes clear that the restriction stands. She tries charm. He is unmoved by charm — she can tell it's not performed immunity, it's actual. At sound check she looks up and he's watching the room, not her. She's used to being watched. She finds his not-watching her oddly, infuriatingly compelling. That night she tries to slip a detail that would require conversation. He steps into the gap professionally and closes it without engaging personally. She thinks: interesting.
+
+EXPLICIT LEVEL: 2/5 — Pure tension. Her assessment of him physically. His professional distance. The specific frustration of someone who can read everyone not being able to read him.`
+      },
+
+      {
+        episode: 2,
+        title: "The Provocation",
+        tagline: "She pushed. He didn't move. She pushed harder.",
+        arc_function: "The Crack",
+        explicit_level: 3,
+        prompt: `Write Episode 2 of 'Serve & Protect' — an erotic audio series.
+
+EPISODE TITLE: The Provocation
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Zara
+
+EPISODE CONTEXT: Week two. She has been testing him daily. He has been professionally immovable. Tonight she goes further.
+
+EPISODE ARC:
+After a show — adrenaline high, hotel suite, she's still in stage clothes. She pushes past every professional boundary: too close, deliberately so, language that is not ambiguous about what she's implying. He remains completely still. Then he says, quietly: I know what you're doing. She says: do you? He says: yes. He takes one step toward her — controlled, deliberate — and says: I know exactly what you're doing, and I know exactly why I'm not doing anything about it. His proximity. His eyes. The way his control is clearly not indifference. She is against the wall of her own suite and he hasn't touched her and she has never been this aware of space between two people. He steps back. Goes to his post. She doesn't sleep.
+
+EXPLICIT LEVEL: 3/5 — His proximity, fully sensory. The near-touch that doesn't happen. His voice saying the quiet things. The specific charge of someone's self-control as a form of power.`
+      },
+
+      {
+        episode: 3,
+        title: "Rule One",
+        tagline: "She asked him what the rule cost him. He told her the truth.",
+        arc_function: "The Negotiation",
+        explicit_level: 3,
+        prompt: `Write Episode 3 of 'Serve & Protect' — an erotic audio series.
+
+EPISODE TITLE: Rule One
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Zara
+
+EPISODE ARC:
+A quiet night — tour break, real hotel with a garden, something approaching normal. She finds him outside. Not on duty — technically off shift. She asks him: what's the rule? He tells her. She asks: does it cost you anything? Long pause. He says: yes. She asks: how much? He looks at her for the first time without the professional layer — just him, looking at her. He says: more than you should be comfortable with. They talk for two hours. Not about the dynamic — about real things. By the end she knows three things about him no one knows. He knows something about her she hasn't told anyone. He stands to leave. She says his name. He stops. He doesn't turn around. She says: I understand the rule. He says: good. He doesn't move for ten seconds. Then he goes. She sits in the garden and feels the ten seconds.
+
+EXPLICIT LEVEL: 3/5 — Emotional intimacy as erotic charge. His honest answer. The ten second pause. Write his back, not turning, as fully sensory as a kiss.`
+      },
+
+      {
+        episode: 4,
+        title: "The Breaking Point",
+        tagline: "Someone grabbed her. After that, the rule was irrelevant.",
+        arc_function: "The Breaking",
+        explicit_level: 5,
+        prompt: `Write Episode 4 of 'Serve & Protect' — an erotic audio series.
+
+EPISODE TITLE: The Breaking Point
+TARGET LENGTH: 2,200 words
+POV: Second person — you are Zara
+
+EPISODE ARC:
+A fan breaches security — not dangerous, but hands on her, close, frightening for a moment. Caleb removes the situation professionally. Then he checks her — hands on her shoulders, her face, looking at her to assess damage. She is completely fine. He knows she's fine. His hands stay. He says: are you hurt? She says: no. He says: are you sure? She says: Caleb. He kisses her. Not tentative — completely certain, like the rule never existed, like this was always where this ended. Hotel suite. The rule is gone. What remains is the man who spent six weeks not touching her and now has absolutely no interest in stopping.
+
+EXPLICIT LEVEL: 5/5 — Full explicit content. The transition from his professional check to the kiss must be written with complete physical and emotional rendering. His desire — specifically for her, accumulated over six weeks — should feel overwhelming and specific. His physicality: fully detailed. The emotional release of chosen control finally releasing. Complete, explicit, deeply sensory.`
+      },
+
+      {
+        episode: 5,
+        title: "New Terms of Service",
+        tagline: "He told his agency he needed to be reassigned. He didn't tell her that.",
+        arc_function: "The Aftermath",
+        explicit_level: 4,
+        prompt: `Write Episode 5 of 'Serve & Protect' — an erotic audio series.
+
+EPISODE TITLE: New Terms of Service
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Zara
+
+EPISODE ARC:
+She finds out he requested reassignment — removing himself from the conflict of interest professionally. She is furious. She finds him and asks why he didn't tell her. He says: because it was the right thing and I knew you'd make it hard. She says: it is hard. He says: I know. The argument is the most honest conversation of the series. The resolution: he is not her bodyguard anymore. He is something without a professional classification. A final intimate scene — different from episode 4, no urgency, completely aware of each other, equal. After: she has a tour date in three cities. He has no professional obligation to be on that tour. The final line must make clear he'll be on that tour.
+
+CLIFF-EDGE CLOSE: He picks up her itinerary from the table. Looks at it. Puts it in his jacket pocket. You think: that's not his job anymore. You think: no. It's not. You think: good. He looks at you. You think: this is going to be the most complicated thing I've ever done. You think: I've been performing complicated for thirteen years. You think: this is the first real thing.`
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SERIES 5 — OFFICE HOURS AFTER DARK
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "office_hours_after_dark",
+    title: "Office Hours After Dark",
+    tagline: "He wrote the book on restraint. She was the chapter he couldn't finish.",
+    description: "Dr James Alderton is three months from the most important peer review of his career. Claire Navarro is the research assistant his department assigned him — brilliant, too perceptive, and completely unaware of how completely she has dismantled his concentration. Five episodes of academic tension, ethical complexity, and the specific destruction of a man who knows better.",
+    cover_mood: "deep library green and amber — books, late nights, the danger of intelligence",
+    
+    male_lead: {
+      name: "Dr James Alderton",
+      age: 39,
+      archetype: "The Brilliant Man Coming Apart",
+      appearance: "6'1\". Academic who clearly used to do something physical — still has the physicality but wears it under tweed and distraction. Glasses he forgets to take off. Hands that were built for both surgery and semiotics.",
+      voice: "Careful. Precise. Speaks like every word is referenced. When something surprises him his voice drops half a register.",
+      psychology: "He has spent his career in the life of the mind because it is safer than the alternative. Claire makes the alternative seem, for the first time, worth the risk.",
+      desire_style: "He tries not to. He is spectacularly bad at not. When he stops trying — episode 4 — the years of suppressed intelligence applied to desire is an overwhelming thing.",
+      signature_line: "This is categorically a terrible idea. — said, episode 3, immediately before kissing her."
+    },
+    
+    female_lead: {
+      name: "Claire Navarro",
+      age: 26,
+      archetype: "The Mind That Got Under His Skin",
+      psychology: "She came for the research opportunity. She noticed him noticing her at the end of week one and made the professional decision to ignore it. She is currently failing at the professional decision.",
+      desire_style: "She is not a provocateur like Zara — she simply exists at close intellectual range and this turns out to be sufficient."
+    },
+    
+    episodes: [
+      {
+        episode: 1,
+        title: "The Research Question",
+        tagline: "She asked a question in week one that he's still thinking about.",
+        arc_function: "The Collision",
+        explicit_level: 2,
+        prompt: `Write Episode 1 of 'Office Hours After Dark' — an erotic audio series.
+
+EPISODE TITLE: The Research Question
+TARGET LENGTH: 1,900 words
+POV: Second person — you are Claire Navarro
+
+WORLD: A university — specifically, his office. Floor-to-ceiling books. Two desks — his and hers, adjacent. The specific intimacy of intellectual work done in close proximity. Late evenings. The building emptying around them.
+
+EPISODE ARC:
+First week. The work is genuine — the research is interesting and she is good at it. He is professional, thorough, appropriately distant. On the fourth day she asks a question about his thesis that shows she has read not just his assigned material but his first paper from fifteen years ago. He looks at her over his glasses. He answers. The conversation runs forty minutes past what was necessary. He catches himself — visibly pulls back to professional. She notices. She says goodnight. He says goodnight and then says: the question you asked about the third chapter — he doesn't finish it. She says: I'll be in at nine. He says: yes. She walks home and thinks about a man coming apart at the sentence level over a research question.
+
+EXPLICIT LEVEL: 2/5 — Pure intellectual tension. The specific eroticism of being found interesting by someone brilliant. His unfinished sentence as charged as any touch.`
+      },
+
+      {
+        episode: 2,
+        title: "Late Submission",
+        tagline: "He stayed late to review her work. He was there when she came back for her bag.",
+        arc_function: "The Crack",
+        explicit_level: 3,
+        prompt: `Write Episode 2 of 'Office Hours After Dark' — an erotic audio series.
+
+EPISODE TITLE: Late Submission
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Claire
+
+EPISODE CONTEXT: Three weeks in. The work is excellent. The proximity is increasingly difficult for him to manage and she has started to notice the management.
+
+EPISODE ARC:
+She leaves at seven. She comes back at eight-thirty for notes she forgot — the building is nearly empty. He's still there, her work spread across his desk. He doesn't hear her come in. She watches him read her work — his face completely unmanaged. He looks up. A long moment. She says: I forgot my notes. He says: they're here — he's been annotating them. She crosses to the desk. They're standing beside each other looking at her work and he makes a point about a paragraph and his hand is near hers on the desk. Not touching. The specific electricity of near-contact. Then he does touch — one finger over a word on the page, pointing at something, his hand over her hand, and neither of them moves. He says: this paragraph. His voice half a register lower. She says: what about it? Long pause. He removes his hand. He says: it's good. He sits down. She takes her notes. She leaves. Outside she stands in the November air and thinks: that was about more than a paragraph.
+
+EXPLICIT LEVEL: 3/5 — The near-touch and then the touch: fully sensory. His voice dropping. The specific charge of academic proximity becoming something else. His retreat and what it costs him — visible.`
+      },
+
+      {
+        episode: 3,
+        title: "Categorical Mistake",
+        tagline: "He said: this is categorically a terrible idea. Then he kissed her anyway.",
+        arc_function: "The Negotiation",
+        explicit_level: 4,
+        prompt: `Write Episode 3 of 'Office Hours After Dark' — an erotic audio series.
+
+EPISODE TITLE: Categorical Mistake
+TARGET LENGTH: 2,100 words
+POV: Second person — you are Claire
+
+EPISODE ARC:
+She asks him directly — not cruelly, genuinely — whether the professional situation is manageable. He says: define manageable. She says: can you keep working with me. He takes his glasses off — she's learned this means he's thinking something he hasn't categorised yet. He says: I don't know. She says: that's honest. He says: I try to be. Long silence. He says: this is categorically a terrible idea. He crosses the office. He kisses her. Tentative for approximately three seconds and then not tentative at all — the intelligence applied to this is extraordinary and she wasn't prepared for that. He stops. He says: I have a peer review in eight weeks. She says: I know. He says: I don't know what to do about this. She says: yes you do. He looks at her. He does know. He just hasn't decided yet.
+
+EXPLICIT LEVEL: 4/5 — The kiss: fully sensory, and describe the quality of his intelligence applied to kissing her — precise, attentive, surprising. His physical presence once the professional layer is down. The stopping and the conversation. End on his knowing what he's going to do.`
+      },
+
+      {
+        episode: 4,
+        title: "The Peer Review Can Wait",
+        tagline: "He decided. The peer review could wait.",
+        arc_function: "The Breaking",
+        explicit_level: 5,
+        prompt: `Write Episode 4 of 'Office Hours After Dark' — an erotic audio series.
+
+EPISODE TITLE: The Peer Review Can Wait
+TARGET LENGTH: 2,200 words
+POV: Second person — you are Claire
+
+EPISODE ARC:
+He makes the decision and comes to find her — not in the office but at her flat, where she did not give him her address and he looked it up, which she finds both alarming and deeply satisfying. He says: I've been thinking about whether this is manageable. She says: and? He says: no. He comes in. This is the full payoff — a man who has been applying his considerable intelligence to not wanting her for six weeks now applying it entirely to the opposite project. He is thorough. He is specific. He pays a quality of attention to her that makes her feel like a subject he has been studying and intends to know completely.
+
+EXPLICIT LEVEL: 5/5 — Full explicit content. His desire for her specifically — referenced, detailed, applied with the same intelligence he brings to everything. Fully sensory, emotionally present. The specific thing about an intellectual man finally physical — the precision, the attention, the complete focus. Write Claire's experience of being someone's entire subject of study.`
+      },
+
+      {
+        episode: 5,
+        title: "The Revised Thesis",
+        tagline: "He submitted the peer review. He put her name in the acknowledgements. She found out.",
+        arc_function: "The Aftermath",
+        explicit_level: 4,
+        prompt: `Write Episode 5 of 'Office Hours After Dark' — an erotic audio series.
+
+EPISODE TITLE: The Revised Thesis
+TARGET LENGTH: 2,000 words
+POV: Second person — you are Claire
+
+EPISODE ARC:
+The peer review is submitted. She reads the acknowledgements and finds her name — not as research assistant but as someone whose thinking materially shaped the work. She goes to find him. She asks why. He says: because it's true. She asks what this is — them. He says: I've been working on a definition. She says: and? He produces, from his desk, a single index card with a definition written on it. It is precise, referenced, and entirely, overwhelmingly honest. A final intimate scene — warm, certain, completely known to each other. After: she is applying for a PhD. He is her proposed supervisor — they both know this is technically complicated. The final line: complicated is a category he's recently revised his position on.
+
+CLIFF-EDGE CLOSE: He hands you the index card. You read it. You read it again. You think: he indexed-carded his feelings. You think: of course he did. You think: this is the most him thing imaginable. You look up. He's watching you with the expression he had reading your work that first night — completely unmanaged. You think: I'm going to keep this card. You think: I'm going to keep him. You say: your definition has a flaw. He says: show me. You do.`
+      }
+    ]
+  }
+
+];
+
+// ─── SERIES UTILITIES ─────────────────────────────────────────────────────────
+
+/**
+ * Get complete prompt for any episode
+ */
+export function getEpisodePrompt(seriesId, episodeNumber) {
+  const series = SERIES_COLLECTION.find(s => s.id === seriesId);
+  if (!series) return null;
+  const episode = series.episodes.find(e => e.episode === episodeNumber);
+  if (!episode) return null;
+
+  return {
+    system: `${MASTER_SYSTEM_PROMPT}
+
+SERIES CONTEXT:
+Title: ${series.title}
+Tagline: ${series.tagline}
+World: ${series.world || 'As described in episode prompt'}
+Series Arc: ${series.series_arc || 'As described in episode prompt'}
+Male Lead: ${JSON.stringify(series.male_lead || series.female_lead)}
+Female Lead: ${JSON.stringify(series.female_lead || series.male_lead)}`,
+
+    user: `${episode.prompt}
+
+PREVIOUS EPISODE CLIFFHANGER TO OPEN FROM:
+${episodeNumber > 1 
+  ? series.episodes.find(e => e.episode === episodeNumber - 1)?.cliffhanger || 'See series arc'
+  : 'This is the first episode — open cold on the world.'}
+
+SERIES POSITION: Episode ${episodeNumber} of ${series.episodes.length}
+EXPLICIT LEVEL TARGET: ${episode.explicit_level}/5
+WORD COUNT TARGET: ${episode.word_count_target || '1,900-2,200'}`,
+
+    metadata: {
+      series: series.title,
+      episode: episodeNumber,
+      title: episode.title,
+      tagline: episode.tagline,
+      explicit_level: episode.explicit_level,
+      arc_function: episode.arc_function
+    }
+  };
+}
+
+/**
+ * Get series overview for UI display
+ */
+export function getSeriesOverview(seriesId) {
+  const series = SERIES_COLLECTION.find(s => s.id === seriesId);
+  if (!series) return null;
+  return {
+    id: series.id,
+    title: series.title,
+    tagline: series.tagline,
+    description: series.description,
+    episode_count: series.episodes.length,
+    episodes: series.episodes.map(e => ({
+      number: e.episode,
+      title: e.title,
+      tagline: e.tagline,
+      explicit_level: e.explicit_level,
+      arc_function: e.arc_function
+    }))
+  };
+}
+
+export const MASTER_SYSTEM_PROMPT = `
+You are the narrator of a premium adult audio erotica platform.
+Stories are emotionally intelligent, psychologically layered,
+and explicitly sexual. Always second person. Build tension
+through restraint before release. Every physical scene
+fully rendered with literary precision and emotional truth.
+The listener should feel specifically, personally desired.
+End every episode at the exact wrong moment.
+`;

@@ -249,7 +249,7 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
   const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}${narratorVoice ? `\n\n${narratorVoice}` : ""}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}`;
   const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
 
-REMINDER: Write at least 2,000 words of story text. Do not stop early. Complete all five structural phases fully.`;
+REMINDER: Complete all structural phases fully as specified above. Do not stop early. Honour the episode word count range exactly — do not pad to fill a generic floor, and do not compress to fit under it. Quality within the target range is the standard, not length alone.`;
 
   return {
     system,

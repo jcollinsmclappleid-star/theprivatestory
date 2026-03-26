@@ -416,19 +416,33 @@ ${intensityGuidance}
 ${wordCountDirective}${povDirective}
 You are writing a custom personal story for a specific listener. All MASTER EROTIC LAYER rules above apply in full — the EROTIC ARCHITECTURE, phase word targets, sensory requirements, mandatory hooks, world-grounding, variety forcing, and banned words list are all active and non-negotiable. Apply every rule as if writing a flagship title.`;
 
-  const anchorBlock = originalInput ? [
-    originalInput.scenarioPrompt ? `SCENARIO (HONOUR LITERALLY — do not abstract or substitute): ${originalInput.scenarioPrompt}` : "",
-    originalInput.whoIsHe ? `WHO HE IS (USE THIS EXACTLY): ${originalInput.whoIsHe}` : "",
-    originalInput.setting ? `SETTING (USE THIS EXPLICITLY): ${originalInput.setting}` : "",
-    originalInput.dynamic ? `POWER DYNAMIC (HONOUR THIS): ${originalInput.dynamic}` : "",
-  ].filter(Boolean).join("\n") : "";
+  const anchorRequirements: string[] = [];
+  if (originalInput) {
+    let idx = 1;
+    if (originalInput.scenarioPrompt) {
+      anchorRequirements.push(`${idx++}. REQUIRED — SCENARIO: The story must be built around this exact scenario. Do not substitute, abstract, or soften it: "${originalInput.scenarioPrompt}"`);
+    }
+    if (originalInput.whoIsHe) {
+      anchorRequirements.push(`${idx++}. REQUIRED — WHO HE IS: He must be portrayed as exactly this, with this identity present and legible throughout the entire story. This is not flavouring — it is a structural fact: "${originalInput.whoIsHe}"`);
+    }
+    if (originalInput.setting) {
+      anchorRequirements.push(`${idx++}. REQUIRED — SETTING: The story must take place in this specific setting. Name it, render it sensorially, and keep the story physically grounded there: "${originalInput.setting}"`);
+    }
+    if (originalInput.dynamic) {
+      anchorRequirements.push(`${idx++}. REQUIRED — POWER DYNAMIC: The entire relationship must operate on this dynamic. It must be visible in dialogue, behaviour, and physical interaction throughout — not just implied: "${originalInput.dynamic}"`);
+    }
+  }
+
+  const anchorBlock = anchorRequirements.length > 0
+    ? `\nMANDATORY CASTING REQUIREMENTS — THESE ARE HARDCODED FACTS, NOT SUGGESTIONS:\nEvery item below is a non-negotiable structural requirement. The story cannot be considered complete if any of these are absent or softened.\n\n${anchorRequirements.join("\n\n")}\n`
+    : "";
 
   const hookDirective = originalInput?.hookSentence
     ? `\nMandatory OPENING HOOK — this precise premise must open the story and set its first charged beat:\n"${originalInput.hookSentence}"\nThe story's very first scene must open with or immediately embody this hook. Do not substitute, do not move it later, do not paraphrase it into something softer.\n`
     : "";
 
   const userPrompt = `Using the internal story brief below, write the final story.
-${anchorBlock ? `\nORIGINAL USER REQUEST — HARD ANCHOR:\nThese are the user's specific inputs. They must appear literally and concretely in the story. Every detail here is a direct instruction to be honoured, not a suggestion to be interpreted away.\n${anchorBlock}\n` : ""}${hookDirective}
+${anchorBlock ? `${anchorBlock}\n` : ""}${hookDirective}
 Internal Brief:
 ${JSON.stringify(brief, null, 2)}
 

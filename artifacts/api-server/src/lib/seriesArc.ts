@@ -64,7 +64,7 @@ export const FIVE_EPISODE_EROTIC_ARC = {
       listener_feeling_at_end: "Restless. Slightly irritated at herself. Already planning to listen to episode two.",
 
       mandatory: [
-        "He must be present or imminent within the first three sentences",
+        "He must be present or imminent within the opening paragraph — a sentence or two of atmosphere is permitted before he arrives, but he cannot be absent from the opening",
         "One line of dialogue from him that could mean two things — she knows which meaning she heard",
         "End mid-thought — cut before she finishes it; the unfinished thought is the cliffhanger",
       ],
@@ -229,9 +229,9 @@ export const FIVE_EPISODE_EROTIC_ARC = {
           rule: "Both desire and emotional truth present from the first touch.",
         },
         peak_moment: {
-          length: "900 words",
-          job: "The full explicit payoff. Every physical moment rendered with literary precision. His desire for her specifically — overwhelming, detailed, personal. Her experience — fully present, fully sensory, emotionally complex. This scene earns its length.",
-          rule: "Minimum 900 words. His desire for HER specifically must be stated. The emotional subtext must run beneath every physical moment.",
+          length: "600–900 words",
+          job: "The full explicit payoff. Every physical moment rendered with literary precision. His desire for her specifically — overwhelming, detailed, personal. Her experience — fully present, fully sensory, emotionally complex. Do not compress this scene into summary — stay present throughout.",
+          rule: "Minimum 600 words of fully rendered, sustained explicit content — not summary, not montage. His desire for HER specifically must be stated. The emotional subtext must run beneath every physical moment. If the prose is rich and specific, length will follow naturally.",
         },
         cliff_edge_close: {
           length: "350 words",
@@ -259,8 +259,8 @@ export const FIVE_EPISODE_EROTIC_ARC = {
       listener_feeling_at_end: "Satisfied, changed, and immediately aware that episode five exists and contains something she still needs.",
 
       mandatory: [
-        "Full explicit content — no fade to black, no euphemism",
-        "Peak moment: minimum 900 words, his desire for HER specifically stated",
+        "Full explicit content — no fade to black, no euphemism, no summary where a scene belongs",
+        "Peak moment: minimum 600 words of fully rendered, sustained explicit content — not compressed, not montaged. His desire for HER specifically stated",
         "Emotional subtext must run beneath every physical moment",
       ],
 

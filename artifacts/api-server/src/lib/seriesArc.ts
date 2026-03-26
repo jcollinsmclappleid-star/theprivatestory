@@ -20,8 +20,8 @@ export const FIVE_EPISODE_EROTIC_ARC = {
       structure: {
         opening_hook: {
           length: "First 50 words",
-          job: "Drop the listener into the middle of a moment already charged. No preamble. No setup. She should feel the tension before she understands it.",
-          rule: "He must be present or imminent within the first three sentences.",
+          job: "Drop the listener into a world already in motion. A sentence or two of atmosphere or setting is permitted before he enters — use it to establish tone. She should feel the tension before she understands it.",
+          rule: "He must be present or imminent within the opening paragraph.",
         },
         establishment: {
           length: "300 words",
@@ -64,7 +64,7 @@ export const FIVE_EPISODE_EROTIC_ARC = {
       listener_feeling_at_end: "Restless. Slightly irritated at herself. Already planning to listen to episode two.",
 
       mandatory: [
-        "He must be present or imminent within the opening paragraph — a sentence or two of atmosphere is permitted before he arrives, but he cannot be absent from the opening",
+        "He must be present or imminent within the opening paragraph — a sentence or two of atmosphere is permitted to establish world and tone before he enters, but he must arrive within the first paragraph",
         "One line of dialogue from him that could mean two things — she knows which meaning she heard",
         "End mid-thought — cut before she finishes it; the unfinished thought is the cliffhanger",
       ],
@@ -231,7 +231,7 @@ export const FIVE_EPISODE_EROTIC_ARC = {
         peak_moment: {
           length: "600–900 words",
           job: "The full explicit payoff. Every physical moment rendered with literary precision. His desire for her specifically — overwhelming, detailed, personal. Her experience — fully present, fully sensory, emotionally complex. Do not compress this scene into summary — stay present throughout.",
-          rule: "Minimum 600 words of fully rendered, sustained explicit content — not summary, not montage. His desire for HER specifically must be stated. The emotional subtext must run beneath every physical moment. If the prose is rich and specific, length will follow naturally.",
+          rule: "Minimum 600 words of fully rendered, sustained explicit content — quality first, not word count. Do not pad to reach a floor. Do not compress to fit under one. Write until the scene is complete. His desire for HER specifically must be stated. Emotional subtext must run beneath every physical moment.",
         },
         cliff_edge_close: {
           length: "350 words",
@@ -260,7 +260,7 @@ export const FIVE_EPISODE_EROTIC_ARC = {
 
       mandatory: [
         "Full explicit content — no fade to black, no euphemism, no summary where a scene belongs",
-        "Peak moment: minimum 600 words of fully rendered, sustained explicit content — not compressed, not montaged. His desire for HER specifically stated",
+        "Peak moment: at least 600 words of fully rendered, sustained explicit content — quality first, not padding. Do not compress. Do not repeat to fill a word count. Write until the scene is complete and emotionally present. His desire for HER specifically stated",
         "Emotional subtext must run beneath every physical moment",
       ],
 

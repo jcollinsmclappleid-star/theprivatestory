@@ -249,7 +249,7 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
   const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}${narratorVoice ? `\n\n${narratorVoice}` : ""}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}`;
   const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
 
-REMINDER: Complete all structural phases fully as specified above. Do not stop early. Honour the episode word count range exactly — do not pad to fill a generic floor, and do not compress to fit under it. Quality within the target range is the standard, not length alone.`;
+REMINDER: Complete all structural phases fully as specified above. Do not stop early. Honour the episode-specific word count range exactly (shown above under TARGET WORD COUNT). Do not pad to reach any generic floor — and do not compress to fit under any floor. The episode word count target is authoritative. Quality within that range is the standard, not length alone. If you find yourself repeating phrases, looping descriptions, or adding filler to hit a number, stop — the quality drops before the count matters.`;
 
   return {
     system,

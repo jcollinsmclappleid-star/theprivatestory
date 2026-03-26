@@ -517,8 +517,14 @@ You are writing a custom personal story for a specific listener. All MASTER EROT
     }
   }
 
+  // If there are casting anchor requirements, append an explicit enforcement instruction
+  // so the model treats them as structural facts, not style suggestions.
+  const anchorEnforcementSuffix = anchorRequirements.length > 0
+    ? `\nENFORCEMENT NOTE: If any of the above REQUIRED items is absent from the final story — even partially softened, abstracted, or moved to subtext — the story FAILS. Do not rationalise any of these requirements away. Do not substitute a similar element. Use the exact selections above, literally, as structural facts throughout the entire narrative from scene 1 to final scene.`
+    : "";
+
   const anchorBlock = anchorRequirements.length > 0
-    ? `\nMANDATORY CASTING REQUIREMENTS — THESE ARE HARDCODED FACTS, NOT SUGGESTIONS:\nEvery item below is a non-negotiable structural requirement. The story cannot be considered complete if any of these are absent or softened.\n\n${anchorRequirements.join("\n\n")}\n`
+    ? `\nMANDATORY CASTING REQUIREMENTS — THESE ARE HARDCODED FACTS, NOT SUGGESTIONS:\nEvery item below is a non-negotiable structural requirement. The story cannot be considered complete if any of these are absent or softened.\n\n${anchorRequirements.join("\n\n")}\n${anchorEnforcementSuffix}\n`
     : "";
 
   const hookDirective = originalInput?.hookSentence

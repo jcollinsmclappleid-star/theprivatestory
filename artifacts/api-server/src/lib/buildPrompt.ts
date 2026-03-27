@@ -206,7 +206,10 @@ export function buildPrompt(
 
   let storyPrompt = subtheme.prompt;
   if (subtheme.is_custom && userInput) {
-    storyPrompt = storyPrompt.replace("[USER_INPUT]", userInput.slice(0, 500));
+    // Wrap user input in explicit delimiters so the LLM sees a clear boundary
+    // between system instructions and user-supplied content.
+    const delimited = `[USER SCENARIO BEGIN]\n${userInput.slice(0, 500)}\n[USER SCENARIO END]`;
+    storyPrompt = storyPrompt.replace("[USER_INPUT]", delimited);
   }
 
   const intensity = options.intensity ?? (typeof subtheme.intensity === "number" ? subtheme.intensity : 3);

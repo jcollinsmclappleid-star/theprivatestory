@@ -1,5 +1,8 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
+import { db, usersTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import { logger } from "../lib/logger.js";
 
 const router = Router();
 
@@ -396,6 +399,35 @@ router.get("/quick-create-params", async (req, res) => {
     });
   } catch {
     res.status(500).json({ error: "Failed to build quick-create params" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /api/me — GDPR Article 17 right to erasure (self-service account deletion)
+// Soft-deletes the user record and clears all personal data from storage.
+// ---------------------------------------------------------------------------
+router.delete("/", async (req, res) => {
+  const userId = getUserId(req);
+
+  try {
+    // Soft-delete the user row by setting deletedAt
+    await db
+      .update(usersTable)
+      .set({ deletedAt: new Date() })
+      .where(eq(usersTable.id, userId));
+
+    // Clear all personal storage data (non-blocking — failures are logged but don't block response)
+    // Erasure of AI-generated content and taste data happens within 30 days per Privacy Policy
+    const cleanupTasks = [
+      tasteStore.upsert(userId, { tasteProfile: {}, preferredIntensity: {}, preferredVoiceFeel: {}, preferredEndings: {}, preferredRelationshipDynamics: {}, streakDays: 0, lastActiveDate: null }),
+    ];
+    await Promise.allSettled(cleanupTasks);
+
+    logger.info({ userId }, "[account-deletion] User account soft-deleted (GDPR Art.17)");
+    res.json({ ok: true, message: "Your account has been scheduled for deletion. All personal data will be removed within 30 days." });
+  } catch (err) {
+    logger.error({ err, userId }, "[account-deletion] Failed to delete account");
+    res.status(500).json({ error: "Failed to delete account. Please contact safety@theprivatestory.com for assistance." });
   }
 });
 

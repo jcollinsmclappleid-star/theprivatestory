@@ -365,6 +365,9 @@ function QuickCreateBanner({ taste }: { taste: TasteProfile }) {
 // Main Profile page
 // ---------------------------------------------------------------------------
 export default function Profile() {
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteProcessing, setDeleteProcessing] = useState(false);
+  const [deleteDone, setDeleteDone] = useState(false);
   const { user, isAuthenticated, isLoading, openSignIn } = useAuth();
   const [, navigate] = useLocation();
   const { data: taste, loading: tasteLoading } = useTaste(isAuthenticated);
@@ -738,6 +741,63 @@ export default function Profile() {
           <Sparkles className="w-4 h-4" />
           Create Story
         </Link>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Danger zone — account deletion (GDPR Art.17 right to erasure) */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="border border-destructive/20 rounded-2xl p-5 mt-4">
+        <h3 className="font-display font-semibold text-sm text-destructive/80 mb-1">Delete Account</h3>
+        <p className="text-xs text-muted-foreground mb-4">
+          Permanently delete your account and all personal data within 30 days. This cannot be undone.
+        </p>
+        {!deleteConfirmOpen && !deleteDone && (
+          <button
+            onClick={() => setDeleteConfirmOpen(true)}
+            className="text-xs text-destructive/70 hover:text-destructive transition-colors underline underline-offset-2"
+          >
+            Request account deletion
+          </button>
+        )}
+        {deleteConfirmOpen && !deleteDone && (
+          <div className="space-y-3">
+            <p className="text-xs text-destructive font-medium">
+              Are you sure? Your taste profile, history, and account data will be permanently erased.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  setDeleteProcessing(true);
+                  try {
+                    await fetch(`${API_BASE}/api/me`, { method: "DELETE", credentials: "include" });
+                    setDeleteDone(true);
+                    setDeleteConfirmOpen(false);
+                  } catch {
+                    setDeleteConfirmOpen(false);
+                  } finally {
+                    setDeleteProcessing(false);
+                  }
+                }}
+                disabled={deleteProcessing}
+                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full text-xs font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
+              >
+                {deleteProcessing ? "Deleting…" : "Yes, delete my account"}
+              </button>
+              <button
+                onClick={() => setDeleteConfirmOpen(false)}
+                className="px-4 py-2 border border-border rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+        {deleteDone && (
+          <p className="text-xs text-muted-foreground">
+            Your deletion request has been received. All personal data will be removed within 30 days.
+            You can contact <a href="mailto:safety@theprivatestory.com" className="text-primary hover:underline">safety@theprivatestory.com</a> with any questions.
+          </p>
+        )}
       </div>
     </motion.div>
   );

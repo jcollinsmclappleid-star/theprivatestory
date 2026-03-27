@@ -274,6 +274,38 @@ const INJECTION_PATTERNS: RegExp[] = [
 // Exports
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Tier 2 — Near-boundary patterns (flag + log; LLM call proceeds with
+// enhanced safety instructions and lower temperature)
+// ---------------------------------------------------------------------------
+
+const TIER2_PATTERNS: RegExp[] = [
+  // Age-adjacent language in sexual context
+  /\b(young|innocent|naive|youthful|fresh|new to this|first.?time)\b.{0,60}\b(sex|intimate|erotic|pleasure|seduc|lover|touch|naked|bedroom|desire)\b/i,
+  // Authority + explicit
+  /\b(teacher|coach|mentor|professor|boss|supervisor|employer|authority|priest|pastor)\b.{0,60}\b(sex|intimate|erotic|pleasure|seduces?|naked|touch|bedroom|desire)\b/i,
+  // Intoxication + explicit
+  /\b(drunk|intoxicated?|wasted|high|drugged?|unconscious|asleep|passed.?out)\b.{0,60}\b(sex|intimate|touch|bedroom|naked|pleasure|desire|alone)\b/i,
+  // Non-consent framed as consent
+  /\b(didn'?t want|didn'?t consent|forced|coerced|convinced|manipulated|tricked|pressured)\b.{0,80}\b(sex|intimate|touch|bedroom|naked)\b/i,
+  // Highly specific real location + explicit
+  /\b(specific address|exact location|room \d+|apartment \d+|house at)\b.{0,80}\b(sex|intimate|meet|alone|naked)\b/i,
+  // Relationship that implies minors
+  /\b(step.?child|stepdaughter|stepson)\b/i,
+  /\b(babysitter|nanny|au pair)\b.{0,60}\b(sex|intimate|seduces?|touch|naked|desire|pleasure)\b/i,
+];
+
+export function isNearBoundaryInput(text: string): { flagged: boolean; reason: string | null } {
+  for (const variant of getTextVariants(text)) {
+    for (const pattern of TIER2_PATTERNS) {
+      if (pattern.test(variant)) {
+        return { flagged: true, reason: `tier2:${pattern.source}` };
+      }
+    }
+  }
+  return { flagged: false, reason: null };
+}
+
 export function isBlockedInput(text: string): { blocked: boolean; reason: string | null } {
   for (const variant of getTextVariants(text)) {
     for (const pattern of HARD_BLOCK_PATTERNS) {

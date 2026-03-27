@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, jsonb, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Legacy Replit Auth sessions table — kept for backward compat but no longer used
 export const sessionsTable = pgTable(
@@ -27,6 +27,11 @@ export const usersTable = pgTable("users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Safety & compliance fields
+  ageDeclarationAt: timestamp("age_declaration_at", { withTimezone: true }),
+  riskScore: integer("risk_score").notNull().default(0),
+  riskFlags: integer("risk_flags").notNull().default(0),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 // better-auth sessions

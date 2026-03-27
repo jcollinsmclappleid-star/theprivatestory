@@ -54,9 +54,18 @@ const globalLimiter = rateLimit({
   skip: (req) => req.path.startsWith("/api/auth"),
 });
 
+/** Auth limiter — 5 attempts per 15 min per IP (login brute-force protection) */
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many login attempts. Please wait 15 minutes and try again." },
+});
+
 const generationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  limit: 15,
+  limit: 10,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   keyGenerator: (req) => {
@@ -65,6 +74,9 @@ const generationLimiter = rateLimit({
   },
   message: { error: "Generation limit reached. Please wait before creating another story." },
 });
+
+// Rate-limit sign-in attempts before better-auth handles them
+app.use("/api/auth/sign-in", authLimiter);
 
 // better-auth handles all /api/auth/* routes (before authMiddleware so it can set session cookie)
 app.all("/api/auth{/*path}", toNodeHandler(auth));

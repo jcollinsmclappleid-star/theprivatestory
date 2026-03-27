@@ -21,7 +21,6 @@ export interface CastingRoomResult {
   dynamic: string;
   storyMode: string;
   customTags?: string[];
-  freeText?: string;
   partnerAppearance?: string;
 }
 
@@ -305,11 +304,11 @@ function StepBar({ current, total }: { current: number; total: number }) {
 }
 
 /* ── Live preview sentence ────────────────────────────────────────── */
-function buildPreview(data: Partial<CastingRoomResult>, customArchetype: string, customSetting: string): string {
+function buildPreview(data: Partial<CastingRoomResult>): string {
   const parts: string[] = [];
   if (data.pairing) parts.push(data.pairing);
-  const archetype = data.archetype || customArchetype.trim();
-  const setting   = data.setting   || customSetting.trim();
+  const archetype = data.archetype;
+  const setting   = data.setting;
   const heritage  = data.heritage;
 
   if (heritage && heritage !== "Ambiguous" && archetype) {
@@ -340,9 +339,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [listenerName, setListenerName] = useState<string>("");
   const [partnerName, setPartnerName] = useState<string>("");
   const [customTags, setCustomTags] = useState<string[]>([]);
-  const [freeText, setFreeText] = useState<string>("");
-  const [customArchetype, setCustomArchetype] = useState<string>("");
-  const [customSetting, setCustomSetting] = useState<string>("");
   // Appearance
   const [appearBuild, setAppearBuild] = useState<string>("");
   const [appearHeight, setAppearHeight] = useState<string>("");
@@ -367,13 +363,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return true;
-      case 1: return true;
-      case 2: return !!data.perspective;
-      case 3: return !!data.pairing;
-      case 4: return !!data.heritage && (!!data.archetype || !!customArchetype.trim());
-      case 5: return !!data.chemistry;
-      case 6: return !!data.setting || !!customSetting.trim();
+      case 0: return !!data.pairing;
+      case 1: return !!data.chemistry;
+      case 2: return true;
+      case 3: return true;
+      case 4: return !!data.perspective;
+      case 5: return !!data.heritage && !!data.archetype;
+      case 6: return !!data.setting;
       case 7: return !!data.intensity && !!data.mood;
       case 8: return true;
       default: return true;
@@ -384,9 +380,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const chemistryCfg = buildChemistries(data.pairing).find(c => c.id === data.chemistry);
     const pairingCfg   = PAIRINGS.find(p => p.id === data.pairing);
 
-    // Use tile selection OR free text — free text wins only if no tile is selected
-    const archetype  = data.archetype  || customArchetype.trim();
-    const setting    = data.setting    || customSetting.trim();
+    const archetype  = data.archetype  ?? "";
+    const setting    = data.setting    ?? "";
     const heritage   = data.heritage   ?? "";
     const atmosphere = data.atmosphere ?? "";
     const name       = partnerName.trim();
@@ -441,7 +436,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       dynamic,
       storyMode: afterDark ? "unrestrained" : (data.intensity === "Tender" || data.intensity === "Heated" ? "passionate" : "unrestrained"),
       customTags,
-      freeText,
       partnerAppearance,
     };
     onComplete(result);
@@ -489,10 +483,44 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
       <AnimatePresence mode="wait">
 
-        {/* ── Step 0 — Your name ───────────────────────────────────── */}
+        {/* ── Step 0 — Pairing ─────────────────────────────────────── */}
         {step === 0 && (
           <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">What's your name?</h2>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
+            <p className="text-muted-foreground text-sm mb-6">Choose the pairing — this shapes everything that follows.</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {PAIRINGS.map(p => (
+                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
+                  <p className="font-semibold text-white text-base">{p.label}</p>
+                  <p className="text-white/50 text-xs mt-0.5">{p.sub}</p>
+                </ArtTile>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Step 1 — Chemistry / Dynamic ─────────────────────────── */}
+        {step === 1 && (
+          <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
+              Between {protagonistP.object} and {partnerP.object}.
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
+            <div className="grid gap-3">
+              {chemistries.map(c => (
+                <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
+                  <p className="font-semibold text-white text-base">{c.label}</p>
+                  <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
+                </ArtTile>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Step 2 — Your name ───────────────────────────────────── */}
+        {step === 2 && (
+          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name</h2>
             <p className="text-muted-foreground text-sm mb-6">
               We'll weave it into the story — so it feels like it was written just for you.
             </p>
@@ -501,29 +529,29 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               onChange={setListenerName}
               placeholder="Your name…"
             />
-            <p className="text-xs text-muted-foreground mt-3">Optional — skip to keep the story written from within.</p>
+            <p className="text-xs text-muted-foreground mt-3">Optional — skip ahead if you prefer.</p>
           </motion.div>
         )}
 
-        {/* ── Step 1 — Character name ──────────────────────────────── */}
-        {step === 1 && (
-          <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Give them a name.</h2>
+        {/* ── Step 3 — Their name ──────────────────────────────────── */}
+        {step === 3 && (
+          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Their name</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Their name will be spoken aloud in the narration — making this story unmistakably yours.
+              Add a name for your love interest, or leave it blank — they'll be unforgettable either way.
             </p>
             <NamePicker
               value={partnerName}
               onChange={setPartnerName}
               placeholder="Their name…"
             />
-            <p className="text-xs text-muted-foreground mt-3">Optional — skip to let them remain nameless.</p>
+            <p className="text-xs text-muted-foreground mt-3">Leave blank and they'll simply remain nameless.</p>
           </motion.div>
         )}
 
-        {/* ── Step 2 — Perspective ─────────────────────────────────── */}
-        {step === 2 && (
-          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 4 — Perspective ─────────────────────────────────── */}
+        {step === 4 && (
+          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Whose story?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose who the story follows.</p>
             <div className="grid gap-3">
@@ -537,25 +565,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 3 — Pairing ─────────────────────────────────────── */}
-        {step === 3 && (
-          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
-            <p className="text-muted-foreground text-sm mb-6">Choose the pairing. This is hardcoded into your story.</p>
-            <div className="grid grid-cols-2 gap-2.5">
-              {PAIRINGS.map(p => (
-                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
-                  <p className="font-semibold text-white text-base">{p.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5">{p.sub}</p>
-                </ArtTile>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* ── Step 4 — Character ───────────────────────────────────── */}
-        {step === 4 && (
-          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 5 — Character ───────────────────────────────────── */}
+        {step === 5 && (
+          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
             <p className="text-muted-foreground text-sm mb-6">
               Choose {partnerP.possessive} heritage and the energy {partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.
@@ -574,41 +586,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               {capFirst(partnerP.possessive)} Energy
             </p>
-            <div className="grid grid-cols-2 gap-2.5 mb-4">
+            <div className="grid grid-cols-2 gap-2.5 mb-6">
               {archetypes.map(a => (
                 <ArtTile
                   key={a.id}
                   gradient={a.gradient}
                   accent={a.accent}
-                  selected={data.archetype === a.id && !customArchetype}
-                  onClick={() => {
-                    update("archetype", a.id);
-                    setCustomArchetype("");
-                  }}
+                  selected={data.archetype === a.id}
+                  onClick={() => update("archetype", a.id)}
                 >
                   <p className="font-semibold text-white text-sm">{a.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{a.sub}</p>
                 </ArtTile>
               ))}
             </div>
-
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
-              Or describe {partnerP.possessive} own energy{" "}
-              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional if tile selected)</span>
-            </p>
-            <input
-              type="text"
-              value={customArchetype}
-              onChange={e => {
-                setCustomArchetype(e.target.value);
-                if (e.target.value.trim()) {
-                  setData(d => ({ ...d, archetype: undefined }));
-                }
-              }}
-              placeholder={`Describe ${partnerP.possessive} energy in your own words…`}
-              maxLength={120}
-              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mb-6"
-            />
 
             {/* ── Appearance (all optional) ─────────────────────── */}
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-1">
@@ -618,7 +609,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs text-muted-foreground mb-4">Describe how they look — as much or as little as you want.</p>
 
             <div className="space-y-4">
-              {/* Build */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Build</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -632,7 +622,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   ))}
                 </div>
               </div>
-              {/* Height */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Height</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -646,7 +635,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   ))}
                 </div>
               </div>
-              {/* Colouring */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Colouring</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -660,7 +648,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   ))}
                 </div>
               </div>
-              {/* Eye Colour */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Eye Colour</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -674,7 +661,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   ))}
                 </div>
               </div>
-              {/* Distinguishing Features — multi-select */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -695,24 +681,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 5 — Chemistry ───────────────────────────────────── */}
-        {step === 5 && (
-          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
-              Between {protagonistP.object} and {partnerP.object}.
-            </h2>
-            <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
-            <div className="grid gap-3">
-              {chemistries.map(c => (
-                <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
-                  <p className="font-semibold text-white text-base">{c.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
-                </ArtTile>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
         {/* ── Step 6 — World ───────────────────────────────────────── */}
         {step === 6 && (
           <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
@@ -726,11 +694,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   key={s.id}
                   gradient={s.gradient}
                   accent={s.accent}
-                  selected={data.setting === s.id && !customSetting}
-                  onClick={() => {
-                    update("setting", s.id);
-                    setCustomSetting("");
-                  }}
+                  selected={data.setting === s.id}
+                  onClick={() => update("setting", s.id)}
                 >
                   <p className="font-semibold text-white text-sm">{s.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
@@ -745,35 +710,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   key={s.id}
                   gradient={s.gradient}
                   accent={s.accent}
-                  selected={data.setting === s.id && !customSetting}
-                  onClick={() => {
-                    update("setting", s.id);
-                    setCustomSetting("");
-                  }}
+                  selected={data.setting === s.id}
+                  onClick={() => update("setting", s.id)}
                 >
                   <p className="font-semibold text-white text-sm">{s.label}</p>
                   <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>
-
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
-              Or create your own world{" "}
-              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional if tile selected)</span>
-            </p>
-            <input
-              type="text"
-              value={customSetting}
-              onChange={e => {
-                setCustomSetting(e.target.value);
-                if (e.target.value.trim()) {
-                  setData(d => ({ ...d, setting: undefined }));
-                }
-              }}
-              placeholder="Describe your world — time, place, atmosphere…"
-              maxLength={200}
-              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mb-6"
-            />
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
@@ -845,7 +789,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             {/* Story preview */}
             <div className="glass-panel rounded-2xl p-5 mb-4 border border-primary/20">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Your story</p>
-              <p className="text-foreground text-sm leading-relaxed italic">"{buildPreview(data, customArchetype, customSetting)}"</p>
+              <p className="text-foreground text-sm leading-relaxed italic">"{buildPreview(data)}"</p>
             </div>
           </motion.div>
         )}
@@ -870,8 +814,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <StoryTagStudio
               selectedTags={customTags}
               onTagToggle={toggleTag}
-              freeText={freeText}
-              onFreeTextChange={setFreeText}
               afterDark={afterDark}
               accentColor={accentColor}
             />

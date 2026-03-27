@@ -93,8 +93,6 @@ const AFTER_DARK_EXTRA_CATEGORIES: TagCategory[] = [
 interface Props {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
-  freeText: string;
-  onFreeTextChange: (text: string) => void;
   afterDark?: boolean;
   accentColor?: string;
 }
@@ -102,8 +100,6 @@ interface Props {
 export function StoryTagStudio({
   selectedTags,
   onTagToggle,
-  freeText,
-  onFreeTextChange,
   afterDark = false,
   accentColor = "#c9a227",
 }: Props) {
@@ -186,22 +182,6 @@ export function StoryTagStudio({
         </div>
       ))}
 
-      <div className="pt-2">
-        <p
-          className="text-xs font-semibold uppercase tracking-widest mb-3"
-          style={{ color: accentColor }}
-        >
-          Anything specific? One sentence is enough.
-        </p>
-        <textarea
-          value={freeText}
-          onChange={(e) => onFreeTextChange(e.target.value)}
-          maxLength={200}
-          rows={3}
-          placeholder="e.g. He's been watching her for weeks…"
-          className="w-full rounded-2xl bg-white/5 border border-white/10 text-sm text-foreground placeholder:text-muted-foreground/50 px-4 py-3 resize-none focus:outline-none focus:border-white/20 transition-colors leading-relaxed"
-        />
-      </div>
     </div>
   );
 }

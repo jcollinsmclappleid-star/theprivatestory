@@ -838,9 +838,23 @@ export default function Admin() {
                 )}
                 {userReports.map((r) => (
                   <div key={String(r.id)} className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-3 mb-2">
-                    <div className="text-[10px] text-white/40 font-mono mb-0.5">ID: {String(r.id)}</div>
-                    <div className="text-xs text-white/70 line-clamp-3">{String(r.blockReason ?? "")}</div>
-                    <div className="text-[10px] text-white/30 mt-1">{r.createdAt ? new Date(String(r.createdAt)).toLocaleString() : ""}</div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] text-white/40 font-mono">#{String(r.id)}</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300">
+                        {String(r.category ?? "unknown")}
+                      </span>
+                      {r.storyId && (
+                        <span className="text-[10px] text-white/30 font-mono truncate">story: {String(r.storyId)}</span>
+                      )}
+                    </div>
+                    {r.notes && (
+                      <div className="text-xs text-white/70 line-clamp-3 mb-1">{String(r.notes)}</div>
+                    )}
+                    <div className="flex items-center gap-3 text-[10px] text-white/30">
+                      <span>{r.createdAt ? new Date(String(r.createdAt)).toLocaleString() : ""}</span>
+                      {r.userId && <span>user: {String(r.userId).slice(0, 8)}…</span>}
+                      {r.ipAddress && <span>ip: {String(r.ipAddress)}</span>}
+                    </div>
                   </div>
                 ))}
               </div>

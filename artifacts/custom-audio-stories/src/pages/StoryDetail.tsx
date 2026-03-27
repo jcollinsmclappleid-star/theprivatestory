@@ -7,6 +7,8 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { Slider } from "@/components/ui/slider";
 import { ReportModal } from "@/components/ReportModal";
 
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 export default function StoryDetail() {
   const { id } = useParams();
   const { data: story } = useStoryFallback(id || "");

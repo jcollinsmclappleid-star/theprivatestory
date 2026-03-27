@@ -489,6 +489,44 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
     ? `a ${heritageLabel} ${loveInterestNoun}`
     : `a ${loveInterestNoun}`;
 
+  // --- partnerAppearance → build and colouring descriptors (whitelist only) ---
+  // Parse the structured "Build: X, Colouring: Y" string emitted by CastingRoom.
+  // Only known whitelist values are passed through — free text is silently dropped.
+  const BUILD_VISUAL: Record<string, string> = {
+    "Lean":        "lean build",
+    "Athletic":    "athletic build",
+    "Broad":       "broad-shouldered",
+    "Muscular":    "muscular",
+    "Tall & lean": "tall lean frame",
+    "Stocky":      "stocky build",
+    "Slight":      "slight slender frame",
+  };
+  const COLOURING_VISUAL: Record<string, string> = {
+    "Dark":         "dark complexion",
+    "Olive":        "olive skin tone",
+    "Fair":         "fair complexion",
+    "Tanned":       "tanned complexion",
+    "Deep brown":   "deep brown skin",
+    "Medium brown": "medium brown skin",
+  };
+  let appearanceParts: string[] = [];
+  if (intake.partnerAppearance) {
+    const rawAppear = intake.partnerAppearance;
+    // Extract "Build: <value>" segment
+    const buildMatch = rawAppear.match(/\bBuild:\s*([^,]+)/);
+    if (buildMatch) {
+      const visual = BUILD_VISUAL[buildMatch[1].trim()];
+      if (visual) appearanceParts.push(visual);
+    }
+    // Extract "Colouring: <value>" segment
+    const colouringMatch = rawAppear.match(/\bColouring:\s*([^,]+)/);
+    if (colouringMatch) {
+      const visual = COLOURING_VISUAL[colouringMatch[1].trim()];
+      if (visual) appearanceParts.push(visual);
+    }
+  }
+  const appearanceDesc = appearanceParts.join(", ");
+
   // --- Setting → environment descriptor (whitelist of known tile IDs only) ---
   // Custom/free-text settings are excluded — only structured tile selections pass through.
   const SETTING_VISUAL: Record<string, string> = {
@@ -566,6 +604,7 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
 
   const parts = [
     `${subjectDesc} with a ${protagonistNoun}`,
+    appearanceDesc,
     settingDesc,
     atmosphereDesc,
     moodTone,

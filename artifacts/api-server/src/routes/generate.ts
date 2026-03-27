@@ -831,6 +831,30 @@ const VALID_ENDINGS = [
   "He says the thing he's been holding back",
 ];
 
+const VALID_PAIRINGS = ["Her & Him", "Her & Her", "Him & Him", "Her & Them", "Him & Them", "Them & Them"];
+
+const VALID_HERITAGES = ["Latina", "Black", "South Asian", "European", "East Asian", "Middle Eastern", "Indigenous", "Ambiguous"];
+
+const VALID_ATMOSPHERES = ["Stormy", "Candlelit", "Midnight", "Golden Hour", "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid"];
+
+const VALID_STORY_MODES = ["romance", "slow_burn", "passionate", "forbidden", "unrestrained"];
+
+/**
+ * Strip characters from a text field that have no place in a story scenario or
+ * setting string.  Only Unicode letters, digits, spaces, and a small set of
+ * safe punctuation are kept.  Control characters, angle brackets, braces,
+ * backticks, and other injection-facilitating characters are removed.
+ * Returns undefined when the cleaned result is empty.
+ */
+function sanitiseTextField(raw: string | undefined, maxChars: number): string | undefined {
+  if (!raw) return undefined;
+  const cleaned = raw
+    .replace(/[^\p{L}\p{N} .,;:'"!?\-—()\/&]/gu, "")
+    .trim()
+    .slice(0, maxChars);
+  return cleaned || undefined;
+}
+
 function buildCustomIntensityGuidance(intensity: string): string {
   const map: Record<string, string> = {
     Tender: `CONTENT LEVEL — TENDER: Focus on emotional tension, longing, and almost-touch. Physical content is poetic and implied. The body is present but desire is expressed through restraint, proximity, and anticipation rather than explicit description.`,
@@ -885,7 +909,8 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
 
-  const rawScenario = raw.scenarioPrompt?.trim() ?? "";
+  // scenarioPrompt — sanitise to safe characters then apply word-count check
+  const rawScenario = sanitiseTextField(raw.scenarioPrompt, 1000) ?? "";
   const meaningfulWords = rawScenario.split(/\s+/).filter((w) => w.length > 2);
   let scenarioPrompt: string;
   if (meaningfulWords.length === 0) {
@@ -920,19 +945,18 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     whoIsHe: raw.whoIsHe && VALID_WHO_IS_HE.includes(raw.whoIsHe.trim()) ? raw.whoIsHe.trim() : undefined,
     dynamic: raw.dynamic && VALID_DYNAMICS.includes(raw.dynamic.trim()) ? raw.dynamic.trim() : undefined,
     ending: raw.ending && VALID_ENDINGS.includes(raw.ending.trim()) ? raw.ending.trim() : undefined,
-    setting: raw.setting?.trim() || undefined,
-    pairing: raw.pairing?.trim() || undefined,
+    setting: sanitiseTextField(raw.setting, 120),
+    pairing: raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim()) ? raw.pairing.trim() : undefined,
     partnerName: raw.partnerName?.trim() || undefined,
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,
 
     numericIntensity,
-    // Casting-wizard and form-path image routing fields — preserved as-is
-    storyMode: raw.storyMode?.trim() || undefined,
-    heritage: raw.heritage?.trim() || undefined,
-    atmosphere: raw.atmosphere?.trim() || undefined,
-    chemistry: raw.chemistry?.trim() || undefined,
-    partnerAppearance: raw.partnerAppearance?.trim().slice(0, 500) || undefined,
+    storyMode: raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim()) ? raw.storyMode.trim() : undefined,
+    heritage: raw.heritage && VALID_HERITAGES.includes(raw.heritage.trim()) ? raw.heritage.trim() : undefined,
+    atmosphere: raw.atmosphere && VALID_ATMOSPHERES.includes(raw.atmosphere.trim()) ? raw.atmosphere.trim() : undefined,
+    chemistry: sanitiseTextField(raw.chemistry, 120),
+    partnerAppearance: sanitiseTextField(raw.partnerAppearance, 500),
   };
 }
 

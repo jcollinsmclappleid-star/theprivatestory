@@ -230,11 +230,19 @@ router.post("/:id/next-chapter", async (req, res) => {
     return;
   }
 
-  const { scenarioPrompt, mood, timeOfDay } = req.body as {
-    scenarioPrompt?: string;
+  const { mood: rawMood, timeOfDay: rawTimeOfDay } = req.body as {
     mood?: string;
     timeOfDay?: string;
   };
+
+  const VALID_MOODS_SERIES = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender",
+    "Romantic", "Raw", "Playful", "Dark", "Nostalgic", "Urgent", "Possessive", "Electric", "Bittersweet",
+    "Vulnerable", "Healing", "Complicated", "Obsessive", "Desperate", "Fevered", "Wicked", "Decadent",
+    "Dangerous", "Hungry", "Savage", "Aching", "Burning", "Shameless", "Breathless", "Primal", "Reckless"];
+  const VALID_TOD = ["Dawn", "Morning", "Afternoon", "Evening", "Midnight"];
+
+  const mood = rawMood && VALID_MOODS_SERIES.includes(rawMood.trim()) ? rawMood.trim() : undefined;
+  const timeOfDay = rawTimeOfDay && VALID_TOD.includes(rawTimeOfDay.trim()) ? rawTimeOfDay.trim() : undefined;
 
   try {
     const s = await seriesStore.getForUser(req.params.id, req.user.id);
@@ -253,16 +261,6 @@ router.post("/:id/next-chapter", async (req, res) => {
 
     const casting = (s.castingData as Record<string, unknown>) ?? {};
     const chapterNumber = currentCount + 1;
-
-    const inputText = [scenarioPrompt, (casting.whoIsHe as string), (casting.setting as string)].filter(Boolean).join(" ");
-    if (inputText.trim()) {
-      const mod = await moderateInput(inputText);
-      if (mod.blocked) {
-        logBlockedRequest(req.user.id, req.sessionID, mod.source, mod.reason, inputText);
-        res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
-        return;
-      }
-    }
 
     const previouslySummary = buildPreviouslySummary(episodes as { scenes: unknown }[]);
     const seriesLayer = previouslySummary
@@ -287,10 +285,9 @@ router.post("/:id/next-chapter", async (req, res) => {
       intensity: (casting.intensity as string) || "Heated",
       voiceFeel: (casting.voiceFeel as string) || "Soft Voice",
       storyLength: (casting.storyLength as string) || "5 min",
-      scenarioPrompt: [
-        timeOfDay ? `Setting: ${timeOfDay}.` : null,
-        scenarioPrompt || "the story continues from where we left off",
-      ].filter(Boolean).join(" "),
+      scenarioPrompt: timeOfDay
+        ? `Setting: ${timeOfDay}. The story continues from where we left off.`
+        : "The story continues from where we left off.",
       cinematicVisuals: true,
       emotionalFocus: true,
     };

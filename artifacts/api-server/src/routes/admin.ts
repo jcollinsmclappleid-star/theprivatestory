@@ -44,10 +44,12 @@ function deriveAdminApiKey(): string {
 }
 
 function isAdmin(req: any): boolean {
+  const user = req.user as { email?: string; isAdmin?: boolean } | undefined;
+  // DB-role check: isAdmin flag set on the session user
+  if (user?.isAdmin === true) return true;
+  // ADMIN_EMAIL env-based check (session)
+  if (ADMIN_EMAIL && user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
   if (!ADMIN_EMAIL) return false;
-  // Session-based auth (web UI)
-  const user = req.user as { email?: string } | undefined;
-  if (user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
   // Header-based auth for scripts — token must be HMAC-derived, never the email itself
   const token = req.headers["x-admin-token"] as string | undefined;
   if (!token) return false;
@@ -1338,6 +1340,29 @@ router.post("/chat", async (req, res) => {
 // CSAM / Content Moderation Routes
 // ---------------------------------------------------------------------------
 
+/** Returns user-submitted safety reports from content_blocks (blockSource = "user-report"). */
+async function getUserReports() {
+  return db
+    .select()
+    .from(contentBlocks)
+    .where(eq(contentBlocks.blockSource, "user-report"))
+    .orderBy(desc(contentBlocks.createdAt))
+    .limit(200);
+}
+
+/** /api/admin/reports — canonical user-submitted reports endpoint. */
+router.get("/reports", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  try {
+    res.json(await getUserReports());
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch reports" });
+  }
+});
+
 /** Returns recent flagged content events (content_blocks) for admin review. */
 router.get("/moderation/flagged", async (req, res) => {
   if (!isAdmin(req)) {
@@ -1407,6 +1432,29 @@ router.post("/moderation/csam-report", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Failed to create CSAM report" });
   }
+});
+
+// ---------------------------------------------------------------------------
+// Route aliases (canonical names from task spec)
+// ---------------------------------------------------------------------------
+router.get("/flagged-content", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  try {
+    const rows = await db.select().from(contentBlocks).where(isNull(contentBlocks.deletedAt)).orderBy(desc(contentBlocks.createdAt)).limit(200);
+    res.json(rows);
+  } catch { res.status(500).json({ error: "Failed to fetch flagged content" }); }
+});
+
+router.post("/csam-report", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { contentBlockId, reportedTo, notes } = req.body as { contentBlockId: string; reportedTo: "ncmec" | "iwf" | "other"; notes?: string };
+  if (!contentBlockId || !reportedTo) { res.status(400).json({ error: "contentBlockId and reportedTo are required" }); return; }
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+  const adminUserId = adminUser?.id ?? adminUser?.email ?? "unknown";
+  try {
+    const [inserted] = await db.insert(csamReports).values({ contentBlockId: String(contentBlockId), reportedTo, adminUserId, notes: notes ?? null }).returning();
+    res.json({ ok: true, report: inserted });
+  } catch { res.status(500).json({ error: "Failed to create CSAM report" }); }
 });
 
 export default router;

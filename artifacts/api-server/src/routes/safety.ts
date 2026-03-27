@@ -1,10 +1,9 @@
 import { Router } from "express";
 import { db, contentBlocks } from "@workspace/db";
 import crypto from "crypto";
+import { sendEmail, SAFETY_EMAIL } from "../lib/email.js";
 
 const router = Router();
-
-const SAFETY_EMAIL = process.env.SAFETY_EMAIL ?? "safety@theprivatestory.com";
 
 /**
  * POST /api/safety-report
@@ -76,8 +75,29 @@ router.post("/safety-report", async (req, res) => {
       .returning({ id: contentBlocks.id });
 
     console.log(
-      `[safety-report] Filed: id=${record.id} category=${category} userId=${userId ?? "anon"} safetyEmail=${SAFETY_EMAIL}`,
+      `[safety-report] Filed: id=${record.id} category=${category} userId=${userId ?? "anon"}`,
     );
+
+    // Notify the safety team via email
+    await sendEmail({
+      to: SAFETY_EMAIL,
+      subject: `[Safety Report] ${category} — ID #${record.id}`,
+      text: [
+        `A safety report has been submitted on The Private Story.`,
+        ``,
+        `Report ID: ${record.id}`,
+        `Category: ${category}`,
+        contentId ? `Content ID: ${contentId}` : null,
+        `User ID: ${userId ?? "anonymous"}`,
+        ``,
+        `Report description:`,
+        description.trim(),
+        ``,
+        `Review in admin: /admin (Moderation tab)`,
+      ]
+        .filter((l) => l !== null)
+        .join("\n"),
+    });
 
     res.json({
       ok: true,

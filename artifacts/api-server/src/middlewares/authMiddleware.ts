@@ -9,6 +9,7 @@ declare global {
   namespace Express {
     interface User extends AuthUser {
       isAdmin?: boolean;
+      riskScore?: number;
     }
 
     interface Request {
@@ -39,17 +40,31 @@ export async function authMiddleware(
     if (session?.user?.id) {
       const u = session.user as Record<string, unknown>;
 
-      // Look up the user's isAdmin flag from the DB
+      // Look up the user's isAdmin, riskScore, and deletedAt from the DB
       let isAdmin = false;
+      let riskScore = 0;
+      let deletedAt: Date | null = null;
       try {
         const [dbUser] = await db
-          .select({ isAdmin: usersTable.isAdmin })
+          .select({
+            isAdmin: usersTable.isAdmin,
+            riskScore: usersTable.riskScore,
+            deletedAt: usersTable.deletedAt,
+          })
           .from(usersTable)
           .where(eq(usersTable.id, session.user.id))
           .limit(1);
         isAdmin = dbUser?.isAdmin ?? false;
+        riskScore = dbUser?.riskScore ?? 0;
+        deletedAt = dbUser?.deletedAt ?? null;
       } catch {
-        // DB lookup failure — default to false
+        // DB lookup failure — default to safe values
+      }
+
+      // Soft-deleted accounts are treated as unauthenticated
+      if (deletedAt) {
+        next();
+        return;
       }
 
       req.user = {
@@ -60,6 +75,7 @@ export async function authMiddleware(
         profileImageUrl:
           (u.profileImageUrl as string) ?? (session.user.image as string) ?? null,
         isAdmin,
+        riskScore,
       };
     }
   } catch {

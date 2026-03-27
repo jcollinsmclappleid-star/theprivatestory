@@ -87,6 +87,29 @@ function validateInputLengths(body: Partial<GenerateStoryRequest>): string | nul
   return null;
 }
 
+/**
+ * Enforces risk score thresholds from the Platform Safety Architecture spec:
+ *   riskScore >= 81 → full account suspension (all generation blocked)
+ *   riskScore >= 61 + custom input → custom scenario generation blocked
+ *
+ * Returns null if access is allowed, or an error message string if blocked.
+ * Uses riskScore already attached to req.user by authMiddleware — no extra DB query.
+ */
+function checkRiskThreshold(
+  req: { isAuthenticated(): boolean; user?: { riskScore?: number } },
+  hasCustomInput: boolean,
+): string | null {
+  if (!req.isAuthenticated()) return null; // Unauthenticated handled by caller
+  const score = req.user?.riskScore ?? 0;
+  if (score >= 81) {
+    return "Your account has been suspended due to repeated safety policy violations. Contact safety@theprivatestory.com to appeal.";
+  }
+  if (score >= 61 && hasCustomInput) {
+    return "Custom story creation has been restricted on your account due to previous policy violations. Contact safety@theprivatestory.com.";
+  }
+  return null;
+}
+
 async function moderateInput(text: string): Promise<ModerationResult> {
   // Layer 0: prompt injection / jailbreak detection
   const injectionResult = isInjectionAttempt(text);
@@ -1760,7 +1783,19 @@ class ContentModerationError extends Error {
 // ---------------------------------------------------------------------------
 
 router.post("/plan-story", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const body = req.body as GenerateStoryRequest;
+
+  const hasCustomInput = !!(body.scenarioPrompt || body.whoIsHe || body.setting || body.dynamic || body.userInput);
+  const riskError = checkRiskThreshold(req, hasCustomInput);
+  if (riskError) {
+    res.status(403).json({ error: riskError });
+    return;
+  }
 
   const lengthError = validateInputLengths(body);
   if (lengthError) {
@@ -1811,6 +1846,13 @@ router.post("/generate-story", async (req, res) => {
     dynamic?: string;
     mood?: string;
   };
+
+  const hasCustomInput = !!(scenarioPrompt || whoIsHe || setting || dynamicInput);
+  const riskError = checkRiskThreshold(req, hasCustomInput);
+  if (riskError) {
+    res.status(403).json({ error: riskError });
+    return;
+  }
 
   const lengthError = validateInputLengths({ listenerName, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput });
   if (lengthError) {
@@ -2031,6 +2073,14 @@ router.post("/generate-full-story", async (req, res) => {
   }
 
   const rawIntake = req.body as GenerateStoryRequest;
+
+  // Risk score gate: check before any expensive work
+  const hasCustom = !!(rawIntake.scenarioPrompt || rawIntake.whoIsHe || rawIntake.setting || rawIntake.dynamic || rawIntake.userInput);
+  const riskError = checkRiskThreshold(req, hasCustom);
+  if (riskError) {
+    res.status(403).json({ error: riskError });
+    return;
+  }
 
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);

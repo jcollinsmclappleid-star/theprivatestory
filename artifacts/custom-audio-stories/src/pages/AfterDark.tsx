@@ -935,9 +935,12 @@ export default function AfterDark() {
       setPresetSaved(false);
 
       const scenarioContext = `${selectedScenario.label}: ${selectedScenario.sub}`;
-      const fullPrompt = [scenarioContext, casting.scenarioPrompt]
-        .filter(Boolean)
-        .join(". ");
+      const locationPhrase = [casting.city, casting.country].filter(Boolean).join(", ");
+      const fullPrompt = [
+        locationPhrase ? `Set in ${locationPhrase}.` : "",
+        scenarioContext,
+        casting.scenarioPrompt,
+      ].filter(Boolean).join(" ");
       const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
 
       setPendingAfterDarkCast({ casting, fullPrompt, allTags });
@@ -946,7 +949,7 @@ export default function AfterDark() {
 
       setPhase("preset-prompt");
     },
-    [selectedScenario, scenarioSeed]
+    [selectedScenario]
   );
 
   const handleAfterDarkStartGenerating = useCallback(
@@ -969,7 +972,7 @@ export default function AfterDark() {
       try {
         await generateMutation.mutateAsync({
           data: {
-            listenerName: "",
+            listenerName: casting.listenerName || "",
             mood: "Late Night",
             intensity: casting.intensity,
             voiceFeel: "Deep Voice",
@@ -984,6 +987,8 @@ export default function AfterDark() {
             heritage: casting.heritage || undefined,
             atmosphere: casting.atmosphere || undefined,
             chemistry: casting.chemistry || undefined,
+            setting: casting.setting || undefined,
+            partnerName: casting.partnerName || undefined,
           },
         });
       } finally {

@@ -216,16 +216,16 @@ const WHO_IS_HE_OPTIONS = [
   "A bodyguard with orders not to touch me",
   "An old friend who finally says it",
   "Someone who wants only me",
-  "A close friend's older brother",
+  "Someone else's husband",
+  "My personal trainer",
+  "My driver",
   "Someone famous who shouldn't know my name",
   "The one who got away",
-  "Someone I used to love",
   "A dangerous man everyone else avoids",
-  "A man who knows exactly what he wants",
   "Someone who sees through every version of me",
   "My rival, who isn't as cold as I thought",
-  "A traveller I met once and never forgot",
-  "Someone who challenges me every time",
+  "A close friend's older brother",
+  "A man from a life I left behind",
 ];
 
 const DYNAMIC_OPTIONS = [
@@ -234,9 +234,9 @@ const DYNAMIC_OPTIONS = [
   "Equal desire, equal intensity",
   "He's completely in control",
   "I'm completely in control",
-  "He holds back until I ask",
-  "We're both pretending this isn't happening",
-  "He knows everything — I know nothing yet",
+  "We've been circling this for months",
+  "He's patient until he isn't",
+  "I dare him to follow through",
 ];
 
 const ENDING_OPTIONS = [
@@ -244,46 +244,15 @@ const ENDING_OPTIONS = [
   "Fully satisfied",
   "Tender afterglow",
   "Unresolved and open",
-  "Something has changed between us",
-  "We agree it never happened",
-  "He stays",
+  "A promise of more",
+  "Something shifts between you",
+  "He says the thing he's been holding back",
 ];
 
 const VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
 const LENGTHS = ["3 min", "5 min", "10 min"];
 
 const SCENARIO_GROUPS = [
-  {
-    heading: "Settings & Places",
-    items: [
-      "A Tokyo hotel room, midnight, rain on the window",
-      "A private members' club in Mayfair, after hours",
-      "The last carriage of a night train through the Alps",
-      "A borrowed beach house in January, nobody else for miles",
-      "A rooftop apartment in Paris at 2am",
-      "A Chateau Marmont suite, West Hollywood, past midnight",
-      "A late-night raw bar in lower Manhattan",
-      "A flooded piazza in Venice in November",
-      "A glass-walled apartment in Singapore, city lights below",
-      "A hillside villa terrace above Positano at dusk",
-      "A boutique hotel in Marrakech, the city noise below",
-      "A private charter cabin on a transatlantic flight",
-    ],
-  },
-  {
-    heading: "Who He Is",
-    items: [
-      "Your ex, here without warning or explanation",
-      "Your boss who has been watching you for weeks",
-      "A stranger on a flight you almost missed",
-      "Someone you were specifically warned about",
-      "A bodyguard with strict orders not to touch you",
-      "An old friend who finally says what he means",
-      "Someone who makes you want things you don't say aloud",
-      "A man who has known you longer than you've known yourself",
-      "Someone famous who has no business looking at you like that",
-    ],
-  },
   {
     heading: "The Situation",
     items: [
@@ -295,6 +264,8 @@ const SCENARIO_GROUPS = [
       "A dare that went further than either of you intended",
       "A reunion that was supposed to be simple and uncomplicated",
       "Stuck together by circumstance with nowhere else to go",
+      "You're both pretending this is professional",
+      "He showed up somewhere you didn't expect him",
     ],
   },
   {
@@ -307,6 +278,9 @@ const SCENARIO_GROUPS = [
       "A secret you've both been keeping about how you feel",
       "He's seen something in you that no one else has noticed",
       "A boundary that has been bending for months",
+      "The chemistry between you has no context and no explanation",
+      "He is very careful around you, for reasons neither of you says aloud",
+      "You both know something is about to happen",
     ],
   },
   {
@@ -319,6 +293,39 @@ const SCENARIO_GROUPS = [
       "The surrender of being truly seen by someone",
       "Being the only thing he is thinking about",
       "A boundary you didn't know you had, slowly dissolving",
+      "Something you've been running from finally catching you",
+      "The relief of not having to pretend anymore",
+      "The feeling of being chosen, completely and deliberately",
+    ],
+  },
+  {
+    heading: "The Moment",
+    items: [
+      "He reaches for you and stops himself",
+      "You're both talking about something else and neither of you is listening",
+      "He says your name differently than anyone else does",
+      "The exact second when both of you stop pretending",
+      "A touch that's technically nothing and changes everything",
+      "He looks at you and you stop being able to form a sentence",
+      "The silence that turns into something neither of you planned",
+      "He moves closer than is strictly necessary",
+      "You ask him to stay and both of you know what that means",
+      "He reaches out and puts his hand over yours, and doesn't move it",
+    ],
+  },
+  {
+    heading: "The Setting",
+    items: [
+      "A Tokyo hotel room, midnight, rain on the window",
+      "A private members' club in Mayfair, after hours",
+      "The last carriage of a night train through the Alps",
+      "A borrowed beach house in January, nobody else for miles",
+      "A rooftop apartment in Paris at 2am",
+      "A hillside villa terrace above Positano at dusk",
+      "A boutique hotel in Marrakech, the city noise below",
+      "A private charter cabin on a transatlantic flight",
+      "A glass-walled apartment in Singapore, city lights below",
+      "A flooded piazza in Venice in November",
     ],
   },
 ];
@@ -644,6 +651,7 @@ export default function Create() {
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
+  const [isSurprising, setIsSurprising] = useState(false);
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -1017,24 +1025,29 @@ export default function Create() {
   };
 
   const handleSurpriseMe = useCallback(() => {
-    function pick<T,>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
+    if (isSurprising) return;
+    setIsSurprising(true);
+    setTimeout(() => {
+      function pick<T,>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    const path = pick(STORY_PATHS);
-    handlePathSelect(path.id);
+      const path = pick(STORY_PATHS);
+      handlePathSelect(path.id);
 
-    const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
-    form.setValue("scenarioPrompt", pick(allScenarios));
-    form.setValue("whoIsHe", pick(WHO_IS_HE_OPTIONS));
-    form.setValue("dynamic", pick(DYNAMIC_OPTIONS));
-    form.setValue("ending", pick(ENDING_OPTIONS));
+      const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
+      form.setValue("scenarioPrompt", pick(allScenarios));
+      form.setValue("whoIsHe", pick(WHO_IS_HE_OPTIONS));
+      form.setValue("dynamic", pick(DYNAMIC_OPTIONS));
+      form.setValue("ending", pick(ENDING_OPTIONS));
 
-    const allPlaces = WORLD_REGIONS.flatMap(r => r.places);
-    form.setValue("setting", pick(allPlaces));
+      const allPlaces = WORLD_REGIONS.flatMap(r => r.places);
+      form.setValue("setting", pick(allPlaces));
 
-    setTimeOfDay(pick(TIME_OF_DAY_OPTIONS));
-    setSeason(pick(SEASON_OPTIONS));
+      setTimeOfDay(pick(TIME_OF_DAY_OPTIONS));
+      setSeason(pick(SEASON_OPTIONS));
+      setIsSurprising(false);
+    }, 450);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form]);
+  }, [form, isSurprising]);
 
   const onSubmit = async (data: FormData) => {
     setStep("generating");
@@ -1311,10 +1324,15 @@ export default function Create() {
                 <button
                   type="button"
                   onClick={handleSurpriseMe}
-                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all mt-1"
+                  disabled={isSurprising}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all mt-1 ${
+                    isSurprising
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
+                  }`}
                 >
-                  <Shuffle className="w-3.5 h-3.5" />
-                  Surprise Me
+                  <Shuffle className={`w-3.5 h-3.5 ${isSurprising ? "animate-spin" : ""}`} />
+                  {isSurprising ? "Surprising…" : "Surprise Me"}
                 </button>
               </div>
             </div>

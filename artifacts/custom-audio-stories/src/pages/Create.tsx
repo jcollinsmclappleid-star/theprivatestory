@@ -1054,7 +1054,6 @@ export default function Create() {
         body: JSON.stringify({
           storyId: result.id,
           castingData: lastCastingData ?? {},
-          title: result.title,
         }),
       });
       if (!resp.ok) throw new Error("Failed to create series");

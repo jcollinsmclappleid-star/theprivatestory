@@ -29,6 +29,7 @@ interface SeriesDetail {
 }
 
 const VALID_MOODS = ["Forbidden", "Tender", "Playful", "Steamy", "Emotional", "Dark", "Whimsical"];
+const VALID_TIMES_OF_DAY = ["Dawn", "Morning", "Afternoon", "Evening", "Late Night", "In the Dark"];
 
 export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
   const { user } = useAuth();
@@ -46,6 +47,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
   const [genError, setGenError] = useState<string | null>(null);
 
   const [nextMood, setNextMood] = useState("Emotional");
+  const [nextTimeOfDay, setNextTimeOfDay] = useState("Late Night");
   const [nextScenario, setNextScenario] = useState("");
 
   const [expandedEpisode, setExpandedEpisode] = useState<string | null>(null);
@@ -99,6 +101,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
         body: JSON.stringify({
           scenarioPrompt: nextScenario || undefined,
           mood: nextMood,
+          timeOfDay: nextTimeOfDay,
         }),
       });
       if (!resp.ok) {
@@ -111,7 +114,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
     } finally {
       setGeneratingNext(false);
     }
-  }, [series, generatingNext, nextScenario, nextMood, fetchSeries]);
+  }, [series, generatingNext, nextScenario, nextMood, nextTimeOfDay, fetchSeries]);
 
   if (!user) {
     return (
@@ -346,6 +349,22 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
                       className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${nextMood === m ? "bg-primary text-primary-foreground" : "border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}
                     >
                       {m}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time of day */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Time of day</label>
+                <div className="flex flex-wrap gap-2">
+                  {VALID_TIMES_OF_DAY.map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setNextTimeOfDay(t)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${nextTimeOfDay === t ? "bg-primary text-primary-foreground" : "border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}
+                    >
+                      {t}
                     </button>
                   ))}
                 </div>

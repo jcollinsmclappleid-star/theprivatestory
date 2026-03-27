@@ -151,6 +151,11 @@ function EmptyState({ tab }: { tab: LibraryTab }) {
       headline: "No variations yet.",
       sub: "Generate a story variation to see it here.",
     },
+    series: {
+      icon: <Layers className="w-10 h-10 text-primary/40" />,
+      headline: "No personal series yet.",
+      sub: "After generating a story, tap \"Make this a series\" to start one.",
+    },
   };
 
   const { icon, headline, sub } = config[tab];

@@ -62,11 +62,12 @@ function buildPreviouslySummary(episodes: { scenes: unknown }[]): string {
   return text.length > 800 ? text.slice(0, 800) + "…" : text;
 }
 
-function buildSeriesLayerForPlan(previouslySummary: string, chapterNumber: number): string {
+function buildSeriesLayerForPlan(previouslySummary: string, chapterNumber: number, timeOfDay?: string): string {
+  const timeContext = timeOfDay ? `\nTime of day: ${timeOfDay}. Let this shape the atmosphere and sensory palette of the chapter.` : "";
   return `SERIES ARC CONTEXT:
 This is Chapter ${chapterNumber} of an ongoing personal series. The story must continue directly from where Chapter ${chapterNumber - 1} ended.
 Previously: "${previouslySummary}"
-Planning directive: Design the emotional arc as a genuine continuation — no re-introduction of characters, no reset. The story's ESTABLISH phase must pick up immediately from the previous chapter's closing emotional note. The arc should deepen, not restart.`;
+Planning directive: Design the emotional arc as a genuine continuation — no re-introduction of characters, no reset. The story's ESTABLISH phase must pick up immediately from the previous chapter's closing emotional note. The arc should deepen, not restart.${timeContext}`;
 }
 
 router.post("/", async (req, res) => {
@@ -229,9 +230,10 @@ router.post("/:id/next-chapter", async (req, res) => {
     return;
   }
 
-  const { scenarioPrompt, mood } = req.body as {
+  const { scenarioPrompt, mood, timeOfDay } = req.body as {
     scenarioPrompt?: string;
     mood?: string;
+    timeOfDay?: string;
   };
 
   try {
@@ -264,7 +266,9 @@ router.post("/:id/next-chapter", async (req, res) => {
 
     const previouslySummary = buildPreviouslySummary(episodes as { scenes: unknown }[]);
     const seriesLayer = previouslySummary
-      ? buildSeriesLayerForPlan(previouslySummary, chapterNumber)
+      ? buildSeriesLayerForPlan(previouslySummary, chapterNumber, timeOfDay)
+      : timeOfDay
+      ? `TIME OF DAY: This chapter takes place at ${timeOfDay}. Use this to set the atmosphere and sensory palette.`
       : undefined;
 
     const intake: GenerateStoryRequest = {
@@ -283,7 +287,10 @@ router.post("/:id/next-chapter", async (req, res) => {
       intensity: (casting.intensity as string) || "Heated",
       voiceFeel: (casting.voiceFeel as string) || "Soft Voice",
       storyLength: (casting.storyLength as string) || "5 min",
-      scenarioPrompt: scenarioPrompt || "the story continues from where we left off",
+      scenarioPrompt: [
+        timeOfDay ? `Setting: ${timeOfDay}.` : null,
+        scenarioPrompt || "the story continues from where we left off",
+      ].filter(Boolean).join(" "),
       cinematicVisuals: true,
       emotionalFocus: true,
     };

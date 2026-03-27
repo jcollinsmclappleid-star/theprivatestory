@@ -10,6 +10,7 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
+import { NamePicker } from "@/components/NamePicker";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -270,8 +271,18 @@ const ENDING_OPTIONS = [
   "He says the thing he's been holding back",
 ];
 
-const VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
-const LENGTHS = ["3 min", "5 min", "10 min"];
+const VOICE_OPTIONS = [
+  { id: "Soft Voice",      desc: "Warm, close, intimate. Like she's only speaking to you." },
+  { id: "Deep Voice",      desc: "Unhurried and low. Presence without effort." },
+  { id: "Breathy Voice",   desc: "Each word close to your ear. Barely restrained." },
+  { id: "Confident Voice", desc: "Clear, assured, slightly playful." },
+];
+
+const LENGTH_OPTIONS = [
+  { id: "3 min",  label: "Short",    detail: "~3 minutes",  desc: "Quick and complete. One scene, fully realised." },
+  { id: "5 min",  label: "Standard", detail: "~5 minutes",  desc: "A full story arc. Build, tension, resolution." },
+  { id: "10 min", label: "Extended", detail: "~10 minutes", desc: "Unhurried. Room to breathe, linger, and land." },
+];
 
 const SCENARIO_GROUPS = [
   {
@@ -358,6 +369,8 @@ const WORLD_REGIONS = [
       "England", "Scotland", "Wales", "Ireland", "Northern Ireland",
       "London", "Edinburgh", "Dublin", "Bath", "The Scottish Highlands",
       "Cornwall", "The Cotswolds", "Oxford", "Cambridge", "Brighton",
+      "Bristol", "Manchester", "York", "Belfast", "Inverness",
+      "St Andrews", "The Lake District", "Whitby", "Glastonbury",
     ],
   },
   {
@@ -367,12 +380,19 @@ const WORLD_REGIONS = [
       "Monaco", "Switzerland", "Austria", "Belgium", "Netherlands",
       "Germany", "Sweden", "Norway", "Denmark", "Finland",
       "Poland", "Czech Republic", "Hungary", "Romania", "Croatia",
-      "Montenegro", "Iceland",
+      "Montenegro", "Iceland", "Malta", "Cyprus",
       "Paris", "Rome", "Barcelona", "Lisbon", "Athens",
       "Venice", "Florence", "Positano", "The Amalfi Coast", "Santorini",
       "Mykonos", "Ibiza", "Tuscany", "Lake Como", "Capri",
       "Prague", "Budapest", "Vienna", "Copenhagen", "Amsterdam",
       "Stockholm", "Dubrovnik", "St. Moritz", "Chamonix",
+      "Porto", "Lyon", "Seville", "Nice", "Naples", "Bruges",
+      "Tallinn", "Riga", "Valletta", "Split", "Kotor", "Ljubljana",
+      "Interlaken", "Lugano", "Salzburg", "Ghent", "Bruges",
+      "Marseille", "Bordeaux", "Cannes", "Biarritz", "Antibes",
+      "Bologna", "Verona", "Siena", "Palermo", "Taormina",
+      "Malaga", "Valencia", "Granada", "Bilbao", "San Sebastian",
+      "Cinque Terre", "The Dolomites", "Lake Bled", "Hallstatt",
     ],
   },
   {
@@ -385,7 +405,10 @@ const WORLD_REGIONS = [
       "Costa Rica", "Panama", "Ecuador", "Uruguay",
       "New York", "Los Angeles", "Miami", "New Orleans", "San Francisco",
       "Las Vegas", "Chicago", "Havana", "Buenos Aires", "Rio de Janeiro",
-      "Tulum", "Cartagena",
+      "Tulum", "Cartagena", "Nashville", "Boston", "Seattle",
+      "Denver", "Vancouver", "Montreal", "Quebec City", "Bogotá",
+      "Medellín", "Montevideo", "Santa Fe", "Charleston", "Savannah",
+      "Palm Beach", "Santa Barbara", "Napa Valley", "Cape Cod",
     ],
   },
   {
@@ -394,15 +417,21 @@ const WORLD_REGIONS = [
       "Japan", "South Korea", "Thailand", "Vietnam",
       "Indonesia", "Singapore", "Malaysia", "Philippines", "India",
       "Sri Lanka", "Cambodia", "Hong Kong", "Taiwan", "China",
-      "Maldives",
+      "Maldives", "Nepal",
       "Tokyo", "Kyoto", "Bali", "Bangkok", "Singapore City",
+      "Seoul", "Osaka", "Hanoi", "Ho Chi Minh City", "Chiang Mai",
+      "Kuala Lumpur", "Penang", "Colombo", "Galle", "Mumbai",
+      "Jaipur", "Udaipur", "Goa", "Kathmandu", "Luang Prabang",
+      "Taipei", "Macau", "Phuket", "Koh Samui", "Siem Reap",
     ],
   },
   {
     heading: "Oceania",
     places: [
       "Australia", "New Zealand", "Fiji",
-      "Sydney", "Melbourne", "Auckland", "Queenstown",
+      "Sydney", "Melbourne", "Auckland", "Queenstown", "Byron Bay",
+      "Christchurch", "Hobart", "The Whitsundays", "The Great Barrier Reef",
+      "Noosa", "Margaret River", "Rottnest Island",
     ],
   },
   {
@@ -411,8 +440,12 @@ const WORLD_REGIONS = [
       "United Arab Emirates", "Saudi Arabia", "Jordan", "Lebanon", "Turkey",
       "Qatar", "Oman", "Morocco", "Egypt", "South Africa",
       "Kenya", "Tanzania", "Seychelles", "Mauritius", "Zanzibar",
+      "Rwanda", "Ethiopia", "Ghana", "Senegal",
       "Dubai", "Abu Dhabi", "Istanbul", "Beirut", "Amman",
-      "Marrakech", "Cape Town", "Nairobi",
+      "Marrakech", "Cape Town", "Nairobi", "Muscat", "Doha",
+      "Casablanca", "Dakar", "Accra", "Kigali", "Addis Ababa",
+      "Petra", "Wadi Rum", "Aswan", "Luxor", "Essaouira",
+      "The Algarve", "Fez", "Tangier",
     ],
   },
   {
@@ -428,6 +461,9 @@ const WORLD_REGIONS = [
       "An oceanfront estate",
       "A penthouse above the city",
       "A safari lodge at sunset",
+      "A colonial-era hotel in the tropics",
+      "A rainforest treehouse",
+      "A lakeside cabin in winter",
     ],
   },
 ];
@@ -637,6 +673,9 @@ export default function Create() {
   const [savePending, setSavePending] = useState(false);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
   const [presetSaved, setPresetSaved] = useState(false);
+  const [myUsualPreset, setMyUsualPreset] = useState<{ id: number; name: string; castingData: Record<string, unknown> } | null>(null);
+  const [myUsualLoading, setMyUsualLoading] = useState(false);
+  const [myUsualApplied, setMyUsualApplied] = useState(false);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -654,6 +693,7 @@ export default function Create() {
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
   const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
   const [castingChemistry, setCastingChemistry] = useState<string | undefined>();
+  const [castingPartnerAppearance, setCastingPartnerAppearance] = useState<string | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
@@ -813,6 +853,38 @@ export default function Create() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Fetch the user's most recent preset ("My Usual") when authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/presets`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: Array<{ id: number; name: string; castingData: Record<string, unknown> }> | null) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setMyUsualPreset(data[0]);
+        }
+      })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  const handleLoadMyUsual = useCallback(() => {
+    if (!myUsualPreset) return;
+    setMyUsualLoading(true);
+    const c = myUsualPreset.castingData;
+    if (c.archetype) form.setValue("whoIsHe", String(c.archetype));
+    if (c.dynamic) form.setValue("dynamic", String(c.dynamic));
+    if (c.intensity) form.setValue("intensity", String(c.intensity));
+    if (c.mood) form.setValue("mood", String(c.mood));
+    if (c.storyMode) form.setValue("storyMode", String(c.storyMode));
+    if (c.setting) form.setValue("setting", String(c.setting));
+    if (c.pairing) setCastingPairing(String(c.pairing));
+    if (c.partnerName) setCastingPartnerName(String(c.partnerName));
+    setLastCastingData(myUsualPreset.castingData);
+    setPendingCastingData(myUsualPreset.castingData);
+    setMyUsualApplied(true);
+    setMyUsualLoading(false);
+    setStep("preset-prompt");
+  }, [myUsualPreset, form]);
+
   const handleGenerateVariation = useCallback(async () => {
     if (!result || isGeneratingVariation) return;
     setVariationModalOpen(false);
@@ -897,6 +969,7 @@ export default function Create() {
     setCastingHeritage(casting.heritage || undefined);
     setCastingAtmosphere(casting.atmosphere || undefined);
     setCastingChemistry(casting.chemistry || undefined);
+    setCastingPartnerAppearance(casting.partnerAppearance || undefined);
     setPresetSaved(false);
 
     form.setValue("scenarioPrompt", scenarioWithFreeText);
@@ -936,6 +1009,7 @@ export default function Create() {
           heritage: casting.heritage || undefined,
           atmosphere: casting.atmosphere || undefined,
           chemistry: casting.chemistry || undefined,
+          partnerAppearance: casting.partnerAppearance || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -998,12 +1072,13 @@ export default function Create() {
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
+          partnerAppearance: castingPartnerAppearance || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, buildPerspectiveOverrides, buildAugmentedScenario]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, castingPartnerAppearance, buildPerspectiveOverrides, buildAugmentedScenario]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -1082,6 +1157,10 @@ export default function Create() {
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
           pairing: castingPairing || perspectivePairing,
           partnerName: castingPartnerName || data.partnerName || undefined,
+          heritage: castingHeritage || undefined,
+          atmosphere: castingAtmosphere || undefined,
+          chemistry: castingChemistry || undefined,
+          partnerAppearance: castingPartnerAppearance || undefined,
         },
       });
     } finally {
@@ -1256,6 +1335,19 @@ export default function Create() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
+            {myUsualPreset && !myUsualApplied && (
+              <div className="max-w-2xl mx-auto px-4 pt-6 pb-0 flex justify-center">
+                <button
+                  type="button"
+                  onClick={handleLoadMyUsual}
+                  disabled={myUsualLoading}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-sm font-medium hover:bg-primary/10 transition-all"
+                >
+                  <Wand2 className="w-4 h-4" />
+                  {myUsualLoading ? "Loading…" : `My Usual: ${myUsualPreset.name}`}
+                </button>
+              </div>
+            )}
             <CastingRoom
               onComplete={handleCastingComplete}
               onSkip={() => setStep("form")}
@@ -1404,17 +1496,16 @@ export default function Create() {
                       {perspective === "your" ? "Your name" : perspective === "her" ? "Her name" : "His name"}
                       <span className="font-normal"> (optional)</span>
                     </label>
-                    <input
-                      {...form.register("listenerName")}
-                      maxLength={15}
+                    <NamePicker
+                      value={form.watch("listenerName") ?? ""}
+                      onChange={v => form.setValue("listenerName", v, { shouldDirty: true })}
                       placeholder={
                         perspective === "your"
                           ? "How should the story address you?"
                           : perspective === "her"
-                          ? "What is her name?"
-                          : "What is his name?"
+                          ? "Her name…"
+                          : "His name…"
                       }
-                      className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm"
                     />
                   </div>
                   <div>
@@ -1422,15 +1513,14 @@ export default function Create() {
                       {perspective === "his" ? "Her name" : "His name"}
                       <span className="font-normal"> — the love interest (optional)</span>
                     </label>
-                    <input
-                      {...form.register("partnerName")}
-                      maxLength={15}
+                    <NamePicker
+                      value={form.watch("partnerName") ?? ""}
+                      onChange={v => form.setValue("partnerName", v, { shouldDirty: true })}
                       placeholder={
                         perspective === "his"
-                          ? "What is her name?"
-                          : "What is his name?"
+                          ? "Her name…"
+                          : "His name…"
                       }
-                      className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm"
                     />
                   </div>
                 </div>
@@ -1681,19 +1771,52 @@ export default function Create() {
               {/* Voice, Length, Enhancements */}
               <div className="glass-panel rounded-2xl p-6 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">Narrator Voice</label>
-                  <div className="flex flex-wrap gap-2">
-                    {VOICES.map((v) => (
-                      <OptionPill key={v} label={v} field="voiceFeel" value={v} />
-                    ))}
+                  <label className="block text-sm font-medium text-foreground mb-1">Narrator Voice</label>
+                  <p className="text-xs text-muted-foreground mb-3">How the story is read aloud to you.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {VOICE_OPTIONS.map((v) => {
+                      const isSelected = form.watch("voiceFeel") === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => form.setValue("voiceFeel", v.id, { shouldDirty: true })}
+                          className={`text-left px-4 py-3 rounded-xl border transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/10"
+                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                          }`}
+                        >
+                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.id}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.desc}</p>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">Length</label>
-                  <div className="flex gap-2">
-                    {LENGTHS.map((l) => (
-                      <OptionPill key={l} label={l} field="storyLength" value={l} />
-                    ))}
+                  <label className="block text-sm font-medium text-foreground mb-1">Length</label>
+                  <p className="text-xs text-muted-foreground mb-3">How long you'd like your story to be.</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {LENGTH_OPTIONS.map((l) => {
+                      const isSelected = form.watch("storyLength") === l.id;
+                      return (
+                        <button
+                          key={l.id}
+                          type="button"
+                          onClick={() => form.setValue("storyLength", l.id, { shouldDirty: true })}
+                          className={`text-left px-4 py-3 rounded-xl border transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/10"
+                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                          }`}
+                        >
+                          <p className={`text-sm font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>{l.label}</p>
+                          <p className={`text-xs font-medium mt-0.5 ${isSelected ? "text-primary/70" : "text-muted-foreground"}`}>{l.detail}</p>
+                          <p className="text-xs text-muted-foreground mt-1 leading-snug">{l.desc}</p>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>

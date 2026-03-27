@@ -119,6 +119,15 @@ export const userReactionHistory = pgTable("user_reaction_history", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const nameSubmissions = pgTable("name_submissions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  submittedByUserId: text("submitted_by_user_id").references(() => usersTable.id, { onDelete: "set null" }),
+  status: text("status").notNull().default("pending"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type GeneratedStoryRow = typeof generatedStories.$inferSelect;
 export type UserLibraryRow = typeof userLibrary.$inferSelect;
 export type UserProgressRow = typeof userProgress.$inferSelect;
@@ -127,3 +136,4 @@ export type GeneratedCacheRow = typeof generatedCache.$inferSelect;
 export type UserPresetRow = typeof userPresets.$inferSelect;
 export type UserReactionHistoryRow = typeof userReactionHistory.$inferSelect;
 export type SeriesRow = typeof series.$inferSelect;
+export type NameSubmissionRow = typeof nameSubmissions.$inferSelect;

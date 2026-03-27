@@ -25,4 +25,11 @@ export interface GenerateStoryRequest {
   storyMode?: string;
   /** User-selected experience tags that shape the story's emotional register */
   experienceTags?: string[];
+  pairing?: string;
+  partnerName?: string;
+  heritage?: string;
+  atmosphere?: string;
+  chemistry?: string;
+  /** Physical appearance description from the casting wizard */
+  partnerAppearance?: string;
 }

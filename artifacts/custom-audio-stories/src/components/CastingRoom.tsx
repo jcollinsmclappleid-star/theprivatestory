@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, ArrowLeft } from "lucide-react";
 import { StoryTagStudio } from "./StoryTagStudio";
+import { NamePicker } from "./NamePicker";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your";
@@ -21,6 +22,7 @@ export interface CastingRoomResult {
   storyMode: string;
   customTags?: string[];
   freeText?: string;
+  partnerAppearance?: string;
 }
 
 interface Props {
@@ -275,6 +277,17 @@ const MOODS = [
   "Breathless", "Primal", "Reckless",
 ];
 
+/* ── Appearance options (for Step 4 — His Appearance) ───────────── */
+const BUILD_OPTIONS = ["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"];
+const HEIGHT_OPTIONS = ["Tall", "Very tall", "Average height", "Shorter than me"];
+const COLOURING_OPTIONS = ["Dark", "Olive", "Fair", "Tanned", "Deep brown", "Medium brown"];
+const EYE_OPTIONS = ["Dark brown", "Light brown", "Green", "Blue", "Grey", "Hazel", "Deep black"];
+const FEATURE_OPTIONS = [
+  "Stubble", "Full beard", "Clean-shaven", "Strong jaw", "Dimples",
+  "Broad shoulders", "Large hands", "Tattoos", "A scar", "Piercing eyes",
+  "Long hair", "Short hair", "Curls", "Silver at the temples",
+];
+
 /* ── Progress bar ─────────────────────────────────────────────────── */
 function StepBar({ current, total }: { current: number; total: number }) {
   return (
@@ -330,6 +343,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [freeText, setFreeText] = useState<string>("");
   const [customArchetype, setCustomArchetype] = useState<string>("");
   const [customSetting, setCustomSetting] = useState<string>("");
+  // Appearance
+  const [appearBuild, setAppearBuild] = useState<string>("");
+  const [appearHeight, setAppearHeight] = useState<string>("");
+  const [appearColouring, setAppearColouring] = useState<string>("");
+  const [appearEyes, setAppearEyes] = useState<string>("");
+  const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
 
   const TOTAL_STEPS = 9;
 
@@ -396,6 +415,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       data.chemistry ? `The dynamic between them: ${data.chemistry}.` : "",
     ].filter(Boolean).join(" ");
 
+    // Build appearance description if any fields are set
+    const appearParts: string[] = [];
+    if (appearBuild) appearParts.push(`Build: ${appearBuild}`);
+    if (appearHeight) appearParts.push(`Height: ${appearHeight}`);
+    if (appearColouring) appearParts.push(`Colouring: ${appearColouring}`);
+    if (appearEyes) appearParts.push(`Eyes: ${appearEyes}`);
+    if (appearFeatures.length > 0) appearParts.push(`Distinguishing features: ${appearFeatures.join(", ")}`);
+    const partnerAppearance = appearParts.length > 0 ? appearParts.join(". ") : undefined;
+
     const result: CastingRoomResult = {
       perspective: data.perspective ?? "her",
       pairing: data.pairing,
@@ -414,6 +442,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       storyMode: afterDark ? "unrestrained" : (data.intensity === "Tender" || data.intensity === "Heated" ? "passionate" : "unrestrained"),
       customTags,
       freeText,
+      partnerAppearance,
     };
     onComplete(result);
   };
@@ -467,14 +496,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-muted-foreground text-sm mb-6">
               We'll weave it into the story — so it feels like it was written just for you.
             </p>
-            <input
-              type="text"
+            <NamePicker
               value={listenerName}
-              onChange={e => setListenerName(e.target.value)}
+              onChange={setListenerName}
               placeholder="Your name…"
-              maxLength={40}
-              autoFocus
-              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
             />
             <p className="text-xs text-muted-foreground mt-3">Optional — skip to keep the story written from within.</p>
           </motion.div>
@@ -487,14 +512,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-muted-foreground text-sm mb-6">
               Their name will be spoken aloud in the narration — making this story unmistakably yours.
             </p>
-            <input
-              type="text"
+            <NamePicker
               value={partnerName}
-              onChange={e => setPartnerName(e.target.value)}
+              onChange={setPartnerName}
               placeholder="Their name…"
-              maxLength={40}
-              autoFocus
-              className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
             />
             <p className="text-xs text-muted-foreground mt-3">Optional — skip to let them remain nameless.</p>
           </motion.div>
@@ -588,6 +609,88 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               maxLength={120}
               className="w-full bg-card/40 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mb-6"
             />
+
+            {/* ── Appearance (all optional) ─────────────────────── */}
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-1">
+              {capFirst(partnerP.possessive)} Appearance{" "}
+              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
+            </p>
+            <p className="text-xs text-muted-foreground mb-4">Describe how they look — as much or as little as you want.</p>
+
+            <div className="space-y-4">
+              {/* Build */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Build</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {BUILD_OPTIONS.map(opt => (
+                    <button key={opt} type="button"
+                      onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
+                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                        appearBuild === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >{opt}</button>
+                  ))}
+                </div>
+              </div>
+              {/* Height */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Height</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {HEIGHT_OPTIONS.map(opt => (
+                    <button key={opt} type="button"
+                      onClick={() => setAppearHeight(prev => prev === opt ? "" : opt)}
+                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                        appearHeight === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >{opt}</button>
+                  ))}
+                </div>
+              </div>
+              {/* Colouring */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Colouring</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {COLOURING_OPTIONS.map(opt => (
+                    <button key={opt} type="button"
+                      onClick={() => setAppearColouring(prev => prev === opt ? "" : opt)}
+                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                        appearColouring === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >{opt}</button>
+                  ))}
+                </div>
+              </div>
+              {/* Eye Colour */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Eye Colour</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {EYE_OPTIONS.map(opt => (
+                    <button key={opt} type="button"
+                      onClick={() => setAppearEyes(prev => prev === opt ? "" : opt)}
+                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                        appearEyes === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >{opt}</button>
+                  ))}
+                </div>
+              </div>
+              {/* Distinguishing Features — multi-select */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {FEATURE_OPTIONS.map(opt => (
+                    <button key={opt} type="button"
+                      onClick={() => setAppearFeatures(prev =>
+                        prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
+                      )}
+                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                        appearFeatures.includes(opt) ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >{opt}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
           </motion.div>
         )}

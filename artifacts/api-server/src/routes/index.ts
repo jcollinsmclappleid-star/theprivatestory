@@ -9,6 +9,7 @@ import adminRouter from "./admin.js";
 import meRouter from "./me.js";
 import safetyRouter from "./safety.js";
 import reportsRouter from "./reports.js";
+import namesRouter from "./names.js";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use("/admin", adminRouter);
 router.use("/me", meRouter);
 router.use(safetyRouter);
 router.use(reportsRouter);
+router.use(namesRouter);
 
 export default router;

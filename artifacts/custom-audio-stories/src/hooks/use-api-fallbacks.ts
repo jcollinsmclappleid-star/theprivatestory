@@ -1,4 +1,4 @@
-import { useGetStories, useGetSeries, useGetStory } from "@workspace/api-client-react";
+import { useGetStories, useGetSeries, useGetStory, useGetSeriesById } from "@workspace/api-client-react";
 import { MOCK_STORIES, MOCK_SERIES } from "@/lib/mockData";
 
 export function useStoriesFallback(params?: { mood?: string; search?: string }) {
@@ -22,6 +22,12 @@ export function useStoriesFallback(params?: { mood?: string; search?: string }) 
 export function useSeriesFallback() {
   const query = useGetSeries();
   return { ...query, data: query.data || MOCK_SERIES };
+}
+
+export function useSeriesDetailFallback(id: string) {
+  const query = useGetSeriesById(id, { query: { enabled: !!id } });
+  const mockFallback = MOCK_SERIES.find(s => s.id === id) ?? MOCK_SERIES[0];
+  return { ...query, data: query.data ?? mockFallback };
 }
 
 export function useStoryFallback(id: string) {

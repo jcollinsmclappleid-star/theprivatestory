@@ -2,14 +2,21 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, Lock } from "lucide-react";
 import { useParams } from "wouter";
-import { useSeriesFallback } from "@/hooks/use-api-fallbacks";
+import { useSeriesDetailFallback } from "@/hooks/use-api-fallbacks";
 import { PremiumModal } from "@/components/PremiumModal";
 
 export default function SeriesDetail() {
   const { id } = useParams();
-  const { data: seriesList } = useSeriesFallback();
-  const series = seriesList?.find(s => s.id === id);
+  const { data: series, isLoading } = useSeriesDetailFallback(id ?? "");
   const [premiumOpen, setPremiumOpen] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   if (!series) return null;
 

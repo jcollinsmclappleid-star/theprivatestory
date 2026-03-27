@@ -143,6 +143,9 @@ Tables:
 - `user_progress` — listening progress (audioProgressSeconds, sceneIndex) per userId/storyId PK
 - `user_taste` — taste profile JSONB columns (tasteProfile, preferredIntensity, preferredVoiceFeel, preferredEndings, preferredRelationshipDynamics) per userId
 - `generated_cache` — request hash → story ID for deduplication (survives restarts)
+- `user_presets` — saved casting presets (castingData JSONB) per user; used for "My Usual" feature
+- `name_submissions` — user-submitted name requests (name, status: pending/approved/rejected, submittedByUserId); reviewed by admin
+- `series` — multi-episode series (title, description, mood, coverImage, episodeCount, status); related to `generated_stories` via `seriesId`/`seriesEpisode`
 
 Exports (all async):
 - `storiesStore` — `getAll()`, `get(id)`, `set(id, story)` — upsert-based
@@ -195,6 +198,11 @@ Key admin endpoints:
 - `GET /api/admin/categories` — list categories
 - `POST /api/admin/generate-one-sync` — regenerate a single library story (body: `{categoryId, subthemeId}`)
 - `DELETE /api/admin/story/:id` — delete a story by ID
+- `GET /api/admin/name-submissions` — list all user-submitted name requests
+- `PUT /api/admin/name-submissions/:id` — approve or reject a name submission (body: `{status: "approved"|"rejected"}`)
+
+Name submission routes (user-facing):
+- `POST /api/names/submit` — authenticated; rate-limited 3/day per user; submits a name request for admin review (status starts "pending")
 
 **Library seed verification**: `artifacts/api-server/src/lib/library-seed-verification.json` tracks the 40-story library state. Key invariants:
 - `totalStories: 40` — one published story per non-custom subtheme (10 categories × 4 subthemes each)

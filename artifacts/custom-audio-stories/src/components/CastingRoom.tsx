@@ -638,11 +638,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose the pairing — this shapes everything that follows.</p>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {PAIRINGS.map(p => (
                 <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5">{p.sub}</p>
+                  <p className="text-white/60 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -724,11 +724,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </p>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {HERITAGES.map(h => (
                 <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} selected={data.heritage === h.id} onClick={() => update("heritage", h.id)}>
-                  <p className="font-semibold text-white text-sm">{h.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{h.sub}</p>
+                  <p className="font-semibold text-white text-base">{h.label}</p>
+                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{h.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -736,7 +736,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               {capFirst(partnerP.possessive)} Energy
             </p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {archetypes.map(a => (
                 <ArtTile
                   key={a.id}
@@ -745,8 +745,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   selected={data.archetype === a.id}
                   onClick={() => update("archetype", a.id)}
                 >
-                  <p className="font-semibold text-white text-sm">{a.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{a.sub}</p>
+                  <p className="font-semibold text-white text-base">{a.label}</p>
+                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -882,11 +882,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             {afterDark && (
               <>
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">After Dark Exclusive</p>
-                <div className="grid grid-cols-2 gap-2.5 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
                   {AFTER_DARK_SETTINGS.map(s => (
                     <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
-                      <p className="font-semibold text-white text-sm">{s.label}</p>
-                      <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
+                      <p className="font-semibold text-white text-base">{s.label}</p>
+                      <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                     </ArtTile>
                   ))}
                 </div>
@@ -894,21 +894,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             )}
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {CONTEMPORARY_SETTINGS.map(s => (
                 <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
-                  <p className="font-semibold text-white text-sm">{s.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
+                  <p className="font-semibold text-white text-base">{s.label}</p>
+                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {HISTORICAL_SETTINGS.map(s => (
                 <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
-                  <p className="font-semibold text-white text-sm">{s.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
+                  <p className="font-semibold text-white text-base">{s.label}</p>
+                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>

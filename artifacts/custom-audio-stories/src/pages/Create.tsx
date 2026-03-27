@@ -292,16 +292,16 @@ const ENDING_OPTIONS = [
 ];
 
 const VOICE_OPTIONS = [
-  { id: "Soft Voice",      desc: "Warm, close, intimate. Like she's only speaking to you." },
-  { id: "Deep Voice",      desc: "Unhurried and low. Presence without effort." },
-  { id: "Breathy Voice",   desc: "Each word close to your ear. Barely restrained." },
-  { id: "Confident Voice", desc: "Clear, assured, slightly playful." },
+  { id: "Soft Voice",      label: "Soft",      desc: "Warm, close, intimate. Like she's only speaking to you." },
+  { id: "Deep Voice",      label: "Deep",      desc: "Unhurried and low. Presence without effort." },
+  { id: "Breathy Voice",   label: "Breathy",   desc: "Each word close to your ear. Barely restrained." },
+  { id: "Confident Voice", label: "Confident", desc: "Clear, assured, slightly playful." },
 ];
 
 const LENGTH_OPTIONS = [
-  { id: "3 min",  label: "Short",    detail: "~3 minutes",  desc: "Quick and complete. One scene, fully realised." },
-  { id: "5 min",  label: "Standard", detail: "~5 minutes",  desc: "A full story arc. Build, tension, resolution." },
-  { id: "10 min", label: "Extended", detail: "~10 minutes", desc: "Unhurried. Room to breathe, linger, and land." },
+  { id: "3 min",  label: "Short",    detail: "~8 minutes",  desc: "Quick and complete. One scene, fully realised." },
+  { id: "5 min",  label: "Standard", detail: "~15 minutes", desc: "A full story arc. Build, tension, resolution." },
+  { id: "10 min", label: "Extended", detail: "~25 minutes", desc: "Unhurried. Room to breathe, linger, and land." },
 ];
 
 const SCENARIO_GROUPS = [
@@ -1291,6 +1291,8 @@ export default function Create() {
 
   const buildPreviewSentence = (): string => {
     const path = STORY_PATHS.find(p => p.id === selectedMode);
+    const watchedVoice = form.watch("voiceFeel");
+    const voiceOption = VOICE_OPTIONS.find(v => v.id === watchedVoice);
     const hasContent = path || watchedWhoIsHe || watchedSetting || watchedDynamic || timeOfDay || season;
     if (!hasContent) return "";
     const intro = path ? `A ${path.label} story` : "Your story";
@@ -1303,7 +1305,8 @@ export default function Create() {
     if (watchedWhoIsHe) characterParts.push(watchedWhoIsHe.charAt(0).toLowerCase() + watchedWhoIsHe.slice(1));
     if (watchedDynamic) characterParts.push(watchedDynamic.charAt(0).toLowerCase() + watchedDynamic.slice(1));
     const characterLine = characterParts.length ? ` — ${characterParts.join(", ")}` : "";
-    return `${intro}${contextLine}${characterLine}.`;
+    const voiceLine = voiceOption ? ` · ${voiceOption.label} voice` : "";
+    return `${intro}${contextLine}${characterLine}${voiceLine}.`;
   };
 
   const formSections = [
@@ -1909,7 +1912,7 @@ export default function Create() {
                               : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
                           }`}
                         >
-                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.id}</p>
+                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.label}</p>
                           <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.desc}</p>
                         </button>
                       );

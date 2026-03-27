@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { nameSubmissions, usersTable } from "@workspace/db/schema";
 import { and, eq, desc } from "drizzle-orm";
+import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 
 const router = Router();
 
@@ -51,13 +52,15 @@ router.post("/names/submit", async (req, res) => {
   const trimmed = (name as string).trim();
   const type = nameType as "listener" | "partner";
 
-  if (!/^[A-Za-z]{1,15}$/.test(trimmed)) {
-    return res.status(400).json({
-      error: "Names must be 1–15 letters only, no spaces or special characters.",
-    });
+  const nameFormatError = validateNameFormat(trimmed);
+  if (nameFormatError) {
+    return res.status(400).json({ error: nameFormatError });
+  }
+  if (trimmed.length > 20) {
+    return res.status(400).json({ error: "Names must be 20 characters or fewer." });
   }
 
-  if (!passesBlocklist(trimmed)) {
+  if (!passesBlocklist(trimmed) || isBlockedInput(trimmed)) {
     return res.status(400).json({ error: "This name cannot be added." });
   }
 
@@ -116,20 +119,6 @@ router.post("/names/submit", async (req, res) => {
   }
 });
 
-// GET /names/approved — public list of admin-approved custom names (supplements the static NAMES list)
-// Used by the NamePicker to surface approved community submissions without requiring a code deploy.
-router.get("/names/approved", async (_req, res) => {
-  try {
-    const rows = await db
-      .select({ name: nameSubmissions.name })
-      .from(nameSubmissions)
-      .where(eq(nameSubmissions.status, "approved"));
-    return res.json({ names: rows.map((r) => r.name) });
-  } catch (err) {
-    console.error("Approved names fetch error:", err);
-    return res.status(500).json({ error: "Server error." });
-  }
-});
 
 // GET /admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
 // (mounted at /api by app, so full path is /api/admin/name-submissions)

@@ -4,6 +4,7 @@ import { db, usersTable } from "@workspace/db";
 import { nameSubmissions } from "@workspace/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
+import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 
 const router = Router();
 
@@ -450,10 +451,14 @@ router.post("/name-submissions", async (req, res) => {
   const trimmed = (name as string).trim();
   const type = nameType as "listener" | "partner";
 
-  if (!/^[A-Za-z]{1,15}$/.test(trimmed)) {
-    return res.status(400).json({ error: "Names must be 1–15 letters only, no spaces or special characters." });
+  const nameFormatError = validateNameFormat(trimmed);
+  if (nameFormatError) {
+    return res.status(400).json({ error: nameFormatError });
   }
-  if (NAME_BLOCKLIST.has(trimmed.toLowerCase())) {
+  if (trimmed.length > 20) {
+    return res.status(400).json({ error: "Names must be 20 characters or fewer." });
+  }
+  if (NAME_BLOCKLIST.has(trimmed.toLowerCase()) || isBlockedInput(trimmed)) {
     return res.status(400).json({ error: "This name cannot be used." });
   }
 

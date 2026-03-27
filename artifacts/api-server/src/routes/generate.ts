@@ -336,6 +336,12 @@ export interface GenerateStoryRequest {
   partnerAppearance?: string;
 }
 
+/** Internal server-only extension of GenerateStoryRequest. Names are never accepted from the client — always injected from req.user after normalisation. */
+interface InternalGenerateRequest extends GenerateStoryRequest {
+  listenerName: string;
+  partnerName?: string;
+}
+
 interface ScenePlan {
   scene_number: number;
   goal: string;
@@ -955,7 +961,7 @@ function derivePairingPronouns(pairing: string): string {
 // Input Normalisation
 // ---------------------------------------------------------------------------
 
-function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
+function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
   const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Heated";
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
@@ -1965,11 +1971,14 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
-  const body = req.body as GenerateStoryRequest;
+  const rawBody = req.body as GenerateStoryRequest;
 
   // Inject approved names from authenticated user profile — never from request body
-  body.listenerName = req.user?.approvedListenerName?.trim() ?? "";
-  body.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
+  const body: InternalGenerateRequest = {
+    ...rawBody,
+    listenerName: req.user?.approvedListenerName?.trim() ?? "",
+    partnerName: req.user?.approvedPartnerName?.trim() || undefined,
+  };
 
   const hasCustomInput = !!(body.scenarioPrompt || body.whoIsHe || body.setting || body.dynamic);
   const riskError = checkRiskThreshold(req, hasCustomInput);

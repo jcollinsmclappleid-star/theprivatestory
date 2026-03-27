@@ -18,6 +18,7 @@ import {
   checkRiskThreshold,
   ContentModerationError,
   type GenerateStoryRequest,
+  type InternalGenerateRequest,
   type GenerateStoryOptions,
   type StoryBrief,
   type WrittenStory,
@@ -269,7 +270,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       ? `TIME OF DAY: This chapter takes place at ${timeOfDay}. Use this to set the atmosphere and sensory palette.`
       : undefined;
 
-    const intake: GenerateStoryRequest = {
+    const intake: InternalGenerateRequest = {
       // Names come from the authenticated user's approved profile — not from saved casting data
       listenerName: req.user?.approvedListenerName?.trim() ?? "",
       partnerName: req.user?.approvedPartnerName?.trim() || undefined,

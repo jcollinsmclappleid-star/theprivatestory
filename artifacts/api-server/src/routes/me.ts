@@ -455,8 +455,8 @@ router.post("/name-submissions", async (req, res) => {
   if (nameFormatError) {
     return res.status(400).json({ error: nameFormatError });
   }
-  if (trimmed.length > 20) {
-    return res.status(400).json({ error: "Names must be 20 characters or fewer." });
+  if (trimmed.length > 15) {
+    return res.status(400).json({ error: "Names must be 15 characters or fewer." });
   }
   if (NAME_BLOCKLIST.has(trimmed.toLowerCase()) || isBlockedInput(trimmed)) {
     return res.status(400).json({ error: "This name cannot be used." });

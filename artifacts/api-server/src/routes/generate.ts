@@ -337,7 +337,7 @@ export interface GenerateStoryRequest {
 }
 
 /** Internal server-only extension of GenerateStoryRequest. Names are never accepted from the client — always injected from req.user after normalisation. */
-interface InternalGenerateRequest extends GenerateStoryRequest {
+export interface InternalGenerateRequest extends GenerateStoryRequest {
   listenerName: string;
   partnerName?: string;
 }

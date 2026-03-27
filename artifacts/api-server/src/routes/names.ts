@@ -56,8 +56,8 @@ router.post("/names/submit", async (req, res) => {
   if (nameFormatError) {
     return res.status(400).json({ error: nameFormatError });
   }
-  if (trimmed.length > 20) {
-    return res.status(400).json({ error: "Names must be 20 characters or fewer." });
+  if (trimmed.length > 15) {
+    return res.status(400).json({ error: "Names must be 15 characters or fewer." });
   }
 
   if (!passesBlocklist(trimmed) || isBlockedInput(trimmed)) {

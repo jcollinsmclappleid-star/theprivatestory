@@ -697,6 +697,11 @@ export default function Create() {
   const [myUsualLoading, setMyUsualLoading] = useState(false);
   const [myUsualApplied, setMyUsualApplied] = useState(false);
 
+  const [formPreset, setFormPreset] = useState<Record<string, unknown> | null>(null);
+  const [formPresetSaving, setFormPresetSaving] = useState(false);
+  const [formPresetFlash, setFormPresetFlash] = useState(false);
+  const [showFormPresetSavePrompt, setShowFormPresetSavePrompt] = useState(false);
+
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
   const [isGeneratingVariation, setIsGeneratingVariation] = useState(false);
@@ -873,7 +878,7 @@ export default function Create() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch the user's most recent preset ("My Usual") when authenticated
+  // Fetch the user's most recent casting preset when authenticated
   useEffect(() => {
     if (!isAuthenticated) return;
     fetch(`${API_BASE}/api/me/presets`, { credentials: "include" })
@@ -882,6 +887,17 @@ export default function Create() {
         if (Array.isArray(data) && data.length > 0) {
           setMyUsualPreset(data[0]);
         }
+      })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  // Fetch the user's saved "My Usual" form preset when authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/presets/my-usual`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: { castingData: Record<string, unknown> } | null) => {
+        if (data?.castingData) setFormPreset(data.castingData);
       })
       .catch(() => {});
   }, [isAuthenticated]);
@@ -904,6 +920,67 @@ export default function Create() {
     setMyUsualLoading(false);
     setStep("preset-prompt");
   }, [myUsualPreset, form]);
+
+  const handleLoadFormPreset = useCallback(() => {
+    if (!formPreset) return;
+    const p = formPreset;
+    if (typeof p.storyMode === "string") form.setValue("storyMode", p.storyMode);
+    if (typeof p.mood === "string") form.setValue("mood", p.mood);
+    if (typeof p.intensity === "string") form.setValue("intensity", p.intensity);
+    if (typeof p.voiceFeel === "string") form.setValue("voiceFeel", p.voiceFeel);
+    if (typeof p.storyLength === "string") form.setValue("storyLength", p.storyLength);
+    if (typeof p.scenarioPrompt === "string") form.setValue("scenarioPrompt", p.scenarioPrompt);
+    if (typeof p.whoIsHe === "string") form.setValue("whoIsHe", p.whoIsHe);
+    if (typeof p.dynamic === "string") form.setValue("dynamic", p.dynamic);
+    if (typeof p.ending === "string") form.setValue("ending", p.ending);
+    if (typeof p.setting === "string") form.setValue("setting", p.setting);
+    if (typeof p.listenerName === "string") form.setValue("listenerName", p.listenerName);
+    if (typeof p.partnerName === "string") form.setValue("partnerName", p.partnerName);
+    if (typeof p.timeOfDay === "string") setTimeOfDay(p.timeOfDay);
+    if (typeof p.season === "string") setSeason(p.season);
+    if (p.perspective === "your" || p.perspective === "her" || p.perspective === "his") setPerspective(p.perspective);
+    setFormPresetFlash(true);
+    setTimeout(() => setFormPresetFlash(false), 1500);
+  }, [formPreset, form]);
+
+  const handleSaveFormPreset = useCallback(async () => {
+    if (formPresetSaving) return;
+    setFormPresetSaving(true);
+    const presetData: Record<string, unknown> = {
+      storyMode: form.getValues("storyMode"),
+      mood: form.getValues("mood"),
+      intensity: form.getValues("intensity"),
+      voiceFeel: form.getValues("voiceFeel"),
+      storyLength: form.getValues("storyLength"),
+      scenarioPrompt: form.getValues("scenarioPrompt") ?? "",
+      whoIsHe: form.getValues("whoIsHe") ?? "",
+      dynamic: form.getValues("dynamic") ?? "",
+      ending: form.getValues("ending") ?? "",
+      setting: form.getValues("setting") ?? "",
+      listenerName: form.getValues("listenerName") ?? "",
+      partnerName: form.getValues("partnerName") ?? "",
+      timeOfDay,
+      season,
+      perspective,
+    };
+    try {
+      const res = await fetch(`${API_BASE}/api/presets/my-usual`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ castingData: presetData }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { castingData: Record<string, unknown> };
+        setFormPreset(data.castingData);
+        setShowFormPresetSavePrompt(false);
+        setFormPresetFlash(true);
+        setTimeout(() => setFormPresetFlash(false), 1500);
+      }
+    } catch { /* ignore */ } finally {
+      setFormPresetSaving(false);
+    }
+  }, [form, timeOfDay, season, perspective, formPresetSaving]);
 
   const handleGenerateVariation = useCallback(async () => {
     if (!result || isGeneratingVariation) return;
@@ -1484,20 +1561,70 @@ export default function Create() {
                   <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
                   <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSurpriseMe}
-                  disabled={isSurprising}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all mt-1 ${
-                    isSurprising
-                      ? "border-primary/40 bg-primary/10 text-primary"
-                      : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
-                  }`}
-                >
-                  <Shuffle className={`w-3.5 h-3.5 ${isSurprising ? "animate-spin" : ""}`} />
-                  {isSurprising ? "Surprising…" : "Surprise Me"}
-                </button>
+                <div className="flex flex-col items-end gap-2 mt-1 flex-shrink-0">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={formPreset ? handleLoadFormPreset : () => setShowFormPresetSavePrompt(v => !v)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all ${
+                        formPresetFlash
+                          ? "border-primary/60 bg-primary/15 text-primary"
+                          : formPreset
+                            ? "border-primary/30 bg-primary/5 text-primary hover:bg-primary/10"
+                            : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
+                      }`}
+                    >
+                      <Heart className={`w-3.5 h-3.5 ${formPreset ? "fill-current" : ""}`} />
+                      {formPresetFlash ? "Loaded ✓" : "My Usual"}
+                    </button>
+                    {formPreset && (
+                      <button
+                        type="button"
+                        onClick={handleSaveFormPreset}
+                        disabled={formPresetSaving}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors px-1 py-1 disabled:opacity-50"
+                      >
+                        {formPresetSaving ? "Saving…" : "Update"}
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSurpriseMe}
+                    disabled={isSurprising}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all ${
+                      isSurprising
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
+                    }`}
+                  >
+                    <Shuffle className={`w-3.5 h-3.5 ${isSurprising ? "animate-spin" : ""}`} />
+                    {isSurprising ? "Surprising…" : "Surprise Me"}
+                  </button>
+                </div>
               </div>
+              {showFormPresetSavePrompt && !formPreset && (
+                <div className="glass-panel rounded-xl px-4 py-3 flex items-center justify-between gap-3 mt-2">
+                  <p className="text-sm text-foreground">Save your current selections as your usual?</p>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleSaveFormPreset}
+                      disabled={formPresetSaving}
+                      className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all disabled:opacity-50"
+                    >
+                      {formPresetSaving ? "Saving…" : "Save"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowFormPresetSavePrompt(false)}
+                      className="px-3 py-1.5 rounded-full text-xs text-muted-foreground hover:text-foreground border border-border/50 transition-colors"
+                    >
+                      Not now
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Section Progress Dots */}

@@ -511,6 +511,39 @@ export const presetsStore = {
       .delete(userPresets)
       .where(and(eq(userPresets.id, id), eq(userPresets.userId, userId)));
   },
+
+  async getByName(userId: string, name: string): Promise<CastingPreset | null> {
+    const rows = await db
+      .select()
+      .from(userPresets)
+      .where(and(eq(userPresets.userId, userId), eq(userPresets.name, name)))
+      .limit(1);
+    if (!rows[0]) return null;
+    return {
+      id: rows[0].id,
+      name: rows[0].name,
+      castingData: (rows[0].castingData as Record<string, unknown>) ?? {},
+      createdAt: rows[0].createdAt.toISOString(),
+    };
+  },
+
+  async upsertByName(userId: string, name: string, castingData: Record<string, unknown>): Promise<CastingPreset> {
+    const existing = await presetsStore.getByName(userId, name);
+    if (existing) {
+      const [updated] = await db
+        .update(userPresets)
+        .set({ castingData })
+        .where(and(eq(userPresets.userId, userId), eq(userPresets.name, name)))
+        .returning();
+      return {
+        id: updated.id,
+        name: updated.name,
+        castingData: (updated.castingData as Record<string, unknown>) ?? {},
+        createdAt: updated.createdAt.toISOString(),
+      };
+    }
+    return presetsStore.create(userId, name, castingData);
+  },
 };
 
 // ---------------------------------------------------------------------------

@@ -11,6 +11,7 @@ import safetyRouter from "./safety.js";
 import reportsRouter from "./reports.js";
 import namesRouter from "./names.js";
 import categoriesRouter from "./categories.js";
+import presetsRouter from "./presets.js";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(safetyRouter);
 router.use(reportsRouter);
 router.use(namesRouter);
 router.use(categoriesRouter);
+router.use("/presets", presetsRouter);
 
 export default router;

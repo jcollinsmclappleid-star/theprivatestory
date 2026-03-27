@@ -77,8 +77,10 @@ async function moderateInput(text: string): Promise<ModerationResult> {
 }
 
 /** Run the generated output text through OpenAI Moderation before returning it to the client.
+ *  Chains into a Mistral secondary QC pass on success.
  *  Fail-closed: API error causes rejection to prevent unreviewed content reaching users. */
 async function moderateOutput(text: string): Promise<ModerationResult> {
+  // Layer 1: OpenAI Moderation API
   try {
     const moderation = await openaiDirect.moderations.create({ input: text });
     const result = moderation.results[0];
@@ -93,7 +95,65 @@ async function moderateOutput(text: string): Promise<ModerationResult> {
     logger.error({ err }, "[output-moderation] OpenAI Moderation API unavailable — blocking output (fail-closed)");
     return { blocked: true, reason: "moderation_api_unavailable", source: "openai" };
   }
-  return { blocked: false, reason: null, source: null };
+
+  // Layer 2: Mistral targeted LLM output QC (runs only if Layer 1 passes)
+  return moderateOutputWithLLM(text);
+}
+
+/** Secondary output check using Mistral. Evaluates specifically against the 6 prohibited categories
+ *  targeted by PROHIBITED_CONTENT_BLOCK in system prompts. Fail-closed. */
+async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
+  const PROHIBITED = [
+    "Sexual content involving anyone under 18 or age-ambiguous characters in sexual scenarios",
+    "Non-consensual sexual acts depicted approvingly or erotically",
+    "Real identified individuals (named public figures) in sexual scenarios",
+    "Bestiality or zoophilia",
+    "Necrophilia",
+    "Content designed to harass or threaten specific real identifiable people",
+  ];
+
+  const sample = text.slice(0, 3000);
+
+  try {
+    const completion = await openrouter.chat.completions.create({
+      model: MISTRAL_MODEL,
+      temperature: 0,
+      max_tokens: 150,
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: "You are a content safety classifier. Respond ONLY with valid JSON. No prose, no explanation.",
+        },
+        {
+          role: "user",
+          content: `Does the following story excerpt violate ANY of these prohibited categories?\n${PROHIBITED.map((c, i) => `${i + 1}. ${c}`).join("\n")}\n\nRespond with JSON only:\n{"safe": true_or_false, "violations": ["exact category name if violated — empty array if safe"]}\n\nStory excerpt:\n---\n${sample}\n---`,
+        },
+      ],
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? "";
+    let parsed: { safe: boolean; violations: string[] };
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      logger.error({ raw }, "[llm-output-moderation] Failed to parse Mistral response — blocking (fail-closed)");
+      return { blocked: true, reason: "llm_moderation_parse_error", source: "mistral" };
+    }
+
+    if (!parsed.safe) {
+      return {
+        blocked: true,
+        reason: `llm_violations: ${(parsed.violations ?? []).join(", ") || "unspecified"}`,
+        source: "mistral",
+      };
+    }
+
+    return { blocked: false, reason: null, source: null };
+  } catch (err) {
+    logger.error({ err }, "[llm-output-moderation] Mistral call failed — blocking (fail-closed)");
+    return { blocked: true, reason: "llm_moderation_unavailable", source: "mistral" };
+  }
 }
 
 function logBlockedRequest(
@@ -1520,6 +1580,18 @@ async function runDerivedPipeline(
     qcResult = await qcStory(brief, finalStory);
   }
 
+  // Output safety check — fail-closed before any media is generated
+  const outputText = [
+    finalStory.title,
+    finalStory.description,
+    ...finalStory.scenes.map((s) => s.text),
+  ].join("\n");
+  const outputMod = await moderateOutput(outputText);
+  if (outputMod.blocked) {
+    logBlockedRequest(userId, undefined, "derived_output_moderation", outputMod.reason ?? "blocked", outputText.slice(0, 500));
+    throw new ContentModerationError(`Generated content did not pass safety review (${outputMod.reason})`);
+  }
+
   // Cover image prompt from brief style direction (derived stories don't carry original casting data)
   const imagePrompts: ImagePrompts = {
     coverPrompt: buildCoverPromptFromBrief(brief),
@@ -1562,6 +1634,15 @@ async function runDerivedPipeline(
   }
 
   return result;
+}
+
+/** Thrown by runDerivedPipeline when generated output fails content safety checks.
+ *  Route handlers catch this to return 422 rather than 500. */
+class ContentModerationError extends Error {
+  constructor(reason: string) {
+    super(reason);
+    this.name = "ContentModerationError";
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1690,6 +1771,11 @@ router.post("/qc-story", async (req, res) => {
 });
 
 router.post("/rewrite-story", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const { brief, story, strategy } = req.body as {
     brief: StoryBrief;
     story: WrittenStory;
@@ -1698,6 +1784,24 @@ router.post("/rewrite-story", async (req, res) => {
 
   if (!brief || !story || !strategy) {
     res.status(400).json({ error: "brief, story, and strategy are required" });
+    return;
+  }
+
+  const inputText = [
+    story.title ?? "",
+    story.description ?? "",
+    ...(story.scenes ?? []).map((s) => s.text ?? ""),
+  ].join(" ");
+  const mod = await moderateInput(inputText);
+  if (mod.blocked) {
+    logBlockedRequest(
+      String(req.user.id),
+      undefined,
+      mod.source,
+      mod.reason,
+      inputText.slice(0, 500),
+    );
+    res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
     return;
   }
 
@@ -1730,7 +1834,31 @@ router.post("/generate-image-prompts", async (req, res) => {
 });
 
 router.post("/generate-audio", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
   const { text, voiceFeel } = req.body as { text: string; voiceFeel: string };
+
+  if (!text || !voiceFeel) {
+    res.status(400).json({ error: "text and voiceFeel are required" });
+    return;
+  }
+
+  const mod = await moderateInput(text);
+  if (mod.blocked) {
+    logBlockedRequest(
+      String(req.user.id),
+      undefined,
+      mod.source,
+      mod.reason,
+      text.slice(0, 500),
+    );
+    res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
+    return;
+  }
+
   const cacheKey = getCacheKey({ text, voiceFeel });
 
   if (audioCache.has(cacheKey)) {
@@ -2053,6 +2181,10 @@ router.post("/generate-variation", async (req, res) => {
     ]);
     res.json(result);
   } catch (err) {
+    if (err instanceof ContentModerationError) {
+      res.status(422).json({ error: "Generated content did not pass safety review." });
+      return;
+    }
     req.log.error({ err }, "Variation generation failed");
     const message = err instanceof Error ? err.message : "Variation generation failed";
     res.status(500).json({ error: message });
@@ -2119,6 +2251,10 @@ router.post("/continue-story", async (req, res) => {
     ]);
     res.json(result);
   } catch (err) {
+    if (err instanceof ContentModerationError) {
+      res.status(422).json({ error: "Generated content did not pass safety review." });
+      return;
+    }
     req.log.error({ err }, "Story continuation failed");
     const message = err instanceof Error ? err.message : "Story continuation failed";
     res.status(500).json({ error: message });

@@ -75,9 +75,12 @@ const publicDir = path.resolve(__dirname, "../public");
 app.use("/api/images", express.static(path.join(publicDir, "images")));
 app.use("/api/audio", express.static(path.join(publicDir, "audio")));
 
-app.use("/api/generate/plan-story", generationLimiter);
-app.use("/api/generate/generate-story", generationLimiter);
-app.use("/api/generate/generate-full-story", generationLimiter);
+app.use("/api/plan-story", generationLimiter);
+app.use("/api/generate-story", generationLimiter);
+app.use("/api/generate-full-story", generationLimiter);
+app.use("/api/generate-variation", generationLimiter);
+app.use("/api/continue-story", generationLimiter);
+app.use("/api/rewrite-story", generationLimiter);
 
 app.use("/api", router);
 

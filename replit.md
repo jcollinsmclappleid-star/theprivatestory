@@ -154,19 +154,24 @@ Exports (all async):
 
 ### Content Safety & Rate Limiting
 
-All generation routes (`/plan-story`, `/generate-story`, `/generate-full-story`) enforce defence-in-depth content safety:
+All generation and media routes enforce defence-in-depth content safety. Auth is required before any content check runs.
+
+**Protected routes (auth required):** `/generate-full-story`, `/generate-variation`, `/continue-story`, `/rewrite-story`, `/generate-audio`
+**Public generation routes (content-checked, rate-limited):** `/plan-story`, `/generate-story`
 
 **Input moderation (4 layers, in order):**
-1. **Prompt injection detection** (`isInjectionAttempt`) — regex patterns targeting jailbreak phrases ("ignore previous instructions", "DAN mode", "pretend you are uncensored", etc.) in `contentBlocklist.ts`
+1. **Prompt injection detection** (`isInjectionAttempt`) — loose-match regex targeting jailbreak phrases including multi-word variants ("ignore your previous instructions", "disregard all safety guidelines", "DAN mode", etc.) in `contentBlocklist.ts`
 2. **Keyword blocklist** (`isBlockedInput`) — CSAM indicators, illegal act descriptors in `contentBlocklist.ts`
 3. **OpenAI Moderation API** — semantic/category-based check; fail-closed (API outage = block)
 4. **PROHIBITED_CONTENT_BLOCK** — injected at top of every generation system prompt (planStory, writeStoryFromBrief, rewriteStory, rewriteStoryAsVariation, writeStoryContinuation)
 
-**Output moderation:** Generated story text is checked against OpenAI Moderation API before audio/image generation begins. Fail-closed. Output blocks are logged and persisted.
+**Output moderation (2 layers, chained):**
+1. **OpenAI Moderation API** — semantic category check on full story text; fail-closed
+2. **Mistral secondary QC** (`moderateOutputWithLLM`) — targeted LLM evaluation against 6 prohibited categories using Mistral via OpenRouter; runs only if Layer 1 passes; fail-closed. Applied on all generation paths including `runDerivedPipeline` (variation/continuation).
 
 **Rate limiting** (`express-rate-limit`, applied in `app.ts`):
 - Global: 200 req / 15 min per IP (all `/api/` routes, skips `/api/auth/*`)
-- Generation: 15 req / hour per user (by userId when authenticated, IPv6-safe IP otherwise) on plan/generate/full-story routes
+- Generation: 15 req / hour per user (by userId when authenticated, IPv6-safe IP otherwise) — applied to `/plan-story`, `/generate-story`, `/generate-full-story`, `/generate-variation`, `/continue-story`, `/rewrite-story`
 
 **Blocked-request audit log:**
 - Structured `logger.warn` (pino) with event, userId, sessionId, blockSource, blockReason, SHA-256 input hash

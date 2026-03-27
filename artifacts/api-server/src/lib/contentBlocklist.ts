@@ -22,17 +22,20 @@ const HARD_BLOCK_PATTERNS: RegExp[] = [
 
 // Prompt injection / jailbreak patterns.
 // Targets explicit attempts to override system instructions or bypass safety constraints.
+// Uses loose middle-segment matching (.{0,40}) to catch common multi-word variants
+// such as "ignore your previous instructions" without requiring exact phrase order.
 const INJECTION_PATTERNS: RegExp[] = [
-  /ignore\s+(all\s+)?(previous|prior|your|the)\s+(instructions?|prompts?|rules?|constraints?|guidelines?)/i,
-  /disregard\s+(all\s+)?(previous|prior|your|the)\s+(instructions?|prompts?|rules?|constraints?)/i,
-  /forget\s+(all\s+)?(previous|prior|your|the)\s+(instructions?|prompts?|rules?|constraints?)/i,
-  /override\s+(all\s+)?(your\s+)?(instructions?|safety|rules?|constraints?|filters?)/i,
+  // "ignore [any words] instructions/rules/etc" — covers "ignore your previous instructions"
+  /\bignore\b.{0,40}\b(instructions?|prompts?|rules?|constraints?|guidelines?|safety)\b/i,
+  /\bdisregard\b.{0,40}\b(instructions?|prompts?|rules?|constraints?|guidelines?|safety)\b/i,
+  /\bforget\b.{0,40}\b(instructions?|prompts?|rules?|constraints?|guidelines?|safety)\b/i,
+  /\boverride\b.{0,30}\b(instructions?|safety|rules?|constraints?|filters?|guidelines?)\b/i,
   /\b(dan\s+mode|jailbreak\s+mode|developer\s+mode|god\s+mode|unrestricted\s+mode|no.?filter\s+mode)\b/i,
   /\b(jailbreak(ed|ing)?)\b/i,
   /you\s+are\s+now\s+(a\s+)?(new|different|unrestricted|unfiltered|uncensored)/i,
   /pretend\s+(you\s+are|to\s+be)\s+(an?\s+)?(unrestricted|unfiltered|uncensored|evil|different)/i,
   /act\s+as\s+(if\s+)?(you\s+have\s+no\s+(rules|limits|restrictions|guidelines|constraints))/i,
-  /\bsystem\s+prompt\b.*\bignore\b|\bignore\b.*\bsystem\s+prompt\b/i,
+  /\bsystem\s+prompt\b.{0,30}\bignore\b|\bignore\b.{0,30}\bsystem\s+prompt\b/i,
   /new\s+(system\s+)?(prompt|instruction|persona|role|directive)\s*:/i,
   /\[system\]|\[assistant\]|\[user\]/i,
   /[<][/]?(system|assistant|user|human|ai)\s*[>]/i,

@@ -48,7 +48,6 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
 
   const [nextMood, setNextMood] = useState("Emotional");
   const [nextTimeOfDay, setNextTimeOfDay] = useState("Late Night");
-  const [nextScenario, setNextScenario] = useState("");
 
   const [expandedEpisode, setExpandedEpisode] = useState<string | null>(null);
 
@@ -99,7 +98,6 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          scenarioPrompt: nextScenario || undefined,
           mood: nextMood,
           timeOfDay: nextTimeOfDay,
         }),
@@ -114,7 +112,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
     } finally {
       setGeneratingNext(false);
     }
-  }, [series, generatingNext, nextScenario, nextMood, nextTimeOfDay, fetchSeries]);
+  }, [series, generatingNext, nextMood, nextTimeOfDay, fetchSeries]);
 
   if (!user) {
     return (
@@ -368,18 +366,6 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Direction hint */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Chapter direction (optional)</label>
-                <textarea
-                  value={nextScenario}
-                  onChange={(e) => setNextScenario(e.target.value)}
-                  placeholder="e.g. the tension finally breaks, they're alone again at midnight…"
-                  rows={2}
-                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 resize-none"
-                />
               </div>
 
               {genError && (

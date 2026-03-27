@@ -3,6 +3,26 @@ import { Search, X, ChevronDown, ExternalLink } from "lucide-react";
 import { NAMES } from "@/data/names";
 import { useAuth } from "@/hooks/useAuth";
 
+const API_BASE = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+
+// Module-level cache so approved names are fetched once per page load, not once per NamePicker instance.
+let approvedNamesCache: string[] | null = null;
+let approvedNamesFetch: Promise<string[]> | null = null;
+
+function fetchApprovedNames(): Promise<string[]> {
+  if (approvedNamesCache) return Promise.resolve(approvedNamesCache);
+  if (approvedNamesFetch) return approvedNamesFetch;
+  approvedNamesFetch = fetch(`${API_BASE}/api/names/approved`, { credentials: "include" })
+    .then((r) => r.json())
+    .then((d) => {
+      const names: string[] = (d.names ?? []).filter((n: unknown) => typeof n === "string");
+      approvedNamesCache = names;
+      return names;
+    })
+    .catch(() => []);
+  return approvedNamesFetch;
+}
+
 interface Props {
   value: string;
   onChange: (name: string) => void;
@@ -20,8 +40,13 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
+  const [approvedNames, setApprovedNames] = useState<string[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetchApprovedNames().then(setApprovedNames).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!open) setQuery(value);
@@ -38,19 +63,25 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  const allNames = useMemo(() => {
+    if (approvedNames.length === 0) return NAMES;
+    const extra = approvedNames.filter((n) => !NAMES.includes(n));
+    return [...NAMES, ...extra];
+  }, [approvedNames]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return NAMES.slice(0, 50);
+    if (!q) return allNames.slice(0, 50);
     const prefix: string[] = [];
     const substring: string[] = [];
-    for (const n of NAMES) {
+    for (const n of allNames) {
       const nl = n.toLowerCase();
       if (nl.startsWith(q)) prefix.push(n);
       else if (nl.includes(q)) substring.push(n);
       if (prefix.length + substring.length >= 50) break;
     }
     return [...prefix, ...substring].slice(0, 50);
-  }, [query]);
+  }, [query, allNames]);
 
   const handleSelect = (name: string) => {
     onChange(name);

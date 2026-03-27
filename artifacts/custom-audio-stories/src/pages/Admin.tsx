@@ -73,7 +73,7 @@ export default function Admin() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "names">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -91,6 +91,18 @@ export default function Admin() {
   const [seriesCatalog, setSeriesCatalog] = useState<SeriesCatalogItem[]>([]);
   const [seriesGenState, setSeriesGenState] = useState<Record<string, SeriesGenerationState>>({});
   const seriesAbortRef = useRef<AbortController | null>(null);
+
+  interface NameSubmissionItem {
+    id: number;
+    name: string;
+    status: "pending" | "approved" | "rejected";
+    submittedAt: string;
+    submittedByUserId: string | null;
+    notes: string | null;
+  }
+  const [nameSubmissionsList, setNameSubmissionsList] = useState<NameSubmissionItem[]>([]);
+  const [namesLoading, setNamesLoading] = useState(false);
+  const [nameActionPending, setNameActionPending] = useState<number | null>(null);
 
   // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
@@ -165,6 +177,43 @@ export default function Admin() {
   useEffect(() => {
     if (activeView === "series") loadSeriesCatalog();
   }, [activeView, loadSeriesCatalog]);
+
+  // ── Load name submissions when switching to names tab ──────────────────────
+  const loadNames = useCallback(async () => {
+    setNamesLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/name-submissions`, { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        setNameSubmissionsList(data.submissions ?? []);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setNamesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeView === "names") loadNames();
+  }, [activeView, loadNames]);
+
+  const reviewName = useCallback(async (id: number, status: "approved" | "rejected") => {
+    setNameActionPending(id);
+    try {
+      await fetch(`${API_BASE}/api/admin/name-submissions/${id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      await loadNames();
+    } catch {
+      // ignore
+    } finally {
+      setNameActionPending(null);
+    }
+  }, [loadNames]);
 
   // ── Generate a full series via SSE ─────────────────────────────────────────
   const generateSeries = useCallback((seriesKey: string, totalEpisodes: number) => {
@@ -497,6 +546,12 @@ export default function Admin() {
               >
                 Moderation
               </button>
+              <button
+                onClick={() => setActiveView("names")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "names" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
+              >
+                Names {nameSubmissionsList.length > 0 && activeView !== "names" ? `(${nameSubmissionsList.length})` : ""}
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -759,6 +814,53 @@ export default function Admin() {
               >
                 ↺ Refresh
               </button>
+            </div>
+          </ScrollArea>
+        ) : activeView === "names" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-3 space-y-2">
+              <div className="text-violet-300 text-xs font-semibold uppercase tracking-widest mb-3">Pending Name Requests</div>
+              {namesLoading && (
+                <div className="text-white/40 text-xs text-center py-6">Loading…</div>
+              )}
+              {!namesLoading && nameSubmissionsList.length === 0 && (
+                <div className="text-white/30 text-xs text-center py-6">No pending name submissions</div>
+              )}
+              {nameSubmissionsList.map((s) => (
+                <div key={s.id} className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-3 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-white/90">{s.name}</span>
+                    <span className="text-[10px] text-white/30">{new Date(s.submittedAt).toLocaleDateString()}</span>
+                  </div>
+                  {s.submittedByUserId && (
+                    <div className="text-[10px] text-white/30 font-mono">user: {s.submittedByUserId.slice(0, 12)}…</div>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => reviewName(s.id, "approved")}
+                      disabled={nameActionPending === s.id}
+                      className="flex-1 text-xs py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white disabled:opacity-50 font-medium transition"
+                    >
+                      {nameActionPending === s.id ? "…" : "✓ Approve"}
+                    </button>
+                    <button
+                      onClick={() => reviewName(s.id, "rejected")}
+                      disabled={nameActionPending === s.id}
+                      className="flex-1 text-xs py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 disabled:opacity-50 font-medium transition"
+                    >
+                      {nameActionPending === s.id ? "…" : "✕ Reject"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {!namesLoading && (
+                <button
+                  onClick={loadNames}
+                  className="w-full text-xs text-white/40 hover:text-white py-2 border border-white/10 rounded-lg mt-2"
+                >
+                  ↺ Refresh
+                </button>
+              )}
             </div>
           </ScrollArea>
         ) : (
@@ -1038,6 +1140,16 @@ export default function Admin() {
                 })()}
               </div>
             </ScrollArea>
+          </div>
+        ) : activeView === "names" ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/30 max-w-xs">
+              <div className="text-4xl mb-3">📝</div>
+              <div className="text-sm mb-2">Name submissions</div>
+              <div className="text-xs text-white/20">
+                Approve or reject requested names from the left panel. Approved names are immediately available in the name picker for all users — no redeploy required.
+              </div>
+            </div>
           </div>
         ) : activeView === "moderation" ? (
           <div className="flex-1 flex items-center justify-center">

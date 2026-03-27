@@ -95,6 +95,21 @@ router.post("/names/submit", async (req, res) => {
   }
 });
 
+// GET /names/approved — public list of admin-approved custom names (supplements the static NAMES list)
+// Used by the NamePicker to surface approved community submissions without requiring a code deploy.
+router.get("/names/approved", async (_req, res) => {
+  try {
+    const rows = await db
+      .select({ name: nameSubmissions.name })
+      .from(nameSubmissions)
+      .where(eq(nameSubmissions.status, "approved"));
+    return res.json({ names: rows.map((r) => r.name) });
+  } catch (err) {
+    console.error("Approved names fetch error:", err);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
+
 // GET /admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
 // (mounted at /api by app, so full path is /api/admin/name-submissions)
 router.get("/admin/name-submissions", async (req, res) => {

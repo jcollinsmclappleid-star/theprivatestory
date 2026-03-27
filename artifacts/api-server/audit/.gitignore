@@ -1,0 +1,4 @@
+# Audit archives are excluded from version control.
+# They must be stored in a secure off-repository location for production.
+# This folder exists locally for development-environment audit trail only.
+*.json

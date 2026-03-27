@@ -511,18 +511,22 @@ function buildCoverPromptFromCasting(intake: GenerateStoryRequest): string {
   };
   let appearanceParts: string[] = [];
   if (intake.partnerAppearance) {
-    const rawAppear = intake.partnerAppearance;
-    // Extract "Build: <value>" segment
-    const buildMatch = rawAppear.match(/\bBuild:\s*([^,]+)/);
-    if (buildMatch) {
-      const visual = BUILD_VISUAL[buildMatch[1].trim()];
-      if (visual) appearanceParts.push(visual);
-    }
-    // Extract "Colouring: <value>" segment
-    const colouringMatch = rawAppear.match(/\bColouring:\s*([^,]+)/);
-    if (colouringMatch) {
-      const visual = COLOURING_VISUAL[colouringMatch[1].trim()];
-      if (visual) appearanceParts.push(visual);
+    // partnerAppearance is serialized by CastingRoom as period-space–delimited segments,
+    // e.g. "Build: Athletic. Height: Tall. Colouring: Dark. Eyes: Blue."
+    // Split into key/value pairs to avoid any cross-segment capture.
+    const segments = intake.partnerAppearance.split(/\.\s*/);
+    for (const seg of segments) {
+      const colonIdx = seg.indexOf(":");
+      if (colonIdx === -1) continue;
+      const key   = seg.slice(0, colonIdx).trim();
+      const value = seg.slice(colonIdx + 1).trim();
+      if (key === "Build") {
+        const visual = BUILD_VISUAL[value];
+        if (visual) appearanceParts.push(visual);
+      } else if (key === "Colouring") {
+        const visual = COLOURING_VISUAL[value];
+        if (visual) appearanceParts.push(visual);
+      }
     }
   }
   const appearanceDesc = appearanceParts.join(", ");

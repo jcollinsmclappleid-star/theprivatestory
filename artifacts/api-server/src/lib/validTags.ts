@@ -189,6 +189,7 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub} surprises ${p.refl}`),
 
   // How It Ends (non-substituted)
+  "They don't leave until morning",
   "No one speaks afterward",
   "They go again immediately",
   "Left open — mid-scene",

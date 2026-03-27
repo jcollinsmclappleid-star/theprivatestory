@@ -1,9 +1,10 @@
 // Content blocklist for server-side input moderation.
 // Targets CSAM-specific terminology indicators, explicit illegal content markers,
 // and prompt injection / jailbreak attempts.
-// Keep this list tightly scoped — broad filtering creates false positives on legitimate content.
-// The OpenAI Moderation API handles broader hate/violence/harassment categories
-// and contextually sensitive words like "child" / "minor" in non-sexual usage.
+// This is an adult fiction platform — terms like "child", "minor", "teen" etc.
+// have NO legitimate use here and are hard-blocked platform-wide without exception.
+// The OpenAI Moderation API (Layer 3) provides an additional safety net for
+// hate/violence/harassment categories not covered by the patterns here.
 // Update patterns here only — route logic does not need to change.
 
 // ---------------------------------------------------------------------------
@@ -215,7 +216,7 @@ const HARD_BLOCK_PATTERNS: RegExp[] = [
   /\b(tween|tweens)\b/i,
   /\b(adolescent|adolescents)\b/i,
   /\b(pubescent|prepubescent)\b/i,
-  /\b(infant|infants|toddler|toddlers)\b/i,
+  /\b(baby|babies|infant|infants|toddler|toddlers)\b/i,
   /\b(juvenile|juveniles)\b/i,
   /\b(underage|under.?age|preteen|pre.?teen|jailbait)\b/i,
   /\b(schoolgirl|schoolboy|school.?girl|school.?boy)\b/i,

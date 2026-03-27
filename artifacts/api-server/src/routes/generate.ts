@@ -12,7 +12,7 @@ import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
-import { isBlockedInput, isInjectionAttempt, isNearBoundaryInput } from "../lib/contentBlocklist.js";
+import { isBlockedInput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
 import { sql as drizzleSql } from "drizzle-orm";
@@ -72,6 +72,10 @@ function validateInputLengths(body: Partial<GenerateStoryRequest>): string | nul
     const val = body[field] as string | undefined;
     if (val && val.length > 40) {
       return `The name you entered is too long. Please keep names under 40 characters.`;
+    }
+    if (val) {
+      const nameError = validateNameFormat(val);
+      if (nameError) return nameError;
     }
   }
   const contextFields: Array<keyof GenerateStoryRequest> = ["whoIsHe", "setting", "dynamic"];

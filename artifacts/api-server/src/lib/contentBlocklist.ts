@@ -206,16 +206,31 @@ const INJECTION_KEYWORDS = new Set([
 // ---------------------------------------------------------------------------
 
 const HARD_BLOCK_PATTERNS: RegExp[] = [
-  // Age indicators suggesting minors in a sexual context.
-  // NOTE: "child" and "minor" are intentionally omitted — they have many legitimate
-  // uses ("childhood", "minor setback") and are handled with full semantic context
-  // by the OpenAI Moderation API (Layer 3).
+  // Age indicators — platform-wide hard block.
+  // None of these terms have a legitimate use on this adult fiction platform.
+  /\b(child|children|childhood)\b/i,
+  /\b(minor|minors)\b/i,
+  /\b(teen|teens|teenage|teenager|teenagers)\b/i,
+  /\b(kid|kids)\b/i,
+  /\b(tween|tweens)\b/i,
+  /\b(adolescent|adolescents)\b/i,
+  /\b(pubescent|prepubescent)\b/i,
+  /\b(infant|infants|toddler|toddlers)\b/i,
+  /\b(juvenile|juveniles)\b/i,
   /\b(underage|under.?age|preteen|pre.?teen|jailbait)\b/i,
   /\b(schoolgirl|schoolboy|school.?girl|school.?boy)\b/i,
   /\b(barely.?legal)\b/i,
   /\b(lolita|loli|shota)\b/i,
   /\b(pedo|paedo|pedoph|paedoph)\b/i,
   /\b(csam|cp\b)\b/i,
+
+  // Exploitation and abuse descriptors.
+  /\b(grooming|groom)\b/i,
+  /\b(molest|molestation|molesting)\b/i,
+  /\b(trafficking|sex.?trafficking)\b/i,
+
+  // Extreme violence.
+  /\b(snuff)\b/i,
 
   // Illegal act descriptors.
   // The non-consent pattern handles: "noncon", "non-con", "non consent",
@@ -332,4 +347,21 @@ export function isInjectionAttempt(text: string): { blocked: boolean; reason: st
     }
   }
   return { blocked: false, reason: null };
+}
+
+/**
+ * Validates that a name field (listenerName, partnerName) is a single word
+ * containing only Unicode letters. Rejects spaces, digits, and all punctuation/
+ * special characters including `.`, `-`, `_`, `'`, etc.
+ * Accented and Unicode letters (é, ñ, André) are accepted.
+ *
+ * Returns an error string if invalid, or null if the name is acceptable.
+ */
+export function validateNameFormat(name: string): string | null {
+  if (!name || name.trim() === "") return null;
+  const trimmed = name.trim();
+  if (!/^[\p{L}]+$/u.test(trimmed)) {
+    return "Names must be a single word with letters only — no spaces, numbers, or special characters.";
+  }
+  return null;
 }

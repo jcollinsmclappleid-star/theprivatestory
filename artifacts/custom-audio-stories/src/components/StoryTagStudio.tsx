@@ -9,225 +9,245 @@ interface TagCategory {
   tags: string[];
 }
 
-const STANDARD_CATEGORIES: TagCategory[] = [
-  {
-    heading: "What You Want To Feel",
-    sub: "The emotional register this story should carry",
-    tags: [
-      "Desired", "Seen", "Powerful", "Safe", "Vulnerable",
-      "Chosen", "Overwhelmed", "Undone", "Adored", "Electric",
-      "Rescued", "Consumed", "Breathless", "Known", "Discovered",
-      "Wanted", "Held", "Irreplaceable", "Shattered", "Lit up",
-    ],
-  },
-  {
-    heading: "The Energy Between Them",
-    sub: "How the charge between two people moves",
-    tags: [
-      "Slow Build", "Instant Chemistry", "Unfinished Business",
-      "Old Wounds", "Forbidden", "Push & Pull",
-      "Inevitable", "Complicated", "Playful tension", "Bittersweet",
-      "First time", "Reunion after years", "Rivals to lovers",
-      "One night only", "A decade of tension finally breaking",
-      "Hate that was always this", "Friends who knew all along",
-    ],
-  },
-  {
-    heading: "Their Presence",
-    sub: "The energy they bring into the room",
-    tags: [
-      "Commanding", "Quiet Intensity", "Gentle", "Protective",
-      "Unpredictable", "Brooding", "Playful", "Restrained",
-      "Tender", "Obsessive", "Magnetic", "Dangerous",
-      "Controlled", "Relentless", "Patient", "Unshakeable",
-      "Focused entirely on her", "Impossible to read",
-    ],
-  },
-  {
-    heading: "Story Texture",
-    sub: "How the writing should feel on the page",
-    tags: [
-      "Dialogue-rich", "Mostly sensation", "Poetic",
-      "Sharp & direct", "Dreamlike", "Cinematic",
-      "Raw & real", "Intimate & internal", "Lyrical",
-      "Sensory", "Grounded & physical", "Interior monologue",
-      "Explicit & direct", "Fragmented & urgent",
-    ],
-  },
-  {
-    heading: "Pacing",
-    sub: "How the tension moves through the story",
-    tags: [
-      "Slow simmer", "Quick burn", "Even tension",
-      "Agonising build", "All foreplay", "Fast then tender",
-      "One long exhale", "Interrupted and restarted",
-      "Building to a crash", "Starting mid-desire",
-      "Two speeds — nothing in between",
-    ],
-  },
-  {
-    heading: "What Makes It Yours",
-    sub: "The personal detail that makes this story unmistakable",
-    tags: [
-      "It's set somewhere I know",
-      "He reminds me of someone",
-      "She could be me",
-      "The relationship is complicated",
-      "It happens just once",
-      "It happens more than once",
-      "It shouldn't have happened",
-      "It was always going to happen",
-      "She doesn't tell anyone",
-      "She tells one person",
-      "No one gets hurt",
-      "Feelings are involved whether they want them or not",
-    ],
-  },
-];
+type PronounCtx = {
+  sub: string;
+  obj: string;
+  poss: string;
+  refl: string;
+};
 
-const AFTER_DARK_EXTRA_CATEGORIES: TagCategory[] = [
-  {
-    heading: "Top Fantasies",
-    sub: "The ones people rarely say out loud. Select what's true for you.",
-    tags: [
-      "He takes, she receives",
-      "She doesn't say stop",
-      "He finds every limit",
-      "She does exactly as she's told",
-      "He makes her beg for it",
-      "She's completely powerless",
-      "They get caught",
-      "Someone else is watching",
-      "She watches herself",
-      "He doesn't stop when she asks him to",
-      "She wears what he chooses",
-      "He makes her say it out loud",
-      "Nothing is off limits tonight",
-      "She earns what she gets",
-      "He goes again before she recovers",
-      "She doesn't know what comes next",
-      "He keeps her at the edge",
-      "She surrenders completely",
-    ],
-  },
-  {
-    heading: "What You Want Him To Do",
-    sub: "The specific energy you want from him",
-    tags: [
-      "Takes full control",
-      "Commands what he wants",
-      "Takes his time",
-      "Doesn't stop",
-      "Makes her ask for it",
-      "Holds her in place",
-      "Undoes her slowly",
-      "Makes her earn it",
-      "Won't let her hide",
-      "Watches closely",
-      "Keeps her at the edge",
-      "Covers her mouth",
-      "Goes again immediately",
-      "Doesn't let her finish until he says",
-      "Pushes every limit",
-      "Asks permission first — then ignores the answer",
-      "Uses only his hands first",
-      "Makes her count",
-    ],
-  },
-  {
-    heading: "The Scene",
-    sub: "Where and how this plays out physically",
-    tags: [
-      "Slow undressing",
-      "Everything at once",
-      "In the dark",
-      "Fully lit",
-      "Against a wall",
-      "In front of a mirror",
-      "Barely private",
-      "Somewhere unexpected",
-      "Horizontal",
-      "Standing the whole time",
-      "Tied down",
-      "Hands behind her back",
-      "On the desk",
-      "In the bath",
-      "She doesn't move unless told",
-      "Outdoors, barely hidden",
-      "In the car",
-      "On the floor",
-      "She's blindfolded",
-      "Fully clothed at first",
-    ],
-  },
-  {
-    heading: "What She Wants Said",
-    sub: "The words matter as much as anything else",
-    tags: [
-      "He narrates everything as it happens",
-      "He tells her what she is",
-      "She's told to repeat it back",
-      "He describes what comes next",
-      "She's told to ask nicely",
-      "He says her name, every time",
-      "He asks if she wants more",
-      "He says it before he does it",
-      "She's told to be quiet",
-      "He makes her say she wants it",
-      "He tells her not to move",
-      "He counts down",
-      "He asks her how it feels — she has to answer",
-    ],
-  },
-  {
-    heading: "Desire Details",
-    sub: "The specific flavour of what she wants",
-    tags: [
-      "Being told what to do",
-      "Being completely seen",
-      "Power fully exchanged",
-      "Nothing off limits",
-      "His total attention",
-      "Total surrender",
-      "She takes control",
-      "Boundaries dissolved",
-      "Watched by someone",
-      "Anonymous desire",
-      "Multiple rounds",
-      "She loses count",
-      "Every part of her",
-      "Nothing is private",
-      "She doesn't get a choice",
-      "She chooses everything",
-      "He owns every reaction",
-      "She surprises herself",
-    ],
-  },
-  {
-    heading: "How It Ends",
-    sub: "The final note of the story",
-    tags: [
-      "She falls asleep in his arms",
-      "He doesn't leave until morning",
-      "She asks for more",
-      "No one speaks afterward",
-      "He leaves — she doesn't stop him",
-      "They go again immediately",
-      "He stays and she's surprised",
-      "Left open — mid-scene",
-      "She's still feeling it hours later",
-      "She texts him before he reaches the door",
-      "He locks the door again",
-      "She doesn't want it to be over",
-    ],
-  },
-];
+function getPronounCtx(pronouns: string): PronounCtx {
+  switch (pronouns) {
+    case "he/him":   return { sub: "He",   obj: "him",  poss: "his",   refl: "himself"    };
+    case "they/them":return { sub: "They", obj: "them", poss: "their", refl: "themselves"  };
+    case "you":      return { sub: "You",  obj: "you",  poss: "your",  refl: "yourself"   };
+    default:         return { sub: "She",  obj: "her",  poss: "her",   refl: "herself"    };
+  }
+}
+
+function buildStandardCategories(p: PronounCtx): TagCategory[] {
+  return [
+    {
+      heading: "What You Want To Feel",
+      sub: "The emotional register this story should carry",
+      tags: [
+        "Desired", "Seen", "Powerful", "Safe", "Vulnerable",
+        "Chosen", "Overwhelmed", "Undone", "Adored", "Electric",
+        "Rescued", "Consumed", "Breathless", "Known", "Discovered",
+        "Wanted", "Held", "Irreplaceable", "Shattered", "Lit up",
+      ],
+    },
+    {
+      heading: "The Energy Between Them",
+      sub: "How the charge between two people moves",
+      tags: [
+        "Slow Build", "Instant Chemistry", "Unfinished Business",
+        "Old Wounds", "Forbidden", "Push & Pull",
+        "Inevitable", "Complicated", "Playful tension", "Bittersweet",
+        "First time", "Reunion after years", "Rivals to lovers",
+        "One night only", "A decade of tension finally breaking",
+        "Hate that was always this", "Friends who knew all along",
+      ],
+    },
+    {
+      heading: "Their Presence",
+      sub: "The energy they bring into the room",
+      tags: [
+        "Commanding", "Quiet Intensity", "Gentle", "Protective",
+        "Unpredictable", "Brooding", "Playful", "Restrained",
+        "Tender", "Obsessive", "Magnetic", "Dangerous",
+        "Controlled", "Relentless", "Patient", "Unshakeable",
+        `Focused entirely on ${p.obj}`, "Impossible to read",
+      ],
+    },
+    {
+      heading: "Story Texture",
+      sub: "How the writing should feel on the page",
+      tags: [
+        "Dialogue-rich", "Mostly sensation", "Poetic",
+        "Sharp & direct", "Dreamlike", "Cinematic",
+        "Raw & real", "Intimate & internal", "Lyrical",
+        "Sensory", "Grounded & physical", "Interior monologue",
+        "Explicit & direct", "Fragmented & urgent",
+      ],
+    },
+    {
+      heading: "Pacing",
+      sub: "How the tension moves through the story",
+      tags: [
+        "Slow simmer", "Quick burn", "Even tension",
+        "Agonising build", "All foreplay", "Fast then tender",
+        "One long exhale", "Interrupted and restarted",
+        "Building to a crash", "Starting mid-desire",
+        "Two speeds — nothing in between",
+      ],
+    },
+    {
+      heading: "What Makes It Yours",
+      sub: "The personal detail that makes this story unmistakable",
+      tags: [
+        "It's set somewhere I know",
+        "They remind me of someone",
+        `${p.sub} could be me`,
+        "The relationship is complicated",
+        "It happens just once",
+        "It happens more than once",
+        "It shouldn't have happened",
+        "It was always going to happen",
+        `${p.sub} doesn't tell anyone`,
+        `${p.sub} tells one person`,
+        "No one gets hurt",
+        "Feelings are involved whether they want them or not",
+      ],
+    },
+  ];
+}
+
+function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
+  return [
+    {
+      heading: "Top Fantasies",
+      sub: "The ones people rarely say out loud. Select what's true for you.",
+      tags: [
+        `They take, ${p.sub} receives`,
+        `${p.sub} doesn't say stop`,
+        "They find every limit",
+        `${p.sub} does exactly as ${p.poss} told`,
+        `They make ${p.obj} beg for it`,
+        `${p.sub}'s completely powerless`,
+        "They get caught",
+        "Someone else is watching",
+        `${p.sub} watches ${p.refl}`,
+        `They don't stop when ${p.sub} asks`,
+        `${p.sub} wears what they choose`,
+        `They make ${p.obj} say it out loud`,
+        `${p.sub} earns what ${p.poss} gets`,
+        `They go again before ${p.sub} recovers`,
+        `${p.sub} doesn't know what comes next`,
+        `They keep ${p.obj} at the edge`,
+        `${p.sub} surrenders completely`,
+      ],
+    },
+    {
+      heading: "What You Want Them To Do",
+      sub: "The specific energy you want from them",
+      tags: [
+        "Takes full control",
+        "Commands what they want",
+        "Takes their time",
+        "Doesn't stop",
+        `Makes ${p.obj} ask for it`,
+        `Holds ${p.obj} in place`,
+        `Undoes ${p.obj} slowly`,
+        `Makes ${p.obj} earn it`,
+        `Won't let ${p.obj} hide`,
+        "Watches closely",
+        `Keeps ${p.obj} at the edge`,
+        "Covers their mouth",
+        "Goes again immediately",
+        `Doesn't let ${p.obj} finish until they say`,
+        "Pushes every limit",
+        "Asks permission first — then ignores the answer",
+        "Uses only their hands first",
+        `Makes ${p.obj} count`,
+      ],
+    },
+    {
+      heading: "The Scene",
+      sub: "Where and how this plays out physically",
+      tags: [
+        "Slow undressing",
+        "Everything at once",
+        "In the dark",
+        "Fully lit",
+        "Against a wall",
+        "In front of a mirror",
+        "Barely private",
+        "Somewhere unexpected",
+        "Horizontal",
+        "Standing the whole time",
+        "Tied down",
+        `Hands behind ${p.poss} back`,
+        "On the desk",
+        "In the bath",
+        `${p.sub} doesn't move unless told`,
+        "Outdoors, barely hidden",
+        "In the car",
+        "On the floor",
+        `${p.sub}'s blindfolded`,
+        "Fully clothed at first",
+      ],
+    },
+    {
+      heading: `What ${p.sub} Wants Said`,
+      sub: "The words matter as much as anything else",
+      tags: [
+        "They narrate everything as it happens",
+        `They tell ${p.obj} what ${p.sub} is`,
+        `${p.sub}'s told to repeat it back`,
+        "They describe what comes next",
+        `${p.sub}'s told to ask nicely`,
+        "They say the name, every time",
+        `They ask if ${p.sub} wants more`,
+        "They say it before they do it",
+        `${p.sub}'s told to be quiet`,
+        `They make ${p.obj} say ${p.sub} wants it`,
+        `They tell ${p.obj} not to move`,
+        "They count down",
+        `They ask ${p.obj} how it feels — ${p.sub} has to answer`,
+      ],
+    },
+    {
+      heading: "Desire Details",
+      sub: `The specific flavour of what ${p.sub} wants`,
+      tags: [
+        "Being told what to do",
+        "Being completely seen",
+        "Power fully exchanged",
+        "Nothing off limits",
+        "Total attention",
+        "Total surrender",
+        `${p.sub} takes control`,
+        "Boundaries dissolved",
+        "Watched by someone",
+        "Anonymous desire",
+        "Multiple rounds",
+        `${p.sub} loses count`,
+        `Every part of ${p.obj}`,
+        "Nothing is private",
+        `${p.sub} doesn't get a choice`,
+        `${p.sub} chooses everything`,
+        "They own every reaction",
+        `${p.sub} surprises ${p.refl}`,
+      ],
+    },
+    {
+      heading: "How It Ends",
+      sub: "The final note of the story",
+      tags: [
+        `${p.sub} falls asleep in their arms`,
+        "They don't leave until morning",
+        `${p.sub} asks for more`,
+        "No one speaks afterward",
+        `They leave — ${p.sub} doesn't stop them`,
+        "They go again immediately",
+        `They stay and ${p.sub}'s surprised`,
+        "Left open — mid-scene",
+        `${p.sub}'s still feeling it hours later`,
+        `${p.sub} texts them before they reach the door`,
+        "They lock the door again",
+        `${p.sub} doesn't want it to be over`,
+      ],
+    },
+  ];
+}
 
 interface Props {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
   afterDark?: boolean;
   accentColor?: string;
+  protagonistPronouns?: string;
 }
 
 export function StoryTagStudio({
@@ -235,6 +255,7 @@ export function StoryTagStudio({
   onTagToggle,
   afterDark = false,
   accentColor = "#c9a227",
+  protagonistPronouns = "she/her",
 }: Props) {
   const { isAuthenticated } = useAuth();
   const [usualTags, setUsualTags] = useState<Set<string>>(new Set());
@@ -257,9 +278,10 @@ export function StoryTagStudio({
       .catch(() => {});
   }, [isAuthenticated]);
 
+  const p = getPronounCtx(protagonistPronouns);
   const categories = afterDark
-    ? [...STANDARD_CATEGORIES, ...AFTER_DARK_EXTRA_CATEGORIES]
-    : STANDARD_CATEGORIES;
+    ? [...buildStandardCategories(p), ...buildAfterDarkExtraCategories(p)]
+    : buildStandardCategories(p);
 
   return (
     <div className="space-y-8">

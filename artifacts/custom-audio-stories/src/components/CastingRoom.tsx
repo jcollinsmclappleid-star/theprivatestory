@@ -282,41 +282,90 @@ const AFTER_DARK_SETTINGS = [
 
 /* ── Country / City data ──────────────────────────────────────────── */
 const COUNTRY_CITIES: Record<string, string[]> = {
-  "France":         ["Paris", "Nice", "Cannes", "Bordeaux", "Biarritz", "Antibes", "Saint-Tropez", "Lyon"],
-  "United Kingdom": ["London", "Edinburgh", "Bath", "Oxford", "Brighton", "Glasgow", "Manchester"],
-  "Italy":          ["Rome", "Milan", "Florence", "Venice", "Positano", "Amalfi Coast", "Capri", "Sardinia"],
-  "Spain":          ["Barcelona", "Madrid", "Ibiza", "Seville", "Valencia", "Marbella", "San Sebastián"],
-  "Monaco":         ["Monte Carlo"],
-  "Greece":         ["Santorini", "Mykonos", "Athens", "Rhodes", "Corfu"],
-  "Turkey":         ["Istanbul", "Bodrum", "Cappadocia"],
-  "Portugal":       ["Lisbon", "Porto", "Algarve"],
-  "Switzerland":    ["Geneva", "Zürich", "St. Moritz", "Lucerne"],
-  "Austria":        ["Vienna", "Salzburg"],
-  "Germany":        ["Berlin", "Munich", "Hamburg"],
-  "Netherlands":    ["Amsterdam"],
-  "Denmark":        ["Copenhagen"],
-  "Sweden":         ["Stockholm"],
-  "Croatia":        ["Dubrovnik", "Split", "Hvar"],
-  "Czechia":        ["Prague"],
-  "Hungary":        ["Budapest"],
-  "Ireland":        ["Dublin", "Galway"],
-  "Iceland":        ["Reykjavik"],
-  "USA":            ["New York", "Los Angeles", "Miami", "Chicago", "New Orleans", "San Francisco", "Las Vegas"],
-  "Mexico":         ["Mexico City", "Tulum", "Cancún"],
-  "Cuba":           ["Havana"],
-  "Argentina":      ["Buenos Aires", "Mendoza"],
-  "Brazil":         ["Rio de Janeiro", "São Paulo"],
-  "South Africa":   ["Cape Town"],
-  "Morocco":        ["Marrakech", "Casablanca", "Fez", "Essaouira"],
-  "Egypt":          ["Cairo"],
-  "UAE":            ["Dubai", "Abu Dhabi"],
-  "India":          ["Mumbai", "Goa", "Jaipur"],
-  "Thailand":       ["Bangkok", "Koh Samui", "Chiang Mai"],
-  "Japan":          ["Tokyo", "Kyoto", "Osaka", "Hakone"],
-  "South Korea":    ["Seoul", "Busan"],
-  "Singapore":      ["Singapore City"],
-  "Australia":      ["Sydney", "Melbourne"],
-  "Maldives":       ["North Malé Atoll", "Baa Atoll"],
+  // Europe
+  "France":             ["Paris", "Nice", "Cannes", "Bordeaux", "Biarritz", "Antibes", "Saint-Tropez", "Lyon", "Marseille"],
+  "United Kingdom":     ["London", "Edinburgh", "Bath", "Oxford", "Brighton", "Glasgow", "Manchester", "Bristol", "Liverpool"],
+  "Italy":              ["Rome", "Milan", "Florence", "Venice", "Positano", "Amalfi Coast", "Capri", "Sardinia", "Turin", "Naples"],
+  "Spain":              ["Barcelona", "Madrid", "Ibiza", "Seville", "Valencia", "Marbella", "San Sebastián", "Bilbao", "Granada"],
+  "Monaco":             ["Monte Carlo"],
+  "Greece":             ["Santorini", "Mykonos", "Athens", "Rhodes", "Corfu", "Thessaloniki", "Crete"],
+  "Turkey":             ["Istanbul", "Bodrum", "Cappadocia", "Antalya", "Izmir"],
+  "Portugal":           ["Lisbon", "Porto", "Algarve", "Cascais", "Funchal", "Sintra"],
+  "Switzerland":        ["Geneva", "Zürich", "St. Moritz", "Lucerne", "Basel", "Interlaken"],
+  "Austria":            ["Vienna", "Salzburg", "Innsbruck", "Graz", "Hallstatt"],
+  "Germany":            ["Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Dresden"],
+  "Netherlands":        ["Amsterdam", "Rotterdam", "The Hague", "Utrecht", "Eindhoven"],
+  "Denmark":            ["Copenhagen", "Aarhus", "Odense", "Aalborg"],
+  "Sweden":             ["Stockholm", "Gothenburg", "Malmö", "Uppsala", "Visby"],
+  "Norway":             ["Oslo", "Bergen", "Tromsø", "Trondheim", "Stavanger"],
+  "Finland":            ["Helsinki", "Tampere", "Turku", "Rovaniemi"],
+  "Belgium":            ["Brussels", "Bruges", "Ghent", "Antwerp", "Liège"],
+  "Poland":             ["Warsaw", "Kraków", "Gdańsk", "Wrocław", "Poznań"],
+  "Croatia":            ["Dubrovnik", "Split", "Hvar", "Rovinj", "Zagreb"],
+  "Czechia":            ["Prague", "Brno", "Karlovy Vary", "Český Krumlov", "Olomouc"],
+  "Hungary":            ["Budapest", "Eger", "Pécs", "Debrecen", "Győr"],
+  "Ireland":            ["Dublin", "Galway", "Cork", "Killarney", "Doolin"],
+  "Iceland":            ["Reykjavik", "Akureyri", "Keflavik"],
+  // Americas
+  "USA":                ["New York", "Los Angeles", "Miami", "Chicago", "New Orleans", "San Francisco", "Las Vegas", "Washington DC", "Boston", "Nashville"],
+  "Mexico":             ["Mexico City", "Tulum", "Cancún", "Oaxaca", "San Miguel de Allende"],
+  "Cuba":               ["Havana", "Trinidad", "Varadero", "Santiago de Cuba"],
+  "Argentina":          ["Buenos Aires", "Mendoza", "Bariloche", "Córdoba", "Salta"],
+  "Brazil":             ["Rio de Janeiro", "São Paulo", "Salvador", "Florianópolis", "Búzios"],
+  "Colombia":           ["Cartagena", "Bogotá", "Medellín", "Santa Marta"],
+  "Peru":               ["Lima", "Cusco", "Machu Picchu"],
+  // Caribbean
+  "Jamaica":            ["Kingston", "Montego Bay", "Negril", "Ocho Rios", "Port Antonio"],
+  "Barbados":           ["Bridgetown", "St. James", "Bathsheba", "Speightstown"],
+  "Trinidad & Tobago":  ["Port of Spain", "Tobago", "Scarborough", "San Fernando"],
+  "St. Lucia":          ["Castries", "Rodney Bay", "Soufrière", "Marigot Bay"],
+  "Bahamas":            ["Nassau", "Paradise Island", "Harbour Island", "Exuma"],
+  "Antigua & Barbuda":  ["St. John's", "English Harbour", "Jolly Harbour", "Barbuda"],
+  "Cayman Islands":     ["George Town", "Seven Mile Beach", "Rum Point"],
+  "St. Barths":         ["Gustavia", "St. Jean", "Flamands"],
+  "Turks & Caicos":     ["Providenciales", "Grace Bay", "Grand Turk"],
+  "Grenada":            ["St. George's", "Grand Anse", "Carriacou"],
+  "Martinique":         ["Fort-de-France", "Les Trois-Îlets", "Le Diamant"],
+  "Guadeloupe":         ["Pointe-à-Pitre", "Basse-Terre", "Saint-François"],
+  // Africa
+  "South Africa":       ["Cape Town", "Johannesburg", "Durban", "Stellenbosch", "Franschhoek", "Knysna"],
+  "Morocco":            ["Marrakech", "Casablanca", "Fez", "Essaouira", "Tangier", "Chefchaouen"],
+  "Egypt":              ["Cairo", "Luxor", "Aswan", "Alexandria", "Sharm El-Sheikh", "Hurghada"],
+  "Kenya":              ["Nairobi", "Mombasa", "Malindi", "Lamu", "Diani Beach"],
+  "Tanzania":           ["Dar es Salaam", "Zanzibar", "Arusha", "Stone Town", "Serengeti"],
+  "Nigeria":            ["Lagos", "Abuja", "Port Harcourt", "Ibadan"],
+  "Ghana":              ["Accra", "Cape Coast", "Kumasi", "Takoradi"],
+  "Senegal":            ["Dakar", "Saint-Louis", "Saly", "Mbour"],
+  "Ethiopia":           ["Addis Ababa", "Lalibela", "Gondar", "Bahir Dar"],
+  "Rwanda":             ["Kigali", "Musanze", "Gisenyi"],
+  "Ivory Coast":        ["Abidjan", "Yamoussoukro", "Grand-Bassam"],
+  "Mozambique":         ["Maputo", "Inhambane", "Vilanculos", "Pemba"],
+  "Mauritius":          ["Port Louis", "Grand Baie", "Flic en Flac", "Mahébourg"],
+  "Seychelles":         ["Mahé", "Praslin", "La Digue", "Victoria"],
+  "Réunion":            ["Saint-Denis", "Saint-Gilles-les-Bains", "Cilaos"],
+  // Middle East
+  "UAE":                ["Dubai", "Abu Dhabi", "Sharjah", "Ras Al Khaimah", "Fujairah"],
+  "Saudi Arabia":       ["Riyadh", "Jeddah", "AlUla", "NEOM", "Diriyah"],
+  "Jordan":             ["Amman", "Petra", "Wadi Rum", "Aqaba"],
+  "Lebanon":            ["Beirut", "Byblos", "Batroun"],
+  "Oman":               ["Muscat", "Nizwa", "Salalah", "Wahiba Sands"],
+  "Qatar":              ["Doha", "Al Wakrah", "Lusail"],
+  // Asia
+  "India":              ["Mumbai", "Goa", "Jaipur", "Delhi", "Udaipur", "Pondicherry", "Kolkata", "Kochi"],
+  "Thailand":           ["Bangkok", "Koh Samui", "Chiang Mai", "Phuket", "Koh Lanta"],
+  "Japan":              ["Tokyo", "Kyoto", "Osaka", "Hakone", "Nara", "Hiroshima"],
+  "South Korea":        ["Seoul", "Busan", "Jeju Island", "Gyeongju"],
+  "Vietnam":            ["Hanoi", "Ho Chi Minh City", "Hội An", "Đà Nẵng", "Phú Quốc"],
+  "Bali":               ["Seminyak", "Ubud", "Canggu", "Nusa Dua", "Uluwatu"],
+  "Sri Lanka":          ["Colombo", "Galle", "Sigiriya", "Kandy"],
+  "Singapore":          ["Singapore City"],
+  "Hong Kong":          ["Hong Kong Island", "Kowloon", "Lantau Island"],
+  // Pacific & Oceania
+  "Australia":          ["Sydney", "Melbourne", "Brisbane", "Gold Coast", "Byron Bay", "Perth"],
+  "New Zealand":        ["Auckland", "Queenstown", "Wellington", "Christchurch"],
+  "Maldives":           ["North Malé Atoll", "Baa Atoll", "Ari Atoll", "South Malé Atoll"],
+  "French Polynesia":   ["Bora Bora", "Moorea", "Papeete", "Rangiroa"],
+  "Fiji":               ["Nadi", "Suva", "Mamanuca Islands", "Yasawa Islands"],
 };
 
 const ATMOSPHERES = [
@@ -340,16 +389,36 @@ const MOODS = [
   "Breathless", "Primal", "Reckless",
 ];
 
-/* ── Appearance options (for Step 4 — His Appearance) ───────────── */
+/* ── Appearance options (pronoun-aware) ───────────────────────────── */
 const BUILD_OPTIONS = ["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"];
 const HEIGHT_OPTIONS = ["Tall", "Very tall", "Average height", "Shorter than me"];
 const COLOURING_OPTIONS = ["Dark", "Olive", "Fair", "Tanned", "Deep brown", "Medium brown"];
 const EYE_OPTIONS = ["Dark brown", "Light brown", "Green", "Blue", "Grey", "Hazel", "Deep black"];
-const FEATURE_OPTIONS = [
-  "Stubble", "Full beard", "Clean-shaven", "Strong jaw", "Dimples",
-  "Broad shoulders", "Large hands", "Tattoos", "A scar", "Piercing eyes",
-  "Long hair", "Short hair", "Curls", "Silver at the temples",
-];
+
+function buildFeatureOptions(partnerPronouns: string): string[] {
+  if (partnerPronouns === "she/her") {
+    return [
+      "Long lashes", "Full lips", "High cheekbones", "Sharp features",
+      "Delicate features", "Natural glow", "Freckles", "Dimples",
+      "Elegant hands", "Tattoos", "A scar", "Piercing eyes",
+      "Long hair", "Short hair", "Curls", "Soft curls",
+    ];
+  }
+  if (partnerPronouns === "they/them") {
+    return [
+      "Stubble", "Strong jaw", "Soft features", "High cheekbones",
+      "Full lips", "Dimples", "Broad shoulders", "Lean frame",
+      "Long lashes", "Elegant hands", "Tattoos", "A scar",
+      "Piercing eyes", "Long hair", "Short hair", "Curls",
+      "Silver at the temples", "Freckles",
+    ];
+  }
+  return [
+    "Stubble", "Full beard", "Clean-shaven", "Strong jaw", "Dimples",
+    "Broad shoulders", "Large hands", "Tattoos", "A scar", "Piercing eyes",
+    "Long hair", "Short hair", "Curls", "Silver at the temples",
+  ];
+}
 
 /* ── Progress bar ─────────────────────────────────────────────────── */
 function StepBar({ current, total }: { current: number; total: number }) {
@@ -522,6 +591,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const accentColor = afterDark ? "#c0392b" : "#c9a227";
 
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
+  const activePairing = PAIRINGS.find(p => p.id === data.pairing);
+  const rawPartnerPronouns    = activePairing?.partnerPronouns    ?? "he/him";
+  const rawProtagonistPronouns = activePairing?.protagonistPronouns ?? "she/her";
   const partnerHeadingVerb = partnerP.subject === "They" ? "Who are they?" : `Who is ${partnerP.object}?`;
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
@@ -742,7 +814,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {FEATURE_OPTIONS.map(opt => (
+                  {buildFeatureOptions(rawPartnerPronouns).map(opt => (
                     <button key={opt} type="button"
                       onClick={() => setAppearFeatures(prev =>
                         prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
@@ -938,6 +1010,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               onTagToggle={toggleTag}
               afterDark={afterDark}
               accentColor={accentColor}
+              protagonistPronouns={rawProtagonistPronouns}
             />
           </motion.div>
         )}

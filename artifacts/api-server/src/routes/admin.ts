@@ -7,8 +7,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
-import { generatedStories } from "@workspace/db/schema";
-import { eq, like, asc, and, sql } from "drizzle-orm";
+import { generatedStories, contentBlocks, csamReports } from "@workspace/db/schema";
+import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getArcStage, FIVE_EPISODE_EROTIC_ARC } from "../lib/seriesArc.js";
 import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
@@ -1331,6 +1331,81 @@ router.post("/chat", async (req, res) => {
     const message = err instanceof Error ? err.message : "Chat error";
     res.write(`data: ${JSON.stringify({ error: message })}\n\n`);
     res.end();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// CSAM / Content Moderation Routes
+// ---------------------------------------------------------------------------
+
+/** Returns recent flagged content events (content_blocks) for admin review. */
+router.get("/moderation/flagged", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  try {
+    const rows = await db
+      .select()
+      .from(contentBlocks)
+      .where(isNull(contentBlocks.deletedAt))
+      .orderBy(desc(contentBlocks.createdAt))
+      .limit(200);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch flagged content" });
+  }
+});
+
+/** Returns CSAM reports that have been filed. */
+router.get("/moderation/csam-reports", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  try {
+    const rows = await db
+      .select()
+      .from(csamReports)
+      .orderBy(desc(csamReports.reportedAt))
+      .limit(200);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch CSAM reports" });
+  }
+});
+
+/** Creates a CSAM report entry — records that an admin has manually reported
+ *  a flagged content event to NCMEC or IWF. */
+router.post("/moderation/csam-report", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  const { contentBlockId, reportedTo, notes } = req.body as {
+    contentBlockId: string;
+    reportedTo: "ncmec" | "iwf" | "other";
+    notes?: string;
+  };
+  if (!contentBlockId || !reportedTo) {
+    res.status(400).json({ error: "contentBlockId and reportedTo are required" });
+    return;
+  }
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+  const adminUserId = adminUser?.id ?? adminUser?.email ?? "unknown";
+  try {
+    const [inserted] = await db
+      .insert(csamReports)
+      .values({
+        contentBlockId: String(contentBlockId),
+        reportedTo,
+        adminUserId,
+        notes: notes ?? null,
+      })
+      .returning();
+    res.json({ ok: true, report: inserted });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create CSAM report" });
   }
 });
 

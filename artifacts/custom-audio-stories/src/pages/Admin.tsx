@@ -78,7 +78,12 @@ export default function Admin() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "chat">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "chat" | "moderation">("generate");
+  const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
+  const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
+  const [moderationLoading, setModerationLoading] = useState(false);
+  const [reportingId, setReportingId] = useState<string | null>(null);
+  const [reportNotes, setReportNotes] = useState<Record<string, string>>({});
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
@@ -115,6 +120,45 @@ export default function Admin() {
       })
       .catch(() => {});
   }, [user?.id]);
+
+  // ── Load moderation data when switching to moderation tab ──────────────────
+  const loadModeration = useCallback(async () => {
+    setModerationLoading(true);
+    try {
+      const [flaggedRes, reportsRes] = await Promise.all([
+        fetch(`${API_BASE}/api/admin/moderation/flagged`, { credentials: "include" }),
+        fetch(`${API_BASE}/api/admin/moderation/csam-reports`, { credentials: "include" }),
+      ]);
+      if (flaggedRes.ok) setFlaggedItems(await flaggedRes.json());
+      if (reportsRes.ok) setCsamReports(await reportsRes.json());
+    } catch {
+      // ignore fetch errors
+    } finally {
+      setModerationLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeView === "moderation") loadModeration();
+  }, [activeView, loadModeration]);
+
+  const fileReport = useCallback(async (contentBlockId: string, reportedTo: "ncmec" | "iwf" | "other") => {
+    setReportingId(contentBlockId);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/moderation/csam-report`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contentBlockId, reportedTo, notes: reportNotes[contentBlockId] ?? "" }),
+      });
+      if (res.ok) {
+        await loadModeration();
+        setReportNotes((prev) => ({ ...prev, [contentBlockId]: "" }));
+      }
+    } finally {
+      setReportingId(null);
+    }
+  }, [loadModeration, reportNotes]);
 
   // ── Load series catalog when switching to series tab ───────────────────────
   const loadSeriesCatalog = useCallback(() => {
@@ -553,6 +597,12 @@ export default function Admin() {
               >
                 Chat
               </button>
+              <button
+                onClick={() => setActiveView("moderation")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "moderation" ? "bg-red-500/30 text-red-300" : "text-white/50 hover:text-white"}`}
+              >
+                Moderation
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -710,6 +760,95 @@ export default function Admin() {
                   </div>
                 );
               })}
+            </div>
+          </ScrollArea>
+        ) : activeView === "moderation" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-3 space-y-4">
+              {moderationLoading && (
+                <div className="text-white/40 text-xs text-center py-6">Loading…</div>
+              )}
+
+              <div>
+                <div className="text-red-300 text-xs font-semibold uppercase tracking-widest mb-2">Flagged Content Events</div>
+                {!moderationLoading && flaggedItems.length === 0 && (
+                  <div className="text-white/30 text-xs text-center py-4">No flagged events</div>
+                )}
+                {flaggedItems.map((item) => {
+                  const id = String(item.id ?? "");
+                  const isReporting = reportingId === id;
+                  const alreadyReported = csamReports.some((r) => String(r.contentBlockId) === id);
+                  return (
+                    <div key={id} className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 space-y-2 mb-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="text-[10px] text-white/40 font-mono mb-0.5">ID: {id}</div>
+                          <div className="text-xs text-white/70">{String(item.blockReason ?? item.blockSource ?? "Unknown reason")}</div>
+                          <div className="text-[10px] text-white/40 mt-0.5">{String(item.blockSource ?? "")}</div>
+                          <div className="text-[10px] text-white/30 mt-1">{item.createdAt ? new Date(String(item.createdAt)).toLocaleString() : ""}</div>
+                        </div>
+                        {alreadyReported && (
+                          <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full flex-shrink-0">Reported</span>
+                        )}
+                      </div>
+                      {item.inputHash && (
+                        <div className="text-[10px] text-white/30 font-mono bg-black/20 rounded p-2 truncate">
+                          hash: {String(item.inputHash)}
+                        </div>
+                      )}
+                      {!alreadyReported && (
+                        <div className="space-y-1.5">
+                          <textarea
+                            placeholder="Notes (optional)"
+                            value={reportNotes[id] ?? ""}
+                            onChange={(e) => setReportNotes((prev) => ({ ...prev, [id]: e.target.value }))}
+                            className="w-full text-[10px] bg-black/30 border border-white/10 rounded p-1.5 text-white/60 placeholder:text-white/20 resize-none"
+                            rows={2}
+                          />
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => fileReport(id, "ncmec")}
+                              disabled={isReporting}
+                              className="text-[10px] px-2 py-1 rounded bg-red-700 hover:bg-red-600 text-white disabled:opacity-50"
+                            >
+                              {isReporting ? "…" : "Report to NCMEC"}
+                            </button>
+                            <button
+                              onClick={() => fileReport(id, "iwf")}
+                              disabled={isReporting}
+                              className="text-[10px] px-2 py-1 rounded bg-orange-700 hover:bg-orange-600 text-white disabled:opacity-50"
+                            >
+                              {isReporting ? "…" : "Report to IWF"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div>
+                <div className="text-amber-300 text-xs font-semibold uppercase tracking-widest mb-2">Filed Reports</div>
+                {!moderationLoading && csamReports.length === 0 && (
+                  <div className="text-white/30 text-xs text-center py-4">No reports filed</div>
+                )}
+                {csamReports.map((r) => (
+                  <div key={String(r.id)} className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 mb-2">
+                    <div className="text-[10px] text-white/40 font-mono">Block ID: {String(r.contentBlockId)}</div>
+                    <div className="text-xs text-amber-300 mt-0.5">Reported to: {String(r.reportedTo).toUpperCase()}</div>
+                    <div className="text-[10px] text-white/40">{r.reportedAt ? new Date(String(r.reportedAt)).toLocaleString() : ""}</div>
+                    {r.notes && <div className="text-[10px] text-white/30 mt-1">{String(r.notes)}</div>}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={loadModeration}
+                className="w-full text-xs text-white/40 hover:text-white py-2 border border-white/10 rounded-lg"
+              >
+                ↺ Refresh
+              </button>
             </div>
           </ScrollArea>
         ) : (
@@ -1000,6 +1139,16 @@ export default function Admin() {
                 })()}
               </div>
             </ScrollArea>
+          </div>
+        ) : activeView === "moderation" ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/30 max-w-xs">
+              <div className="text-4xl mb-3">🛡️</div>
+              <div className="text-sm mb-2">Moderation queue</div>
+              <div className="text-xs text-white/20">
+                Review flagged events and file CSAM reports to NCMEC or IWF from the left panel. Reports are logged permanently.
+              </div>
+            </div>
           </div>
         ) : activeView === "generate" ? (
           <div className="flex-1 flex items-center justify-center">

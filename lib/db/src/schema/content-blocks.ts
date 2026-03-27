@@ -8,4 +8,5 @@ export const contentBlocks = pgTable("content_blocks", {
   blockReason: text("block_reason").notNull(),
   inputHash: text("input_hash").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });

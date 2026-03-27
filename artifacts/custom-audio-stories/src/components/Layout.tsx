@@ -341,6 +341,12 @@ function Footer() {
     { label: "Gift a Story", href: "/gift" },
   ];
 
+  const legalLinks = [
+    { label: "Privacy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+    { label: "Content Policy", href: "/content-policy" },
+  ];
+
   return (
     <footer className="border-t border-border/40 bg-background/50 py-12 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
@@ -350,16 +356,27 @@ function Footer() {
         <p className="text-muted-foreground text-sm max-w-md mb-6">
           Stories written for the parts of you that nobody else gets to know.
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mb-6">
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mb-4">
           {footerLinks.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-primary transition-colors">
               {link.label}
             </Link>
           ))}
-          <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
-          <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
         </div>
-        <p className="text-xs text-muted-foreground/50">What you listen to here stays here. Always.</p>
+        <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground/60 mb-4">
+          {legalLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-primary transition-colors">
+              {link.label}
+            </Link>
+          ))}
+          <a
+            href="mailto:safety@theprivatestory.com"
+            className="hover:text-amber-400 transition-colors"
+          >
+            Report a safety concern
+          </a>
+        </div>
+        <p className="text-xs text-muted-foreground/40">What you listen to here stays here. Always. · Adults 18+ only.</p>
       </div>
     </footer>
   );

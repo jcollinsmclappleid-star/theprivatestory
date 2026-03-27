@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, Lock, Trash2, Database, Eye, UserX, Link as LinkIcon } from "lucide-react";
+import { Shield, Lock, Trash2, Database, Eye, UserX, Link as LinkIcon, Clock, FileText, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Privacy() {
@@ -18,7 +18,10 @@ export default function Privacy() {
           We built it so we can't share it,<br className="hidden md:block" /> even if we wanted to.
         </h1>
         <p className="text-muted-foreground text-lg leading-relaxed">
-          This isn't a legal document. It's a plain explanation of what we do and don't hold on to — because you have a right to know, and you deserve a straight answer.
+          This isn't just a legal document. It's a plain explanation of what we do and don't hold on to — because you have a right to know, and you deserve a straight answer.
+        </p>
+        <p className="text-muted-foreground text-sm mt-3">
+          For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is My Private Story Ltd (trading as The Private Story).
         </p>
       </div>
 
@@ -39,7 +42,7 @@ export default function Privacy() {
             {[
               {
                 title: "Your email address",
-                desc: "So you can sign in and access your library. We don't use it for marketing. We don't share it.",
+                desc: "So you can sign in and access your library. We don't use it for marketing. We don't share it. Legal basis: contract performance.",
               },
               {
                 title: "Your stories",
@@ -53,6 +56,32 @@ export default function Privacy() {
               <div key={item.title} className="glass-panel rounded-xl p-4">
                 <p className="font-semibold text-foreground text-sm mb-1">{item.title}</p>
                 <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Data retention */}
+        <section>
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Clock className="w-5 h-5 text-blue-400" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">How long we keep data</h2>
+              <p className="text-muted-foreground text-sm">Specific retention periods for every category of data.</p>
+            </div>
+          </div>
+          <div className="pl-14 space-y-2">
+            {[
+              { category: "Account and story data", period: "Deleted immediately on account deletion (see below)" },
+              { category: "Safety event logs (blocked requests)", period: "90 days, then automatically deleted — unless legally preserved" },
+              { category: "Payment records", period: "7 years, as required by UK financial regulations" },
+              { category: "Safety reports and preserved evidence", period: "Retained indefinitely for legal compliance — see Content Policy" },
+            ].map(({ category, period }) => (
+              <div key={category} className="glass-panel rounded-xl p-4">
+                <p className="font-semibold text-foreground text-sm mb-1">{category}</p>
+                <p className="text-muted-foreground text-sm">{period}</p>
               </div>
             ))}
           </div>
@@ -84,6 +113,69 @@ export default function Privacy() {
                 <p className="text-muted-foreground text-sm leading-relaxed">{item}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Your rights (GDPR) */}
+        <section>
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <FileText className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Your rights under UK GDPR</h2>
+              <p className="text-muted-foreground text-sm">These are your legal rights. We take them seriously.</p>
+            </div>
+          </div>
+          <div className="pl-14 space-y-3">
+            {[
+              {
+                right: "Right of access",
+                desc: "You can request a copy of all personal data we hold about you. Email us at hello@theprivatestory.com and we'll respond within 30 days.",
+              },
+              {
+                right: "Right to erasure (Article 17)",
+                desc: "You can delete your account at any time. When you do, we permanently and irreversibly delete your stories, email address, and profile. Safety event logs are retained for 90 days per our legal obligations, then deleted. Preserved safety evidence (if applicable) cannot be deleted.",
+              },
+              {
+                right: "Right to data portability",
+                desc: "You can request your data in a machine-readable format. Email us at hello@theprivatestory.com.",
+              },
+              {
+                right: "Right to rectification",
+                desc: "You can update your email address from your account settings. Other information can be corrected by contacting us.",
+              },
+              {
+                right: "Right to object",
+                desc: "You can object to processing where we rely on legitimate interests as the legal basis. Email us to discuss.",
+              },
+              {
+                right: "Right to lodge a complaint",
+                desc: "If you're not satisfied with our response, you have the right to lodge a complaint with the Information Commissioner's Office (ICO) at ico.org.uk.",
+              },
+            ].map(({ right, desc }) => (
+              <div key={right} className="glass-panel rounded-xl p-4">
+                <p className="font-semibold text-foreground text-sm mb-1">{right}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Safety note */}
+        <section>
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Safety exceptions to deletion</h2>
+            </div>
+          </div>
+          <div className="pl-14">
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Where our automated systems detect or we receive a report of content that may constitute child sexual abuse material (CSAM) or other serious illegal content, we are legally required to preserve relevant metadata and report to the NCMEC CyberTipline (US) and/or Internet Watch Foundation (UK). This data is retained for law enforcement purposes and <strong className="text-foreground/70">cannot be deleted by account deletion request</strong>. This is a legal requirement under US 18 USC 2258A and equivalent UK law.
+            </p>
           </div>
         </section>
 
@@ -165,10 +257,30 @@ export default function Privacy() {
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              You can delete your account and everything associated with it at any time. When you do, we permanently remove your stories, your progress, and your email from our systems.
+              You can delete your account and everything associated with it at any time. When you do, we permanently remove your stories, your progress, and your email from our systems within 30 days.
+            </p>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+              Deletion is not hidden behind a form or a support ticket. It is a single action, and it is irreversible.
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Deletion is not hidden behind a form or a support ticket. It is a single action, and it is irreversible.
+              To request deletion of your data if you cannot access your account, email <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a> from the email associated with your account.
+            </p>
+          </div>
+        </section>
+
+        {/* Breach notification */}
+        <section>
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Data breach notification</h2>
+            </div>
+          </div>
+          <div className="pl-14">
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              In the event of a personal data breach that is likely to result in a risk to your rights and freedoms, we will notify the ICO within 72 hours of becoming aware of the breach, as required by UK GDPR Article 33. Where the breach is likely to result in a high risk to you, we will also notify you directly without undue delay.
             </p>
           </div>
         </section>
@@ -183,14 +295,16 @@ export default function Privacy() {
             Privacy isn't a policy we wrote to cover ourselves. It's a design decision we made at the start. We deliberately chose not to build social features, public profiles, or listening histories because we believe what you listen to privately should stay that way.
           </p>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md mx-auto">
-            If you have a question about anything on this page, email us at <span className="text-primary">hello@theprivatestory.com</span>.
+            Questions about this policy: <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a>
+            <br />
+            Safety concerns: <a href="mailto:safety@theprivatestory.com" className="text-amber-400 hover:underline">safety@theprivatestory.com</a>
           </p>
         </section>
 
-        <div className="text-center pt-4">
-          <Link href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            ← Back to home
-          </Link>
+        <div className="text-center pt-4 flex gap-6 justify-center flex-wrap">
+          <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
+          <Link href="/content-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Content Policy</Link>
+          <Link href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">← Back to home</Link>
         </div>
 
       </div>

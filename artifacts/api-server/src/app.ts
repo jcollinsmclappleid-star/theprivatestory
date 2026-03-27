@@ -10,6 +10,8 @@ import { auth } from "./lib/auth.js";
 import router from "./routes/index.js";
 import { logger } from "./lib/logger.js";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
+import { db, contentBlocks } from "@workspace/db";
+import { lt, isNull, and } from "drizzle-orm";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -83,5 +85,41 @@ app.use("/api/continue-story", generationLimiter);
 app.use("/api/rewrite-story", generationLimiter);
 
 app.use("/api", router);
+
+// ---------------------------------------------------------------------------
+// Scheduled jobs
+// ---------------------------------------------------------------------------
+
+/**
+ * Content-block retention job: soft-deletes records older than 90 days.
+ * Runs once on startup (to catch any backlog) then every 24 hours.
+ * Records with deletedAt already set are skipped (idempotent).
+ * CSAM-reported events are NOT deleted regardless of age (they may carry a
+ * legal hold — the CSAM reports table references them by contentBlockId).
+ */
+async function runRetentionCleanup(): Promise<void> {
+  const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+  try {
+    const result = await db
+      .update(contentBlocks)
+      .set({ deletedAt: new Date() })
+      .where(
+        and(
+          lt(contentBlocks.createdAt, cutoff),
+          isNull(contentBlocks.deletedAt),
+        ),
+      )
+      .returning({ id: contentBlocks.id });
+    if (result.length > 0) {
+      logger.info({ count: result.length, cutoff }, "[retention] Soft-deleted old content_blocks records");
+    }
+  } catch (err) {
+    logger.error({ err }, "[retention] Content-block retention job failed");
+  }
+}
+
+// Run on startup (catches backlog) then every 24 hours
+runRetentionCleanup();
+setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000);
 
 export default app;

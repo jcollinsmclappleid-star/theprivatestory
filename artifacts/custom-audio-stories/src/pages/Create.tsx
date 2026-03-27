@@ -1584,7 +1584,7 @@ export default function Create() {
                         disabled={formPresetSaving}
                         className="text-xs text-muted-foreground hover:text-foreground transition-colors px-1 py-1 disabled:opacity-50"
                       >
-                        {formPresetSaving ? "Saving…" : "Update"}
+                        {formPresetSaving ? "Saving…" : "Update my usual"}
                       </button>
                     )}
                   </div>

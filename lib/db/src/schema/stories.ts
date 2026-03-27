@@ -106,7 +106,9 @@ export const userPresets = pgTable("user_presets", {
   name: text("name").notNull().default(""),
   castingData: jsonb("casting_data").notNull().default({}),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => ({
+  userNameUnique: unique("user_presets_user_name_unique").on(t.userId, t.name),
+}));
 
 export const userReactionHistory = pgTable("user_reaction_history", {
   id: serial("id").primaryKey(),

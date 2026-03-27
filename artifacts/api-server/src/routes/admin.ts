@@ -1363,12 +1363,12 @@ router.get("/reports", async (req, res) => {
   }
 });
 
-/** Returns recent flagged content events (content_blocks) for admin review. */
-router.get("/moderation/flagged", async (req, res) => {
-  if (!isAdmin(req)) {
-    res.status(403).json({ error: "Forbidden" });
-    return;
-  }
+// ---------------------------------------------------------------------------
+// Shared moderation handler functions (used by both canonical + alias routes)
+// ---------------------------------------------------------------------------
+
+async function handleGetFlaggedContent(req: any, res: any) {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
   try {
     const rows = await db
       .select()
@@ -1377,10 +1377,37 @@ router.get("/moderation/flagged", async (req, res) => {
       .orderBy(desc(contentBlocks.createdAt))
       .limit(200);
     res.json(rows);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch flagged content" });
   }
-});
+}
+
+async function handlePostCsamReport(req: any, res: any) {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { contentBlockId, reportedTo, notes } = req.body as {
+    contentBlockId: string;
+    reportedTo: "ncmec" | "iwf" | "other";
+    notes?: string;
+  };
+  if (!contentBlockId || !reportedTo) {
+    res.status(400).json({ error: "contentBlockId and reportedTo are required" });
+    return;
+  }
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+  const adminUserId = adminUser?.id ?? adminUser?.email ?? "unknown";
+  try {
+    const [inserted] = await db
+      .insert(csamReports)
+      .values({ contentBlockId: String(contentBlockId), reportedTo, adminUserId, notes: notes ?? null })
+      .returning();
+    res.json({ ok: true, report: inserted });
+  } catch {
+    res.status(500).json({ error: "Failed to create CSAM report" });
+  }
+}
+
+/** Returns recent flagged content events (content_blocks) for admin review. */
+router.get("/moderation/flagged", handleGetFlaggedContent);
 
 /** Returns CSAM reports that have been filed. */
 router.get("/moderation/csam-reports", async (req, res) => {
@@ -1402,59 +1429,12 @@ router.get("/moderation/csam-reports", async (req, res) => {
 
 /** Creates a CSAM report entry — records that an admin has manually reported
  *  a flagged content event to NCMEC or IWF. */
-router.post("/moderation/csam-report", async (req, res) => {
-  if (!isAdmin(req)) {
-    res.status(403).json({ error: "Forbidden" });
-    return;
-  }
-  const { contentBlockId, reportedTo, notes } = req.body as {
-    contentBlockId: string;
-    reportedTo: "ncmec" | "iwf" | "other";
-    notes?: string;
-  };
-  if (!contentBlockId || !reportedTo) {
-    res.status(400).json({ error: "contentBlockId and reportedTo are required" });
-    return;
-  }
-  const adminUser = req.user as { id?: string; email?: string } | undefined;
-  const adminUserId = adminUser?.id ?? adminUser?.email ?? "unknown";
-  try {
-    const [inserted] = await db
-      .insert(csamReports)
-      .values({
-        contentBlockId: String(contentBlockId),
-        reportedTo,
-        adminUserId,
-        notes: notes ?? null,
-      })
-      .returning();
-    res.json({ ok: true, report: inserted });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to create CSAM report" });
-  }
-});
+router.post("/moderation/csam-report", handlePostCsamReport);
 
 // ---------------------------------------------------------------------------
-// Route aliases (canonical names from task spec)
+// Route aliases — shared handlers with canonical /moderation/* routes above
 // ---------------------------------------------------------------------------
-router.get("/flagged-content", async (req, res) => {
-  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
-  try {
-    const rows = await db.select().from(contentBlocks).where(isNull(contentBlocks.deletedAt)).orderBy(desc(contentBlocks.createdAt)).limit(200);
-    res.json(rows);
-  } catch { res.status(500).json({ error: "Failed to fetch flagged content" }); }
-});
-
-router.post("/csam-report", async (req, res) => {
-  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
-  const { contentBlockId, reportedTo, notes } = req.body as { contentBlockId: string; reportedTo: "ncmec" | "iwf" | "other"; notes?: string };
-  if (!contentBlockId || !reportedTo) { res.status(400).json({ error: "contentBlockId and reportedTo are required" }); return; }
-  const adminUser = req.user as { id?: string; email?: string } | undefined;
-  const adminUserId = adminUser?.id ?? adminUser?.email ?? "unknown";
-  try {
-    const [inserted] = await db.insert(csamReports).values({ contentBlockId: String(contentBlockId), reportedTo, adminUserId, notes: notes ?? null }).returning();
-    res.json({ ok: true, report: inserted });
-  } catch { res.status(500).json({ error: "Failed to create CSAM report" }); }
-});
+router.get("/flagged-content", handleGetFlaggedContent);
+router.post("/csam-report", handlePostCsamReport);
 
 export default router;

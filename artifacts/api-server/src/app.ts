@@ -91,11 +91,17 @@ app.use("/api", router);
 // ---------------------------------------------------------------------------
 
 /**
- * Content-block retention job: soft-deletes records older than 90 days.
- * Runs once on startup (to catch any backlog) then every 24 hours.
- * Records with deletedAt already set are skipped (idempotent).
- * CSAM-reported events are NOT deleted regardless of age (they may carry a
- * legal hold — the CSAM reports table references them by contentBlockId).
+ * Content-block retention job: soft-deletes auto-blocked safety-event records
+ * older than 90 days. Runs once on startup then every 24 hours.
+ *
+ * Records are NEVER deleted if:
+ *  - deletedAt is already set (idempotent)
+ *  - blockSource is 'user-report' — user-submitted reports must be explicitly
+ *    dispositioned by an admin before they can be removed
+ *  - The record is referenced by a csam_reports entry (legal hold)
+ *
+ * This ensures unresolved safety incidents remain in the admin moderation queue
+ * regardless of age, and are only removed after review/disposition.
  */
 async function runRetentionCleanup(): Promise<void> {
   const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
@@ -107,7 +113,9 @@ async function runRetentionCleanup(): Promise<void> {
         and(
           lt(contentBlocks.createdAt, cutoff),
           isNull(contentBlocks.deletedAt),
-          // Exclude records referenced by a CSAM report (legal hold — must not be deleted)
+          // Never delete user-submitted reports — must be explicitly dispositioned
+          sql`${contentBlocks.blockSource} != 'user-report'`,
+          // Never delete records with a CSAM legal hold
           notExists(
             db
               .select({ one: csamReports.id })

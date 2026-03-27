@@ -20,20 +20,26 @@ export function ReportModal({ storyId, onClose }: ReportModalProps) {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = useCallback(async () => {
     if (!category || submitting) return;
     setSubmitting(true);
+    setError(false);
     try {
-      await fetch(`${API_BASE}/api/reports`, {
+      const res = await fetch(`${API_BASE}/api/reports`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ category, notes: notes.trim() || undefined, storyId }),
       });
-      setDone(true);
+      if (res.ok) {
+        setDone(true);
+      } else {
+        setError(true);
+      }
     } catch {
-      setDone(true);
+      setError(true);
     } finally {
       setSubmitting(false);
     }
@@ -102,6 +108,12 @@ export function ReportModal({ storyId, onClose }: ReportModalProps) {
               onChange={(e) => setNotes(e.target.value)}
               maxLength={500}
             />
+            {error && (
+              <p className="text-xs text-destructive mb-2 text-center">
+                Submission failed. Please try again or email{" "}
+                <a href="mailto:safety@theprivatestory.com" className="underline">safety@theprivatestory.com</a>.
+              </p>
+            )}
             <button
               onClick={handleSubmit}
               disabled={!category || submitting}

@@ -54,6 +54,15 @@ const globalLimiter = rateLimit({
   skip: (req) => req.path.startsWith("/api/auth"),
 });
 
+/** Report limiter — 10 submissions per hour per IP (abuse prevention) */
+const reportLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many reports submitted. Please contact safety@theprivatestory.com directly." },
+});
+
 /** Auth limiter — 5 attempts per 15 min per IP (login brute-force protection) */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -88,6 +97,8 @@ app.use(globalLimiter);
 const publicDir = path.resolve(__dirname, "../public");
 app.use("/api/images", express.static(path.join(publicDir, "images")));
 app.use("/api/audio", express.static(path.join(publicDir, "audio")));
+
+app.use("/api/reports", reportLimiter);
 
 app.use("/api/plan-story", generationLimiter);
 app.use("/api/generate-story", generationLimiter);

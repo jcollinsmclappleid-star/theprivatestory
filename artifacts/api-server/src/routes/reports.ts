@@ -53,7 +53,7 @@ router.post("/reports", async (req, res) => {
         storyId: storyId ?? null,
         generationSessionId: generationSessionId ?? null,
         category,
-        notes: notes?.trim().slice(0, 2000) ?? null,
+        notes: notes?.trim().slice(0, 500) ?? null,
         ipAddress: ip,
       })
       .returning({ id: userReports.id });

@@ -5,16 +5,7 @@ import { Play, Pause, FastForward, Rewind, Heart, Flag } from "lucide-react";
 import { useStoryFallback } from "@/hooks/use-api-fallbacks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { Slider } from "@/components/ui/slider";
-
-const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
-
-const REPORT_CATEGORIES = [
-  { value: "csam", label: "This content involves a minor" },
-  { value: "non-consent", label: "This content is non-consensual" },
-  { value: "real-person", label: "This content involves a real person without consent" },
-  { value: "harassment", label: "This content is illegal or harmful" },
-  { value: "other", label: "Other safety concern" },
-];
+import { ReportModal } from "@/components/ReportModal";
 
 export default function StoryDetail() {
   const { id } = useParams();
@@ -23,10 +14,6 @@ export default function StoryDetail() {
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
-  const [reportCategory, setReportCategory] = useState("");
-  const [reportDescription, setReportDescription] = useState("");
-  const [reportSubmitting, setReportSubmitting] = useState(false);
-  const [reportDone, setReportDone] = useState(false);
 
   // Auto-play on mount if it's a new story
   useEffect(() => {
@@ -34,27 +21,6 @@ export default function StoryDetail() {
       setTimeout(() => play(story), 500);
     }
   }, [story, currentStory?.id, play]);
-
-  const handleSubmitReport = useCallback(async () => {
-    if (!reportCategory || reportSubmitting) return;
-    setReportSubmitting(true);
-    try {
-      await fetch(`${API_BASE}/api/safety-report`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          category: reportCategory,
-          description: `Story ID: ${id ?? "unknown"}. ${reportDescription}`,
-        }),
-      });
-      setReportDone(true);
-    } catch {
-      setReportDone(true);
-    } finally {
-      setReportSubmitting(false);
-    }
-  }, [reportCategory, reportDescription, reportSubmitting, id]);
 
   const handleSave = useCallback(async () => {
     if (!story || savePending) return;
@@ -197,7 +163,7 @@ export default function StoryDetail() {
               <Heart className={`w-6 h-6 ${saved ? 'fill-current' : ''}`} />
             </button>
             <button
-              onClick={() => { setReportOpen(true); setReportDone(false); setReportCategory(""); setReportDescription(""); }}
+              onClick={() => setReportOpen(true)}
               className="p-3 rounded-full text-muted-foreground/50 hover:text-muted-foreground transition-colors"
               title="Report this content"
             >
@@ -262,81 +228,9 @@ export default function StoryDetail() {
       {/* ------------------------------------------------------------------ */}
       {/* Report content modal */}
       {/* ------------------------------------------------------------------ */}
-      <AnimatePresence>
-        {reportOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center p-6"
-            onClick={() => setReportOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-background border border-border rounded-2xl p-6 w-full max-w-md"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {reportDone ? (
-                <div className="text-center py-4">
-                  <div className="text-2xl mb-3">✓</div>
-                  <h3 className="font-display font-bold text-lg text-foreground mb-2">Report Received</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Thank you. Our safety team will review this within 24 hours. Reports are anonymous.
-                  </p>
-                  <button
-                    onClick={() => setReportOpen(false)}
-                    className="mt-5 px-6 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium"
-                  >
-                    Close
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-display font-bold text-lg text-foreground">Report Content</h3>
-                    <button onClick={() => setReportOpen(false)} className="text-muted-foreground hover:text-foreground text-sm">✕</button>
-                  </div>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    Select a reason and we'll review this immediately. Reports are anonymous.
-                  </p>
-                  <div className="space-y-2 mb-5">
-                    {REPORT_CATEGORIES.map((cat) => (
-                      <label key={cat.value} className="flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-transparent hover:border-primary/30 hover:bg-primary/5 transition-colors">
-                        <input
-                          type="radio"
-                          name="report-category"
-                          value={cat.value}
-                          checked={reportCategory === cat.value}
-                          onChange={() => setReportCategory(cat.value)}
-                          className="mt-0.5 accent-primary"
-                        />
-                        <span className="text-sm text-foreground">{cat.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <textarea
-                    placeholder="Additional details (optional)"
-                    value={reportDescription}
-                    onChange={(e) => setReportDescription(e.target.value)}
-                    maxLength={500}
-                    rows={3}
-                    className="w-full bg-muted/50 border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground resize-none mb-4 focus:outline-none focus:border-primary/50"
-                  />
-                  <button
-                    onClick={handleSubmitReport}
-                    disabled={!reportCategory || reportSubmitting}
-                    className="w-full py-3 bg-destructive text-destructive-foreground rounded-full text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
-                  >
-                    {reportSubmitting ? "Submitting…" : "Submit Report"}
-                  </button>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {reportOpen && (
+        <ReportModal storyId={id} onClose={() => setReportOpen(false)} />
+      )}
     </motion.div>
   );
 }

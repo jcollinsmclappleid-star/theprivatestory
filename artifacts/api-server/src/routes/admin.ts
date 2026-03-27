@@ -7,7 +7,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
-import { generatedStories, contentBlocks, csamReports } from "@workspace/db/schema";
+import { generatedStories, contentBlocks, csamReports, userReports } from "@workspace/db/schema";
 import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getArcStage, FIVE_EPISODE_EROTIC_ARC } from "../lib/seriesArc.js";
@@ -1340,13 +1340,12 @@ router.post("/chat", async (req, res) => {
 // CSAM / Content Moderation Routes
 // ---------------------------------------------------------------------------
 
-/** Returns user-submitted safety reports from content_blocks (blockSource = "user-report"). */
+/** Returns user-submitted safety reports from the dedicated user_reports table. */
 async function getUserReports() {
   return db
     .select()
-    .from(contentBlocks)
-    .where(eq(contentBlocks.blockSource, "user-report"))
-    .orderBy(desc(contentBlocks.createdAt))
+    .from(userReports)
+    .orderBy(desc(userReports.createdAt))
     .limit(200);
 }
 

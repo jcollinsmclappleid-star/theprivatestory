@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
+const ReportModal = lazy(() => import("./ReportModal").then((m) => ({ default: m.ReportModal })));
 import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
@@ -332,14 +333,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
 }
 
 function Footer() {
-  const [safetyEmail, setSafetyEmail] = useState("safety@theprivatestory.com");
-
-  useEffect(() => {
-    fetch("/api/safety-report/categories")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.contactEmail) setSafetyEmail(data.contactEmail); })
-      .catch(() => {});
-  }, []);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const footerLinks = [
     { label: "Home", href: "/" },
@@ -378,15 +372,20 @@ function Footer() {
               {link.label}
             </Link>
           ))}
-          <a
-            href={`mailto:${safetyEmail}`}
+          <button
+            onClick={() => setReportOpen(true)}
             className="hover:text-amber-400 transition-colors"
           >
-            Report a safety concern
-          </a>
+            Report a concern
+          </button>
         </div>
         <p className="text-xs text-muted-foreground/40">What you listen to here stays here. Always. · Adults 18+ only.</p>
       </div>
+      {reportOpen && (
+        <Suspense fallback={null}>
+          <ReportModal onClose={() => setReportOpen(false)} />
+        </Suspense>
+      )}
     </footer>
   );
 }

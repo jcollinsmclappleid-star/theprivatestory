@@ -251,7 +251,7 @@ const INJECTION_PATTERNS: RegExp[] = [
   /\bthere\s+are\s+no\s+(rules?|restrictions?|filters?|limits?|guidelines?|constraints?|safety)\s*(here|now|anymore|in\s+this|at\s+all)\b/i,
 
   // --- New: "pretend you have no [safety thing]" (extends existing pretend pattern) ---
-  /\bpretend\b.{0,40}\bno\s+(rules?|restrictions?|filters?|limits?|safety|guidelines?|content\s+polic)\b/i,
+  /\bpretend\b.{0,40}\bno\s+(rules?|restrictions?|filters?|limits?|safety|guidelines?|content\s+polic(?:y|ies)?)\b/i,
 
   // --- New: emotional manipulation / "true self" bypass ---
   // "your true self has no restrictions", "your real self can do anything"
@@ -265,9 +265,9 @@ const INJECTION_PATTERNS: RegExp[] = [
   /\bas\s+\w[\w\s]{0,20}\s*:\s*\byou\b.{0,30}\b(must|will|shall|can|may)\b.{0,40}\b(do|say|write|create|generate|ignore|bypass|forget)\b/i,
 
   // --- New: base64 / token-stuffing detection ---
-  // A 40+ character run of base64 alphabet characters with no spaces is a strong
-  // indicator of an encoding attack or token-stuffing attempt.
-  /[A-Za-z0-9+/]{40,}/,
+  // A 30+ character run of base64 alphabet characters (including padding =) with no spaces
+  // is a strong indicator of an encoding attack or token-stuffing attempt.
+  /[A-Za-z0-9+/=]{30,}/,
 ];
 
 // ---------------------------------------------------------------------------

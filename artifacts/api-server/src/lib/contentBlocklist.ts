@@ -226,7 +226,7 @@ const HARD_BLOCK_PATTERNS: RegExp[] = [
   /\b(csam|cp\b)\b/i,
 
   // Exploitation and abuse descriptors.
-  /\b(grooming|groom)\b/i,
+  /\b(grooming)\b/i,
   /\b(molest|molestation|molesting)\b/i,
   /\b(trafficking|sex.?trafficking)\b/i,
 
@@ -359,9 +359,8 @@ export function isInjectionAttempt(text: string): { blocked: boolean; reason: st
  * Returns an error string if invalid, or null if the name is acceptable.
  */
 export function validateNameFormat(name: string): string | null {
-  if (!name || name.trim() === "") return null;
-  const trimmed = name.trim();
-  if (!/^[\p{L}]+$/u.test(trimmed)) {
+  if (!name || name === "") return null;
+  if (!/^[\p{L}]+$/u.test(name)) {
     return "Names must be a single word with letters only — no spaces, numbers, or special characters.";
   }
   return null;

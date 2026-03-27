@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Sparkles, ArrowLeft } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft } from "lucide-react";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { NamePicker } from "./NamePicker";
 
@@ -226,34 +226,96 @@ function buildArchetypes(pairingId: string | undefined) {
   ];
 }
 
-/* ── Settings ─────────────────────────────────────────────────────── */
-const CONTEMPORARY_SETTINGS = [
-  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
-  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
-  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
-  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
-  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
-  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc" },
-  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8" },
-  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8" },
-  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0" },
-  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8" },
-  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d" },
-  { id: "Train Journey",            label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c" },
-  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef" },
+/* ── Settings — grouped for dropdown ─────────────────────────────── */
+interface SettingGroup { label: string; options: string[] }
+
+const SETTING_GROUPS: SettingGroup[] = [
+  {
+    label: "Contemporary Cities",
+    options: [
+      "Paris — Midnight Rooftop",
+      "New York — Penthouse",
+      "London — Mayfair After Hours",
+      "Milan — Fashion Week Suite",
+      "Monaco — Casino Terrace",
+      "Tokyo — Neon District, Midnight",
+      "Dubai — Desert Resort",
+      "Rome — Ancient Villa",
+      "Barcelona — Rooftop, Late Night",
+      "Istanbul — Bosphorus Suite",
+      "Ibiza — Villa After-Party",
+      "Marrakech — Riad, Midnight",
+      "The Maldives — Overwater Villa",
+      "St. Tropez — Mega-Yacht",
+      "Vienna — Grand Hotel, Winter",
+      "Edinburgh — Private Estate",
+      "Santorini — Cliff-Top Villa",
+      "Buenos Aires — Penthouse, Summer",
+    ],
+  },
+  {
+    label: "Private Venues",
+    options: [
+      "Late Night City",
+      "Luxury Hotel",
+      "European Villa",
+      "Private Yacht",
+      "Mountain Retreat",
+      "Penthouse Suite",
+      "Art Gallery After Hours",
+      "Office After Hours",
+      "Rooftop Bar",
+      "Beach House",
+      "Private Members Club",
+      "Orient Express Style",
+      "Concert Backstage",
+      "Private Estate, Countryside",
+      "Casino, High-Stakes Room",
+      "Ski Chalet, Snowstorm",
+    ],
+  },
+  {
+    label: "Historical Eras",
+    options: [
+      "Regency England (1810s)",
+      "Victorian London (1880s)",
+      "Belle Époque Paris (1900s)",
+      "Roaring Twenties (1920s)",
+      "Wartime (1940s)",
+      "Swinging Sixties (1960s)",
+      "Disco & Velvet (1970s)",
+      "Neon Decade (1980s)",
+      "Ancient Mediterranean",
+      "Renaissance Italy",
+      "Feudal Japan",
+      "Georgian Scotland",
+    ],
+  },
 ];
 
-const HISTORICAL_SETTINGS = [
-  { id: "Regency England (1810s)",    label: "Regency England",     sub: "1810s — letters never sent, country house urgency",     gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d" },
-  { id: "Victorian London (1880s)",   label: "Victorian London",    sub: "1880s — fog, corsets, what's unspeakable and felt",     gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af" },
-  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",  sub: "1900s — absinthe, salons, decadent evenings",          gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b" },
-  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",    sub: "1920s — speakeasies, jazz, smoke and consequence",     gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6" },
-  { id: "Wartime (1940s)",            label: "Wartime",             sub: "1940s — last night together, everything at stake",     gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac" },
-  { id: "Swinging Sixties (1960s)",   label: "Swinging Sixties",    sub: "1960s — revolution, hotel rooms, free desire",         gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
-  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",      sub: "1970s — heat, mirror balls, all night long",           gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0" },
-  { id: "Neon Decade (1980s)",        label: "Neon Decade",         sub: "1980s — excess, power, after hours at the top",       gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
-  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean", sub: "Marble, olives, conquest, and the gods watching",    gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24" },
-];
+const AFTER_DARK_SETTING_GROUP: SettingGroup = {
+  label: "After Dark Exclusive",
+  options: [
+    "Private Club — invitation only, no cameras",
+    "VIP Suite — no names, no histories",
+    "The Back Room — velvet curtains, low light",
+    "Abandoned Gallery — just the two of them",
+    "Moving Elevator — thirty floors of anticipation",
+    "Private Cinema — the film isn't the point",
+    "Hotel Balcony — floor above the party",
+    "Dressing Room — after the show ends",
+    "Locked Room in a House Full of People",
+    "Rooftop, 3am — city below, no witnesses",
+    "First-Class Cabin — overnight, no names",
+    "Private Hot Spring — somewhere secluded",
+    "The Glass House — floor-to-ceiling windows, no curtains",
+    "Yacht Cabin — open water, no escape",
+    "Members Lounge — after everyone else leaves",
+    "Penthouse Pool — midnight, no neighbours",
+    "Private Screening Room — just the two of them",
+    "Spa Suite — late booking, no other guests",
+  ],
+};
 
 const ATMOSPHERES = [
   "Stormy", "Candlelit", "Midnight", "Golden Hour",
@@ -687,37 +749,31 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your world.</h2>
             <p className="text-muted-foreground text-sm mb-6">Where — and when — does this happen?</p>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {CONTEMPORARY_SETTINGS.map(s => (
-                <ArtTile
-                  key={s.id}
-                  gradient={s.gradient}
-                  accent={s.accent}
-                  selected={data.setting === s.id}
-                  onClick={() => update("setting", s.id)}
-                >
-                  <p className="font-semibold text-white text-sm">{s.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
-                </ArtTile>
-              ))}
+            {/* Location dropdown */}
+            <div className="relative mb-6">
+              <select
+                value={data.setting ?? ""}
+                onChange={e => update("setting", e.target.value)}
+                className="w-full bg-card/60 border border-border/40 rounded-xl px-4 py-4 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer pr-10"
+                style={{ colorScheme: "dark" }}
+              >
+                <option value="" disabled>Choose a location or era…</option>
+                {(afterDark ? [AFTER_DARK_SETTING_GROUP, ...SETTING_GROUPS] : SETTING_GROUPS).map(group => (
+                  <optgroup key={group.label} label={`── ${group.label}`}>
+                    {group.options.map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {HISTORICAL_SETTINGS.map(s => (
-                <ArtTile
-                  key={s.id}
-                  gradient={s.gradient}
-                  accent={s.accent}
-                  selected={data.setting === s.id}
-                  onClick={() => update("setting", s.id)}
-                >
-                  <p className="font-semibold text-white text-sm">{s.label}</p>
-                  <p className="text-white/50 text-xs mt-0.5 leading-snug">{s.sub}</p>
-                </ArtTile>
-              ))}
-            </div>
+            {data.setting && (
+              <p className="text-xs text-primary/70 mb-6 px-1">
+                ✓ {data.setting}
+              </p>
+            )}
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>

@@ -802,9 +802,8 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
-  const [phase, setPhase] = useState<"scenario" | "seed" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
+  const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [scenarioSeed, setScenarioSeed] = useState<string>("");
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
@@ -936,7 +935,7 @@ export default function AfterDark() {
       setPresetSaved(false);
 
       const scenarioContext = `${selectedScenario.label}: ${selectedScenario.sub}`;
-      const fullPrompt = [scenarioContext, scenarioSeed, casting.scenarioPrompt, casting.freeText]
+      const fullPrompt = [scenarioContext, casting.scenarioPrompt]
         .filter(Boolean)
         .join(". ");
       const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
@@ -1138,8 +1137,7 @@ export default function AfterDark() {
               <button
                 onClick={() => {
                   if (selectedScenario) {
-                    setScenarioSeed("");
-                    setPhase("seed");
+                    setPhase("casting");
                   }
                 }}
                 disabled={!selectedScenario}
@@ -1162,85 +1160,6 @@ export default function AfterDark() {
           </motion.div>
         )}
 
-        {/* ── Scenario Seed ─────────────────────────────────────────────── */}
-        {phase === "seed" && selectedScenario && (
-          <motion.div
-            key="seed"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="max-w-2xl mx-auto px-4 py-12"
-          >
-            <button
-              onClick={() => setPhase("scenario")}
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </button>
-
-            {/* Selected scenario summary */}
-            <div
-              className="relative overflow-hidden rounded-2xl p-5 mb-8 border"
-              style={{ border: "1px solid rgba(192,57,43,0.2)", background: "rgba(192,57,43,0.04)" }}
-            >
-              <div
-                className="absolute inset-0 rounded-2xl"
-                style={{
-                  background: `radial-gradient(ellipse at 70% 30%, ${selectedScenario.accent}15 0%, transparent 65%)`,
-                }}
-              />
-              <div className="relative z-10">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <p className="font-bold text-foreground text-lg">{selectedScenario.label}</p>
-                  <DarknessBadge level={selectedScenario.darkness} />
-                </div>
-                <p className="text-muted-foreground text-sm leading-relaxed">{selectedScenario.sub}</p>
-              </div>
-            </div>
-
-            {/* Seed prompt */}
-            <div className="mb-10">
-              <h2 className="font-display text-2xl font-bold text-foreground mb-2">
-                In one line — what are you imagining right now?
-              </h2>
-              <p className="text-muted-foreground text-sm mb-6">
-                Give the story a personal detail before it begins. Optional — skip if you'd rather let us decide.
-              </p>
-              <textarea
-                value={scenarioSeed}
-                onChange={(e) => setScenarioSeed(e.target.value.slice(0, 120))}
-                rows={3}
-                maxLength={120}
-                placeholder={`e.g. He's been watching me across the room for an hour and still hasn't moved…`}
-                className="w-full rounded-2xl bg-white/5 border border-white/10 text-sm text-foreground placeholder:text-muted-foreground/40 px-4 py-3 resize-none focus:outline-none focus:border-white/20 transition-colors leading-relaxed"
-              />
-              {scenarioSeed.length > 0 && (
-                <p className="text-xs text-muted-foreground/40 mt-1 text-right">{scenarioSeed.length}/120</p>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={() => setPhase("casting")}
-                className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 text-white transition-all hover:-translate-y-0.5"
-                style={{
-                  background: "linear-gradient(135deg, #c0392b, #7f1d1d)",
-                  boxShadow: "0 0 28px rgba(192,57,43,0.24)",
-                }}
-              >
-                <Sparkles className="w-5 h-5" />
-                {scenarioSeed.trim() ? "Set the Scene" : "Begin the Fantasy"}
-              </button>
-              <button
-                onClick={() => { setScenarioSeed(""); setPhase("casting"); }}
-                className="w-full py-3 rounded-2xl text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Skip this step →
-              </button>
-            </div>
-          </motion.div>
-        )}
 
         {/* ── Casting Room ──────────────────────────────────────────────── */}
         {phase === "casting" && (
@@ -1503,7 +1422,6 @@ export default function AfterDark() {
               onClick={() => {
                 setPhase("scenario");
                 setSelectedScenario(null);
-                setScenarioSeed("");
                 setResult(null);
               }}
               className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/50"

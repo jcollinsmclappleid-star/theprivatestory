@@ -13,6 +13,7 @@ import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterErot
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
+import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
 import { sql as drizzleSql } from "drizzle-orm";
@@ -957,6 +958,9 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     atmosphere: raw.atmosphere && VALID_ATMOSPHERES.includes(raw.atmosphere.trim()) ? raw.atmosphere.trim() : undefined,
     chemistry: sanitiseTextField(raw.chemistry, 120),
     partnerAppearance: sanitiseTextField(raw.partnerAppearance, 500),
+    experienceTags: Array.isArray(raw.experienceTags)
+      ? raw.experienceTags.filter((t): t is string => typeof t === "string" && VALID_EXPERIENCE_TAGS.has(t))
+      : undefined,
   };
 }
 

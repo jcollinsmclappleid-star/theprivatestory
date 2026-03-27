@@ -2,10 +2,14 @@ import { type Request, type Response, type NextFunction } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import type { AuthUser } from "@workspace/api-zod";
 import { auth } from "../lib/auth.js";
+import { db, usersTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
 declare global {
   namespace Express {
-    interface User extends AuthUser {}
+    interface User extends AuthUser {
+      isAdmin?: boolean;
+    }
 
     interface Request {
       isAuthenticated(): this is AuthedRequest;
@@ -34,6 +38,20 @@ export async function authMiddleware(
 
     if (session?.user?.id) {
       const u = session.user as Record<string, unknown>;
+
+      // Look up the user's isAdmin flag from the DB
+      let isAdmin = false;
+      try {
+        const [dbUser] = await db
+          .select({ isAdmin: usersTable.isAdmin })
+          .from(usersTable)
+          .where(eq(usersTable.id, session.user.id))
+          .limit(1);
+        isAdmin = dbUser?.isAdmin ?? false;
+      } catch {
+        // DB lookup failure — default to false
+      }
+
       req.user = {
         id: session.user.id,
         email: (session.user.email as string) ?? null,
@@ -41,6 +59,7 @@ export async function authMiddleware(
         lastName: (u.lastName as string) ?? null,
         profileImageUrl:
           (u.profileImageUrl as string) ?? (session.user.image as string) ?? null,
+        isAdmin,
       };
     }
   } catch {

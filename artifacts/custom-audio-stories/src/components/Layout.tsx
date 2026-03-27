@@ -332,6 +332,15 @@ function Navbar({ streakDays }: { streakDays: number }) {
 }
 
 function Footer() {
+  const [safetyEmail, setSafetyEmail] = useState("safety@theprivatestory.com");
+
+  useEffect(() => {
+    fetch("/api/safety-report/categories")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.contactEmail) setSafetyEmail(data.contactEmail); })
+      .catch(() => {});
+  }, []);
+
   const footerLinks = [
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
@@ -370,7 +379,7 @@ function Footer() {
             </Link>
           ))}
           <a
-            href="mailto:safety@theprivatestory.com"
+            href={`mailto:${safetyEmail}`}
             className="hover:text-amber-400 transition-colors"
           >
             Report a safety concern

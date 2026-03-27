@@ -81,6 +81,7 @@ export default function Admin() {
   const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "chat" | "moderation">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
+  const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
   const [moderationLoading, setModerationLoading] = useState(false);
   const [reportingId, setReportingId] = useState<string | null>(null);
   const [reportNotes, setReportNotes] = useState<Record<string, string>>({});
@@ -125,12 +126,14 @@ export default function Admin() {
   const loadModeration = useCallback(async () => {
     setModerationLoading(true);
     try {
-      const [flaggedRes, reportsRes] = await Promise.all([
+      const [flaggedRes, reportsRes, csamRes] = await Promise.all([
         fetch(`${API_BASE}/api/admin/moderation/flagged`, { credentials: "include" }),
+        fetch(`${API_BASE}/api/admin/reports`, { credentials: "include" }),
         fetch(`${API_BASE}/api/admin/moderation/csam-reports`, { credentials: "include" }),
       ]);
       if (flaggedRes.ok) setFlaggedItems(await flaggedRes.json());
-      if (reportsRes.ok) setCsamReports(await reportsRes.json());
+      if (reportsRes.ok) setUserReports(await reportsRes.json());
+      if (csamRes.ok) setCsamReports(await csamRes.json());
     } catch {
       // ignore fetch errors
     } finally {
@@ -829,7 +832,21 @@ export default function Admin() {
               </div>
 
               <div>
-                <div className="text-amber-300 text-xs font-semibold uppercase tracking-widest mb-2">Filed Reports</div>
+                <div className="text-blue-300 text-xs font-semibold uppercase tracking-widest mb-2">User-Submitted Reports</div>
+                {!moderationLoading && userReports.length === 0 && (
+                  <div className="text-white/30 text-xs text-center py-4">No user reports</div>
+                )}
+                {userReports.map((r) => (
+                  <div key={String(r.id)} className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-3 mb-2">
+                    <div className="text-[10px] text-white/40 font-mono mb-0.5">ID: {String(r.id)}</div>
+                    <div className="text-xs text-white/70 line-clamp-3">{String(r.blockReason ?? "")}</div>
+                    <div className="text-[10px] text-white/30 mt-1">{r.createdAt ? new Date(String(r.createdAt)).toLocaleString() : ""}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <div className="text-amber-300 text-xs font-semibold uppercase tracking-widest mb-2">Filed CSAM Reports</div>
                 {!moderationLoading && csamReports.length === 0 && (
                   <div className="text-white/30 text-xs text-center py-4">No reports filed</div>
                 )}

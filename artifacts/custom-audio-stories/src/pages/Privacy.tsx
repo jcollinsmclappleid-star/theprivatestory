@@ -76,7 +76,8 @@ export default function Privacy() {
             {[
               { category: "Account and story data", period: "Deleted immediately on account deletion (see below)" },
               { category: "Safety event logs (blocked requests)", period: "90 days, then automatically deleted — unless legally preserved" },
-              { category: "Payment records", period: "7 years, as required by UK financial regulations" },
+              { category: "Payment records", period: "7 years, as required by UK financial regulations (HMRC)" },
+              { category: "Age verification records", period: "7 years from the date of verification, as required by the Online Safety Act 2023" },
               { category: "Safety reports and preserved evidence", period: "Retained indefinitely for legal compliance — see Content Policy" },
             ].map(({ category, period }) => (
               <div key={category} className="glass-panel rounded-xl p-4">

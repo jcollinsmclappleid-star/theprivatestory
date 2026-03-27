@@ -20,7 +20,7 @@ function checkRateLimit(userId: string): boolean {
   return true;
 }
 
-// Minimal blocklist — common slurs and offensive terms that must not be added as character names.
+// Minimal blocklist — common offensive/slur terms that must not be added as character names.
 const BLOCKLIST = new Set([
   "fuck", "shit", "cunt", "nigger", "nigga", "faggot", "fag", "bitch",
   "whore", "slut", "retard", "spastic", "kike", "chink", "spic", "wetback",
@@ -31,8 +31,9 @@ function passesBlocklist(name: string): boolean {
   return !BLOCKLIST.has(name.toLowerCase());
 }
 
-// POST /api/names/submit — authenticated users only
-router.post("/api/names/submit", async (req, res) => {
+// POST /names/submit — authenticated users only
+// (mounted at /api by app, so full path is /api/names/submit)
+router.post("/names/submit", async (req, res) => {
   // TODO: tighten to active subscribers once payment model is defined
   const user = req.user as { id?: string } | undefined;
   if (!user?.id) {
@@ -57,14 +58,9 @@ router.post("/api/names/submit", async (req, res) => {
     return res.status(400).json({ error: "This name cannot be added." });
   }
 
-  if (!checkRateLimit(user.id)) {
-    return res.status(429).json({
-      error: "You can request up to 3 names per day. Please try again tomorrow.",
-    });
-  }
-
   try {
-    // Duplicate suppression: same user + same name (any status) — silently accept per spec
+    // Duplicate suppression: same user + same name (any status) — checked BEFORE rate limit
+    // so duplicate requests are always silently accepted regardless of quota
     const existing = await db
       .select({ id: nameSubmissions.id })
       .from(nameSubmissions)
@@ -80,6 +76,12 @@ router.post("/api/names/submit", async (req, res) => {
       return res.json({ ok: true, name: trimmed });
     }
 
+    if (!checkRateLimit(user.id)) {
+      return res.status(429).json({
+        error: "You can request up to 3 names per day. Please try again tomorrow.",
+      });
+    }
+
     await db.insert(nameSubmissions).values({
       name: trimmed,
       submittedByUserId: user.id,
@@ -93,8 +95,9 @@ router.post("/api/names/submit", async (req, res) => {
   }
 });
 
-// GET /api/admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
-router.get("/api/admin/name-submissions", async (req, res) => {
+// GET /admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
+// (mounted at /api by app, so full path is /api/admin/name-submissions)
+router.get("/admin/name-submissions", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
     return res.status(403).json({ error: "Forbidden" });
@@ -113,8 +116,8 @@ router.get("/api/admin/name-submissions", async (req, res) => {
   }
 });
 
-// POST /api/admin/name-submissions/:id/approve — admin only
-router.post("/api/admin/name-submissions/:id/approve", async (req, res) => {
+// POST /admin/name-submissions/:id/approve — admin only
+router.post("/admin/name-submissions/:id/approve", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
     return res.status(403).json({ error: "Forbidden" });
@@ -135,8 +138,8 @@ router.post("/api/admin/name-submissions/:id/approve", async (req, res) => {
   }
 });
 
-// POST /api/admin/name-submissions/:id/reject — admin only
-router.post("/api/admin/name-submissions/:id/reject", async (req, res) => {
+// POST /admin/name-submissions/:id/reject — admin only
+router.post("/admin/name-submissions/:id/reject", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
     return res.status(403).json({ error: "Forbidden" });
@@ -157,8 +160,8 @@ router.post("/api/admin/name-submissions/:id/reject", async (req, res) => {
   }
 });
 
-// PUT /api/admin/name-submissions/:id — approve or reject (single combined endpoint)
-router.put("/api/admin/name-submissions/:id", async (req, res) => {
+// PUT /admin/name-submissions/:id — approve or reject (single combined endpoint)
+router.put("/admin/name-submissions/:id", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
     return res.status(403).json({ error: "Forbidden" });

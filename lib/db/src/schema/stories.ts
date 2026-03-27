@@ -130,7 +130,7 @@ export const nameSubmissions = pgTable("name_submissions", {
   status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull().default("pending"),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   notes: text("notes"),
-  submittedAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export type GeneratedStoryRow = typeof generatedStories.$inferSelect;

@@ -327,44 +327,77 @@ const WORLD_REGIONS = [
   {
     heading: "UK & Ireland",
     places: [
-      "London", "Edinburgh", "Dublin", "Bath", "Oxford",
-      "The Scottish Highlands", "Cornwall", "The Cotswolds", "Brighton", "Liverpool",
+      "England", "Scotland", "Wales", "Ireland", "Northern Ireland",
+      "London", "Edinburgh", "Dublin", "Bath", "The Scottish Highlands",
+      "Cornwall", "The Cotswolds", "Oxford", "Cambridge",
     ],
   },
   {
-    heading: "Europe",
+    heading: "Western Europe",
     places: [
-      "Paris", "Rome", "Venice", "Florence", "Positano",
-      "Santorini", "Mykonos", "Barcelona", "Madrid", "Ibiza",
-      "Lisbon", "Porto", "Amsterdam", "Copenhagen", "Stockholm",
-      "Vienna", "Prague", "Budapest", "Dubrovnik", "Monaco",
-      "Nice", "Cannes", "Chamonix", "St. Moritz", "Lake Como",
-      "Capri", "Cinque Terre", "The Amalfi Coast", "Tuscany", "Sicily",
+      "France", "Italy", "Spain", "Portugal", "Greece",
+      "Monaco", "Switzerland", "Austria", "Belgium", "Netherlands",
+      "Luxembourg", "Andorra", "Malta", "Cyprus", "Iceland",
+      "Paris", "Rome", "Barcelona", "Lisbon", "Athens",
+      "Venice", "Florence", "Positano", "The Amalfi Coast", "Santorini",
+      "Mykonos", "Ibiza", "Tuscany", "Lake Como", "Capri",
+    ],
+  },
+  {
+    heading: "Northern & Eastern Europe",
+    places: [
+      "Sweden", "Norway", "Denmark", "Finland", "Germany",
+      "Poland", "Czech Republic", "Hungary", "Romania", "Croatia",
+      "Slovenia", "Slovakia", "Montenegro", "Albania", "Serbia",
+      "Dubrovnik", "Prague", "Budapest", "Vienna", "Copenhagen",
+      "Stockholm", "Reykjavik", "St. Moritz", "Chamonix", "Amsterdam",
     ],
   },
   {
     heading: "The Americas",
     places: [
+      "United States", "Canada", "Mexico", "Brazil", "Argentina",
+      "Colombia", "Chile", "Peru", "Cuba", "Jamaica",
+      "Dominican Republic", "Bahamas", "Barbados", "Trinidad & Tobago", "Costa Rica",
+      "Panama", "Ecuador", "Bolivia", "Uruguay", "Venezuela",
       "New York", "Los Angeles", "Miami", "New Orleans", "San Francisco",
-      "Chicago", "Las Vegas", "Havana", "Mexico City", "Tulum",
-      "Cancún", "Buenos Aires", "Rio de Janeiro", "São Paulo", "Cartagena",
-      "Bogotá", "Toronto", "Montreal", "Vancouver", "Montserrat",
+      "Las Vegas", "Chicago", "Havana", "Buenos Aires", "Rio de Janeiro",
+      "Tulum", "Cartagena",
+    ],
+  },
+  {
+    heading: "The Caribbean",
+    places: [
+      "St. Lucia", "Antigua", "St. Barths", "Turks & Caicos", "Aruba",
+      "Curaçao", "Cayman Islands", "Grenada", "Martinique", "Guadeloupe",
     ],
   },
   {
     heading: "Asia & Pacific",
     places: [
-      "Tokyo", "Kyoto", "Osaka", "Seoul", "Shanghai",
-      "Hong Kong", "Singapore", "Bangkok", "Chiang Mai", "Bali",
-      "Phuket", "Koh Samui", "Ho Chi Minh City", "Hanoi", "Maldives",
-      "Sydney", "Melbourne", "Auckland", "Queenstown", "Fiji",
+      "Japan", "South Korea", "China", "Thailand", "Vietnam",
+      "Indonesia", "Singapore", "Malaysia", "Philippines", "India",
+      "Sri Lanka", "Nepal", "Myanmar", "Cambodia", "Laos",
+      "Australia", "New Zealand", "Fiji", "Maldives", "Papua New Guinea",
+      "Hong Kong", "Taiwan",
+      "Tokyo", "Kyoto", "Bali", "Bangkok", "Singapore City",
     ],
   },
   {
-    heading: "Middle East & Africa",
+    heading: "Middle East",
     places: [
-      "Dubai", "Abu Dhabi", "Marrakech", "Casablanca", "Cairo",
-      "Cape Town", "Nairobi", "Zanzibar", "Seychelles", "Mauritius",
+      "United Arab Emirates", "Saudi Arabia", "Jordan", "Lebanon", "Israel",
+      "Turkey", "Qatar", "Kuwait", "Bahrain", "Oman",
+      "Dubai", "Abu Dhabi", "Istanbul", "Beirut", "Amman",
+    ],
+  },
+  {
+    heading: "Africa",
+    places: [
+      "Morocco", "Tunisia", "Egypt", "South Africa", "Kenya",
+      "Tanzania", "Ghana", "Nigeria", "Ethiopia", "Rwanda",
+      "Seychelles", "Mauritius", "Zanzibar", "Botswana", "Senegal",
+      "Marrakech", "Cape Town", "Nairobi",
     ],
   },
   {
@@ -386,7 +419,7 @@ const WORLD_REGIONS = [
   },
 ];
 
-const TIME_OF_DAY_OPTIONS = ["Dawn", "Morning", "Afternoon", "Dusk", "Evening", "Late night", "The small hours"];
+const TIME_OF_DAY_OPTIONS = ["Dawn", "Morning", "Afternoon", "Evening", "Midnight"];
 const SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter"];
 
 const LOADING_PHASES = [
@@ -1096,15 +1129,31 @@ export default function Create() {
     : 0;
   const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] ?? result?.images?.cover ?? "";
 
-  const previewParts = [
-    STORY_PATHS.find(p => p.id === selectedMode)?.label,
-    watchedIntensity,
-    watchedWhoIsHe || undefined,
-    watchedDynamic || undefined,
-    watchedSetting || undefined,
-    timeOfDay || undefined,
-    season || undefined,
-  ].filter(Boolean) as string[];
+  const buildPreviewSentence = (): string => {
+    const path = STORY_PATHS.find(p => p.id === selectedMode);
+    const hasContent = path || watchedWhoIsHe || watchedSetting || watchedDynamic || timeOfDay || season;
+    if (!hasContent) return "";
+    const intro = path ? `A ${path.label} story` : "Your story";
+    const contextParts: string[] = [];
+    if (watchedSetting) contextParts.push(watchedSetting);
+    if (timeOfDay) contextParts.push(timeOfDay.toLowerCase());
+    if (season) contextParts.push(season);
+    const contextLine = contextParts.length ? `, ${contextParts.join(", ")}` : "";
+    const characterParts: string[] = [];
+    if (watchedWhoIsHe) characterParts.push(watchedWhoIsHe.charAt(0).toLowerCase() + watchedWhoIsHe.slice(1));
+    if (watchedDynamic) characterParts.push(watchedDynamic.charAt(0).toLowerCase() + watchedDynamic.slice(1));
+    const characterLine = characterParts.length ? ` — ${characterParts.join(", ")}` : "";
+    return `${intro}${contextLine}${characterLine}.`;
+  };
+
+  const formSections = [
+    { label: "Experience", filled: !!selectedMode },
+    { label: "Scene", filled: !!(watchedScenario || watchedSetting) },
+    { label: "Character", filled: !!watchedWhoIsHe },
+    { label: "Dynamic", filled: !!watchedDynamic },
+    { label: "Intensity", filled: !!watchedIntensity },
+    { label: "Ending", filled: !!form.watch("ending") },
+  ];
 
   if (!ageConfirmed) {
     return (
@@ -1268,6 +1317,27 @@ export default function Create() {
                   Surprise Me
                 </button>
               </div>
+            </div>
+
+            {/* Section Progress Dots */}
+            <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-hide">
+              {formSections.map((section, i) => (
+                <div key={section.label} className="flex items-center gap-1 flex-shrink-0">
+                  <div className="flex flex-col items-center gap-1">
+                    <div
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        section.filled ? "bg-primary" : "bg-border/50"
+                      }`}
+                    />
+                    <span className={`text-[10px] font-medium ${section.filled ? "text-primary/70" : "text-muted-foreground/50"}`}>
+                      {section.label}
+                    </span>
+                  </div>
+                  {i < formSections.length - 1 && (
+                    <div className={`w-6 h-px mb-3 mx-0.5 ${section.filled ? "bg-primary/30" : "bg-border/30"}`} />
+                  )}
+                </div>
+              ))}
             </div>
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -1624,32 +1694,21 @@ export default function Create() {
               </div>
 
               {/* Live Combination Preview */}
-              {previewParts.length > 0 && (
+              {buildPreviewSentence() && (
                 <motion.div
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="glass-panel rounded-2xl p-5 border border-primary/20 bg-primary/5"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2.5">Your Story</p>
-                  <div className="flex flex-wrap gap-2">
-                    {previewParts.map((part, i) => (
-                      <span
-                        key={i}
-                        className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                          i === 0
-                            ? "bg-primary/10 border-primary/30 text-primary"
-                            : "bg-card/60 border-border/40 text-muted-foreground"
-                        }`}
-                      >
-                        {part}
-                      </span>
-                    ))}
-                    {watchedScenario && (
-                      <span className="px-3 py-1 rounded-full text-xs border bg-card/60 border-border/40 text-muted-foreground italic max-w-xs truncate">
-                        "{watchedScenario}"
-                      </span>
-                    )}
-                  </div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Your story so far</p>
+                  <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    {buildPreviewSentence()}
+                  </p>
+                  {watchedScenario && (
+                    <p className="text-xs text-muted-foreground mt-2 line-clamp-1">
+                      Scene: <span className="italic">"{watchedScenario}"</span>
+                    </p>
+                  )}
                 </motion.div>
               )}
 

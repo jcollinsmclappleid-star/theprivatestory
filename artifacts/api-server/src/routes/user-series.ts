@@ -30,6 +30,28 @@ const router: IRouter = Router();
 const MAX_CHAPTERS = 10;
 const SERIES_PIPELINE_TIMEOUT = 300_000;
 
+function buildAutoSeriesName(
+  storyTitle: string,
+  castingData: Record<string, unknown>,
+): string {
+  const mood = castingData.mood as string | undefined;
+  const setting = castingData.setting as string | undefined;
+  const dynamic = castingData.dynamic as string | undefined;
+
+  if (mood && setting) {
+    const moodLabel = `The ${mood}`;
+    const settingLabel = setting.length <= 30 ? setting : setting.slice(0, 30);
+    return `${moodLabel} — ${settingLabel}`;
+  }
+  if (mood && dynamic) {
+    return `${dynamic}: ${mood}`;
+  }
+  if (storyTitle && storyTitle !== "Untitled") {
+    return storyTitle;
+  }
+  return "My Series";
+}
+
 function buildPreviouslySummary(episodes: { scenes: unknown }[]): string {
   const lastEp = episodes[episodes.length - 1];
   if (!lastEp) return "";
@@ -77,8 +99,9 @@ router.post("/", async (req, res) => {
     }
 
     const seriesId = `series-${crypto.randomUUID()}`;
-    const seriesTitle = title || (story.title as string) || "My Series";
-    const mood = (story.mood as string) || "Emotional";
+    const cd = castingData ?? (story.castingData as Record<string, unknown>) ?? {};
+    const seriesTitle = title || buildAutoSeriesName((story.title as string) || "", cd);
+    const mood = (cd.mood as string) || (story.mood as string) || "Emotional";
     const images = (story.images as Record<string, unknown>) ?? {};
     const coverImage = (images.cover as string) || "";
 
@@ -86,7 +109,7 @@ router.post("/", async (req, res) => {
       id: seriesId,
       title: seriesTitle,
       ownerUserId: req.user.id,
-      castingData: castingData ?? {},
+      castingData: cd,
       mood,
       coverImage,
     });

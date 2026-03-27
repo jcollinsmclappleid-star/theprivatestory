@@ -111,7 +111,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
     } finally {
       setGeneratingNext(false);
     }
-  }, [series, generatingNext, nextScenario, nextMood, nextIntensity, nextVoice, nextLength, fetchSeries]);
+  }, [series, generatingNext, nextScenario, nextMood, fetchSeries]);
 
   if (!user) {
     return (

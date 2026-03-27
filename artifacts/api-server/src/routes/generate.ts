@@ -44,6 +44,46 @@ function extractUserText(req: Partial<GenerateStoryRequest>): string {
   ].filter(Boolean).join(" ");
 }
 
+/**
+ * Validates server-side input length limits on all free-text fields.
+ * Returns an error message string if any limit is exceeded, or null if all pass.
+ *
+ * Limits (per safety architecture spec):
+ *   scenarioPrompt  ≤ 100 words
+ *   listenerName    ≤ 40 characters
+ *   partnerName     ≤ 40 characters
+ *   whoIsHe         ≤ 80 characters
+ *   setting         ≤ 80 characters
+ *   dynamic         ≤ 80 characters
+ *   userInput       ≤ 150 characters
+ */
+function validateInputLengths(body: Partial<GenerateStoryRequest>): string | null {
+  if (body.scenarioPrompt) {
+    const wordCount = body.scenarioPrompt.trim().split(/\s+/).filter(Boolean).length;
+    if (wordCount > 100) {
+      return `Your scenario is too long (${wordCount} words). Please keep it under 100 words.`;
+    }
+  }
+  const nameFields: Array<keyof GenerateStoryRequest> = ["listenerName", "partnerName"];
+  for (const field of nameFields) {
+    const val = body[field] as string | undefined;
+    if (val && val.length > 40) {
+      return `The name you entered is too long. Please keep names under 40 characters.`;
+    }
+  }
+  const contextFields: Array<keyof GenerateStoryRequest> = ["whoIsHe", "setting", "dynamic"];
+  for (const field of contextFields) {
+    const val = body[field] as string | undefined;
+    if (val && val.length > 80) {
+      return `One of your entries is too long. Please keep each field under 80 characters.`;
+    }
+  }
+  if (body.userInput && body.userInput.length > 150) {
+    return `Your custom input is too long. Please keep it under 150 characters.`;
+  }
+  return null;
+}
+
 async function moderateInput(text: string): Promise<ModerationResult> {
   // Layer 0: prompt injection / jailbreak detection
   const injectionResult = isInjectionAttempt(text);
@@ -1650,6 +1690,12 @@ class ContentModerationError extends Error {
 router.post("/plan-story", async (req, res) => {
   const body = req.body as GenerateStoryRequest;
 
+  const lengthError = validateInputLengths(body);
+  if (lengthError) {
+    res.status(422).json({ error: lengthError });
+    return;
+  }
+
   const inputToModerate = extractUserText(body);
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
@@ -1693,6 +1739,12 @@ router.post("/generate-story", async (req, res) => {
     dynamic?: string;
     mood?: string;
   };
+
+  const lengthError = validateInputLengths({ listenerName, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput });
+  if (lengthError) {
+    res.status(422).json({ error: lengthError });
+    return;
+  }
 
   const inputToModerate = extractUserText({ listenerName, scenarioPrompt, whoIsHe, dynamic: dynamicInput, setting, mood });
   if (inputToModerate.trim()) {
@@ -1908,6 +1960,13 @@ router.post("/generate-full-story", async (req, res) => {
 
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
+
+  // Step 1a: Input length validation
+  const lengthError = validateInputLengths(intake);
+  if (lengthError) {
+    res.status(422).json({ error: lengthError });
+    return;
+  }
 
   // Step 1b: Content moderation — blocklist + OpenAI Moderation API (all user-supplied fields)
   const inputToModerate = extractUserText(intake);

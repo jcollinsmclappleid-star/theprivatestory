@@ -10,6 +10,7 @@ import meRouter from "./me.js";
 import safetyRouter from "./safety.js";
 import reportsRouter from "./reports.js";
 import namesRouter from "./names.js";
+import categoriesRouter from "./categories.js";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use("/me", meRouter);
 router.use(safetyRouter);
 router.use(reportsRouter);
 router.use(namesRouter);
+router.use(categoriesRouter);
 
 export default router;

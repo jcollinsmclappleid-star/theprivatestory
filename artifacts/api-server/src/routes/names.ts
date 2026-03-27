@@ -48,7 +48,7 @@ router.post("/api/names/submit", async (req, res) => {
   }
 
   try {
-    // Check for duplicate (any status)
+    // Check for duplicate (any status) — silently accept per spec
     const existing = await db
       .select({ id: nameSubmissions.id })
       .from(nameSubmissions)
@@ -56,7 +56,7 @@ router.post("/api/names/submit", async (req, res) => {
       .limit(1);
 
     if (existing.length > 0) {
-      return res.status(409).json({ error: "This name has already been requested." });
+      return res.json({ ok: true, name: trimmed });
     }
 
     await db.insert(nameSubmissions).values({

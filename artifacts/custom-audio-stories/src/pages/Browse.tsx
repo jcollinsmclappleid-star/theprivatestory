@@ -149,6 +149,35 @@ export default function Browse() {
         </div>
       </div>
 
+      {/* Category tab strip */}
+      <div className="mb-6 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-2 px-4 sm:px-6 lg:px-8 min-w-max">
+          <button
+            onClick={() => { setActiveCategory(null); setSearch(""); }}
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+              !activeCategory && !search
+                ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                : "border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+            }`}
+          >
+            All
+          </button>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => { setActiveCategory(activeCategory === cat.id ? null : cat.id); setSearch(""); }}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                activeCategory === cat.id
+                  ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                  : "border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Active filter badge */}
       <AnimatePresence>
         {isFiltering && (

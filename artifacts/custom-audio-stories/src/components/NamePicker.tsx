@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, X, ChevronDown, ExternalLink } from "lucide-react";
 import { NAMES } from "@/data/names";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
   value: string;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export function NamePicker({ value, onChange, placeholder = "Search names…", className = "" }: Props) {
+  const { isAuthenticated } = useAuth();
   const [query, setQuery] = useState(value);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -147,7 +149,8 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
             )}
           </div>
 
-          {/* Request / submit */}
+          {/* Request / submit — only visible to authenticated users */}
+          {isAuthenticated && (
           <div className="border-t border-border/40 px-4 py-2.5">
             {!showSubmit ? (
               <button
@@ -196,6 +199,7 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
               </div>
             )}
           </div>
+          )}
         </div>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +34,25 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+interface ApiSubtheme {
+  id: string;
+  name: string;
+  tags: string[];
+  intensity: number | "variable";
+  is_custom: boolean;
+  custom_placeholder: string | null;
+}
+
+interface ApiCategory {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  mood: string;
+  explicit_level: string;
+  subthemes: ApiSubtheme[];
+}
 
 const STORY_PATHS = [
   {
@@ -1088,6 +1108,34 @@ export default function Create() {
   const watchedDynamic = form.watch("dynamic") ?? "";
   const watchedIntensity = form.watch("intensity") ?? "";
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedSubthemeId, setSelectedSubthemeId] = useState<string | null>(null);
+  const [customSubthemeText, setCustomSubthemeText] = useState("");
+
+  const { data: apiCategories = [] } = useQuery<ApiCategory[]>({
+    queryKey: ["story-categories"],
+    queryFn: () =>
+      fetch(`${API_BASE}/api/categories`, { credentials: "include" }).then(r => r.json()),
+    staleTime: Infinity,
+  });
+
+  const handleCategorySelect = (catId: string) => {
+    if (selectedCategoryId === catId) {
+      setSelectedCategoryId(null);
+      setSelectedSubthemeId(null);
+      setCustomSubthemeText("");
+    } else {
+      setSelectedCategoryId(catId);
+      setSelectedSubthemeId(null);
+      setCustomSubthemeText("");
+    }
+  };
+
+  const handleSubthemeSelect = (subId: string) => {
+    setSelectedSubthemeId(prev => (prev === subId ? null : subId));
+    setCustomSubthemeText("");
+  };
+
   const handlePathSelect = (pathId: string) => {
     const path = STORY_PATHS.find(p => p.id === pathId);
     if (!path) return;
@@ -1111,8 +1159,17 @@ export default function Create() {
     setTimeout(() => {
       function pick<T,>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
-      const path = pick(STORY_PATHS);
-      handlePathSelect(path.id);
+      if (apiCategories.length > 0) {
+        const randomCat = pick(apiCategories);
+        const nonCustomSubs = randomCat.subthemes.filter(s => !s.is_custom);
+        const randomSub = nonCustomSubs.length > 0 ? pick(nonCustomSubs) : null;
+        setSelectedCategoryId(randomCat.id);
+        setSelectedSubthemeId(randomSub?.id ?? null);
+        setCustomSubthemeText("");
+      } else {
+        const path = pick(STORY_PATHS);
+        handlePathSelect(path.id);
+      }
 
       const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
       form.setValue("scenarioPrompt", pick(allScenarios));
@@ -1129,7 +1186,7 @@ export default function Create() {
       setIsSurprising(false);
     }, 450);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, isSurprising]);
+  }, [form, isSurprising, apiCategories]);
 
   const onSubmit = async (data: FormData) => {
     setStep("generating");
@@ -1146,7 +1203,9 @@ export default function Create() {
           intensity: data.intensity,
           voiceFeel: data.voiceFeel,
           storyLength: data.storyLength,
-          scenarioPrompt: scenarioWithPov,
+          scenarioPrompt: selectedSubthemeId && customSubthemeText
+            ? `${scenarioWithPov} ${customSubthemeText}`.trim()
+            : scenarioWithPov,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
           whoIsHe: data.whoIsHe || undefined,
@@ -1154,6 +1213,8 @@ export default function Create() {
           ending: data.ending || undefined,
           setting: data.setting || undefined,
           storyMode: data.storyMode || undefined,
+          categoryId: selectedCategoryId || undefined,
+          subthemeId: selectedSubthemeId || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
           pairing: castingPairing || perspectivePairing,
           partnerName: castingPartnerName || data.partnerName || undefined,
@@ -1246,7 +1307,7 @@ export default function Create() {
   };
 
   const formSections = [
-    { label: "Experience", filled: !!selectedMode },
+    { label: "Theme", filled: !!(selectedCategoryId || selectedMode) },
     { label: "Scene", filled: !!(watchedScenario || watchedSetting) },
     { label: "Character", filled: !!watchedWhoIsHe },
     { label: "Dynamic", filled: !!watchedDynamic },
@@ -1526,40 +1587,101 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Story Experience — Path Selector */}
+              {/* Story Theme — Category Picker */}
               <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">Your Experience</label>
-                <p className="text-xs text-muted-foreground mb-5">What kind of story do you want to step into?</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {STORY_PATHS.map((path) => {
-                    const isSelected = selectedMode === path.id;
-                    return (
-                      <button
-                        key={path.id}
-                        type="button"
-                        onClick={() => handlePathSelect(path.id)}
-                        className={`text-left p-4 rounded-2xl border transition-all ${
-                          isSelected
-                            ? "border-primary bg-primary/10 shadow-glow"
-                            : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-2 mb-1.5">
-                          <p className={`font-bold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
-                            {path.label}
+                <label className="block text-sm font-medium text-foreground mb-1">Story Theme</label>
+                <p className="text-xs text-muted-foreground mb-5">Choose the world your story lives in.</p>
+
+                {apiCategories.length === 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <div key={i} className="h-20 rounded-2xl bg-card/30 animate-pulse" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    {apiCategories.map((cat) => {
+                      const isSelected = selectedCategoryId === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => handleCategorySelect(cat.id)}
+                          className={`text-left p-3 rounded-2xl border transition-all flex flex-col gap-1 ${
+                            isSelected
+                              ? "border-primary bg-primary/10 shadow-glow"
+                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                          }`}
+                        >
+                          <span className="text-xl leading-none">{cat.icon}</span>
+                          <p className={`font-semibold text-xs leading-tight ${isSelected ? "text-primary" : "text-foreground"}`}>
+                            {cat.name}
                           </p>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />}
+                          <p className="text-[10px] text-muted-foreground/70 leading-tight line-clamp-2">
+                            {cat.description}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Subtheme picker — appears when a category is selected */}
+                <AnimatePresence>
+                  {selectedCategoryId && (() => {
+                    const cat = apiCategories.find(c => c.id === selectedCategoryId);
+                    if (!cat) return null;
+                    const selectedSub = cat.subthemes.find(s => s.id === selectedSubthemeId);
+                    return (
+                      <motion.div
+                        key={selectedCategoryId}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-5 pt-5 border-t border-border/30">
+                          <p className="text-xs font-medium text-foreground mb-1">Subtheme</p>
+                          <p className="text-xs text-muted-foreground mb-3">Pick the specific flavour of your {cat.name} story.</p>
+                          <div className="flex flex-wrap gap-2">
+                            {cat.subthemes.map((sub) => {
+                              const isSel = selectedSubthemeId === sub.id;
+                              return (
+                                <button
+                                  key={sub.id}
+                                  type="button"
+                                  onClick={() => handleSubthemeSelect(sub.id)}
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                                    isSel
+                                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                                      : "border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                                  }`}
+                                >
+                                  {isSel && <Check className="w-3 h-3 flex-shrink-0" />}
+                                  {sub.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Custom subtheme text input */}
+                          {selectedSub?.is_custom && (
+                            <div className="mt-3">
+                              <input
+                                type="text"
+                                value={customSubthemeText}
+                                onChange={(e) => setCustomSubthemeText(e.target.value)}
+                                placeholder={selectedSub.custom_placeholder ?? "Describe your custom scenario…"}
+                                className="w-full bg-card/50 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                              />
+                            </div>
+                          )}
                         </div>
-                        <p className={`text-xs font-medium mb-1.5 ${isSelected ? "text-primary/70" : "text-muted-foreground"}`}>
-                          {path.tagline}
-                        </p>
-                        <p className="text-xs text-muted-foreground/80 leading-relaxed">
-                          {path.description}
-                        </p>
-                      </button>
+                      </motion.div>
                     );
-                  })}
-                </div>
+                  })()}
+                </AnimatePresence>
               </div>
 
               {/* Experience Tags — path-specific multi-select */}
@@ -1725,14 +1847,14 @@ export default function Create() {
                 <label className="block text-sm font-medium text-foreground mb-1">Intensity</label>
                 <p className="text-xs text-muted-foreground mb-4">
                   How far does the story go?
-                  {currentPath.highlightIntensities.length < 4 && (
+                  {!selectedCategoryId && currentPath.highlightIntensities.length < 4 && (
                     <span className="text-primary/60"> · Suggested for {currentPath.label}: {currentPath.highlightIntensities.join(", ")}</span>
                   )}
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {INTENSITIES.map((item) => {
                     const isSelected = form.watch("intensity") === item.id;
-                    const isHighlighted = currentPath.highlightIntensities.includes(item.id);
+                    const isHighlighted = selectedCategoryId ? true : currentPath.highlightIntensities.includes(item.id);
                     const isMuted = !isHighlighted;
                     return (
                       <button

@@ -12,8 +12,9 @@ import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
-import { isBlockedInput } from "../lib/contentBlocklist.js";
+import { isBlockedInput, isInjectionAttempt } from "../lib/contentBlocklist.js";
 import { logger } from "../lib/logger.js";
+import { db, contentBlocks } from "@workspace/db";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -44,6 +45,12 @@ function extractUserText(req: Partial<GenerateStoryRequest>): string {
 }
 
 async function moderateInput(text: string): Promise<ModerationResult> {
+  // Layer 0: prompt injection / jailbreak detection
+  const injectionResult = isInjectionAttempt(text);
+  if (injectionResult.blocked) {
+    return { blocked: true, reason: injectionResult.reason, source: "blocklist" };
+  }
+
   // Layer 1: synchronous keyword blocklist
   const blocklistResult = isBlockedInput(text);
   if (blocklistResult.blocked) {
@@ -69,6 +76,26 @@ async function moderateInput(text: string): Promise<ModerationResult> {
   return { blocked: false, reason: null, source: null };
 }
 
+/** Run the generated output text through OpenAI Moderation before returning it to the client.
+ *  Fail-closed: API error causes rejection to prevent unreviewed content reaching users. */
+async function moderateOutput(text: string): Promise<ModerationResult> {
+  try {
+    const moderation = await openaiDirect.moderations.create({ input: text });
+    const result = moderation.results[0];
+    if (result?.flagged) {
+      const flaggedCategories = Object.entries(result.categories)
+        .filter(([, flagged]) => flagged)
+        .map(([cat]) => cat)
+        .join(", ");
+      return { blocked: true, reason: flaggedCategories, source: "openai" };
+    }
+  } catch (err) {
+    logger.error({ err }, "[output-moderation] OpenAI Moderation API unavailable — blocking output (fail-closed)");
+    return { blocked: true, reason: "moderation_api_unavailable", source: "openai" };
+  }
+  return { blocked: false, reason: null, source: null };
+}
+
 function logBlockedRequest(
   userId: string | undefined,
   sessionId: string | undefined,
@@ -85,7 +112,15 @@ function logBlockedRequest(
     blockSource: source,
     blockReason: reason,
     inputHash: hash,
-  }, "[content-block] Request blocked before generation");
+  }, "[content-block] Request blocked");
+
+  db.insert(contentBlocks).values({
+    userId: userId ?? null,
+    sessionId: sessionId ?? null,
+    blockSource: source ?? "unknown",
+    blockReason: reason ?? "unknown",
+    inputHash: hash,
+  }).catch((err: unknown) => logger.error({ err }, "[content-block] Failed to persist block event to DB"));
 }
 
 // ---------------------------------------------------------------------------
@@ -1605,6 +1640,30 @@ router.post("/generate-story", async (req, res) => {
   try {
     const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput || mood) ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } : undefined;
     const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated", originalInput);
+
+    const outputText = story.scenes.map((s) => [s.narration, s.dialogue].filter(Boolean).join(" ")).join(" ");
+    if (outputText.trim()) {
+      const outputMod = await moderateOutput(outputText);
+      if (outputMod.blocked) {
+        logger.warn({
+          event: "output_blocked",
+          userId: req.isAuthenticated() ? String(req.user.id) : null,
+          sessionId: req.sessionID,
+          blockSource: outputMod.source,
+          blockReason: outputMod.reason,
+        }, "[output-moderation] Generated story failed output moderation");
+        db.insert(contentBlocks).values({
+          userId: req.isAuthenticated() ? String(req.user.id) : null,
+          sessionId: req.sessionID,
+          blockSource: `output:${outputMod.source ?? "openai"}`,
+          blockReason: outputMod.reason ?? "output_flagged",
+          inputHash: crypto.createHash("sha256").update(outputText.slice(0, 500)).digest("hex"),
+        }).catch((err: unknown) => logger.error({ err }, "[output-moderation] Failed to persist output block to DB"));
+        res.status(422).json({ error: "Generated content did not pass safety review." });
+        return;
+      }
+    }
+
     storyCache.set(cacheKey, story);
     res.json(story);
   } catch (err) {
@@ -1819,6 +1878,29 @@ router.post("/generate-full-story", async (req, res) => {
       qcResult = await qcStory(brief, story);
     }
 
+    // Step 6b: Output moderation — check generated story text before spending on audio/images
+    const outputText = story.scenes.map((s) => [s.narration, s.dialogue].filter(Boolean).join(" ")).join(" ");
+    if (outputText.trim()) {
+      const outputMod = await moderateOutput(outputText);
+      if (outputMod.blocked) {
+        logger.warn({
+          event: "output_blocked",
+          userId: req.user?.id ?? null,
+          sessionId: req.sessionID,
+          blockSource: outputMod.source,
+          blockReason: outputMod.reason,
+        }, "[output-moderation] Generated story failed output moderation");
+        db.insert(contentBlocks).values({
+          userId: req.user?.id ? String(req.user.id) : null,
+          sessionId: req.sessionID,
+          blockSource: `output:${outputMod.source ?? "openai"}`,
+          blockReason: outputMod.reason ?? "output_flagged",
+          inputHash: crypto.createHash("sha256").update(outputText.slice(0, 500)).digest("hex"),
+        }).catch((err: unknown) => logger.error({ err }, "[output-moderation] Failed to persist output block to DB"));
+        throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
+      }
+    }
+
     // Step 7: Cover image prompt
     // Route to the casting-based builder when casting fields are present,
     // otherwise use the form-data builder (structured form selections only).
@@ -1899,9 +1981,15 @@ router.post("/generate-full-story", async (req, res) => {
     const result = await Promise.race([pipeline(), timeoutPromise]);
     res.json(result);
   } catch (err) {
-    req.log.error({ err }, "Full story generation failed");
-    const message = err instanceof Error ? err.message : "Full story generation failed";
-    res.status(500).json({ error: message });
+    const statusCode = (err instanceof Error && (err as Error & { statusCode?: number }).statusCode) ?? 500;
+    if (statusCode === 422) {
+      const message = err instanceof Error ? err.message : "Content policy violation";
+      res.status(422).json({ error: message });
+    } else {
+      req.log.error({ err }, "Full story generation failed");
+      const message = err instanceof Error ? err.message : "Full story generation failed";
+      res.status(500).json({ error: message });
+    }
   }
 });
 

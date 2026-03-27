@@ -152,6 +152,29 @@ Exports (all async):
 - `generatedCacheStore` — `get(hash)`, `set(hash, storyId)`
 - `usersStore` — backwards-compat aggregated profile fetch (combines taste + library)
 
+### Content Safety & Rate Limiting
+
+All generation routes (`/plan-story`, `/generate-story`, `/generate-full-story`) enforce defence-in-depth content safety:
+
+**Input moderation (4 layers, in order):**
+1. **Prompt injection detection** (`isInjectionAttempt`) — regex patterns targeting jailbreak phrases ("ignore previous instructions", "DAN mode", "pretend you are uncensored", etc.) in `contentBlocklist.ts`
+2. **Keyword blocklist** (`isBlockedInput`) — CSAM indicators, illegal act descriptors in `contentBlocklist.ts`
+3. **OpenAI Moderation API** — semantic/category-based check; fail-closed (API outage = block)
+4. **PROHIBITED_CONTENT_BLOCK** — injected at top of every generation system prompt (planStory, writeStoryFromBrief, rewriteStory, rewriteStoryAsVariation, writeStoryContinuation)
+
+**Output moderation:** Generated story text is checked against OpenAI Moderation API before audio/image generation begins. Fail-closed. Output blocks are logged and persisted.
+
+**Rate limiting** (`express-rate-limit`, applied in `app.ts`):
+- Global: 200 req / 15 min per IP (all `/api/` routes, skips `/api/auth/*`)
+- Generation: 15 req / hour per user (by userId when authenticated, IPv6-safe IP otherwise) on plan/generate/full-story routes
+
+**Blocked-request audit log:**
+- Structured `logger.warn` (pino) with event, userId, sessionId, blockSource, blockReason, SHA-256 input hash
+- Also persisted to `content_blocks` DB table (fire-and-forget, no impact on 422 response latency)
+- `lib/db/src/schema/content-blocks.ts` — columns: id (serial PK), userId, sessionId, blockSource, blockReason, inputHash, createdAt
+
+**Age gate:** Full-screen modal in `Create.tsx` on first visit; localStorage persistence; blocks page before auth check.
+
 ### Admin API & Library Seed Integrity
 
 The API server exposes admin endpoints under `/api/admin/*` protected by an HMAC-derived token:

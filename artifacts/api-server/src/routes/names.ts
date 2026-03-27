@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { nameSubmissions } from "@workspace/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 
 const router = Router();
 
-// Rate-limit tracking (in-memory, per-user). Max 3 per day.
+// Rate-limit tracking (in-memory, per-user). Max 3 submissions per 24 hours.
 const submissionCounts = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(userId: string): boolean {
@@ -18,6 +18,17 @@ function checkRateLimit(userId: string): boolean {
   if (entry.count >= 3) return false;
   entry.count++;
   return true;
+}
+
+// Minimal blocklist — common slurs and offensive terms that must not be added as character names.
+const BLOCKLIST = new Set([
+  "fuck", "shit", "cunt", "nigger", "nigga", "faggot", "fag", "bitch",
+  "whore", "slut", "retard", "spastic", "kike", "chink", "spic", "wetback",
+  "cracker", "coon", "dyke", "tranny",
+]);
+
+function passesBlocklist(name: string): boolean {
+  return !BLOCKLIST.has(name.toLowerCase());
 }
 
 // POST /api/names/submit — authenticated users only
@@ -42,6 +53,10 @@ router.post("/api/names/submit", async (req, res) => {
     });
   }
 
+  if (!passesBlocklist(trimmed)) {
+    return res.status(400).json({ error: "This name cannot be added." });
+  }
+
   if (!checkRateLimit(user.id)) {
     return res.status(429).json({
       error: "You can request up to 3 names per day. Please try again tomorrow.",
@@ -49,11 +64,16 @@ router.post("/api/names/submit", async (req, res) => {
   }
 
   try {
-    // Check for duplicate (any status) — silently accept per spec
+    // Duplicate suppression: same user + same name (any status) — silently accept per spec
     const existing = await db
       .select({ id: nameSubmissions.id })
       .from(nameSubmissions)
-      .where(eq(nameSubmissions.name, trimmed))
+      .where(
+        and(
+          eq(nameSubmissions.submittedByUserId, user.id),
+          eq(nameSubmissions.name, trimmed),
+        ),
+      )
       .limit(1);
 
     if (existing.length > 0) {
@@ -73,7 +93,7 @@ router.post("/api/names/submit", async (req, res) => {
   }
 });
 
-// GET /api/admin/name-submissions — list all submissions, sorted by date (admin only)
+// GET /api/admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
 router.get("/api/admin/name-submissions", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
@@ -84,7 +104,8 @@ router.get("/api/admin/name-submissions", async (req, res) => {
     const rows = await db
       .select()
       .from(nameSubmissions)
-      .orderBy(desc(nameSubmissions.createdAt));
+      .where(eq(nameSubmissions.status, "pending"))
+      .orderBy(desc(nameSubmissions.submittedAt));
     return res.json({ submissions: rows });
   } catch (err) {
     console.error("Admin list names error:", err);
@@ -136,7 +157,7 @@ router.post("/api/admin/name-submissions/:id/reject", async (req, res) => {
   }
 });
 
-// PUT /api/admin/name-submissions/:id — approve or reject (legacy single endpoint)
+// PUT /api/admin/name-submissions/:id — approve or reject (single combined endpoint)
 router.put("/api/admin/name-submissions/:id", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
@@ -153,7 +174,7 @@ router.put("/api/admin/name-submissions/:id", async (req, res) => {
   try {
     await db
       .update(nameSubmissions)
-      .set({ status: status!, reviewedAt: new Date(), notes: notes ?? null })
+      .set({ status: status as "approved" | "rejected", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
     return res.json({ ok: true });
   } catch (err) {

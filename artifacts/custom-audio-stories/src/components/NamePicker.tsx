@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, X, ChevronDown } from "lucide-react";
 import { NAMES } from "@/data/names";
 
+const API_BASE = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+
 // Module-level cache so approved names are fetched once per page load, not once per NamePicker instance.
 let approvedNamesCache: string[] | null = null;
 let approvedNamesFetch: Promise<string[]> | null = null;

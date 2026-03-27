@@ -45,10 +45,12 @@ export async function authMiddleware(
     if (session?.user?.id) {
       const u = session.user as Record<string, unknown>;
 
-      // Look up the user's isAdmin, riskScore, and deletedAt from the DB
+      // Look up the user's isAdmin, riskScore, deletedAt, and approved names from the DB
       let isAdmin = false;
       let riskScore = 0;
       let deletedAt: Date | null = null;
+      let approvedListenerName: string | null = null;
+      let approvedPartnerName: string | null = null;
       try {
         const [dbUser] = await db
           .select({
@@ -64,6 +66,8 @@ export async function authMiddleware(
         isAdmin = dbUser?.isAdmin ?? false;
         riskScore = dbUser?.riskScore ?? 0;
         deletedAt = dbUser?.deletedAt ?? null;
+        approvedListenerName = dbUser?.approvedListenerName ?? null;
+        approvedPartnerName = dbUser?.approvedPartnerName ?? null;
       } catch {
         // DB lookup failure — default to safe values
       }
@@ -83,8 +87,8 @@ export async function authMiddleware(
           (u.profileImageUrl as string) ?? (session.user.image as string) ?? null,
         isAdmin,
         riskScore,
-        approvedListenerName: dbUser?.approvedListenerName ?? null,
-        approvedPartnerName: dbUser?.approvedPartnerName ?? null,
+        approvedListenerName,
+        approvedPartnerName,
       };
     }
   } catch {

@@ -303,6 +303,7 @@ export function logBlockedRequest(
 // Interfaces
 // ---------------------------------------------------------------------------
 
+/** Public client-facing request shape. Name fields are intentionally absent — injected server-side only. */
 export interface GenerateStoryRequest {
   mood: string;
   intensity: string;
@@ -319,10 +320,6 @@ export interface GenerateStoryRequest {
   storyMode?: string;
   experienceTags?: string[];
   pairing?: string;
-  /** @internal Server-injected from req.user.approvedListenerName — never accepted from client */
-  listenerName?: string;
-  /** @internal Server-injected from req.user.approvedPartnerName — never accepted from client */
-  partnerName?: string;
   /** Story category from STORY_CATEGORIES (e.g. "late_night", "forbidden_desire") */
   categoryId?: string;
   /** Subtheme within the category (e.g. "office_tension") */

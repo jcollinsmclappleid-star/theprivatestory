@@ -95,7 +95,7 @@ const UI_AFTER_DARK = [
 
   "Takes full control","Commands what they want","Takes their time","Doesn't stop",
   "Watches closely","Covers their mouth","Goes again immediately",
-  "Pushes every limit","Asks permission first — then ignores the answer",
+  "Pushes every limit","Asks first — and doesn't stop until the answer is yes",
   "Uses only their hands first",
   ...v(p => `Makes ${p.obj} ask for it`),
   ...v(p => `Holds ${p.obj} in place`),

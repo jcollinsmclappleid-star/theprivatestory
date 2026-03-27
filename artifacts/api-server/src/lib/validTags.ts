@@ -133,7 +133,7 @@ const AFTER_DARK_TAGS: string[] = [
   "Covers their mouth",
   "Goes again immediately",
   "Pushes every limit",
-  "Asks permission first — then ignores the answer",
+  "Asks first — and doesn't stop until the answer is yes",
   "Uses only their hands first",
   // What You Want Them To Do — pronoun-substituted
   ...variants(p => `Makes ${p.obj} ask for it`),

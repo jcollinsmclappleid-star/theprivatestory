@@ -41,6 +41,7 @@ export function extractUserText(req: Partial<GenerateStoryRequest>): string {
     req.whoIsHe,
     req.dynamic,
     req.setting,
+    req.partnerAppearance,
     ...(req.experienceTags ?? []),
   ].filter(Boolean).join(" ");
 }

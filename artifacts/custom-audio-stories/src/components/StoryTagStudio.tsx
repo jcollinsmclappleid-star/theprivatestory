@@ -147,7 +147,7 @@ function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
         "Goes again immediately",
         `Doesn't let ${p.obj} finish until they say`,
         "Pushes every limit",
-        "Asks permission first — then ignores the answer",
+        "Asks first — and doesn't stop until the answer is yes",
         "Uses only their hands first",
         `Makes ${p.obj} count`,
       ],

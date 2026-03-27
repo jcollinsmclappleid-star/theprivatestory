@@ -427,7 +427,7 @@ const WORLD_REGIONS = [
       "Las Vegas", "Chicago", "Havana", "Buenos Aires", "Rio de Janeiro",
       "Tulum", "Cartagena", "Nashville", "Boston", "Seattle",
       "Denver", "Vancouver", "Montreal", "Quebec City", "Bogotá",
-      "Medellín", "Montevideo", "Santa Fe", "Charleston", "Savannah",
+      "Medellín", "Montevideo", "Asunción", "Santa Fe", "Charleston", "Savannah",
       "Palm Beach", "Santa Barbara", "Napa Valley", "Cape Cod",
     ],
   },
@@ -450,7 +450,7 @@ const WORLD_REGIONS = [
     places: [
       "Australia", "New Zealand", "Fiji",
       "Sydney", "Melbourne", "Auckland", "Queenstown", "Byron Bay",
-      "Christchurch", "Hobart", "The Whitsundays", "The Great Barrier Reef",
+      "Christchurch", "Hobart", "Noumea", "The Whitsundays", "The Great Barrier Reef",
       "Noosa", "Margaret River", "Rottnest Island",
     ],
   },

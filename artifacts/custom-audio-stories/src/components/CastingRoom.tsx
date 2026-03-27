@@ -499,23 +499,23 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
   const back = () => setStep(s => Math.max(s - 1, 0));
 
-  // Save approved names to user profile before advancing from name steps.
-  // Fire-and-forget — the backend validates and stores; generation reads from DB.
+  // Submit custom names for admin review before advancing from name steps.
+  // Fire-and-forget — only admin-approved names are written to the user profile.
   const handleNext = () => {
     if (step === 2 && listenerName.trim()) {
-      fetch(`${CASTING_API_BASE}/api/me/profile-names`, {
-        method: "PUT",
+      fetch(`${CASTING_API_BASE}/api/me/name-submissions`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ listenerName: listenerName.trim() }),
+        body: JSON.stringify({ name: listenerName.trim(), nameType: "listener" }),
       }).catch(() => {});
     }
     if (step === 3 && partnerName.trim()) {
-      fetch(`${CASTING_API_BASE}/api/me/profile-names`, {
-        method: "PUT",
+      fetch(`${CASTING_API_BASE}/api/me/name-submissions`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ partnerName: partnerName.trim() }),
+        body: JSON.stringify({ name: partnerName.trim(), nameType: "partner" }),
       }).catch(() => {});
     }
     next();

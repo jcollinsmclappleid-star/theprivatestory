@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Heart, BookOpen, Flame, User, ChevronRight,
-  Trash2, Wand2, Play, Library, ArrowRight, Star, Zap, LogIn,
+  Trash2, Wand2, Play, Library, ArrowRight, Star, Zap, LogIn, UserCircle2, Clock, CheckCircle2, XCircle,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -137,6 +137,196 @@ function useContinueListening(isAuthenticated: boolean) {
   }, [isAuthenticated]);
 
   return { items, loading };
+}
+
+type NameSubmission = {
+  id: number;
+  name: string;
+  nameType: "listener" | "partner";
+  status: "pending" | "approved" | "rejected";
+  submittedAt: string;
+  reviewedAt: string | null;
+};
+
+type ProfileNames = {
+  listenerName: string | null;
+  partnerName: string | null;
+};
+
+function useMyNames(isAuthenticated: boolean) {
+  const [profileNames, setProfileNames] = useState<ProfileNames>({ listenerName: null, partnerName: null });
+  const [submissions, setSubmissions] = useState<NameSubmission[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const reload = useCallback(() => {
+    if (!isAuthenticated) { setLoading(false); return; }
+    Promise.all([
+      fetch(`${API_BASE}/api/me/profile-names`, { credentials: "include" }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE}/api/me/name-submissions`, { credentials: "include" }).then(r => r.ok ? r.json() : null),
+    ]).then(([names, subs]) => {
+      if (names) setProfileNames(names);
+      if (subs?.submissions) setSubmissions(subs.submissions);
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, [isAuthenticated]);
+
+  useEffect(() => { reload(); }, [reload]);
+
+  return { profileNames, submissions, loading, reload };
+}
+
+function MyNamesSection({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const { profileNames, submissions, loading, reload } = useMyNames(isAuthenticated);
+  const [nameInput, setNameInput] = useState("");
+  const [nameType, setNameType] = useState<"listener" | "partner">("listener");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitOk, setSubmitOk] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const hasPendingListener = submissions.some(s => s.nameType === "listener" && s.status === "pending");
+  const hasPendingPartner = submissions.some(s => s.nameType === "partner" && s.status === "pending");
+  const selectedTypePending = nameType === "listener" ? hasPendingListener : hasPendingPartner;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nameInput.trim() || submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    setSubmitOk(false);
+    try {
+      const res = await fetch(`${API_BASE}/api/me/name-submissions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name: nameInput.trim(), nameType }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error ?? "Could not submit name.");
+      } else {
+        setSubmitOk(true);
+        setNameInput("");
+        reload();
+        setTimeout(() => setSubmitOk(false), 3000);
+      }
+    } catch {
+      setSubmitError("Network error — please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return null;
+
+  const recentSubmissions = submissions.slice(0, 6);
+
+  return (
+    <section className="glass-panel rounded-2xl p-6 space-y-5">
+      <div className="flex items-center gap-2">
+        <UserCircle2 className="w-4 h-4 text-primary" />
+        <h2 className="font-display text-lg font-bold text-foreground">Your Story Names</h2>
+      </div>
+      <p className="text-xs text-muted-foreground -mt-2">
+        Names used in your generated stories. Submit a custom name — once approved by our team it will appear automatically.
+      </p>
+
+      {/* Approved names */}
+      {(profileNames.listenerName || profileNames.partnerName) && (
+        <div className="flex flex-wrap gap-3">
+          {profileNames.listenerName && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-primary/30 bg-primary/5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium">{profileNames.listenerName}</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">your name</span>
+            </div>
+          )}
+          {profileNames.partnerName && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-primary/30 bg-primary/5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium">{profileNames.partnerName}</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">love interest</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Recent submissions */}
+      {recentSubmissions.length > 0 && (
+        <div className="space-y-1.5">
+          {recentSubmissions.map(s => (
+            <div key={s.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-card/40 border border-border/20">
+              {s.status === "pending" && <Clock className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
+              {s.status === "approved" && <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />}
+              {s.status === "rejected" && <XCircle className="w-3.5 h-3.5 text-destructive flex-shrink-0" />}
+              <span className="text-sm text-foreground font-medium flex-1">{s.name}</span>
+              <span className="text-[10px] text-muted-foreground">{s.nameType === "listener" ? "your name" : "love interest"}</span>
+              <span className={`text-[10px] font-medium capitalize ${
+                s.status === "approved" ? "text-green-500" :
+                s.status === "rejected" ? "text-destructive" :
+                "text-muted-foreground"
+              }`}>{s.status}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Submit form */}
+      <form onSubmit={handleSubmit} className="space-y-3 pt-1">
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => { setNameType("listener"); setSubmitError(null); }}
+            className={`flex-1 py-2 rounded-full text-xs font-medium border transition-all ${
+              nameType === "listener"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border/30 text-muted-foreground hover:border-primary/30"
+            }`}
+          >
+            Your name
+          </button>
+          <button
+            type="button"
+            onClick={() => { setNameType("partner"); setSubmitError(null); }}
+            className={`flex-1 py-2 rounded-full text-xs font-medium border transition-all ${
+              nameType === "partner"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border/30 text-muted-foreground hover:border-primary/30"
+            }`}
+          >
+            Love interest's name
+          </button>
+        </div>
+
+        {selectedTypePending ? (
+          <p className="text-xs text-muted-foreground text-center py-2 border border-dashed border-border/30 rounded-xl">
+            Your {nameType === "listener" ? "name" : "love interest's name"} submission is under review.
+          </p>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={nameInput}
+              onChange={e => { setNameInput(e.target.value.replace(/[^A-Za-z]/g, "").slice(0, 15)); setSubmitError(null); }}
+              placeholder={nameType === "listener" ? "Your name…" : "Their name…"}
+              className="flex-1 px-4 py-2.5 rounded-full bg-card/60 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 transition-colors"
+              maxLength={15}
+            />
+            <button
+              type="submit"
+              disabled={!nameInput.trim() || submitting}
+              className="px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-all disabled:opacity-40 flex-shrink-0"
+            >
+              {submitting ? "…" : "Submit"}
+            </button>
+          </div>
+        )}
+
+        {submitError && <p className="text-xs text-destructive text-center">{submitError}</p>}
+        {submitOk && <p className="text-xs text-green-500 text-center">Name submitted for review. You'll see it here once approved.</p>}
+      </form>
+    </section>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -728,6 +918,11 @@ export default function Profile() {
           </div>
         </section>
       )}
+
+      {/* ------------------------------------------------------------------ */}
+      {/* My Story Names */}
+      {/* ------------------------------------------------------------------ */}
+      <MyNamesSection isAuthenticated={isAuthenticated} />
 
       {/* ------------------------------------------------------------------ */}
       {/* Footer links */}

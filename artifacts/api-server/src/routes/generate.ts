@@ -304,7 +304,6 @@ export function logBlockedRequest(
 // ---------------------------------------------------------------------------
 
 export interface GenerateStoryRequest {
-  listenerName: string;
   mood: string;
   intensity: string;
   voiceFeel: string;
@@ -320,6 +319,9 @@ export interface GenerateStoryRequest {
   storyMode?: string;
   experienceTags?: string[];
   pairing?: string;
+  /** @internal Server-injected from req.user.approvedListenerName — never accepted from client */
+  listenerName?: string;
+  /** @internal Server-injected from req.user.approvedPartnerName — never accepted from client */
   partnerName?: string;
   /** Story category from STORY_CATEGORIES (e.g. "late_night", "forbidden_desire") */
   categoryId?: string;

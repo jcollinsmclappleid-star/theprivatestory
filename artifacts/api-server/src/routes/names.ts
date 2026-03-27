@@ -51,9 +51,9 @@ router.post("/names/submit", async (req, res) => {
   const trimmed = (name as string).trim();
   const type = nameType as "listener" | "partner";
 
-  if (!/^[A-Za-z]{2,20}$/.test(trimmed)) {
+  if (!/^[A-Za-z]{1,15}$/.test(trimmed)) {
     return res.status(400).json({
-      error: "Names must be 2–20 letters only, no spaces or special characters.",
+      error: "Names must be 1–15 letters only, no spaces or special characters.",
     });
   }
 

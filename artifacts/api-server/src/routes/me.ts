@@ -414,8 +414,8 @@ router.get("/profile-names", (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// PUT /api/me/profile-names — set a story name directly from the curated NAMES list (no admin review).
-// For custom names not in the list, users must use POST /api/names/submit instead.
+// POST /api/me/name-submissions — submit a custom name for admin review.
+// Only admin approval writes the name to the user profile.
 // ---------------------------------------------------------------------------
 const NAME_BLOCKLIST = new Set([
   "fuck", "shit", "cunt", "nigger", "nigga", "faggot", "fag", "bitch",
@@ -423,52 +423,90 @@ const NAME_BLOCKLIST = new Set([
   "cracker", "coon", "dyke", "tranny",
 ]);
 
-router.put("/profile-names", async (req, res) => {
+const submissionCounts = new Map<string, { count: number; resetAt: number }>();
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = submissionCounts.get(userId);
+  if (!entry || entry.resetAt < now) {
+    submissionCounts.set(userId, { count: 1, resetAt: now + 24 * 60 * 60 * 1000 });
+    return true;
+  }
+  if (entry.count >= 3) return false;
+  entry.count++;
+  return true;
+}
+
+router.post("/name-submissions", async (req, res) => {
   const userId = getUserId(req);
-  const { listenerName, partnerName } = req.body as {
-    listenerName?: string;
-    partnerName?: string;
-  };
+  const { name, nameType } = req.body ?? {};
 
-  if (!listenerName && !partnerName) {
-    return res.status(400).json({ error: "At least one of listenerName or partnerName is required." });
+  if (!name || typeof name !== "string") {
+    return res.status(400).json({ error: "Name is required." });
+  }
+  if (!nameType || !["listener", "partner"].includes(nameType)) {
+    return res.status(400).json({ error: "nameType must be 'listener' or 'partner'." });
   }
 
-  const validateName = (name: string): string | null => {
-    const trimmed = name.trim();
-    if (!/^[A-Za-z]{2,20}$/.test(trimmed)) {
-      return "Names must be 2–20 letters only, no spaces or special characters.";
-    }
-    if (NAME_BLOCKLIST.has(trimmed.toLowerCase())) {
-      return "This name cannot be used.";
-    }
-    return null;
-  };
+  const trimmed = (name as string).trim();
+  const type = nameType as "listener" | "partner";
 
-  if (listenerName) {
-    const err = validateName(listenerName);
-    if (err) return res.status(400).json({ error: err });
+  if (!/^[A-Za-z]{1,15}$/.test(trimmed)) {
+    return res.status(400).json({ error: "Names must be 1–15 letters only, no spaces or special characters." });
   }
-  if (partnerName) {
-    const err = validateName(partnerName);
-    if (err) return res.status(400).json({ error: err });
+  if (NAME_BLOCKLIST.has(trimmed.toLowerCase())) {
+    return res.status(400).json({ error: "This name cannot be used." });
   }
 
   try {
-    const update: Partial<{ approvedListenerName: string; approvedPartnerName: string }> = {};
-    if (listenerName) update.approvedListenerName = listenerName.trim();
-    if (partnerName) update.approvedPartnerName = partnerName.trim();
+    // One-pending-per-type: if user already has a pending submission of this nameType, reject
+    const pendingForType = await db
+      .select({ id: nameSubmissions.id })
+      .from(nameSubmissions)
+      .where(
+        and(
+          eq(nameSubmissions.submittedByUserId, userId),
+          eq(nameSubmissions.nameType, type),
+          eq(nameSubmissions.status, "pending"),
+        ),
+      )
+      .limit(1);
 
-    await db.update(usersTable).set(update).where(eq(usersTable.id, userId));
+    if (pendingForType.length > 0) {
+      return res.status(409).json({ error: "You already have a pending submission for this name type. Wait for it to be reviewed before submitting another." });
+    }
 
-    return res.json({
-      ok: true,
-      listenerName: update.approvedListenerName ?? req.user.approvedListenerName ?? null,
-      partnerName: update.approvedPartnerName ?? req.user.approvedPartnerName ?? null,
+    // Duplicate suppression: same user + same name + same type (any status)
+    const existing = await db
+      .select({ id: nameSubmissions.id, status: nameSubmissions.status })
+      .from(nameSubmissions)
+      .where(
+        and(
+          eq(nameSubmissions.submittedByUserId, userId),
+          eq(nameSubmissions.name, trimmed),
+          eq(nameSubmissions.nameType, type),
+        ),
+      )
+      .limit(1);
+
+    if (existing.length > 0) {
+      return res.json({ ok: true, name: trimmed, status: existing[0].status });
+    }
+
+    if (!checkRateLimit(userId)) {
+      return res.status(429).json({ error: "You can request up to 3 names per day. Please try again tomorrow." });
+    }
+
+    await db.insert(nameSubmissions).values({
+      name: trimmed,
+      submittedByUserId: userId,
+      nameType: type,
+      status: "pending",
     });
+
+    return res.json({ ok: true, name: trimmed, status: "pending" });
   } catch (err) {
-    logger.error({ err, userId }, "Failed to update profile names");
-    return res.status(500).json({ error: "Failed to update profile names." });
+    logger.error({ err, userId }, "Failed to create name submission");
+    return res.status(500).json({ error: "Server error. Please try again." });
   }
 });
 

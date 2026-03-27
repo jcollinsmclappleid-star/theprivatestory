@@ -112,8 +112,6 @@ async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
     "Content designed to harass or threaten specific real identifiable people",
   ];
 
-  const sample = text.slice(0, 3000);
-
   try {
     const completion = await openrouter.chat.completions.create({
       model: MISTRAL_MODEL,
@@ -127,7 +125,7 @@ async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
         },
         {
           role: "user",
-          content: `Does the following story excerpt violate ANY of these prohibited categories?\n${PROHIBITED.map((c, i) => `${i + 1}. ${c}`).join("\n")}\n\nRespond with JSON only:\n{"safe": true_or_false, "violations": ["exact category name if violated — empty array if safe"]}\n\nStory excerpt:\n---\n${sample}\n---`,
+          content: `Does the following story violate ANY of these prohibited categories?\n${PROHIBITED.map((c, i) => `${i + 1}. ${c}`).join("\n")}\n\nRespond with JSON only:\n{"safe": true_or_false, "violations": ["exact category name if violated — empty array if safe"]}\n\nFull story:\n---\n${text}\n---`,
         },
       ],
     });

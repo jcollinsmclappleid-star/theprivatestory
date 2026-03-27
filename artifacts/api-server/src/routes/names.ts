@@ -22,6 +22,7 @@ function checkRateLimit(userId: string): boolean {
 
 // POST /api/names/submit — authenticated users only
 router.post("/api/names/submit", async (req, res) => {
+  // TODO: tighten to active subscribers once payment model is defined
   const user = req.user as { id?: string } | undefined;
   if (!user?.id) {
     return res.status(401).json({ error: "Sign in to request a name." });
@@ -72,7 +73,7 @@ router.post("/api/names/submit", async (req, res) => {
   }
 });
 
-// GET /api/admin/name-submissions — list all submissions (admin only)
+// GET /api/admin/name-submissions — list all submissions, sorted by date (admin only)
 router.get("/api/admin/name-submissions", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
@@ -91,7 +92,51 @@ router.get("/api/admin/name-submissions", async (req, res) => {
   }
 });
 
-// PUT /api/admin/name-submissions/:id — approve or reject (admin only)
+// POST /api/admin/name-submissions/:id/approve — admin only
+router.post("/api/admin/name-submissions/:id/approve", async (req, res) => {
+  const user = req.user as { isAdmin?: boolean } | undefined;
+  if (!user?.isAdmin) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  const id = Number(req.params.id);
+  const { notes } = (req.body ?? {}) as { notes?: string };
+
+  try {
+    await db
+      .update(nameSubmissions)
+      .set({ status: "approved", reviewedAt: new Date(), notes: notes ?? null })
+      .where(eq(nameSubmissions.id, id));
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Admin approve name error:", err);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
+
+// POST /api/admin/name-submissions/:id/reject — admin only
+router.post("/api/admin/name-submissions/:id/reject", async (req, res) => {
+  const user = req.user as { isAdmin?: boolean } | undefined;
+  if (!user?.isAdmin) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  const id = Number(req.params.id);
+  const { notes } = (req.body ?? {}) as { notes?: string };
+
+  try {
+    await db
+      .update(nameSubmissions)
+      .set({ status: "rejected", reviewedAt: new Date(), notes: notes ?? null })
+      .where(eq(nameSubmissions.id, id));
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Admin reject name error:", err);
+    return res.status(500).json({ error: "Server error." });
+  }
+});
+
+// PUT /api/admin/name-submissions/:id — approve or reject (legacy single endpoint)
 router.put("/api/admin/name-submissions/:id", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
@@ -99,7 +144,7 @@ router.put("/api/admin/name-submissions/:id", async (req, res) => {
   }
 
   const id = Number(req.params.id);
-  const { status } = (req.body ?? {}) as { status?: string };
+  const { status, notes } = (req.body ?? {}) as { status?: string; notes?: string };
 
   if (!["approved", "rejected"].includes(status ?? "")) {
     return res.status(400).json({ error: "Status must be 'approved' or 'rejected'." });
@@ -108,9 +153,8 @@ router.put("/api/admin/name-submissions/:id", async (req, res) => {
   try {
     await db
       .update(nameSubmissions)
-      .set({ status: status!, reviewedAt: new Date() })
+      .set({ status: status!, reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
-
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin review name error:", err);

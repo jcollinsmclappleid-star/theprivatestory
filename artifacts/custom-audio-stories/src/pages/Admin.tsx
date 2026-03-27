@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useLayoutEffect, type RefObject } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,18 +67,13 @@ interface SeriesGenerationState {
   error?: string;
 }
 
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
 export default function Admin() {
   const { user, isLoading } = useAuth();
   const [subthemes, setSubthemes] = useState<SubthemeItem[]>([]);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "chat" | "moderation">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -96,13 +91,6 @@ export default function Admin() {
   const [seriesCatalog, setSeriesCatalog] = useState<SeriesCatalogItem[]>([]);
   const [seriesGenState, setSeriesGenState] = useState<Record<string, SeriesGenerationState>>({});
   const seriesAbortRef = useRef<AbortController | null>(null);
-
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [chatInput, setChatInput] = useState("");
-  const [isChatStreaming, setIsChatStreaming] = useState(false);
-  const chatScrollRef = useRef<HTMLDivElement>(null);
-  const chatAbortRef = useRef<AbortController | null>(null);
-  const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
   // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
@@ -443,97 +431,6 @@ export default function Admin() {
     loadDrafts();
   };
 
-  // ── Chat: auto-scroll to bottom when messages change ─────────────────────
-  useLayoutEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
-    }
-  }, [chatMessages]);
-
-  // ── Chat: send message and stream response ────────────────────────────────
-  const sendChatMessage = useCallback(async () => {
-    const trimmed = chatInput.trim();
-    if (!trimmed || isChatStreaming) return;
-    const userMsg: ChatMessage = { role: "user", content: trimmed };
-    const withUser = [...chatMessages, userMsg];
-    setChatMessages([...withUser, { role: "assistant", content: "" }]);
-    setChatInput("");
-    setIsChatStreaming(true);
-
-    chatAbortRef.current?.abort();
-    const abort = new AbortController();
-    chatAbortRef.current = abort;
-
-    try {
-      const res = await fetch(`${API_BASE}/api/admin/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ messages: withUser }),
-        signal: abort.signal,
-      });
-
-      if (!res.ok) {
-        const errText = await res.text().catch(() => "Request failed");
-        throw new Error(`Server error ${res.status}: ${errText}`);
-      }
-
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("No readable stream");
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split("\n\n");
-        buffer = parts.pop() ?? "";
-        for (const part of parts) {
-          const dataLine = part.match(/^data: (.+)$/m)?.[1];
-          if (!dataLine || dataLine === "[DONE]") continue;
-          try {
-            const parsed = JSON.parse(dataLine);
-            if (parsed.text) {
-              setChatMessages((prev) => {
-                const msgs = [...prev];
-                const last = msgs[msgs.length - 1];
-                if (last?.role === "assistant") {
-                  msgs[msgs.length - 1] = { ...last, content: last.content + parsed.text };
-                }
-                return msgs;
-              });
-            }
-            if (parsed.error) {
-              setChatMessages((prev) => {
-                const msgs = [...prev];
-                const last = msgs[msgs.length - 1];
-                if (last?.role === "assistant") {
-                  msgs[msgs.length - 1] = { ...last, content: `Error: ${parsed.error}` };
-                }
-                return msgs;
-              });
-            }
-          } catch {}
-        }
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name !== "AbortError") {
-        setChatMessages((prev) => {
-          const msgs = [...prev];
-          const last = msgs[msgs.length - 1];
-          if (last?.role === "assistant") {
-            msgs[msgs.length - 1] = { ...last, content: "Sorry, something went wrong. Please try again." };
-          }
-          return msgs;
-        });
-      }
-    } finally {
-      setIsChatStreaming(false);
-      setTimeout(() => chatInputRef.current?.focus(), 50);
-    }
-  }, [chatInput, chatMessages, isChatStreaming]);
-
   // ── Access guard ───────────────────────────────────────────────────────────
   if (isLoading) {
     return (
@@ -595,12 +492,6 @@ export default function Admin() {
                 Series
               </button>
               <button
-                onClick={() => setActiveView("chat")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "chat" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
-              >
-                Chat
-              </button>
-              <button
                 onClick={() => setActiveView("moderation")}
                 className={`text-xs px-2 py-1 rounded ${activeView === "moderation" ? "bg-red-500/30 text-red-300" : "text-white/50 hover:text-white"}`}
               >
@@ -633,20 +524,8 @@ export default function Admin() {
           )}
         </div>
 
-        {/* Queue list / Series list / Review list / Chat (mobile) */}
-        {activeView === "chat" ? (
-          <ChatPanel
-            messages={chatMessages}
-            input={chatInput}
-            isStreaming={isChatStreaming}
-            scrollRef={chatScrollRef}
-            inputRef={chatInputRef}
-            onInputChange={setChatInput}
-            onSend={sendChatMessage}
-            onClear={() => { chatAbortRef.current?.abort(); setChatMessages([]); }}
-            className="flex md:hidden flex-col flex-1 overflow-hidden"
-          />
-        ) : activeView === "generate" ? (
+        {/* Queue list / Series list / Review list */}
+        {activeView === "generate" ? (
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-0.5">
               {queue.length === 0 && (
@@ -944,18 +823,7 @@ export default function Admin() {
 
       {/* ── RIGHT PANEL — Prompt Transparency + Live Log (desktop only) ────── */}
       <div className="hidden md:flex flex-1 flex-col overflow-hidden">
-        {activeView === "chat" ? (
-          <ChatPanel
-            messages={chatMessages}
-            input={chatInput}
-            isStreaming={isChatStreaming}
-            scrollRef={chatScrollRef}
-            inputRef={chatInputRef}
-            onInputChange={setChatInput}
-            onSend={sendChatMessage}
-            onClear={() => { chatAbortRef.current?.abort(); setChatMessages([]); }}
-          />
-        ) : activeView === "generate" && selectedItem ? (
+        {activeView === "generate" && selectedItem ? (
           <>
             {/* Story header */}
             <div className="px-6 py-4 border-b border-white/10 flex-shrink-0 bg-white/5">
@@ -1341,165 +1209,6 @@ function StatusBadge({ status }: { status: QueueStatus }) {
     <Badge variant="outline" className={`text-xs ${cls}`}>
       {label}
     </Badge>
-  );
-}
-
-function renderMarkdown(text: string): React.ReactNode[] {
-  const lines = text.split("\n");
-  const nodes: React.ReactNode[] = [];
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-    const rendered = parts.map((p, pi) => {
-      if (p.startsWith("**") && p.endsWith("**")) {
-        return <strong key={pi}>{p.slice(2, -2)}</strong>;
-      }
-      if (p.startsWith("*") && p.endsWith("*")) {
-        return <em key={pi}>{p.slice(1, -1)}</em>;
-      }
-      return p;
-    });
-    nodes.push(<span key={i}>{rendered}</span>);
-    if (i < lines.length - 1) nodes.push(<br key={`br-${i}`} />);
-  }
-  return nodes;
-}
-
-interface ChatPanelProps {
-  messages: ChatMessage[];
-  input: string;
-  isStreaming: boolean;
-  scrollRef: RefObject<HTMLDivElement>;
-  inputRef: RefObject<HTMLTextAreaElement>;
-  onInputChange: (v: string) => void;
-  onSend: () => void;
-  onClear: () => void;
-  className?: string;
-}
-
-function ChatPanel({
-  messages,
-  input,
-  isStreaming,
-  scrollRef,
-  inputRef,
-  onInputChange,
-  onSend,
-  onClear,
-  className = "flex flex-col flex-1 overflow-hidden",
-}: ChatPanelProps) {
-  return (
-    <div className={className}>
-      {/* Header bar */}
-      <div className="px-4 py-2 border-b border-white/10 flex items-center justify-between flex-shrink-0">
-        <div className="text-xs font-medium text-violet-300 uppercase tracking-widest">
-          Story Engine Chat
-        </div>
-        {messages.length > 0 && (
-          <button
-            onClick={onClear}
-            className="text-xs text-white/30 hover:text-white/60 transition"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center gap-3 py-12">
-            <div className="text-3xl">✦</div>
-            <div className="text-white/30 text-sm max-w-xs leading-relaxed">
-              Ask anything about the series arcs, episode structure, characters, or writing rules.
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-2">
-              {[
-                "What's the arc for Midnight Authority?",
-                "What makes Episode 3 different from Ep 1?",
-                "Describe Naomi Clarke",
-                "What are the banned words?",
-              ].map((hint) => (
-                <button
-                  key={hint}
-                  onClick={() => onInputChange(hint)}
-                  className="text-xs bg-white/5 hover:bg-white/10 text-white/40 hover:text-white/70 px-3 py-1.5 rounded-full transition border border-white/10"
-                >
-                  {hint}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {messages.map((msg, i) => {
-          const isLast = i === messages.length - 1;
-          const isStreamingThis = isLast && msg.role === "assistant" && isStreaming;
-          return (
-            <div
-              key={i}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-[#c9a227]/20 text-[#f0d080] rounded-br-sm"
-                    : "bg-white/10 text-white/80 rounded-bl-sm"
-                }`}
-              >
-                {msg.content ? (
-                  <span>{renderMarkdown(msg.content)}</span>
-                ) : (
-                  isStreamingThis && (
-                    <span className="inline-block w-2 h-4 bg-violet-400 opacity-80 animate-pulse rounded-sm" />
-                  )
-                )}
-                {isStreamingThis && msg.content && (
-                  <span className="inline-block w-1.5 h-3.5 bg-violet-400 opacity-80 animate-pulse rounded-sm ml-0.5 align-middle" />
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Input area */}
-      <div className="flex-shrink-0 border-t border-white/10 p-3">
-        <div className="flex gap-2 items-end">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => onInputChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                onSend();
-              }
-            }}
-            placeholder="Ask about series, episodes, characters, writing rules… (Enter to send)"
-            rows={1}
-            disabled={isStreaming}
-            className="flex-1 bg-white/10 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/30 resize-none focus:outline-none focus:border-violet-500/50 disabled:opacity-50 leading-snug"
-            style={{ minHeight: "40px", maxHeight: "120px", overflowY: "auto" }}
-            onInput={(e) => {
-              const el = e.currentTarget;
-              el.style.height = "auto";
-              el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
-            }}
-          />
-          <button
-            onClick={onSend}
-            disabled={!input.trim() || isStreaming}
-            className="flex-shrink-0 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-medium px-3 py-2.5 rounded-xl transition h-10"
-          >
-            {isStreaming ? "…" : "Send"}
-          </button>
-        </div>
-        <div className="text-[10px] text-white/20 mt-1.5 text-right">
-          Shift+Enter for newline
-        </div>
-      </div>
-    </div>
   );
 }
 

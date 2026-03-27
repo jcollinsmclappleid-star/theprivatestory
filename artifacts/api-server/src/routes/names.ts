@@ -62,6 +62,23 @@ router.post("/names/submit", async (req, res) => {
   }
 
   try {
+    // One-pending-per-type: if user already has a pending submission of this nameType, reject
+    const pendingForType = await db
+      .select({ id: nameSubmissions.id })
+      .from(nameSubmissions)
+      .where(
+        and(
+          eq(nameSubmissions.submittedByUserId, user.id),
+          eq(nameSubmissions.nameType, type),
+          eq(nameSubmissions.status, "pending"),
+        ),
+      )
+      .limit(1);
+
+    if (pendingForType.length > 0) {
+      return res.status(409).json({ error: "You already have a pending submission for this name type. Wait for it to be reviewed before submitting another." });
+    }
+
     // Duplicate suppression: same user + same name + same type (any status) — silently accepted
     const existing = await db
       .select({ id: nameSubmissions.id })

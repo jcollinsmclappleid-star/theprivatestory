@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, X, ChevronDown, ExternalLink } from "lucide-react";
+import { Search, X, ChevronDown } from "lucide-react";
 import { NAMES } from "@/data/names";
-import { useAuth } from "@/hooks/useAuth";
-
-const API_BASE = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
 
 // Module-level cache so approved names are fetched once per page load, not once per NamePicker instance.
 let approvedNamesCache: string[] | null = null;
@@ -33,13 +30,8 @@ interface Props {
 }
 
 export function NamePicker({ value, onChange, placeholder = "Search names…", className = "" }: Props) {
-  const { isAuthenticated } = useAuth();
   const [query, setQuery] = useState(value);
   const [open, setOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [showSubmit, setShowSubmit] = useState(false);
   const [approvedNames, setApprovedNames] = useState<string[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +48,6 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
-        setShowSubmit(false);
       }
     }
     if (open) document.addEventListener("mousedown", handler);
@@ -87,42 +78,12 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
     onChange(name);
     setQuery(name);
     setOpen(false);
-    setShowSubmit(false);
   };
 
   const handleClear = () => {
     onChange("");
     setQuery("");
     inputRef.current?.focus();
-  };
-
-  const handleSubmitName = async () => {
-    const name = query.trim();
-    if (!name || !/^[A-Za-z]{2,20}$/.test(name)) {
-      setSubmitError("Names must be 2–20 letters only.");
-      return;
-    }
-    setSubmitting(true);
-    setSubmitError("");
-    try {
-      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
-      const res = await fetch(`${base}/api/names/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-        credentials: "include",
-      });
-      if (res.ok || res.status === 409) {
-        setSubmitted(true);
-      } else {
-        const j = await res.json().catch(() => ({}));
-        setSubmitError(j.error ?? "Something went wrong. Please try again.");
-      }
-    } catch {
-      setSubmitError("Connection error. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   const displayValue = value || "";
@@ -140,7 +101,7 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
         <input
           ref={inputRef}
           value={open ? query : displayValue}
-          onChange={e => { setQuery(e.target.value); setOpen(true); setShowSubmit(false); setSubmitted(false); setSubmitError(""); }}
+          onChange={e => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
           className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
@@ -180,57 +141,10 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
             )}
           </div>
 
-          {/* Request / submit — only visible to authenticated users */}
-          {isAuthenticated && (
-          <div className="border-t border-border/40 px-4 py-2.5">
-            {!showSubmit ? (
-              <button
-                type="button"
-                onClick={() => { setShowSubmit(true); setSubmitted(false); setSubmitError(""); }}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                <ExternalLink className="w-3 h-3" />
-                Can't find your name? Request it →
-              </button>
-            ) : submitted ? (
-              <p className="text-xs text-green-400">
-                Submitted. We'll review and add it within 48 hours if it meets our guidelines.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground">Request this name to be added:</p>
-                <div className="flex gap-2">
-                  <input
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
-                    placeholder="Name to request…"
-                    maxLength={20}
-                    className="flex-1 bg-background/50 border border-border/40 rounded-lg px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-                  />
-                  <button
-                    type="button"
-                    disabled={submitting}
-                    onMouseDown={e => { e.preventDefault(); handleSubmitName(); }}
-                    className="px-3 py-1.5 rounded-lg bg-primary/20 text-primary text-xs font-medium hover:bg-primary/30 disabled:opacity-50 transition-colors"
-                  >
-                    {submitting ? "Sending…" : "Request"}
-                  </button>
-                  <button
-                    type="button"
-                    onMouseDown={e => { e.preventDefault(); setShowSubmit(false); }}
-                    className="px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-                {submitError && <p className="text-xs text-red-400">{submitError}</p>}
-                <p className="text-xs text-muted-foreground/70">
-                  We'll review your request within 48 hours.
-                </p>
-              </div>
-            )}
+          {/* Can't find a name? Users can submit custom names via their profile page. */}
+          <div className="border-t border-border/40 px-4 py-2 text-center">
+            <p className="text-xs text-muted-foreground/60">Can't find your name? Submit it via your <a href="/profile" className="text-primary/70 hover:text-primary underline underline-offset-2 transition-colors">profile page</a>.</p>
           </div>
-          )}
         </div>
       )}
     </div>

@@ -95,6 +95,7 @@ export default function Admin() {
   interface NameSubmissionItem {
     id: number;
     name: string;
+    nameType: "listener" | "partner" | null;
     status: "pending" | "approved" | "rejected";
     submittedAt: string;
     submittedByUserId: string | null;
@@ -826,11 +827,21 @@ export default function Admin() {
               {!namesLoading && nameSubmissionsList.length === 0 && (
                 <div className="text-white/30 text-xs text-center py-6">No pending name submissions</div>
               )}
-              {nameSubmissionsList.map((s) => (
+              {nameSubmissionsList.map((s) => {
+                const ageMs = Date.now() - new Date(s.submittedAt).getTime();
+                const ageMins = Math.floor(ageMs / 60000);
+                const ageHours = Math.floor(ageMins / 60);
+                const ageDays = Math.floor(ageHours / 24);
+                const ageLabel = ageDays > 0 ? `${ageDays}d ago` : ageHours > 0 ? `${ageHours}h ago` : ageMins > 0 ? `${ageMins}m ago` : "just now";
+                const nameTypeLabel = s.nameType === "partner" ? "Love interest" : s.nameType === "listener" ? "Your name" : "Unknown type";
+                return (
                 <div key={s.id} className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-3 space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-white/90">{s.name}</span>
-                    <span className="text-[10px] text-white/30">{new Date(s.submittedAt).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-white/90">{s.name}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 font-medium">{nameTypeLabel}</span>
+                    </div>
+                    <span className="text-[10px] text-white/30">{ageLabel}</span>
                   </div>
                   {s.submittedByUserId && (
                     <div className="text-[10px] text-white/30 font-mono">user: {s.submittedByUserId.slice(0, 12)}…</div>
@@ -852,7 +863,7 @@ export default function Admin() {
                     </button>
                   </div>
                 </div>
-              ))}
+              ); })}
               {!namesLoading && (
                 <button
                   onClick={loadNames}

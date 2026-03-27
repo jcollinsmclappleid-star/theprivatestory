@@ -471,9 +471,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     intensity: afterDark ? "Explicit" : "Heated",
     mood: "Emotional",
   });
-  // Local name state — used for story scenario prompt & UI display only.
-  // Names are also saved to the user's profile via PUT /api/me/profile-names
-  // so the backend can source them from the DB rather than the request body.
+  // Local name state — used for UI display only.
+  // On "Next", names are submitted to POST /api/me/name-submissions for admin review.
+  // Only admin-approved names reach generation via req.user (never from the request body).
   const [listenerName, setListenerName] = useState<string>("");
   const [partnerName, setPartnerName] = useState<string>("");
   const [customTags, setCustomTags] = useState<string[]>([]);
@@ -574,7 +574,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const fullScenario = [
       pairingCfg ? `This is a ${pairingCfg.id} story. Protagonist pronouns: ${pairingCfg.protagonistPronouns}. Love interest pronouns: ${pairingCfg.partnerPronouns}.` : "",
       heritagePhrase,
-      name ? `The love interest's name is ${name}.` : "",
       locationPhrase,
       setting ? `The physical setting is ${setting}${atmosphere ? `, with a ${atmosphere.toLowerCase()} atmosphere` : ""}.` : "",
       data.chemistry ? `The dynamic between them: ${data.chemistry}.` : "",

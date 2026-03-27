@@ -1,14 +1,31 @@
 /**
  * Canonical allowlist for experienceTags / customTags.
  *
- * The StoryTagStudio on the frontend generates tags via template literals that
- * substitute pronoun tokens (sub/obj/poss/refl) for the protagonist.  Four
- * pronoun contexts exist: she/her · he/him · they/them · you.
+ * NAMING NOTE
+ * -----------
+ * On the frontend, the user's StoryTagStudio selections are stored in
+ * `casting.customTags`.  Before the API call the frontend merges them with any
+ * hardcoded `selectedScenario.tags` (AfterDark preset tags) into a single
+ * `allTags` array, which is sent to the API as `experienceTags`.  The backend
+ * only ever sees `experienceTags` — it cannot distinguish StoryTagStudio picks
+ * from scenario preset tags at that point.
  *
- * This file enumerates every resolved string the UI can ever produce (all four
- * pronoun variants for every substituted template) plus every hardcoded
- * AfterDark-scenario preset tag.  The resulting Set is used in normaliseIntake
- * to silently drop any tag that didn't come from the known list.
+ * HOW THE ALLOWLIST IS BUILT
+ * --------------------------
+ * StoryTagStudio generates tags via pronoun-substituted template literals across
+ * four protagonist pronoun contexts (she/her · he/him · they/them · you).
+ * This file enumerates every resolved string all four contexts can produce,
+ * plus every hardcoded AfterDark-scenario preset tag.
+ *
+ * DRIFT PREVENTION
+ * ----------------
+ * If StoryTagStudio.tsx gains new tags or renames existing ones, this file must
+ * be updated in sync.  Run the parity-check script to verify:
+ *
+ *   node artifacts/api-server/scripts/checkTagParity.mjs  (plain node, no build needed)
+ *
+ * The script independently mirrors both this file and StoryTagStudio.tsx and
+ * reports any mismatches between them.
  */
 
 type P = { sub: string; obj: string; poss: string; refl: string };
@@ -25,7 +42,7 @@ function variants(fn: (p: P) => string): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Standard categories (buildStandardCategories)
+// Standard categories (buildStandardCategories in StoryTagStudio.tsx)
 // ---------------------------------------------------------------------------
 
 const STANDARD_TAGS: string[] = [
@@ -83,7 +100,7 @@ const STANDARD_TAGS: string[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// After Dark extra categories (buildAfterDarkExtraCategories)
+// After Dark extra categories (buildAfterDarkExtraCategories in StoryTagStudio.tsx)
 // ---------------------------------------------------------------------------
 
 const AFTER_DARK_TAGS: string[] = [
@@ -206,6 +223,7 @@ const AFTER_DARK_TAGS: string[] = [
 
 // ---------------------------------------------------------------------------
 // AfterDark scenario preset tags (hardcoded in AfterDark.tsx selectedScenario.tags)
+// These are added by the frontend before the API call, not by user text input.
 // ---------------------------------------------------------------------------
 
 const SCENARIO_PRESET_TAGS: string[] = [
@@ -237,7 +255,7 @@ const SCENARIO_PRESET_TAGS: string[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Exported canonical Set
+// Exported canonical Set — used in normaliseIntake() in generate.ts
 // ---------------------------------------------------------------------------
 
 export const VALID_EXPERIENCE_TAGS: Set<string> = new Set([

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,13 +14,13 @@ import type { CastingRoomResult } from "@/components/CastingRoom";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const formSchema = z.object({
-  listenerName: z.string().optional().default(""),
-  partnerName: z.string().optional().default(""),
+  listenerName: z.string().max(15).optional().default(""),
+  partnerName: z.string().max(15).optional().default(""),
   mood: z.string().min(1),
   intensity: z.string(),
   voiceFeel: z.string(),
   storyLength: z.string(),
-  scenarioPrompt: z.string().min(5, "Please describe a scenario"),
+  scenarioPrompt: z.string().optional().default(""),
   cinematicVisuals: z.boolean(),
   emotionalFocus: z.boolean(),
   whoIsHe: z.string().optional().default(""),
@@ -62,6 +62,24 @@ const STORY_PATHS = [
     mood: "Emotional",
   },
   {
+    id: "playful",
+    label: "Playful",
+    tagline: "Desire with a smile",
+    description: "Witty, warm, and charged. The banter is the foreplay and neither of you is pretending otherwise.",
+    suggestedIntensity: "Heated",
+    highlightIntensities: ["Tender", "Heated"],
+    mood: "Emotional",
+  },
+  {
+    id: "nostalgic",
+    label: "Nostalgic",
+    tagline: "It was always going to be you",
+    description: "History between you. Old feelings finding new permission. The story was written long before tonight.",
+    suggestedIntensity: "Tender",
+    highlightIntensities: ["Tender", "Heated"],
+    mood: "Slow Burn",
+  },
+  {
     id: "forbidden",
     label: "Forbidden",
     tagline: "The wanting is complicated",
@@ -91,6 +109,10 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "Safe enough to want",
     "Two people who finally say it",
     "Closeness that took a long time coming",
+    "The moment the pretending stops",
+    "He is paying attention to all of it",
+    "A feeling that keeps returning",
+    "Something real underneath everything",
   ],
   slow_burn: [
     "The anticipation is everything",
@@ -101,6 +123,10 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "Wanting without reaching yet",
     "A tension that keeps building",
     "Almost — again and again",
+    "The long pause before yes",
+    "His restraint is doing something to me",
+    "We are very carefully not touching",
+    "One of us will break first",
   ],
   passionate: [
     "The moment it finally tips",
@@ -111,6 +137,38 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "A feeling that becomes physical",
     "Raw and completely present",
     "Desire that surprises you both",
+    "All that restraint, released",
+    "He is as undone as I am",
+    "The chemistry was always this",
+    "Every touch is an admission",
+  ],
+  playful: [
+    "The banter that becomes something else",
+    "He is trying not to smile",
+    "A dare neither of us planned to lose",
+    "Sharp enough to be foreplay",
+    "Light on the surface, charged underneath",
+    "He's too clever not to notice",
+    "We both know exactly what this is",
+    "The tension hidden inside the joke",
+    "He makes me laugh and then looks at me like that",
+    "Every game has a winner",
+    "Playful until it suddenly isn't",
+    "This started as nothing and became everything",
+  ],
+  nostalgic: [
+    "Old history, new permission",
+    "We never finished what we started",
+    "The version of you he still remembers",
+    "Years collapsed into one moment",
+    "He looks at me like he always did",
+    "Something between us that never quite closed",
+    "The past was always going to find us here",
+    "A reunion that was supposed to be simple",
+    "The old feelings are entirely current",
+    "I forgot what it felt like until now",
+    "We don't have to say it — we both know",
+    "This was always where we were going",
   ],
   forbidden: [
     "He shouldn't, and neither should you",
@@ -121,6 +179,10 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "Complicated wanting",
     "A line that keeps moving",
     "The danger makes it real",
+    "Both of us knowing this is a mistake",
+    "The wanting that makes no sense",
+    "Rules that are bending under pressure",
+    "The forbidden thing is the only thing",
   ],
   unrestrained: [
     "Complete presence, nothing held back",
@@ -131,6 +193,10 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "The space between wanting and having, erased",
     "Nothing implied where it can be named",
     "Desire without apology",
+    "All of it, completely",
+    "He is not being careful",
+    "No pauses, no holding back",
+    "Entirely consumed",
   ],
 };
 
@@ -150,6 +216,16 @@ const WHO_IS_HE_OPTIONS = [
   "A bodyguard with orders not to touch me",
   "An old friend who finally says it",
   "Someone who wants only me",
+  "A close friend's older brother",
+  "Someone famous who shouldn't know my name",
+  "The one who got away",
+  "Someone I used to love",
+  "A dangerous man everyone else avoids",
+  "A man who knows exactly what he wants",
+  "Someone who sees through every version of me",
+  "My rival, who isn't as cold as I thought",
+  "A traveller I met once and never forgot",
+  "Someone who challenges me every time",
 ];
 
 const DYNAMIC_OPTIONS = [
@@ -158,6 +234,9 @@ const DYNAMIC_OPTIONS = [
   "Equal desire, equal intensity",
   "He's completely in control",
   "I'm completely in control",
+  "He holds back until I ask",
+  "We're both pretending this isn't happening",
+  "He knows everything — I know nothing yet",
 ];
 
 const ENDING_OPTIONS = [
@@ -165,6 +244,9 @@ const ENDING_OPTIONS = [
   "Fully satisfied",
   "Tender afterglow",
   "Unresolved and open",
+  "Something has changed between us",
+  "We agree it never happened",
+  "He stays",
 ];
 
 const VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
@@ -241,6 +323,72 @@ const SCENARIO_GROUPS = [
   },
 ];
 
+const WORLD_REGIONS = [
+  {
+    heading: "UK & Ireland",
+    places: [
+      "London", "Edinburgh", "Dublin", "Bath", "Oxford",
+      "The Scottish Highlands", "Cornwall", "The Cotswolds", "Brighton", "Liverpool",
+    ],
+  },
+  {
+    heading: "Europe",
+    places: [
+      "Paris", "Rome", "Venice", "Florence", "Positano",
+      "Santorini", "Mykonos", "Barcelona", "Madrid", "Ibiza",
+      "Lisbon", "Porto", "Amsterdam", "Copenhagen", "Stockholm",
+      "Vienna", "Prague", "Budapest", "Dubrovnik", "Monaco",
+      "Nice", "Cannes", "Chamonix", "St. Moritz", "Lake Como",
+      "Capri", "Cinque Terre", "The Amalfi Coast", "Tuscany", "Sicily",
+    ],
+  },
+  {
+    heading: "The Americas",
+    places: [
+      "New York", "Los Angeles", "Miami", "New Orleans", "San Francisco",
+      "Chicago", "Las Vegas", "Havana", "Mexico City", "Tulum",
+      "Cancún", "Buenos Aires", "Rio de Janeiro", "São Paulo", "Cartagena",
+      "Bogotá", "Toronto", "Montreal", "Vancouver", "Montserrat",
+    ],
+  },
+  {
+    heading: "Asia & Pacific",
+    places: [
+      "Tokyo", "Kyoto", "Osaka", "Seoul", "Shanghai",
+      "Hong Kong", "Singapore", "Bangkok", "Chiang Mai", "Bali",
+      "Phuket", "Koh Samui", "Ho Chi Minh City", "Hanoi", "Maldives",
+      "Sydney", "Melbourne", "Auckland", "Queenstown", "Fiji",
+    ],
+  },
+  {
+    heading: "Middle East & Africa",
+    places: [
+      "Dubai", "Abu Dhabi", "Marrakech", "Casablanca", "Cairo",
+      "Cape Town", "Nairobi", "Zanzibar", "Seychelles", "Mauritius",
+    ],
+  },
+  {
+    heading: "Iconic Settings",
+    places: [
+      "A private island",
+      "A superyacht at anchor",
+      "A mountain chalet in the Alps",
+      "A château in the Loire Valley",
+      "A clifftop villa in Santorini",
+      "A colonial-era hotel in Asia",
+      "An oceanfront estate",
+      "A penthouse above the city",
+      "A vineyard estate in Tuscany",
+      "A safari lodge at sunset",
+      "A rainforest retreat",
+      "A lakeside cabin in winter",
+    ],
+  },
+];
+
+const TIME_OF_DAY_OPTIONS = ["Dawn", "Morning", "Afternoon", "Dusk", "Evening", "Late night", "The small hours"];
+const SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter"];
+
 const LOADING_PHASES = [
   { label: "Architecting your story…", sub: "Building the emotional arc and scene structure" },
   { label: "Writing the narrative…", sub: "Crafting the scenes, tension, and pacing" },
@@ -268,7 +416,44 @@ const CONTINUATION_OPTIONS = [
   { id: "unresolved_continuation", label: "Lingering continuation", description: "More unresolved. Even more charged." },
 ];
 
-function ScenarioDropdown({ onSelect }: { onSelect: (text: string) => void }) {
+function ScenarioPicker({ value, onChange }: { value: string; onChange: (text: string) => void }) {
+  return (
+    <div className="space-y-5 mt-4">
+      {SCENARIO_GROUPS.map((group) => (
+        <div key={group.heading}>
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2.5">
+            {group.heading}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {group.items.map((item) => {
+              const isSelected = value === item;
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => onChange(isSelected ? "" : item)}
+                  className={`text-left px-4 py-3 rounded-xl border transition-all text-sm leading-snug ${
+                    isSelected
+                      ? "border-primary bg-primary/10 text-foreground shadow-glow"
+                      : "border-border/30 bg-card/30 text-muted-foreground hover:border-primary/30 hover:text-foreground hover:bg-primary/5"
+                  }`}
+                >
+                  {isSelected && (
+                    <Check className="w-3 h-3 text-primary inline mr-1.5 mb-0.5 flex-shrink-0" />
+                  )}
+                  {item}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function WorldPicker({ value, onChange }: { value: string; onChange: (place: string) => void }) {
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -280,36 +465,79 @@ function ScenarioDropdown({ onSelect }: { onSelect: (text: string) => void }) {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, [open]);
 
+  const filtered = search.trim()
+    ? WORLD_REGIONS.map((r) => ({
+        heading: r.heading,
+        places: r.places.filter((p) => p.toLowerCase().includes(search.toLowerCase())),
+      })).filter((r) => r.places.length > 0)
+    : WORLD_REGIONS;
+
   return (
-    <div ref={ref} className="relative mt-3">
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 text-xs text-primary/80 hover:text-primary transition-colors font-medium"
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-sm ${
+          value
+            ? "border-primary/50 bg-primary/5 text-foreground"
+            : "border-border/50 text-muted-foreground hover:border-primary/30"
+        }`}
       >
-        <Shuffle className="w-3.5 h-3.5" />
-        Browse inspiration
+        <span className="flex items-center gap-2">
+          <Globe className="w-4 h-4 text-primary/60 flex-shrink-0" />
+          {value || "Choose a world…"}
+        </span>
+        {value && (
+          <span
+            role="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onChange("");
+            }}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </span>
+        )}
       </button>
       {open && (
-        <div className="absolute z-30 left-0 right-0 mt-2 max-h-96 overflow-y-auto rounded-2xl border border-border/60 bg-background/98 backdrop-blur-sm shadow-2xl">
-          <div className="p-4 space-y-5">
-            {SCENARIO_GROUPS.map((group) => (
-              <div key={group.heading}>
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2 px-1">
-                  {group.heading}
+        <div className="absolute z-30 left-0 right-0 mt-2 max-h-80 rounded-2xl border border-border/60 bg-background/98 backdrop-blur-sm shadow-2xl overflow-hidden flex flex-col">
+          <div className="p-3 border-b border-border/30 flex-shrink-0">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card/60 border border-border/30">
+              <Search className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+              <input
+                autoFocus
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search places…"
+                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </div>
+          </div>
+          <div className="overflow-y-auto flex-1 p-3 space-y-4">
+            {filtered.map((region) => (
+              <div key={region.heading}>
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/50 mb-1.5 px-1">
+                  {region.heading}
                 </p>
                 <div className="space-y-0.5">
-                  {group.items.map((item) => (
+                  {region.places.map((place) => (
                     <button
-                      key={item}
+                      key={place}
                       type="button"
                       onClick={() => {
-                        onSelect(item);
+                        onChange(value === place ? "" : place);
                         setOpen(false);
+                        setSearch("");
                       }}
-                      className="w-full text-left text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 px-3 py-2 rounded-xl transition-colors leading-snug"
+                      className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors flex items-center justify-between ${
+                        value === place
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
+                      }`}
                     >
-                      {item}
+                      <span>{place}</span>
+                      {value === place && <Check className="w-3 h-3 flex-shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -322,14 +550,14 @@ function ScenarioDropdown({ onSelect }: { onSelect: (text: string) => void }) {
   );
 }
 
-function OptionCard<T extends string>({
+function OptionCard({
   option,
   selected,
   onSelect,
 }: {
-  option: { id: T; label: string; description: string };
+  option: { id: string; label: string; description: string };
   selected: boolean;
-  onSelect: (id: T) => void;
+  onSelect: (id: string) => void;
 }) {
   return (
     <button
@@ -380,6 +608,9 @@ export default function Create() {
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
   const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
   const [castingChemistry, setCastingChemistry] = useState<string | undefined>();
+
+  const [timeOfDay, setTimeOfDay] = useState("");
+  const [season, setSeason] = useState("");
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -504,7 +735,6 @@ export default function Create() {
     },
   });
 
-  // Pick up quickCreateParams or castingPreset injected by Profile page (runs once on mount)
   useEffect(() => {
     const qcp = sessionStorage.getItem("quickCreateParams");
     if (qcp) {
@@ -679,6 +909,11 @@ export default function Create() {
     };
   }, [perspective]);
 
+  const buildAugmentedScenario = useCallback((base: string) => {
+    const timeModifiers = [timeOfDay, season].filter(Boolean).join(", ");
+    return [base, timeModifiers].filter(Boolean).join(" · ").trim();
+  }, [timeOfDay, season]);
+
   const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
     if (savePreset && pendingCastingData && presetName.trim()) {
       fetch(`${API_BASE}/api/me/presets`, {
@@ -692,7 +927,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
-    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(form.getValues("scenarioPrompt"));
+    const augmented = buildAugmentedScenario(form.getValues("scenarioPrompt") || "");
+    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(augmented);
 
     try {
       await generateMutation.mutateAsync({
@@ -720,10 +956,15 @@ export default function Create() {
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, buildPerspectiveOverrides]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, buildPerspectiveOverrides, buildAugmentedScenario]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
+  const watchedScenario = form.watch("scenarioPrompt") ?? "";
+  const watchedSetting = form.watch("setting") ?? "";
+  const watchedWhoIsHe = form.watch("whoIsHe") ?? "";
+  const watchedDynamic = form.watch("dynamic") ?? "";
+  const watchedIntensity = form.watch("intensity") ?? "";
 
   const handlePathSelect = (pathId: string) => {
     const path = STORY_PATHS.find(p => p.id === pathId);
@@ -742,11 +983,32 @@ export default function Create() {
     form.setValue("experienceTags", next);
   };
 
+  const handleSurpriseMe = useCallback(() => {
+    function pick<T,>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    const path = pick(STORY_PATHS);
+    handlePathSelect(path.id);
+
+    const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
+    form.setValue("scenarioPrompt", pick(allScenarios));
+    form.setValue("whoIsHe", pick(WHO_IS_HE_OPTIONS));
+    form.setValue("dynamic", pick(DYNAMIC_OPTIONS));
+    form.setValue("ending", pick(ENDING_OPTIONS));
+
+    const allPlaces = WORLD_REGIONS.flatMap(r => r.places);
+    form.setValue("setting", pick(allPlaces));
+
+    setTimeOfDay(pick(TIME_OF_DAY_OPTIONS));
+    setSeason(pick(SEASON_OPTIONS));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form]);
+
   const onSubmit = async (data: FormData) => {
     setStep("generating");
     startLoadingPhase();
 
-    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(data.scenarioPrompt);
+    const augmented = buildAugmentedScenario(data.scenarioPrompt || "");
+    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(augmented);
 
     try {
       await generateMutation.mutateAsync({
@@ -833,6 +1095,16 @@ export default function Create() {
     ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
     : 0;
   const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] ?? result?.images?.cover ?? "";
+
+  const previewParts = [
+    STORY_PATHS.find(p => p.id === selectedMode)?.label,
+    watchedIntensity,
+    watchedWhoIsHe || undefined,
+    watchedDynamic || undefined,
+    watchedSetting || undefined,
+    timeOfDay || undefined,
+    season || undefined,
+  ].filter(Boolean) as string[];
 
   if (!ageConfirmed) {
     return (
@@ -981,9 +1253,21 @@ export default function Create() {
                 <ChevronLeft className="w-4 h-4" />
                 Back to Casting Room
               </button>
-              <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
-              <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
-              <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
+                  <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
+                  <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSurpriseMe}
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all mt-1"
+                >
+                  <Shuffle className="w-3.5 h-3.5" />
+                  Surprise Me
+                </button>
+              </div>
             </div>
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -1027,6 +1311,7 @@ export default function Create() {
                     </label>
                     <input
                       {...form.register("listenerName")}
+                      maxLength={15}
                       placeholder={
                         perspective === "your"
                           ? "How should the story address you?"
@@ -1044,6 +1329,7 @@ export default function Create() {
                     </label>
                     <input
                       {...form.register("partnerName")}
+                      maxLength={15}
                       placeholder={
                         perspective === "his"
                           ? "What is her name?"
@@ -1134,29 +1420,87 @@ export default function Create() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Your Scenario */}
+              {/* Your Scenario — card picker */}
               <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-3">Your Scenario</label>
-                <textarea
-                  {...form.register("scenarioPrompt")}
-                  rows={4}
-                  placeholder="Describe a setting, a feeling, or a situation…"
-                  className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-medium text-foreground">Your Scenario</label>
+                  {watchedScenario && (
+                    <button
+                      type="button"
+                      onClick={() => form.setValue("scenarioPrompt", "")}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                    >
+                      <X className="w-3 h-3" />
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Tap a card to set the scene — tap again to clear it. Optional.
+                </p>
+                <ScenarioPicker
+                  value={watchedScenario}
+                  onChange={(text) => form.setValue("scenarioPrompt", text)}
                 />
-                {form.formState.errors.scenarioPrompt && (
-                  <p className="text-xs text-red-400 mt-1">{form.formState.errors.scenarioPrompt.message}</p>
-                )}
-                <ScenarioDropdown onSelect={(text) => form.setValue("scenarioPrompt", text)} />
 
+                {/* World / Setting */}
                 <div className="mt-5 pt-5 border-t border-border/20">
                   <label className="block text-xs font-medium text-muted-foreground mb-2">
-                    Where does it take place? <span className="text-muted-foreground/60 font-normal">(optional)</span>
+                    Where does it take place?{" "}
+                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
                   </label>
-                  <input
-                    {...form.register("setting")}
-                    placeholder="e.g. Tokyo, Paris, a private yacht…"
-                    className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                  <WorldPicker
+                    value={watchedSetting}
+                    onChange={(place) => form.setValue("setting", place)}
                   />
+                </div>
+
+                {/* Time of Day */}
+                <div className="mt-4 pt-4 border-t border-border/20">
+                  <label className="block text-xs font-medium text-muted-foreground mb-2.5">
+                    Time of day{" "}
+                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {TIME_OF_DAY_OPTIONS.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setTimeOfDay(timeOfDay === t ? "" : t)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                          timeOfDay === t
+                            ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Season */}
+                <div className="mt-4 pt-4 border-t border-border/20">
+                  <label className="block text-xs font-medium text-muted-foreground mb-2.5">
+                    Season{" "}
+                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {SEASON_OPTIONS.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setSeason(season === s ? "" : s)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                          season === s
+                            ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1278,6 +1622,36 @@ export default function Create() {
                   </div>
                 </div>
               </div>
+
+              {/* Live Combination Preview */}
+              {previewParts.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-panel rounded-2xl p-5 border border-primary/20 bg-primary/5"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2.5">Your Story</p>
+                  <div className="flex flex-wrap gap-2">
+                    {previewParts.map((part, i) => (
+                      <span
+                        key={i}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                          i === 0
+                            ? "bg-primary/10 border-primary/30 text-primary"
+                            : "bg-card/60 border-border/40 text-muted-foreground"
+                        }`}
+                      >
+                        {part}
+                      </span>
+                    ))}
+                    {watchedScenario && (
+                      <span className="px-3 py-1 rounded-full text-xs border bg-card/60 border-border/40 text-muted-foreground italic max-w-xs truncate">
+                        "{watchedScenario}"
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              )}
 
               <button
                 type="submit"

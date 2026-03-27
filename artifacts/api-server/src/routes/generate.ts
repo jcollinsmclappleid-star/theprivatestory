@@ -70,8 +70,8 @@ function validateInputLengths(body: Partial<GenerateStoryRequest>): string | nul
   const nameFields: Array<keyof GenerateStoryRequest> = ["listenerName", "partnerName"];
   for (const field of nameFields) {
     const val = body[field] as string | undefined;
-    if (val && val.length > 40) {
-      return `The name you entered is too long. Please keep names under 40 characters.`;
+    if (val && val.length > 15) {
+      return `The name you entered is too long. Please keep names under 15 characters.`;
     }
     if (val) {
       const nameError = validateNameFormat(val);

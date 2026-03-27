@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
+import { AuthModal } from "@/components/AuthModal";
 
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
@@ -70,6 +71,7 @@ function App() {
       <TooltipProvider>
         <AudioProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <AuthModal />
             <Router />
           </WouterRouter>
         </AudioProvider>

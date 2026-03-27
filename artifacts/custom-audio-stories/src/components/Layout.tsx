@@ -401,7 +401,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/noise-texture.png)` }}
       />
 
-      <AuthModal />
       <Navbar streakDays={streakDays} />
       <StoryLifecycleManager
         isAuthenticated={isAuthenticated}

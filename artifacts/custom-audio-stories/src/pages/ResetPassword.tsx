@@ -3,9 +3,11 @@ import { useLocation } from "wouter";
 import { authClient } from "@/lib/authClient";
 import { Logo } from "@/components/Logo";
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ResetPassword() {
   const [, navigate] = useLocation();
+  const { openSignIn } = useAuth();
   const [token, setToken] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -74,10 +76,10 @@ export default function ResetPassword() {
                 Your password has been updated. You can now sign in.
               </p>
               <button
-                onClick={() => navigate("/")}
+                onClick={() => { navigate("/"); setTimeout(openSignIn, 100); }}
                 className="mt-3 px-6 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all"
               >
-                Go to sign in
+                Sign in
               </button>
             </div>
           ) : (

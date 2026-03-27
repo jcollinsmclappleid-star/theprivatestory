@@ -1075,6 +1075,7 @@ export default function Create() {
 
     const castingSnapshot = {
       archetype: casting.archetype,
+      whoIsHe: casting.archetype,
       dynamic: casting.dynamic,
       setting: casting.setting,
       intensity: casting.intensity,
@@ -1082,6 +1083,13 @@ export default function Create() {
       storyMode: casting.storyMode,
       pairing: casting.pairing,
       partnerName: casting.partnerName,
+      listenerName: casting.listenerName ?? "",
+      heritage: casting.heritage || undefined,
+      atmosphere: casting.atmosphere || undefined,
+      chemistry: casting.chemistry || undefined,
+      partnerAppearance: casting.partnerAppearance || undefined,
+      voiceFeel: form.getValues("voiceFeel"),
+      storyLength: form.getValues("storyLength"),
     };
 
     form.setValue("listenerName", casting.listenerName ?? "");

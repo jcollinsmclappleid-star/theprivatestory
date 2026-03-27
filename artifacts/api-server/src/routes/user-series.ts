@@ -206,12 +206,9 @@ router.post("/:id/next-chapter", async (req, res) => {
     return;
   }
 
-  const { scenarioPrompt, mood, intensity, voiceFeel, storyLength } = req.body as {
+  const { scenarioPrompt, mood } = req.body as {
     scenarioPrompt?: string;
     mood?: string;
-    intensity?: string;
-    voiceFeel?: string;
-    storyLength?: string;
   };
 
   try {
@@ -260,9 +257,9 @@ router.post("/:id/next-chapter", async (req, res) => {
       partnerAppearance: (casting.partnerAppearance as string) || undefined,
       storyMode: (casting.storyMode as string) || "romance",
       mood: mood || (casting.mood as string) || (s.mood as string) || "Emotional",
-      intensity: intensity || (casting.intensity as string) || "Heated",
-      voiceFeel: voiceFeel || (casting.voiceFeel as string) || "Soft Voice",
-      storyLength: storyLength || (casting.storyLength as string) || "5 min",
+      intensity: (casting.intensity as string) || "Heated",
+      voiceFeel: (casting.voiceFeel as string) || "Soft Voice",
+      storyLength: (casting.storyLength as string) || "5 min",
       scenarioPrompt: scenarioPrompt || "the story continues from where we left off",
       cinematicVisuals: true,
       emotionalFocus: true,

@@ -29,9 +29,6 @@ interface SeriesDetail {
 }
 
 const VALID_MOODS = ["Forbidden", "Tender", "Playful", "Steamy", "Emotional", "Dark", "Whimsical"];
-const VALID_INTENSITIES = ["Soft", "Heated", "Explicit"];
-const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
-const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
 
 export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
   const { user } = useAuth();
@@ -49,11 +46,7 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
   const [genError, setGenError] = useState<string | null>(null);
 
   const [nextMood, setNextMood] = useState("Emotional");
-  const [nextIntensity, setNextIntensity] = useState("Heated");
-  const [nextVoice, setNextVoice] = useState("Soft Voice");
-  const [nextLength, setNextLength] = useState("5 min");
   const [nextScenario, setNextScenario] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [expandedEpisode, setExpandedEpisode] = useState<string | null>(null);
 
@@ -64,10 +57,6 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
       const data = await resp.json() as SeriesDetail;
       setSeries(data);
       setNextMood(data.mood || "Emotional");
-      const cd = data.castingData as Record<string, unknown>;
-      if (cd?.voiceFeel && typeof cd.voiceFeel === "string") setNextVoice(cd.voiceFeel);
-      if (cd?.storyLength && typeof cd.storyLength === "string") setNextLength(cd.storyLength);
-      if (cd?.intensity && typeof cd.intensity === "string") setNextIntensity(cd.intensity);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
@@ -110,9 +99,6 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
         body: JSON.stringify({
           scenarioPrompt: nextScenario || undefined,
           mood: nextMood,
-          intensity: nextIntensity,
-          voiceFeel: nextVoice,
-          storyLength: nextLength,
         }),
       });
       if (!resp.ok) {
@@ -342,9 +328,16 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
 
           {!maxChapters && (
             <div className="p-6 space-y-5">
+              {/* Casting locked notice */}
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/20 border border-border/20">
+                <span className="text-xs text-muted-foreground">
+                  Cast is locked — same characters, same world, continuing from where it ended.
+                </span>
+              </div>
+
               {/* Mood */}
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Mood</label>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Mood for this chapter</label>
                 <div className="flex flex-wrap gap-2">
                   {VALID_MOODS.map((m) => (
                     <button
@@ -358,84 +351,17 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
                 </div>
               </div>
 
-              {/* Advanced options toggle */}
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {showAdvanced ? "Hide" : "Show"} advanced options
-              </button>
-
-              <AnimatePresence>
-                {showAdvanced && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden space-y-4"
-                  >
-                    {/* Intensity */}
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Intensity</label>
-                      <div className="flex gap-2">
-                        {VALID_INTENSITIES.map((v) => (
-                          <button
-                            key={v}
-                            onClick={() => setNextIntensity(v)}
-                            className={`flex-1 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${nextIntensity === v ? "bg-primary text-primary-foreground" : "border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}
-                          >
-                            {v}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Voice */}
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Narrator voice</label>
-                      <div className="flex flex-wrap gap-2">
-                        {VALID_VOICES.map((v) => (
-                          <button
-                            key={v}
-                            onClick={() => setNextVoice(v)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${nextVoice === v ? "bg-primary text-primary-foreground" : "border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}
-                          >
-                            {v}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Length */}
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Length</label>
-                      <div className="flex gap-2">
-                        {VALID_LENGTHS.map((v) => (
-                          <button
-                            key={v}
-                            onClick={() => setNextLength(v)}
-                            className={`flex-1 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${nextLength === v ? "bg-primary text-primary-foreground" : "border border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}
-                          >
-                            {v}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Scenario hint */}
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Chapter direction (optional)</label>
-                      <textarea
-                        value={nextScenario}
-                        onChange={(e) => setNextScenario(e.target.value)}
-                        placeholder="e.g. the tension finally breaks, they're alone again…"
-                        rows={2}
-                        className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 resize-none"
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Direction hint */}
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-widest block mb-2">Chapter direction (optional)</label>
+                <textarea
+                  value={nextScenario}
+                  onChange={(e) => setNextScenario(e.target.value)}
+                  placeholder="e.g. the tension finally breaks, they're alone again at midnight…"
+                  rows={2}
+                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 resize-none"
+                />
+              </div>
 
               {genError && (
                 <p className="text-sm text-red-400">{genError}</p>

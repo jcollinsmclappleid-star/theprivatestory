@@ -24,6 +24,7 @@ import Terms from "@/pages/Terms";
 import ContentPolicy from "@/pages/ContentPolicy";
 import NotFound from "@/pages/not-found";
 import MySeriesDetailPage from "@/pages/MySeriesDetail";
+import ResetPassword from "@/pages/ResetPassword";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +37,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/admin" component={Admin} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route>
         <Layout>
           <Switch>

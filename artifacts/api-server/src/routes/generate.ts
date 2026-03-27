@@ -789,7 +789,24 @@ const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
 const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
 const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
 
+// Archetype IDs from CastingRoom buildArchetypes() — sent as whoIsHe
 const VALID_WHO_IS_HE = [
+  // CastingRoom archetype tile IDs
+  "The Executive",
+  "The Stranger",
+  "The Artist",
+  "The Protector",
+  "The Bad One",
+  "The Professor",
+  "The Wanderer",
+  "The Old Friend",
+  "The Detective",
+  "The Doctor",
+  "The Musician",
+  "The Athlete",
+  "The Chef",
+  "The Soldier",
+  // Legacy form-based values (kept for backwards compat with existing stories)
   "My boss",
   "Someone else's husband",
   "Someone I shouldn't want",
@@ -811,15 +828,62 @@ const VALID_WHO_IS_HE = [
   "A man who doesn't need to explain himself",
 ];
 
+// Dynamic values come from CastingRoom chemistry options (.dynamic field)
 const VALID_DYNAMICS = [
-  "He pursues, I decide",
-  "I take what I want",
+  // CastingRoom chemistry dynamics
+  "They pursue, I decide",
   "Equal desire, equal intensity",
+  "I take what I want",
+  "Dominant and yielding",
+  "Forbidden desire",
+  "Adoration and surrender",
+  // Legacy form-based values (kept for backwards compat)
+  "He pursues, I decide",
   "He's completely in control",
   "I'm completely in control",
   "We've been circling this for months",
   "He's patient until he isn't",
   "I dare him to follow through",
+];
+
+// Chemistry option IDs from CastingRoom buildChemistries() — pronoun-substituted
+const VALID_CHEMISTRIES = [
+  // Partner-led (partner.subject + "Takes Charge")
+  "He Takes Charge",
+  "She Takes Charge",
+  "They Takes Charge",
+  // Protagonist-led (protagonist.subject + "Leads")
+  "She Leads",
+  "He Leads",
+  "They Leads",
+  // Fixed-id options (no pronoun substitution)
+  "Equal Tension",
+  "Push & Pull",
+  "Slow Surrender",
+  "Power Play",
+  "Forbidden Pull",
+  "Worship",
+  "Rivals",
+];
+
+// Setting IDs from CastingRoom CONTEMPORARY_SETTINGS, HISTORICAL_SETTINGS, AFTER_DARK_SETTINGS
+const VALID_SETTINGS = [
+  // Contemporary
+  "Late Night City", "Luxury Hotel", "European Villa", "Private Yacht",
+  "Mountain Retreat", "Penthouse Suite", "Art Gallery After Hours",
+  "Office After Hours", "Rooftop Bar", "Beach House", "Private Members Club",
+  "Orient Express Style", "Concert Backstage", "Ski Chalet", "Private Estate",
+  "Casino High-Stakes Room",
+  // Historical
+  "Regency England (1810s)", "Victorian London (1880s)", "Belle Époque Paris (1900s)",
+  "Roaring Twenties (1920s)", "Wartime (1940s)", "Swinging Sixties (1960s)",
+  "Disco & Velvet (1970s)", "Neon Decade (1980s)", "Ancient Mediterranean",
+  "Renaissance Italy", "Feudal Japan", "Georgian Scotland",
+  // After Dark
+  "Private Club", "VIP Suite", "The Back Room", "Moving Elevator",
+  "Private Cinema", "Hotel Balcony", "Dressing Room", "Locked Room",
+  "Rooftop 3am", "First-Class Cabin", "The Glass House", "Yacht Cabin",
+  "Penthouse Pool", "Private Spa Suite",
 ];
 
 const VALID_ENDINGS = [
@@ -946,7 +1010,7 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     whoIsHe: raw.whoIsHe && VALID_WHO_IS_HE.includes(raw.whoIsHe.trim()) ? raw.whoIsHe.trim() : undefined,
     dynamic: raw.dynamic && VALID_DYNAMICS.includes(raw.dynamic.trim()) ? raw.dynamic.trim() : undefined,
     ending: raw.ending && VALID_ENDINGS.includes(raw.ending.trim()) ? raw.ending.trim() : undefined,
-    setting: sanitiseTextField(raw.setting, 120),
+    setting: raw.setting && VALID_SETTINGS.includes(raw.setting.trim()) ? raw.setting.trim() : undefined,
     pairing: raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim()) ? raw.pairing.trim() : undefined,
     partnerName: raw.partnerName?.trim() || undefined,
     categoryId: validCategory ? categoryId : undefined,
@@ -956,7 +1020,7 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     storyMode: raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim()) ? raw.storyMode.trim() : undefined,
     heritage: raw.heritage && VALID_HERITAGES.includes(raw.heritage.trim()) ? raw.heritage.trim() : undefined,
     atmosphere: raw.atmosphere && VALID_ATMOSPHERES.includes(raw.atmosphere.trim()) ? raw.atmosphere.trim() : undefined,
-    chemistry: sanitiseTextField(raw.chemistry, 120),
+    chemistry: raw.chemistry && VALID_CHEMISTRIES.includes(raw.chemistry.trim()) ? raw.chemistry.trim() : undefined,
     partnerAppearance: sanitiseTextField(raw.partnerAppearance, 500),
     experienceTags: Array.isArray(raw.experienceTags)
       ? raw.experienceTags.filter((t): t is string => typeof t === "string" && VALID_EXPERIENCE_TAGS.has(t))

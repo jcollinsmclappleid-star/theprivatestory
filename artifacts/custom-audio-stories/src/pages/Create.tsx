@@ -207,25 +207,48 @@ const INTENSITIES = [
   { id: "Scorching", label: "Scorching", desc: "Maximum intensity, no restraint" },
 ];
 
-const WHO_IS_HE_OPTIONS = [
-  "A stranger I'll never see again",
-  "Someone I've wanted for a long time",
-  "My ex",
-  "Someone I shouldn't want",
-  "My boss",
-  "A bodyguard with orders not to touch me",
-  "An old friend who finally says it",
-  "Someone who wants only me",
-  "Someone else's husband",
-  "My personal trainer",
-  "My driver",
-  "Someone famous who shouldn't know my name",
-  "The one who got away",
-  "A dangerous man everyone else avoids",
-  "Someone who sees through every version of me",
-  "My rival, who isn't as cold as I thought",
-  "A close friend's older brother",
-  "A man from a life I left behind",
+const WHO_IS_HE_GROUPS = [
+  {
+    heading: "The Forbidden",
+    items: [
+      "My boss",
+      "Someone else's husband",
+      "Someone I shouldn't want",
+      "My personal trainer",
+      "My driver",
+      "My rival, who isn't as cold as I thought",
+    ],
+  },
+  {
+    heading: "The Unknown",
+    items: [
+      "A stranger I'll never see again",
+      "Someone I was specifically warned about",
+      "Someone famous who shouldn't know my name",
+      "A dangerous man everyone else avoids",
+      "A man with no past I can trace",
+    ],
+  },
+  {
+    heading: "The Familiar",
+    items: [
+      "My ex",
+      "An old friend who finally says it",
+      "The one who got away",
+      "A close friend's older brother",
+      "Someone I used to love",
+    ],
+  },
+  {
+    heading: "The Devoted",
+    items: [
+      "Someone I've wanted for a long time",
+      "Someone who wants only me",
+      "A bodyguard with orders not to touch me",
+      "Someone who sees through every version of me",
+      "A man who has been watching, and waiting",
+    ],
+  },
 ];
 
 const DYNAMIC_OPTIONS = [
@@ -1035,7 +1058,8 @@ export default function Create() {
 
       const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
       form.setValue("scenarioPrompt", pick(allScenarios));
-      form.setValue("whoIsHe", pick(WHO_IS_HE_OPTIONS));
+      const allWhoIsHe = WHO_IS_HE_GROUPS.flatMap(g => g.items);
+      form.setValue("whoIsHe", pick(allWhoIsHe));
       form.setValue("dynamic", pick(DYNAMIC_OPTIONS));
       form.setValue("ending", pick(ENDING_OPTIONS));
 
@@ -1596,9 +1620,18 @@ export default function Create() {
               <div className="glass-panel rounded-2xl p-6">
                 <label className="block text-sm font-medium text-foreground mb-1">Who is He?</label>
                 <p className="text-xs text-muted-foreground mb-4">Optional — tap to select, tap again to clear</p>
-                <div className="flex flex-wrap gap-2">
-                  {WHO_IS_HE_OPTIONS.map((opt) => (
-                    <OptionalPill key={opt} label={opt} field="whoIsHe" value={opt} />
+                <div className="space-y-4">
+                  {WHO_IS_HE_GROUPS.map((group) => (
+                    <div key={group.heading}>
+                      <p className="text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">
+                        {group.heading}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {group.items.map((opt) => (
+                          <OptionalPill key={opt} label={opt} field="whoIsHe" value={opt} />
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

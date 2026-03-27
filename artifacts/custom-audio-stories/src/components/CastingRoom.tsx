@@ -7,8 +7,6 @@ import { NamePicker } from "./NamePicker";
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your";
   pairing?: string;
-  listenerName?: string;
-  partnerName?: string;
   heritage: string;
   archetype: string;
   chemistry: string;
@@ -463,6 +461,8 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
     : parts.join(", ") + ".";
 }
 
+const CASTING_API_BASE = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+
 /* ── Main component ───────────────────────────────────────────────── */
 export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [step, setStep] = useState(0);
@@ -471,6 +471,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     intensity: afterDark ? "Explicit" : "Heated",
     mood: "Emotional",
   });
+  // Local name state — used for story scenario prompt & UI display only.
+  // Names are also saved to the user's profile via PUT /api/me/profile-names
+  // so the backend can source them from the DB rather than the request body.
   const [listenerName, setListenerName] = useState<string>("");
   const [partnerName, setPartnerName] = useState<string>("");
   const [customTags, setCustomTags] = useState<string[]>([]);
@@ -495,6 +498,28 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
   const back = () => setStep(s => Math.max(s - 1, 0));
+
+  // Save approved names to user profile before advancing from name steps.
+  // Fire-and-forget — the backend validates and stores; generation reads from DB.
+  const handleNext = () => {
+    if (step === 2 && listenerName.trim()) {
+      fetch(`${CASTING_API_BASE}/api/me/profile-names`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ listenerName: listenerName.trim() }),
+      }).catch(() => {});
+    }
+    if (step === 3 && partnerName.trim()) {
+      fetch(`${CASTING_API_BASE}/api/me/profile-names`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ partnerName: partnerName.trim() }),
+      }).catch(() => {});
+    }
+    next();
+  };
 
   const canProceed = () => {
     switch (step) {
@@ -567,8 +592,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const result: CastingRoomResult = {
       perspective: data.perspective ?? "her",
       pairing: data.pairing,
-      listenerName: listenerName.trim() || undefined,
-      partnerName: name || undefined,
       heritage,
       archetype,
       chemistry: data.chemistry ?? "",
@@ -1021,7 +1044,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       <div className="mt-8">
         {step < TOTAL_STEPS - 1 ? (
           <button
-            onClick={next}
+            onClick={handleNext}
             disabled={!canProceed()}
             className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all ${
               canProceed()

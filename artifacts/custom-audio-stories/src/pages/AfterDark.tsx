@@ -972,7 +972,6 @@ export default function AfterDark() {
       try {
         await generateMutation.mutateAsync({
           data: {
-            listenerName: casting.listenerName || "",
             mood: "Late Night",
             intensity: casting.intensity,
             voiceFeel: "Deep Voice",
@@ -988,7 +987,6 @@ export default function AfterDark() {
             atmosphere: casting.atmosphere || undefined,
             chemistry: casting.chemistry || undefined,
             setting: casting.setting || undefined,
-            partnerName: casting.partnerName || undefined,
           },
         });
       } finally {

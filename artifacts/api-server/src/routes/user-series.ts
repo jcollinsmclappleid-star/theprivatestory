@@ -270,8 +270,9 @@ router.post("/:id/next-chapter", async (req, res) => {
       : undefined;
 
     const intake: GenerateStoryRequest = {
-      listenerName: (casting.listenerName as string) || "",
-      partnerName: (casting.partnerName as string) || undefined,
+      // Names come from the authenticated user's approved profile — not from saved casting data
+      listenerName: req.user?.approvedListenerName?.trim() ?? "",
+      partnerName: req.user?.approvedPartnerName?.trim() || undefined,
       whoIsHe: (casting.whoIsHe as string) || undefined,
       dynamic: (casting.dynamic as string) || undefined,
       setting: (casting.setting as string) || undefined,

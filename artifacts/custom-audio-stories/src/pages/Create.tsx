@@ -11,13 +11,10 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
-import { NamePicker } from "@/components/NamePicker";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const formSchema = z.object({
-  listenerName: z.string().max(15, "Name must be 15 characters or fewer").optional().default(""),
-  partnerName: z.string().max(15, "Name must be 15 characters or fewer").optional().default(""),
   mood: z.string().min(1),
   intensity: z.string(),
   voiceFeel: z.string(),
@@ -717,7 +714,6 @@ export default function Create() {
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
   const [perspective, setPerspective] = useState<"your" | "her" | "his">("your");
   const [castingPairing, setCastingPairing] = useState<string | undefined>();
-  const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
   const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
   const [castingChemistry, setCastingChemistry] = useState<string | undefined>();
@@ -734,8 +730,6 @@ export default function Create() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      listenerName: "",
-      partnerName: "",
       mood: "Emotional",
       intensity: "Tender",
       voiceFeel: "Soft Voice",
@@ -874,7 +868,6 @@ export default function Create() {
         form.setValue("mood", casting.mood ?? "Emotional");
         form.setValue("storyMode", casting.storyMode ?? "romance");
         if (casting.pairing) setCastingPairing(casting.pairing);
-        if (casting.partnerName) setCastingPartnerName(casting.partnerName);
         setStep("form");
       } catch { /* ignore */ }
     }
@@ -916,7 +909,6 @@ export default function Create() {
     if (c.storyMode) form.setValue("storyMode", String(c.storyMode));
     if (c.setting) form.setValue("setting", String(c.setting));
     if (c.pairing) setCastingPairing(String(c.pairing));
-    if (c.partnerName) setCastingPartnerName(String(c.partnerName));
     setLastCastingData(myUsualPreset.castingData);
     setPendingCastingData(myUsualPreset.castingData);
     setMyUsualApplied(true);
@@ -937,8 +929,6 @@ export default function Create() {
     if (typeof p.dynamic === "string") form.setValue("dynamic", p.dynamic);
     if (typeof p.ending === "string") form.setValue("ending", p.ending);
     if (typeof p.setting === "string") form.setValue("setting", p.setting);
-    if (typeof p.listenerName === "string") form.setValue("listenerName", p.listenerName);
-    if (typeof p.partnerName === "string") form.setValue("partnerName", p.partnerName);
     if (typeof p.timeOfDay === "string") setTimeOfDay(p.timeOfDay);
     if (typeof p.season === "string") setSeason(p.season);
     if (p.perspective === "your" || p.perspective === "her" || p.perspective === "his") setPerspective(p.perspective);
@@ -960,8 +950,6 @@ export default function Create() {
       dynamic: form.getValues("dynamic") ?? "",
       ending: form.getValues("ending") ?? "",
       setting: form.getValues("setting") ?? "",
-      listenerName: form.getValues("listenerName") ?? "",
-      partnerName: form.getValues("partnerName") ?? "",
       timeOfDay,
       season,
       perspective,
@@ -1081,8 +1069,6 @@ export default function Create() {
       mood: casting.mood,
       storyMode: casting.storyMode,
       pairing: casting.pairing,
-      partnerName: casting.partnerName,
-      listenerName: casting.listenerName ?? "",
       heritage: casting.heritage || undefined,
       atmosphere: casting.atmosphere || undefined,
       chemistry: casting.chemistry || undefined,
@@ -1091,12 +1077,9 @@ export default function Create() {
       storyLength: form.getValues("storyLength"),
     };
 
-    form.setValue("listenerName", casting.listenerName ?? "");
-
     setLastCastingData(castingSnapshot);
     setPendingCastingData(castingSnapshot);
     setCastingPairing(casting.pairing);
-    setCastingPartnerName(casting.partnerName);
     setCastingHeritage(casting.heritage || undefined);
     setCastingAtmosphere(casting.atmosphere || undefined);
     setCastingChemistry(casting.chemistry || undefined);
@@ -1122,7 +1105,6 @@ export default function Create() {
       startLoadingPhase();
       generateMutation.mutateAsync({
         data: {
-          listenerName: form.getValues("listenerName") ?? "",
           mood: casting.mood,
           intensity: casting.intensity,
           voiceFeel: form.getValues("voiceFeel"),
@@ -1136,7 +1118,6 @@ export default function Create() {
           storyMode: casting.storyMode || undefined,
           experienceTags: allTags.length ? allTags : undefined,
           pairing: casting.pairing || undefined,
-          partnerName: casting.partnerName || undefined,
           heritage: casting.heritage || undefined,
           atmosphere: casting.atmosphere || undefined,
           chemistry: casting.chemistry || undefined,
@@ -1185,7 +1166,6 @@ export default function Create() {
     try {
       await generateMutation.mutateAsync({
         data: {
-          listenerName: form.getValues("listenerName") ?? "",
           mood: form.getValues("mood"),
           intensity: form.getValues("intensity"),
           voiceFeel: form.getValues("voiceFeel"),
@@ -1199,7 +1179,6 @@ export default function Create() {
           storyMode: form.getValues("storyMode") || undefined,
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
           pairing: castingPairing || perspectivePairing,
-          partnerName: castingPartnerName || form.getValues("partnerName") || undefined,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
@@ -1209,7 +1188,7 @@ export default function Create() {
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingPartnerName, castingHeritage, castingAtmosphere, castingChemistry, castingPartnerAppearance, buildPerspectiveOverrides, buildAugmentedScenario]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingPartnerAppearance, buildPerspectiveOverrides, buildAugmentedScenario]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -1309,7 +1288,6 @@ export default function Create() {
     try {
       await generateMutation.mutateAsync({
         data: {
-          listenerName: data.listenerName ?? "",
           mood: data.mood,
           intensity: data.intensity,
           voiceFeel: data.voiceFeel,
@@ -1328,7 +1306,6 @@ export default function Create() {
           subthemeId: selectedSubthemeId || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
           pairing: castingPairing || perspectivePairing,
-          partnerName: castingPartnerName || data.partnerName || undefined,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
@@ -1715,40 +1692,6 @@ export default function Create() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-2">
-                      {perspective === "your" ? "Your name" : perspective === "her" ? "Her name" : "His name"}
-                      <span className="font-normal"> (optional)</span>
-                    </label>
-                    <NamePicker
-                      value={form.watch("listenerName") ?? ""}
-                      onChange={v => form.setValue("listenerName", v, { shouldDirty: true })}
-                      placeholder={
-                        perspective === "your"
-                          ? "How should the story address you?"
-                          : perspective === "her"
-                          ? "Her name…"
-                          : "His name…"
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-2">
-                      {perspective === "his" ? "Her name" : "His name"}
-                      <span className="font-normal"> — the love interest (optional)</span>
-                    </label>
-                    <NamePicker
-                      value={form.watch("partnerName") ?? ""}
-                      onChange={v => form.setValue("partnerName", v, { shouldDirty: true })}
-                      placeholder={
-                        perspective === "his"
-                          ? "Her name…"
-                          : "His name…"
-                      }
-                    />
-                  </div>
-                </div>
               </div>
 
               {/* Story Theme — Category Picker */}

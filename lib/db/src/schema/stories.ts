@@ -128,6 +128,8 @@ export const nameSubmissions = pgTable("name_submissions", {
   name: text("name").notNull(),
   submittedByUserId: text("submitted_by_user_id").references(() => usersTable.id, { onDelete: "set null" }),
   status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull().default("pending"),
+  /** Whether this is a "listener" (the reader) or "partner" (love interest) name request */
+  nameType: text("name_type", { enum: ["listener", "partner"] }).notNull().default("listener"),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   notes: text("notes"),
   submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),

@@ -37,8 +37,6 @@ interface ModerationResult {
 /** Collect all user-supplied free-text fields from a generation request into one string for moderation. */
 export function extractUserText(req: Partial<GenerateStoryRequest>): string {
   return [
-    req.listenerName,
-    req.partnerName,
     req.scenarioPrompt,
     req.whoIsHe,
     req.dynamic,
@@ -53,28 +51,18 @@ export function extractUserText(req: Partial<GenerateStoryRequest>): string {
  *
  * Limits (per safety architecture spec):
  *   scenarioPrompt  ≤ 100 words
- *   listenerName    ≤ 15 characters (letters only)
- *   partnerName     ≤ 15 characters (letters only)
  *   whoIsHe         ≤ 120 characters (from predefined list)
  *   setting         ≤ 120 characters (from predefined list)
  *   dynamic         ≤ 120 characters (from predefined list)
+ *
+ * Note: listenerName and partnerName are sourced exclusively from the
+ * authenticated user's DB profile — they are never validated from req.body.
  */
 function validateInputLengths(body: Partial<GenerateStoryRequest>): string | null {
   if (body.scenarioPrompt) {
     const wordCount = body.scenarioPrompt.trim().split(/\s+/).filter(Boolean).length;
     if (wordCount > 100) {
       return `Your scenario is too long (${wordCount} words). Please keep it under 100 words.`;
-    }
-  }
-  const nameFields: Array<keyof GenerateStoryRequest> = ["listenerName", "partnerName"];
-  for (const field of nameFields) {
-    const val = body[field] as string | undefined;
-    if (val && val.length > 15) {
-      return `The name you entered is too long. Please keep names under 15 characters.`;
-    }
-    if (val) {
-      const nameError = validateNameFormat(val);
-      if (nameError) return nameError;
     }
   }
   const contextFields: Array<keyof GenerateStoryRequest> = ["whoIsHe", "setting", "dynamic"];
@@ -999,7 +987,9 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     : undefined;
 
   return {
-    listenerName: raw.listenerName?.trim() ?? "",
+    // listenerName and partnerName are NOT taken from the request body.
+    // They are injected from req.user.approvedListenerName/approvedPartnerName after this call.
+    listenerName: "",
     mood,
     intensity,
     voiceFeel,
@@ -1012,7 +1002,7 @@ function normaliseIntake(raw: GenerateStoryRequest): GenerateStoryRequest {
     ending: raw.ending && VALID_ENDINGS.includes(raw.ending.trim()) ? raw.ending.trim() : undefined,
     setting: raw.setting && VALID_SETTINGS.includes(raw.setting.trim()) ? raw.setting.trim() : undefined,
     pairing: raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim()) ? raw.pairing.trim() : undefined,
-    partnerName: raw.partnerName?.trim() || undefined,
+    partnerName: undefined,
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,
 
@@ -1978,6 +1968,10 @@ router.post("/plan-story", async (req, res) => {
 
   const body = req.body as GenerateStoryRequest;
 
+  // Inject approved names from authenticated user profile — never from request body
+  body.listenerName = req.user?.approvedListenerName?.trim() ?? "";
+  body.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
+
   const hasCustomInput = !!(body.scenarioPrompt || body.whoIsHe || body.setting || body.dynamic);
   const riskError = checkRiskThreshold(req, hasCustomInput);
   if (riskError) {
@@ -2024,9 +2018,8 @@ router.post("/plan-story", async (req, res) => {
 });
 
 router.post("/generate-story", async (req, res) => {
-  const { brief, listenerName, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } = req.body as {
+  const { brief, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } = req.body as {
     brief: StoryBrief;
-    listenerName?: string;
     intensity?: string;
     scenarioPrompt?: string;
     whoIsHe?: string;
@@ -2035,6 +2028,9 @@ router.post("/generate-story", async (req, res) => {
     mood?: string;
   };
 
+  // Names come exclusively from the authenticated user's approved profile fields
+  const listenerName = req.isAuthenticated() ? (req.user.approvedListenerName?.trim() ?? "") : "";
+
   const hasCustomInput = !!(scenarioPrompt || whoIsHe || setting || dynamicInput);
   const riskError = checkRiskThreshold(req, hasCustomInput);
   if (riskError) {
@@ -2042,7 +2038,7 @@ router.post("/generate-story", async (req, res) => {
     return;
   }
 
-  const lengthError = validateInputLengths({ listenerName, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput });
+  const lengthError = validateInputLengths({ scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput });
   if (lengthError) {
     res.status(422).json({ error: lengthError });
     return;
@@ -2050,7 +2046,7 @@ router.post("/generate-story", async (req, res) => {
 
   const userId = req.isAuthenticated() ? String(req.user.id) : undefined;
   let tier2Enhanced = false;
-  const inputToModerate = extractUserText({ listenerName, scenarioPrompt, whoIsHe, dynamic: dynamicInput, setting, mood });
+  const inputToModerate = extractUserText({ scenarioPrompt, whoIsHe, dynamic: dynamicInput, setting, mood });
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
@@ -2272,6 +2268,11 @@ router.post("/generate-full-story", async (req, res) => {
 
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
+
+  // Inject approved names from authenticated user profile — never from request body.
+  // normaliseIntake already zeroes these out; we override here with DB-sourced values.
+  intake.listenerName = req.user?.approvedListenerName?.trim() ?? "";
+  intake.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
 
   // Step 1a: Input length validation
   const lengthError = validateInputLengths(intake);

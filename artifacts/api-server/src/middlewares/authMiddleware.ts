@@ -17,6 +17,11 @@ declare global {
       user?: User | undefined;
     }
 
+    interface User {
+      approvedListenerName?: string | null;
+      approvedPartnerName?: string | null;
+    }
+
     export interface AuthedRequest {
       user: User;
     }
@@ -50,6 +55,8 @@ export async function authMiddleware(
             isAdmin: usersTable.isAdmin,
             riskScore: usersTable.riskScore,
             deletedAt: usersTable.deletedAt,
+            approvedListenerName: usersTable.approvedListenerName,
+            approvedPartnerName: usersTable.approvedPartnerName,
           })
           .from(usersTable)
           .where(eq(usersTable.id, session.user.id))
@@ -76,6 +83,8 @@ export async function authMiddleware(
           (u.profileImageUrl as string) ?? (session.user.image as string) ?? null,
         isAdmin,
         riskScore,
+        approvedListenerName: dbUser?.approvedListenerName ?? null,
+        approvedPartnerName: dbUser?.approvedPartnerName ?? null,
       };
     }
   } catch {

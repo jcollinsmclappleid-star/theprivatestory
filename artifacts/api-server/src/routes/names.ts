@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { nameSubmissions } from "@workspace/db/schema";
+import { nameSubmissions, usersTable } from "@workspace/db/schema";
 import { and, eq, desc } from "drizzle-orm";
 
 const router = Router();
@@ -34,19 +34,22 @@ function passesBlocklist(name: string): boolean {
 // POST /names/submit — authenticated users only
 // (mounted at /api by app, so full path is /api/names/submit)
 router.post("/names/submit", async (req, res) => {
-  // TODO: tighten to active subscribers once payment model is defined
   const user = req.user as { id?: string } | undefined;
   if (!user?.id) {
     return res.status(401).json({ error: "Sign in to request a name." });
   }
 
-  const { name } = req.body ?? {};
+  const { name, nameType } = req.body ?? {};
 
   if (!name || typeof name !== "string") {
     return res.status(400).json({ error: "Name is required." });
   }
+  if (!nameType || !["listener", "partner"].includes(nameType)) {
+    return res.status(400).json({ error: "nameType must be 'listener' or 'partner'." });
+  }
 
   const trimmed = (name as string).trim();
+  const type = nameType as "listener" | "partner";
 
   if (!/^[A-Za-z]{2,20}$/.test(trimmed)) {
     return res.status(400).json({
@@ -59,8 +62,7 @@ router.post("/names/submit", async (req, res) => {
   }
 
   try {
-    // Duplicate suppression: same user + same name (any status) — checked BEFORE rate limit
-    // so duplicate requests are always silently accepted regardless of quota
+    // Duplicate suppression: same user + same name + same type (any status) — silently accepted
     const existing = await db
       .select({ id: nameSubmissions.id })
       .from(nameSubmissions)
@@ -68,12 +70,13 @@ router.post("/names/submit", async (req, res) => {
         and(
           eq(nameSubmissions.submittedByUserId, user.id),
           eq(nameSubmissions.name, trimmed),
+          eq(nameSubmissions.nameType, type),
         ),
       )
       .limit(1);
 
     if (existing.length > 0) {
-      return res.json({ ok: true, name: trimmed });
+      return res.json({ ok: true, name: trimmed, status: "pending" });
     }
 
     if (!checkRateLimit(user.id)) {
@@ -85,10 +88,11 @@ router.post("/names/submit", async (req, res) => {
     await db.insert(nameSubmissions).values({
       name: trimmed,
       submittedByUserId: user.id,
+      nameType: type,
       status: "pending",
     });
 
-    return res.json({ ok: true, name: trimmed });
+    return res.json({ ok: true, name: trimmed, status: "pending" });
   } catch (err) {
     console.error("Name submission error:", err);
     return res.status(500).json({ error: "Server error. Please try again." });
@@ -176,6 +180,7 @@ router.post("/admin/name-submissions/:id/reject", async (req, res) => {
 });
 
 // PUT /admin/name-submissions/:id — approve or reject (single combined endpoint)
+// On approval: writes the name to the submitting user's approvedListenerName or approvedPartnerName.
 router.put("/admin/name-submissions/:id", async (req, res) => {
   const user = req.user as { isAdmin?: boolean } | undefined;
   if (!user?.isAdmin) {
@@ -190,10 +195,38 @@ router.put("/admin/name-submissions/:id", async (req, res) => {
   }
 
   try {
+    // Fetch the submission first so we know submittedByUserId and nameType
+    const [submission] = await db
+      .select({
+        submittedByUserId: nameSubmissions.submittedByUserId,
+        name: nameSubmissions.name,
+        nameType: nameSubmissions.nameType,
+      })
+      .from(nameSubmissions)
+      .where(eq(nameSubmissions.id, id))
+      .limit(1);
+
+    if (!submission) {
+      return res.status(404).json({ error: "Submission not found." });
+    }
+
     await db
       .update(nameSubmissions)
       .set({ status: status as "approved" | "rejected", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
+
+    // On approval: write the name to the submitting user's profile field
+    if (status === "approved" && submission.submittedByUserId) {
+      const profileUpdate = submission.nameType === "partner"
+        ? { approvedPartnerName: submission.name }
+        : { approvedListenerName: submission.name };
+
+      await db
+        .update(usersTable)
+        .set(profileUpdate)
+        .where(eq(usersTable.id, submission.submittedByUserId));
+    }
+
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin review name error:", err);

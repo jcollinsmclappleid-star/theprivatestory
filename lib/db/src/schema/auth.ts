@@ -32,6 +32,10 @@ export const usersTable = pgTable("users", {
   riskScore: integer("risk_score").notNull().default(0),
   riskFlags: integer("risk_flags").notNull().default(0),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  // Approved story names — sourced from the curated NAMES list or admin-approved custom submissions.
+  // These are read by generation endpoints and never accepted from request bodies.
+  approvedListenerName: varchar("approved_listener_name", { length: 20 }),
+  approvedPartnerName: varchar("approved_partner_name", { length: 20 }),
 });
 
 // better-auth sessions

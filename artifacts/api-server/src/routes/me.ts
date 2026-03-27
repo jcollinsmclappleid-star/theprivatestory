@@ -1,7 +1,8 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
 import { db, usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { nameSubmissions } from "@workspace/db/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 
 const router = Router();
@@ -399,6 +400,104 @@ router.get("/quick-create-params", async (req, res) => {
     });
   } catch {
     res.status(500).json({ error: "Failed to build quick-create params" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/profile-names — return user's current approved story names
+// ---------------------------------------------------------------------------
+router.get("/profile-names", (req, res) => {
+  return res.json({
+    listenerName: req.user.approvedListenerName ?? null,
+    partnerName: req.user.approvedPartnerName ?? null,
+  });
+});
+
+// ---------------------------------------------------------------------------
+// PUT /api/me/profile-names — set a story name directly from the curated NAMES list (no admin review).
+// For custom names not in the list, users must use POST /api/names/submit instead.
+// ---------------------------------------------------------------------------
+const NAME_BLOCKLIST = new Set([
+  "fuck", "shit", "cunt", "nigger", "nigga", "faggot", "fag", "bitch",
+  "whore", "slut", "retard", "spastic", "kike", "chink", "spic", "wetback",
+  "cracker", "coon", "dyke", "tranny",
+]);
+
+router.put("/profile-names", async (req, res) => {
+  const userId = getUserId(req);
+  const { listenerName, partnerName } = req.body as {
+    listenerName?: string;
+    partnerName?: string;
+  };
+
+  if (!listenerName && !partnerName) {
+    return res.status(400).json({ error: "At least one of listenerName or partnerName is required." });
+  }
+
+  const validateName = (name: string): string | null => {
+    const trimmed = name.trim();
+    if (!/^[A-Za-z]{2,20}$/.test(trimmed)) {
+      return "Names must be 2–20 letters only, no spaces or special characters.";
+    }
+    if (NAME_BLOCKLIST.has(trimmed.toLowerCase())) {
+      return "This name cannot be used.";
+    }
+    return null;
+  };
+
+  if (listenerName) {
+    const err = validateName(listenerName);
+    if (err) return res.status(400).json({ error: err });
+  }
+  if (partnerName) {
+    const err = validateName(partnerName);
+    if (err) return res.status(400).json({ error: err });
+  }
+
+  try {
+    const update: Partial<{ approvedListenerName: string; approvedPartnerName: string }> = {};
+    if (listenerName) update.approvedListenerName = listenerName.trim();
+    if (partnerName) update.approvedPartnerName = partnerName.trim();
+
+    await db.update(usersTable).set(update).where(eq(usersTable.id, userId));
+
+    return res.json({
+      ok: true,
+      listenerName: update.approvedListenerName ?? req.user.approvedListenerName ?? null,
+      partnerName: update.approvedPartnerName ?? req.user.approvedPartnerName ?? null,
+    });
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to update profile names");
+    return res.status(500).json({ error: "Failed to update profile names." });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/name-submissions — user's own pending/reviewed name submissions
+// ---------------------------------------------------------------------------
+router.get("/name-submissions", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const rows = await db
+      .select({
+        id: nameSubmissions.id,
+        name: nameSubmissions.name,
+        nameType: nameSubmissions.nameType,
+        status: nameSubmissions.status,
+        submittedAt: nameSubmissions.submittedAt,
+        reviewedAt: nameSubmissions.reviewedAt,
+      })
+      .from(nameSubmissions)
+      .where(
+        and(
+          eq(nameSubmissions.submittedByUserId, userId),
+        ),
+      )
+      .orderBy(desc(nameSubmissions.submittedAt));
+    return res.json({ submissions: rows });
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to load name submissions");
+    return res.status(500).json({ error: "Failed to load name submissions." });
   }
 });
 

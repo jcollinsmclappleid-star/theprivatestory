@@ -10,8 +10,8 @@ import { auth } from "./lib/auth.js";
 import router from "./routes/index.js";
 import { logger } from "./lib/logger.js";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
-import { db, contentBlocks } from "@workspace/db";
-import { lt, isNull, and } from "drizzle-orm";
+import { db, contentBlocks, csamReports } from "@workspace/db";
+import { lt, isNull, and, notExists, sql } from "drizzle-orm";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -107,6 +107,13 @@ async function runRetentionCleanup(): Promise<void> {
         and(
           lt(contentBlocks.createdAt, cutoff),
           isNull(contentBlocks.deletedAt),
+          // Exclude records referenced by a CSAM report (legal hold — must not be deleted)
+          notExists(
+            db
+              .select({ one: csamReports.id })
+              .from(csamReports)
+              .where(sql`${csamReports.contentBlockId} = ${contentBlocks.id}::text`),
+          ),
         ),
       )
       .returning({ id: contentBlocks.id });

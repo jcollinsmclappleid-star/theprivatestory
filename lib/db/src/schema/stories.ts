@@ -23,6 +23,8 @@ export const series = pgTable("series", {
   episodeCount: integer("episode_count").notNull().default(5),
   seriesArc: text("series_arc").notNull().default(""),
   status: text("status").notNull().default("pending"),
+  ownerUserId: text("owner_user_id").references(() => usersTable.id, { onDelete: "cascade" }),
+  castingData: jsonb("casting_data").notNull().default({}),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

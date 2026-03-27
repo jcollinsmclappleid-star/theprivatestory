@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
 
+import { useParams } from "wouter";
 import Home from "@/pages/Home";
 import Browse from "@/pages/Browse";
 import SeriesList from "@/pages/SeriesList";
@@ -22,6 +23,12 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import ContentPolicy from "@/pages/ContentPolicy";
 import NotFound from "@/pages/not-found";
+import MySeriesDetailPage from "@/pages/MySeriesDetail";
+
+function MySeriesDetailRoute() {
+  const { id } = useParams<{ id: string }>();
+  return <MySeriesDetailPage seriesId={id ?? ""} />;
+}
 
 const queryClient = new QueryClient();
 
@@ -42,6 +49,7 @@ function Router() {
             <Route path="/gift" component={Gift} />
             <Route path="/library" component={Library} />
             <Route path="/after-dark" component={AfterDark} />
+            <Route path="/my-series/:id" component={MySeriesDetailRoute} />
             <Route path="/me" component={Profile} />
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />

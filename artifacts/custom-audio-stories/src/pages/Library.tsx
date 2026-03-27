@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn } from "lucide-react";
+import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Layers } from "lucide-react";
 import { Link } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
@@ -9,7 +9,16 @@ import { useAuth } from "@/hooks/useAuth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type LibraryTab = "saved" | "generated" | "continue" | "variations";
+type LibraryTab = "saved" | "generated" | "continue" | "variations" | "series";
+
+interface UserSeries {
+  id: string;
+  title: string;
+  mood: string;
+  coverImage: string;
+  episodeCount: number;
+  createdAt: string;
+}
 
 function ProgressBar({ value }: { value: number }) {
   return (
@@ -197,6 +206,7 @@ function AuthGate({ openSignIn }: { openSignIn: () => void }) {
 const TAB_CONFIG = [
   { id: "saved" as LibraryTab, label: "Saved", icon: Heart },
   { id: "generated" as LibraryTab, label: "Generated", icon: Sparkles },
+  { id: "series" as LibraryTab, label: "My Series", icon: Layers },
   { id: "continue" as LibraryTab, label: "Continue", icon: Clock },
   { id: "variations" as LibraryTab, label: "Variations", icon: Shuffle },
 ];
@@ -208,6 +218,7 @@ export default function Library() {
   const [generated, setGenerated] = useState<Story[]>([]);
   const [variations, setVariations] = useState<FullGeneratedStory[]>([]);
   const [inProgress, setInProgress] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
+  const [userSeries, setUserSeries] = useState<UserSeries[]>([]);
   const [loading, setLoading] = useState(false);
 
   const VARIATION_LABELS: Record<string, string> = {
@@ -223,9 +234,10 @@ export default function Library() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [libRes, contRes] = await Promise.all([
+      const [libRes, contRes, seriesRes] = await Promise.all([
         fetch(`${API_BASE}/api/library`, { credentials: "include" }),
         fetch(`${API_BASE}/api/continue-listening`, { credentials: "include" }),
+        fetch(`${API_BASE}/api/user/series`, { credentials: "include" }),
       ]);
       if (libRes.ok) {
         const lib = await libRes.json() as { saved: Story[]; generated: Story[]; variations: FullGeneratedStory[] };
@@ -236,6 +248,10 @@ export default function Library() {
       if (contRes.ok) {
         const cont = await contRes.json() as (Story & { progress?: Record<string, unknown> })[];
         setInProgress(cont ?? []);
+      }
+      if (seriesRes.ok) {
+        const series = await seriesRes.json() as UserSeries[];
+        setUserSeries(series ?? []);
       }
     } catch {
     } finally {
@@ -425,6 +441,52 @@ export default function Library() {
                     </div>
                   );
                 })
+              )
+            )}
+
+            {activeTab === "series" && (
+              userSeries.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-16 space-y-3"
+                >
+                  <Layers className="w-10 h-10 text-muted-foreground/30 mx-auto" />
+                  <p className="text-sm text-muted-foreground">No personal series yet.</p>
+                  <p className="text-xs text-muted-foreground/60">After generating a story, tap "Make this a series" to start one.</p>
+                  <Link href="/create" className="inline-flex items-center gap-2 mt-4 bg-primary text-primary-foreground px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all">
+                    <Sparkles className="w-4 h-4" />
+                    Create a story
+                  </Link>
+                </motion.div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {userSeries.map((s) => (
+                    <Link key={s.id} href={`/my-series/${s.id}`}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-card rounded-2xl border border-border/30 overflow-hidden hover:border-primary/30 transition-all cursor-pointer group"
+                      >
+                        {s.coverImage ? (
+                          <img
+                            src={s.coverImage}
+                            alt={s.title}
+                            className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full aspect-square bg-muted/20 flex items-center justify-center">
+                            <Layers className="w-10 h-10 text-muted-foreground/30" />
+                          </div>
+                        )}
+                        <div className="p-3">
+                          <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{s.mood} · {s.episodeCount} ch</p>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))}
+                </div>
               )
             )}
           </motion.div>

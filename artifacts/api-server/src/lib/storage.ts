@@ -117,6 +117,13 @@ export const storiesStore = {
       .where(eq(generatedStories.id, id));
   },
 
+  async updateSeriesInfo(id: string, seriesId: string, seriesEpisode: number): Promise<void> {
+    await db
+      .update(generatedStories)
+      .set({ seriesId, seriesEpisode })
+      .where(eq(generatedStories.id, id));
+  },
+
   async getLibraryStories(status?: string): Promise<StoredStory[]> {
     const rows = await db
       .select()
@@ -220,6 +227,50 @@ export const seriesStore = {
       .where(eq(generatedStories.seriesId, seriesId))
       .orderBy(generatedStories.seriesEpisode);
     return rows.map(rowToStoredStory);
+  },
+
+  async createForUser(data: {
+    id: string;
+    title: string;
+    ownerUserId: string;
+    castingData: Record<string, unknown>;
+    mood: string;
+    coverImage?: string;
+  }): Promise<void> {
+    await db.insert(series).values({
+      id: data.id,
+      title: data.title,
+      ownerUserId: data.ownerUserId,
+      castingData: data.castingData as unknown[],
+      mood: data.mood,
+      coverImage: data.coverImage ?? "",
+      episodeCount: 0,
+      status: "active",
+    });
+  },
+
+  async getAllForUser(userId: string): Promise<typeof series.$inferSelect[]> {
+    return db.select().from(series).where(eq(series.ownerUserId, userId)).orderBy(desc(series.createdAt));
+  },
+
+  async getForUser(id: string, userId: string): Promise<typeof series.$inferSelect | undefined> {
+    const [row] = await db.select().from(series).where(and(eq(series.id, id), eq(series.ownerUserId, userId)));
+    return row;
+  },
+
+  async renameForUser(id: string, userId: string, title: string): Promise<void> {
+    await db.update(series).set({ title }).where(and(eq(series.id, id), eq(series.ownerUserId, userId)));
+  },
+
+  async incrementEpisodeCount(id: string): Promise<void> {
+    const [current] = await db.select({ episodeCount: series.episodeCount }).from(series).where(eq(series.id, id));
+    if (current) {
+      await db.update(series).set({ episodeCount: current.episodeCount + 1 }).where(eq(series.id, id));
+    }
+  },
+
+  async updateCoverImageForUser(id: string, userId: string, coverImage: string): Promise<void> {
+    await db.update(series).set({ coverImage }).where(and(eq(series.id, id), eq(series.ownerUserId, userId)));
   },
 };
 

@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Layers } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -710,6 +710,9 @@ export default function Create() {
   const [selectedContinuation, setSelectedContinuation] = useState<string>("keep_same_mood");
   const [isGeneratingContinuation, setIsGeneratingContinuation] = useState(false);
 
+  const [isMakingSeries, setIsMakingSeries] = useState(false);
+  const [seriesCreated, setSeriesCreated] = useState<{ id: string; title: string } | null>(null);
+
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
   const [perspective, setPerspective] = useState<"your" | "her" | "his">("your");
@@ -1039,6 +1042,30 @@ export default function Create() {
       setIsGeneratingContinuation(false);
     }
   }, [result, isGeneratingContinuation, selectedContinuation, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
+
+  const handleMakeSeries = useCallback(async () => {
+    if (!result || isMakingSeries || seriesCreated) return;
+    setIsMakingSeries(true);
+    try {
+      const resp = await fetch(`${API_BASE}/api/user/series`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          storyId: result.id,
+          castingData: lastCastingData ?? {},
+          title: result.title,
+        }),
+      });
+      if (!resp.ok) throw new Error("Failed to create series");
+      const data = await resp.json() as { seriesId: string; title: string };
+      setSeriesCreated({ id: data.seriesId, title: data.title });
+    } catch {
+      // silently ignore — user can retry
+    } finally {
+      setIsMakingSeries(false);
+    }
+  }, [result, isMakingSeries, seriesCreated, lastCastingData]);
 
   const handleCastingComplete = useCallback((casting: CastingRoomResult) => {
     const allTags = [...(casting.customTags ?? [])];
@@ -2434,6 +2461,32 @@ export default function Create() {
               )}
               Write Episode 2 →
             </button>
+
+            {/* Make this a series */}
+            {user && (
+              seriesCreated ? (
+                <button
+                  onClick={() => { window.location.href = `${import.meta.env.BASE_URL}my-series/${seriesCreated.id}`; }}
+                  className="w-full flex items-center justify-center gap-2 border border-primary/40 text-primary py-4 rounded-2xl font-semibold text-sm hover:bg-primary/10 transition-all"
+                >
+                  <Layers className="w-4 h-4" />
+                  Series created — View "{seriesCreated.title}"
+                </button>
+              ) : (
+                <button
+                  onClick={handleMakeSeries}
+                  disabled={isMakingSeries}
+                  className="w-full flex items-center justify-center gap-2 border border-border/50 text-muted-foreground py-4 rounded-2xl text-sm font-medium hover:border-primary/30 hover:text-foreground hover:bg-primary/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isMakingSeries ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground animate-spin" />
+                  ) : (
+                    <Layers className="w-4 h-4" />
+                  )}
+                  Make this a series
+                </button>
+              )
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <button

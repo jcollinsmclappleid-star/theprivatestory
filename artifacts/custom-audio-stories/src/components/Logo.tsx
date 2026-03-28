@@ -22,6 +22,7 @@ export function Logo({ height = 80, className = "" }: LogoProps) {
           height: `${height}px`,
           width: "auto",
           display: "block",
+          mixBlendMode: "screen",
         }}
       />
     </span>

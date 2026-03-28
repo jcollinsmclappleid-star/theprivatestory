@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import {
-  Sparkles, Headphones, Play, ChevronRight, Zap, Moon,
+  Sparkles, Headphones, ChevronRight, Zap, Moon,
   EyeOff, WifiOff, Trash2, Lock, Shield, BookOpen, Star,
   ChevronLeft,
 } from "lucide-react";
@@ -111,6 +111,7 @@ const CASTING_STEPS = [
     label: "Who's in your world",
     sub: "Choose the pairing that feels right for tonight.",
     chips: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
+    selected: "Her & Him",
     accent: "#e879a0",
     gradient: "from-[#1a0810] via-[#2a1020] to-[#120508]",
   },
@@ -119,6 +120,7 @@ const CASTING_STEPS = [
     label: "The chemistry between you",
     sub: "Set the charge. Pick the energy you're after.",
     chips: ["Slow Surrender", "Push & Pull", "Instant Desire", "Old Tension"],
+    selected: "Push & Pull",
     accent: "#c9a227",
     gradient: "from-[#100d00] via-[#1e1900] to-[#0c0a00]",
   },
@@ -127,6 +129,7 @@ const CASTING_STEPS = [
     label: "Cast your love interest",
     sub: "Build them from the ground up — their presence, their look.",
     chips: ["Commanding", "Quiet Intensity", "Brooding", "Protective"],
+    selected: "Commanding",
     accent: "#6b8cce",
     gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]",
   },
@@ -135,6 +138,7 @@ const CASTING_STEPS = [
     label: "Set the world",
     sub: "Where does this story take place? The atmosphere is yours.",
     chips: ["Midnight city", "A private villa", "Golden afternoon", "Somewhere familiar"],
+    selected: "A private villa",
     accent: "#34d399",
     gradient: "from-[#001008] via-[#001a10] to-[#000a06]",
   },
@@ -143,6 +147,7 @@ const CASTING_STEPS = [
     label: "Set the intensity",
     sub: "From tender and slow to scorching and explicit — you decide.",
     chips: ["Tender", "Heated", "Explicit", "Scorching"],
+    selected: "Heated",
     accent: "#f97316",
     gradient: "from-[#1a0800] via-[#2a1000] to-[#0c0500]",
   },
@@ -151,6 +156,7 @@ const CASTING_STEPS = [
     label: "Tune the feeling",
     sub: "Tags that tell us exactly what kind of story this should be.",
     chips: ["Slow Build", "Forbidden", "Instant Chemistry", "All foreplay"],
+    selected: "Slow Build",
     accent: "#a78bfa",
     gradient: "from-[#0a0018] via-[#100028] to-[#060010]",
   },
@@ -159,6 +165,7 @@ const CASTING_STEPS = [
     label: "Your story is written",
     sub: "Narrated. Private. Heard only through your headphones.",
     chips: ["ElevenLabs narration", "Cover art generated", "Saved to your library", "Yours alone"],
+    selected: null,
     accent: "#c9a227",
     gradient: "from-[#0f0c00] via-[#1a1500] to-[#0a0900]",
     isFinal: true,
@@ -226,18 +233,20 @@ function CastingPreview() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06, duration: 0.5 }}
-            className="flex-shrink-0 w-72 snap-start"
+            className="flex-shrink-0 w-80 snap-start"
           >
-            <div className={`relative overflow-hidden rounded-2xl border h-full ${s.isFinal ? "border-primary/40" : "border-white/8"}`}>
+            <div className={`relative overflow-hidden rounded-2xl border flex flex-col ${s.isFinal ? "border-primary/40" : "border-white/10"}`}>
               <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
               <div
                 className="absolute inset-0 rounded-2xl"
-                style={{ background: `radial-gradient(ellipse at 70% 30%, ${s.accent}22 0%, transparent 65%)` }}
+                style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }}
               />
               {s.isFinal && (
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/20" />
               )}
-              <div className="relative z-10 p-5 flex flex-col h-full min-h-[220px]">
+
+              {/* Header */}
+              <div className="relative z-10 p-5 pb-3">
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="text-[10px] font-bold tracking-[0.2em] uppercase"
@@ -249,23 +258,72 @@ function CastingPreview() {
                     <span className="text-[10px] font-medium tracking-widest uppercase text-primary/60 ml-1">✦ The moment</span>
                   )}
                 </div>
-                <p className="text-sm font-semibold text-white/90 mb-1 leading-snug">{s.label}</p>
-                <p className="text-xs text-white/40 leading-relaxed mb-4">{s.sub}</p>
-                <div className="flex flex-wrap gap-1.5 mt-auto">
-                  {s.chips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="px-2.5 py-1 rounded-full text-[11px] font-medium border"
-                      style={{
-                        borderColor: `${s.accent}30`,
-                        color: s.isFinal ? s.accent : `${s.accent}cc`,
-                        background: `${s.accent}0d`,
-                      }}
-                    >
-                      {chip}
-                    </span>
+                <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
+                <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+              </div>
+
+              {/* All options */}
+              <div className="relative z-10 px-5 pb-2">
+                <div className="flex flex-wrap gap-1.5">
+                  {s.chips.map((chip) => {
+                    const isSelected = chip === s.selected;
+                    return (
+                      <span
+                        key={chip}
+                        className="px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all"
+                        style={
+                          isSelected
+                            ? {
+                                borderColor: s.accent,
+                                color: "#0a0a0a",
+                                background: s.accent,
+                                fontWeight: 700,
+                              }
+                            : {
+                                borderColor: `${s.accent}28`,
+                                color: `${s.accent}99`,
+                                background: `${s.accent}0a`,
+                              }
+                        }
+                      >
+                        {chip}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selected callout */}
+              {s.selected && (
+                <div className="relative z-10 mx-4 mb-3 mt-2 rounded-xl border p-3" style={{ borderColor: `${s.accent}25`, background: `${s.accent}0d` }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: `${s.accent}99` }}>Selected</p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: s.accent }} />
+                    <p className="text-sm font-semibold" style={{ color: s.accent }}>{s.selected}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Final step delivery list */}
+              {s.isFinal && (
+                <div className="relative z-10 mx-4 mb-4 mt-1 space-y-1.5">
+                  {["Your story, written", "Narrated by ElevenLabs", "Cover art generated", "Saved privately"].map((item) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      </div>
+                      <span className="text-xs text-white/60">{item}</span>
+                    </div>
                   ))}
                 </div>
+              )}
+
+              {/* Arrow down */}
+              <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
+                <ChevronRight
+                  className="w-4 h-4 rotate-90"
+                  style={{ color: `${s.accent}60` }}
+                />
               </div>
             </div>
           </motion.div>
@@ -372,11 +430,11 @@ export default function Home() {
               </Link>
 
               <Link
-                href="/browse"
-                className="flex items-center gap-2 px-6 py-4 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border/80 transition-all font-medium"
+                href="/after-dark"
+                className="flex items-center gap-2 px-6 py-4 rounded-full border border-[#4a4fff]/40 text-[#8b9dff] hover:text-[#aab4ff] hover:border-[#4a4fff]/70 hover:bg-[#4a4fff]/8 transition-all font-medium"
               >
-                <Play className="w-4 h-4 fill-current" />
-                Listen privately
+                <Moon className="w-4 h-4" />
+                The Private Story After Dark
               </Link>
             </div>
 
@@ -522,57 +580,6 @@ export default function Home() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* Continue Listening                                                */}
-        {/* ---------------------------------------------------------------- */}
-        {continueListening.length > 0 && (
-          <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="font-display text-xl font-bold text-foreground">Continue Listening</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Pick up exactly where you left off.</p>
-              </div>
-              <Link href="/library" className="text-xs text-primary hover:text-primary/80 transition-colors">
-                See all →
-              </Link>
-            </div>
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-              {continueListening.map((s) => (
-                <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Story rows                                                        */}
-        {/* ---------------------------------------------------------------- */}
-        {isLoading ? (
-          <>
-            <SkeletonRow count={5} />
-            <SkeletonRow count={5} />
-          </>
-        ) : (
-          <>
-            <RowSlider
-              title={isAuthenticated && recs.has_taste_profile ? "For You" : "For tonight"}
-              subtitle={isAuthenticated && recs.has_taste_profile ? "Picked from what you love" : "Stories that know what tonight calls for"}
-              stories={tonightPicks}
-            />
-            {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
-              <RowSlider
-                title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}
-                stories={recs.because_you_liked as Story[]}
-              />
-            )}
-            <RowSlider
-              title="After midnight"
-              subtitle="When the evening has its own kind of quiet"
-              stories={lateNight}
-            />
-          </>
-        )}
-
-        {/* ---------------------------------------------------------------- */}
         {/* After Dark — premium marketing block                              */}
         {/* ---------------------------------------------------------------- */}
         <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
@@ -654,6 +661,57 @@ export default function Home() {
             </div>
           </Link>
         </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Continue Listening                                                */}
+        {/* ---------------------------------------------------------------- */}
+        {continueListening.length > 0 && (
+          <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="font-display text-xl font-bold text-foreground">Continue Listening</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Pick up exactly where you left off.</p>
+              </div>
+              <Link href="/library" className="text-xs text-primary hover:text-primary/80 transition-colors">
+                See all →
+              </Link>
+            </div>
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+              {continueListening.map((s) => (
+                <ContinueCard key={s.id} story={s as Story & { progress?: Record<string, unknown> }} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Story rows                                                        */}
+        {/* ---------------------------------------------------------------- */}
+        {isLoading ? (
+          <>
+            <SkeletonRow count={5} />
+            <SkeletonRow count={5} />
+          </>
+        ) : (
+          <>
+            <RowSlider
+              title={isAuthenticated && recs.has_taste_profile ? "For You" : "For tonight"}
+              subtitle={isAuthenticated && recs.has_taste_profile ? "Picked from what you love" : "Stories that know what tonight calls for"}
+              stories={tonightPicks}
+            />
+            {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
+              <RowSlider
+                title={recs.because_you_liked_mood ? `Because you liked ${recs.because_you_liked_mood}` : "You May Also Like"}
+                stories={recs.because_you_liked as Story[]}
+              />
+            )}
+            <RowSlider
+              title="After midnight"
+              subtitle="When the evening has its own kind of quiet"
+              stories={lateNight}
+            />
+          </>
+        )}
 
         {/* Slow Burn row */}
         {!isLoading && (

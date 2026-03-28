@@ -13,10 +13,14 @@ import namesRouter from "./names.js";
 import categoriesRouter from "./categories.js";
 import presetsRouter from "./presets.js";
 import userSeriesRouter from "./user-series.js";
+import mediaRouter from "./media.js";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+// Authenticated media handlers — must come before other routes so /audio and /images
+// are handled by the ownership-checking route, not any catch-all.
+router.use(mediaRouter);
 router.use(storiesRouter);
 router.use(generateRouter);
 router.use(libraryRouter);

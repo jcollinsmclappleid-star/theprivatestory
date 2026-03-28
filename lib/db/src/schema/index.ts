@@ -6,3 +6,4 @@ export * from "./gift";
 export * from "./content-blocks";
 export * from "./csam-reports";
 export * from "./user-reports";
+export * from "./admin-audit-log";

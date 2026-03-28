@@ -7,8 +7,9 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
-import { generatedStories, contentBlocks, csamReports, userReports, usersTable } from "@workspace/db/schema";
+import { generatedStories, contentBlocks, csamReports, userReports, usersTable, adminAuditLog } from "@workspace/db/schema";
 import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
+import { writeAuditLog } from "../lib/auditLog.js";
 import { notifyAdmin } from "../lib/adminNotify.js";
 import { isAdmin, requireAdmin, requireAdminIdentity } from "../middlewares/requireAdmin.js";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
@@ -352,6 +353,15 @@ router.patch("/stories/:id/status", async (req, res) => {
   }
   try {
     await storiesStore.updateStatus(id, status as "published" | "skipped");
+    const actor = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(
+      actor?.id,
+      actor?.email,
+      status === "published" ? "story_published" : "story_rejected",
+      "story",
+      id,
+      { newStatus: status },
+    );
     notifyAdmin("Story status changed", { storyId: id, newStatus: status });
     res.json({ ok: true, id, status });
   } catch {
@@ -1374,6 +1384,10 @@ router.patch("/users/:userId/risk", async (req, res) => {
       return;
     }
     const adminUser = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(adminUser?.id, adminUser?.email, "risk_score_change", "user", userId, {
+      newScore,
+      reason: String(reason ?? ""),
+    });
     notifyAdmin("User risk score updated", {
       targetUserId: userId,
       newScore,
@@ -1418,6 +1432,10 @@ router.delete("/moderation/flagged/:id", async (req, res) => {
       return;
     }
     const adminUser = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(adminUser?.id, adminUser?.email, "content_block_dispositioned", "content_block", String(blockId), {
+      disposition: "dismissed",
+      reason: String(reason ?? ""),
+    });
     notifyAdmin("Content block disposed", {
       contentBlockId: blockId,
       disposition: "dismissed",
@@ -1427,6 +1445,32 @@ router.delete("/moderation/flagged/:id", async (req, res) => {
     res.json({ ok: true, id: blockId, disposed: true });
   } catch {
     res.status(500).json({ error: "Failed to dispose content block" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/audit-log — last 200 admin audit log entries, newest first
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the last 200 rows of admin_audit_log for display in the Admin UI.
+ * The table is append-only; rows are never deleted.
+ * Access is gate-kept by requireAdmin (includes 2FA session check).
+ */
+router.get("/audit-log", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  try {
+    const rows = await db
+      .select()
+      .from(adminAuditLog)
+      .orderBy(desc(adminAuditLog.createdAt))
+      .limit(200);
+    res.json({ entries: rows });
+  } catch {
+    res.status(500).json({ error: "Failed to load audit log" });
   }
 });
 

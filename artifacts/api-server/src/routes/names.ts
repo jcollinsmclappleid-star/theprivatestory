@@ -1,10 +1,11 @@
 import { Router, type NextFunction, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import { nameSubmissions, usersTable } from "@workspace/db/schema";
-import { and, eq, desc } from "drizzle-orm";
+import { and, eq, desc, gt, count } from "drizzle-orm";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 import { notifyAdmin } from "../lib/adminNotify.js";
 import { requireAdmin } from "../middlewares/requireAdmin.js";
+import { writeAuditLog } from "../lib/auditLog.js";
 
 const router = Router();
 
@@ -14,19 +15,23 @@ const router = Router();
 const adminRouter = Router();
 adminRouter.use(requireAdmin);
 
-// Rate-limit tracking (in-memory, per-user). Max 3 submissions per 24 hours.
-const submissionCounts = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const entry = submissionCounts.get(userId);
-  if (!entry || entry.resetAt < now) {
-    submissionCounts.set(userId, { count: 1, resetAt: now + 24 * 60 * 60 * 1000 });
-    return true;
-  }
-  if (entry.count >= 3) return false;
-  entry.count++;
-  return true;
+/**
+ * DB-backed rate limit — counts submissions by this user in the last 24 hours.
+ * Replaces the previous in-memory Map which reset on every server restart,
+ * letting users bypass the 3-per-day limit via a deploy or process restart.
+ */
+async function checkRateLimit(userId: string): Promise<boolean> {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const [row] = await db
+    .select({ total: count() })
+    .from(nameSubmissions)
+    .where(
+      and(
+        eq(nameSubmissions.submittedByUserId, userId),
+        gt(nameSubmissions.submittedAt, since),
+      ),
+    );
+  return (row?.total ?? 0) < 3;
 }
 
 // Minimal blocklist — common offensive/slur terms that must not be added as character names.
@@ -107,7 +112,7 @@ router.post("/names/submit", async (req: Request, res: Response, next: NextFunct
       return res.json({ ok: true, name: trimmed, status: "pending" });
     }
 
-    if (!checkRateLimit(user.id)) {
+    if (!(await checkRateLimit(user.id))) {
       return res.status(429).json({
         error: "You can request up to 3 names per day. Please try again tomorrow.",
       });
@@ -164,6 +169,13 @@ adminRouter.post("/name-submissions/:id/approve", async (req: Request, res: Resp
       .update(nameSubmissions)
       .set({ status: "approved", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
+    const actor = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(actor?.id, actor?.email, "name_approved", "name_submission", String(id), {
+      name: submission.name,
+      nameType: submission.nameType,
+      submittedByUserId: submission.submittedByUserId,
+      notes: notes ?? null,
+    });
     notifyAdmin("Name approved", {
       submissionId: id,
       name: submission.name,
@@ -194,6 +206,13 @@ adminRouter.post("/name-submissions/:id/reject", async (req: Request, res: Respo
       .update(nameSubmissions)
       .set({ status: "rejected", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
+    const actor = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(actor?.id, actor?.email, "name_rejected", "name_submission", String(id), {
+      name: submission.name,
+      nameType: submission.nameType,
+      submittedByUserId: submission.submittedByUserId,
+      notes: notes ?? null,
+    });
     notifyAdmin("Name rejected", {
       submissionId: id,
       name: submission.name,
@@ -252,6 +271,20 @@ adminRouter.put("/name-submissions/:id", async (req: Request, res: Response, nex
         .where(eq(usersTable.id, submission.submittedByUserId));
     }
 
+    const actor = req.user as { id?: string; email?: string } | undefined;
+    writeAuditLog(
+      actor?.id,
+      actor?.email,
+      status === "approved" ? "name_approved" : "name_rejected",
+      "name_submission",
+      String(id),
+      {
+        name: submission.name,
+        nameType: submission.nameType,
+        submittedByUserId: submission.submittedByUserId,
+        notes: notes ?? null,
+      },
+    );
     notifyAdmin(`Name ${status}`, {
       submissionId: id,
       name: submission.name,

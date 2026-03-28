@@ -181,9 +181,10 @@ app.use(authMiddleware);
 
 app.use(globalLimiter);
 
-const publicDir = path.resolve(__dirname, "../public");
-app.use("/api/images", express.static(path.join(publicDir, "images")));
-app.use("/api/audio", express.static(path.join(publicDir, "audio")));
+// Media files (/api/audio, /api/images) are served by authenticated route
+// handlers in routes/media.ts — not as unrestricted static directories.
+// See GAP 5 in Task #58: audio files contain personalised listener names;
+// serving them without ownership verification is a privacy violation.
 
 app.use("/api/reports", reportLimiter);
 app.use("/api/admin", adminLimiter);

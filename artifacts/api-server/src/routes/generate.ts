@@ -2636,9 +2636,15 @@ router.post("/generate-full-story", async (req, res) => {
       qcResult = await qcStory(brief, story);
     }
 
-    // Step 6b: Output moderation — check generated story text before spending on audio/images
-    const outputText = story.scenes.map((s) => [s.narration, s.dialogue].filter(Boolean).join(" ")).join(" ");
+    // Step 6b: Output moderation + blocklist scan — check generated story text before spending on audio/images.
+    // NOTE: s.text is the canonical scene field (s.narration / s.dialogue do not exist on WrittenStory scenes).
+    const outputText = [
+      story.title,
+      story.description,
+      ...story.scenes.map((s) => s.text),
+    ].join("\n");
     if (outputText.trim()) {
+      // Primary: OpenAI / LLM moderation
       const outputMod = await moderateOutput(outputText);
       if (outputMod.blocked) {
         logger.warn({
@@ -2655,6 +2661,34 @@ router.post("/generate-full-story", async (req, res) => {
           blockReason: outputMod.reason ?? "output_flagged",
           inputHash: crypto.createHash("sha256").update(outputText.slice(0, 500)).digest("hex"),
         }).catch((err: unknown) => logger.error({ err }, "[output-moderation] Failed to persist output block to DB"));
+        throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
+      }
+
+      // Secondary: static blocklist scan over the full generated text.
+      // Catches hard-coded slurs or illegal content that the AI may produce despite instructions.
+      const outputBlocklistResult = isBlockedInput(outputText);
+      if (outputBlocklistResult.blocked) {
+        logger.warn({
+          event: "output_blocklist_hit",
+          userId: req.user?.id ?? null,
+          sessionId: req.sessionID,
+          blockSource: "output-scan",
+          reason: outputBlocklistResult.reason,
+        }, "[output-blocklist] Generated story matched blocklist term");
+        db.insert(contentBlocks).values({
+          userId: req.user?.id ? String(req.user.id) : null,
+          sessionId: req.sessionID,
+          blockSource: "output-scan",
+          blockReason: `blocklist_match:${outputBlocklistResult.reason ?? "unknown"}`,
+          inputHash: crypto.createHash("sha256").update(outputText.slice(0, 500)).digest("hex"),
+        }).catch((err: unknown) => logger.error({ err }, "[output-blocklist] Failed to persist output block to DB"));
+        // Increment riskScore by +5 for AI that produced blocked content
+        if (req.user?.id) {
+          db.update(usersTable)
+            .set({ riskScore: drizzleSql`LEAST(${usersTable.riskScore} + 5, 100)` })
+            .where(eq(usersTable.id, String(req.user.id)))
+            .catch((err: unknown) => logger.error({ err }, "[output-blocklist] Failed to update riskScore"));
+        }
         throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
       }
     }

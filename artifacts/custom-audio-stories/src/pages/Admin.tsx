@@ -74,7 +74,7 @@ export default function Admin() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "names" | "security">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "names" | "security" | "audit">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -117,6 +117,32 @@ export default function Admin() {
   const [twoFaQrDataUrl, setTwoFaQrDataUrl] = useState("");
   const [twoFaError, setTwoFaError] = useState("");
   const [twoFaLoading, setTwoFaLoading] = useState(false);
+
+  // ── Audit log state ────────────────────────────────────────────────────────
+  interface AuditLogEntry {
+    id: number;
+    actorUserId: string | null;
+    actorEmail: string | null;
+    action: string;
+    targetType: string;
+    targetId: string;
+    metadata: Record<string, unknown> | null;
+    createdAt: string;
+  }
+  const [auditEntries, setAuditEntries] = useState<AuditLogEntry[]>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+
+  const loadAuditLog = useCallback(async () => {
+    setAuditLoading(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/audit-log`, { credentials: "include" });
+      if (r.ok) {
+        const data = await r.json();
+        setAuditEntries(data.entries ?? []);
+      }
+    } catch {}
+    setAuditLoading(false);
+  }, []);
 
   // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
@@ -167,7 +193,8 @@ export default function Admin() {
 
   useEffect(() => {
     if (activeView === "moderation") loadModeration();
-  }, [activeView, loadModeration]);
+    if (activeView === "audit") loadAuditLog();
+  }, [activeView, loadModeration, loadAuditLog]);
 
   const fileReport = useCallback(async (contentBlockId: string, reportedTo: "ncmec" | "iwf" | "other") => {
     setReportingId(contentBlockId);
@@ -650,6 +677,12 @@ export default function Admin() {
               >
                 🔐 Security
               </button>
+              <button
+                onClick={() => setActiveView("audit")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "audit" ? "bg-amber-500/30 text-amber-300" : "text-white/50 hover:text-white"}`}
+              >
+                Audit
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -1131,6 +1164,53 @@ export default function Admin() {
               )}
             </div>
           </ScrollArea>
+        ) : activeView === "audit" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-3 space-y-2">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-amber-300 text-xs font-semibold uppercase tracking-widest">Admin Audit Log</div>
+                <button
+                  onClick={loadAuditLog}
+                  className="text-xs text-white/40 hover:text-white"
+                >
+                  ↺ Refresh
+                </button>
+              </div>
+              {auditLoading && <div className="text-white/40 text-xs text-center py-6">Loading…</div>}
+              {!auditLoading && auditEntries.length === 0 && (
+                <div className="text-white/30 text-xs text-center py-6">No audit log entries yet</div>
+              )}
+              {auditEntries.map((entry) => {
+                const ts = new Date(entry.createdAt);
+                const timeLabel = ts.toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" });
+                const actionColour =
+                  entry.action.includes("approved") || entry.action.includes("published")
+                    ? "text-emerald-300"
+                    : entry.action.includes("rejected") || entry.action.includes("risk") || entry.action.includes("block")
+                    ? "text-red-300"
+                    : "text-amber-300";
+                return (
+                  <div key={entry.id} className="rounded-xl border border-amber-500/10 bg-white/5 p-3 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`text-xs font-semibold ${actionColour}`}>{entry.action}</span>
+                      <span className="text-[10px] text-white/30">{timeLabel}</span>
+                    </div>
+                    <div className="text-[10px] text-white/40 font-mono">
+                      {entry.targetType} #{entry.targetId}
+                    </div>
+                    {entry.actorEmail && (
+                      <div className="text-[10px] text-white/30">by {entry.actorEmail}</div>
+                    )}
+                    {entry.metadata && Object.keys(entry.metadata).length > 0 && (
+                      <div className="text-[10px] text-white/25 font-mono break-all line-clamp-2">
+                        {JSON.stringify(entry.metadata)}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
         ) : (
           <>
             {drafts.length > 0 && (
@@ -1436,6 +1516,16 @@ export default function Admin() {
               <div className="text-sm mb-2">Moderation queue</div>
               <div className="text-xs text-white/20">
                 Review flagged events and file CSAM reports to NCMEC or IWF from the left panel. Reports are logged permanently.
+              </div>
+            </div>
+          </div>
+        ) : activeView === "audit" ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/30 max-w-xs">
+              <div className="text-4xl mb-3">📋</div>
+              <div className="text-sm mb-2">Admin audit trail</div>
+              <div className="text-xs text-white/20 leading-relaxed">
+                Every privileged action — name approvals, risk-score changes, content-block dispositions, and story status changes — is logged here with actor, timestamp, and metadata. Rows are never deleted.
               </div>
             </div>
           </div>

@@ -1453,6 +1453,7 @@ export default function Create() {
     );
   }
 
+  /* AUTH_GATE_DISABLED — restore before launch
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">
@@ -1475,6 +1476,7 @@ export default function Create() {
       </div>
     );
   }
+  */
 
   return (
     <div className="w-full">

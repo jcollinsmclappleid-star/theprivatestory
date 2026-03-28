@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type NextFunction, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import { nameSubmissions, usersTable } from "@workspace/db/schema";
 import { and, eq, desc } from "drizzle-orm";
@@ -42,7 +42,7 @@ function passesBlocklist(name: string): boolean {
 
 // POST /names/submit — authenticated users only
 // (mounted at /api by app, so full path is /api/names/submit)
-router.post("/names/submit", async (req, res) => {
+router.post("/names/submit", async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as { id?: string } | undefined;
   if (!user?.id) {
     return res.status(401).json({ error: "Sign in to request a name." });
@@ -122,8 +122,7 @@ router.post("/names/submit", async (req, res) => {
 
     return res.json({ ok: true, name: trimmed, status: "pending" });
   } catch (err) {
-    console.error("Name submission error:", err);
-    return res.status(500).json({ error: "Server error. Please try again." });
+    next(err);
   }
 });
 
@@ -134,7 +133,7 @@ router.post("/names/submit", async (req, res) => {
 
 // GET /admin/name-submissions — list PENDING submissions sorted by submitted_at
 // (mounted at /api by app, so full path is /api/admin/name-submissions)
-adminRouter.get("/name-submissions", async (req, res) => {
+adminRouter.get("/name-submissions", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const rows = await db
       .select()
@@ -143,13 +142,12 @@ adminRouter.get("/name-submissions", async (req, res) => {
       .orderBy(desc(nameSubmissions.submittedAt));
     return res.json({ submissions: rows });
   } catch (err) {
-    console.error("Admin list names error:", err);
-    return res.status(500).json({ error: "Server error." });
+    next(err);
   }
 });
 
 // POST /admin/name-submissions/:id/approve — admin only
-adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
+adminRouter.post("/name-submissions/:id/approve", async (req: Request, res: Response, next: NextFunction) => {
   const id = Number(req.params.id);
   const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
   const notes = typeof rawNotes === "string" ? rawNotes.trim().slice(0, 500) : undefined;
@@ -174,13 +172,12 @@ adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
     });
     return res.json({ ok: true });
   } catch (err) {
-    console.error("Admin approve name error:", err);
-    return res.status(500).json({ error: "Server error." });
+    next(err);
   }
 });
 
 // POST /admin/name-submissions/:id/reject — admin only
-adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
+adminRouter.post("/name-submissions/:id/reject", async (req: Request, res: Response, next: NextFunction) => {
   const id = Number(req.params.id);
   const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
   const notes = typeof rawNotes === "string" ? rawNotes.trim().slice(0, 500) : undefined;
@@ -205,14 +202,13 @@ adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
     });
     return res.json({ ok: true });
   } catch (err) {
-    console.error("Admin reject name error:", err);
-    return res.status(500).json({ error: "Server error." });
+    next(err);
   }
 });
 
 // PUT /admin/name-submissions/:id — approve or reject (single combined endpoint)
 // On approval: writes the name to the submitting user's approvedListenerName or approvedPartnerName.
-adminRouter.put("/name-submissions/:id", async (req, res) => {
+adminRouter.put("/name-submissions/:id", async (req: Request, res: Response, next: NextFunction) => {
   const id = Number(req.params.id);
   const { status } = (req.body ?? {}) as { status?: string; notes?: string };
   const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
@@ -265,8 +261,7 @@ adminRouter.put("/name-submissions/:id", async (req, res) => {
 
     return res.json({ ok: true });
   } catch (err) {
-    console.error("Admin review name error:", err);
-    return res.status(500).json({ error: "Server error." });
+    next(err);
   }
 });
 

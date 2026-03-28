@@ -53,7 +53,7 @@ app.use(
   helmet({
     // Prevents MIME-type sniffing attacks where a browser misinterprets
     // a response as a different content type.
-    contentTypeOptions: true,
+    xContentTypeOptions: true,
     // Prevents clickjacking by forbidding the page from being embedded in an
     // iframe on any other origin.
     frameguard: { action: "deny" },

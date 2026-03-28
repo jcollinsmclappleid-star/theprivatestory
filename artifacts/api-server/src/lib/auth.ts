@@ -74,6 +74,32 @@ export const auth = betterAuth({
         },
       },
     },
+    session: {
+      create: {
+        /**
+         * Stamp twoFactorVerifiedAt on sessions that are created as a direct
+         * result of the user completing a TOTP or backup-code challenge. All
+         * other session creation paths (normal sign-in, "enable 2FA" flow, etc.)
+         * leave this field null so admin routes can distinguish them.
+         *
+         * The second argument is the current better-auth request context which
+         * carries the endpoint path — we use a type-safe duck-type check because
+         * the context type is not exported by the library.
+         */
+        before: async (session, ctx: unknown) => {
+          const path = (ctx as { path?: string } | null)?.path ?? "";
+          const isTotpVerification =
+            path.endsWith("/two-factor/verify-totp") ||
+            path.endsWith("/two-factor/verify-backup-code");
+          return {
+            data: {
+              ...session,
+              twoFactorVerifiedAt: isTotpVerification ? new Date() : null,
+            },
+          };
+        },
+      },
+    },
   },
 
   advanced: {

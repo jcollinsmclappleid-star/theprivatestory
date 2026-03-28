@@ -1,15 +1,15 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
-import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
-import { generatedStories, contentBlocks, csamReports, userReports } from "@workspace/db/schema";
+import { generatedStories, contentBlocks, csamReports, userReports, usersTable } from "@workspace/db/schema";
 import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
 import { notifyAdmin } from "../lib/adminNotify.js";
+import { isAdmin, requireAdmin } from "../middlewares/requireAdmin.js";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getArcStage, FIVE_EPISODE_EROTIC_ARC } from "../lib/seriesArc.js";
 import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
@@ -29,74 +29,8 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
-
-/**
- * Derives the admin API key from the existing OPENROUTER_API_KEY secret via
- * HMAC-SHA256.  This means no additional plaintext secret lives in source or
- * env files — the key is computable only by anyone who already holds the
- * OPENROUTER_API_KEY.  Scripts can compute the same value with:
- *   node -e "const c=require('crypto');console.log(c.createHmac('sha256',process.env.OPENROUTER_API_KEY).update('private-story-admin-v1').digest('hex'))"
- */
-function deriveAdminApiKey(): string {
-  const base = process.env.OPENROUTER_API_KEY ?? "";
-  if (!base) return "";
-  return crypto.createHmac("sha256", base).update("private-story-admin-v1").digest("hex");
-}
-
-/** True if the request carries a valid HMAC-derived x-admin-token (script access). */
-function isTokenAdmin(req: any): boolean {
-  if (!ADMIN_EMAIL) return false;
-  const token = req.headers["x-admin-token"] as string | undefined;
-  if (!token) return false;
-  const derived = deriveAdminApiKey();
-  if (!derived) return false;
-  const tBuf = Buffer.from(token, "utf8");
-  const dBuf = Buffer.from(derived, "utf8");
-  if (tBuf.length !== dBuf.length) return false;
-  return crypto.timingSafeEqual(tBuf, dBuf);
-}
-
-/** True if the request has a valid admin session (DB flag or ADMIN_EMAIL match). */
-function isSessionAdmin(req: any): boolean {
-  const user = req.user as { email?: string; isAdmin?: boolean } | undefined;
-  if (user?.isAdmin === true) return true;
-  if (ADMIN_EMAIL && user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
-  return false;
-}
-
-function isAdmin(req: any): boolean {
-  return isSessionAdmin(req) || isTokenAdmin(req);
-}
-
-/**
- * Router-level middleware: blocks all admin routes unless the caller is a
- * verified admin. Session-based admins additionally must have 2FA enabled —
- * this ensures a stolen password alone cannot reach any admin endpoint.
- * Token-based access (HMAC x-admin-token for scripts) bypasses the 2FA check
- * because the token is already derived from a high-entropy secret.
- */
-function requireAdmin(req: Request, res: Response, next: NextFunction): void {
-  if (isTokenAdmin(req)) {
-    // Script access via HMAC token — already high-security, no 2FA check needed
-    next();
-    return;
-  }
-  if (!isSessionAdmin(req)) {
-    res.status(403).json({ error: "Forbidden" });
-    return;
-  }
-  // Session-based admin: require 2FA to be enrolled
-  const user = req.user as { twoFactorEnabled?: boolean } | undefined;
-  if (!user?.twoFactorEnabled) {
-    res.status(403).json({
-      error: "Admin access requires two-factor authentication. Please enable 2FA in your account settings.",
-      code: "ADMIN_2FA_REQUIRED",
-    });
-    return;
-  }
-  next();
-}
+// Re-export requireAdmin so any code that imports it from this module continues to work.
+export { requireAdmin } from "../middlewares/requireAdmin.js";
 
 // Apply admin 2FA enforcement to every route on this router
 router.use(requireAdmin);
@@ -1372,5 +1306,93 @@ router.post("/moderation/csam-report", handlePostCsamReport);
 // ---------------------------------------------------------------------------
 router.get("/flagged-content", handleGetFlaggedContent);
 router.post("/csam-report", handlePostCsamReport);
+
+// ---------------------------------------------------------------------------
+// User risk-score management (manual admin override)
+// ---------------------------------------------------------------------------
+
+/**
+ * PATCH /admin/users/:userId/risk
+ * Manually set a user's risk score and optionally append a note to riskFlags.
+ * Fires an admin notification so the action is auditable outside the DB.
+ */
+router.patch("/users/:userId/risk", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  const { userId } = req.params;
+  const { score, reason } = req.body as { score?: unknown; reason?: unknown };
+  const newScore = Number(score);
+  if (!Number.isInteger(newScore) || newScore < 0 || newScore > 100) {
+    res.status(400).json({ error: "score must be an integer 0–100" });
+    return;
+  }
+  try {
+    const [updated] = await db
+      .update(usersTable)
+      .set({ riskScore: newScore })
+      .where(eq(usersTable.id, userId))
+      .returning({ id: usersTable.id, riskScore: usersTable.riskScore });
+    if (!updated) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    const adminUser = req.user as { id?: string; email?: string } | undefined;
+    notifyAdmin("User risk score updated", {
+      targetUserId: userId,
+      newScore,
+      reason: String(reason ?? ""),
+      adminId: adminUser?.id ?? adminUser?.email ?? "unknown",
+    });
+    res.json({ ok: true, userId, riskScore: newScore });
+  } catch {
+    res.status(500).json({ error: "Failed to update risk score" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Content-block disposition (dismiss / escalate a flagged content entry)
+// ---------------------------------------------------------------------------
+
+/**
+ * DELETE /admin/moderation/flagged/:id
+ * Soft-deletes a content_blocks entry (sets deletedAt), recording that an
+ * admin reviewed and dismissed it. Fires an admin notification for the audit log.
+ */
+router.delete("/moderation/flagged/:id", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  const rawId = req.params.id;
+  const blockId = Number(rawId);
+  if (!Number.isInteger(blockId) || blockId <= 0) {
+    res.status(400).json({ error: "Invalid content block id" });
+    return;
+  }
+  const { reason } = req.body as { reason?: unknown };
+  try {
+    const [disposed] = await db
+      .update(contentBlocks)
+      .set({ deletedAt: new Date() })
+      .where(and(eq(contentBlocks.id, blockId), isNull(contentBlocks.deletedAt)))
+      .returning({ id: contentBlocks.id });
+    if (!disposed) {
+      res.status(404).json({ error: "Content block not found or already disposed" });
+      return;
+    }
+    const adminUser = req.user as { id?: string; email?: string } | undefined;
+    notifyAdmin("Content block disposed", {
+      contentBlockId: blockId,
+      disposition: "dismissed",
+      reason: String(reason ?? ""),
+      adminId: adminUser?.id ?? adminUser?.email ?? "unknown",
+    });
+    res.json({ ok: true, id: blockId, disposed: true });
+  } catch {
+    res.status(500).json({ error: "Failed to dispose content block" });
+  }
+});
 
 export default router;

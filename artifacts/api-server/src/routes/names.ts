@@ -4,8 +4,15 @@ import { nameSubmissions, usersTable } from "@workspace/db/schema";
 import { and, eq, desc } from "drizzle-orm";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 import { notifyAdmin } from "../lib/adminNotify.js";
+import { requireAdmin } from "../middlewares/requireAdmin.js";
 
 const router = Router();
+
+// Sub-router that enforces the full admin 2FA guard on every /admin/* name route.
+// This mirrors the router.use(requireAdmin) pattern in admin.ts so the guard is
+// applied consistently regardless of which router handles the request.
+const adminRouter = Router();
+adminRouter.use(requireAdmin);
 
 // Rate-limit tracking (in-memory, per-user). Max 3 submissions per 24 hours.
 const submissionCounts = new Map<string, { count: number; resetAt: number }>();
@@ -121,14 +128,13 @@ router.post("/names/submit", async (req, res) => {
 });
 
 
-// GET /admin/name-submissions — list PENDING submissions sorted by submitted_at (admin only)
-// (mounted at /api by app, so full path is /api/admin/name-submissions)
-router.get("/admin/name-submissions", async (req, res) => {
-  const user = req.user as { isAdmin?: boolean } | undefined;
-  if (!user?.isAdmin) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+// ---------------------------------------------------------------------------
+// Admin routes — protected by requireAdmin (2FA session verification enforced)
+// ---------------------------------------------------------------------------
 
+// GET /admin/name-submissions — list PENDING submissions sorted by submitted_at
+// (mounted at /api by app, so full path is /api/admin/name-submissions)
+adminRouter.get("/name-submissions", async (req, res) => {
   try {
     const rows = await db
       .select()
@@ -143,12 +149,7 @@ router.get("/admin/name-submissions", async (req, res) => {
 });
 
 // POST /admin/name-submissions/:id/approve — admin only
-router.post("/admin/name-submissions/:id/approve", async (req, res) => {
-  const user = req.user as { isAdmin?: boolean } | undefined;
-  if (!user?.isAdmin) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
-
+adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
   const id = Number(req.params.id);
   const { notes } = (req.body ?? {}) as { notes?: string };
 
@@ -166,12 +167,7 @@ router.post("/admin/name-submissions/:id/approve", async (req, res) => {
 });
 
 // POST /admin/name-submissions/:id/reject — admin only
-router.post("/admin/name-submissions/:id/reject", async (req, res) => {
-  const user = req.user as { isAdmin?: boolean } | undefined;
-  if (!user?.isAdmin) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
-
+adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
   const id = Number(req.params.id);
   const { notes } = (req.body ?? {}) as { notes?: string };
 
@@ -190,12 +186,7 @@ router.post("/admin/name-submissions/:id/reject", async (req, res) => {
 
 // PUT /admin/name-submissions/:id — approve or reject (single combined endpoint)
 // On approval: writes the name to the submitting user's approvedListenerName or approvedPartnerName.
-router.put("/admin/name-submissions/:id", async (req, res) => {
-  const user = req.user as { isAdmin?: boolean } | undefined;
-  if (!user?.isAdmin) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
-
+adminRouter.put("/name-submissions/:id", async (req, res) => {
   const id = Number(req.params.id);
   const { status, notes } = (req.body ?? {}) as { status?: string; notes?: string };
 
@@ -226,9 +217,10 @@ router.put("/admin/name-submissions/:id", async (req, res) => {
 
     // On approval: write the name to the submitting user's profile field
     if (status === "approved" && submission.submittedByUserId) {
-      const profileUpdate = submission.nameType === "partner"
-        ? { approvedPartnerName: submission.name }
-        : { approvedListenerName: submission.name };
+      const profileUpdate =
+        submission.nameType === "partner"
+          ? { approvedPartnerName: submission.name }
+          : { approvedListenerName: submission.name };
 
       await db
         .update(usersTable)
@@ -249,5 +241,8 @@ router.put("/admin/name-submissions/:id", async (req, res) => {
     return res.status(500).json({ error: "Server error." });
   }
 });
+
+// Mount the admin sub-router under /admin so full paths become /api/admin/name-submissions/*
+router.use("/admin", adminRouter);
 
 export default router;

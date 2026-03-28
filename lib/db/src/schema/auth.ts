@@ -52,6 +52,10 @@ export const baSessionsTable = pgTable("ba_sessions", {
   userId: text("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
+  // Set to the timestamp when the user completed TOTP/backup-code verification during this session.
+  // Null means the session was created without a 2FA challenge (e.g. normal login for non-2FA users,
+  // or the "enable 2FA" session created by better-auth itself). Admin routes require this to be non-null.
+  twoFactorVerifiedAt: timestamp("two_factor_verified_at", { withTimezone: true }),
 });
 
 // better-auth accounts (OAuth providers + email/password credential)

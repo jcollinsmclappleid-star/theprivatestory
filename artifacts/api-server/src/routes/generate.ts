@@ -831,7 +831,16 @@ const VALID_WHO_IS_HE = [
 
 // Dynamic values come from CastingRoom chemistry options (.dynamic field)
 const VALID_DYNAMICS = [
-  // CastingRoom chemistry dynamics
+  // CastingRoom chemistry dynamics — every chemistry tile in buildChemistries() maps to one of these.
+  // Coverage for Task #54 / Task #55 new chemistries:
+  //   "They pursue, I decide"      ← used by: *Takes Charge, Slow Surrender, Nervous Energy
+  //   "Equal desire, equal intensity" ← used by: Equal Tension, Push & Pull, Rivals, Lovers, Playful, The Best Friend
+  //   "I take what I want"         ← used by: *Leads
+  //   "Dominant and yielding"      ← used by: Power Play
+  //   "Forbidden desire"           ← used by: Forbidden Pull
+  //   "Adoration and surrender"    ← used by: Worship, Romantic, Sweet & Tender
+  // All 6 new chemistry entries (Lovers, Playful, Romantic, The Best Friend, Sweet & Tender,
+  // Nervous Energy) resolve to dynamics already present in this list — no additions needed.
   "They pursue, I decide",
   "Equal desire, equal intensity",
   "I take what I want",

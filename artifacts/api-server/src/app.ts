@@ -64,9 +64,6 @@ app.use(
     // external links.  "strict-origin-when-cross-origin" sends the origin only,
     // not the full path (which might contain user IDs or tokens).
     referrerPolicy: { policy: "strict-origin-when-cross-origin" },
-    // Disables browser features that this application never uses.  Reduces
-    // attack surface if an XSS vulnerability is ever introduced.
-    permittedCrossDomainPolicies: false,
     // Mitigates Spectre-class side-channel attacks by isolating the browsing
     // context.  Both are "same-origin" so the app can still use its own workers
     // and shared memory.
@@ -83,6 +80,19 @@ app.use(
     crossOriginEmbedderPolicy: false,
   }),
 );
+
+// Helmet v8 does not include a Permissions-Policy middleware, so we set it
+// manually.  Each directive is set to () which means "denied for all origins
+// including the page itself" — the API server never uses these browser features
+// and disabling them reduces the attack surface if an XSS vulnerability is
+// ever introduced.
+app.use((_req, res, next) => {
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  );
+  next();
+});
 
 const ALLOWED_ORIGIN_PATTERNS = [
   /^https?:\/\/localhost(:\d+)?$/,

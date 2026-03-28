@@ -28,6 +28,13 @@ declare global {
     interface Request {
       isAuthenticated(): this is AuthedRequest;
       user?: User | undefined;
+      /**
+       * Set to true when an admin session has exceeded the inactivity threshold.
+       * authMiddleware sets this and clears req.user so that non-admin routes
+       * treat the request as unauthenticated. requireAdmin checks it and returns
+       * 401 ADMIN_SESSION_EXPIRED specifically for admin-protected routes.
+       */
+      adminSessionExpired?: boolean;
     }
 
     export interface AuthedRequest {
@@ -124,8 +131,12 @@ export async function authMiddleware(
       // Admin sessions (by DB flag or email) are hard-expired after 30 minutes of
       // inactivity. session.session.updatedAt is refreshed by better-auth every
       // updateAge seconds (set to 10 min in auth.ts so this check is accurate
-      // within a 10-minute window). Return 401 (not 403) so clients can
-      // distinguish "session expired, re-authenticate" from "insufficient privileges".
+      // within a 10-minute window).
+      // We do NOT respond with 401 here — instead we set req.adminSessionExpired = true
+      // and leave req.user unset so that:
+      //   • Non-admin routes treat the request as unauthenticated (no disruption).
+      //   • requireAdmin checks the flag and returns 401 ADMIN_SESSION_EXPIRED
+      //     specifically on admin-protected routes.
       const effectiveAdmin = isAdmin || isEmailAdmin(session.user.email as string);
       if (effectiveAdmin) {
         const lastActivity =
@@ -134,10 +145,8 @@ export async function authMiddleware(
             : new Date(session.session.updatedAt as string);
         const idleMs = Date.now() - lastActivity.getTime();
         if (idleMs > ADMIN_SESSION_MAX_IDLE_MS) {
-          res.status(401).json({
-            error: "Admin session expired. Please log in again.",
-            code: "ADMIN_SESSION_EXPIRED",
-          });
+          req.adminSessionExpired = true;
+          next();
           return;
         }
       }

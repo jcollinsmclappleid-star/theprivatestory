@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import QRCode from "qrcode";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -113,6 +114,7 @@ export default function Admin() {
   const [twoFaTotpUri, setTwoFaTotpUri] = useState("");
   const [twoFaBackupCodes, setTwoFaBackupCodes] = useState<string[]>([]);
   const [twoFaVerifyCode, setTwoFaVerifyCode] = useState("");
+  const [twoFaQrDataUrl, setTwoFaQrDataUrl] = useState("");
   const [twoFaError, setTwoFaError] = useState("");
   const [twoFaLoading, setTwoFaLoading] = useState(false);
 
@@ -209,6 +211,16 @@ export default function Admin() {
   useEffect(() => {
     if (activeView === "names") loadNames();
   }, [activeView, loadNames]);
+
+  // Generate QR code data URL client-side when the TOTP URI is ready.
+  // The totpURI contains the TOTP secret — it must NEVER be sent to an external
+  // service. QRCode.toDataURL() runs entirely in the browser.
+  useEffect(() => {
+    if (!twoFaTotpUri) { setTwoFaQrDataUrl(""); return; }
+    QRCode.toDataURL(twoFaTotpUri, { margin: 1, width: 220 })
+      .then(setTwoFaQrDataUrl)
+      .catch(() => setTwoFaQrDataUrl(""));
+  }, [twoFaTotpUri]);
 
   // Load 2FA status when switching to the security tab
   useEffect(() => {
@@ -966,13 +978,19 @@ export default function Admin() {
                   <p className="text-xs text-white/60 leading-relaxed">Scan this QR code with your authenticator app, then tap Continue to confirm.</p>
                   <div className="flex justify-center">
                     <div className="bg-white p-3 rounded-xl inline-block">
-                      <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(twoFaTotpUri)}`}
-                        alt="2FA QR code"
-                        width={200}
-                        height={200}
-                        className="block"
-                      />
+                      {twoFaQrDataUrl ? (
+                        <img
+                          src={twoFaQrDataUrl}
+                          alt="2FA QR code — scan with your authenticator app"
+                          width={220}
+                          height={220}
+                          className="block"
+                        />
+                      ) : (
+                        <div className="w-[220px] h-[220px] flex items-center justify-center text-gray-400 text-xs">
+                          Generating QR…
+                        </div>
+                      )}
                     </div>
                   </div>
                   <details className="cursor-pointer">

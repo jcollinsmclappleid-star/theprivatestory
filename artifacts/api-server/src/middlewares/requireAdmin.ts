@@ -53,10 +53,23 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
     next();
     return;
   }
+
+  // authMiddleware sets adminSessionExpired when it detects an idle admin session
+  // but intentionally does NOT respond so that non-admin routes remain usable.
+  // We surface the 401 here, scoped only to admin-protected routes.
+  if ((req as any).adminSessionExpired) {
+    res.status(401).json({
+      error: "Admin session expired due to inactivity. Please log in again.",
+      code: "ADMIN_SESSION_EXPIRED",
+    });
+    return;
+  }
+
   if (!isSessionAdmin(req)) {
     res.status(403).json({ error: "Forbidden" });
     return;
   }
+
   // Session-based admin: require 2FA completion for THIS session.
   // twoFactorVerifiedAt is stamped by authMiddleware only when the session was
   // created via a TOTP/backup-code challenge — null means the session predates

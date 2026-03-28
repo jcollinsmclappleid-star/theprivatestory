@@ -937,12 +937,18 @@ console.log("\n── Suite F: Admin 2FA Gate ───────────�
  * Inline re-implementation of the requireAdmin middleware decision logic.
  * Returns { status: 200|401|403, code?: string }
  * Mirrors: artifacts/api-server/src/middlewares/requireAdmin.ts
+ *
+ * adminSessionExpired: set by authMiddleware when idle threshold is exceeded.
+ * requireAdmin returns 401 ADMIN_SESSION_EXPIRED for this case (not authMiddleware
+ * which now only clears req.user to avoid disrupting non-admin routes).
  */
-function simulateRequireAdmin({ isAdmin = false, adminEmail = "admin@test.com", userEmail = "", twoFactorVerifiedAt = null, adminScriptKey = "", xAdminToken = "" }) {
+function simulateRequireAdmin({ isAdmin = false, adminEmail = "admin@test.com", userEmail = "", twoFactorVerifiedAt = null, adminScriptKey = "", xAdminToken = "", adminSessionExpired = false }) {
   // Token path (ADMIN_SCRIPT_KEY)
   if (adminScriptKey && xAdminToken && adminScriptKey === xAdminToken) {
     return { status: 200 };
   }
+  // Expired admin session (set by authMiddleware, surfaced only on admin routes)
+  if (adminSessionExpired) return { status: 401, code: "ADMIN_SESSION_EXPIRED" };
   // Session admin check
   const isSessionAdmin = isAdmin || (adminEmail && userEmail.toLowerCase() === adminEmail.toLowerCase());
   if (!isSessionAdmin) return { status: 403, code: "FORBIDDEN" };
@@ -1021,7 +1027,24 @@ check("F11: admin email match is case-insensitive",
   200
 );
 
-console.log("  Suite F complete — 12 admin 2FA gate assertions");
+// F12: adminSessionExpired flag (set by authMiddleware) → 401 on admin routes only.
+// authMiddleware now clears req.user and sets req.adminSessionExpired to avoid
+// disrupting non-admin routes. requireAdmin surfaces the 401 scoped to admin routes.
+check("F12: expired admin session returns 401 (surfaced by requireAdmin, not authMiddleware)",
+  simulateRequireAdmin({ adminSessionExpired: true }).status,
+  401
+);
+check("F12: expired admin session returns ADMIN_SESSION_EXPIRED code",
+  simulateRequireAdmin({ adminSessionExpired: true }).code,
+  "ADMIN_SESSION_EXPIRED"
+);
+// F13: Token admin bypass still works even if session is expired
+check("F13: valid script token bypasses expired session check",
+  simulateRequireAdmin({ adminSessionExpired: true, adminScriptKey: "key", xAdminToken: "key" }).status,
+  200
+);
+
+console.log("  Suite F complete — 15 admin 2FA gate assertions");
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Final summary

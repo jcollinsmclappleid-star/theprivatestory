@@ -189,6 +189,48 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0800] via-[#121000] to-[#050600]", accent: "#84cc16",
     },
+    {
+      id: "Lovers",
+      label: "Lovers",
+      sub: "Two people who chose each other. The familiarity only makes it better.",
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#0a0010] via-[#120018] to-[#060009]", accent: "#e879a0",
+    },
+    {
+      id: "Playful",
+      label: "Playful",
+      sub: "It starts with a joke. Ends somewhere neither of them expected.",
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#001808] via-[#002810] to-[#000e04]", accent: "#34d399",
+    },
+    {
+      id: "Romantic",
+      label: "Romantic",
+      sub: "Deliberate. Everything intentional. This kind of attention is rare.",
+      dynamic: "Adoration and surrender",
+      gradient: "from-[#0a0600] via-[#180e00] to-[#060300]", accent: "#f59e0b",
+    },
+    {
+      id: "The Best Friend",
+      label: "The Best Friend",
+      sub: "Known each other too long to pretend. Not long enough to stop feeling this.",
+      dynamic: "Equal desire, equal intensity",
+      gradient: "from-[#000a14] via-[#001020] to-[#00050c]", accent: "#7dd3fc",
+    },
+    {
+      id: "Sweet & Tender",
+      label: "Sweet & Tender",
+      sub: "No games, no strategy. Two people being honest with each other.",
+      dynamic: "Adoration and surrender",
+      gradient: "from-[#0c0008] via-[#180010] to-[#080005]", accent: "#f0abfc",
+    },
+    {
+      id: "Nervous Energy",
+      label: "Nervous Energy",
+      sub: "First time together. Neither is sure what comes next. That's the whole thing.",
+      dynamic: "They pursue, I decide",
+      gradient: "from-[#080800] via-[#141400] to-[#050500]", accent: "#fde68a",
+    },
   ];
 }
 
@@ -222,6 +264,13 @@ function buildArchetypes(pairingId: string | undefined) {
     { id: "The Athlete",      label: "The Athlete",      sub: `Physical command. Total focus. That discipline doesn't stop here.`,                           gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80" },
     { id: "The Chef",         label: "The Chef",         sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                        gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c" },
     { id: "The Soldier",      label: "The Soldier",      sub: `Discipline runs through ${o}. So does something much harder to control.`,                    gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264" },
+    { id: "The Charmer",      label: "The Charmer",      sub: `Effortless with people. ${s} could have anyone. Somehow ${p} focus on ${o} is the whole point.`, gradient: "from-[#0a0008] via-[#160010] to-[#060005]", accent: "#f472b6" },
+    { id: "The Good One",     label: "The Good One",     sub: `No games, no pretence. This is genuinely who ${s} is. You keep waiting for the catch.`,          gradient: "from-[#001208] via-[#001e10] to-[#000a04]", accent: "#6ee7b7" },
+    { id: "The Funny One",    label: "The Funny One",    sub: `Makes ${o} laugh first. Then does something that makes laughing impossible.`,                    gradient: "from-[#0a0800] via-[#160e00] to-[#050500]", accent: "#fbbf24" },
+    { id: "The Refined One",  label: "The Refined One",  sub: `Old-fashioned in the best ways. ${s} notices the small things and means everything behind them.`, gradient: "from-[#060008] via-[#0e0012] to-[#030005]", accent: "#c4b5fd" },
+    { id: "The Introvert",    label: "The Introvert",    sub: `Quiet until ${s} isn't. You didn't expect the person underneath.`,                              gradient: "from-[#000810] via-[#001018] to-[#000408]", accent: "#93c5fd" },
+    { id: "The Softie",       label: "The Softie",       sub: `Looks one way. Is entirely another. You figure it out before ${s} admits it.`,                  gradient: "from-[#0a0002] via-[#140004] to-[#060001]", accent: "#fda4af" },
+    { id: "The Adventurer",   label: "The Adventurer",   sub: `Always somewhere new. This time ${s} wants ${o} to see it too.`,                                gradient: "from-[#001006] via-[#001a0a] to-[#000803]", accent: "#86efac" },
   ];
 }
 

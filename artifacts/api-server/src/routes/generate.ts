@@ -800,6 +800,13 @@ const VALID_WHO_IS_HE = [
   "The Athlete",
   "The Chef",
   "The Soldier",
+  "The Charmer",
+  "The Good One",
+  "The Funny One",
+  "The Refined One",
+  "The Introvert",
+  "The Softie",
+  "The Adventurer",
   // Legacy form-based values (kept for backwards compat with existing stories)
   "My boss",
   "Someone else's husband",

@@ -737,14 +737,14 @@ function ScenarioCard({
       onClick={onClick}
       whileHover={{ scale: selected ? 1 : 1.02 }}
       whileTap={{ scale: 0.97 }}
-      animate={{ width: selected ? 260 : 220 }}
+      animate={{ width: selected ? 300 : 255 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`relative overflow-hidden rounded-2xl border text-left flex-shrink-0 transition-colors ${
         selected
           ? "border-white/30 shadow-[0_0_24px_rgba(192,57,43,0.22)]"
           : "border-white/6 hover:border-white/16"
       }`}
-      style={{ minHeight: "140px" }}
+      style={{ minHeight: "185px" }}
     >
       <div className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient}`} />
       <motion.div
@@ -783,7 +783,7 @@ function ScenarioCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="text-white/45 text-xs leading-snug line-clamp-2"
+              className="text-white/45 text-xs leading-snug line-clamp-3"
             >
               {scenario.sub}
             </motion.p>

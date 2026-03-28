@@ -79,6 +79,19 @@ const reportLimiter = rateLimit({
   message: { error: "Too many reports submitted. Please contact safety@theprivatestory.com directly." },
 });
 
+/**
+ * Admin limiter — 20 admin actions per hour per IP.
+ * Limits blast radius if admin credentials are compromised: an attacker cannot
+ * mass-approve or mass-modify hundreds of records in seconds.
+ */
+const adminLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 20,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many admin actions. Please try again later." },
+});
+
 /** Auth limiter — 5 attempts per 15 min per IP (login brute-force protection) */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -115,6 +128,7 @@ app.use("/api/images", express.static(path.join(publicDir, "images")));
 app.use("/api/audio", express.static(path.join(publicDir, "audio")));
 
 app.use("/api/reports", reportLimiter);
+app.use("/api/admin", adminLimiter);
 
 app.use("/api/plan-story", generationLimiter);
 app.use("/api/generate-story", generationLimiter);

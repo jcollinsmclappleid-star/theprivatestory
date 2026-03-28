@@ -27,6 +27,8 @@ export const usersTable = pgTable("users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // 2FA — required for admin accounts
+  twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
   // Safety & compliance fields
   ageDeclarationAt: timestamp("age_declaration_at", { withTimezone: true }),
   riskScore: integer("risk_score").notNull().default(0),
@@ -79,6 +81,16 @@ export const baVerificationsTable = pgTable("ba_verifications", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }),
   updatedAt: timestamp("updated_at", { withTimezone: true }),
+});
+
+// better-auth two-factor authentication data (TOTP secrets + backup codes)
+export const baTwoFactorTable = pgTable("ba_two_factor", {
+  id: text("id").primaryKey(),
+  secret: text("secret").notNull(),
+  backupCodes: text("backup_codes").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
 });
 
 export type UpsertUser = typeof usersTable.$inferInsert;

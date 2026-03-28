@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { nameSubmissions, usersTable } from "@workspace/db/schema";
 import { and, eq, desc } from "drizzle-orm";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
+import { notifyAdmin } from "../lib/adminNotify.js";
 
 const router = Router();
 
@@ -156,6 +157,7 @@ router.post("/admin/name-submissions/:id/approve", async (req, res) => {
       .update(nameSubmissions)
       .set({ status: "approved", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
+    notifyAdmin("Name approved", { submissionId: id });
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin approve name error:", err);
@@ -178,6 +180,7 @@ router.post("/admin/name-submissions/:id/reject", async (req, res) => {
       .update(nameSubmissions)
       .set({ status: "rejected", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
+    notifyAdmin("Name rejected", { submissionId: id });
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin reject name error:", err);
@@ -232,6 +235,13 @@ router.put("/admin/name-submissions/:id", async (req, res) => {
         .set(profileUpdate)
         .where(eq(usersTable.id, submission.submittedByUserId));
     }
+
+    notifyAdmin(`Name ${status}`, {
+      submissionId: id,
+      name: submission.name,
+      nameType: submission.nameType,
+      userId: submission.submittedByUserId ?? "unknown",
+    });
 
     return res.json({ ok: true });
   } catch (err) {

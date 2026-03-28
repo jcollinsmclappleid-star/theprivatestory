@@ -10,6 +10,7 @@ declare global {
     interface User extends AuthUser {
       isAdmin?: boolean;
       riskScore?: number;
+      twoFactorEnabled?: boolean;
     }
 
     interface Request {
@@ -28,6 +29,9 @@ declare global {
   }
 }
 
+/** Admin sessions are hard-expired after 30 minutes of inactivity */
+const ADMIN_SESSION_MAX_IDLE_MS = 30 * 60 * 1000;
+
 export async function authMiddleware(
   req: Request,
   res: Response,
@@ -45,12 +49,13 @@ export async function authMiddleware(
     if (session?.user?.id) {
       const u = session.user as Record<string, unknown>;
 
-      // Look up the user's isAdmin, riskScore, deletedAt, and approved names from the DB
+      // Look up the user's isAdmin, riskScore, deletedAt, 2FA status, and approved names from the DB
       let isAdmin = false;
       let riskScore = 0;
       let deletedAt: Date | null = null;
       let approvedListenerName: string | null = null;
       let approvedPartnerName: string | null = null;
+      let twoFactorEnabled = false;
       try {
         const [dbUser] = await db
           .select({
@@ -59,6 +64,7 @@ export async function authMiddleware(
             deletedAt: usersTable.deletedAt,
             approvedListenerName: usersTable.approvedListenerName,
             approvedPartnerName: usersTable.approvedPartnerName,
+            twoFactorEnabled: usersTable.twoFactorEnabled,
           })
           .from(usersTable)
           .where(eq(usersTable.id, session.user.id))
@@ -68,6 +74,7 @@ export async function authMiddleware(
         deletedAt = dbUser?.deletedAt ?? null;
         approvedListenerName = dbUser?.approvedListenerName ?? null;
         approvedPartnerName = dbUser?.approvedPartnerName ?? null;
+        twoFactorEnabled = dbUser?.twoFactorEnabled ?? false;
       } catch {
         // DB lookup failure — default to safe values
       }
@@ -76,6 +83,21 @@ export async function authMiddleware(
       if (deletedAt) {
         next();
         return;
+      }
+
+      // Admin sessions are hard-expired after 30 minutes of inactivity.
+      // session.session.updatedAt is refreshed by better-auth on every request,
+      // so this is effectively an inactivity timeout.
+      if (isAdmin) {
+        const lastActivity = session.session.updatedAt instanceof Date
+          ? session.session.updatedAt
+          : new Date(session.session.updatedAt as string);
+        const idleMs = Date.now() - lastActivity.getTime();
+        if (idleMs > ADMIN_SESSION_MAX_IDLE_MS) {
+          // Session too old for admin access — treat as unauthenticated
+          next();
+          return;
+        }
       }
 
       req.user = {
@@ -87,6 +109,7 @@ export async function authMiddleware(
           (u.profileImageUrl as string) ?? (session.user.image as string) ?? null,
         isAdmin,
         riskScore,
+        twoFactorEnabled,
         approvedListenerName,
         approvedPartnerName,
       };

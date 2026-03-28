@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db, usersTable, baSessionsTable, baAccountsTable, baVerificationsTable } from "@workspace/db";
+import { twoFactor } from "better-auth/plugins";
+import { db, usersTable, baSessionsTable, baAccountsTable, baVerificationsTable, baTwoFactorTable } from "@workspace/db";
 import { sendEmail } from "./email.js";
 
 function getBaseURL(): string {
@@ -21,8 +22,19 @@ export const auth = betterAuth({
       session: baSessionsTable,
       account: baAccountsTable,
       verification: baVerificationsTable,
+      twoFactor: baTwoFactorTable,
     },
   }),
+
+  plugins: [
+    twoFactor({
+      issuer: "My Private Story",
+      totpOptions: {
+        digits: 6,
+        period: 30,
+      },
+    }),
+  ],
 
   emailAndPassword: {
     enabled: true,

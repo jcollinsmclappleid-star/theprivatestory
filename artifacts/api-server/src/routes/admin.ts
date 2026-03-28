@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
 import crypto from "crypto";
@@ -9,6 +9,7 @@ import { storiesStore, seriesStore } from "../lib/storage.js";
 import { db } from "@workspace/db";
 import { generatedStories, contentBlocks, csamReports, userReports } from "@workspace/db/schema";
 import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
+import { notifyAdmin } from "../lib/adminNotify.js";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getArcStage, FIVE_EPISODE_EROTIC_ARC } from "../lib/seriesArc.js";
 import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
@@ -43,14 +44,9 @@ function deriveAdminApiKey(): string {
   return crypto.createHmac("sha256", base).update("private-story-admin-v1").digest("hex");
 }
 
-function isAdmin(req: any): boolean {
-  const user = req.user as { email?: string; isAdmin?: boolean } | undefined;
-  // DB-role check: isAdmin flag set on the session user
-  if (user?.isAdmin === true) return true;
-  // ADMIN_EMAIL env-based check (session)
-  if (ADMIN_EMAIL && user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
+/** True if the request carries a valid HMAC-derived x-admin-token (script access). */
+function isTokenAdmin(req: any): boolean {
   if (!ADMIN_EMAIL) return false;
-  // Header-based auth for scripts — token must be HMAC-derived, never the email itself
   const token = req.headers["x-admin-token"] as string | undefined;
   if (!token) return false;
   const derived = deriveAdminApiKey();
@@ -60,6 +56,50 @@ function isAdmin(req: any): boolean {
   if (tBuf.length !== dBuf.length) return false;
   return crypto.timingSafeEqual(tBuf, dBuf);
 }
+
+/** True if the request has a valid admin session (DB flag or ADMIN_EMAIL match). */
+function isSessionAdmin(req: any): boolean {
+  const user = req.user as { email?: string; isAdmin?: boolean } | undefined;
+  if (user?.isAdmin === true) return true;
+  if (ADMIN_EMAIL && user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return true;
+  return false;
+}
+
+function isAdmin(req: any): boolean {
+  return isSessionAdmin(req) || isTokenAdmin(req);
+}
+
+/**
+ * Router-level middleware: blocks all admin routes unless the caller is a
+ * verified admin. Session-based admins additionally must have 2FA enabled —
+ * this ensures a stolen password alone cannot reach any admin endpoint.
+ * Token-based access (HMAC x-admin-token for scripts) bypasses the 2FA check
+ * because the token is already derived from a high-entropy secret.
+ */
+function requireAdmin(req: Request, res: Response, next: NextFunction): void {
+  if (isTokenAdmin(req)) {
+    // Script access via HMAC token — already high-security, no 2FA check needed
+    next();
+    return;
+  }
+  if (!isSessionAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  // Session-based admin: require 2FA to be enrolled
+  const user = req.user as { twoFactorEnabled?: boolean } | undefined;
+  if (!user?.twoFactorEnabled) {
+    res.status(403).json({
+      error: "Admin access requires two-factor authentication. Please enable 2FA in your account settings.",
+      code: "ADMIN_2FA_REQUIRED",
+    });
+    return;
+  }
+  next();
+}
+
+// Apply admin 2FA enforcement to every route on this router
+router.use(requireAdmin);
 
 function getPublicAudioDir(): string {
   const dir = path.resolve(__dirname, "../public/audio");
@@ -343,6 +383,7 @@ router.patch("/stories/:id/status", async (req, res) => {
   }
   try {
     await storiesStore.updateStatus(id, status as "published" | "skipped");
+    notifyAdmin("Story status changed", { storyId: id, newStatus: status });
     res.json({ ok: true, id, status });
   } catch {
     res.status(500).json({ error: "Failed to update status" });
@@ -661,6 +702,7 @@ router.delete("/story/:id", async (req, res) => {
   }
   const { id } = req.params;
   await db.delete(generatedStories).where(eq(generatedStories.id, id));
+  notifyAdmin("Story deleted", { storyId: id });
   res.json({ ok: true, deleted: id });
 });
 
@@ -1293,6 +1335,7 @@ async function handlePostCsamReport(req: any, res: any) {
       .insert(csamReports)
       .values({ contentBlockId: String(contentBlockId), reportedTo, adminUserId, notes: notes ?? null })
       .returning();
+    notifyAdmin("CSAM report filed", { contentBlockId, reportedTo, adminUserId });
     res.json({ ok: true, report: inserted });
   } catch {
     res.status(500).json({ error: "Failed to create CSAM report" });

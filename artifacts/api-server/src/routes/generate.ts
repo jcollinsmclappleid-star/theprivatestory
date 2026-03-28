@@ -12,7 +12,7 @@ import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
-import { isBlockedInput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
+import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
@@ -2664,9 +2664,10 @@ router.post("/generate-full-story", async (req, res) => {
         throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
       }
 
-      // Secondary: static blocklist scan over the full generated text.
-      // Catches hard-coded slurs or illegal content that the AI may produce despite instructions.
-      const outputBlocklistResult = isBlockedInput(outputText);
+      // Secondary: output-specific blocklist scan over the full generated text.
+      // Uses OUTPUT_HARD_BLOCK_PATTERNS — the full input list minus grooming/rape/non-consensual,
+      // which can appear innocuously in literary prose (handled by OpenAI Moderation above).
+      const outputBlocklistResult = isBlockedOutput(outputText);
       if (outputBlocklistResult.blocked) {
         logger.warn({
           event: "output_blocklist_hit",

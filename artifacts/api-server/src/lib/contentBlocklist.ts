@@ -336,6 +336,72 @@ export function isBlockedInput(text: string): { blocked: boolean; reason: string
   return { blocked: false, reason: null };
 }
 
+/**
+ * Patterns for scanning AI-generated story OUTPUT.
+ *
+ * This is a strict subset of HARD_BLOCK_PATTERNS, deliberately omitting three
+ * terms that can appear innocuously in literary adult fiction prose:
+ *
+ *   - "grooming"   → "impeccably groomed", "morning grooming ritual" are normal
+ *                    character-description phrases.
+ *   - "rape"       → archaic literary usage ("the rape of the lock"), a character
+ *                    reflecting on their past, historical reference.
+ *   - "non-consensual / noncon" → most likely to appear when explicitly affirming
+ *                    consent ("everything was fully consensual").
+ *
+ * All three are still hard-blocked on the INPUT side (isBlockedInput) and
+ * are also handled by the OpenAI Moderation API, which reads context.
+ *
+ * The no-free-text architecture (T002) means users cannot steer the AI toward
+ * these topics — the closed structured input is itself a primary mitigation.
+ */
+const OUTPUT_HARD_BLOCK_PATTERNS: RegExp[] = [
+  // Age indicators — absolute, no exceptions
+  /\b(child|children|childhood)\b/i,
+  /\b(minor|minors)\b/i,
+  /\b(teen|teens|teenage|teenager|teenagers)\b/i,
+  /\b(kid|kids)\b/i,
+  /\b(tween|tweens)\b/i,
+  /\b(adolescent|adolescents)\b/i,
+  /\b(pubescent|prepubescent)\b/i,
+  /\b(baby|babies|infant|infants|toddler|toddlers)\b/i,
+  /\b(juvenile|juveniles)\b/i,
+  /\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen)\b/i,
+  /\b(underaged?|under.?aged?|preteen|pre.?teen|jailbait)\b/i,
+  /\b(schoolgirl|schoolboy|school.?girl|school.?boy)\b/i,
+  /\b(barely.?legal)\b/i,
+  /\b(lolita|loli|shota)\b/i,
+  /\b(pedo|paedo)\w*/i,
+  /\b(csam|cp\b)\b/i,
+
+  // Exploitation and abuse — absolute (grooming intentionally excluded here)
+  /\b(molest|molestation|molesting)\b/i,
+  /\b(trafficking|sex.?trafficking)\b/i,
+
+  // Extreme violence — absolute
+  /\b(snuff)\b/i,
+
+  // Illegal acts — absolute (rape and non-consensual intentionally excluded here)
+  /\b(bestiality|beastiality|zoophilia)\b/i,
+  /\b(necrophilia|necrophil)\b/i,
+];
+
+/**
+ * Checks AI-generated story text against the output-specific hard-block list.
+ * Use this instead of isBlockedInput() for scanning model output — it omits
+ * terms that can appear innocuously in literary adult prose.
+ */
+export function isBlockedOutput(text: string): { blocked: boolean; reason: string | null } {
+  for (const variant of getTextVariants(text)) {
+    for (const pattern of OUTPUT_HARD_BLOCK_PATTERNS) {
+      if (pattern.test(variant)) {
+        return { blocked: true, reason: pattern.source };
+      }
+    }
+  }
+  return { blocked: false, reason: null };
+}
+
 export function isInjectionAttempt(text: string): { blocked: boolean; reason: string | null } {
   for (const variant of getTextVariants(text)) {
     // Full injection pattern check (requires sentence context — works on context variants)

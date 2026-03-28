@@ -123,8 +123,18 @@ export default function Admin() {
     if (!user?.id || categoriesLoadedRef.current) return;
     categoriesLoadedRef.current = true;
     fetch(`${API_BASE}/api/admin/categories`, { credentials: "include" })
-      .then((r) => {
-        if (r.status === 403) { setAccessDenied(true); return null; }
+      .then(async (r) => {
+        if (r.status === 403) {
+          // Distinguish "you're not an admin" from "you ARE an admin but need 2FA".
+          // For the latter, route to the Security tab so the admin can enrol.
+          const body = await r.json().catch(() => ({}));
+          if (body.code === "ADMIN_2FA_REQUIRED") {
+            setActiveView("security");
+          } else {
+            setAccessDenied(true);
+          }
+          return null;
+        }
         return r.json();
       })
       .then((data) => {

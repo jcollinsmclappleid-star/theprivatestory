@@ -10,7 +10,7 @@ import { db } from "@workspace/db";
 import { generatedStories, contentBlocks, csamReports, userReports, usersTable } from "@workspace/db/schema";
 import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
 import { notifyAdmin } from "../lib/adminNotify.js";
-import { isAdmin, requireAdmin } from "../middlewares/requireAdmin.js";
+import { isAdmin, requireAdmin, requireAdminIdentity } from "../middlewares/requireAdmin.js";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { getArcStage, FIVE_EPISODE_EROTIC_ARC } from "../lib/seriesArc.js";
 import { MASTER_EROTIC_LAYER } from "../lib/masterEroticLayer.js";
@@ -33,7 +33,41 @@ const router: IRouter = Router();
 // Re-export requireAdmin so any code that imports it from this module continues to work.
 export { requireAdmin } from "../middlewares/requireAdmin.js";
 
-// Apply admin 2FA enforcement to every route on this router
+// ---------------------------------------------------------------------------
+// 2FA setup/status routes — exempt from the 2FA gate (requireAdminIdentity only).
+// These must be registered BEFORE router.use(requireAdmin) to avoid the
+// chicken-and-egg deadlock where a first-time admin can't set up 2FA because
+// 2FA isn't set up yet.
+//
+// They still require admin identity (isAdmin DB flag or ADMIN_EMAIL match)
+// and reject expired sessions; they simply don't enforce twoFactorVerifiedAt.
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /admin/2fa/status
+ * Returns the 2FA enrollment state and whether this session was verified via TOTP.
+ * Frontend uses this to show setup prompts or session re-authentication prompts.
+ *
+ * Setup flow (via existing better-auth endpoints):
+ *   1. POST /api/auth/two-factor/enable  { password }  → { totpURI, backupCodes }
+ *   2. Admin scans QR code with authenticator app (generated client-side — secret never sent externally)
+ *   3. POST /api/auth/two-factor/verify-totp  { code }  → confirms enrollment
+ *   4. On next login, TOTP is required before admin routes are accessible.
+ */
+router.get("/2fa/status", requireAdminIdentity, (req, res) => {
+  const user = req.user as {
+    twoFactorEnabled?: boolean;
+    twoFactorVerifiedAt?: Date | null;
+  } | undefined;
+  res.json({
+    twoFactorEnabled: user?.twoFactorEnabled ?? false,
+    twoFactorVerifiedThisSession: !!(user?.twoFactorVerifiedAt),
+    setupEndpoint: "/api/auth/two-factor/enable",
+    verifyEndpoint: "/api/auth/two-factor/verify-totp",
+  });
+});
+
+// Apply full admin 2FA enforcement to every subsequent route on this router
 router.use(requireAdmin);
 
 function getPublicAudioDir(): string {
@@ -1307,35 +1341,6 @@ router.post("/moderation/csam-report", handlePostCsamReport);
 // ---------------------------------------------------------------------------
 router.get("/flagged-content", handleGetFlaggedContent);
 router.post("/csam-report", handlePostCsamReport);
-
-// ---------------------------------------------------------------------------
-// Admin 2FA status — lets the frontend know whether the current admin session
-// has completed 2FA and whether 2FA is enrolled on the account.
-// ---------------------------------------------------------------------------
-
-/**
- * GET /admin/2fa/status
- * Returns the 2FA enrollment state and whether this session was verified via TOTP.
- * Frontend uses this to show setup prompts or session re-authentication prompts.
- *
- * Setup flow (via existing better-auth endpoints):
- *   1. POST /api/auth/two-factor/enable  { password }  → { totpURI, backupCodes }
- *   2. Admin scans QR code with authenticator app
- *   3. POST /api/auth/two-factor/verify-totp  { code }  → confirms enrollment
- *   4. On next login, TOTP is required before admin routes are accessible.
- */
-router.get("/2fa/status", (req, res) => {
-  const user = req.user as {
-    twoFactorEnabled?: boolean;
-    twoFactorVerifiedAt?: Date | null;
-  } | undefined;
-  res.json({
-    twoFactorEnabled: user?.twoFactorEnabled ?? false,
-    twoFactorVerifiedThisSession: !!(user?.twoFactorVerifiedAt),
-    setupEndpoint: "/api/auth/two-factor/enable",
-    verifyEndpoint: "/api/auth/two-factor/verify-totp",
-  });
-});
 
 // ---------------------------------------------------------------------------
 // User risk-score management (manual admin override)

@@ -1044,7 +1044,32 @@ check("F13: valid script token bypasses expired session check",
   200
 );
 
-console.log("  Suite F complete — 15 admin 2FA gate assertions");
+// F14: requireAdminIdentity (lighter gate for 2FA setup endpoints)
+// Verifies admin identity without requiring twoFactorVerifiedAt.
+function simulateRequireAdminIdentity({ isAdmin = false, adminEmail = "admin@test.com", userEmail = "", adminScriptKey = "", xAdminToken = "", adminSessionExpired = false }) {
+  if (adminScriptKey && xAdminToken && adminScriptKey === xAdminToken) return { status: 200 };
+  if (adminSessionExpired) return { status: 401, code: "ADMIN_SESSION_EXPIRED" };
+  const isSessionAdmin = isAdmin || (adminEmail && userEmail.toLowerCase() === adminEmail.toLowerCase());
+  if (!isSessionAdmin) return { status: 403 };
+  return { status: 200 };
+}
+// F14a: Admin without 2FA can access 2FA setup endpoint (no twoFactorVerifiedAt check)
+check("F14a: non-2FA admin can access 2FA setup route (requireAdminIdentity)",
+  simulateRequireAdminIdentity({ isAdmin: true }).status,
+  200
+);
+// F14b: Non-admin cannot access 2FA setup endpoint
+check("F14b: non-admin cannot access 2FA setup route",
+  simulateRequireAdminIdentity({ isAdmin: false, userEmail: "hacker@example.com" }).status,
+  403
+);
+// F14c: Expired session still blocked on 2FA setup route
+check("F14c: expired session blocked on 2FA setup route",
+  simulateRequireAdminIdentity({ isAdmin: true, adminSessionExpired: true }).code,
+  "ADMIN_SESSION_EXPIRED"
+);
+
+console.log("  Suite F complete — 18 admin 2FA gate assertions");
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Final summary

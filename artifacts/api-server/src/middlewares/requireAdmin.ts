@@ -37,6 +37,34 @@ export function isAdmin(req: any): boolean {
 }
 
 /**
+ * Lighter middleware for the 2FA setup/status endpoints themselves.
+ * Verifies admin identity (DB flag, ADMIN_EMAIL match, or script token) and checks
+ * for expired sessions, but does NOT require twoFactorVerifiedAt.
+ *
+ * Use this on /api/admin/2fa/* so a first-time admin without 2FA enrolled can
+ * still reach the enrollment flow (the chicken-and-egg problem: they can't satisfy
+ * the 2FA gate before they've set up 2FA).
+ */
+export function requireAdminIdentity(req: Request, res: Response, next: NextFunction): void {
+  if (isTokenAdmin(req)) {
+    next();
+    return;
+  }
+  if ((req as any).adminSessionExpired) {
+    res.status(401).json({
+      error: "Admin session expired due to inactivity. Please log in again.",
+      code: "ADMIN_SESSION_EXPIRED",
+    });
+    return;
+  }
+  if (!isSessionAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  next();
+}
+
+/**
  * Router-level middleware: blocks all admin routes unless the caller is a
  * verified admin. Session-based admins additionally must have completed a TOTP
  * or backup-code challenge during THIS session (twoFactorVerifiedAt !== null) —

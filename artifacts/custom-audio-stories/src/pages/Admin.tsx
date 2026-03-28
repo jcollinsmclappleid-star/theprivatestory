@@ -73,7 +73,7 @@ export default function Admin() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "names">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "names" | "security">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -104,6 +104,17 @@ export default function Admin() {
   const [nameSubmissionsList, setNameSubmissionsList] = useState<NameSubmissionItem[]>([]);
   const [namesLoading, setNamesLoading] = useState(false);
   const [nameActionPending, setNameActionPending] = useState<number | null>(null);
+
+  // ── 2FA setup state ────────────────────────────────────────────────────────
+  const [twoFaEnabled, setTwoFaEnabled] = useState<boolean | null>(null);
+  const [twoFaVerifiedSession, setTwoFaVerifiedSession] = useState<boolean>(false);
+  const [twoFaSetupStep, setTwoFaSetupStep] = useState<"idle" | "password" | "qr" | "verify" | "done">("idle");
+  const [twoFaPassword, setTwoFaPassword] = useState("");
+  const [twoFaTotpUri, setTwoFaTotpUri] = useState("");
+  const [twoFaBackupCodes, setTwoFaBackupCodes] = useState<string[]>([]);
+  const [twoFaVerifyCode, setTwoFaVerifyCode] = useState("");
+  const [twoFaError, setTwoFaError] = useState("");
+  const [twoFaLoading, setTwoFaLoading] = useState(false);
 
   // ── Load categories — only once when user first authenticates ─────────────
   useEffect(() => {
@@ -199,6 +210,20 @@ export default function Admin() {
     if (activeView === "names") loadNames();
   }, [activeView, loadNames]);
 
+  // Load 2FA status when switching to the security tab
+  useEffect(() => {
+    if (activeView !== "security") return;
+    fetch(`${API_BASE}/api/admin/2fa/status`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        setTwoFaEnabled(data.twoFactorEnabled ?? false);
+        setTwoFaVerifiedSession(data.twoFactorVerifiedThisSession ?? false);
+        if (data.twoFactorEnabled) setTwoFaSetupStep("done");
+        else setTwoFaSetupStep("idle");
+      })
+      .catch(() => {});
+  }, [activeView]);
+
   const reviewName = useCallback(async (id: number, status: "approved" | "rejected") => {
     setNameActionPending(id);
     try {
@@ -215,6 +240,50 @@ export default function Admin() {
       setNameActionPending(null);
     }
   }, [loadNames]);
+
+  // ── 2FA setup callbacks ────────────────────────────────────────────────────
+  const twoFaStartSetup = useCallback(async () => {
+    setTwoFaError("");
+    setTwoFaLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/two-factor/enable`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: twoFaPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setTwoFaError(data.message ?? "Failed to enable 2FA."); return; }
+      setTwoFaTotpUri(data.totpURI ?? "");
+      setTwoFaBackupCodes(data.backupCodes ?? []);
+      setTwoFaSetupStep("qr");
+    } catch {
+      setTwoFaError("Network error. Please try again.");
+    } finally {
+      setTwoFaLoading(false);
+    }
+  }, [twoFaPassword]);
+
+  const twoFaVerifyEnrollment = useCallback(async () => {
+    setTwoFaError("");
+    setTwoFaLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/two-factor/verify-totp`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: twoFaVerifyCode }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setTwoFaError(data.message ?? "Invalid code. Please try again."); return; }
+      setTwoFaEnabled(true);
+      setTwoFaSetupStep("done");
+    } catch {
+      setTwoFaError("Network error. Please try again.");
+    } finally {
+      setTwoFaLoading(false);
+    }
+  }, [twoFaVerifyCode]);
 
   // ── Generate a full series via SSE ─────────────────────────────────────────
   const generateSeries = useCallback((seriesKey: string, totalEpisodes: number) => {
@@ -553,6 +622,12 @@ export default function Admin() {
               >
                 Names {nameSubmissionsList.length > 0 && activeView !== "names" ? `(${nameSubmissionsList.length})` : ""}
               </button>
+              <button
+                onClick={() => setActiveView("security")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "security" ? "bg-emerald-500/30 text-emerald-300" : "text-white/50 hover:text-white"}`}
+              >
+                🔐 Security
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -815,6 +890,160 @@ export default function Admin() {
               >
                 ↺ Refresh
               </button>
+            </div>
+          </ScrollArea>
+        ) : activeView === "security" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-4 max-w-md mx-auto">
+              <div className="text-emerald-300 text-xs font-semibold uppercase tracking-widest mb-1">Admin Account Security</div>
+
+              {/* Status banner */}
+              <div className={`rounded-xl p-3 flex items-center gap-3 ${twoFaEnabled ? "bg-emerald-900/30 border border-emerald-500/30" : "bg-amber-900/30 border border-amber-500/30"}`}>
+                <span className="text-xl">{twoFaEnabled ? "✅" : "⚠️"}</span>
+                <div>
+                  <div className={`text-sm font-semibold ${twoFaEnabled ? "text-emerald-200" : "text-amber-200"}`}>
+                    {twoFaEnabled ? "Two-factor authentication is enabled" : "Two-factor authentication is not set up"}
+                  </div>
+                  <div className="text-xs text-white/50 mt-0.5">
+                    {twoFaEnabled
+                      ? twoFaVerifiedSession
+                        ? "This session was verified via TOTP."
+                        : "Log out and sign in with your authenticator app to fully access admin routes."
+                      : "Set up an authenticator app to protect your admin account."}
+                  </div>
+                </div>
+              </div>
+
+              {/* Step: idle — not yet enabled */}
+              {twoFaSetupStep === "idle" && !twoFaEnabled && (
+                <div className="space-y-3">
+                  <p className="text-xs text-white/60 leading-relaxed">
+                    Use any TOTP app (Google Authenticator, Authy, 1Password, etc.) to add a second factor. Once enabled, you must enter a code from your app on every admin login.
+                  </p>
+                  <button
+                    onClick={() => setTwoFaSetupStep("password")}
+                    className="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold transition"
+                  >
+                    Set up 2FA →
+                  </button>
+                </div>
+              )}
+
+              {/* Step: password */}
+              {twoFaSetupStep === "password" && (
+                <div className="space-y-3">
+                  <p className="text-xs text-white/60">Enter your account password to begin setup.</p>
+                  <input
+                    type="password"
+                    value={twoFaPassword}
+                    onChange={(e) => setTwoFaPassword(e.target.value)}
+                    placeholder="Current password"
+                    className="w-full rounded-xl bg-white/10 border border-white/10 text-sm text-white px-4 py-2.5 placeholder-white/30 focus:outline-none focus:border-emerald-500"
+                    onKeyDown={(e) => { if (e.key === "Enter") twoFaStartSetup(); }}
+                  />
+                  {twoFaError && <div className="text-red-400 text-xs">{twoFaError}</div>}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setTwoFaSetupStep("idle"); setTwoFaPassword(""); setTwoFaError(""); }}
+                      className="flex-1 py-2 rounded-xl bg-white/10 text-white/60 text-sm hover:bg-white/15 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={twoFaStartSetup}
+                      disabled={twoFaLoading || !twoFaPassword}
+                      className="flex-1 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold disabled:opacity-50 transition"
+                    >
+                      {twoFaLoading ? "…" : "Continue"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step: QR code */}
+              {twoFaSetupStep === "qr" && twoFaTotpUri && (
+                <div className="space-y-3">
+                  <p className="text-xs text-white/60 leading-relaxed">Scan this QR code with your authenticator app, then tap Continue to confirm.</p>
+                  <div className="flex justify-center">
+                    <div className="bg-white p-3 rounded-xl inline-block">
+                      <img
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(twoFaTotpUri)}`}
+                        alt="2FA QR code"
+                        width={200}
+                        height={200}
+                        className="block"
+                      />
+                    </div>
+                  </div>
+                  <details className="cursor-pointer">
+                    <summary className="text-xs text-white/40 hover:text-white/60 select-none">Can't scan? Show manual key</summary>
+                    <div className="mt-2 text-[10px] font-mono text-white/60 bg-white/5 rounded-lg px-3 py-2 break-all select-all">{twoFaTotpUri}</div>
+                  </details>
+                  {twoFaBackupCodes.length > 0 && (
+                    <div className="rounded-xl border border-amber-500/30 bg-amber-900/20 p-3 space-y-2">
+                      <div className="text-xs text-amber-300 font-semibold">Save your backup codes</div>
+                      <div className="text-[10px] text-white/50 leading-relaxed">Store these in a password manager. Each can be used once if you lose your device.</div>
+                      <div className="grid grid-cols-2 gap-1 mt-2">
+                        {twoFaBackupCodes.map((code) => (
+                          <span key={code} className="font-mono text-[11px] text-white/70 bg-white/5 rounded px-2 py-1 text-center select-all">{code}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setTwoFaSetupStep("verify")}
+                    className="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold transition"
+                  >
+                    I've scanned it — Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step: verify TOTP code */}
+              {twoFaSetupStep === "verify" && (
+                <div className="space-y-3">
+                  <p className="text-xs text-white/60 leading-relaxed">Enter the 6-digit code from your authenticator app to confirm setup.</p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    value={twoFaVerifyCode}
+                    onChange={(e) => setTwoFaVerifyCode(e.target.value.replace(/\D/g, ""))}
+                    placeholder="000000"
+                    className="w-full text-center rounded-xl bg-white/10 border border-white/10 text-2xl tracking-[0.5em] text-white px-4 py-3 placeholder-white/20 focus:outline-none focus:border-emerald-500"
+                    onKeyDown={(e) => { if (e.key === "Enter" && twoFaVerifyCode.length === 6) twoFaVerifyEnrollment(); }}
+                  />
+                  {twoFaError && <div className="text-red-400 text-xs text-center">{twoFaError}</div>}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setTwoFaSetupStep("qr")}
+                      className="flex-1 py-2 rounded-xl bg-white/10 text-white/60 text-sm hover:bg-white/15 transition"
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      onClick={twoFaVerifyEnrollment}
+                      disabled={twoFaLoading || twoFaVerifyCode.length !== 6}
+                      className="flex-1 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold disabled:opacity-50 transition"
+                    >
+                      {twoFaLoading ? "Verifying…" : "Confirm"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step: done */}
+              {twoFaSetupStep === "done" && twoFaEnabled && (
+                <div className="rounded-xl bg-emerald-900/20 border border-emerald-500/20 p-4 text-center space-y-2">
+                  <div className="text-2xl">🔐</div>
+                  <div className="text-sm text-emerald-200 font-semibold">2FA is active</div>
+                  <div className="text-xs text-white/50 leading-relaxed">
+                    You will be prompted for a code from your authenticator app on every admin sign-in.
+                    Keep your backup codes somewhere safe.
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
         ) : activeView === "names" ? (
@@ -1151,6 +1380,16 @@ export default function Admin() {
                 })()}
               </div>
             </ScrollArea>
+          </div>
+        ) : activeView === "security" ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/30 max-w-xs">
+              <div className="text-4xl mb-3">🔐</div>
+              <div className="text-sm mb-2">Admin 2FA Setup</div>
+              <div className="text-xs text-white/20 leading-relaxed">
+                Use the left panel to enrol your authenticator app. Once set up, every admin login will require a TOTP code. All admin routes are blocked until 2FA is verified for the session.
+              </div>
+            </div>
           </div>
         ) : activeView === "names" ? (
           <div className="flex-1 flex items-center justify-center">

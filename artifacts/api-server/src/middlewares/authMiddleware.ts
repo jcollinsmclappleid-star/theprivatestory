@@ -39,6 +39,18 @@ declare global {
 /** Admin sessions are hard-expired after 30 minutes of inactivity */
 const ADMIN_SESSION_MAX_IDLE_MS = 30 * 60 * 1000;
 
+/**
+ * The ADMIN_EMAIL env var defines the email address that is treated as admin
+ * even if the DB `isAdmin` flag is not set. Must be consistent with the check
+ * in requireAdmin.ts (isSessionAdmin).
+ */
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
+
+function isEmailAdmin(email: string | null | undefined): boolean {
+  if (!ADMIN_EMAIL || !email) return false;
+  return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
 export async function authMiddleware(
   req: Request,
   res: Response,
@@ -84,10 +96,14 @@ export async function authMiddleware(
         approvedPartnerName = dbUser?.approvedPartnerName ?? null;
         twoFactorEnabled = dbUser?.twoFactorEnabled ?? false;
 
-        // For admin accounts, look up whether this specific session was created
-        // via a TOTP or backup-code challenge (twoFactorVerifiedAt is stamped
-        // by auth.ts databaseHooks.session.create.before only on those paths).
-        if (isAdmin) {
+        // An "effective admin" is one with the DB isAdmin flag OR whose email
+        // matches ADMIN_EMAIL. Both identities require 2FA and the idle check,
+        // so we load twoFactorVerifiedAt for either.  Not doing so for email-based
+        // admins would cause requireAdmin to always block them on the 2FA gate even
+        // after a valid TOTP challenge.
+        const effectiveAdmin = isAdmin || isEmailAdmin(session.user.email as string);
+
+        if (effectiveAdmin) {
           const [baSession] = await db
             .select({ twoFactorVerifiedAt: baSessionsTable.twoFactorVerifiedAt })
             .from(baSessionsTable)
@@ -105,12 +121,13 @@ export async function authMiddleware(
         return;
       }
 
-      // Admin sessions are hard-expired after 30 minutes of inactivity.
-      // session.session.updatedAt is refreshed by better-auth on every request,
-      // so this is effectively an inactivity timeout.
-      // Return 401 (not 403) so the client can distinguish "session expired, please
-      // re-authenticate" from "insufficient privileges" (which is 403).
-      if (isAdmin) {
+      // Admin sessions (by DB flag or email) are hard-expired after 30 minutes of
+      // inactivity. session.session.updatedAt is refreshed by better-auth every
+      // updateAge seconds (set to 10 min in auth.ts so this check is accurate
+      // within a 10-minute window). Return 401 (not 403) so clients can
+      // distinguish "session expired, re-authenticate" from "insufficient privileges".
+      const effectiveAdmin = isAdmin || isEmailAdmin(session.user.email as string);
+      if (effectiveAdmin) {
         const lastActivity =
           session.session.updatedAt instanceof Date
             ? session.session.updatedAt

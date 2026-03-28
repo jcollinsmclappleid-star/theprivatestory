@@ -52,7 +52,9 @@ async function checkOwnership(
   try {
     // Look up the story that owns this file.
     // Audio is stored in the `audio_url` column as the full /api/audio/... path.
-    // Cover images are stored in the `images` JSONB column as { "cover": "/api/images/..." }.
+    // Images are stored in the `images` JSONB column as:
+    //   { "cover": "/api/images/cover-xxx.png", "scenes": ["/api/images/scene-xxx.png", ...] }
+    // We must match either the cover field OR any entry in the scenes array.
     const [story] = await db
       .select({
         ownerUserId: generatedStories.ownerUserId,
@@ -62,7 +64,11 @@ async function checkOwnership(
       .where(
         mediaType === "audio"
           ? eq(generatedStories.audioUrl, urlPath)
-          : sql`${generatedStories.images}->>'cover' = ${urlPath}`,
+          : sql`(
+              ${generatedStories.images}->>'cover' = ${urlPath}
+              OR
+              ${generatedStories.images}->'scenes' @> jsonb_build_array(${urlPath}::text)
+            )`,
       )
       .limit(1);
 

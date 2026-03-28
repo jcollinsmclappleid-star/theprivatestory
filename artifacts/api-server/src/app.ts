@@ -1,6 +1,7 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import pinoHttp from "pino-http";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -16,6 +17,12 @@ import { lt, isNull, and, notExists, sql } from "drizzle-orm";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app: Express = express();
+
+// Trust the first hop of Replit's reverse proxy so rate limiters key on the
+// real client IP (from X-Forwarded-For) rather than the proxy's IP. Without
+// this, all users share one rate-limit bucket and one heavy user can exhaust
+// the quota for everyone.
+app.set("trust proxy", 1);
 
 app.use(
   pinoHttp({
@@ -36,6 +43,47 @@ app.use(
     },
   }),
 );
+
+// ---------------------------------------------------------------------------
+// HTTP security headers — Helmet sets all of these before any application
+// middleware runs so every response (including error responses) gets headers.
+// Configured explicitly so the intent of each directive is clear.
+// ---------------------------------------------------------------------------
+app.use(
+  helmet({
+    // Prevents MIME-type sniffing attacks where a browser misinterprets
+    // a response as a different content type.
+    contentTypeOptions: true,
+    // Prevents clickjacking by forbidding the page from being embedded in an
+    // iframe on any other origin.
+    frameguard: { action: "deny" },
+    // Enforces HTTPS for 1 year on future visits (includeSubDomains avoids
+    // mixed-content leakage via subdomains).
+    hsts: { maxAge: 31536000, includeSubDomains: true },
+    // Controls how much of the URL is sent in the Referer header when following
+    // external links.  "strict-origin-when-cross-origin" sends the origin only,
+    // not the full path (which might contain user IDs or tokens).
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    // Disables browser features that this application never uses.  Reduces
+    // attack surface if an XSS vulnerability is ever introduced.
+    permittedCrossDomainPolicies: false,
+    // Mitigates Spectre-class side-channel attacks by isolating the browsing
+    // context.  Both are "same-origin" so the app can still use its own workers
+    // and shared memory.
+    crossOriginOpenerPolicy: { policy: "same-origin" },
+    crossOriginResourcePolicy: { policy: "same-origin" },
+    // Removes the X-Powered-By: Express header that fingerprints the stack.
+    // (Helmet does this automatically via hidePoweredBy: true)
+    hidePoweredBy: true,
+    // Disable CSP — the API server serves no HTML, so CSP provides no benefit
+    // and would break any image/audio static-file responses.
+    contentSecurityPolicy: false,
+    // Disable COEP — too strict for static media served from /api/audio and
+    // /api/images without cross-origin isolation headers on the frontend.
+    crossOriginEmbedderPolicy: false,
+  }),
+);
+
 const ALLOWED_ORIGIN_PATTERNS = [
   /^https?:\/\/localhost(:\d+)?$/,
   /\.replit\.dev$/,
@@ -189,5 +237,26 @@ async function runRetentionCleanup(): Promise<void> {
 // Run on startup (catches backlog) then every 24 hours
 runRetentionCleanup();
 setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000);
+
+// ---------------------------------------------------------------------------
+// Global error handler — must be registered last, after all routes.
+// Returns a structured JSON response with a request trace ID so users can
+// quote it when reporting a bug.  Never leaks a stack trace to the client.
+// ---------------------------------------------------------------------------
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+  const status = (err as { status?: number; statusCode?: number })?.status
+    ?? (err as { status?: number; statusCode?: number })?.statusCode
+    ?? 500;
+  const message =
+    status < 500 && (err as { message?: string })?.message
+      ? (err as { message: string }).message
+      : "An unexpected error occurred.";
+  // req.id is assigned by pino-http and appears in the server logs, so the
+  // user can quote it and the team can look it up without exposing stack traces.
+  const requestId = (req as unknown as { id?: string }).id;
+  logger.error({ err, requestId }, "Unhandled request error");
+  res.status(status).json({ error: message, requestId });
+});
 
 export default app;

@@ -151,7 +151,8 @@ adminRouter.get("/name-submissions", async (req, res) => {
 // POST /admin/name-submissions/:id/approve — admin only
 adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
   const id = Number(req.params.id);
-  const { notes } = (req.body ?? {}) as { notes?: string };
+  const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
+  const notes = typeof rawNotes === "string" ? rawNotes.trim().slice(0, 500) : undefined;
 
   try {
     const [submission] = await db
@@ -181,7 +182,8 @@ adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
 // POST /admin/name-submissions/:id/reject — admin only
 adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
   const id = Number(req.params.id);
-  const { notes } = (req.body ?? {}) as { notes?: string };
+  const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
+  const notes = typeof rawNotes === "string" ? rawNotes.trim().slice(0, 500) : undefined;
 
   try {
     const [submission] = await db
@@ -212,7 +214,9 @@ adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
 // On approval: writes the name to the submitting user's approvedListenerName or approvedPartnerName.
 adminRouter.put("/name-submissions/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const { status, notes } = (req.body ?? {}) as { status?: string; notes?: string };
+  const { status } = (req.body ?? {}) as { status?: string; notes?: string };
+  const rawNotes = ((req.body ?? {}) as { notes?: string }).notes;
+  const notes = typeof rawNotes === "string" ? rawNotes.trim().slice(0, 500) : undefined;
 
   if (!["approved", "rejected"].includes(status ?? "")) {
     return res.status(400).json({ error: "Status must be 'approved' or 'rejected'." });

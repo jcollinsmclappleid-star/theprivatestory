@@ -221,11 +221,11 @@ const HARD_BLOCK_PATTERNS: RegExp[] = [
   // Spelled-out minor ages — eleven through seventeen have no legitimate use
   // in adult fiction as age indicators; zero–ten are too common in prose.
   /\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen)\b/i,
-  /\b(underage|under.?age|preteen|pre.?teen|jailbait)\b/i,
+  /\b(underaged?|under.?aged?|preteen|pre.?teen|jailbait)\b/i,
   /\b(schoolgirl|schoolboy|school.?girl|school.?boy)\b/i,
   /\b(barely.?legal)\b/i,
   /\b(lolita|loli|shota)\b/i,
-  /\b(pedo|paedo|pedoph|paedoph)\b/i,
+  /\b(pedo|paedo)\w*/i,
   /\b(csam|cp\b)\b/i,
 
   // Exploitation and abuse descriptors.
@@ -252,8 +252,8 @@ const INJECTION_PATTERNS: RegExp[] = [
   /\bforget\b.{0,40}\b(instructions?|prompts?|rules?|constraints?|guidelines?|safety)\b/i,
   /\boverride\b.{0,30}\b(instructions?|safety|rules?|constraints?|filters?|guidelines?)\b/i,
   /\b(dan\s+mode|jailbreak\s+mode|developer\s+mode|god\s+mode|unrestricted\s+mode|no.?filter\s+mode)\b/i,
-  /\b(jailbreak(ed|ing)?)\b/i,
-  /you\s+are\s+now\s+(a\s+)?(new|different|unrestricted|unfiltered|uncensored)/i,
+  /\bjailbr(eak(ed|ing|en)?|oken)\b/i,
+  /you\s+are\s+now\s+(an?\s+)?(new|different|unrestricted|unfiltered|uncensored)/i,
   /pretend\s+(you\s+are|to\s+be)\s+(an?\s+)?(unrestricted|unfiltered|uncensored|evil|different)/i,
   /act\s+as\s+(if\s+)?(you\s+have\s+no\s+(rules|limits|restrictions|guidelines|constraints))/i,
   /\bsystem\s+prompt\b.{0,30}\bignore\b|\bignore\b.{0,30}\bsystem\s+prompt\b/i,

@@ -488,9 +488,9 @@ function CastingPreview() {
             {[
               { n: "50+", label: "Countries" },
               { n: "12", label: "Historical eras" },
-              { n: "14", label: "Archetypes" },
-              { n: "9", label: "Chemistries" },
-              { n: "2M+", label: "Combinations" },
+              { n: "21", label: "Archetypes" },
+              { n: "19", label: "Chemistries" },
+              { n: "500M+", label: "Combinations" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>

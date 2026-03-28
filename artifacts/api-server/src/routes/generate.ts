@@ -2183,12 +2183,15 @@ router.post("/generate-story", async (req, res) => {
   }
 
   try {
+    // DEPRECATED ENDPOINT — /generate-story is a legacy two-step path (plan-brief → generate-story).
+    // It cannot carry Task #55 anchor fields (chemistry, heritage, atmosphere, storyMode,
+    // experienceTags, ending) because those fields are only present on the intake object,
+    // which is not available here — only the pre-computed brief is received.
+    // The frontend Create page uses /generate (via useGenerateFullStory) exclusively.
+    // This endpoint is kept for backwards compatibility only. Do not add new features here.
     const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput || mood)
       ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood, tier2Enhanced }
       : (tier2Enhanced ? { tier2Enhanced } : undefined);
-    // Note: /generate-story is the legacy two-step endpoint (plan-brief then generate-story separately).
-    // The new fields (chemistry, heritage, etc.) are not available here since the brief is already computed.
-    // Full anchor coverage only applies via the main /generate endpoint which has access to all intake fields.
     const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated", originalInput);
 
     const outputText = story.scenes.map((s) => [s.narration, s.dialogue].filter(Boolean).join(" ")).join(" ");

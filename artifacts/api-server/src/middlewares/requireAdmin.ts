@@ -4,29 +4,23 @@ import crypto from "crypto";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
 /**
- * Derives the admin API key from the existing OPENROUTER_API_KEY secret via
- * HMAC-SHA256.  This means no additional plaintext secret lives in source or
- * env files — the key is computable only by anyone who already holds the
- * OPENROUTER_API_KEY.  Scripts can compute the same value with:
- *   node -e "const c=require('crypto');console.log(c.createHmac('sha256',process.env.OPENROUTER_API_KEY).update('private-story-admin-v1').digest('hex'))"
+ * Token-based admin access for scripts (CI, data export, etc.).
+ * Set ADMIN_SCRIPT_KEY to a high-entropy random secret (e.g. openssl rand -hex 32).
+ * Send as `x-admin-token` header. Disabled (returns false) if the env var is unset.
+ *
+ * This replaces the previous OPENROUTER_API_KEY-derived approach so the admin
+ * token is a dedicated, independently rotatable secret rather than being
+ * entangled with the AI gateway credential.
  */
-function deriveAdminApiKey(): string {
-  const base = process.env.OPENROUTER_API_KEY ?? "";
-  if (!base) return "";
-  return crypto.createHmac("sha256", base).update("private-story-admin-v1").digest("hex");
-}
-
-/** True if the request carries a valid HMAC-derived x-admin-token (script access). */
 export function isTokenAdmin(req: any): boolean {
-  if (!ADMIN_EMAIL) return false;
+  const scriptKey = process.env.ADMIN_SCRIPT_KEY ?? "";
+  if (!scriptKey) return false;
   const token = req.headers["x-admin-token"] as string | undefined;
   if (!token) return false;
-  const derived = deriveAdminApiKey();
-  if (!derived) return false;
   const tBuf = Buffer.from(token, "utf8");
-  const dBuf = Buffer.from(derived, "utf8");
-  if (tBuf.length !== dBuf.length) return false;
-  return crypto.timingSafeEqual(tBuf, dBuf);
+  const kBuf = Buffer.from(scriptKey, "utf8");
+  if (tBuf.length !== kBuf.length) return false;
+  return crypto.timingSafeEqual(tBuf, kBuf);
 }
 
 /** True if the request has a valid admin session (DB flag or ADMIN_EMAIL match). */
@@ -37,7 +31,7 @@ export function isSessionAdmin(req: any): boolean {
   return false;
 }
 
-/** True if the request is from an admin (via session or HMAC token). */
+/** True if the request is from an admin (via session or script token). */
 export function isAdmin(req: any): boolean {
   return isSessionAdmin(req) || isTokenAdmin(req);
 }
@@ -48,12 +42,14 @@ export function isAdmin(req: any): boolean {
  * or backup-code challenge during THIS session (twoFactorVerifiedAt !== null) —
  * checking enrollment alone is insufficient because a session created by the
  * "enable 2FA" flow or a compromised token would pass an enrollment-only check.
- * Token-based access (HMAC x-admin-token for scripts) bypasses the 2FA check
- * because the token is already derived from a high-entropy secret.
+ *
+ * Script access via ADMIN_SCRIPT_KEY bypasses the 2FA check because the key is
+ * a dedicated high-entropy secret, independently rotatable from the session.
+ *
+ * Exported for use by any router that gates admin functionality (admin.ts, names.ts).
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   if (isTokenAdmin(req)) {
-    // Script access via HMAC token — already high-security, no 2FA check needed
     next();
     return;
   }

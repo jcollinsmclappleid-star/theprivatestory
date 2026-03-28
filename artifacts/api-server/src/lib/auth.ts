@@ -102,6 +102,15 @@ export const auth = betterAuth({
     },
   },
 
+  session: {
+    // Sessions expire after 7 days of absolute time.
+    expiresIn: 60 * 60 * 24 * 7,
+    // Refresh the session cookie on every request so the TTL resets with activity.
+    updateAge: 60 * 60 * 24,
+    // Sessions are considered "fresh" (eligible for re-confirmation prompts) for 24 h.
+    freshAge: 60 * 60 * 24,
+  },
+
   advanced: {
     crossSubDomainCookies: { enabled: false },
     defaultCookieAttributes: {

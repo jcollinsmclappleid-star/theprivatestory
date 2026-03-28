@@ -154,11 +154,23 @@ adminRouter.post("/name-submissions/:id/approve", async (req, res) => {
   const { notes } = (req.body ?? {}) as { notes?: string };
 
   try {
+    const [submission] = await db
+      .select({ name: nameSubmissions.name, nameType: nameSubmissions.nameType, submittedByUserId: nameSubmissions.submittedByUserId })
+      .from(nameSubmissions)
+      .where(eq(nameSubmissions.id, id))
+      .limit(1);
+    if (!submission) return res.status(404).json({ error: "Submission not found." });
+
     await db
       .update(nameSubmissions)
       .set({ status: "approved", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
-    notifyAdmin("Name approved", { submissionId: id });
+    notifyAdmin("Name approved", {
+      submissionId: id,
+      name: submission.name,
+      nameType: submission.nameType,
+      userId: submission.submittedByUserId ?? "unknown",
+    });
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin approve name error:", err);
@@ -172,11 +184,23 @@ adminRouter.post("/name-submissions/:id/reject", async (req, res) => {
   const { notes } = (req.body ?? {}) as { notes?: string };
 
   try {
+    const [submission] = await db
+      .select({ name: nameSubmissions.name, nameType: nameSubmissions.nameType, submittedByUserId: nameSubmissions.submittedByUserId })
+      .from(nameSubmissions)
+      .where(eq(nameSubmissions.id, id))
+      .limit(1);
+    if (!submission) return res.status(404).json({ error: "Submission not found." });
+
     await db
       .update(nameSubmissions)
       .set({ status: "rejected", reviewedAt: new Date(), notes: notes ?? null })
       .where(eq(nameSubmissions.id, id));
-    notifyAdmin("Name rejected", { submissionId: id });
+    notifyAdmin("Name rejected", {
+      submissionId: id,
+      name: submission.name,
+      nameType: submission.nameType,
+      userId: submission.submittedByUserId ?? "unknown",
+    });
     return res.json({ ok: true });
   } catch (err) {
     console.error("Admin reject name error:", err);

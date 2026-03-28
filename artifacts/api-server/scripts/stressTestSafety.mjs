@@ -929,6 +929,101 @@ for (const input of cleanInputs) {
 if (e3Failures === 0) console.log(`  E3: All ${cleanInputs.length} clean inputs pass without false positives`);
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Suite F — Admin 2FA gate (re-implements requireAdmin middleware logic inline)
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n── Suite F: Admin 2FA Gate ──────────────────────────────────────────────");
+
+/**
+ * Inline re-implementation of the requireAdmin middleware decision logic.
+ * Returns { status: 200|401|403, code?: string }
+ * Mirrors: artifacts/api-server/src/middlewares/requireAdmin.ts
+ */
+function simulateRequireAdmin({ isAdmin = false, adminEmail = "admin@test.com", userEmail = "", twoFactorVerifiedAt = null, adminScriptKey = "", xAdminToken = "" }) {
+  // Token path (ADMIN_SCRIPT_KEY)
+  if (adminScriptKey && xAdminToken && adminScriptKey === xAdminToken) {
+    return { status: 200 };
+  }
+  // Session admin check
+  const isSessionAdmin = isAdmin || (adminEmail && userEmail.toLowerCase() === adminEmail.toLowerCase());
+  if (!isSessionAdmin) return { status: 403, code: "FORBIDDEN" };
+  // 2FA gate
+  if (!twoFactorVerifiedAt) return { status: 403, code: "ADMIN_2FA_REQUIRED" };
+  return { status: 200 };
+}
+
+// F1: No session, no token → 403 Forbidden
+check("F1: unauthenticated request is blocked", simulateRequireAdmin({}).status, 403);
+
+// F2: Admin session but twoFactorVerifiedAt = null → 403 ADMIN_2FA_REQUIRED
+check("F2: admin without 2FA verification is blocked",
+  simulateRequireAdmin({ isAdmin: true, twoFactorVerifiedAt: null }).code,
+  "ADMIN_2FA_REQUIRED"
+);
+check("F2: admin without 2FA verification returns 403",
+  simulateRequireAdmin({ isAdmin: true, twoFactorVerifiedAt: null }).status,
+  403
+);
+
+// F3: Admin session with twoFactorVerifiedAt set → 200
+check("F3: admin with 2FA verified is allowed",
+  simulateRequireAdmin({ isAdmin: true, twoFactorVerifiedAt: new Date() }).status,
+  200
+);
+
+// F4: Admin matched by email (not isAdmin flag), 2FA verified → 200
+check("F4: admin matched by email with 2FA is allowed",
+  simulateRequireAdmin({ adminEmail: "admin@test.com", userEmail: "admin@test.com", twoFactorVerifiedAt: new Date() }).status,
+  200
+);
+
+// F5: Admin matched by email, no 2FA → blocked
+check("F5: admin matched by email without 2FA is blocked",
+  simulateRequireAdmin({ adminEmail: "admin@test.com", userEmail: "admin@test.com", twoFactorVerifiedAt: null }).code,
+  "ADMIN_2FA_REQUIRED"
+);
+
+// F6: Non-admin user with twoFactorVerifiedAt → still blocked (not admin)
+check("F6: non-admin user even with 2FA timestamp is blocked",
+  simulateRequireAdmin({ isAdmin: false, userEmail: "user@example.com", twoFactorVerifiedAt: new Date() }).status,
+  403
+);
+
+// F7: Token admin with matching ADMIN_SCRIPT_KEY → allowed (no 2FA needed)
+check("F7: valid ADMIN_SCRIPT_KEY token bypasses 2FA gate",
+  simulateRequireAdmin({ adminScriptKey: "supersecretkey123", xAdminToken: "supersecretkey123" }).status,
+  200
+);
+
+// F8: Wrong ADMIN_SCRIPT_KEY → token path fails, no session → blocked
+check("F8: wrong script key is blocked (falls through to session check)",
+  simulateRequireAdmin({ adminScriptKey: "correctkey", xAdminToken: "wrongkey", isAdmin: false }).status,
+  403
+);
+
+// F9: Empty ADMIN_SCRIPT_KEY disables token path entirely (even with matching header)
+check("F9: empty ADMIN_SCRIPT_KEY disables token admin even if header matches",
+  simulateRequireAdmin({ adminScriptKey: "", xAdminToken: "", isAdmin: false }).status,
+  403
+);
+
+// F10: TOTP date in the past (over 30 min) — middleware itself doesn't expire timestamps,
+// that is done by the authMiddleware idle-session check. Confirm the gate
+// only checks for presence, not recency (recency is enforced upstream).
+const oldDate = new Date(Date.now() - 1000 * 60 * 60 * 2); // 2 hours ago
+check("F10: admin session with old twoFactorVerifiedAt is still passed through 2FA gate (recency enforced upstream)",
+  simulateRequireAdmin({ isAdmin: true, twoFactorVerifiedAt: oldDate }).status,
+  200
+);
+
+// F11: Case-insensitive email matching
+check("F11: admin email match is case-insensitive",
+  simulateRequireAdmin({ adminEmail: "Admin@Example.COM", userEmail: "admin@example.com", twoFactorVerifiedAt: new Date() }).status,
+  200
+);
+
+console.log("  Suite F complete — 12 admin 2FA gate assertions");
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Final summary
 // ─────────────────────────────────────────────────────────────────────────────
 

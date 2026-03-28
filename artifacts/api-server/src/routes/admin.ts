@@ -1,6 +1,7 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
+import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -1306,6 +1307,35 @@ router.post("/moderation/csam-report", handlePostCsamReport);
 // ---------------------------------------------------------------------------
 router.get("/flagged-content", handleGetFlaggedContent);
 router.post("/csam-report", handlePostCsamReport);
+
+// ---------------------------------------------------------------------------
+// Admin 2FA status — lets the frontend know whether the current admin session
+// has completed 2FA and whether 2FA is enrolled on the account.
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /admin/2fa/status
+ * Returns the 2FA enrollment state and whether this session was verified via TOTP.
+ * Frontend uses this to show setup prompts or session re-authentication prompts.
+ *
+ * Setup flow (via existing better-auth endpoints):
+ *   1. POST /api/auth/two-factor/enable  { password }  → { totpURI, backupCodes }
+ *   2. Admin scans QR code with authenticator app
+ *   3. POST /api/auth/two-factor/verify-totp  { code }  → confirms enrollment
+ *   4. On next login, TOTP is required before admin routes are accessible.
+ */
+router.get("/2fa/status", (req, res) => {
+  const user = req.user as {
+    twoFactorEnabled?: boolean;
+    twoFactorVerifiedAt?: Date | null;
+  } | undefined;
+  res.json({
+    twoFactorEnabled: user?.twoFactorEnabled ?? false,
+    twoFactorVerifiedThisSession: !!(user?.twoFactorVerifiedAt),
+    setupEndpoint: "/api/auth/two-factor/enable",
+    verifyEndpoint: "/api/auth/two-factor/verify-totp",
+  });
+});
 
 // ---------------------------------------------------------------------------
 // User risk-score management (manual admin override)

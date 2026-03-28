@@ -19,7 +19,7 @@ const formSchema = z.object({
   intensity: z.string(),
   voiceFeel: z.string(),
   storyLength: z.string(),
-  scenarioPrompt: z.string().optional().default(""),
+  scenarioCard: z.string().optional().default(""),
   cinematicVisuals: z.boolean(),
   emotionalFocus: z.boolean(),
   whoIsHe: z.string().optional().default(""),
@@ -717,7 +717,12 @@ export default function Create() {
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
   const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
   const [castingChemistry, setCastingChemistry] = useState<string | undefined>();
-  const [castingPartnerAppearance, setCastingPartnerAppearance] = useState<string | undefined>();
+  // Structured appearance fields — individual chip selections (no free text)
+  const [castingAppearBuild, setCastingAppearBuild] = useState<string | undefined>();
+  const [castingAppearHeight, setCastingAppearHeight] = useState<string | undefined>();
+  const [castingAppearColouring, setCastingAppearColouring] = useState<string | undefined>();
+  const [castingAppearEyes, setCastingAppearEyes] = useState<string | undefined>();
+  const [castingAppearFeatures, setCastingAppearFeatures] = useState<string[] | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
@@ -734,7 +739,7 @@ export default function Create() {
       intensity: "Tender",
       voiceFeel: "Soft Voice",
       storyLength: "5 min",
-      scenarioPrompt: "",
+      scenarioCard: "",
       cinematicVisuals: true,
       emotionalFocus: false,
       whoIsHe: "",
@@ -924,7 +929,7 @@ export default function Create() {
     if (typeof p.intensity === "string") form.setValue("intensity", p.intensity);
     if (typeof p.voiceFeel === "string") form.setValue("voiceFeel", p.voiceFeel);
     if (typeof p.storyLength === "string") form.setValue("storyLength", p.storyLength);
-    if (typeof p.scenarioPrompt === "string") form.setValue("scenarioPrompt", p.scenarioPrompt);
+    if (typeof p.scenarioCard === "string") form.setValue("scenarioCard", p.scenarioCard);
     if (typeof p.whoIsHe === "string") form.setValue("whoIsHe", p.whoIsHe);
     if (typeof p.dynamic === "string") form.setValue("dynamic", p.dynamic);
     if (typeof p.ending === "string") form.setValue("ending", p.ending);
@@ -945,7 +950,7 @@ export default function Create() {
       intensity: form.getValues("intensity"),
       voiceFeel: form.getValues("voiceFeel"),
       storyLength: form.getValues("storyLength"),
-      scenarioPrompt: form.getValues("scenarioPrompt") ?? "",
+      scenarioCard: form.getValues("scenarioCard") ?? "",
       whoIsHe: form.getValues("whoIsHe") ?? "",
       dynamic: form.getValues("dynamic") ?? "",
       ending: form.getValues("ending") ?? "",
@@ -1056,9 +1061,6 @@ export default function Create() {
 
   const handleCastingComplete = useCallback((casting: CastingRoomResult) => {
     const allTags = [...(casting.customTags ?? [])];
-    const scenarioWithFreeText = [casting.scenarioPrompt, casting.freeText]
-      .filter(Boolean)
-      .join(". ");
 
     const castingSnapshot = {
       archetype: casting.archetype,
@@ -1072,7 +1074,6 @@ export default function Create() {
       heritage: casting.heritage || undefined,
       atmosphere: casting.atmosphere || undefined,
       chemistry: casting.chemistry || undefined,
-      partnerAppearance: casting.partnerAppearance || undefined,
       voiceFeel: form.getValues("voiceFeel"),
       storyLength: form.getValues("storyLength"),
     };
@@ -1083,10 +1084,14 @@ export default function Create() {
     setCastingHeritage(casting.heritage || undefined);
     setCastingAtmosphere(casting.atmosphere || undefined);
     setCastingChemistry(casting.chemistry || undefined);
-    setCastingPartnerAppearance(casting.partnerAppearance || undefined);
+    // Structured appearance fields
+    setCastingAppearBuild(casting.appearBuild || undefined);
+    setCastingAppearHeight(casting.appearHeight || undefined);
+    setCastingAppearColouring(casting.appearColouring || undefined);
+    setCastingAppearEyes(casting.appearEyes || undefined);
+    setCastingAppearFeatures(casting.appearFeatures || undefined);
     setPresetSaved(false);
 
-    form.setValue("scenarioPrompt", scenarioWithFreeText);
     form.setValue("whoIsHe", casting.archetype);
     form.setValue("dynamic", casting.dynamic);
     form.setValue("setting", casting.setting);
@@ -1109,7 +1114,10 @@ export default function Create() {
           intensity: casting.intensity,
           voiceFeel: form.getValues("voiceFeel"),
           storyLength: form.getValues("storyLength"),
-          scenarioPrompt: scenarioWithFreeText,
+          scenarioCard: form.getValues("scenarioCard") || undefined,
+          timeOfDay: timeOfDay || undefined,
+          season: season || undefined,
+          perspective: casting.perspective === "your" ? "you" : casting.perspective,
           cinematicVisuals: true,
           emotionalFocus: casting.mood === "Emotional",
           whoIsHe: casting.archetype || undefined,
@@ -1121,31 +1129,15 @@ export default function Create() {
           heritage: casting.heritage || undefined,
           atmosphere: casting.atmosphere || undefined,
           chemistry: casting.chemistry || undefined,
-          partnerAppearance: casting.partnerAppearance || undefined,
+          appearBuild: casting.appearBuild || undefined,
+          appearHeight: casting.appearHeight || undefined,
+          appearColouring: casting.appearColouring || undefined,
+          appearEyes: casting.appearEyes || undefined,
+          appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
-  }, [form, generateMutation, isAuthenticated, startLoadingPhase, stopLoadingPhase]);
-
-  const buildPerspectiveOverrides = useCallback((baseScenario: string) => {
-    const povPrefix =
-      perspective === "her"
-        ? "[Third-person close: write from her perspective using she/her throughout — never 'you'] "
-        : perspective === "his"
-        ? "[Third-person close: write from his perspective using he/him throughout — never 'you'] "
-        : "";
-    const pairing =
-      perspective === "his" ? "Him & Her" : "Her & Him";
-    return {
-      scenarioPrompt: (povPrefix + baseScenario).trim(),
-      pairing,
-    };
-  }, [perspective]);
-
-  const buildAugmentedScenario = useCallback((base: string) => {
-    const timeModifiers = [timeOfDay, season].filter(Boolean).join(", ");
-    return [base, timeModifiers].filter(Boolean).join(" · ").trim();
-  }, [timeOfDay, season]);
+  }, [form, generateMutation, isAuthenticated, startLoadingPhase, stopLoadingPhase, timeOfDay, season]);
 
   const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
     if (savePreset && pendingCastingData && presetName.trim()) {
@@ -1160,8 +1152,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
-    const augmented = buildAugmentedScenario(form.getValues("scenarioPrompt") || "");
-    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(augmented);
+    // perspective: CastingRoom uses "your"/"her"/"his" but API uses "you"/"her"/"his"
+    const apiPerspective = perspective === "your" ? "you" : perspective;
 
     try {
       await generateMutation.mutateAsync({
@@ -1170,7 +1162,10 @@ export default function Create() {
           intensity: form.getValues("intensity"),
           voiceFeel: form.getValues("voiceFeel"),
           storyLength: form.getValues("storyLength"),
-          scenarioPrompt: scenarioWithPov,
+          scenarioCard: form.getValues("scenarioCard") || undefined,
+          timeOfDay: timeOfDay || undefined,
+          season: season || undefined,
+          perspective: apiPerspective,
           cinematicVisuals: true,
           emotionalFocus: form.getValues("mood") === "Emotional",
           whoIsHe: form.getValues("whoIsHe") || undefined,
@@ -1178,21 +1173,25 @@ export default function Create() {
           setting: form.getValues("setting") || undefined,
           storyMode: form.getValues("storyMode") || undefined,
           experienceTags: form.getValues("experienceTags")?.length ? form.getValues("experienceTags") : undefined,
-          pairing: castingPairing || perspectivePairing,
+          pairing: castingPairing,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
-          partnerAppearance: castingPartnerAppearance || undefined,
+          appearBuild: castingAppearBuild || undefined,
+          appearHeight: castingAppearHeight || undefined,
+          appearColouring: castingAppearColouring || undefined,
+          appearEyes: castingAppearEyes || undefined,
+          appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingPartnerAppearance, buildPerspectiveOverrides, buildAugmentedScenario]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
-  const watchedScenario = form.watch("scenarioPrompt") ?? "";
+  const watchedScenario = form.watch("scenarioCard") ?? "";
   const watchedSetting = form.watch("setting") ?? "";
   const watchedWhoIsHe = form.watch("whoIsHe") ?? "";
   const watchedDynamic = form.watch("dynamic") ?? "";
@@ -1200,7 +1199,6 @@ export default function Create() {
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedSubthemeId, setSelectedSubthemeId] = useState<string | null>(null);
-  const [customSubthemeText, setCustomSubthemeText] = useState("");
 
   const { data: apiCategories = [] } = useQuery<ApiCategory[]>({
     queryKey: ["story-categories"],
@@ -1262,7 +1260,7 @@ export default function Create() {
       }
 
       const allScenarios = SCENARIO_GROUPS.flatMap(g => g.items);
-      form.setValue("scenarioPrompt", pick(allScenarios));
+      form.setValue("scenarioCard", pick(allScenarios));
       const allWhoIsHe = WHO_IS_HE_GROUPS.flatMap(g => g.items);
       form.setValue("whoIsHe", pick(allWhoIsHe));
       form.setValue("dynamic", pick(DYNAMIC_OPTIONS));
@@ -1282,8 +1280,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
-    const augmented = buildAugmentedScenario(data.scenarioPrompt || "");
-    const { scenarioPrompt: scenarioWithPov, pairing: perspectivePairing } = buildPerspectiveOverrides(augmented);
+    // perspective: form state uses "your"/"her"/"his", API uses "you"/"her"/"his"
+    const apiPerspective = perspective === "your" ? "you" : perspective;
 
     try {
       await generateMutation.mutateAsync({
@@ -1292,9 +1290,10 @@ export default function Create() {
           intensity: data.intensity,
           voiceFeel: data.voiceFeel,
           storyLength: data.storyLength,
-          scenarioPrompt: selectedSubthemeId && customSubthemeText
-            ? `${scenarioWithPov} ${customSubthemeText}`.trim()
-            : scenarioWithPov,
+          scenarioCard: data.scenarioCard || undefined,
+          timeOfDay: timeOfDay || undefined,
+          season: season || undefined,
+          perspective: apiPerspective,
           cinematicVisuals: data.cinematicVisuals,
           emotionalFocus: data.emotionalFocus,
           whoIsHe: data.whoIsHe || undefined,
@@ -1305,11 +1304,15 @@ export default function Create() {
           categoryId: selectedCategoryId || undefined,
           subthemeId: selectedSubthemeId || undefined,
           experienceTags: data.experienceTags?.length ? data.experienceTags : undefined,
-          pairing: castingPairing || perspectivePairing,
+          pairing: castingPairing,
           heritage: castingHeritage || undefined,
           atmosphere: castingAtmosphere || undefined,
           chemistry: castingChemistry || undefined,
-          partnerAppearance: castingPartnerAppearance || undefined,
+          appearBuild: castingAppearBuild || undefined,
+          appearHeight: castingAppearHeight || undefined,
+          appearColouring: castingAppearColouring || undefined,
+          appearEyes: castingAppearEyes || undefined,
+          appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
         },
       });
     } finally {
@@ -1774,18 +1777,6 @@ export default function Create() {
                             })}
                           </div>
 
-                          {/* Custom subtheme text input */}
-                          {selectedSub?.is_custom && (
-                            <div className="mt-3">
-                              <input
-                                type="text"
-                                value={customSubthemeText}
-                                onChange={(e) => setCustomSubthemeText(e.target.value)}
-                                placeholder={selectedSub.custom_placeholder ?? "Describe your custom scenario…"}
-                                className="w-full bg-card/50 border border-border/50 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
-                              />
-                            </div>
-                          )}
                         </div>
                       </motion.div>
                     );
@@ -1843,7 +1834,7 @@ export default function Create() {
                   {watchedScenario && (
                     <button
                       type="button"
-                      onClick={() => form.setValue("scenarioPrompt", "")}
+                      onClick={() => form.setValue("scenarioCard", "")}
                       className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
                     >
                       <X className="w-3 h-3" />
@@ -1856,7 +1847,7 @@ export default function Create() {
                 </p>
                 <ScenarioPicker
                   value={watchedScenario}
-                  onChange={(text) => form.setValue("scenarioPrompt", text)}
+                  onChange={(text) => form.setValue("scenarioCard", text)}
                 />
 
                 {/* World / Setting */}

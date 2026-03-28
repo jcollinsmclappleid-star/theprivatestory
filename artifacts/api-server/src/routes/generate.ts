@@ -34,45 +34,30 @@ interface ModerationResult {
   source: "blocklist" | "openai" | null;
 }
 
-/** Collect all user-supplied free-text fields from a generation request into one string for moderation. */
+/**
+ * Collect structured (allowlisted) fields from a generation request for moderation screening.
+ * All fields are now allowlist-validated — no free text accepted. This function collects
+ * the remaining structured string values (whoIsHe, dynamic, setting) that are validated
+ * against VALID_* allowlists in normaliseIntake. scenarioPrompt and partnerAppearance are
+ * constructed server-side and are never included here.
+ * experienceTags are still screened as they are token-matched against VALID_EXPERIENCE_TAGS.
+ */
 export function extractUserText(req: Partial<GenerateStoryRequest>): string {
+  // All structured string fields — each validated against VALID_* allowlists before this runs.
+  // No free-text paths remain. This function is retained for the moderation pipeline interface.
   return [
-    req.scenarioPrompt,
     req.whoIsHe,
     req.dynamic,
     req.setting,
-    req.partnerAppearance,
     ...(req.experienceTags ?? []),
   ].filter(Boolean).join(" ");
 }
 
 /**
- * Validates server-side input length limits on all controlled-selection fields.
- * Returns an error message string if any limit is exceeded, or null if all pass.
- *
- * Limits (per safety architecture spec):
- *   scenarioPrompt  ≤ 100 words
- *   whoIsHe         ≤ 120 characters (from predefined list)
- *   setting         ≤ 120 characters (from predefined list)
- *   dynamic         ≤ 120 characters (from predefined list)
- *
- * Note: listenerName and partnerName are sourced exclusively from the
- * authenticated user's DB profile — they are never validated from req.body.
+ * All fields are now allowlist-validated in normaliseIntake — no length checks needed.
+ * Retained as a no-op to avoid breaking callers; may be removed in a future cleanup.
  */
-function validateInputLengths(body: Partial<GenerateStoryRequest>): string | null {
-  if (body.scenarioPrompt) {
-    const wordCount = body.scenarioPrompt.trim().split(/\s+/).filter(Boolean).length;
-    if (wordCount > 100) {
-      return `Your scenario is too long (${wordCount} words). Please keep it under 100 words.`;
-    }
-  }
-  const contextFields: Array<keyof GenerateStoryRequest> = ["whoIsHe", "setting", "dynamic"];
-  for (const field of contextFields) {
-    const val = body[field] as string | undefined;
-    if (val && val.length > 120) {
-      return `One of your entries is too long. Please keep each selection under 120 characters.`;
-    }
-  }
+function validateInputLengths(_body: Partial<GenerateStoryRequest>): string | null {
   return null;
 }
 
@@ -310,7 +295,15 @@ export interface GenerateStoryRequest {
   intensity: string;
   voiceFeel: string;
   storyLength: string;
-  scenarioPrompt: string;
+  // --- Structured scenario fields (no free text accepted) ---
+  /** One of the 50 predefined scenario cards from VALID_SCENARIO_CARDS. Any other value is dropped. */
+  scenarioCard?: string;
+  /** Time of day modifier from VALID_TIME_OF_DAY (Dawn / Morning / Afternoon / Evening / Midnight). */
+  timeOfDay?: string;
+  /** Season modifier from VALID_SEASONS (Spring / Summer / Autumn / Winter). */
+  season?: string;
+  /** POV perspective: "her" or "his" → third-person close; "you" → second person (default). */
+  perspective?: string;
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
   bypassCache?: boolean;
@@ -333,14 +326,29 @@ export interface GenerateStoryRequest {
   atmosphere?: string;
   /** Chemistry selection from the casting wizard (e.g. "Push & Pull", "Slow Surrender") */
   chemistry?: string;
-  /** Physical appearance description from the casting wizard (build/height/colouring/eyes/features) */
-  partnerAppearance?: string;
+  // --- Structured appearance fields (replaces free-text partnerAppearance) ---
+  /** Body build from VALID_APPEAR_BUILD chip set. */
+  appearBuild?: string;
+  /** Height from VALID_APPEAR_HEIGHT chip set. */
+  appearHeight?: string;
+  /** Skin/hair colouring from VALID_APPEAR_COLOURING chip set. */
+  appearColouring?: string;
+  /** Eye colour from VALID_APPEAR_EYES chip set. */
+  appearEyes?: string;
+  /** Distinguishing features from VALID_APPEAR_FEATURES chip set (array). */
+  appearFeatures?: string[];
 }
 
-/** Internal server-only extension of GenerateStoryRequest. Names are never accepted from the client — always injected from req.user after normalisation. */
+/** Internal server-only extension of GenerateStoryRequest.
+ *  scenarioPrompt is constructed server-side from validated structured fields — never accepted from the client.
+ *  Names are never accepted from the client — always injected from req.user after normalisation. */
 export interface InternalGenerateRequest extends GenerateStoryRequest {
   listenerName: string;
   partnerName?: string;
+  /** Constructed server-side from scenarioCard + timeOfDay + season + perspective. Never from client. */
+  scenarioPrompt: string;
+  /** Reconstructed server-side from validated appearance chip fields. Never from client. */
+  partnerAppearance?: string;
 }
 
 interface ScenePlan {
@@ -921,6 +929,92 @@ const VALID_ATMOSPHERES = ["Stormy", "Candlelit", "Midnight", "Golden Hour", "Ra
 
 const VALID_STORY_MODES = ["romance", "slow_burn", "passionate", "forbidden", "unrestrained"];
 
+// ---------------------------------------------------------------------------
+// Structured scenario & appearance allowlists — replaces all free-text fields
+// ---------------------------------------------------------------------------
+
+/** The 50 predefined scenario cards from SCENARIO_GROUPS in Create.tsx. */
+const VALID_SCENARIO_CARDS = new Set([
+  // The Situation
+  "One last night before everything changes between you",
+  "You've been pretending not to want each other for months",
+  "Weeks of messages and this is the first time you've actually met",
+  "You walked into the wrong room, and he was already in it",
+  "A work trip that became something neither of you planned",
+  "A dare that went further than either of you intended",
+  "A reunion that was supposed to be simple and uncomplicated",
+  "Stuck together by circumstance with nowhere else to go",
+  "You're both pretending this is professional",
+  "He showed up somewhere you didn't expect him",
+  // The Tension
+  "Something between you that should be forbidden",
+  "He has a specific kind of power over you and both of you know it",
+  "Years of unfinished business, one night to settle it",
+  "He knows exactly what you want and is making you wait",
+  "A secret you've both been keeping about how you feel",
+  "He's seen something in you that no one else has noticed",
+  "A boundary that has been bending for months",
+  "The chemistry between you has no context and no explanation",
+  "He is very careful around you, for reasons neither of you says aloud",
+  "You both know something is about to happen",
+  // The Feeling
+  "Being completely undone by someone who knows how",
+  "Feeling safe enough to want what you actually want",
+  "The specific pleasure of giving in, completely",
+  "Being wanted without any reservation or condition",
+  "The surrender of being truly seen by someone",
+  "Being the only thing he is thinking about",
+  "A boundary you didn't know you had, slowly dissolving",
+  "Something you've been running from finally catching you",
+  "The relief of not having to pretend anymore",
+  "The feeling of being chosen, completely and deliberately",
+  // The Moment
+  "He reaches for you and stops himself",
+  "You're both talking about something else and neither of you is listening",
+  "He says your name differently than anyone else does",
+  "The exact second when both of you stop pretending",
+  "A touch that's technically nothing and changes everything",
+  "He looks at you and you stop being able to form a sentence",
+  "The silence that turns into something neither of you planned",
+  "He moves closer than is strictly necessary",
+  "You ask him to stay and both of you know what that means",
+  "He reaches out and puts his hand over yours, and doesn't move it",
+  // The Setting
+  "A Tokyo hotel room, midnight, rain on the window",
+  "A private members' club in Mayfair, after hours",
+  "The last carriage of a night train through the Alps",
+  "A borrowed beach house in January, nobody else for miles",
+  "A rooftop apartment in Paris at 2am",
+  "A hillside villa terrace above Positano at dusk",
+  "A boutique hotel in Marrakech, the city noise below",
+  "A private charter cabin on a transatlantic flight",
+  "A glass-walled apartment in Singapore, city lights below",
+  "A flooded piazza in Venice in November",
+]);
+
+const VALID_TIME_OF_DAY = new Set(["Dawn", "Morning", "Afternoon", "Evening", "Midnight"]);
+const VALID_SEASONS = new Set(["Spring", "Summer", "Autumn", "Winter"]);
+/** "her" / "his" → third-person close. "you" → second person (default). */
+const VALID_PERSPECTIVES = new Set(["her", "his", "you"]);
+
+/** Appearance chip options — union of all pronoun variants from CastingRoom. */
+const VALID_APPEAR_BUILD = new Set(["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"]);
+const VALID_APPEAR_HEIGHT = new Set(["Tall", "Very tall", "Average height", "Shorter than me"]);
+const VALID_APPEAR_COLOURING = new Set(["Dark", "Olive", "Fair", "Tanned", "Deep brown", "Medium brown"]);
+const VALID_APPEAR_EYES = new Set(["Dark brown", "Light brown", "Green", "Blue", "Grey", "Hazel", "Deep black"]);
+const VALID_APPEAR_FEATURES = new Set([
+  // he/him
+  "Stubble", "Full beard", "Clean-shaven", "Strong jaw", "Dimples",
+  "Broad shoulders", "Large hands", "Tattoos", "A scar", "Piercing eyes",
+  "Long hair", "Short hair", "Curls", "Silver at the temples",
+  // she/her additions
+  "Long lashes", "Full lips", "High cheekbones", "Sharp features",
+  "Delicate features", "Natural glow", "Freckles", "Elegant hands",
+  "Soft curls",
+  // they/them additions
+  "Soft features", "Lean frame",
+]);
+
 /**
  * Strip characters from a text field that have no place in a story scenario or
  * setting string.  Only Unicode letters, digits, spaces, and a small set of
@@ -1001,17 +1095,54 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
 
-  // scenarioPrompt — sanitise to safe characters then apply word-count check
-  const rawScenario = sanitiseTextField(raw.scenarioPrompt, 1000) ?? "";
-  const meaningfulWords = rawScenario.split(/\s+/).filter((w) => w.length > 2);
-  let scenarioPrompt: string;
-  if (meaningfulWords.length === 0) {
-    scenarioPrompt = "an unexpected late evening encounter that becomes emotionally charged";
-  } else if (meaningfulWords.length < 6) {
-    scenarioPrompt = `${rawScenario} — ${mood.toLowerCase()} atmosphere, ${intensity.toLowerCase()} emotional tone`;
-  } else {
-    scenarioPrompt = rawScenario;
-  }
+  // --- Scenario construction (no free text) ---
+  // scenarioCard: one of the 50 predefined strings, or undefined if not in the set.
+  const scenarioCard = raw.scenarioCard && VALID_SCENARIO_CARDS.has(raw.scenarioCard.trim())
+    ? raw.scenarioCard.trim() : undefined;
+  const timeOfDay = raw.timeOfDay && VALID_TIME_OF_DAY.has(raw.timeOfDay.trim())
+    ? raw.timeOfDay.trim() : undefined;
+  const season = raw.season && VALID_SEASONS.has(raw.season.trim())
+    ? raw.season.trim() : undefined;
+  const perspective = raw.perspective && VALID_PERSPECTIVES.has(raw.perspective.trim())
+    ? raw.perspective.trim() : undefined;
+
+  // Build scenarioPrompt server-side from validated components.
+  const scenarioParts: string[] = [];
+  if (scenarioCard) scenarioParts.push(scenarioCard);
+  if (timeOfDay || season) scenarioParts.push([timeOfDay, season].filter(Boolean).join(", "));
+  const scenarioBase = scenarioParts.length > 0
+    ? scenarioParts.join(" · ")
+    : "an unexpected late evening encounter that becomes emotionally charged";
+
+  // POV prefix for third-person close — system-generated, never from client input.
+  const povPrefix = perspective === "her"
+    ? "[Third-person close: write from her perspective using she/her throughout — never 'you'] "
+    : perspective === "his"
+    ? "[Third-person close: write from his perspective using he/him throughout — never 'you'] "
+    : "";
+  const scenarioPrompt = povPrefix + scenarioBase;
+
+  // --- Appearance reconstruction (no free text) ---
+  const appearBuild = raw.appearBuild && VALID_APPEAR_BUILD.has(raw.appearBuild.trim())
+    ? raw.appearBuild.trim() : undefined;
+  const appearHeight = raw.appearHeight && VALID_APPEAR_HEIGHT.has(raw.appearHeight.trim())
+    ? raw.appearHeight.trim() : undefined;
+  const appearColouring = raw.appearColouring && VALID_APPEAR_COLOURING.has(raw.appearColouring.trim())
+    ? raw.appearColouring.trim() : undefined;
+  const appearEyes = raw.appearEyes && VALID_APPEAR_EYES.has(raw.appearEyes.trim())
+    ? raw.appearEyes.trim() : undefined;
+  const appearFeatures = Array.isArray(raw.appearFeatures)
+    ? raw.appearFeatures.filter((f): f is string => typeof f === "string" && VALID_APPEAR_FEATURES.has(f.trim()))
+    : undefined;
+
+  // Reconstruct partnerAppearance from validated components only.
+  const appearParts: string[] = [];
+  if (appearBuild) appearParts.push(`Build: ${appearBuild}`);
+  if (appearHeight) appearParts.push(`Height: ${appearHeight}`);
+  if (appearColouring) appearParts.push(`Colouring: ${appearColouring}`);
+  if (appearEyes) appearParts.push(`Eyes: ${appearEyes}`);
+  if (appearFeatures && appearFeatures.length > 0) appearParts.push(`Distinguishing features: ${appearFeatures.join(", ")}`);
+  const partnerAppearance = appearParts.length > 0 ? appearParts.join(". ") : undefined;
 
   // Validate categoryId/subthemeId against known categories
   const categoryId = raw.categoryId?.trim() || undefined;
@@ -1033,7 +1164,13 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     intensity,
     voiceFeel,
     storyLength,
-    scenarioPrompt,
+    // Structured scenario fields (passed through for reference — scenarioPrompt is the canonical value)
+    scenarioCard,
+    timeOfDay,
+    season,
+    perspective,
+    scenarioPrompt,   // constructed server-side — never from client
+    partnerAppearance, // reconstructed server-side — never from client
     cinematicVisuals: raw.cinematicVisuals ?? true,
     emotionalFocus: raw.emotionalFocus ?? false,
     whoIsHe: raw.whoIsHe && VALID_WHO_IS_HE.includes(raw.whoIsHe.trim()) ? raw.whoIsHe.trim() : undefined,
@@ -1044,13 +1181,16 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     partnerName: undefined,
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,
-
     numericIntensity,
     storyMode: raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim()) ? raw.storyMode.trim() : undefined,
     heritage: raw.heritage && VALID_HERITAGES.includes(raw.heritage.trim()) ? raw.heritage.trim() : undefined,
     atmosphere: raw.atmosphere && VALID_ATMOSPHERES.includes(raw.atmosphere.trim()) ? raw.atmosphere.trim() : undefined,
     chemistry: raw.chemistry && VALID_CHEMISTRIES.includes(raw.chemistry.trim()) ? raw.chemistry.trim() : undefined,
-    partnerAppearance: sanitiseTextField(raw.partnerAppearance, 500),
+    appearBuild,
+    appearHeight,
+    appearColouring,
+    appearEyes,
+    appearFeatures,
     experienceTags: Array.isArray(raw.experienceTags)
       ? raw.experienceTags.filter((t): t is string => typeof t === "string" && VALID_EXPERIENCE_TAGS.has(t))
       : undefined,
@@ -2079,16 +2219,14 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
-  const rawBody = req.body as GenerateStoryRequest;
+  // Normalise first — validates allowlists and constructs scenarioPrompt server-side
+  const body = normaliseIntake(req.body as GenerateStoryRequest);
 
   // Inject approved names from authenticated user profile — never from request body
-  const body: InternalGenerateRequest = {
-    ...rawBody,
-    listenerName: req.user?.approvedListenerName?.trim() ?? "",
-    partnerName: req.user?.approvedPartnerName?.trim() || undefined,
-  };
+  body.listenerName = req.user?.approvedListenerName?.trim() ?? "";
+  body.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
 
-  const hasCustomInput = !!(body.scenarioPrompt || body.whoIsHe || body.setting || body.dynamic);
+  const hasCustomInput = !!(body.whoIsHe || body.setting || body.dynamic || body.scenarioCard);
   const riskError = checkRiskThreshold(req, hasCustomInput);
   if (riskError) {
     res.status(403).json({ error: riskError });
@@ -2134,10 +2272,14 @@ router.post("/plan-story", async (req, res) => {
 });
 
 router.post("/generate-story", async (req, res) => {
-  const { brief, intensity, scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood } = req.body as {
+  // DEPRECATED ENDPOINT — /generate-story is a legacy two-step path (plan-brief → generate-story).
+  // scenarioPrompt is NO LONGER accepted from the client (free-text removed). whoIsHe/setting/dynamic
+  // are still validated via extractUserText for moderation, as they go through allowlists server-side.
+  // The frontend uses /generate-full-story (via useGenerateFullStory) exclusively.
+  // This endpoint is kept for backwards compatibility only. Do not add new features here.
+  const { brief, intensity, whoIsHe, setting, dynamic: dynamicInput, mood } = req.body as {
     brief: StoryBrief;
     intensity?: string;
-    scenarioPrompt?: string;
     whoIsHe?: string;
     setting?: string;
     dynamic?: string;
@@ -2147,22 +2289,16 @@ router.post("/generate-story", async (req, res) => {
   // Names come exclusively from the authenticated user's approved profile fields
   const listenerName = req.isAuthenticated() ? (req.user.approvedListenerName?.trim() ?? "") : "";
 
-  const hasCustomInput = !!(scenarioPrompt || whoIsHe || setting || dynamicInput);
+  const hasCustomInput = !!(whoIsHe || setting || dynamicInput);
   const riskError = checkRiskThreshold(req, hasCustomInput);
   if (riskError) {
     res.status(403).json({ error: riskError });
     return;
   }
 
-  const lengthError = validateInputLengths({ scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput });
-  if (lengthError) {
-    res.status(422).json({ error: lengthError });
-    return;
-  }
-
   const userId = req.isAuthenticated() ? String(req.user.id) : undefined;
   let tier2Enhanced = false;
-  const inputToModerate = extractUserText({ scenarioPrompt, whoIsHe, dynamic: dynamicInput, setting, mood });
+  const inputToModerate = extractUserText({ whoIsHe, dynamic: dynamicInput, setting, mood });
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
@@ -2183,14 +2319,8 @@ router.post("/generate-story", async (req, res) => {
   }
 
   try {
-    // DEPRECATED ENDPOINT — /generate-story is a legacy two-step path (plan-brief → generate-story).
-    // It cannot carry Task #55 anchor fields (chemistry, heritage, atmosphere, storyMode,
-    // experienceTags, ending) because those fields are only present on the intake object,
-    // which is not available here — only the pre-computed brief is received.
-    // The frontend Create page uses /generate (via useGenerateFullStory) exclusively.
-    // This endpoint is kept for backwards compatibility only. Do not add new features here.
-    const originalInput = (scenarioPrompt || whoIsHe || setting || dynamicInput || mood)
-      ? { scenarioPrompt, whoIsHe, setting, dynamic: dynamicInput, mood, tier2Enhanced }
+    const originalInput = (whoIsHe || setting || dynamicInput || mood)
+      ? { whoIsHe, setting, dynamic: dynamicInput, mood, tier2Enhanced }
       : (tier2Enhanced ? { tier2Enhanced } : undefined);
     const story = await writeStoryFromBrief(brief, listenerName ?? "", intensity ?? "Heated", originalInput);
 
@@ -2381,7 +2511,7 @@ router.post("/generate-full-story", async (req, res) => {
   const rawIntake = req.body as GenerateStoryRequest;
 
   // Risk score gate: check before any expensive work
-  const hasCustom = !!(rawIntake.scenarioPrompt || rawIntake.whoIsHe || rawIntake.setting || rawIntake.dynamic);
+  const hasCustom = !!(rawIntake.scenarioCard || rawIntake.whoIsHe || rawIntake.setting || rawIntake.dynamic);
   const riskError = checkRiskThreshold(req, hasCustom);
   if (riskError) {
     res.status(403).json({ error: riskError });

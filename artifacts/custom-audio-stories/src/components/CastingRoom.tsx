@@ -15,12 +15,16 @@ export interface CastingRoomResult {
   atmosphere: string;
   intensity: "Tender" | "Heated" | "Explicit" | "Scorching";
   mood: string;
-  scenarioPrompt: string;
   whoIsHe: string;
   dynamic: string;
   storyMode: string;
   customTags?: string[];
-  partnerAppearance?: string;
+  // Structured appearance fields — individual chip selections (no free text)
+  appearBuild?: string;
+  appearHeight?: string;
+  appearColouring?: string;
+  appearEyes?: string;
+  appearFeatures?: string[];
 }
 
 interface Props {
@@ -567,43 +571,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     const whoIsHe = archetype;
     const dynamic = chemistryCfg?.dynamic ?? "";
 
-    // Natural, respectful heritage phrasing with gendered noun from pairing pronouns
-    const partnerPronouns = pairingCfg?.partnerPronouns ?? "he/him";
-    const genderedNoun    = getGenderedNoun(partnerPronouns);
-    const heritagePhrase  = (() => {
-      if (!heritage) return "";
-      if (heritage === "Ambiguous") {
-        const energyClause = archetype ? ` who carries the presence of ${archetype}` : "";
-        return `The love interest is someone${energyClause}. Write them as genuinely, specifically attractive — not reliant on stereotypes or clichés.`;
-      }
-      const energyClause = archetype ? ` who carries the presence of ${archetype}` : "";
-      return `The love interest is a ${heritage} ${genderedNoun}${energyClause}. Write them as genuinely, specifically attractive — not reliant on stereotypes or clichés.`;
-    })();
-
-    const locationPhrase = (() => {
-      if (city && country) return `The story takes place in ${city}, ${country}.`;
-      if (city) return `The story takes place in ${city}.`;
-      if (country) return `The story takes place in ${country}.`;
-      return "";
-    })();
-
-    const fullScenario = [
-      pairingCfg ? `This is a ${pairingCfg.id} story. Protagonist pronouns: ${pairingCfg.protagonistPronouns}. Love interest pronouns: ${pairingCfg.partnerPronouns}.` : "",
-      heritagePhrase,
-      locationPhrase,
-      setting ? `The physical setting is ${setting}${atmosphere ? `, with a ${atmosphere.toLowerCase()} atmosphere` : ""}.` : "",
-      data.chemistry ? `The dynamic between them: ${data.chemistry}.` : "",
-    ].filter(Boolean).join(" ");
-
-    // Build appearance description if any fields are set
-    const appearParts: string[] = [];
-    if (appearBuild) appearParts.push(`Build: ${appearBuild}`);
-    if (appearHeight) appearParts.push(`Height: ${appearHeight}`);
-    if (appearColouring) appearParts.push(`Colouring: ${appearColouring}`);
-    if (appearEyes) appearParts.push(`Eyes: ${appearEyes}`);
-    if (appearFeatures.length > 0) appearParts.push(`Distinguishing features: ${appearFeatures.join(", ")}`);
-    const partnerAppearance = appearParts.length > 0 ? appearParts.join(". ") : undefined;
-
     const result: CastingRoomResult = {
       perspective: data.perspective ?? "her",
       pairing: data.pairing,
@@ -616,12 +583,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       atmosphere,
       intensity: data.intensity ?? "Heated",
       mood: data.mood ?? "Emotional",
-      scenarioPrompt: fullScenario,
       whoIsHe,
       dynamic,
       storyMode: afterDark ? "unrestrained" : (data.intensity === "Tender" || data.intensity === "Heated" ? "passionate" : "unrestrained"),
       customTags,
-      partnerAppearance,
+      // Structured appearance fields — sent individually to the API, reconstructed server-side
+      appearBuild: appearBuild || undefined,
+      appearHeight: appearHeight || undefined,
+      appearColouring: appearColouring || undefined,
+      appearEyes: appearEyes || undefined,
+      appearFeatures: appearFeatures.length > 0 ? appearFeatures : undefined,
     };
     onComplete(result);
   };

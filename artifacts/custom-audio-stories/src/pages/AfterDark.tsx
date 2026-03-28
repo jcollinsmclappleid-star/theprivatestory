@@ -812,7 +812,6 @@ export default function AfterDark() {
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
     casting: CastingRoomResult;
-    fullPrompt: string;
     allTags: string[];
   } | null>(null);
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -934,19 +933,11 @@ export default function AfterDark() {
       setLastCastingData(castingSnapshot);
       setPresetSaved(false);
 
-      const scenarioContext = `${selectedScenario.label}: ${selectedScenario.sub}`;
-      const locationPhrase = [casting.city, casting.country].filter(Boolean).join(", ");
-      const fullPrompt = [
-        locationPhrase ? `Set in ${locationPhrase}.` : "",
-        scenarioContext,
-        casting.scenarioPrompt,
-      ].filter(Boolean).join(" ");
       const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
+      setPendingAfterDarkCast({ casting, allTags });
 
-      setPendingAfterDarkCast({ casting, fullPrompt, allTags });
       const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "After Dark Cast";
       setPresetNameDraft(suggestedName);
-
       setPhase("preset-prompt");
     },
     [selectedScenario]
@@ -955,7 +946,7 @@ export default function AfterDark() {
   const handleAfterDarkStartGenerating = useCallback(
     async (savePreset: boolean, presetName: string) => {
       if (!pendingAfterDarkCast || !selectedScenario) return;
-      const { casting, fullPrompt, allTags } = pendingAfterDarkCast;
+      const { casting, allTags } = pendingAfterDarkCast;
 
       if (savePreset && presetName.trim() && lastCastingData) {
         fetch(`${API_BASE}/api/me/presets`, {
@@ -969,6 +960,9 @@ export default function AfterDark() {
       setPhase("generating");
       startLoadingPhase();
 
+      // perspective: CastingRoom uses "your"/"her"/"his" but API uses "you"/"her"/"his"
+      const apiPerspective = casting.perspective === "your" ? "you" : casting.perspective;
+
       try {
         await generateMutation.mutateAsync({
           data: {
@@ -976,7 +970,9 @@ export default function AfterDark() {
             intensity: casting.intensity,
             voiceFeel: "Deep Voice",
             storyLength: "10 min",
-            scenarioPrompt: fullPrompt,
+            // scenarioCard omitted — AfterDark scenarios are not in the 50-card set;
+            // context is carried via experienceTags, dynamic, storyMode, and chemistry.
+            perspective: apiPerspective,
             cinematicVisuals: true,
             emotionalFocus: false,
             whoIsHe: casting.archetype || undefined,
@@ -987,6 +983,11 @@ export default function AfterDark() {
             atmosphere: casting.atmosphere || undefined,
             chemistry: casting.chemistry || undefined,
             setting: casting.setting || undefined,
+            appearBuild: casting.appearBuild || undefined,
+            appearHeight: casting.appearHeight || undefined,
+            appearColouring: casting.appearColouring || undefined,
+            appearEyes: casting.appearEyes || undefined,
+            appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
           },
         });
       } finally {
@@ -1203,7 +1204,6 @@ export default function AfterDark() {
                   atmosphere: "",
                   intensity: "Explicit",
                   mood: "Raw",
-                  scenarioPrompt: selectedScenario?.sub ?? "",
                   whoIsHe: "",
                   dynamic: selectedScenario?.tags[0] ?? "",
                   storyMode: selectedScenario?.storyMode ?? "unrestrained",

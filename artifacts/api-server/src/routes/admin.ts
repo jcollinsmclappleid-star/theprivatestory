@@ -27,6 +27,7 @@ import {
   getCacheKey,
   type GenerateStoryRequest,
 } from "./generate.js";
+import { LIBRARY_SEED_MANIFEST } from "../lib/librarySeedManifest.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
@@ -683,6 +684,150 @@ router.delete("/story/:id", async (req, res) => {
   await db.delete(generatedStories).where(eq(generatedStories.id, id));
   notifyAdmin("Story deleted", { storyId: id });
   res.json({ ok: true, deleted: id });
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /admin/clear-library — delete all library stories
+// ---------------------------------------------------------------------------
+
+router.delete("/clear-library", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  const result = await db
+    .delete(generatedStories)
+    .where(eq(generatedStories.isLibraryStory, true));
+  const count = result.rowCount ?? 0;
+  notifyAdmin("Library cleared", { deleted: count });
+  res.json({ ok: true, deleted: count });
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/seed-library — sequential SSE seed of 30 library stories
+// ---------------------------------------------------------------------------
+
+router.post("/seed-library", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  const send = (event: string, data: Record<string, unknown>) => {
+    res.write(`data: ${JSON.stringify({ event, ...data })}\n\n`);
+  };
+
+  const total = LIBRARY_SEED_MANIFEST.length;
+  send("start", { total, message: `Starting library seed — ${total} stories` });
+
+  let done = 0;
+  let failed = 0;
+
+  for (const entry of LIBRARY_SEED_MANIFEST) {
+    const idx = LIBRARY_SEED_MANIFEST.indexOf(entry) + 1;
+    send("story_start", {
+      index: idx,
+      total,
+      situationId: entry.situationId,
+      label: entry.label,
+      mood: entry.mood,
+    });
+
+    try {
+      const intake: GenerateStoryRequest = {
+        mood: entry.mood,
+        intensity: entry.intensity,
+        voiceFeel: entry.voiceFeel,
+        storyLength: entry.storyLength,
+        pairing: entry.pairing,
+        chemistry: entry.chemistry,
+        atmosphere: entry.atmosphere,
+        setting: entry.setting,
+        country: entry.country,
+        city: entry.city,
+        whoIsHe: entry.whoIsHe,
+        situationId: entry.situationId,
+        cinematicVisuals: true,
+        emotionalFocus: true,
+      };
+
+      send("phase", { index: idx, phase: "planning", label: "Planning story brief…" });
+      const brief = await planStory(intake);
+
+      send("phase", { index: idx, phase: "writing", label: "Writing story…" });
+      const story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
+
+      send("phase", { index: idx, phase: "images", label: "Generating cover image…" });
+      const cacheKey = `lib-${entry.situationId}-${Date.now()}`;
+      const prompts = await buildImagePrompts(brief, story);
+      const images = await generateAllImages(prompts, cacheKey);
+
+      const castingData: Record<string, string> = {
+        pairing: entry.pairing,
+        chemistry: entry.chemistry,
+        mood: entry.mood,
+        intensity: entry.intensity,
+        atmosphere: entry.atmosphere,
+        setting: entry.setting,
+        country: entry.country,
+        city: entry.city,
+        archetype: entry.whoIsHe,
+      };
+      if (brief.situation) castingData.situation = brief.situation;
+      if (brief.situationId) castingData.situationId = brief.situationId;
+
+      send("phase", { index: idx, phase: "saving", label: "Saving to library…" });
+      const storyId = `lib-${entry.situationId}-${cacheKey}`;
+      await storiesStore.set(storyId, {
+        id: storyId,
+        title: story.title,
+        description: story.description,
+        mood: entry.mood,
+        audioUrl: "",
+        duration: entry.storyLength,
+        brief,
+        scenes: story.scenes,
+        images: { cover: images.cover, scenes: images.scenes ?? [] },
+        recommendation_tags: brief.recommendation_tags ?? [entry.mood],
+        isLibraryStory: true,
+        status: "published",
+        ownerUserId: null,
+        castingData,
+      });
+
+      done++;
+      send("story_done", {
+        index: idx,
+        total,
+        situationId: entry.situationId,
+        title: story.title,
+        storyId,
+        coverUrl: images.cover,
+        done,
+        failed,
+      });
+    } catch (err) {
+      failed++;
+      const message = err instanceof Error ? err.message : String(err);
+      send("story_error", {
+        index: idx,
+        total,
+        situationId: entry.situationId,
+        label: entry.label,
+        error: message,
+        done,
+        failed,
+      });
+    }
+  }
+
+  send("complete", { total, done, failed, message: `Seed complete — ${done} stories created, ${failed} failed` });
+  res.end();
 });
 
 // ---------------------------------------------------------------------------

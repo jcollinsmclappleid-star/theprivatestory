@@ -74,7 +74,7 @@ export default function Admin() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "security" | "audit">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "security" | "audit" | "library">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -118,6 +118,132 @@ export default function Admin() {
   }
   const [auditEntries, setAuditEntries] = useState<AuditLogEntry[]>([]);
   const [auditLoading, setAuditLoading] = useState(false);
+
+  // ── Seed Library state ──────────────────────────────────────────────────────
+  interface SeedItem {
+    index: number;
+    situationId: string;
+    label: string;
+    mood: string;
+    status: "pending" | "planning" | "writing" | "images" | "saving" | "done" | "error";
+    title?: string;
+    storyId?: string;
+    coverUrl?: string;
+    error?: string;
+  }
+  const [seedItems, setSeedItems] = useState<SeedItem[]>([]);
+  const [seedRunning, setSeedRunning] = useState(false);
+  const seedAbortRef = useRef<AbortController | null>(null);
+  const [clearStatus, setClearStatus] = useState<"idle" | "clearing" | "done" | "error">("idle");
+  const [seedSummary, setSeedSummary] = useState<{ done: number; failed: number } | null>(null);
+
+  const clearLibrary = async () => {
+    if (!confirm("Delete all library stories? This cannot be undone.")) return;
+    setClearStatus("clearing");
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/clear-library`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (r.ok) {
+        setClearStatus("done");
+        setSeedItems([]);
+        setSeedSummary(null);
+      } else {
+        setClearStatus("error");
+      }
+    } catch {
+      setClearStatus("error");
+    }
+  };
+
+  const seedLibrary = async () => {
+    if (seedRunning) {
+      seedAbortRef.current?.abort();
+      setSeedRunning(false);
+      return;
+    }
+    setSeedRunning(true);
+    setSeedItems([]);
+    setSeedSummary(null);
+    const ctrl = new AbortController();
+    seedAbortRef.current = ctrl;
+
+    const updateItem = (idx: number, patch: Partial<SeedItem>) => {
+      setSeedItems((prev) => {
+        const next = [...prev];
+        const existing = next.find((i) => i.index === idx);
+        if (existing) {
+          Object.assign(existing, patch);
+        } else {
+          next.push({ index: idx, situationId: "", label: "", mood: "", status: "pending", ...patch });
+        }
+        return next;
+      });
+    };
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/seed-library`, {
+        method: "POST",
+        credentials: "include",
+        signal: ctrl.signal,
+      });
+      if (!resp.ok || !resp.body) {
+        setSeedRunning(false);
+        return;
+      }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const parts = buf.split("\n\n");
+        buf = parts.pop() ?? "";
+        for (const part of parts) {
+          const line = part.startsWith("data: ") ? part.slice(6) : part;
+          if (!line.trim()) continue;
+          try {
+            const ev = JSON.parse(line) as Record<string, unknown>;
+            const evt = ev.event as string;
+            const idx = ev.index as number;
+            if (evt === "story_start") {
+              updateItem(idx, {
+                index: idx,
+                situationId: ev.situationId as string,
+                label: ev.label as string,
+                mood: ev.mood as string,
+                status: "planning",
+              });
+            } else if (evt === "phase") {
+              const phaseMap: Record<string, SeedItem["status"]> = {
+                planning: "planning",
+                writing: "writing",
+                images: "images",
+                saving: "saving",
+              };
+              updateItem(idx, { status: phaseMap[ev.phase as string] ?? "planning" });
+            } else if (evt === "story_done") {
+              updateItem(idx, {
+                status: "done",
+                title: ev.title as string,
+                storyId: ev.storyId as string,
+                coverUrl: ev.coverUrl as string,
+              });
+            } else if (evt === "story_error") {
+              updateItem(idx, { status: "error", error: ev.error as string });
+            } else if (evt === "complete") {
+              setSeedSummary({ done: ev.done as number, failed: ev.failed as number });
+            }
+          } catch {}
+        }
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") console.error(e);
+    }
+    setSeedRunning(false);
+  };
 
   const loadAuditLog = useCallback(async () => {
     setAuditLoading(true);
@@ -627,6 +753,12 @@ export default function Admin() {
               >
                 Audit
               </button>
+              <button
+                onClick={() => setActiveView("library")}
+                className={`text-xs px-2 py-1 rounded ${activeView === "library" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
+              >
+                Seed Library
+              </button>
             </div>
           </div>
           {activeView === "generate" && (
@@ -1098,6 +1230,84 @@ export default function Admin() {
               })}
             </div>
           </ScrollArea>
+        ) : activeView === "library" ? (
+          <ScrollArea className="flex-1">
+            <div className="p-3 space-y-1">
+              {seedItems.length === 0 ? (
+                <div className="text-white/30 text-xs p-6 text-center leading-relaxed">
+                  30 stories will appear here as they are seeded.<br />
+                  Use the controls on the right to start.
+                </div>
+              ) : (
+                seedItems
+                  .slice()
+                  .sort((a, b) => a.index - b.index)
+                  .map((item) => {
+                    const statusColor: Record<string, string> = {
+                      pending: "text-white/30",
+                      planning: "text-amber-300",
+                      writing: "text-amber-300",
+                      images: "text-violet-300",
+                      saving: "text-blue-300",
+                      done: "text-emerald-400",
+                      error: "text-red-400",
+                    };
+                    const statusLabel: Record<string, string> = {
+                      pending: "Pending",
+                      planning: "Planning…",
+                      writing: "Writing…",
+                      images: "Cover image…",
+                      saving: "Saving…",
+                      done: "Done",
+                      error: "Error",
+                    };
+                    return (
+                      <div
+                        key={item.situationId}
+                        className={`rounded-lg px-3 py-2 text-xs ${
+                          item.status === "done"
+                            ? "bg-emerald-900/20"
+                            : item.status === "error"
+                            ? "bg-red-900/20"
+                            : item.status !== "pending"
+                            ? "bg-amber-900/20"
+                            : "bg-white/5"
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-white/30 tabular-nums w-5 flex-shrink-0">
+                            {item.index}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-white/80 leading-snug line-clamp-2 mb-0.5">
+                              {item.title ?? item.label}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-white/30">{item.situationId}</span>
+                              <span className={`font-medium ${statusColor[item.status]}`}>
+                                {statusLabel[item.status]}
+                              </span>
+                            </div>
+                            {item.error && (
+                              <div className="mt-1 text-red-400/80 leading-snug line-clamp-2">
+                                {item.error}
+                              </div>
+                            )}
+                          </div>
+                          {item.coverUrl && (
+                            <img
+                              src={item.coverUrl}
+                              alt=""
+                              className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+              )}
+            </div>
+          </ScrollArea>
         ) : (
           <>
             {drafts.length > 0 && (
@@ -1393,6 +1603,80 @@ export default function Admin() {
               <div className="text-sm mb-2">Moderation queue</div>
               <div className="text-xs text-white/20">
                 Review flagged events and file CSAM reports to NCMEC or IWF from the left panel. Reports are logged permanently.
+              </div>
+            </div>
+          </div>
+        ) : activeView === "library" ? (
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="px-6 py-5 border-b border-white/10 flex-shrink-0">
+              <h2 className="font-semibold text-base mb-1">Seed Library</h2>
+              <p className="text-white/40 text-xs leading-relaxed mb-5">
+                Generate 30 premium library stories — 3 per situation category × 10 categories.
+                Each story runs the full pipeline: plan → write → cover image → save.
+                Audio is skipped (library stories stream text only).
+                This will take approximately 30–60 minutes.
+              </p>
+
+              <div className="flex gap-3 mb-4">
+                <button
+                  onClick={clearLibrary}
+                  disabled={clearStatus === "clearing" || seedRunning}
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white/70 text-xs font-medium transition disabled:opacity-40"
+                >
+                  {clearStatus === "clearing" ? "Clearing…" : clearStatus === "done" ? "✓ Cleared" : "Clear Library"}
+                </button>
+                <button
+                  onClick={seedLibrary}
+                  disabled={clearStatus === "clearing"}
+                  className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                    seedRunning
+                      ? "bg-red-600 hover:bg-red-500 text-white"
+                      : "bg-violet-600 hover:bg-violet-500 text-white"
+                  }`}
+                >
+                  {seedRunning ? "Stop Seeding" : "Seed Library (30 stories)"}
+                </button>
+              </div>
+
+              {seedRunning && (
+                <div className="mb-4">
+                  <div className="flex items-center justify-between text-xs text-white/50 mb-1.5">
+                    <span>{seedItems.filter((i) => i.status === "done").length} / 30 complete</span>
+                    {seedItems.filter((i) => i.status === "error").length > 0 && (
+                      <span className="text-red-400">
+                        {seedItems.filter((i) => i.status === "error").length} failed
+                      </span>
+                    )}
+                  </div>
+                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                    <div
+                      className="bg-violet-500 h-1.5 rounded-full transition-all"
+                      style={{
+                        width: `${(seedItems.filter((i) => i.status === "done").length / 30) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {seedSummary && !seedRunning && (
+                <div className={`rounded-xl px-4 py-3 text-sm border ${
+                  seedSummary.failed === 0
+                    ? "bg-emerald-900/20 border-emerald-500/20 text-emerald-300"
+                    : "bg-amber-900/20 border-amber-500/20 text-amber-300"
+                }`}>
+                  {seedSummary.failed === 0
+                    ? `✓ All ${seedSummary.done} stories seeded successfully.`
+                    : `⚠ ${seedSummary.done} stories seeded, ${seedSummary.failed} failed.`}
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1 px-6 py-4 overflow-y-auto">
+              <div className="text-xs text-white/30 mb-3 font-medium uppercase tracking-widest">30 Situations</div>
+              <div className="space-y-1 text-xs text-white/40 leading-relaxed">
+                <div>3 per category · Forbidden / Reunion / First / Power / Psychological / Circumstance / Secrets / Dark / Slow Burn / Professional</div>
+                <div className="mt-2 text-white/20">Cover images generated with gpt-image-1 · Story written by Mistral Large · No audio (library mode)</div>
               </div>
             </div>
           </div>

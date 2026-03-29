@@ -515,7 +515,7 @@ function CastingPreview() {
             Every detail is yours to write.
           </h2>
           <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
-            Cast who he is, set the chemistry between you, choose your world and exactly how far it goes. This is your story — built choice by choice, before a word is written.
+            Cast your lead, set the chemistry between you, choose your world and exactly how far it goes. This is your story — built choice by choice, before a word is written.
           </p>
           <div className="flex items-center gap-3 mt-3">
             {[
@@ -764,7 +764,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              You choose who he is, the chemistry between you, where it happens and how far it goes. We write it, narrate it, and keep it entirely private — heard only by you.
+              You choose the cast, the chemistry, where it happens and how far it goes. We write it, narrate it, and keep it entirely private — heard only by you.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">
@@ -894,7 +894,7 @@ export default function Home() {
                   <span className="text-primary">as you want it.</span>
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                  Cast who he is. Name him. Set where it happens and exactly how far it goes. Choose the tension, the tone, the feeling you want to be left with. This story is built entirely around you.
+                  Cast who they are. Name them. Set where it happens and exactly how far it goes. Choose the tension, the tone, the feeling you want to be left with. This story is built entirely around you.
                 </p>
                 <p className="text-muted-foreground/60 text-sm leading-relaxed mb-8">
                   Written for the moment you're in right now — then narrated and kept private, heard only by you. Yours from the very first word.
@@ -933,7 +933,7 @@ export default function Home() {
                   "Forbidden — and she knew it from the start",
                   "Slow burn. It finally broke.",
                   "The night she stopped pretending",
-                  "He knew exactly what she wanted",
+                  "The one who saw it before she said a word",
                 ].map((label) => (
                   <div
                     key={label}

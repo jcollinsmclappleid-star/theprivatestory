@@ -218,6 +218,16 @@ psql "$DATABASE_URL" -t -A -c "SELECT story_dna->>'power_dynamic', story_dna->>'
 The 10 SEO categories must match exactly between frontend and backend:
 `forbidden_desire`, `dominant_surrendered`, `late_night`, `explicit_collection`, `slow_burn`, `emotional_desire`, `second_chance`, `dark_romance`, `historical_romance`, `first_time`
 
+**SEO landing pages** — 20 pages total in `src/pages/seo/`, all using `SEOPage.tsx` component:
+- Core cluster (4): `/personalised-audio-stories`, `/private-audio-stories`, `/create-your-own-audio-story`, `/ai-audio-story-generator`
+- Bedtime cluster (3): `/sleep-audio-stories`, `/bedtime-audio-stories`, `/relaxing-audio-stories`
+- Romantic cluster (3): `/romantic-audio-stories`, `/love-stories-audio`, `/emotional-audio-stories`
+- Intimate cluster (5): `/intimate-audio-stories`, `/late-night-audio-stories`, `/slow-burn-audio-stories`, `/confident-energy-stories`, `/quiet-intensity-stories`
+- Genre & Audience cluster (5): `/dark-romance-audio-stories`, `/forbidden-romance-audio-stories`, `/enemies-to-lovers-audio-stories`, `/adult-audio-stories`, `/audio-stories-for-women`
+
+**FAQ JSON-LD**: `SEOPage.tsx` injects a `FAQPage` schema script tag into `<head>` on mount for all pages automatically.
+All 20 pages are in `public/sitemap.xml` and `public/llms.txt`.
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.

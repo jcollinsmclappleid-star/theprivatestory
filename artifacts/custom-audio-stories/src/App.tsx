@@ -43,6 +43,11 @@ import LateNightAudioStories from "@/pages/seo/LateNightAudioStories";
 import SlowBurnAudioStories from "@/pages/seo/SlowBurnAudioStories";
 import ConfidentEnergyAudioStories from "@/pages/seo/ConfidentEnergyAudioStories";
 import QuietIntensityAudioStories from "@/pages/seo/QuietIntensityAudioStories";
+import DarkRomanceAudioStories from "@/pages/seo/DarkRomanceAudioStories";
+import ForbiddenRomanceAudioStories from "@/pages/seo/ForbiddenRomanceAudioStories";
+import EnemiesToLoversAudioStories from "@/pages/seo/EnemiesToLoversAudioStories";
+import AdultAudioStories from "@/pages/seo/AdultAudioStories";
+import AudioStoriesForWomen from "@/pages/seo/AudioStoriesForWomen";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -91,6 +96,11 @@ function Router() {
             <Route path="/slow-burn-audio-stories" component={SlowBurnAudioStories} />
             <Route path="/confident-energy-stories" component={ConfidentEnergyAudioStories} />
             <Route path="/quiet-intensity-stories" component={QuietIntensityAudioStories} />
+            <Route path="/dark-romance-audio-stories" component={DarkRomanceAudioStories} />
+            <Route path="/forbidden-romance-audio-stories" component={ForbiddenRomanceAudioStories} />
+            <Route path="/enemies-to-lovers-audio-stories" component={EnemiesToLoversAudioStories} />
+            <Route path="/adult-audio-stories" component={AdultAudioStories} />
+            <Route path="/audio-stories-for-women" component={AudioStoriesForWomen} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

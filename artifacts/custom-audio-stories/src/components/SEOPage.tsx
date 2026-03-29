@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, Star } from "lucide-react";
 import { Link } from "wouter";
@@ -50,6 +50,29 @@ const TRUST_ITEMS = [
 export default function SEOPage({ config }: { config: SEOPageConfig }) {
   useSEO({ title: config.meta.title, description: config.meta.description });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  useEffect(() => {
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": config.faqs.map((faq) => ({
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.a,
+        },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "faq-schema";
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+    return () => {
+      document.getElementById("faq-schema")?.remove();
+    };
+  }, [config.faqs]);
 
   return (
     <motion.div

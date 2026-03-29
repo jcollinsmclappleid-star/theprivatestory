@@ -1202,6 +1202,8 @@ export default function Home() {
                 {[
                   { label: "Personalised audio stories", href: "/personalised-audio-stories" },
                   { label: "Private audio stories", href: "/private-audio-stories" },
+                  { label: "Adult audio stories", href: "/adult-audio-stories" },
+                  { label: "Audio stories for women", href: "/audio-stories-for-women" },
                   { label: "Create your own audio story", href: "/create-your-own-audio-story" },
                   { label: "AI audio story generator", href: "/ai-audio-story-generator" },
                 ].map((link) => (
@@ -1261,7 +1263,7 @@ export default function Home() {
 
             {/* Intimate */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Intimate</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Intimate & Genre</p>
               <div className="flex flex-col gap-2">
                 {[
                   { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -1269,6 +1271,9 @@ export default function Home() {
                   { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
                   { label: "Confident energy stories", href: "/confident-energy-stories" },
                   { label: "Quiet intensity stories", href: "/quiet-intensity-stories" },
+                  { label: "Dark romance audio stories", href: "/dark-romance-audio-stories" },
+                  { label: "Forbidden romance stories", href: "/forbidden-romance-audio-stories" },
+                  { label: "Enemies to lovers stories", href: "/enemies-to-lovers-audio-stories" },
                 ].map((link) => (
                   <Link
                     key={link.href}

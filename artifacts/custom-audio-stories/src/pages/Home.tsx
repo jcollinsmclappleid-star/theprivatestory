@@ -934,8 +934,8 @@ export default function Home() {
               backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-1.png)`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              maskImage: "linear-gradient(to left, rgba(0,0,0,0.12) 0%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.12) 0%, transparent 100%)",
+              maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 100%)",
             }}
           />
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
@@ -975,8 +975,8 @@ export default function Home() {
                 backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-2.png)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center left",
-                maskImage: "linear-gradient(to left, rgba(0,0,0,0.09) 0%, transparent 75%)",
-                WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.09) 0%, transparent 75%)",
+                maskImage: "linear-gradient(to left, rgba(0,0,0,0.60) 0%, transparent 75%)",
+                WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.60) 0%, transparent 75%)",
               }}
             />
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
@@ -1068,8 +1068,8 @@ export default function Home() {
                   backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.png)`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
-                  maskImage: "linear-gradient(to left, rgba(0,0,0,0.13) 0%, transparent 80%)",
-                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.13) 0%, transparent 80%)",
+                  maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
+                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
                 }}
               />
 

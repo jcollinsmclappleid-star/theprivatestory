@@ -165,7 +165,7 @@ const STEP_CARDS = [
     step: "07",
     category: "Your Story",
     label: "Written. Narrated. Yours.",
-    sub: "Narrated by ElevenLabs. Cover art generated. Saved privately.",
+    sub: "Written, narrated, cover art created. Private from the first moment.",
     accent: "#c9a227",
     gradient: "from-[#100c00] via-[#1a1500] to-[#0a0800]",
     options: null,
@@ -379,7 +379,7 @@ function FinalOutputCard({ s }: { s: StepCard }) {
       </div>
 
       <div className="relative z-10 mx-4 mb-4 space-y-1.5">
-        {["Narrated by ElevenLabs AI", "Cover art generated", "Saved to your private library", "Visible only to you"].map((item) => (
+        {["Narrated — just press play", "Cover art created", "Saved to your private library", "Visible only to you"].map((item) => (
           <div key={item} className="flex items-center gap-2">
             <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -490,7 +490,7 @@ function CastingPreview() {
               { n: "12", label: "Historical eras" },
               { n: "21", label: "Archetypes" },
               { n: "19", label: "Chemistries" },
-              { n: "4B+", label: "Story variations" },
+              { n: "6,100+", label: "Names" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>
@@ -498,6 +498,12 @@ function CastingPreview() {
               </div>
             ))}
           </div>
+          <p className="text-[10px] text-muted-foreground/35 mt-2.5">
+            Your name not listed?{" "}
+            <Link href="/name-club" className="text-primary/55 hover:text-primary transition-colors underline-offset-2 hover:underline">
+              Submit it to the Name Club →
+            </Link>
+          </p>
         </div>
         <div className="hidden md:flex items-center gap-2 flex-shrink-0">
           <button

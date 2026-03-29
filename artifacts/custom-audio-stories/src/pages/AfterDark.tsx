@@ -992,6 +992,7 @@ export default function AfterDark() {
             partnerName: casting.partnerName || undefined,
             country: casting.country || undefined,
             city: casting.city || undefined,
+            scenarioRoom: selectedScenario.room,
           },
         });
       } finally {

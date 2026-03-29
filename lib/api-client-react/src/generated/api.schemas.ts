@@ -148,6 +148,8 @@ export interface GenerateStoryRequest {
   partnerName?: string;
   country?: string;
   city?: string;
+  /** After Dark room ID — used server-side for group-scene detection. */
+  scenarioRoom?: string;
 }
 
 export interface GenerateStoryFromBriefRequest {

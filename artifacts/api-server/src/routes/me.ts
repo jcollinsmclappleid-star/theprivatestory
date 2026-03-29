@@ -5,6 +5,51 @@ import { nameSubmissions } from "@workspace/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
+import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
+
+// ---------------------------------------------------------------------------
+// Canonical allowlists for taste profile dimensions.
+// Keys outside these sets are silently dropped — never stored or acted upon.
+// Must be kept in sync with the equivalent constants in generate.ts.
+// ---------------------------------------------------------------------------
+const VALID_TASTE_INTENSITIES = new Set([
+  "Tender", "Warm", "Heated", "Explicit", "Scorching",
+]);
+const VALID_TASTE_VOICES = new Set([
+  "Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice",
+]);
+const VALID_TASTE_ENDINGS = new Set([
+  "Left wanting more", "Fully satisfied", "Tender afterglow",
+  "Unresolved and open", "A promise of more",
+  "Something shifts between you", "He says the thing he's been holding back",
+]);
+const VALID_TASTE_DYNAMICS = new Set([
+  "They pursue, I decide", "Equal desire, equal intensity", "I take what I want",
+  "Dominant and yielding", "Forbidden desire", "Adoration and surrender",
+  "He pursues, I decide", "He's completely in control", "I'm completely in control",
+  "We've been circling this for months", "He's patient until he isn't",
+  "I dare him to follow through",
+]);
+
+/** Clamp an increment value: must be a positive finite number, max 10 per call. */
+function clampIncrement(val: unknown): number | null {
+  if (typeof val !== "number" || !isFinite(val) || val <= 0) return null;
+  return Math.min(Math.round(val), 10);
+}
+
+/** Filter a client-supplied Record to only allowed keys, clamping values. */
+function filterDimension(
+  raw: Record<string, unknown>,
+  allowed: Set<string>,
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [key, val] of Object.entries(raw)) {
+    if (!allowed.has(key)) continue;
+    const clamped = clampIncrement(val);
+    if (clamped !== null) out[key] = clamped;
+  }
+  return out;
+}
 
 const router = Router();
 
@@ -76,31 +121,36 @@ router.post("/taste", async (req, res) => {
     const current = await tasteStore.get(userId);
 
     if (tasteProfile) {
-      for (const [key, val] of Object.entries(tasteProfile)) {
+      const safe = filterDimension(tasteProfile as Record<string, unknown>, VALID_EXPERIENCE_TAGS);
+      for (const [key, val] of Object.entries(safe)) {
         current.tasteProfile[key] = (current.tasteProfile[key] ?? 0) + val;
       }
     }
 
     if (preferredIntensity) {
-      for (const [key, val] of Object.entries(preferredIntensity)) {
+      const safe = filterDimension(preferredIntensity as Record<string, unknown>, VALID_TASTE_INTENSITIES);
+      for (const [key, val] of Object.entries(safe)) {
         current.preferredIntensity[key] = (current.preferredIntensity[key] ?? 0) + val;
       }
     }
 
     if (preferredVoiceFeel) {
-      for (const [key, val] of Object.entries(preferredVoiceFeel)) {
+      const safe = filterDimension(preferredVoiceFeel as Record<string, unknown>, VALID_TASTE_VOICES);
+      for (const [key, val] of Object.entries(safe)) {
         current.preferredVoiceFeel[key] = (current.preferredVoiceFeel[key] ?? 0) + val;
       }
     }
 
     if (preferredEndings) {
-      for (const [key, val] of Object.entries(preferredEndings)) {
+      const safe = filterDimension(preferredEndings as Record<string, unknown>, VALID_TASTE_ENDINGS);
+      for (const [key, val] of Object.entries(safe)) {
         current.preferredEndings[key] = (current.preferredEndings[key] ?? 0) + val;
       }
     }
 
     if (preferredRelationshipDynamics) {
-      for (const [key, val] of Object.entries(preferredRelationshipDynamics)) {
+      const safe = filterDimension(preferredRelationshipDynamics as Record<string, unknown>, VALID_TASTE_DYNAMICS);
+      for (const [key, val] of Object.entries(safe)) {
         current.preferredRelationshipDynamics[key] =
           (current.preferredRelationshipDynamics[key] ?? 0) + val;
       }
@@ -108,8 +158,10 @@ router.post("/taste", async (req, res) => {
 
     await tasteStore.upsert(userId, current);
 
-    if (storyId && reactionTags && reactionTags.length > 0) {
-      reactionHistoryStore.addEntry(userId, storyId, storyTitle ?? "", reactionTags).catch(() => {});
+    // Only record reaction tags that are on the canonical tag allowlist
+    const safeReactionTags = (reactionTags ?? []).filter(t => VALID_EXPERIENCE_TAGS.has(t));
+    if (storyId && safeReactionTags.length > 0) {
+      reactionHistoryStore.addEntry(userId, storyId, storyTitle ?? "", safeReactionTags).catch(() => {});
     }
 
     if (incrementStreak) {

@@ -25,13 +25,11 @@ function getPronounCtx(pronouns: string): PronounCtx {
   }
 }
 
-function buildContradictionPairs(p: PronounCtx): [string, string][] {
+function buildContradictionPairs(_p: PronounCtx): [string, string][] {
   return [
     ["Slow simmer", "Quick burn"],
     ["Dialogue-rich", "Mostly sensation"],
     ["Sharp & direct", "Lyrical"],
-    [`${p.sub} takes control`, `${p.sub} surrenders completely`],
-    [`${p.sub} takes control`, "Being fully taken care of"],
   ];
 }
 

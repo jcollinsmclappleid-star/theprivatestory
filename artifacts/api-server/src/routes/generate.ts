@@ -1646,7 +1646,11 @@ Return JSON in exactly this shape:
       throw new Error("MODEL_REFUSAL");
     }
 
-    return JSON.parse(cleaned) as StoryBrief;
+    const brief = JSON.parse(cleaned) as StoryBrief;
+    // Stamp the intake situation onto the brief so downstream consumers
+    // (cache, persist, writeStoryFromBrief) always have it in structured data.
+    if (intake.situation) brief.situation = intake.situation;
+    return brief;
   }
 
   // One retry on refusal or parse failure — model refusals are often transient

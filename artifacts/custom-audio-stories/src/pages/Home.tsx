@@ -1184,6 +1184,108 @@ export default function Home() {
         )}
 
         {/* ---------------------------------------------------------------- */}
+        {/* Explore by mood — SEO page links                                  */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="mb-8">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Explore by mood</p>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
+              Find the story that fits tonight.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            {/* Core */}
+            <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Personalised</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "Personalised audio stories", href: "/personalised-audio-stories" },
+                  { label: "Private audio stories", href: "/private-audio-stories" },
+                  { label: "Create your own audio story", href: "/create-your-own-audio-story" },
+                  { label: "AI audio story generator", href: "/ai-audio-story-generator" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Bedtime */}
+            <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Relaxation</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
+                  { label: "Relaxing audio stories", href: "/relaxing-audio-stories" },
+                  { label: "Sleep audio stories", href: "/sleep-audio-stories" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Romantic */}
+            <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Romantic</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "Romantic audio stories", href: "/romantic-audio-stories" },
+                  { label: "Love stories audio", href: "/love-stories-audio" },
+                  { label: "Emotional audio stories", href: "/emotional-audio-stories" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Intimate */}
+            <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Intimate</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+                  { label: "Late night audio stories", href: "/late-night-audio-stories" },
+                  { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+                  { label: "Confident energy stories", href: "/confident-energy-stories" },
+                  { label: "Quiet intensity stories", href: "/quiet-intensity-stories" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
         {/* Final CTA                                                          */}
         {/* ---------------------------------------------------------------- */}
         <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">

@@ -153,8 +153,8 @@ function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
       ],
     },
     {
-      heading: "What You Want Them To Do",
-      sub: "The specific energy you want from them",
+      heading: "The Dynamic Between You",
+      sub: "The energy and tension you want in the room",
       tags: [
         "Takes full control",
         "Commands what they want",

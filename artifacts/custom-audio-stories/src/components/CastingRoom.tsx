@@ -454,7 +454,7 @@ const MOODS = [
   "Romantic", "Emotional", "Raw", "Playful", "Dark",
   "Nostalgic", "Urgent", "Possessive", "Electric", "Bittersweet",
   "Forbidden", "Vulnerable", "Healing", "Complicated", "Obsessive",
-  "Desperate", "Fevered", "Wicked", "Decadent", "Dangerous",
+  "Desperate", "Fevered", "Wicked", "Decadent", "Volatile",
   "Hungry", "Savage", "Aching", "Burning", "Shameless",
   "Breathless", "Primal", "Reckless",
 ];

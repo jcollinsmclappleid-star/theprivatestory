@@ -490,7 +490,7 @@ function CastingPreview() {
               { n: "12", label: "Historical eras" },
               { n: "21", label: "Archetypes" },
               { n: "19", label: "Chemistries" },
-              { n: "500M+", label: "Combinations" },
+              { n: "4B+", label: "Story variations" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>
@@ -709,16 +709,16 @@ export default function Home() {
             className="max-w-2xl"
           >
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              Personalised Audio Story
+              Every detail, your choice
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
-              A story written<br className="hidden md:block" /> just for you.<br className="hidden md:block" />
-              <span className="text-primary">Seen only by you.</span>
+              A story built<br className="hidden md:block" /> exactly as you<br className="hidden md:block" />
+              <span className="text-primary">want it.</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              Tell us your mood, the person you want in your world, your moment. We write it and narrate it — a personalised audio story that exists only for you, heard only through your headphones.
+              You choose the pairing, the person, the chemistry, the setting, the mood — every detail. We write it and narrate it, privately, heard only by you.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">

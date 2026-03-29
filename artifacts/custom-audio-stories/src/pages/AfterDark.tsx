@@ -1003,6 +1003,7 @@ export default function AfterDark() {
             country: casting.country || undefined,
             city: casting.city || undefined,
             scenarioRoom: selectedScenario.room,
+            situation: casting.situation || undefined,
           },
         });
       } finally {

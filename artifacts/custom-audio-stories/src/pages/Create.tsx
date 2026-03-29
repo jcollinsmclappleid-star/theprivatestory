@@ -727,6 +727,7 @@ export default function Create() {
   const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
   const [castingCountry, setCastingCountry] = useState<string | undefined>();
   const [castingCity, setCastingCity] = useState<string | undefined>();
+  const [castingSituation, setCastingSituation] = useState<string | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
@@ -1100,6 +1101,7 @@ export default function Create() {
     setCastingAppearFeatures(casting.appearFeatures || undefined);
     setCastingListenerName(casting.listenerName || undefined);
     setCastingPartnerName(casting.partnerName || undefined);
+    setCastingSituation(casting.situation || undefined);
     setPresetSaved(false);
 
     form.setValue("whoIsHe", casting.archetype);
@@ -1148,6 +1150,7 @@ export default function Create() {
           partnerName: casting.partnerName || undefined,
           country: casting.country || undefined,
           city: casting.city || undefined,
+          situation: casting.situation || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -1200,12 +1203,13 @@ export default function Create() {
           partnerName: castingPartnerName || undefined,
           country: castingCountry || undefined,
           city: castingCity || undefined,
+          situation: castingSituation || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName, castingCountry, castingCity]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName, castingCountry, castingCity, castingSituation]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];

@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft } from "lucide-react";
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
+import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory } from "../data/situations";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your" | "their";
@@ -29,6 +30,8 @@ export interface CastingRoomResult {
   // Name selections — dropdown only, validated server-side against allowlist
   listenerName?: string;
   partnerName?: string;
+  // Situation — one of 220 predefined situations from SITUATIONS
+  situation?: string;
 }
 
 interface Props {
@@ -665,7 +668,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [appearEyes, setAppearEyes] = useState<string>("");
   const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
 
-  const TOTAL_STEPS = 10;
+  // Situation step state
+  const [situationLabel, setSituationLabel] = useState<string>("");
+  const [situationCategory, setSituationCategory] = useState<string>("");
+  const [cfmMode, setCfmMode] = useState<"none" | "all" | "category">("none");
+
+  const TOTAL_STEPS = 11;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => {
@@ -699,9 +707,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       case 4: return true;
       case 5: return !!data.setting;
       case 6: return !!data.intensity && !!data.mood;
-      case 7: return true;
-      case 8: return true;
-      case 9: return true;
+      case 7: return true; // Situation — optional
+      case 8: return true; // Tag Studio
+      case 9: return true; // Your Name
+      case 10: return true; // Partner Name
       default: return true;
     }
   };
@@ -745,6 +754,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       // Name selections — validated server-side against allowlist
       listenerName: listenerName || undefined,
       partnerName: partnerName || undefined,
+      // Situation — the selected situation label (one of 220 predefined)
+      situation: situationLabel || undefined,
     };
     onComplete(result);
   };
@@ -1179,9 +1190,151 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 7 — Tag Studio ──────────────────────────────────── */}
+        {/* ── Step 7 — The Situation ───────────────────────────────── */}
         {step === 7 && (
           <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="font-display text-3xl font-bold text-foreground mb-2">What's the situation?</h2>
+                <p className="text-muted-foreground text-sm">Choose the engine of your story — or let us pick one for you.</p>
+              </div>
+              <button
+                type="button"
+                onClick={next}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ml-4 mt-1 flex-shrink-0"
+              >
+                Skip →
+              </button>
+            </div>
+
+            {/* Selected situation display */}
+            {situationLabel && (
+              <div className="glass-panel rounded-2xl p-4 border mb-4 flex items-start justify-between gap-3" style={{ borderColor: `${accentColor}60` }}>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
+                    {situationCategory}
+                  </p>
+                  <p className="font-semibold text-foreground text-base">{situationLabel}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-1"
+                >
+                  <X size={12} /> Clear
+                </button>
+              </div>
+            )}
+
+            {/* Choose For Me */}
+            {!situationLabel && (
+              <div className="glass-panel rounded-2xl p-4 border border-white/8 mb-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Choose For Me</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
+                      setSituationLabel(pick.label);
+                      setSituationCategory(pick.category);
+                      setCfmMode("all");
+                    }}
+                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border/30 text-sm font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/5 transition-all"
+                  >
+                    <Shuffle size={14} />
+                    Surprise me
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCfmMode(cfmMode === "category" ? "none" : "category")}
+                    className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-medium transition-all ${
+                      cfmMode === "category"
+                        ? "border-primary/60 text-primary bg-primary/10"
+                        : "border-border/30 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/5"
+                    }`}
+                  >
+                    <Sparkles size={14} />
+                    From a category
+                  </button>
+                </div>
+
+                {/* Category mode — pick category, then randomise */}
+                {cfmMode === "category" && (
+                  <div className="mt-3">
+                    <p className="text-xs text-muted-foreground/70 mb-2">Pick a category and we'll choose one for you:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {SITUATION_CATEGORIES.map(cat => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => {
+                            const pool = getSituationsByCategory(cat);
+                            const pick = pool[Math.floor(Math.random() * pool.length)];
+                            setSituationLabel(pick.label);
+                            setSituationCategory(pick.category);
+                          }}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium border border-border/30 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Browse by category */}
+            {!situationLabel && (
+              <div className="space-y-2">
+                {SITUATION_CATEGORIES.map(cat => {
+                  const isOpen = situationCategory === cat;
+                  const catSituations = getSituationsByCategory(cat);
+                  return (
+                    <div key={cat} className="glass-panel rounded-2xl border border-white/8 overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setSituationCategory(isOpen ? "" : cat)}
+                        className="w-full flex items-center justify-between px-5 py-4 text-left"
+                      >
+                        <div>
+                          <span className="font-semibold text-sm text-foreground">{cat}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{catSituations.length} situations</span>
+                        </div>
+                        <ChevronDown
+                          size={16}
+                          className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {isOpen && (
+                        <div className="px-5 pb-4 grid grid-cols-1 gap-1.5">
+                          {catSituations.map(sit => (
+                            <button
+                              key={sit.id}
+                              type="button"
+                              onClick={() => {
+                                setSituationLabel(sit.label);
+                                setSituationCategory(sit.category);
+                                setCfmMode("none");
+                              }}
+                              className="text-left px-3 py-2.5 rounded-xl text-sm text-muted-foreground border border-border/20 hover:border-primary/40 hover:text-foreground hover:bg-primary/5 transition-all"
+                            >
+                              {sit.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ── Step 8 — Tag Studio ──────────────────────────────────── */}
+        {step === 8 && (
+          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h2 className="font-display text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
@@ -1206,9 +1359,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 8 — Your Name ───────────────────────────────────── */}
-        {step === 8 && (
-          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 9 — Your Name ───────────────────────────────────── */}
+        {step === 9 && (
+          <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — the narrator will use it throughout your story.
@@ -1272,9 +1425,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 9 — Partner Name ────────────────────────────────── */}
-        {step === 9 && (
-          <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 10 — Partner Name ───────────────────────────────── */}
+        {step === 10 && (
+          <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Their name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.

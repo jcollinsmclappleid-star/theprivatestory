@@ -11,6 +11,7 @@ import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
+import { VALID_SITUATION_LABELS, getSituationByLabel } from "../lib/situations.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
@@ -511,6 +512,8 @@ export interface GenerateStoryRequest {
   city?: string;
   /** After Dark room ID (e.g. "more_than_two", "power_exchange") — used for group-scene detection. */
   scenarioRoom?: string;
+  /** Situation label from the Casting Room (one of 220 predefined — validated server-side). */
+  situation?: string;
 }
 
 /** Internal server-only extension of GenerateStoryRequest.
@@ -1432,6 +1435,9 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
       raw.scenarioRoom?.trim() === GROUP_SCENE_ROOM ||
       (Array.isArray(raw.experienceTags) && raw.experienceTags.some(t => GROUP_IMPLICATION_TAGS.has(t)))
     ) ? true : undefined,
+    // Situation — validate against the 220-item allowlist, silently drop if unknown.
+    situation: raw.situation?.trim() && VALID_SITUATION_LABELS.has(raw.situation.trim())
+      ? raw.situation.trim() : undefined,
   };
 }
 
@@ -1458,6 +1464,7 @@ function makeRequestHash(intake: GenerateStoryRequest): string {
     intake.country ?? "",
     intake.city ?? "",
     intake.scenarioRoom ?? "",
+    intake.situation ?? "",
   ].join("|");
   return crypto.createHash("md5").update(key).digest("hex");
 }
@@ -1561,7 +1568,11 @@ User Input:
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
-- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}
+- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situation ? (() => { const sit = getSituationByLabel(intake.situation); return sit ? `
+
+SITUATION ANCHOR (MANDATORY — treat this as non-negotiable structural DNA; the plot engine of the story must be built on this foundation):
+Situation: ${sit.label} (${sit.category})
+${sit.internalInject}` : ""; })() : ""}
 
 You must infer and return:
 - emotional_arc (from the variety pools above — choose intelligently)
@@ -2902,6 +2913,7 @@ router.post("/generate-full-story", async (req, res) => {
       city: intake.city,
       isGroupScene: intake.isGroupScene,
       scenarioRoom: intake.scenarioRoom,
+      situation: intake.situation,
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 

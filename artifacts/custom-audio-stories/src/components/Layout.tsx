@@ -116,6 +116,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Series", href: "/series", icon: <Library className="w-4 h-4" /> },
     { label: "My Library", href: isAuthenticated ? "/me" : "/library", icon: <BookOpen className="w-4 h-4" /> },
+    { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 

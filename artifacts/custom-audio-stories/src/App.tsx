@@ -27,6 +27,7 @@ import NotFound from "@/pages/not-found";
 import MySeriesDetailPage from "@/pages/MySeriesDetail";
 import ResetPassword from "@/pages/ResetPassword";
 import Contact from "@/pages/Contact";
+import Pricing from "@/pages/Pricing";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -59,6 +60,7 @@ function Router() {
             <Route path="/terms" component={Terms} />
             <Route path="/content-policy" component={ContentPolicy} />
             <Route path="/contact" component={Contact} />
+            <Route path="/pricing" component={Pricing} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

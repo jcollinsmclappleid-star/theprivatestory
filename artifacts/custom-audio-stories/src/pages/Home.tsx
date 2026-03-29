@@ -735,7 +735,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative w-full h-[82vh] min-h-[600px] flex items-end pb-24">
+      <section className="relative w-full h-[90vh] min-h-[760px] flex items-end pb-16">
         <div className="absolute inset-0 z-0">
           <img
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
@@ -826,8 +826,19 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         {/* Privacy Trust Strip                                               */}
         {/* ---------------------------------------------------------------- */}
-        <section className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <section className="relative py-10 px-4 md:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+          <div
+            className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
+            aria-hidden="true"
+            style={{
+              backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-1.png)`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              maskImage: "linear-gradient(to left, rgba(0,0,0,0.12) 0%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.12) 0%, transparent 100%)",
+            }}
+          />
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
             {[
               { icon: <EyeOff className="w-4 h-4" />, text: "Visible only to you" },
               { icon: <WifiOff className="w-4 h-4" />, text: "No social features, no feeds" },
@@ -847,49 +858,6 @@ export default function Home() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* Visual mood strip                                                 */}
-        {/* ---------------------------------------------------------------- */}
-        <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-3 gap-3 md:gap-4">
-            {[
-              {
-                img: "home-visual-1.png",
-                quote: "The kind of story you keep to yourself.",
-                accent: "#c9a227",
-              },
-              {
-                img: "home-visual-2.png",
-                quote: "Private. Intimate. Heard only by you.",
-                accent: "#a78bfa",
-              },
-              {
-                img: "home-visual-3.png",
-                quote: "Written for tonight. Saved only to yours.",
-                accent: "#e879a0",
-              },
-            ].map(({ img, quote, accent }) => (
-              <div key={img} className="relative overflow-hidden rounded-2xl aspect-[3/4]">
-                <img
-                  src={`${import.meta.env.BASE_URL}images/${img}`}
-                  alt=""
-                  aria-hidden="true"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p
-                    className="text-xs md:text-sm font-medium italic leading-snug"
-                    style={{ color: `${accent}dd` }}
-                  >
-                    {quote}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
         {/* CastingRoom preview                                               */}
         {/* ---------------------------------------------------------------- */}
         <CastingPreview />
@@ -900,6 +868,17 @@ export default function Home() {
         <section className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-3xl border border-primary/15 bg-card/30 backdrop-blur-md p-10 md:p-16">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-background/60 pointer-events-none" />
+            <div
+              className="absolute inset-y-0 right-0 w-1/2 pointer-events-none"
+              aria-hidden="true"
+              style={{
+                backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-2.png)`,
+                backgroundSize: "cover",
+                backgroundPosition: "center left",
+                maskImage: "linear-gradient(to left, rgba(0,0,0,0.09) 0%, transparent 75%)",
+                WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.09) 0%, transparent 75%)",
+              }}
+            />
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 flex flex-col md:flex-row gap-12 items-start">
@@ -982,6 +961,17 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-900/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-950/15 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 bg-[#3b3bff]/5 rounded-full blur-3xl pointer-events-none" />
+              <div
+                className="absolute inset-y-0 right-0 w-2/5 pointer-events-none"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.png)`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  maskImage: "linear-gradient(to left, rgba(0,0,0,0.13) 0%, transparent 80%)",
+                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.13) 0%, transparent 80%)",
+                }}
+              />
 
               <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
                 <div className="flex-1">

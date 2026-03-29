@@ -919,6 +919,8 @@ interface QcSubScores {
   originality: number;
   sensory_detail: number;
   ending_strength: number;
+  /** Present only when casting selections were supplied — verifies they are all honoured */
+  casting_compliance?: number;
 }
 
 interface QcResult {
@@ -1891,12 +1893,45 @@ Return JSON only in this exact format — no markdown, no explanation:
   };
 }
 
-export async function qcStory(brief: StoryBrief, story: WrittenStory): Promise<QcResult> {
+export async function qcStory(brief: StoryBrief, story: WrittenStory, originalInput?: OriginalUserInput): Promise<QcResult> {
   const systemPrompt = `You are a quality controller for a premium audio storytelling product.
 Evaluate stories against strict quality standards.
 Return only JSON — no explanation, no markdown.`;
 
-  const userPrompt = `Score this story on the following 7 dimensions (1-10 each):
+  // Build a compact casting brief so QC can verify compliance
+  const castingLines: string[] = [];
+  if (originalInput) {
+    if (originalInput.whoIsHe)         castingLines.push(`Archetype: "${originalInput.whoIsHe}" — must be a persistent behavioural signature, not a passing label`);
+    if (originalInput.heritage)         castingLines.push(`Heritage: "${originalInput.heritage}" — must shape character behaviour, voice, or emotional expression (not just appearance)`);
+    if (originalInput.setting)          castingLines.push(`Setting: "${originalInput.setting}" — must be named and sensorially grounded`);
+    if (originalInput.dynamic)          castingLines.push(`Power dynamic: "${originalInput.dynamic}" — must be visible in dialogue and physical interaction throughout`);
+    if (originalInput.mood)             castingLines.push(`Mood: "${originalInput.mood}" — must be the dominant tonal quality of every scene`);
+    if (originalInput.chemistry)        castingLines.push(`Chemistry: "${originalInput.chemistry}" — must define how characters relate from scene 1`);
+    if (originalInput.atmosphere)       castingLines.push(`Atmosphere: "${originalInput.atmosphere}" — must be rendered sensorially in every scene, not just the opening`);
+    if (originalInput.ending)           castingLines.push(`Ending: "${originalInput.ending}" — the final scene must achieve this specific emotional outcome`);
+    if (originalInput.partnerName)      castingLines.push(`Partner name: "${originalInput.partnerName}" — must appear consistently in narration and dialogue`);
+    if (originalInput.city || originalInput.country) {
+      const loc = [originalInput.city, originalInput.country].filter(Boolean).join(", ");
+      castingLines.push(`World location: "${loc}" — at least one scene element must be unmistakably specific to this exact place`);
+    }
+    if (originalInput.experienceTags && originalInput.experienceTags.length > 0) {
+      castingLines.push(`Experience desires: ${originalInput.experienceTags.join(", ")} — must be present as felt story elements`);
+    }
+  }
+
+  const hasCastingRequirements = castingLines.length > 0;
+
+  const castingDimensionInstruction = hasCastingRequirements
+    ? `\n8. casting_compliance — every user casting selection listed in the CASTING BRIEF below is visibly and consistently present in the story. Score 10 if all are honoured fully. Deduct 2 points for each selection that is absent, softened to subtext only, or present only in the opening scene and then abandoned. Score 1-3 if the story largely ignores the casting brief.`
+    : "";
+
+  const castingBriefBlock = hasCastingRequirements
+    ? `\nCASTING BRIEF — the user selected all of the following. Each must be present and sustained:\n${castingLines.join("\n")}\n`
+    : "";
+
+  const castingJsonExample = hasCastingRequirements ? `\n    "casting_compliance": 9,` : "";
+
+  const userPrompt = `Score this story on the following dimensions (1-10 each):
 
 1. emotional_depth — real emotional resonance, vulnerability, and weight
 2. specificity — concrete, precise details vs vague or generic writing
@@ -1904,8 +1939,8 @@ Return only JSON — no explanation, no markdown.`;
 4. scene_progression — scenes build on each other meaningfully, not repetitive
 5. originality — fresh and distinctive, not clichéd or formulaic
 6. sensory_detail — strong grounding sensory images present in each scene
-7. ending_strength — the ending lands emotionally and feels earned
-
+7. ending_strength — the ending lands emotionally and feels earned${castingDimensionInstruction}
+${castingBriefBlock}
 Story Brief Context:
 ${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type }, null, 2)}
 
@@ -1923,7 +1958,7 @@ Return JSON only:
     "scene_progression": 8,
     "originality": 7,
     "sensory_detail": 9,
-    "ending_strength": 8
+    "ending_strength": 8${castingJsonExample}
   },
   "issues": ["list any specific problems here, or empty array if none"],
   "rewrite_strategy": null
@@ -1950,10 +1985,19 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
     scene_progression: 0, originality: 0, sensory_detail: 0, ending_strength: 0,
   };
 
-  const passed = scoreTotal >= 7.5 && subScores.ending_strength >= 7;
+  // casting_compliance is only present when casting requirements were supplied.
+  // A score < 7 here means the model ignored the user's selections — treat as full failure.
+  const castingComplianceScore: number | undefined =
+    hasCastingRequirements ? ((parsed.sub_scores as Record<string, unknown>)?.casting_compliance as number ?? 0) : undefined;
+
+  const passed =
+    scoreTotal >= 7.5 &&
+    subScores.ending_strength >= 7 &&
+    (castingComplianceScore === undefined || castingComplianceScore >= 7);
 
   // Hard rules for targeted rewrite strategies — applied independently of pass status.
-  // The pipeline decides whether to regenerate (score_total < 7.5) or targeted-rewrite.
+  // The pipeline decides whether to regenerate (score_total < 7.5 or casting_compliance < 7)
+  // or do a targeted rewrite.
   // "regenerate" is intentionally NOT a valid rewrite_strategy value here; it is
   // handled as pipeline control logic in generate-full-story based on score_total.
   let rewriteStrategy: string | null = null;
@@ -1965,6 +2009,10 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
     rewriteStrategy = "rotate_dynamic_or_setting";
   } else if (!passed) {
     rewriteStrategy = parsed.rewrite_strategy ?? "rewrite_ending";
+  }
+
+  if (castingComplianceScore !== undefined) {
+    subScores.casting_compliance = castingComplianceScore;
   }
 
   return {
@@ -2788,17 +2836,19 @@ router.post("/generate-full-story", async (req, res) => {
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 
-    // Step 5: QC evaluation
-    let qcResult = await qcStory(brief, story);
+    // Step 5: QC evaluation — passes casting selections so QC can verify compliance
+    let qcResult = await qcStory(brief, story, originalUserInput);
 
     // Step 6: Apply hard rules — max one correction pass.
     // Hard rules (per spec):
     //   score_total < 7.5           → full regeneration (re-plan + re-write)
+    //   casting_compliance < 7      → full regeneration (model ignored user selections)
     //   ending_strength < 7         → targeted rewrite_ending
     //   specificity < 7             → targeted increase_specificity
     //   originality < 6.5           → targeted rotate_dynamic_or_setting
-    // All four rules are checked independently (not only when story "fails").
-    const needsRegenerate = qcResult.score_total < 7.5;
+    // All rules are checked independently (not only when story "fails").
+    const castingFailed = (qcResult.sub_scores.casting_compliance ?? 10) < 7;
+    const needsRegenerate = qcResult.score_total < 7.5 || castingFailed;
     const needsTargetedFix = !needsRegenerate && qcResult.rewrite_strategy !== null;
 
     if (needsRegenerate || needsTargetedFix) {
@@ -2811,7 +2861,7 @@ router.post("/generate-full-story", async (req, res) => {
         story = await rewriteStory(brief, story, qcResult.rewrite_strategy!);
       }
       // Re-run QC once after correction (result reflects final quality)
-      qcResult = await qcStory(brief, story);
+      qcResult = await qcStory(brief, story, originalUserInput);
     }
 
     // Step 6b: Output moderation + blocklist scan — check generated story text before spending on audio/images.

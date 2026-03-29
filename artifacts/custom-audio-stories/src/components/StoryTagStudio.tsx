@@ -166,7 +166,7 @@ function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
         `Won't let ${p.obj} hide`,
         "Watches closely",
         `Keeps ${p.obj} at the edge`,
-        `Doesn't let ${p.obj} finish until they say`,
+        `Doesn't let ${p.obj} finish until ${p.sub} asks`,
         `Takes ${p.obj} to every edge`,
         "Uses only their hands first",
         `${p.sub} counts for them`,

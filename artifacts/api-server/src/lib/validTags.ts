@@ -134,7 +134,7 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub} earns every moment`),
   ...variants(p => `Won't let ${p.obj} hide`),
   ...variants(p => `Keeps ${p.obj} at the edge`),
-  ...variants(p => `Doesn't let ${p.obj} finish until they say`),
+  ...variants(p => `Doesn't let ${p.obj} finish until ${p.sub} asks`),
   ...variants(p => `Takes ${p.obj} to every edge`),
   ...variants(p => `${p.sub} counts for them`),
 

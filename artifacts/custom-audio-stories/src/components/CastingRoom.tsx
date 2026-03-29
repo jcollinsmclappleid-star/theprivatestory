@@ -37,6 +37,17 @@ interface Props {
   afterDark?: boolean;
 }
 
+/* ── Perspective helpers ──────────────────────────────────────────── */
+function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "his" | "your"> {
+  const pairing = PAIRINGS.find(p => p.id === pairingId);
+  switch (pairing?.protagonistPronouns) {
+    case "she/her":   return ["her", "your"];
+    case "he/him":    return ["his", "your"];
+    case "they/them": return ["your"];
+    default:          return ["her", "his", "your"];
+  }
+}
+
 /* ── Abstract art tiles ───────────────────────────────────────────── */
 function ArtTile({ gradient, accent, children, selected, onClick }: {
   gradient: string; accent: string; children: React.ReactNode;
@@ -538,7 +549,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const TOTAL_STEPS = 9;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
-    setData(d => ({ ...d, [key]: value }));
+    setData(d => {
+      const next = { ...d, [key]: value };
+      // When pairing changes, clear perspective if it's no longer valid
+      if (key === "pairing") {
+        const valid = getValidPerspectiveIds(value);
+        if (d.perspective && !valid.includes(d.perspective)) {
+          delete next.perspective;
+        }
+      }
+      return next;
+    });
   };
 
   const toggleTag = (tag: string) => {
@@ -554,7 +575,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     switch (step) {
       case 0: return !!data.pairing;
       case 1: return !!data.chemistry;
-      case 2: return !!data.perspective;
+      case 2: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your");
       case 3: return !!data.heritage && !!data.archetype;
       case 4: return !!data.setting;
       case 5: return !!data.intensity && !!data.mood;
@@ -705,7 +726,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Whose story?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose who the story follows.</p>
             <div className="grid gap-3">
-              {PERSPECTIVES.map(p => (
+              {PERSPECTIVES.filter(p => getValidPerspectiveIds(data.pairing).includes(p.id)).map(p => (
                 <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.perspective === p.id} onClick={() => update("perspective", p.id)}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
                   <p className="text-white/60 text-sm mt-0.5">{p.sub}</p>

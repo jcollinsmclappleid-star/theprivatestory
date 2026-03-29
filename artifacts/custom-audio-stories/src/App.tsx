@@ -32,6 +32,17 @@ import PersonalisedAudioStories from "@/pages/seo/PersonalisedAudioStories";
 import PrivateAudioStories from "@/pages/seo/PrivateAudioStories";
 import CreateYourOwnAudioStory from "@/pages/seo/CreateYourOwnAudioStory";
 import SleepAudioStories from "@/pages/seo/SleepAudioStories";
+import AIAudioStoryGenerator from "@/pages/seo/AIAudioStoryGenerator";
+import BedtimeAudioStories from "@/pages/seo/BedtimeAudioStories";
+import RelaxingAudioStories from "@/pages/seo/RelaxingAudioStories";
+import RomanticAudioStories from "@/pages/seo/RomanticAudioStories";
+import LoveStoriesAudio from "@/pages/seo/LoveStoriesAudio";
+import EmotionalAudioStories from "@/pages/seo/EmotionalAudioStories";
+import IntimateAudioStories from "@/pages/seo/IntimateAudioStories";
+import LateNightAudioStories from "@/pages/seo/LateNightAudioStories";
+import SlowBurnAudioStories from "@/pages/seo/SlowBurnAudioStories";
+import ConfidentEnergyAudioStories from "@/pages/seo/ConfidentEnergyAudioStories";
+import QuietIntensityAudioStories from "@/pages/seo/QuietIntensityAudioStories";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -69,6 +80,17 @@ function Router() {
             <Route path="/private-audio-stories" component={PrivateAudioStories} />
             <Route path="/create-your-own-audio-story" component={CreateYourOwnAudioStory} />
             <Route path="/sleep-audio-stories" component={SleepAudioStories} />
+            <Route path="/ai-audio-story-generator" component={AIAudioStoryGenerator} />
+            <Route path="/bedtime-audio-stories" component={BedtimeAudioStories} />
+            <Route path="/relaxing-audio-stories" component={RelaxingAudioStories} />
+            <Route path="/romantic-audio-stories" component={RomanticAudioStories} />
+            <Route path="/love-stories-audio" component={LoveStoriesAudio} />
+            <Route path="/emotional-audio-stories" component={EmotionalAudioStories} />
+            <Route path="/intimate-audio-stories" component={IntimateAudioStories} />
+            <Route path="/late-night-audio-stories" component={LateNightAudioStories} />
+            <Route path="/slow-burn-audio-stories" component={SlowBurnAudioStories} />
+            <Route path="/confident-energy-stories" component={ConfidentEnergyAudioStories} />
+            <Route path="/quiet-intensity-stories" component={QuietIntensityAudioStories} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

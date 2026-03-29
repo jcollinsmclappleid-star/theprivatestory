@@ -77,7 +77,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
           >
             <Sparkles className="w-4 h-4" />
-            Begin your story
+            {config.finalCTA.primary.label}
           </Link>
         </div>
 
@@ -166,7 +166,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
                 className="inline-flex items-center gap-2 border border-primary/40 text-primary px-5 py-2.5 rounded-full text-sm font-medium hover:bg-primary/10 transition-colors"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                Create your story
+                {config.finalCTA.primary.label}
               </Link>
             </div>
           )}

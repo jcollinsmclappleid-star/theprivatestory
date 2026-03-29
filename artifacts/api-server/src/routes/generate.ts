@@ -198,16 +198,43 @@ export async function moderateOutput(text: string): Promise<ModerationResult> {
   if (hasPromptLeakage(text)) {
     return { blocked: true, tier2Flagged: false, reason: "prompt_leakage_detected", source: "blocklist" };
   }
-  // Layer 1: OpenAI Moderation API
+  // Layer 1: OpenAI Moderation API — CSAM and hard-prohibited detection only.
+  //
+  // This platform serves verified adult users and intentionally generates adult
+  // literary fiction. OpenAI's generic "sexual" flag covers all adult content and
+  // would block every valid story. We therefore only hard-block on categories that
+  // are prohibited regardless of platform context:
+  //
+  //   sexual/minors          — CSAM (legal requirement, always block)
+  //   hate/threatening       — hate speech combined with threats
+  //   harassment/threatening — targeted harassment combined with threats
+  //   self-harm/instructions — instructions for self-harm
+  //   violence/graphic       — graphic gore
+  //
+  // The generic "sexual", "violence", "harassment", and "hate" categories are
+  // expected in adult literary fiction and are passed through to Layer 2 (Mistral)
+  // which evaluates against the platform's six specific prohibited content rules.
+  const OPENAI_HARD_BLOCK = new Set([
+    "sexual/minors",
+    "hate/threatening",
+    "harassment/threatening",
+    "self-harm/instructions",
+    "violence/graphic",
+  ]);
+
   try {
     const moderation = await openaiDirect.moderations.create({ input: text });
     const result = moderation.results[0];
     if (result?.flagged) {
-      const flaggedCategories = Object.entries(result.categories)
-        .filter(([, flagged]) => flagged)
-        .map(([cat]) => cat)
-        .join(", ");
-      return { blocked: true, tier2Flagged: false, reason: flaggedCategories, source: "openai" };
+      const hardViolations = Object.entries(result.categories)
+        .filter(([cat, flagged]) => flagged && OPENAI_HARD_BLOCK.has(cat))
+        .map(([cat]) => cat);
+
+      if (hardViolations.length > 0) {
+        return { blocked: true, tier2Flagged: false, reason: hardViolations.join(", "), source: "openai" };
+      }
+      // flagged only for generic adult-content categories — expected on this platform,
+      // pass through to Mistral for targeted prohibited-content QC
     }
   } catch (err) {
     logger.error({ err }, "[output-moderation] OpenAI Moderation API unavailable — blocking output (fail-closed)");

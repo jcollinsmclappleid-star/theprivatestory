@@ -2492,6 +2492,15 @@ router.post("/generate-audio", async (req, res) => {
 });
 
 router.post("/generate-images", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+  if (!req.user?.isAdmin) {
+    res.status(403).json({ error: "Admin access required" });
+    return;
+  }
+
   const body = req.body as { coverPrompt: string; scenePrompts: string[] };
   const cacheKey = getCacheKey(body);
 

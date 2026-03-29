@@ -98,17 +98,14 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
     return;
   }
 
-  // Session-based admin: require 2FA completion for THIS session.
-  // twoFactorVerifiedAt is stamped by authMiddleware only when the session was
-  // created via a TOTP/backup-code challenge — null means the session predates
-  // or bypassed the 2FA flow.
-  const user = req.user as { twoFactorVerifiedAt?: Date | null } | undefined;
-  if (!user?.twoFactorVerifiedAt) {
-    res.status(403).json({
-      error: "Admin access requires two-factor authentication. Please log out and sign in with 2FA.",
-      code: "ADMIN_2FA_REQUIRED",
-    });
-    return;
-  }
+  // 2FA check temporarily disabled — re-enable once 2FA is re-implemented.
+  // const user = req.user as { twoFactorVerifiedAt?: Date | null } | undefined;
+  // if (!user?.twoFactorVerifiedAt) {
+  //   res.status(403).json({
+  //     error: "Admin access requires two-factor authentication. Please log out and sign in with 2FA.",
+  //     code: "ADMIN_2FA_REQUIRED",
+  //   });
+  //   return;
+  // }
   next();
 }

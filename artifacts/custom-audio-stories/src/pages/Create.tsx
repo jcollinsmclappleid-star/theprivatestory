@@ -679,7 +679,7 @@ function OptionCard({
 }
 
 export default function Create() {
-  const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, openSignIn, user } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => {
     try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
   });

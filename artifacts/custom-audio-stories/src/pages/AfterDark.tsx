@@ -138,7 +138,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_punishment",
     label: "The Punishment",
-    sub: "She broke a rule. He didn't forget. He rarely does. Now she waits.",
+    sub: "They had an agreement. She pushed it. He remembered. Both of them were counting on exactly this.",
     room: "power_exchange",
     darkness: "No Limits",
     gradient: "from-[#180000] via-[#260000] to-[#0e0000]",
@@ -149,7 +149,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "owned",
     label: "Owned",
-    sub: "The word came out before she could stop it. He made her say it again. Slowly.",
+    sub: "She said it first. He asked her to say it again, slower. Neither of them wanted to stop.",
     room: "power_exchange",
     darkness: "No Limits",
     gradient: "from-[#120000] via-[#1e0000] to-[#0a0000]",
@@ -467,7 +467,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "ruin_me",
     label: "Ruin Me",
-    sub: "She said it like she wasn't sure. He made sure she meant it. She did.",
+    sub: "She said it and meant every word. He took his time making sure she knew it.",
     room: "sweet_and_savage",
     darkness: "No Limits",
     gradient: "from-[#1a0012] via-[#28001a] to-[#10000c]",
@@ -500,7 +500,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "say_it",
     label: "Say It",
-    sub: "He wants to hear it from her. She won't. He makes it impossible not to.",
+    sub: "She's been holding it back. He makes it safe to let go. The moment she does is the whole story.",
     room: "sweet_and_savage",
     darkness: "Deep Night",
     gradient: "from-[#180012] via-[#26001c] to-[#10000a]",
@@ -570,7 +570,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "obsession",
     label: "Obsession",
-    sub: "He knew her schedule before she mentioned it. She noticed. She didn't say a word.",
+    sub: "He notices everything about her. She's started doing things just to see if he's still watching. He always is.",
     room: "the_edge",
     darkness: "Deep Night",
     gradient: "from-[#080010] via-[#10001e] to-[#04000a]",
@@ -581,7 +581,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "mind_games",
     label: "Mind Games",
-    sub: "She thought she was running this. She was wrong. She found out one step at a time.",
+    sub: "She thought she had the upper hand. He let her think that. Right up until the moment he didn't.",
     room: "the_edge",
     darkness: "No Limits",
     gradient: "from-[#0a000e] via-[#14001a] to-[#060008]",
@@ -627,7 +627,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "completely_undone",
     label: "Completely Undone",
-    sub: "He takes her past every boundary she thought she had. She finds edges she didn't know existed.",
+    sub: "He takes her further than she expected. She discovers she wanted to go there all along.",
     room: "dark_territory",
     darkness: "No Limits",
     gradient: "from-[#180000] via-[#280000] to-[#0e0000]",
@@ -649,7 +649,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "past_midnight",
     label: "Past Midnight",
-    sub: "Everything she'd never say out loud. He makes her say it. Then he makes it true.",
+    sub: "Everything she'd never say out loud. He waits until she's ready to say it. Then he makes every word true.",
     room: "dark_territory",
     darkness: "No Limits",
     gradient: "from-[#140000] via-[#200000] to-[#0c0000]",

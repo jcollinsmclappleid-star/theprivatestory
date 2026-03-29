@@ -188,7 +188,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     {
       id: "Slow Surrender",
       label: "Slow Surrender",
-      sub: "Resistance is part of the pleasure. It always was.",
+      sub: "The tension holds until it can't. Both of them know exactly how this ends.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8",
     },

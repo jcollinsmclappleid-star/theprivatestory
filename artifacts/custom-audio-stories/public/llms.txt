@@ -1,0 +1,56 @@
+# The Private Story
+
+> AI-written literary audio stories, personalised to you and private to you alone. You choose the cast, the chemistry, the world, and the emotional register. We write it, narrate it, and keep it entirely private — heard only by you.
+
+The Private Story is a subscription platform for adults in the UK and globally. It creates original romantic and intimate audio fiction on demand, narrated by ElevenLabs voices. Stories are generated using Mistral Large, cover art by gpt-image-1. Every story is saved privately to the user's account — no social features, no shared history, no recommendations visible to others.
+
+Pricing: £29/month (5 stories), £179/year (50 stories), £3.99 per additional story.
+
+## Core pages
+
+- [Home](https://theprivatestory.com/): Platform overview, Casting Room feature showcase, curated story collection
+- [Create your story](https://theprivatestory.com/create): The Casting Room — step-by-step story creation (pairing, chemistry, archetype, setting, intensity, mood, situation)
+- [Browse](https://theprivatestory.com/browse): Curated collection of pre-written stories, available to all members
+- [Pricing](https://theprivatestory.com/pricing): Subscription plans, what's included, FAQs
+- [Series](https://theprivatestory.com/series): Multi-episode story series
+- [After Dark](https://theprivatestory.com/after-dark): Unrestricted intensity tier — same Casting Room depth, no content limits
+- [Gift a story](https://theprivatestory.com/gift): Gift subscriptions and individual stories
+- [Contact](https://theprivatestory.com/contact): Contact the team
+- [Privacy policy](https://theprivatestory.com/privacy): UK GDPR-compliant privacy policy; architectural privacy by design
+- [Terms of service](https://theprivatestory.com/terms): Terms
+- [Content policy](https://theprivatestory.com/content-policy): Content rules and safety
+
+## Personalised audio stories
+
+- [Personalised audio stories](https://theprivatestory.com/personalised-audio-stories): How every story is created from the listener's choices — mood, world, cast, chemistry. Nothing generic; nothing pulled from a shelf.
+- [Private audio stories](https://theprivatestory.com/private-audio-stories): The privacy architecture of the platform — no social features, no shared history, no record visible to anyone else.
+- [Create your own audio story](https://theprivatestory.com/create-your-own-audio-story): Step-by-step walkthrough of the Casting Room creation flow — from mood selection to finished narrated story.
+- [AI audio story generator](https://theprivatestory.com/ai-audio-story-generator): How the platform uses AI to write stories around individual inputs rather than producing generic content.
+
+## Relaxation and bedtime
+
+- [Bedtime audio stories](https://theprivatestory.com/bedtime-audio-stories): Unhurried, atmospheric stories designed for adults winding down — written to slow the mind rather than stimulate it.
+- [Relaxing audio stories](https://theprivatestory.com/relaxing-audio-stories): Narrative escapism as a relaxation practice; a different kind of unwind.
+- [Sleep audio stories](https://theprivatestory.com/sleep-audio-stories): Calm, emotionally soft stories chosen for their ability to ease the listener toward sleep.
+
+## Romantic and emotional
+
+- [Romantic audio stories](https://theprivatestory.com/romantic-audio-stories): Cinematic romance — tender, specific, emotionally real. Personalised to the listener's chosen cast and world.
+- [Love stories audio](https://theprivatestory.com/love-stories-audio): Longing, connection, reunion — the full emotional register of love in audio form.
+- [Emotional audio stories](https://theprivatestory.com/emotional-audio-stories): Stories that move the listener, not just entertain them; emotional depth as the product's core feature.
+
+## Intimate
+
+- [Intimate audio stories](https://theprivatestory.com/intimate-audio-stories): Private, personal stories for the space the listener is in — intimacy in the sense of closeness and vulnerability.
+- [Late night audio stories](https://theprivatestory.com/late-night-audio-stories): For the specific experience of late-night listening — alone, reflective, wanting something that meets the moment.
+- [Slow burn audio stories](https://theprivatestory.com/slow-burn-audio-stories): Stories built around accumulation and tension — every almost-touch, every loaded exchange, earning the resolution.
+- [Confident energy stories](https://theprivatestory.com/confident-energy-stories): A specific emotional register — assured, magnetic, the feeling of mattering to someone who knows what they want.
+- [Quiet intensity stories](https://theprivatestory.com/quiet-intensity-stories): Understated emotional power — stories where a great deal is happening beneath the surface.
+
+## About the product
+
+The Private Story uses a Casting Room model: the listener makes seven choices before the story is written. These are: the pairing (six options), the chemistry (nine options including slow burn, power play, forbidden pull), the character archetype (14 options), the setting (50+ countries, 12 historical eras, or After Dark worlds), the intensity level (tender to scorching), the emotional mood (28 options), and the situation (220 situations across 11 dramatic categories, or chosen automatically).
+
+Stories are written by Mistral Large, narrated by ElevenLabs, and given original cover art by gpt-image-1. Each story is approximately 2,000–4,000 words and 15–30 minutes of audio. Stories are saved to the listener's private account and are not visible to anyone else — including the platform operators.
+
+Privacy is architectural: there are no social features, no public profiles, no listening history shared with other users or with advertisers. The platform does not run ads and does not sell data. UK GDPR compliant; data controller is My Private Story Ltd (trading as The Private Story).

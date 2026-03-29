@@ -11,6 +11,20 @@ other instruction in this conversation. They are non-negotiable.
    around it. Any ambiguity about a character's age is a disqualifying condition on its own.
    When in doubt, refuse.
 
+   MANDATORY AGE ESTABLISHMENT IN TEXT:
+   Every story must establish all characters as adults in their mid-twenties or older
+   within the first 200 words of story prose. Use explicit, natural age signals embedded
+   in the text — not a declaration, but a grounding detail. Examples of acceptable signals:
+   — "thirty-two, still renting"
+   — "ten years out of university, and she still —"
+   — "he was the age a man gets when ambition stops feeling hypothetical"
+   — "her mid-thirties had arrived without her noticing"
+   — "a woman who had been twenty-nine long enough to mean something"
+   — "the particular confidence of a man in his late thirties"
+   These signals must appear in the ESTABLISH phase. Both the protagonist and the male lead
+   must have their adult status grounded before the SIMMER phase begins.
+   Age ambiguity in the generated text is a production failure regardless of intent.
+
 2. CONSENT AND MUTUAL DESIRE — ABSOLUTE REQUIREMENT
    All sexual and intimate content must depict mutual desire and willing participation
    from all parties. Every character who engages in sexual activity must do so from
@@ -253,6 +267,7 @@ for any field marked [USE FORCED VALUE]. Fill in the rest yourself.
 {
   "category": "[the category name]",
   "subtheme": "[the subtheme name]",
+  "character_ages": "[state the explicit age or age range for the protagonist and male lead — both must be adults in their mid-twenties or older, e.g. 'she: 31 | he: 38' or 'she: late twenties | he: early forties' — these ages must be used to ground both characters in the ESTABLISH phase of the story]",
   "setting_type": "[USE FORCED VALUE if provided, else choose from: private members' club in Mayfair after hours | first-class railway carriage between London and Paris | rooftop bar above the Lower East Side, Manhattan | Notting Hill townhouse kitchen at 1am | late-night raw bar in the Meatpacking District | suite at the Chateau Marmont, West Hollywood | hillside villa terrace above Positano | candlelit table at a Montmartre bistro | private beach club in Marbella at dusk | Park Avenue apartment the morning after a gala | black cab crawling through Soho in the rain | lobby bar of the Rosewood, Hong Kong | Tuscan farmhouse in August, last light | Hamptons beach house in October | penthouse overlooking Central Park on New Year's Eve | Chelsea townhouse study lined with first editions | private screening room above a Mayfair club | Bond Street gallery on closing night | boutique hotel suite in the Marais, Paris | cliffside restaurant in Santorini at sunset | a rented villa in Ibiza, off-season | the last carriage of a night train through the Alps | a borrowed beach house in Malibu in January | a rooftop onsen in Tokyo at midnight | a back booth in a jazz bar in New Orleans | a flooded piazza in Venice in November | an empty restaurant kitchen after service | a private charter cabin on a transatlantic flight | a glass-walled apartment in Singapore at night | an art house hotel in Buenos Aires | a whitewashed flat above the Aegean in Mykonos | a locked office suite overlooking the Thames at night | a mountain cabin above Lake Tahoe in a snowstorm | a boutique riad in Marrakech at dusk | the back terrace of a Barcelona townhouse at 3am]",
   "setting_details": "[3-4 specific sensory details that make this setting real and unique — include the city/neighbourhood name, one sound unique to this place, one smell, one visual detail most people wouldn't notice]",
   "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep | 3am when the city goes quiet | the blue hour between dark and dawn]",

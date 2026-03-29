@@ -23,6 +23,38 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
 
 // ---------------------------------------------------------------------------
+// LLM response helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a JSON response from an LLM call, with built-in refusal detection.
+ *
+ * If the model returns a natural-language refusal ("I'm sorry,…") instead of
+ * JSON, a bare JSON.parse throws a SyntaxError that becomes an unhandled 500.
+ * This helper:
+ *   1. Strips markdown code fences
+ *   2. Detects refusals (response doesn't start with `{` or `[`) and throws a
+ *      labelled error that callers can catch and retry or surface gracefully
+ *   3. Parses and returns the typed result
+ *
+ * @param raw     Raw string from completion.choices[0].message.content
+ * @param caller  Label used in the warning log line (e.g. "writeStoryFromBrief")
+ */
+function parseLlmJson<T>(raw: string, caller: string): T {
+  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  if (!cleaned.startsWith("{") && !cleaned.startsWith("[")) {
+    logger.warn({ caller, raw: raw.slice(0, 200) }, `[${caller}] Model returned non-JSON (likely refusal)`);
+    throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
+  }
+  try {
+    return JSON.parse(cleaned) as T;
+  } catch {
+    logger.warn({ caller, raw: raw.slice(0, 200) }, `[${caller}] JSON.parse failed on model response`);
+    throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Content moderation
 // ---------------------------------------------------------------------------
 
@@ -1377,18 +1409,47 @@ Return JSON in exactly this shape:
   "quality_target": "A story that lingers like the feeling after a conversation you didn't want to end."
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    max_completion_tokens: 2048,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-  });
+  async function attemptPlan(): Promise<StoryBrief> {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      max_completion_tokens: 2048,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    });
 
-  const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  return JSON.parse(cleaned) as StoryBrief;
+    const raw = completion.choices[0]?.message?.content ?? "";
+    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+
+    // Detect model refusal — starts with natural-language apology rather than JSON
+    const looksLikeRefusal = !cleaned.startsWith("{") && !cleaned.startsWith("[");
+    if (looksLikeRefusal) {
+      logger.warn({ raw: raw.slice(0, 200) }, "[planStory] Model returned non-JSON (likely refusal)");
+      throw new Error("MODEL_REFUSAL");
+    }
+
+    return JSON.parse(cleaned) as StoryBrief;
+  }
+
+  // One retry on refusal or parse failure — model refusals are often transient
+  try {
+    return await attemptPlan();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg === "MODEL_REFUSAL" || err instanceof SyntaxError) {
+      logger.warn({ err: msg }, "[planStory] Retrying after refusal/parse failure");
+      try {
+        return await attemptPlan();
+      } catch (retryErr) {
+        const retryMsg = retryErr instanceof Error ? retryErr.message : String(retryErr);
+        logger.error({ err: retryMsg }, "[planStory] Retry also failed — giving up");
+        // Surface as a clean 503 so the client can prompt the user to try again
+        throw Object.assign(new Error("Story planning is temporarily unavailable. Please try again."), { statusCode: 503 });
+      }
+    }
+    throw err;
+  }
 }
 
 interface OriginalUserInput {
@@ -1612,8 +1673,7 @@ Return JSON only in this exact format — no markdown, no explanation:
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   return {
     title: parsed.title,
@@ -1680,8 +1740,7 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   const scoreTotal: number = parsed.score_total ?? 0;
   const subScores: QcSubScores = parsed.sub_scores ?? {
@@ -1777,8 +1836,7 @@ Return the improved story in this exact JSON shape:
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   return {
     title: parsed.title ?? story.title,
@@ -1854,8 +1912,7 @@ Return JSON only in exactly this shape:
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   const coverVisual = parsed.cover as SceneVisual;
   const sceneVisuals = (parsed.scenes ?? []) as Array<SceneVisual & { scene_id: number }>;
@@ -2012,8 +2069,7 @@ Return the varied story in this exact JSON shape (same number of scenes as origi
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   return {
     title: parsed.title ?? story.title,
@@ -2098,8 +2154,7 @@ Return JSON only:
   });
 
   const raw = completion.choices[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
 
   return {
     title: parsed.title ?? `${story.title} — Continued`,

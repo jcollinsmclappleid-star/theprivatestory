@@ -247,12 +247,85 @@ export async function moderateOutput(text: string): Promise<ModerationResult> {
   return moderateOutputWithLLM(text);
 }
 
-/** Secondary output check using Mistral. Evaluates specifically against the 6 prohibited categories
- *  targeted by PROHIBITED_CONTENT_BLOCK in system prompts. Fail-closed. */
+// The consent violation category that warrants a nuanced second-pass check.
+// Mistral's broad classifier frequently misfires on consensual power dynamics,
+// authority/submission fantasy, and intensity-framing that this platform
+// intentionally produces. A targeted recheck distinguishes genuine non-consent
+// from consensual fantasy before we surface a 422 to the user.
+const CONSENT_VIOLATION_LABEL = "Non-consensual sexual acts depicted approvingly or erotically";
+
+/**
+ * Second-pass consent check. Called only when the primary QC scan flags
+ * CONSENT_VIOLATION_LABEL as the sole (or partial) violation.
+ *
+ * Uses a more nuanced prompt that explains the platform's content model and
+ * asks Mistral to distinguish genuine non-consent from consensual power dynamics.
+ *
+ * Returns true  → genuinely non-consensual, block.
+ * Returns false → consensual power dynamics, pass through.
+ * Throws        → caller treats as block (fail-closed).
+ */
+async function recheckConsentViolation(text: string): Promise<boolean> {
+  const completion = await openrouter.chat.completions.create({
+    model: MISTRAL_MODEL,
+    temperature: 0,
+    max_tokens: 200,
+    response_format: { type: "json_object" },
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a specialist content safety reviewer for an adult literary fiction platform. Respond ONLY with valid JSON. No prose, no explanation.",
+      },
+      {
+        role: "user",
+        content: `You must distinguish between two very different things in adult fiction:
+
+A) GENUINE NON-CONSENT (always prohibited):
+   — One party is coerced, threatened, or manipulated into participation
+   — A character's clear refusal or withdrawal is overridden or ignored
+   — Reluctance or protest is treated as erotic fuel while the other party continues
+   — One character takes what the other has explicitly not offered
+
+B) CONSENSUAL POWER DYNAMICS (permitted on this platform):
+   — Both parties genuinely desire the dynamic, including games of resistance they both chose
+   — Authority/submission where both characters want the arrangement
+   — Intensity, forcefulness, or dominance that the receiving character desires and has chosen
+   — Tension and delayed mutual giving-in — both parties want each other throughout
+   — A character "losing control" or being "overwhelmed" by desire they already have
+
+The story below was flagged as potentially non-consensual. Re-read it carefully and determine whether it depicts (A) or (B).
+
+Respond with JSON only:
+{"non_consensual": true_or_false, "reason": "one sentence explaining your determination"}
+
+Story:
+---
+${text}
+---`,
+      },
+    ],
+  });
+
+  const raw = completion.choices[0]?.message?.content?.trim() ?? "";
+  let parsed: { non_consensual: boolean; reason?: string };
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    logger.error({ raw }, "[consent-recheck] Failed to parse Mistral response — blocking (fail-closed)");
+    return true; // fail-closed
+  }
+  logger.info(
+    { non_consensual: parsed.non_consensual, reason: parsed.reason },
+    "[consent-recheck] Second-pass consent determination",
+  );
+  return parsed.non_consensual === true;
+}
+
 async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
   const PROHIBITED = [
     "Sexual content involving anyone under 18 or age-ambiguous characters in sexual scenarios",
-    "Non-consensual sexual acts depicted approvingly or erotically",
+    CONSENT_VIOLATION_LABEL,
     "Real identified individuals (named public figures) in sexual scenarios",
     "Bestiality or zoophilia",
     "Necrophilia",
@@ -287,10 +360,40 @@ async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
     }
 
     if (!parsed.safe) {
+      const violations = parsed.violations ?? [];
+      const consentOnly =
+        violations.length > 0 && violations.every((v) => v.trim() === CONSENT_VIOLATION_LABEL);
+
+      // Fix C: when the only flag is the consent violation, run a second nuanced
+      // check before surfacing a 422. Mistral's broad classifier misfires on
+      // consensual power dynamics — the recheck uses a more precise prompt.
+      if (consentOnly) {
+        logger.info(
+          { violations },
+          "[llm-output-moderation] Consent-only flag — running second-pass recheck",
+        );
+        try {
+          const genuinelyNonConsensual = await recheckConsentViolation(text);
+          if (!genuinelyNonConsensual) {
+            logger.info(
+              {},
+              "[consent-recheck] Second pass cleared — content is consensual power dynamics, passing through",
+            );
+            return { blocked: false, tier2Flagged: false, reason: null, source: null };
+          }
+          logger.warn(
+            {},
+            "[consent-recheck] Second pass confirmed non-consent — blocking",
+          );
+        } catch (recheckErr) {
+          logger.error({ err: recheckErr }, "[consent-recheck] Recheck call failed — blocking (fail-closed)");
+        }
+      }
+
       return {
         blocked: true,
         tier2Flagged: false,
-        reason: `llm_violations: ${(parsed.violations ?? []).join(", ") || "unspecified"}`,
+        reason: `llm_violations: ${violations.join(", ") || "unspecified"}`,
         source: "mistral",
       };
     }

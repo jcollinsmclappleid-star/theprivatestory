@@ -71,7 +71,7 @@ const config: SEOPageConfig = {
       },
       {
         heading: "The confident, direct encounter — assured and fully present",
-        body: "A character who knows what he wants and is not uncertain about it. The story is not slow — it is direct, adult in register, and built around the specific quality of confident, calibrated attention. The character is assured without being aggressive, certain without being controlling. The dynamic is between equals, both fully present, both knowing. For when slow burn is not the mood and what you want is the story itself.",
+        body: "A character who knows what he wants and is not uncertain about it. The story moves directly into its register — built around the specific quality of confident, calibrated attention. The character is assured without being aggressive, certain without being controlling. The dynamic is between equals, both fully present, both knowing. For when slow burn is not the mood and what you want is the story itself.",
       },
       {
         heading: "The morally complex story — darker, heavier, more complicated",
@@ -101,7 +101,7 @@ const config: SEOPageConfig = {
       },
       {
         heading: "The full intensity spectrum",
-        body: "From emotionally charged and slow burn to fully explicit. The intensity is your genuine choice for each session, not a fixed platform setting. Different moods require different registers.",
+        body: "From slow burn and emotionally charged to full unrestricted intensity. The level is your genuine choice for each session, not a fixed platform setting. Different moods require different registers.",
       },
       {
         heading: "Literary quality as standard",

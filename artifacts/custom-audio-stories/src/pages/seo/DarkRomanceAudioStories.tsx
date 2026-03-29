@@ -25,7 +25,7 @@ const config: SEOPageConfig = {
       paragraphs: [
         "The defining feature of dark romance is a character — usually the romantic lead — who does not conform to conventional heroism. He may have done things that are difficult to justify. He may want in ways that are possessive, controlling, or driven by motivations the story does not entirely excuse. He may occupy a world where the usual rules do not apply or where he makes them.",
         "The appeal is not that these qualities are desirable in real life. The appeal is that fiction is the space where we are permitted to feel things we do not act on — where the pull towards dangerous certainty, the attraction to someone who knows exactly what they want and takes it, or the specific fantasy of being chosen by someone whose standards are high and whose attention is not easily given can be inhabited safely.",
-        "Dark romance makes explicit something that more sanitised romance encodes without acknowledging. The want in the reader or listener is real. The genre respects that want enough to write to it directly rather than wrapping it in reassurance. This is why the connection between dark romance and its audience tends to be particularly intense — the genre meets its reader with honesty about what she is actually feeling, rather than redirecting her to something more comfortable.",
+        "Dark romance surfaces something that more sanitised romance encodes without acknowledging. The want in the reader or listener is real. The genre respects that want enough to write to it directly rather than wrapping it in reassurance. This is why the connection between dark romance and its audience tends to be particularly intense — the genre meets its reader with honesty about what she is actually feeling, rather than redirecting her to something more comfortable.",
         "The stories at The Private Story are created around this premise — not graphic darkness for its own sake, but the authentic emotional texture of complicated wanting. You choose the specific character, the dynamic, the moral weight. The story is built around what you actually want to feel.",
       ],
     },
@@ -139,7 +139,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Is dark romance the same as erotica?",
-      a: "No. Dark romance is a tonal and thematic register, not an explicitness level. A dark romance story can be entirely non-explicit and still be unmistakably dark romance — the darkness is in the character, the dynamic, and the moral texture of the story, not necessarily in the physical content. At The Private Story, you set the intensity of your story separately from the dark romance dynamic you choose. A dark romance story can be slow burn and emotionally charged, or more physically explicit — both are available. The moral complexity and the intensity are independent choices.",
+      a: "No. Dark romance is a tonal and thematic register, not a content intensity level. A dark romance story can work entirely through implication and still be unmistakably dark romance — the darkness is in the character, the dynamic, and the moral texture of the story. At The Private Story, you set the intensity of your story separately from the dark romance dynamic you choose. A dark romance story can be slow burn and emotionally charged, or more direct in its physical register — both are available. The moral complexity and the intensity are independent choices.",
     },
     {
       q: "Are dark romance stories morally troubling?",

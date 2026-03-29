@@ -42,7 +42,7 @@ const config: SEOPageConfig = {
       h2: "The Range of Adult Audio Fiction on the Platform",
       paragraphs: [
         "The Private Story covers the full range of adult audio fiction — not a niche specialisation but the genuine breadth of what the genre encompasses for adult listeners. Romantic and slow burn, for those who want the emotional charge of restrained desire and accumulating tension. Confident energy and quiet intensity, for those who want the specific quality of assured, knowing attention. Dark romance and morally complex character dynamics. Forbidden romance. Enemies to lovers.",
-        "The intensity level is also a genuine choice. Adult audio fiction exists on a spectrum from emotionally charged and implicit to fully explicit, and the spectrum is not a hierarchy — different intensities suit different moods, different occasions, different preferences. The creation flow allows you to set the intensity of your story as a genuine choice, not a constraint.",
+        "The intensity level is a genuine choice. The range runs from emotionally charged and tender to fully unrestricted — and neither end of the spectrum is a default. Different moods suit different registers. The creation flow allows you to set exactly where your story sits, as a genuine choice for this session, not a platform constraint.",
         "The cover images — generated with AI specifically for each story — add a visual dimension to the private library you're building. Each story has its own cover, its own title, and lives in your account as a complete and specific thing that belongs to your particular taste and that particular session.",
         "Stories run to approximately 1,500–3,000 words in narrated form — long enough to build properly, short enough to be a complete listening experience in a session. This is adult audio fiction for adults with full lives who want the experience to be what it is rather than a significant time commitment.",
       ],
@@ -67,11 +67,11 @@ const config: SEOPageConfig = {
     items: [
       {
         heading: "The slow-built, emotionally-charged story",
-        body: "Not everything that makes adult fiction adult is explicit. Some of the most effective adult audio fiction operates through accumulation — the charged exchange, the restraint that makes every small moment significant, the specific quality of attention between two people who are both aware of what is happening. The story is adult in its emotional register, in the quality of wanting it inhabits, in the specificity of the connection it builds. The intensity is not in the events but in everything that surrounds them.",
+        body: "Some of the most powerful stories for adults work entirely through accumulation — the charged exchange, the restraint that makes every small moment significant, the specific quality of attention between two people who are both aware of what is happening. The story's charge is in the emotional register, the quality of wanting it inhabits, the specificity of the connection it builds. The intensity is not in the events but in everything that surrounds them.",
       },
       {
-        heading: "The confident, direct, explicitly adult story",
-        body: "Sometimes what you want is a story that does not circle the subject. The connection is immediate, the dynamic is clear, the story moves into adult territory without prolonged restraint. The character you've chosen has a specific quality — assured, experienced, certain of what he wants — and the story reflects this from the first scene. Literary in craft, direct in register, explicit in the ways that suit the dynamic you chose.",
+        heading: "The confident, direct, full-intensity story",
+        body: "Sometimes what you want is a story that does not circle the subject. The connection is immediate, the dynamic is clear, the story moves directly into the territory of the dynamic you chose without prolonged restraint. The character has a specific quality — assured, experienced, certain of what he wants — and the story reflects this from the first scene. Literary in craft, direct in register, built to the full intensity the dynamic calls for.",
       },
       {
         heading: "The morally complex, dark and compelling story",
@@ -89,7 +89,7 @@ const config: SEOPageConfig = {
       },
       {
         heading: "The full spectrum of intensity",
-        body: "From emotionally charged slow burn to fully explicit — the intensity level is your genuine choice, not a constraint of the platform. Different moods require different registers. All are available.",
+        body: "From slow burn and emotionally charged to full unrestricted intensity — the level is your genuine choice, not a fixed platform setting. Different moods require different registers. All are available.",
       },
       {
         heading: "Literary quality",
@@ -135,15 +135,15 @@ const config: SEOPageConfig = {
   faqs: [
     {
       q: "What kind of adult audio stories are available?",
-      a: "The full range of adult audio fiction: slow burn and emotionally charged, romantic and tender, confidently direct, dark romance, forbidden romance, enemies to lovers, and everything between. The intensity level is a genuine choice in the creation flow — from implicit and emotionally intense to fully explicit. The character types, dynamics, settings, and emotional registers available are designed to cover the breadth of what adult audio fiction listeners actually want, rather than a narrowly defined niche.",
+      a: "The full range: slow burn and emotionally charged, romantic and tender, confidently direct, dark romance, forbidden romance, enemies to lovers, and everything between. The intensity level is a genuine choice in the creation flow — from tender and emotionally rich to fully unrestricted. The character types, dynamics, settings, and emotional registers available are designed to cover the genuine breadth of what listeners actually want, rather than a narrowly defined niche.",
     },
     {
-      q: "How is this different from other adult audio fiction platforms?",
-      a: "The key distinction is generation versus retrieval. Other platforms offer a catalogue of pre-produced content — you browse, filter, and select from what already exists. The Private Story generates your story around your specific choices. Your story does not exist before you ask for it. This produces a significantly higher level of match between the story and your specific preferences than even the most carefully curated catalogue can achieve. The second distinction is privacy: the platform is architecturally private — no social features, no visible listening history, no recommendation feeds — which most adult audio platforms are not.",
+      q: "How is this different from other platforms?",
+      a: "The key distinction is generation versus retrieval. Other platforms offer a catalogue of pre-produced content — you browse, filter, and select from what already exists. The Private Story generates your story around your specific choices. Your story does not exist before you ask for it. This produces a significantly higher level of match between the story and your specific preferences than even the most carefully curated catalogue can achieve. The second distinction is privacy: the platform is architecturally private — no social features, no visible listening history, no recommendation feeds.",
     },
     {
-      q: "Can I choose how explicit the story is?",
-      a: "Yes. The intensity level is a genuine choice in the creation flow, not a fixed setting of the platform. Adult audio fiction exists on a spectrum from emotionally charged and implicit to fully explicit, and different moods and sessions call for different registers. You set the intensity for each story you create. The story is then generated to that register — not defaulting to explicit or sanitising to implicit, but building to the level you chose.",
+      q: "Can I choose the intensity level of my story?",
+      a: "Yes. The intensity level is a genuine choice in the creation flow, not a fixed platform setting. Stories run from tender and emotionally charged to fully unrestricted, and different moods and sessions call for different registers. You set the intensity for each story you create. The story is then generated to that register — built specifically to the level you chose, not to a platform default.",
     },
     {
       q: "How long are the stories?",

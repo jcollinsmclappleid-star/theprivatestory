@@ -623,6 +623,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Scene"
+        castingData:
+          $ref: "#/components/schemas/StoryCastingData"
       required:
         - id
         - title
@@ -633,6 +635,33 @@ components:
         - coverImage
         - isPremium
         - isNew
+
+    StoryCastingData:
+      type: object
+      description: Casting selections captured at generation time. Present only for Casting Room stories.
+      properties:
+        pairing:
+          type: string
+        archetype:
+          type: string
+        chemistry:
+          type: string
+        setting:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        atmosphere:
+          type: string
+        intensity:
+          type: string
+        mood:
+          type: string
+        situation:
+          type: string
+        situationId:
+          type: string
 
     Scene:
       type: object

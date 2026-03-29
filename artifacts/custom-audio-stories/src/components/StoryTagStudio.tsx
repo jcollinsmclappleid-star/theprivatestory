@@ -43,6 +43,9 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
       tags: [
         "Desired", "Seen", "Powerful", "Chosen",
         "Adored", "Electric", "Wanted", "Known",
+        "Vulnerable", "Held", "Breathless", "Undone",
+        "Overwhelmed", "Consumed", "Lit up", "Irreplaceable",
+        "Discovered", "Safe",
       ],
     },
     {
@@ -102,6 +105,12 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
         "No one speaks afterward",
         "They go again immediately",
         `${p.sub} doesn't want it to be over`,
+        `They leave — ${p.sub} doesn't stop them`,
+        `They stay and ${p.sub}'s surprised`,
+        "Left open — mid-scene",
+        `${p.sub}'s still feeling it hours later`,
+        `${p.sub} texts them before they reach the door`,
+        "They lock the door again",
       ],
     },
   ];

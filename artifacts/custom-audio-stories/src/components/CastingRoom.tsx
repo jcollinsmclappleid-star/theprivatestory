@@ -606,20 +606,25 @@ const MOODS = [
 
 /* ── Appearance options (pronoun-aware) ───────────────────────────── */
 const BUILD_OPTIONS = ["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"];
+const FEMALE_BUILD_OPTIONS = ["Petite", "Slim", "Curvy", "Athletic", "Full-figured", "Hourglass", "Tall and lean"];
 const HEIGHT_OPTIONS = ["Tall", "Very tall", "Average height", "Shorter than me"];
 const COLOURING_OPTIONS = ["Dark", "Olive", "Fair", "Tanned", "Deep brown", "Medium brown"];
 const EYE_OPTIONS = ["Dark brown", "Light brown", "Green", "Blue", "Grey", "Hazel", "Deep black"];
 
-function buildFeatureOptions(partnerPronouns: string): string[] {
-  if (partnerPronouns === "she/her") {
+function buildFeatureOptions(pronouns: string): string[] {
+  if (pronouns === "she/her") {
     return [
+      // Face & hair
       "Long lashes", "Full lips", "High cheekbones", "Sharp features",
       "Delicate features", "Natural glow", "Freckles", "Dimples",
       "Elegant hands", "Tattoos", "A scar", "Piercing eyes",
       "Long hair", "Short hair", "Curls", "Soft curls",
+      // Body
+      "Hourglass figure", "Curvy", "Petite frame", "Full-figured",
+      "Long legs", "Narrow waist", "Full chest", "Peach shape", "Large curves",
     ];
   }
-  if (partnerPronouns === "they/them") {
+  if (pronouns === "they/them") {
     return [
       "Stubble", "Strong jaw", "Soft features", "High cheekbones",
       "Full lips", "Dimples", "Broad shoulders", "Lean frame",
@@ -813,9 +818,18 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
   const activePairing = PAIRINGS.find(p => p.id === data.pairing);
-  const rawPartnerPronouns    = activePairing?.partnerPronouns    ?? "he/him";
+  const rawPartnerPronouns     = activePairing?.partnerPronouns     ?? "he/him";
   const rawProtagonistPronouns = activePairing?.protagonistPronouns ?? "she/her";
   const partnerHeadingVerb = partnerP.subject === "They" ? "Who are they?" : `Who is ${partnerP.object}?`;
+
+  // Appearance step always describes the love interest from the active perspective's viewpoint.
+  // When following the protagonist the love interest = partner; when following the partner it inverts.
+  const perspectivePronounMap: Record<string, string> = { her: "she/her", his: "he/him", their: "they/them" };
+  const activePerspectivePronoun = perspectivePronounMap[data.perspective ?? "her"] ?? null;
+  const appearancePronouns = activePerspectivePronoun && activePerspectivePronoun !== rawProtagonistPronouns
+    ? rawProtagonistPronouns
+    : rawPartnerPronouns;
+  const loveInterestP = appearancePronouns === rawPartnerPronouns ? partnerP : protagonistP;
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
 
@@ -946,7 +960,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                    {capFirst(partnerP.possessive)} Appearance
+                    {capFirst(loveInterestP.possessive)} Appearance
                     <span className="font-normal text-muted-foreground normal-case tracking-normal ml-2">(optional)</span>
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">Describe how they look — as much or as little as you want.</p>
@@ -957,7 +971,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 <div>
                   <p className="text-xs text-muted-foreground mb-2">Build</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {BUILD_OPTIONS.map(opt => (
+                    {(appearancePronouns === "she/her" ? FEMALE_BUILD_OPTIONS : BUILD_OPTIONS).map(opt => (
                       <button key={opt} type="button"
                         onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
                         className={`px-3 py-1 rounded-full text-xs border transition-all ${
@@ -1009,7 +1023,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 <div>
                   <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {buildFeatureOptions(rawPartnerPronouns).map(opt => (
+                    {buildFeatureOptions(appearancePronouns).map(opt => (
                       <button key={opt} type="button"
                         onClick={() => setAppearFeatures(prev =>
                           prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]

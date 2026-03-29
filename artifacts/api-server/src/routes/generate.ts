@@ -1212,7 +1212,12 @@ const VALID_SEASONS = new Set(["Spring", "Summer", "Autumn", "Winter"]);
 const VALID_PERSPECTIVES = new Set(["her", "his", "you", "they"]);
 
 /** Appearance chip options — union of all pronoun variants from CastingRoom. */
-const VALID_APPEAR_BUILD = new Set(["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"]);
+const VALID_APPEAR_BUILD = new Set([
+  // Male-coded builds
+  "Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight",
+  // Female-coded builds
+  "Petite", "Slim", "Curvy", "Full-figured", "Hourglass", "Tall and lean",
+]);
 const VALID_APPEAR_HEIGHT = new Set(["Tall", "Very tall", "Average height", "Shorter than me"]);
 const VALID_APPEAR_COLOURING = new Set(["Dark", "Olive", "Fair", "Tanned", "Deep brown", "Medium brown"]);
 const VALID_APPEAR_EYES = new Set(["Dark brown", "Light brown", "Green", "Blue", "Grey", "Hazel", "Deep black"]);
@@ -1221,10 +1226,13 @@ const VALID_APPEAR_FEATURES = new Set([
   "Stubble", "Full beard", "Clean-shaven", "Strong jaw", "Dimples",
   "Broad shoulders", "Large hands", "Tattoos", "A scar", "Piercing eyes",
   "Long hair", "Short hair", "Curls", "Silver at the temples",
-  // she/her additions
+  // she/her face & hair
   "Long lashes", "Full lips", "High cheekbones", "Sharp features",
   "Delicate features", "Natural glow", "Freckles", "Elegant hands",
   "Soft curls",
+  // she/her body
+  "Hourglass figure", "Curvy", "Petite frame", "Full-figured",
+  "Long legs", "Narrow waist", "Full chest", "Peach shape", "Large curves",
   // they/them additions
   "Soft features", "Lean frame",
 ]);

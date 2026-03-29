@@ -1,25 +1,15 @@
-interface CastingData {
-  pairing?: string;
-  archetype?: string;
-  chemistry?: string;
-  setting?: string;
-  country?: string;
-  city?: string;
-  atmosphere?: string;
-  intensity?: string;
-  situation?: string;
-  situationId?: string;
-}
+import type { StoryCastingData } from "@workspace/api-client-react";
 
 interface CastSituationProps {
-  data?: CastingData | null;
+  data?: StoryCastingData | null;
   className?: string;
 }
 
-const PILL_FIELDS: Array<{ key: keyof Omit<CastingData, "situation" | "situationId">; label: string }> = [
+const PILL_FIELDS: Array<{ key: keyof Omit<StoryCastingData, "situation" | "situationId">; label: string }> = [
   { key: "pairing",    label: "Pairing" },
   { key: "archetype",  label: "He Is" },
   { key: "chemistry",  label: "Chemistry" },
+  { key: "mood",       label: "Mood" },
   { key: "intensity",  label: "Intensity" },
   { key: "atmosphere", label: "Atmosphere" },
   { key: "country",    label: "Country" },

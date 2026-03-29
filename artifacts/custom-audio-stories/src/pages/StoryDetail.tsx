@@ -10,23 +10,9 @@ import { CastSituation } from "@/components/CastSituation";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-interface CastingData {
-  pairing?: string;
-  archetype?: string;
-  chemistry?: string;
-  setting?: string;
-  country?: string;
-  city?: string;
-  atmosphere?: string;
-  intensity?: string;
-  situation?: string;
-  situationId?: string;
-}
-
 export default function StoryDetail() {
   const { id } = useParams();
-  const { data: rawStory } = useStoryFallback(id || "");
-  const story = rawStory as (typeof rawStory) & { castingData?: CastingData };
+  const { data: story } = useStoryFallback(id || "");
   const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress } = useAudioPlayer();
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);

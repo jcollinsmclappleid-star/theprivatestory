@@ -81,6 +81,7 @@ export const storiesStore = {
       storyDna: (story.storyDna ?? null) as Record<string, unknown> | null,
       seriesId: (story.seriesId as string | null) ?? null,
       seriesEpisode: (story.seriesEpisode as number | null) ?? null,
+      castingData: (story.castingData ?? null) as Record<string, unknown> | null,
     };
     const updateSet = {
       title: values.title,
@@ -103,6 +104,7 @@ export const storiesStore = {
       storyDna: values.storyDna,
       seriesId: values.seriesId,
       seriesEpisode: values.seriesEpisode,
+      castingData: values.castingData,
     };
     await db
       .insert(generatedStories)
@@ -174,6 +176,7 @@ function rowToStoredStory(row: typeof generatedStories.$inferSelect): StoredStor
     storyDna: row.storyDna,
     seriesId: row.seriesId,
     seriesEpisode: row.seriesEpisode,
+    castingData: row.castingData ?? null,
     createdAt: row.createdAt?.toISOString(),
   };
 }

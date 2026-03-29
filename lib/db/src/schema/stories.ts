@@ -52,6 +52,8 @@ export const generatedStories = pgTable("generated_stories", {
   storyDna: jsonb("story_dna"),
   seriesId: text("series_id"),
   seriesEpisode: integer("series_episode"),
+  /** Casting selections captured at generation time — surfaced in the story detail view. */
+  castingData: jsonb("casting_data"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

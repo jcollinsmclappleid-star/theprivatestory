@@ -3056,6 +3056,7 @@ router.post("/generate-full-story", async (req, res) => {
     if (intake.city)       castingData.city       = intake.city;
     if (intake.atmosphere) castingData.atmosphere = intake.atmosphere;
     if (intake.intensity)  castingData.intensity  = intake.intensity;
+    if (intake.mood)       castingData.mood       = intake.mood;
     if (brief.situation)   castingData.situation  = brief.situation;
     if (brief.situationId) castingData.situationId = brief.situationId;
 

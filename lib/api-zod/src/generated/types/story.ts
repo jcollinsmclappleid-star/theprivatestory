@@ -7,6 +7,20 @@
  */
 import type { Scene } from "./scene";
 
+export interface StoryCastingData {
+  pairing?: string;
+  archetype?: string;
+  chemistry?: string;
+  setting?: string;
+  country?: string;
+  city?: string;
+  atmosphere?: string;
+  intensity?: string;
+  mood?: string;
+  situation?: string;
+  situationId?: string;
+}
+
 export interface Story {
   id: string;
   title: string;
@@ -22,4 +36,6 @@ export interface Story {
   seriesName?: string;
   seriesEpisode?: number;
   scenes?: Scene[];
+  /** Casting selections captured at generation time. Present only for Casting Room stories. */
+  castingData?: StoryCastingData;
 }

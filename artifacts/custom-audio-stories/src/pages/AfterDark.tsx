@@ -1120,7 +1120,7 @@ export default function AfterDark() {
                           alt=""
                           aria-hidden="true"
                           className="absolute inset-0 w-full h-full object-cover"
-                          style={{ opacity: 0.14 }}
+                          style={{ opacity: 0.22 }}
                         />
                       )}
                       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${room.accent}12 0%, transparent 70%)` }} />

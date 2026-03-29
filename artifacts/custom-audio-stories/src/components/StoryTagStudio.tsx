@@ -16,246 +16,91 @@ type PronounCtx = {
   refl: string;
 };
 
-const MAX_PER_SECTION = 2;
+function getPronounCtx(pronouns: string): PronounCtx {
+  switch (pronouns) {
+    case "he/him":    return { sub: "He",   obj: "him",  poss: "his",   refl: "himself"   };
+    case "they/them": return { sub: "They", obj: "them", poss: "their", refl: "themselves" };
+    case "you":       return { sub: "You",  obj: "you",  poss: "your",  refl: "yourself"  };
+    default:          return { sub: "She",  obj: "her",  poss: "her",   refl: "herself"   };
+  }
+}
 
 function buildContradictionPairs(p: PronounCtx): [string, string][] {
   return [
-    // Pacing
     ["Slow simmer", "Quick burn"],
-    ["Slow simmer", "Two speeds — nothing in between"],
-    ["All foreplay", "Building to a crash"],
-    ["Starting mid-desire", "Agonising build"],
-    // Story Texture
     ["Dialogue-rich", "Mostly sensation"],
-    ["Sharp & direct", "Dreamlike"],
     ["Sharp & direct", "Lyrical"],
-    // Energy Between Them
-    ["Slow Build", "Instant Chemistry"],
-    ["One night only", "Reunion after years"],
-    // Their Presence
-    ["Gentle", "Relentless"],
-    ["Patient", "Relentless"],
-    ["Gentle", "Commanding"],
-    // Desire Details (AfterDark)
-    [`${p.sub} takes control`, `${p.sub} surrenders all control`],
-    [`${p.sub} takes control`, "Total surrender"],
-    [`${p.sub} chooses everything`, "Being told what to do"],
+    [`${p.sub} takes control`, `${p.sub} surrenders completely`],
+    [`${p.sub} takes control`, "Being fully taken care of"],
   ];
-}
-
-function getPronounCtx(pronouns: string): PronounCtx {
-  switch (pronouns) {
-    case "he/him":   return { sub: "He",   obj: "him",  poss: "his",   refl: "himself"    };
-    case "they/them":return { sub: "They", obj: "them", poss: "their", refl: "themselves"  };
-    case "you":      return { sub: "You",  obj: "you",  poss: "your",  refl: "yourself"   };
-    default:         return { sub: "She",  obj: "her",  poss: "her",   refl: "herself"    };
-  }
 }
 
 function buildStandardCategories(p: PronounCtx): TagCategory[] {
   return [
     {
-      heading: "What You Want To Feel",
-      sub: "The emotional register this story should carry",
+      heading: "How do you want to feel?",
+      sub: "The emotional register of this story",
       tags: [
-        "Desired", "Seen", "Powerful", "Safe", "Vulnerable",
-        "Chosen", "Overwhelmed", "Undone", "Adored", "Electric",
-        "Rescued", "Consumed", "Breathless", "Known", "Discovered",
-        "Wanted", "Held", "Irreplaceable", "Shattered", "Lit up",
+        "Desired", "Seen", "Powerful", "Chosen",
+        "Adored", "Electric", "Wanted", "Known",
       ],
     },
     {
-      heading: "The Energy Between Them",
-      sub: "How the charge between two people moves",
+      heading: "What's between them?",
+      sub: "The energy and tension at the heart of it",
       tags: [
-        "Slow Build", "Instant Chemistry", "Unfinished Business",
-        "Old Wounds", "Forbidden", "Push & Pull",
-        "Inevitable", "Complicated", "Playful tension", "Bittersweet",
-        "First time", "Reunion after years", "Rivals to lovers",
-        "One night only", "A decade of tension finally breaking",
-        "Hate that was always this", "Friends who knew all along",
+        "Slow Build", "Instant Chemistry", "Forbidden", "Push & Pull",
+        "Inevitable", "Unfinished Business", "One night only", "Rivals to lovers",
       ],
     },
     {
-      heading: "Their Presence",
-      sub: "The energy they bring into the room",
+      heading: "How do you want it written?",
+      sub: "The texture and pacing of the writing",
       tags: [
-        "Commanding", "Quiet Intensity", "Gentle", "Protective",
-        "Unpredictable", "Brooding", "Playful", "Restrained",
-        "Tender", "Obsessive", "Magnetic",
-        "Controlled", "Relentless", "Patient", "Unshakeable",
-        `Focused entirely on ${p.obj}`, "Impossible to read",
+        "Slow simmer", "Dialogue-rich", "Mostly sensation",
+        "Lyrical", "Cinematic", "Sharp & direct",
       ],
     },
     {
-      heading: "Story Texture",
-      sub: "How the writing should feel on the page",
+      heading: "What makes this yours?",
+      sub: "The personal detail that makes it unmistakable",
       tags: [
-        "Dialogue-rich", "Mostly sensation", "Poetic",
-        "Sharp & direct", "Dreamlike", "Cinematic",
-        "Raw & real", "Intimate & internal", "Lyrical",
-        "Sensory", "Grounded & physical", "Interior monologue",
-        "Explicit & direct", "Fragmented & urgent",
-      ],
-    },
-    {
-      heading: "Pacing",
-      sub: "How the tension moves through the story",
-      tags: [
-        "Slow simmer", "Quick burn", "Even tension",
-        "Agonising build", "All foreplay", "Fast then tender",
-        "One long exhale", "Interrupted and restarted",
-        "Building to a crash", "Starting mid-desire",
-        "Two speeds — nothing in between",
-      ],
-    },
-    {
-      heading: "What Makes It Yours",
-      sub: "The personal detail that makes this story unmistakable",
-      tags: [
-        "It's set somewhere I know",
         "They remind me of someone",
-        `${p.sub} could be me`,
-        "The relationship is complicated",
         "It happens just once",
-        "It happens more than once",
         "It shouldn't have happened",
         "It was always going to happen",
-        `${p.sub} doesn't tell anyone`,
-        `${p.sub} tells one person`,
+        "The relationship is complicated",
         "No one gets hurt",
-        "Feelings are involved whether they want them or not",
       ],
     },
   ];
 }
 
-function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
+function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
   return [
     {
-      heading: "Top Fantasies",
-      sub: "The ones people rarely say out loud. Select what's true for you.",
+      heading: "What do you want?",
+      sub: "The things you rarely say out loud",
       tags: [
-        `They take, ${p.sub} receives`,
         `They find every limit ${p.sub} has`,
-        `${p.sub} gives ${p.refl} over completely`,
-        `${p.sub} begs for it`,
-        `${p.sub} lets ${p.refl} be completely powerless`,
-        "They get caught",
-        "Someone else is watching",
-        `${p.sub} watches ${p.refl}`,
-        `${p.sub} doesn't want them to stop`,
-        `${p.sub} wears what they choose`,
-        `${p.sub} loses the fight to stay quiet`,
-        `${p.sub} doesn't know what comes next`,
-        `They keep ${p.obj} at the edge`,
         `${p.sub} surrenders completely`,
-      ],
-    },
-    {
-      heading: "The Dynamic Between You",
-      sub: "The energy and tension you want in the room",
-      tags: [
-        "Takes full control",
-        "Commands what they want",
-        "Takes their time",
-        `Makes ${p.obj} ask for it`,
-        `Holds ${p.obj} in place`,
-        `Undoes ${p.obj} slowly`,
-        `Makes ${p.obj} earn it`,
-        `Won't let ${p.obj} hide`,
-        "Watches closely",
-        `Keeps ${p.obj} at the edge`,
-        `Covers ${p.poss} mouth`,
-        `Doesn't let ${p.obj} finish until they say`,
-        `Takes ${p.obj} to every edge`,
-        "Uses only their hands first",
-        `Makes ${p.obj} count`,
-      ],
-    },
-    {
-      heading: "The Scene",
-      sub: "Where and how this plays out physically",
-      tags: [
-        "Slow undressing",
-        "Everything at once",
-        "In the dark",
-        "Fully lit",
-        "Against a wall",
-        "In front of a mirror",
-        "Barely private",
-        "Somewhere unexpected",
-        "Horizontal",
-        "Standing the whole time",
-        "Tied down",
-        `Hands behind ${p.poss} back`,
-        "On the desk",
-        "In the bath",
-        `${p.sub} holds perfectly still for them`,
-        "Outdoors, barely hidden",
-        "In the car",
-        "On the floor",
-        `${p.sub}'s blindfolded`,
-        "Fully clothed at first",
-      ],
-    },
-    {
-      heading: `What ${p.sub} Wants Said`,
-      sub: "The words matter as much as anything else",
-      tags: [
-        "They narrate everything as it happens",
-        `They tell ${p.obj} what ${p.sub} is`,
-        `${p.sub}'s told to repeat it back`,
-        "They describe what comes next",
-        `${p.sub}'s told to ask nicely`,
-        "They say the name, every time",
-        `They ask if ${p.sub} wants more`,
-        "They say it before they do it",
-        `${p.sub} goes quiet when they say`,
-        `${p.sub} tells them ${p.sub} wants it`,
-        `${p.sub} holds still when they ask`,
-        "They count down",
-        `They ask how it feels — ${p.sub} answers every time`,
-      ],
-    },
-    {
-      heading: "Desire Details",
-      sub: `The specific flavour of what ${p.sub} wants`,
-      tags: [
-        "Being told what to do",
-        "Being completely seen",
-        "Power fully exchanged",
-        "Nothing off limits",
-        "Total attention",
-        "Total surrender",
+        `${p.sub} loses the fight to stay quiet`,
         `${p.sub} takes control`,
-        "Watched by someone",
-        "Anonymous desire",
-        "Multiple rounds",
-        `${p.sub} loses count`,
-        `Every part of ${p.obj}`,
-        `${p.sub} holds nothing back`,
-        `${p.sub} surrenders all control`,
-        `${p.sub} chooses everything`,
-        "They own every reaction",
-        `${p.sub} surprises ${p.refl}`,
+        `They keep ${p.obj} at the edge`,
+        "They get caught",
+        `${p.sub} doesn't know what comes next`,
+        "Being fully taken care of",
       ],
     },
     {
-      heading: "How It Ends",
-      sub: "The final note of the story",
+      heading: "How does it end?",
+      sub: "The final note of your story",
       tags: [
         `${p.sub} falls asleep in their arms`,
         "They don't leave until morning",
         `${p.sub} asks for more`,
         "No one speaks afterward",
-        `They leave — ${p.sub} doesn't stop them`,
         "They go again immediately",
-        `They stay and ${p.sub}'s surprised`,
-        "Left open — mid-scene",
-        `${p.sub}'s still feeling it hours later`,
-        `${p.sub} texts them before they reach the door`,
-        "They lock the door again",
         `${p.sub} doesn't want it to be over`,
       ],
     },
@@ -299,43 +144,28 @@ export function StoryTagStudio({
   }, [isAuthenticated]);
 
   const p = getPronounCtx(protagonistPronouns);
-  const categories = afterDark
-    ? [...buildStandardCategories(p), ...buildAfterDarkExtraCategories(p)]
+  const categories: TagCategory[] = afterDark
+    ? [...buildStandardCategories(p), ...buildAfterDarkCategories(p)]
     : buildStandardCategories(p);
   const contradictionPairs = buildContradictionPairs(p);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {categories.map((cat) => {
-        const catSelectedCount = cat.tags.filter(t => selectedTags.includes(t)).length;
-
         return (
           <div key={cat.heading}>
-            <div className="flex items-baseline justify-between mb-0.5">
-              <p
-                className="text-xs font-semibold uppercase tracking-widest"
-                style={{ color: accentColor }}
-              >
-                {cat.heading}
-              </p>
-              {catSelectedCount > 0 && (
-                <span
-                  className="text-[10px] font-semibold tabular-nums"
-                  style={{ color: catSelectedCount >= MAX_PER_SECTION ? accentColor : `${accentColor}80` }}
-                >
-                  {catSelectedCount}/{MAX_PER_SECTION}
-                </span>
-              )}
-            </div>
+            <p
+              className="text-base font-semibold text-foreground mb-1"
+            >
+              {cat.heading}
+            </p>
             {cat.sub && (
-              <p className="text-xs text-muted-foreground mb-3 leading-snug">{cat.sub}</p>
+              <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
             )}
             <div className="flex flex-wrap gap-2">
               {cat.tags.map((tag) => {
                 const selected = selectedTags.includes(tag);
                 const isUsual = usualTags.has(tag) && !selected;
-
-                const atSectionLimit = !selected && catSelectedCount >= MAX_PER_SECTION;
 
                 const contradictionPartners = contradictionPairs
                   .filter(([a, b]) => a === tag || b === tag)
@@ -344,7 +174,7 @@ export function StoryTagStudio({
                   partner => cat.tags.includes(partner) && selectedTags.includes(partner)
                 );
 
-                const isDisabled = atSectionLimit || blockedByContradiction;
+                const isDisabled = blockedByContradiction;
 
                 return (
                   <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
@@ -353,14 +183,14 @@ export function StoryTagStudio({
                       onClick={() => !isDisabled && onTagToggle(tag)}
                       disabled={isDisabled}
                       title={blockedByContradiction ? "Conflicts with another selection" : undefined}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
                         selected
                           ? "border-transparent text-black"
                           : isDisabled
-                          ? "border-white/5 text-muted-foreground/30 cursor-not-allowed"
+                          ? "border-white/5 text-muted-foreground/25 cursor-not-allowed"
                           : isUsual
                           ? "border-primary/40 text-foreground hover:border-primary/60"
-                          : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                          : "border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground"
                       }`}
                       style={
                         selected

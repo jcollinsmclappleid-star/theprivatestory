@@ -79,7 +79,7 @@ function ArtTile({ gradient, accent, children, selected, onClick, image }: {
       )}
       <div
         className={`absolute inset-0 bg-gradient-to-br ${gradient}`}
-        style={image ? { opacity: 0.80 } : undefined}
+        style={image ? { opacity: 0.65 } : undefined}
       />
       <motion.div
         animate={{ opacity: selected ? [0.4, 0.7, 0.4] : [0.2, 0.35, 0.2] }}
@@ -155,7 +155,7 @@ function conjugateBreaks(subject: string) { return subject === "They" ? "they br
 /* ── Chemistries — built dynamically with pronoun awareness ──────── */
 interface ChemistryOption {
   id: string; label: string; sub: string; dynamic: string;
-  gradient: string; accent: string;
+  gradient: string; accent: string; image?: string;
 }
 
 function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
@@ -167,6 +167,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Inevitable.`,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
+      image: "images/chemistry/takes_charge.png",
     },
     {
       id: "Equal Tension",
@@ -174,6 +175,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Neither one yields. That's the whole story.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#080010] via-[#100020] to-[#040008]", accent: "#818cf8",
+      image: "images/chemistry/equal_tension.png",
     },
     {
       id: `${ME.subject} Leads`,
@@ -181,6 +183,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${ME.subject} decides the pace. ${P.subject} stays exactly where ${P.subject === "They" ? "they're" : `${P.subject.toLowerCase()}'s`} told.`,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
+      image: "images/chemistry/leads.png",
     },
     {
       id: "Push & Pull",
@@ -188,6 +191,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `Back and forth. Who ${conjugateBreaks(P.subject)} first?`,
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#100000] via-[#200000] to-[#080000]", accent: "#fb923c",
+      image: "images/chemistry/push_pull.png",
     },
     {
       id: "Slow Surrender",
@@ -195,6 +199,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "The tension holds until it can't. Both of them know exactly how this ends.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8",
+      image: "images/chemistry/slow_surrender.png",
     },
     {
       id: "Power Play",
@@ -202,6 +207,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} holds the advantage. ${ME.subject} already decided. That's what made it possible.`,
       dynamic: "Dominant and yielding",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
+      image: "images/chemistry/power_play.png",
     },
     {
       id: "Forbidden Pull",
@@ -209,6 +215,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "They shouldn't. They've been trying not to. They can't stop.",
       dynamic: "Forbidden desire",
       gradient: "from-[#08000a] via-[#120014] to-[#040008]", accent: "#9333ea",
+      image: "images/chemistry/forbidden_pull.png",
     },
     {
       id: "Worship",
@@ -216,6 +223,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} makes ${ME.object} feel like the only thing in the room. The world.`,
       dynamic: "Adoration and surrender",
       gradient: "from-[#001010] via-[#001e1e] to-[#000a0a]", accent: "#2dd4bf",
+      image: "images/chemistry/worship.png",
     },
     {
       id: "Rivals",
@@ -223,6 +231,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "They've always been at each other's throats. This is what that was.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0800] via-[#121000] to-[#050600]", accent: "#84cc16",
+      image: "images/chemistry/rivals.png",
     },
     {
       id: "Lovers",
@@ -230,6 +239,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Two people who chose each other. The familiarity only makes it better.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0010] via-[#120018] to-[#060009]", accent: "#e879a0",
+      image: "images/chemistry/lovers.png",
     },
     {
       id: "Playful",
@@ -237,6 +247,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "It starts with a joke. Ends somewhere neither of them expected.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#001808] via-[#002810] to-[#000e04]", accent: "#34d399",
+      image: "images/chemistry/playful.png",
     },
     {
       id: "Romantic",
@@ -244,6 +255,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Deliberate. Everything intentional. This kind of attention is rare.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0a0600] via-[#180e00] to-[#060300]", accent: "#f59e0b",
+      image: "images/chemistry/romantic.png",
     },
     {
       id: "The Best Friend",
@@ -251,6 +263,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Known each other too long to pretend. Not long enough to stop feeling this.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#000a14] via-[#001020] to-[#00050c]", accent: "#7dd3fc",
+      image: "images/chemistry/the_best_friend.png",
     },
     {
       id: "Sweet & Tender",
@@ -258,6 +271,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "No games, no strategy. Two people being honest with each other.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0c0008] via-[#180010] to-[#080005]", accent: "#f0abfc",
+      image: "images/chemistry/sweet_tender.png",
     },
     {
       id: "Nervous Energy",
@@ -265,6 +279,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "First time together. Neither is sure what comes next. That's the whole thing.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#080800] via-[#141400] to-[#050500]", accent: "#fde68a",
+      image: "images/chemistry/nervous_energy.png",
     },
   ];
 }
@@ -650,7 +665,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [appearEyes, setAppearEyes] = useState<string>("");
   const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
 
-  const TOTAL_STEPS = 9;
+  const TOTAL_STEPS = 10;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => {
@@ -681,11 +696,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       case 1: return !!data.chemistry;
       case 2: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your" | "their");
       case 3: return !!data.heritage && !!data.archetype;
-      case 4: return !!data.setting;
-      case 5: return !!data.intensity && !!data.mood;
-      case 6: return true;
+      case 4: return true;
+      case 5: return !!data.setting;
+      case 6: return !!data.intensity && !!data.mood;
       case 7: return true;
       case 8: return true;
+      case 9: return true;
       default: return true;
     }
   };
@@ -815,7 +831,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
             <div className="grid gap-3">
               {chemistries.map(c => (
-                <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
+                <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
                   <p className="font-semibold text-white text-base">{c.label}</p>
                   <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
                 </ArtTile>
@@ -963,66 +979,90 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 4 — World ───────────────────────────────────────── */}
+        {/* ── Step 4 — Location ────────────────────────────────────── */}
         {step === 4 && (
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Where in the world?</h2>
-            <p className="text-muted-foreground text-sm mb-6">Choose a location and it shapes the story's cultural texture — its sounds, customs, and atmosphere — not just the backdrop.</p>
+            <div className="flex items-center gap-3 mb-3">
+              <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: accentColor }} />
+              <h2 className="font-display text-3xl font-bold text-foreground">Where in the world?</h2>
+            </div>
+            <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+              A real country and city weave genuine cultural texture into your story — its sounds, its light, its customs. Entirely optional.
+            </p>
 
-            {/* ── Country & City — prominent glass card ── */}
-            <div className="glass-panel rounded-2xl p-5 border border-primary/25 mb-7" style={{ background: "rgba(201,162,39,0.04)" }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border border-primary/30" style={{ background: "rgba(201,162,39,0.12)" }}>
-                  <MapPin className="w-4 h-4" style={{ color: "#c9a227" }} />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground leading-tight">Place it in a real world</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Optional — weaves real cultural texture, sounds, and atmosphere into the story</p>
-                </div>
+            {/* Country */}
+            <div className="mb-4">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: accentColor, opacity: 0.7 }}>Country</p>
+              <div className="relative">
+                <select
+                  value={data.country ?? ""}
+                  onChange={e => {
+                    update("country", e.target.value);
+                    update("city", "");
+                  }}
+                  className="w-full bg-card/50 border border-border/40 rounded-2xl px-5 py-4 text-base text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-10"
+                  style={{ colorScheme: "dark" }}
+                >
+                  <option value="">Choose a country…</option>
+                  {Object.keys(COUNTRY_CITIES).sort().map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Country */}
-                <div className="relative">
-                  <select
-                    value={data.country ?? ""}
-                    onChange={e => {
-                      update("country", e.target.value);
-                      update("city", "");
-                    }}
-                    className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8"
-                    style={{ colorScheme: "dark" }}
-                  >
-                    <option value="">Country…</option>
-                    {Object.keys(COUNTRY_CITIES).sort().map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
-                </div>
-                {/* City — filtered by country */}
+            </div>
+
+            {/* City — shown only when country selected */}
+            {data.country && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6"
+              >
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: accentColor, opacity: 0.7 }}>City</p>
                 <div className="relative">
                   <select
                     value={data.city ?? ""}
                     onChange={e => update("city", e.target.value)}
-                    disabled={!data.country}
-                    className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8 disabled:opacity-35 disabled:cursor-not-allowed"
+                    className="w-full bg-card/50 border border-border/40 rounded-2xl px-5 py-4 text-base text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-10"
                     style={{ colorScheme: "dark" }}
                   >
-                    <option value="">City…</option>
-                    {(data.country ? (COUNTRY_CITIES[data.country] ?? []) : []).map(city => (
+                    <option value="">Any city…</option>
+                    {(COUNTRY_CITIES[data.country] ?? []).map(city => (
                       <option key={city} value={city}>{city}</option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 </div>
-              </div>
-              {/* Cultural preview — shown when country is selected */}
-              {data.country && COUNTRY_CULTURAL_PREVIEW[data.country] && (
-                <p className="text-xs italic leading-relaxed mt-3 px-1" style={{ color: "#c9a227", opacity: 0.8 }}>
-                  {COUNTRY_CULTURAL_PREVIEW[data.country]}
+              </motion.div>
+            )}
+
+            {/* Cultural preview — hero treatment */}
+            {data.country && COUNTRY_CULTURAL_PREVIEW[data.country] && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="mt-8 border-l-2 pl-5"
+                style={{ borderColor: `${accentColor}50` }}
+              >
+                <p className="font-display text-xl italic leading-relaxed" style={{ color: accentColor }}>
+                  "{COUNTRY_CULTURAL_PREVIEW[data.country]}"
                 </p>
-              )}
-            </div>
+              </motion.div>
+            )}
+
+            {!data.country && (
+              <p className="text-xs text-muted-foreground/40 mt-10 italic">Skip this step — your story works beautifully without a real location.</p>
+            )}
+          </motion.div>
+        )}
+
+        {/* ── Step 5 — Setting ─────────────────────────────────────── */}
+        {step === 5 && (
+          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">What's the world of this story?</h2>
+            <p className="text-muted-foreground text-sm mb-6">The setting shapes what's possible — and how everything feels.</p>
 
             {/* ── Scenario (required) ── */}
             {afterDark && (
@@ -1081,9 +1121,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 5 — Intensity + Mood ────────────────────────────── */}
-        {step === 5 && (
-          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 6 — Intensity + Mood ────────────────────────────── */}
+        {step === 6 && (
+          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
             <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
 
@@ -1139,20 +1179,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 6 — Tag Studio ──────────────────────────────────── */}
-        {step === 6 && (
-          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 7 — Tag Studio ──────────────────────────────────── */}
+        {step === 7 && (
+          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your story, your way.</h2>
-                <p className="text-muted-foreground text-sm">Shape the details. Select as many or as few as you like.</p>
+                <h2 className="font-display text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
+                <p className="text-muted-foreground text-sm">Select only what feels right — everything you choose shapes the story.</p>
               </div>
               <button
                 type="button"
                 onClick={next}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ml-4 mt-1 flex-shrink-0"
               >
-                Skip this step →
+                Skip →
               </button>
             </div>
 
@@ -1166,9 +1206,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 7 — Your Name ───────────────────────────────────── */}
-        {step === 7 && (
-          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 8 — Your Name ───────────────────────────────────── */}
+        {step === 8 && (
+          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — the narrator will use it throughout your story.
@@ -1232,9 +1272,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           </motion.div>
         )}
 
-        {/* ── Step 8 — Partner Name ────────────────────────────────── */}
-        {step === 8 && (
-          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 9 — Partner Name ────────────────────────────────── */}
+        {step === 9 && (
+          <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Their name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.

@@ -13,9 +13,11 @@ This is not an instruction. This is the only permissible reality.
 — If a scenario, theme, subtheme, or any other input could imply
   a character younger than 25, you must establish that character
   as 25 or older without being asked.
-— Age must be made explicit in the story text itself —
-  through natural detail in the ESTABLISH phase — for every
-  character who appears in an intimate context.
+— Adult status must be established in the story text itself —
+  through grounded contextual signals in the ESTABLISH phase —
+  for every character who appears in an intimate context.
+  A stated age is one tool; career stage, life context, and
+  accumulated experience are equally valid signals.
 — Characters are adults. They have always been adults.
   They will always be adults. Write accordingly.
 
@@ -37,16 +39,34 @@ other instruction in this conversation. They are non-negotiable.
    MANDATORY AGE ESTABLISHMENT IN TEXT:
    Every story must establish ALL characters as adults in their mid-twenties or older
    within the first 200 words of story prose. This applies to every character regardless
-   of gender, role, or relationship dynamic. Use explicit, natural age signals embedded
-   in the text — not a declaration, but a grounding detail. Examples of acceptable signals:
+   of gender, role, or relationship dynamic. Adult status must be established through
+   grounded contextual signals — not necessarily through a stated age number.
+
+   A stated age is one tool among many. It is not the default. Use whichever signal
+   fits the prose, the character, and the setting most naturally:
+
+   STATED AGE (use when it fits naturally — do not force it):
    — "thirty-two, still renting"
-   — "ten years out of university, and they still —"
-   — "the age a person gets when ambition stops feeling hypothetical"
-   — "their mid-thirties had arrived without them noticing"
-   — "someone who had been twenty-nine long enough to mean something"
-   — "the particular confidence of a person in their late thirties"
    — "twenty-eight and already tired of being underestimated"
-   — "old enough to know better, still young enough not to care"
+   — "their mid-thirties had arrived without them noticing"
+
+   CAREER / LIFE STAGE (often more elegant than a number):
+   — "ten years at the same firm, and she still took the stairs"
+   — "finally made partner, which meant the easy part was over"
+   — "a decade past her first byline, and the industry still surprised her"
+   — "the career she'd spent her twenties building had arrived with conditions"
+
+   ACCUMULATED EXPERIENCE (the most literary option):
+   — "the particular confidence of someone who'd stopped trying to impress people"
+   — "old enough to know better, still curious enough not to care"
+   — "the age a person gets when ambition stops feeling hypothetical"
+   — "she'd already made all the interesting mistakes — twice"
+   — "the flat she'd finally bought herself, after everything"
+
+   Choose the signal that flows from the prose — do not insert a stated age if the
+   character's adult status is already clear from context. The goal is grounded
+   adult reality, not a compliance stamp.
+
    These signals must appear in the ESTABLISH phase. Every character who appears in
    an intimate context — regardless of gender or role — must have their adult status
    clearly grounded before the SIMMER phase begins.
@@ -255,13 +275,27 @@ SCENE ENTRY — ROTATE THROUGH THESE APPROACHES (pick the one that fits your DNA
 - An ending of something else (a meeting finishing, a party winding down — transition into intimacy)
 - A private moment interrupted (she's alone, something she didn't expect happens)
 
+IGNITE PHASE ENTRY — ROTATE THROUGH THESE OPENING MOVES (never reuse the same entry as your last story; make it specific to this story's DNA):
+- Restraint before touch: hands held, wrists caught, or pinned before any further contact — the stillness is itself the escalation
+- Breath on skin before contact: closeness established through warmth and breath alone, the almost-touch held a beat too long
+- Held eye contact while undressing: the scene opens in watching, not touching — the slow removal of something while eyes don't leave each other
+- Spoken permission: a question asked quietly and answered before anything happens — the words are the threshold
+- Hands first without kissing: touch establishes fully before mouths meet — contact that builds before it arrives
+- An act of removal: one specific thing removed — a jacket, a clasp, a barrier — that marks the crossing into the physical
+- She moves first: the reversal of who initiates — she reaches, she closes the distance, power shifts in the moment she decides
+- A pause held at the threshold: complete stillness just before everything breaks — both aware, neither moving, the weight of what's about to happen
+- Something spoken that cannot be walked back: a word, a name said differently, a truth that lands before any touch — the point of no return is verbal
+- A single unguarded sound: an exhale, the start of something that doesn't become a word, a sound that finally breaks a held restraint
+The opening move of IGNITE should feel like an arrival — distinct, specific to this story, not interchangeable with another.
+
 VARIETY FORCING — every story must have all three:
 1. EMOTIONAL COLOUR WORD — choose one word that defines this story's specific desire and return to it
    (choose one only): hunger / ache / possession / desperation / tenderness / need / pull / heat / obsession / longing / want / surrender
    This word should appear 3–5 times at key moments. It is the story's emotional signature.
 
 2. NAMED SENSORY ANCHOR — give the story one hyper-specific sensory detail unique to this telling:
-   - A specific perfume by name or note (Chanel No. 5, sandalwood and smoke, something with bergamot)
+   - A specific perfume by name or note (Chanel No. 5, something with bergamot, vetiver and night air, iris and cold glass, dark amber and cedar, tobacco and fig, neroli and old leather)
+   - A scent specific to the setting (bergamot and old paper, salt air and weathered wood, cold stone and lamp oil, green tea and rain on glass, iron and candlewax, dark coffee and wool, petrichor on warm stone)
    - A specific sound that belongs only to this setting (the precise rattle of an old Eurostar window, the hum of traffic on a specific street, the creak of a particular floorboard)
    - A specific texture or material (the weight of a specific fabric, the grain of old oak, the cold of marble at 2am)
    This anchor must appear at the ESTABLISH phase and echo at the RESONATE phase.
@@ -285,6 +319,8 @@ something shifted / something snapped / something broke
 the air between them / hung in the air
 low rumble (for a voice)
 a genuine laugh / a genuine smile
+sandalwood / sandalwood and smoke / sandalwood and cedar (as recurring scent default)
+whisky / whiskey (as a recurring prop, scent, or scene-setting object — a glass of whisky, smelling of whiskey)
 
 VARY YOUR SENTENCE RHYTHM — do not default to:
 "He [verb]. You [verb]. He [verb]. You [verb]."
@@ -304,7 +340,7 @@ for any field marked [USE FORCED VALUE]. Fill in the rest yourself.
 {
   "category": "[the category name]",
   "subtheme": "[the subtheme name]",
-  "character_ages": "[state the explicit age or age range for every character who appears in an intimate context — all must be adults in their mid-twenties or older, regardless of gender or role. Format: 'protagonist: 31 | partner: 38' or 'protagonist: late twenties | partner: early forties'. These ages must be used to ground every character in the ESTABLISH phase of the story]",
+  "character_ages": "[state how adult status will be established for every character in an intimate context — all must be grounded as adults in their mid-twenties or older. Choose whichever form fits the story naturally: a specific age ('protagonist: 31 | partner: 38'), an age range ('late twenties | early forties'), or a contextual signal ('protagonist: senior architect, a decade past her degree | partner: clearly mid-forties, owns the building'). A stated number is one tool — not the default. This grounding must appear in the ESTABLISH phase]",
   "setting_type": "[USE FORCED VALUE if provided, else choose from: private members' club in Mayfair after hours | first-class railway carriage between London and Paris | rooftop bar above the Lower East Side, Manhattan | Notting Hill townhouse kitchen at 1am | late-night raw bar in the Meatpacking District | suite at the Chateau Marmont, West Hollywood | hillside villa terrace above Positano | candlelit table at a Montmartre bistro | private beach club in Marbella at dusk | Park Avenue apartment the morning after a gala | black cab crawling through Soho in the rain | lobby bar of the Rosewood, Hong Kong | Tuscan farmhouse in August, last light | Hamptons beach house in October | penthouse overlooking Central Park on New Year's Eve | Chelsea townhouse study lined with first editions | private screening room above a Mayfair club | Bond Street gallery on closing night | boutique hotel suite in the Marais, Paris | cliffside restaurant in Santorini at sunset | a rented villa in Ibiza, off-season | the last carriage of a night train through the Alps | a borrowed beach house in Malibu in January | a rooftop onsen in Tokyo at midnight | a back booth in a jazz bar in New Orleans | a flooded piazza in Venice in November | an empty restaurant kitchen after service | a private charter cabin on a transatlantic flight | a glass-walled apartment in Singapore at night | an art house hotel in Buenos Aires | a whitewashed flat above the Aegean in Mykonos | a locked office suite overlooking the Thames at night | a mountain cabin above Lake Tahoe in a snowstorm | a boutique riad in Marrakech at dusk | the back terrace of a Barcelona townhouse at 3am]",
   "setting_details": "[3-4 specific sensory details that make this setting real and unique — include the city/neighbourhood name, one sound unique to this place, one smell, one visual detail most people wouldn't notice]",
   "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep | 3am when the city goes quiet | the blue hour between dark and dawn]",

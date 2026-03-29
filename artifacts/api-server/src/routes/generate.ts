@@ -1562,6 +1562,18 @@ ${STORY_BIBLE}${opts?.seriesLayer ? `\n\n${opts.seriesLayer}` : ""}`;
     ? `,\n      "casting_anchors": ["Setting: [X] — anchor it here", "Intensity: [X] — apply in this scene"]`
     : "";
 
+  // Relationship backstory injection — triggered when complication/history tags are present
+  const RELATIONSHIP_TENSION_TAGS = new Set([
+    "the relationship is complicated", "unfinished business", "old wounds", "complicated",
+    "second chance", "there's history", "unresolved tension", "something unfinished between them",
+  ]);
+  const hasRelationshipTension = (intake.experienceTags ?? []).some(
+    t => RELATIONSHIP_TENSION_TAGS.has(t.toLowerCase().trim())
+  );
+  const backstoryInjection = hasRelationshipTension
+    ? `\n\nRELATIONSHIP BACKSTORY — MANDATORY: One or more selected tags signals a complicated or unresolved history between these characters. You must invent a specific, concrete reason for the complication — a past event, a circumstance, a thing that happened — and weave it into ESTABLISH and SIMMER as felt context, not stated exposition. The reason must be particular: not "they have history" but what that history specifically IS. It must never be delivered in a single declarative sentence — it must emerge through detail, dialogue, a glance, or a memory that surfaces uninvited. The listener should understand the wound from how the characters behave, not from being told about it. Build this into the scene_plan's ESTABLISH and SIMMER goals.`
+    : "";
+
   const userPrompt = `Take this user input and turn it into a hidden internal story brief.
 
 INTENSITY CONSTRAINT — STRUCTURAL (non-negotiable):
@@ -1590,7 +1602,7 @@ User Input:
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
-- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situationId ? (() => { const sit = getSituationById(intake.situationId); return sit ? `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}` : ""; })() : ""}
+- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situationId ? (() => { const sit = getSituationById(intake.situationId); return sit ? `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}` : ""; })() : ""}${backstoryInjection}
 
 You must infer and return:
 - emotional_arc (from the variety pools above — choose intelligently)

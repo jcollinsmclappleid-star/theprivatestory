@@ -4,16 +4,21 @@
  * Usage:
  *   node artifacts/api-server/scripts/checkTagParity.mjs
  *
- * Exit 0 → parity OK.  Exit 1 → mismatches found.
+ * Exit 0 → parity OK.  Exit 1 → mismatches found (missing OR unexpected stale).
  *
- * SOURCE A — mirrors StoryTagStudio.tsx tag output (what the frontend can send).
+ * SOURCE A — mirrors StoryTagStudio.tsx (what the frontend can send).
  * SOURCE B — mirrors validTags.ts VALID_EXPERIENCE_TAGS (what the backend accepts).
  *
- * These are INDEPENDENT enumerations. If a tag is added to Source A but not B
- * it will be silently dropped by the backend. If B has entries missing from A
- * (other than scenario presets) those are stale allowlist entries.
+ * These are INDEPENDENT enumerations. If a tag is in A but not B it will be
+ * silently dropped by the backend. If B has entries not in A (other than
+ * scenario presets or known historical tags) those are unexpected stale entries.
  *
- * Update BOTH sources and the respective source file whenever StoryTagStudio.tsx
+ * KNOWN_HISTORICAL_TAGS — standard tags kept in validTags.ts for backward
+ * compatibility with existing taste profiles and stored stories. They are no
+ * longer shown in the condensed standard UI but are still accepted by the
+ * backend. Stale detection ignores these intentional extras.
+ *
+ * Update both sources and the respective source file whenever StoryTagStudio.tsx
  * or validTags.ts changes.
  */
 
@@ -29,8 +34,8 @@ const PRONOUNS = [
 const v = (fn) => PRONOUNS.map(fn);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SOURCE A: StoryTagStudio.tsx — what the UI can produce
-// Keep in sync with buildStandardCategories() and buildAfterDarkCategories()
+// SOURCE A: StoryTagStudio.tsx — current UI output
+// Sync with buildStandardCategories() and buildAfterDarkCategories()
 // ─────────────────────────────────────────────────────────────────────────────
 
 // buildStandardCategories()
@@ -46,7 +51,7 @@ const UI_STANDARD = [
   "Slow Build", "Instant Chemistry", "Forbidden", "Push & Pull",
   "Inevitable", "Unfinished Business", "One night only", "Rivals to lovers",
 
-  // How do you want it written? (pacing + texture merged in UI)
+  // How do you want it written?
   "Slow simmer", "Dialogue-rich", "Mostly sensation",
   "Lyrical", "Cinematic", "Sharp & direct",
 
@@ -59,7 +64,7 @@ const UI_STANDARD = [
   "No one gets hurt",
 ];
 
-// buildAfterDarkCategories() — ONLY what the function currently returns
+// buildAfterDarkCategories() — only what it currently returns
 const UI_AFTER_DARK = [
   // Sensation & Restraint
   ...v(p => `${p.sub} wanted to be tied up`),
@@ -86,7 +91,15 @@ const UI_AFTER_DARK = [
   ...v(p => `${p.sub} wanted to be used and adored`),
   ...v(p => `${p.sub} wanted to be made to beg`),
 
-  // How does it end?
+  // How does it end? — explicit agency-led climax
+  ...v(p => `${p.sub} comes apart completely`),
+  ...v(p => `${p.sub} finishes while they watch`),
+  ...v(p => `${p.sub} loses count of how many times`),
+  ...v(p => `${p.sub} comes the moment they say to`),
+  ...v(p => `${p.sub} asks to go again before they've stopped`),
+  ...v(p => `${p.sub} is shaking and wants more`),
+  ...v(p => `${p.sub} gets everything that was promised`),
+  // How does it end? — aftermath
   ...v(p => `${p.sub} falls asleep in their arms`),
   "They don't leave until morning",
   ...v(p => `${p.sub} asks for more`),
@@ -103,10 +116,10 @@ const UI_AFTER_DARK = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SOURCE B: validTags.ts — what the backend accepts
-// Keep in sync with STANDARD_TAGS, AFTER_DARK_TAGS, SCENARIO_PRESET_TAGS
+// Sync with STANDARD_TAGS, AFTER_DARK_TAGS, SCENARIO_PRESET_TAGS
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Mirror of STANDARD_TAGS
+// Mirror of STANDARD_TAGS in validTags.ts
 const BACKEND_STANDARD = [
   // What You Want To Feel
   "Desired", "Seen", "Powerful", "Safe", "Vulnerable",
@@ -159,7 +172,7 @@ const BACKEND_STANDARD = [
   ...v(p => `${p.sub} tells one person`),
 ];
 
-// Mirror of AFTER_DARK_TAGS in validTags.ts
+// Mirror of AFTER_DARK_TAGS in validTags.ts (trimmed to current UI)
 const BACKEND_AFTER_DARK = [
   // What do you want? — Sensation & Restraint
   ...v(p => `${p.sub} wanted to be tied up`),
@@ -183,109 +196,27 @@ const BACKEND_AFTER_DARK = [
   ...v(p => `${p.sub} wanted to be worshipped`),
   ...v(p => `${p.sub} wanted to be used and adored`),
   ...v(p => `${p.sub} wanted to be made to beg`),
-
-  // Top Fantasies
-  "They get caught",
-  "Someone else is watching",
-  ...v(p => `They take, ${p.sub} receives`),
-  ...v(p => `They find every limit ${p.sub} has`),
-  ...v(p => `${p.sub} gives ${p.refl} over completely`),
-  ...v(p => `${p.sub} begs for it`),
-  ...v(p => `${p.sub} lets ${p.refl} be completely powerless`),
-  ...v(p => `${p.sub} watches ${p.refl}`),
-  ...v(p => `${p.sub} doesn't want them to stop`),
-  ...v(p => `${p.sub} wears what they choose`),
-  ...v(p => `${p.sub} loses the fight to stay quiet`),
-  ...v(p => `${p.sub} doesn't know what comes next`),
-  ...v(p => `They keep ${p.obj} at the edge`),
-  ...v(p => `${p.sub} surrenders completely`),
-
-  // What You Want Them To Do
-  "Takes full control",
-  "Commands what they want",
-  "Takes their time",
-  "Watches closely",
-  "Uses only their hands first",
-  ...v(p => `Covers ${p.poss} mouth`),
-  ...v(p => `Makes ${p.obj} ask for it`),
-  ...v(p => `Holds ${p.obj} in place`),
-  ...v(p => `Undoes ${p.obj} slowly`),
-  ...v(p => `Makes ${p.obj} earn it`),
-  ...v(p => `Won't let ${p.obj} hide`),
-  ...v(p => `Keeps ${p.obj} at the edge`),
-  ...v(p => `Doesn't let ${p.obj} finish until they say`),
-  ...v(p => `Takes ${p.obj} to every edge`),
-  ...v(p => `Makes ${p.obj} count`),
-
-  // The Scene
-  "Slow undressing",
-  "Everything at once",
-  "In the dark",
-  "Fully lit",
-  "Against a wall",
-  "In front of a mirror",
-  "Barely private",
-  "Somewhere unexpected",
-  "Horizontal",
-  "Standing the whole time",
-  "Tied down",
-  "On the desk",
-  "In the bath",
-  "Outdoors, barely hidden",
-  "In the car",
-  "On the floor",
-  "Fully clothed at first",
-  ...v(p => `Hands behind ${p.poss} back`),
-  ...v(p => `${p.sub} holds perfectly still for them`),
-  ...v(p => `${p.sub}'s blindfolded`),
-
-  // What sub Wants Said
-  "They narrate everything as it happens",
-  "They describe what comes next",
-  "They say the name, every time",
-  "They say it before they do it",
-  "They count down",
-  ...v(p => `They tell ${p.obj} what ${p.sub} is`),
-  ...v(p => `${p.sub}'s told to repeat it back`),
-  ...v(p => `${p.sub}'s told to ask nicely`),
-  ...v(p => `They ask if ${p.sub} wants more`),
-  ...v(p => `${p.sub} goes quiet when they say`),
-  ...v(p => `${p.sub} tells them ${p.sub} wants it`),
-  ...v(p => `${p.sub} holds still when they ask`),
-  ...v(p => `They ask how it feels — ${p.sub} answers every time`),
-
-  // Desire Details
-  "Being told what to do",
-  "Being completely seen",
-  "Power fully exchanged",
-  "Nothing off limits",
-  "Total attention",
-  "Total surrender",
-  "Watched by someone",
-  "Anonymous desire",
-  "Multiple rounds",
-  "They own every reaction",
-  ...v(p => `${p.sub} takes control`),
-  ...v(p => `${p.sub} loses count`),
-  ...v(p => `Every part of ${p.obj}`),
-  ...v(p => `${p.sub} holds nothing back`),
-  ...v(p => `${p.sub} surrenders all control`),
-  ...v(p => `${p.sub} chooses everything`),
-  ...v(p => `${p.sub} surprises ${p.refl}`),
-
-  // How It Ends
+  // How It Ends — explicit agency-led climax
+  ...v(p => `${p.sub} comes apart completely`),
+  ...v(p => `${p.sub} finishes while they watch`),
+  ...v(p => `${p.sub} loses count of how many times`),
+  ...v(p => `${p.sub} comes the moment they say to`),
+  ...v(p => `${p.sub} asks to go again before they've stopped`),
+  ...v(p => `${p.sub} is shaking and wants more`),
+  ...v(p => `${p.sub} gets everything that was promised`),
+  // How It Ends — aftermath
+  ...v(p => `${p.sub} falls asleep in their arms`),
   "They don't leave until morning",
+  ...v(p => `${p.sub} asks for more`),
   "No one speaks afterward",
   "They go again immediately",
-  "Left open — mid-scene",
-  "They lock the door again",
-  ...v(p => `${p.sub} falls asleep in their arms`),
-  ...v(p => `${p.sub} asks for more`),
+  ...v(p => `${p.sub} doesn't want it to be over`),
   ...v(p => `They leave — ${p.sub} doesn't stop them`),
   ...v(p => `They stay and ${p.sub}'s surprised`),
+  "Left open — mid-scene",
   ...v(p => `${p.sub}'s still feeling it hours later`),
   ...v(p => `${p.sub} texts them before they reach the door`),
-  ...v(p => `${p.sub} doesn't want it to be over`),
+  "They lock the door again",
 ];
 
 // Mirror of SCENARIO_PRESET_TAGS in validTags.ts
@@ -317,17 +248,55 @@ const BACKEND_SCENARIO_PRESETS = new Set([
   "Desire without apology",
 ]);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// KNOWN_HISTORICAL_TAGS — in validTags.ts STANDARD_TAGS for backward
+// compatibility with existing taste profiles and stories. No longer shown in
+// the condensed standard UI. Intentional extras: not flagged as stale.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const KNOWN_HISTORICAL_TAGS = new Set([
+  // Standard feel tags not in condensed UI
+  "Rescued", "Shattered",
+  // Energy/tension tags not in condensed UI
+  "Old Wounds", "Complicated", "Playful tension", "Bittersweet",
+  "First time", "Reunion after years", "A decade of tension finally breaking",
+  "Hate that was always this", "Friends who knew all along",
+  // Their Presence section (not shown in condensed UI)
+  "Commanding", "Quiet Intensity", "Gentle", "Protective",
+  "Unpredictable", "Brooding", "Playful", "Restrained",
+  "Tender", "Obsessive", "Magnetic",
+  "Controlled", "Relentless", "Patient", "Unshakeable",
+  "Impossible to read",
+  ...v(p => `Focused entirely on ${p.obj}`),
+  // Extended story texture not in condensed UI
+  "Poetic", "Dreamlike", "Raw & real", "Intimate & internal",
+  "Sensory", "Grounded & physical", "Interior monologue",
+  "Explicit & direct", "Fragmented & urgent",
+  // Extended pacing not in condensed UI
+  "Quick burn", "Even tension", "Agonising build", "All foreplay",
+  "Fast then tender", "One long exhale", "Interrupted and restarted",
+  "Building to a crash", "Starting mid-desire",
+  "Two speeds — nothing in between",
+  // Extended "makes it yours" not in condensed UI
+  "It's set somewhere I know",
+  "It happens more than once",
+  "Feelings are involved whether they want them or not",
+  ...v(p => `${p.sub} could be me`),
+  ...v(p => `${p.sub} doesn't tell anyone`),
+  ...v(p => `${p.sub} tells one person`),
+]);
+
 // ── Diff ──────────────────────────────────────────────────────────────────────
 
 const EXPECTED_UI = new Set([...UI_STANDARD, ...UI_AFTER_DARK]);
 const BACKEND_ALLOWLIST = new Set([...BACKEND_STANDARD, ...BACKEND_AFTER_DARK, ...BACKEND_SCENARIO_PRESETS]);
 
-// UI tags that the backend doesn't know → will be silently dropped
+// UI tags the backend doesn't accept → will be silently dropped (CRITICAL)
 const missingFromBackend = [...EXPECTED_UI].filter(t => !BACKEND_ALLOWLIST.has(t));
 
-// Backend entries not in UI and not scenario presets → stale allowlist entries
+// Backend entries not in UI, not scenario presets, not known historical → unexpected drift
 const staleInBackend = [...BACKEND_ALLOWLIST].filter(
-  t => !EXPECTED_UI.has(t) && !BACKEND_SCENARIO_PRESETS.has(t)
+  t => !EXPECTED_UI.has(t) && !BACKEND_SCENARIO_PRESETS.has(t) && !KNOWN_HISTORICAL_TAGS.has(t)
 );
 
 let ok = true;
@@ -339,8 +308,9 @@ if (missingFromBackend.length > 0) {
 }
 
 if (staleInBackend.length > 0) {
-  console.warn("⚠️   validTags.ts entries not found in StoryTagStudio (stale — not scenario presets):");
-  staleInBackend.forEach(t => console.warn(`   ~ ${JSON.stringify(t)}`));
+  ok = false;
+  console.error("❌  Unexpected stale entries in validTags.ts (not in UI, not scenario presets, not historical):");
+  staleInBackend.forEach(t => console.error(`   ~ ${JSON.stringify(t)}`));
 }
 
 if (ok) {
@@ -348,6 +318,7 @@ if (ok) {
   console.log(`   UI tags:             ${EXPECTED_UI.size}`);
   console.log(`   Backend allowlist:   ${BACKEND_ALLOWLIST.size}`);
   console.log(`   Scenario presets:    ${BACKEND_SCENARIO_PRESETS.size}`);
+  console.log(`   Historical extras:   ${KNOWN_HISTORICAL_TAGS.size}`);
 }
 
 process.exit(ok ? 0 : 1);

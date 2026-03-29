@@ -122,6 +122,13 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
       heading: "How does it end?",
       sub: "The final note of your story",
       tags: [
+        `${p.sub} comes apart completely`,
+        `${p.sub} finishes while they watch`,
+        `${p.sub} loses count of how many times`,
+        `${p.sub} comes the moment they say to`,
+        `${p.sub} asks to go again before they've stopped`,
+        `${p.sub} is shaking and wants more`,
+        `${p.sub} gets everything that was promised`,
         `${p.sub} falls asleep in their arms`,
         "They don't leave until morning",
         `${p.sub} asks for more`,

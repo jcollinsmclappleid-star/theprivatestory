@@ -25,6 +25,7 @@ export const series = pgTable("series", {
   status: text("status").notNull().default("pending"),
   ownerUserId: text("owner_user_id").references(() => usersTable.id, { onDelete: "cascade" }),
   castingData: jsonb("casting_data").notNull().default({}),
+  chapterSummaries: jsonb("chapter_summaries").notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -272,6 +272,17 @@ export const seriesStore = {
   async updateCoverImageForUser(id: string, userId: string, coverImage: string): Promise<void> {
     await db.update(series).set({ coverImage }).where(and(eq(series.id, id), eq(series.ownerUserId, userId)));
   },
+
+  async getChapterSummaries(id: string): Promise<string[]> {
+    const [row] = await db.select({ chapterSummaries: series.chapterSummaries }).from(series).where(eq(series.id, id));
+    if (!row) return [];
+    return (row.chapterSummaries as string[]) ?? [];
+  },
+
+  async appendChapterSummary(id: string, summary: string): Promise<void> {
+    const existing = await this.getChapterSummaries(id);
+    await db.update(series).set({ chapterSummaries: [...existing, summary] as unknown[] }).where(eq(series.id, id));
+  },
 };
 
 // ---------------------------------------------------------------------------

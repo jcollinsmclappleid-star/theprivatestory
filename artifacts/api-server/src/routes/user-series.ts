@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import crypto from "crypto";
+import { openai } from "@workspace/integrations-openai-ai-server";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import {
@@ -28,7 +29,7 @@ import { logger } from "../lib/logger.js";
 
 const router: IRouter = Router();
 
-const MAX_CHAPTERS = 10;
+const MAX_CHAPTERS = 3;
 const SERIES_PIPELINE_TIMEOUT = 300_000;
 
 function buildAutoSeriesName(
@@ -63,12 +64,71 @@ function buildPreviouslySummary(episodes: { scenes: unknown }[]): string {
   return text.length > 800 ? text.slice(0, 800) + "…" : text;
 }
 
-function buildSeriesLayerForPlan(previouslySummary: string, chapterNumber: number, timeOfDay?: string): string {
-  const timeContext = timeOfDay ? `\nTime of day: ${timeOfDay}. Let this shape the atmosphere and sensory palette of the chapter.` : "";
+function buildSeriesLayerForPlan(
+  previouslySummary: string,
+  chapterNumber: number,
+  accumulatedSummaries: string[],
+  timeOfDay?: string,
+): string {
+  const timeContext = timeOfDay
+    ? `\nTime of day: ${timeOfDay}. Let this shape the atmosphere and sensory palette of the chapter.`
+    : "";
+
+  const continuityLog =
+    accumulatedSummaries.length > 0
+      ? `\n\nCANONICAL SERIES RECORD — treat every item below as established fact that cannot be contradicted:\n${accumulatedSummaries.map((s, i) => `Chapter ${i + 1}: ${s}`).join("\n")}`
+      : "";
+
   return `SERIES ARC CONTEXT:
 This is Chapter ${chapterNumber} of an ongoing personal series. The story must continue directly from where Chapter ${chapterNumber - 1} ended.
 Previously: "${previouslySummary}"
-Planning directive: Design the emotional arc as a genuine continuation — no re-introduction of characters, no reset. The story's ESTABLISH phase must pick up immediately from the previous chapter's closing emotional note. The arc should deepen, not restart.${timeContext}`;
+Planning directive: Design the emotional arc as a genuine continuation — no re-introduction of characters, no reset. The story's ESTABLISH phase must pick up immediately from the previous chapter's closing emotional note. The arc should deepen, not restart.${continuityLog}${timeContext}`;
+}
+
+/**
+ * After a chapter is written and passes moderation, call this to extract a
+ * short canonical-facts summary for continuity injection into future chapters.
+ *
+ * SAFETY: Only ever receives server-generated story text (already moderated).
+ * The system prompt is entirely fixed — no user-supplied content is interpolated.
+ * The returned string is stored server-side and never surfaced as user-editable.
+ */
+async function summariseChapter(
+  chapterNumber: number,
+  storyText: string,
+  characterNames: { listener?: string; partner?: string },
+): Promise<string> {
+  const listenerLabel = characterNames.listener || "the listener";
+  const partnerLabel = characterNames.partner || "the partner";
+
+  const systemPrompt = `You are a continuity editor for serialised audio fiction. Extract a short, precise canonical record from the chapter provided. This record will be injected verbatim into future chapters to prevent drift.
+
+Rules:
+- Maximum 120 words
+- Plain prose, no bullet points
+- Cover ONLY: character details established or changed, relationship state at chapter end, key events that cannot be undone, specific named locations or objects introduced
+- Do NOT summarise plot beats or narrate the story — only lock canonical facts
+- Refer to characters by their given names: listener = "${listenerLabel}", partner = "${partnerLabel}"
+- Do not invent anything not present in the chapter text`;
+
+  try {
+    const resp = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      max_tokens: 200,
+      temperature: 0.2,
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content: `Chapter ${chapterNumber} text:\n\n${storyText.slice(0, 6000)}`,
+        },
+      ],
+    });
+    return (resp.choices[0]?.message?.content ?? "").trim();
+  } catch (err) {
+    logger.warn({ err }, "[user-series] summariseChapter failed — skipping continuity entry");
+    return "";
+  }
 }
 
 router.post("/", async (req, res) => {
@@ -264,8 +324,9 @@ router.post("/:id/next-chapter", async (req, res) => {
     const chapterNumber = currentCount + 1;
 
     const previouslySummary = buildPreviouslySummary(episodes as { scenes: unknown }[]);
+    const accumulatedSummaries = await seriesStore.getChapterSummaries(req.params.id);
     const seriesLayer = previouslySummary
-      ? buildSeriesLayerForPlan(previouslySummary, chapterNumber, timeOfDay)
+      ? buildSeriesLayerForPlan(previouslySummary, chapterNumber, accumulatedSummaries, timeOfDay)
       : timeOfDay
       ? `TIME OF DAY: This chapter takes place at ${timeOfDay}. Use this to set the atmosphere and sensory palette.`
       : undefined;
@@ -368,6 +429,18 @@ router.post("/:id/next-chapter", async (req, res) => {
 
       if (images.cover && chapterNumber === 1) {
         await seriesStore.updateCoverImageForUser(s.id, req.user.id, images.cover);
+      }
+
+      // Generate continuity summary for this chapter and append to the series log.
+      // Runs after moderation has already passed — storyText is server-generated output only.
+      const continuitySummary = await summariseChapter(chapterNumber, outputText, {
+        listener: intake.listenerName,
+        partner: intake.partnerName,
+      });
+      if (continuitySummary) {
+        seriesStore.appendChapterSummary(s.id, continuitySummary).catch((err) =>
+          logger.warn({ err }, "[user-series] Failed to append chapter summary"),
+        );
       }
 
       await trackGeneratedStory(

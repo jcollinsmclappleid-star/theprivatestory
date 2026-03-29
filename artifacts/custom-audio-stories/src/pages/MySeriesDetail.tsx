@@ -86,8 +86,8 @@ export default function MySeriesDetail({ seriesId }: { seriesId: string }) {
 
   const handleGenerateNext = useCallback(async () => {
     if (!series || generatingNext) return;
-    if (series.episodes.length >= 10) {
-      setGenError("This series has reached its 10-chapter limit.");
+    if (series.episodes.length >= 3) {
+      setGenError("This series has reached its 3-chapter limit.");
       return;
     }
     setGeneratingNext(true);

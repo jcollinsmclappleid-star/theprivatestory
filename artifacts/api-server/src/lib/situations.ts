@@ -1228,7 +1228,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: "pl_20",
-    label: "She used her own authority to bring him level with her. What was containable before is not containable now.",
+    label: "She promoted him. He's now her peer. Everything that wasn't possible before now is.",
     category: "Professional & Crossing Lines",
     internalInject: "She used her authority to advance him to a level beside her own. The hierarchical barrier that made certain feelings manageable has dissolved by her own decision. Both are adjusting to what the dissolution means. The story is the first encounter as equals after the change.",
   },

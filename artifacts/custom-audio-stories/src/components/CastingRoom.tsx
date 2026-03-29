@@ -30,7 +30,7 @@ export interface CastingRoomResult {
   // Name selections — dropdown only, validated server-side against allowlist
   listenerName?: string;
   partnerName?: string;
-  // Situation — one of 220 predefined situations from SITUATIONS
+  // Situation — one of 200 predefined situations from SITUATIONS
   situation?: string;
   /** Machine-readable ID — used for API validation (e.g. "fc_01"). */
   situationId?: string;
@@ -758,7 +758,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       // Name selections — validated server-side against allowlist
       listenerName: listenerName || undefined,
       partnerName: partnerName || undefined,
-      // Situation — the selected situation label (one of 220 predefined)
+      // Situation — the selected situation label (one of 200 predefined)
       situation: situationLabel || undefined,
       situationId: situationId || undefined,
     };

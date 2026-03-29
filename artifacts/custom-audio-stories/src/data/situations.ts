@@ -1,6 +1,7 @@
 /**
- * The Situation — 200 story situations across 10 categories.
+ * The Situation — 200 story situations across 10 categories (20 per category).
  * Frontend display-only data (no internalInject — that lives on the server).
+ * Keyed by unique ID (e.g. "fc_01") — labels are display-only.
  */
 
 export interface SituationDisplay {
@@ -228,7 +229,7 @@ export const SITUATIONS: SituationDisplay[] = [
   { id: "pl_17", label: "He's been her therapist for a year. She terminated the relationship last month. He's been waiting to call.", category: "Professional & Crossing Lines" },
   { id: "pl_18", label: "They closed the deal. The biggest negotiation of both their careers. Someone ordered champagne. Nobody went home.", category: "Professional & Crossing Lines" },
   { id: "pl_19", label: "She's the crisis manager. He's the crisis. She's never failed to resolve one before.", category: "Professional & Crossing Lines" },
-  { id: "pl_20", label: "She used her own authority to bring him level with her. What was containable before is not containable now.", category: "Professional & Crossing Lines" },
+  { id: "pl_20", label: "She promoted him. He's now her peer. Everything that wasn't possible before now is.", category: "Professional & Crossing Lines" },
 ];
 
 export const SITUATION_CATEGORIES: string[] = [

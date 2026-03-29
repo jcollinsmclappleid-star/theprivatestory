@@ -864,13 +864,69 @@ components:
         bypassCache:
           type: boolean
           description: When true, skips request-hash cache lookup (used for variation and continuation requests)
+        scenarioCard:
+          type: string
+        timeOfDay:
+          type: string
+        season:
+          type: string
+        perspective:
+          type: string
+        whoIsHe:
+          type: string
+        dynamic:
+          type: string
+        ending:
+          type: string
+        setting:
+          type: string
+        storyMode:
+          type: string
+        experienceTags:
+          type: array
+          items:
+            type: string
+        pairing:
+          type: string
+        categoryId:
+          type: string
+        subthemeId:
+          type: string
+        numericIntensity:
+          type: number
+        heritage:
+          type: string
+        atmosphere:
+          type: string
+        chemistry:
+          type: string
+        appearBuild:
+          type: string
+        appearHeight:
+          type: string
+        appearColouring:
+          type: string
+        appearEyes:
+          type: string
+        appearFeatures:
+          type: array
+          items:
+            type: string
+        partnerName:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        scenarioRoom:
+          type: string
+          description: After Dark room ID — used server-side for group-scene detection
       required:
         - listenerName
         - mood
         - intensity
         - voiceFeel
         - storyLength
-        - scenarioPrompt
 
     GenerateStoryFromBriefRequest:
       type: object

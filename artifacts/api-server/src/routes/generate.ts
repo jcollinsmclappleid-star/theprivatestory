@@ -1247,9 +1247,9 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     : undefined;
 
   // Validate names against allowlists — silently drop anything not in the set.
-  const listenerName = raw.listenerName?.trim() && VALID_LISTENER_NAMES.has(raw.listenerName.trim())
+  const listenerName = raw.listenerName?.trim() && !validateNameFormat(raw.listenerName.trim())
     ? raw.listenerName.trim() : "";
-  const partnerName = raw.partnerName?.trim() && VALID_PARTNER_NAMES.has(raw.partnerName.trim())
+  const partnerName = raw.partnerName?.trim() && !validateNameFormat(raw.partnerName.trim())
     ? raw.partnerName.trim() : undefined;
 
   return {

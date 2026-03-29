@@ -16,6 +16,33 @@ type PronounCtx = {
   refl: string;
 };
 
+const MAX_PER_SECTION = 2;
+
+function buildContradictionPairs(p: PronounCtx): [string, string][] {
+  return [
+    // Pacing
+    ["Slow simmer", "Quick burn"],
+    ["Slow simmer", "Two speeds — nothing in between"],
+    ["All foreplay", "Building to a crash"],
+    ["Starting mid-desire", "Agonising build"],
+    // Story Texture
+    ["Dialogue-rich", "Mostly sensation"],
+    ["Sharp & direct", "Dreamlike"],
+    ["Sharp & direct", "Lyrical"],
+    // Energy Between Them
+    ["Slow Build", "Instant Chemistry"],
+    ["One night only", "Reunion after years"],
+    // Their Presence
+    ["Gentle", "Relentless"],
+    ["Patient", "Relentless"],
+    ["Gentle", "Commanding"],
+    // Desire Details (AfterDark)
+    [`${p.sub} takes control`, `${p.sub} surrenders all control`],
+    [`${p.sub} takes control`, "Total surrender"],
+    [`${p.sub} chooses everything`, "Being told what to do"],
+  ];
+}
+
 function getPronounCtx(pronouns: string): PronounCtx {
   switch (pronouns) {
     case "he/him":   return { sub: "He",   obj: "him",  poss: "his",   refl: "himself"    };
@@ -275,61 +302,91 @@ export function StoryTagStudio({
   const categories = afterDark
     ? [...buildStandardCategories(p), ...buildAfterDarkExtraCategories(p)]
     : buildStandardCategories(p);
+  const contradictionPairs = buildContradictionPairs(p);
 
   return (
     <div className="space-y-8">
-      {categories.map((cat) => (
-        <div key={cat.heading}>
-          <p
-            className="text-xs font-semibold uppercase tracking-widest mb-0.5"
-            style={{ color: accentColor }}
-          >
-            {cat.heading}
-          </p>
-          {cat.sub && (
-            <p className="text-xs text-muted-foreground mb-3 leading-snug">{cat.sub}</p>
-          )}
-          <div className="flex flex-wrap gap-2">
-            {cat.tags.map((tag) => {
-              const selected = selectedTags.includes(tag);
-              const isUsual = usualTags.has(tag) && !selected;
-              return (
-                <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => onTagToggle(tag)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                      selected
-                        ? "border-transparent text-black"
-                        : isUsual
-                        ? "border-primary/40 text-foreground hover:border-primary/60"
-                        : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
-                    }`}
-                    style={
-                      selected
-                        ? { background: accentColor, borderColor: accentColor }
-                        : isUsual
-                        ? { background: `${accentColor}14` }
-                        : undefined
-                    }
-                  >
-                    {tag}
-                  </button>
-                  {isUsual && (
-                    <span
-                      className="text-[8px] font-semibold uppercase tracking-widest px-1.5 leading-tight"
-                      style={{ color: accentColor, opacity: 0.85 }}
-                    >
-                      Your Usual
-                    </span>
-                  )}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      {categories.map((cat) => {
+        const catSelectedCount = cat.tags.filter(t => selectedTags.includes(t)).length;
 
+        return (
+          <div key={cat.heading}>
+            <div className="flex items-baseline justify-between mb-0.5">
+              <p
+                className="text-xs font-semibold uppercase tracking-widest"
+                style={{ color: accentColor }}
+              >
+                {cat.heading}
+              </p>
+              {catSelectedCount > 0 && (
+                <span
+                  className="text-[10px] font-semibold tabular-nums"
+                  style={{ color: catSelectedCount >= MAX_PER_SECTION ? accentColor : `${accentColor}80` }}
+                >
+                  {catSelectedCount}/{MAX_PER_SECTION}
+                </span>
+              )}
+            </div>
+            {cat.sub && (
+              <p className="text-xs text-muted-foreground mb-3 leading-snug">{cat.sub}</p>
+            )}
+            <div className="flex flex-wrap gap-2">
+              {cat.tags.map((tag) => {
+                const selected = selectedTags.includes(tag);
+                const isUsual = usualTags.has(tag) && !selected;
+
+                const atSectionLimit = !selected && catSelectedCount >= MAX_PER_SECTION;
+
+                const contradictionPartners = contradictionPairs
+                  .filter(([a, b]) => a === tag || b === tag)
+                  .map(([a, b]) => (a === tag ? b : a));
+                const blockedByContradiction = !selected && contradictionPartners.some(
+                  partner => cat.tags.includes(partner) && selectedTags.includes(partner)
+                );
+
+                const isDisabled = atSectionLimit || blockedByContradiction;
+
+                return (
+                  <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
+                    <button
+                      type="button"
+                      onClick={() => !isDisabled && onTagToggle(tag)}
+                      disabled={isDisabled}
+                      title={blockedByContradiction ? "Conflicts with another selection" : undefined}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        selected
+                          ? "border-transparent text-black"
+                          : isDisabled
+                          ? "border-white/5 text-muted-foreground/30 cursor-not-allowed"
+                          : isUsual
+                          ? "border-primary/40 text-foreground hover:border-primary/60"
+                          : "border-white/10 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                      }`}
+                      style={
+                        selected
+                          ? { background: accentColor, borderColor: accentColor }
+                          : isUsual && !isDisabled
+                          ? { background: `${accentColor}14` }
+                          : undefined
+                      }
+                    >
+                      {tag}
+                    </button>
+                    {isUsual && !isDisabled && (
+                      <span
+                        className="text-[8px] font-semibold uppercase tracking-widest px-1.5 leading-tight"
+                        style={{ color: accentColor, opacity: 0.85 }}
+                      >
+                        Your Usual
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

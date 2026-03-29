@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown, Sparkles, ArrowLeft } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X } from "lucide-react";
+import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 
 export interface CastingRoomResult {
@@ -29,30 +30,6 @@ export interface CastingRoomResult {
   listenerName?: string;
   partnerName?: string;
 }
-
-// ---------------------------------------------------------------------------
-// Name arrays — must match VALID_LISTENER_NAMES / VALID_PARTNER_NAMES on backend
-// ---------------------------------------------------------------------------
-export const LISTENER_NAMES_FEMALE = [
-  "Emma", "Sophie", "Charlotte", "Olivia", "Amelia", "Isabella", "Ava", "Mia",
-  "Luna", "Aria", "Chloe", "Elena", "Victoria", "Clara", "Grace", "Lily",
-  "Rose", "Julia", "Alice", "Natasha",
-];
-export const LISTENER_NAMES_MALE = [
-  "James", "Oliver", "William", "Harry", "Jack", "Charlie", "Noah", "Liam",
-  "Ethan", "Daniel", "Henry", "Thomas", "Alexander", "Sebastian", "Lucas",
-  "Finn", "Leo", "Max", "Nathan", "Ryan",
-];
-export const PARTNER_NAMES_MALE = [
-  "James", "Marco", "Luca", "Alessandro", "Ethan", "Rafael", "Kai", "Dominic",
-  "Noah", "Sebastian", "Leo", "Matteo", "Christian", "Xavier", "Adrian",
-  "Dante", "Roman", "Hunter", "Blake", "Cain",
-];
-export const PARTNER_NAMES_FEMALE = [
-  "Sophia", "Isabella", "Elena", "Valentina", "Camille", "Vivienne", "Aurora",
-  "Scarlett", "Juliette", "Celeste", "Serena", "Aria", "Estelle", "Lila",
-  "Margot", "Nina", "Cleo", "Zara", "Iris", "Bianca",
-];
 
 interface Props {
   onComplete: (result: CastingRoomResult) => void;
@@ -633,16 +610,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   const accentColor = afterDark ? "#c0392b" : "#c9a227";
 
-  // Derive name lists from pairing selection
-  const protagonistIsMale = data.pairing?.startsWith("Him") ?? false;
-  const loveInterestIsMale = (data.pairing === "Her & Him" || data.pairing === "Him & Him");
-  const loveInterestIsFemale = (data.pairing === "Her & Her");
-  const listenerNameOptions = protagonistIsMale ? LISTENER_NAMES_MALE : [...LISTENER_NAMES_FEMALE, ...LISTENER_NAMES_MALE].filter(
-    (n, i, a) => a.indexOf(n) === i
-  );
-  const partnerNameOptions = loveInterestIsMale ? PARTNER_NAMES_MALE
-    : loveInterestIsFemale ? PARTNER_NAMES_FEMALE
-    : [...PARTNER_NAMES_MALE, ...PARTNER_NAMES_FEMALE];
+  const [listenerSearch, setListenerSearch] = useState("");
+  const [partnerSearch, setPartnerSearch] = useState("");
+  const listenerInputRef = useRef<HTMLInputElement>(null);
+  const partnerInputRef = useRef<HTMLInputElement>(null);
+
+  const filteredListenerNames = listenerSearch.trim().length >= 1
+    ? NAMES.filter(n => n.toLowerCase().startsWith(listenerSearch.toLowerCase())).slice(0, 8)
+    : [];
+  const filteredPartnerNames = partnerSearch.trim().length >= 1
+    ? NAMES.filter(n => n.toLowerCase().startsWith(partnerSearch.toLowerCase())).slice(0, 8)
+    : [];
 
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
   const activePairing = PAIRINGS.find(p => p.id === data.pairing);
@@ -1041,83 +1019,131 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
         {step === 7 && (
           <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name.</h2>
-            <p className="text-muted-foreground text-sm mb-2">Select your name and the narrator will use it throughout your story.</p>
+            <p className="text-muted-foreground text-sm mb-2">
+              Search from 6,000+ names — the narrator will use it throughout your story.
+            </p>
             <p className="text-xs text-muted-foreground/70 mb-6 italic">
-              Leave blank if your name isn't listed — the narrator will refer to you as "you".
+              Skip this step and the narrator will address you as "you".
             </p>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {listenerNameOptions.map(name => (
+            {listenerName ? (
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground">
+                  {listenerName}
+                </span>
                 <button
-                  key={name}
                   type="button"
-                  onClick={() => setListenerName(listenerName === name ? "" : name)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                    listenerName === name
-                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
+                  onClick={() => { setListenerName(""); setListenerSearch(""); setTimeout(() => listenerInputRef.current?.focus(), 50); }}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {name}
+                  <X size={12} /> Change
                 </button>
-              ))}
-            </div>
-
-            {listenerName && (
-              <p className="text-sm text-primary/80 mb-4">
-                The narrator will call you <span className="font-semibold">{listenerName}</span>.
-              </p>
+              </div>
+            ) : (
+              <div className="relative mb-6">
+                <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
+                  <Search size={14} className="text-muted-foreground shrink-0" />
+                  <input
+                    ref={listenerInputRef}
+                    type="text"
+                    value={listenerSearch}
+                    onChange={e => setListenerSearch(e.target.value)}
+                    placeholder="Start typing your name…"
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  {listenerSearch && (
+                    <button type="button" onClick={() => setListenerSearch("")}>
+                      <X size={12} className="text-muted-foreground hover:text-foreground" />
+                    </button>
+                  )}
+                </div>
+                {filteredListenerNames.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {filteredListenerNames.map(name => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => { setListenerName(name); setListenerSearch(""); }}
+                        className="px-4 py-2 rounded-full text-sm font-medium border border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {listenerSearch.trim().length >= 1 && filteredListenerNames.length === 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>
+                )}
+              </div>
             )}
-
-            <a
-              href="/contact"
-              className="text-xs text-muted-foreground hover:text-primary underline underline-offset-2 transition-colors"
-            >
-              My name isn't listed — request it here →
-            </a>
           </motion.div>
         )}
 
         {/* ── Step 8 — Partner Name ────────────────────────────────── */}
         {step === 8 && (
           <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
-              {partnerHeadingVerb.replace("Who is", "Name")}
-            </h2>
-            <p className="text-muted-foreground text-sm mb-2">Give your love interest a name, or leave it for the story to decide.</p>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Their name.</h2>
+            <p className="text-muted-foreground text-sm mb-2">
+              Search from 6,000+ names — or skip and the narrator will choose one that fits.
+            </p>
             <p className="text-xs text-muted-foreground/70 mb-6 italic">
-              Leave blank if a name isn't listed — the narrator will give them a name that fits.
+              Optional — the story works beautifully either way.
             </p>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {partnerNameOptions.map(name => (
+            {partnerName ? (
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground">
+                  {partnerName}
+                </span>
                 <button
-                  key={name}
                   type="button"
-                  onClick={() => setPartnerName(partnerName === name ? "" : name)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                    partnerName === name
-                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
+                  onClick={() => { setPartnerName(""); setPartnerSearch(""); setTimeout(() => partnerInputRef.current?.focus(), 50); }}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {name}
+                  <X size={12} /> Change
                 </button>
-              ))}
-            </div>
-
-            {partnerName && (
-              <p className="text-sm text-primary/80 mb-4">
-                Your love interest will be called <span className="font-semibold">{partnerName}</span>.
-              </p>
+              </div>
+            ) : (
+              <div className="relative mb-6">
+                <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
+                  <Search size={14} className="text-muted-foreground shrink-0" />
+                  <input
+                    ref={partnerInputRef}
+                    type="text"
+                    value={partnerSearch}
+                    onChange={e => setPartnerSearch(e.target.value)}
+                    placeholder="Start typing their name…"
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  {partnerSearch && (
+                    <button type="button" onClick={() => setPartnerSearch("")}>
+                      <X size={12} className="text-muted-foreground hover:text-foreground" />
+                    </button>
+                  )}
+                </div>
+                {filteredPartnerNames.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {filteredPartnerNames.map(name => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => { setPartnerName(name); setPartnerSearch(""); }}
+                        className="px-4 py-2 rounded-full text-sm font-medium border border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {partnerSearch.trim().length >= 1 && filteredPartnerNames.length === 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>
+                )}
+              </div>
             )}
-
-            <a
-              href="/contact"
-              className="text-xs text-muted-foreground hover:text-primary underline underline-offset-2 transition-colors"
-            >
-              This name isn't listed — request it here →
-            </a>
           </motion.div>
         )}
 

@@ -16,7 +16,7 @@ export function Logo({ height = 80, className = "" }: LogoProps) {
       className={className}
     >
       <img
-        src="/images/logo.png"
+        src={`${import.meta.env.BASE_URL}images/logo.png`}
         alt="My Private Story"
         style={{
           height: `${height}px`,

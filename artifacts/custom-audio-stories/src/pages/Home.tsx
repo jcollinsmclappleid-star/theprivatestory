@@ -75,7 +75,7 @@ const STEP_CARDS = [
     step: "01",
     category: "The Pairing",
     label: "Who's in your story",
-    sub: "Six pairings — choose the dynamic that feels right.",
+    sub: "Six pairings. You choose the dynamic — and we write to it.",
     accent: "#e879a0",
     gradient: "from-[#1a0810] via-[#250f1a] to-[#100508]",
     options: ["Her & Him", "Her & Her", "Him & Him", "Her & Them", "He & Them", "Them & Them"],
@@ -89,10 +89,10 @@ const STEP_CARDS = [
     step: "02",
     category: "The Chemistry",
     label: "The energy between you",
-    sub: "Nine ways the tension plays out — pick yours.",
+    sub: "Nine chemistries. The tension, the power, the pull — choose how it feels.",
     accent: "#c9a227",
     gradient: "from-[#1a0d00] via-[#251500] to-[#100800]",
-    options: ["Push & Pull", "Slow Surrender", "Power Play", "Forbidden Pull", "Worship", "Rivals", "Equal Tension"],
+    options: ["Push & Pull", "Slow Surrender", "Power Play", "Forbidden Pull", "Worship", "Rivals", "Inevitable", "First & Last", "Equal Tension"],
     selected: "Forbidden Pull",
     example: "They shouldn't. They've been trying not to. They can't stop.",
     isSetting: false,
@@ -102,13 +102,13 @@ const STEP_CARDS = [
   {
     step: "03",
     category: "The Archetype",
-    label: "Cast your love interest",
-    sub: "14 archetypes. Build them from the ground up.",
+    label: "Cast him exactly as you want",
+    sub: "14 archetypes. Name him, describe him, make him entirely yours.",
     accent: "#6b8cce",
     gradient: "from-[#040a1a] via-[#081228] to-[#020610]",
     options: ["The Executive", "The Stranger", "The Artist", "The Bad One", "The Professor", "The Wanderer", "The Detective", "The Old Friend"],
     selected: "The Executive",
-    example: "Measured control. Understated power. He never raises his voice.",
+    example: "Measured control. Understated power. He never raises his voice — and never needs to.",
     isSetting: false,
     isFinal: false,
     isIntensity: false,
@@ -116,13 +116,13 @@ const STEP_CARDS = [
   {
     step: "04",
     category: "The Setting",
-    label: "Where in the world",
-    sub: "Contemporary, historical, or After Dark — set it anywhere.",
+    label: "Set it anywhere in the world",
+    sub: "50+ countries, 12 historical eras, or an After Dark world entirely your own.",
     accent: "#34d399",
     gradient: "from-[#001008] via-[#001a12] to-[#000a06]",
     options: null,
     selected: "Victorian London",
-    example: "1880s — fog, corsets, and everything that cannot be said. Only felt.",
+    example: "1880s — fog, corsets, and everything that cannot be said aloud. Only felt.",
     isSetting: true,
     isFinal: false,
     isIntensity: false,
@@ -135,12 +135,12 @@ const STEP_CARDS = [
   {
     step: "05",
     category: "The Intensity",
-    label: "How far it goes",
-    sub: "You set the temperature. We write exactly to it.",
+    label: "You set the temperature",
+    sub: "From slow burn to scorching. We write exactly to the level you choose.",
     accent: "#f97316",
     gradient: "from-[#1a0800] via-[#250f00] to-[#100500]",
     options: ["Tender", "Heated", "Explicit", "Scorching"],
-    optionSubs: ["Emotional, slow burn", "Desire building, charged", "Fully rendered", "Maximum intensity"],
+    optionSubs: ["Emotional, slow burn", "Desire building, charged", "Fully rendered", "No limits"],
     selected: "Heated",
     example: null,
     isSetting: false,
@@ -151,7 +151,7 @@ const STEP_CARDS = [
     step: "06",
     category: "The Mood",
     label: "The emotional register",
-    sub: "28 moods to tune the exact feeling of your story.",
+    sub: "28 moods to tune exactly how you want to feel inside the story.",
     accent: "#a78bfa",
     gradient: "from-[#0a0018] via-[#100025] to-[#060010]",
     options: ["Forbidden", "Urgent", "Dark", "Desperate", "Decadent", "Wicked", "Breathless", "Possessive", "Burning", "Reckless"],
@@ -164,8 +164,8 @@ const STEP_CARDS = [
   {
     step: "07",
     category: "Your Story",
-    label: "Written. Narrated. Yours.",
-    sub: "Written, narrated, cover art created. Private from the first moment.",
+    label: "Written. Narrated. Yours alone.",
+    sub: "Your story written, a voice selected, cover art created — private from the very first word.",
     accent: "#c9a227",
     gradient: "from-[#100c00] via-[#1a1500] to-[#0a0800]",
     options: null,
@@ -479,17 +479,17 @@ function CastingPreview() {
             The Casting Room
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            You decide every detail.
+            Every detail is yours to write.
           </h2>
           <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
-            The person, the place, the era, the feeling, the intensity — all yours. See what you're actually building before a single word is written.
+            Cast who he is, set the chemistry between you, choose your world and exactly how far it goes. This is your story — built choice by choice, before a word is written.
           </p>
           <div className="flex items-center gap-3 mt-3">
             {[
               { n: "50+", label: "Countries" },
               { n: "12", label: "Historical eras" },
-              { n: "21", label: "Archetypes" },
-              { n: "19", label: "Chemistries" },
+              { n: "14", label: "Archetypes" },
+              { n: "9", label: "Chemistries" },
               { n: "6,100+", label: "Names" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
@@ -715,7 +715,7 @@ export default function Home() {
             className="max-w-2xl"
           >
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              Every detail, your choice
+              Written for the parts of you nobody else gets to know
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
@@ -724,7 +724,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              You choose the pairing, the person, the chemistry, the setting, the mood — every detail. We write it and narrate it, privately, heard only by you.
+              You choose who he is, the chemistry between you, where it happens and how far it goes. We write it, narrate it, and keep it entirely private — heard only by you.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">
@@ -807,6 +807,49 @@ export default function Home() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
+        {/* Visual mood strip                                                 */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-3 gap-3 md:gap-4">
+            {[
+              {
+                img: "home-visual-1.png",
+                quote: "The kind of story you keep to yourself.",
+                accent: "#c9a227",
+              },
+              {
+                img: "home-visual-2.png",
+                quote: "Heard only by you — exactly as you wanted it.",
+                accent: "#a78bfa",
+              },
+              {
+                img: "home-visual-3.png",
+                quote: "Written for tonight. Private from the first word.",
+                accent: "#e879a0",
+              },
+            ].map(({ img, quote, accent }) => (
+              <div key={img} className="relative overflow-hidden rounded-2xl aspect-[3/4]">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/${img}`}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p
+                    className="text-xs md:text-sm font-medium italic leading-snug"
+                    style={{ color: `${accent}dd` }}
+                  >
+                    {quote}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
         {/* CastingRoom preview                                               */}
         {/* ---------------------------------------------------------------- */}
         <CastingPreview />
@@ -828,14 +871,14 @@ export default function Home() {
                   </span>
                 </div>
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-                  The novelist's version.<br className="hidden md:block" />
-                  <span className="text-primary">Your story.</span>
+                  Every detail exactly<br className="hidden md:block" />
+                  <span className="text-primary">as you want it.</span>
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                  For those who want every detail just so. Pick your pairing, cast your love interest, set the scene, choose the emotional register. Romance, tension, slow burn — curated entirely by you.
+                  Cast who he is. Name him. Set where it happens and exactly how far it goes. Choose the tension, the tone, the feeling you want to be left with. This story is built entirely around you.
                 </p>
                 <p className="text-muted-foreground/60 text-sm leading-relaxed mb-8">
-                  A story that didn't exist an hour ago, written for exactly the moment you're in — then narrated and kept private, from the very first word.
+                  Written for the moment you're in right now — then narrated and kept private, heard only by you. Yours from the very first word.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
@@ -866,12 +909,12 @@ export default function Home() {
                   Stories waiting to be written
                 </p>
                 {[
+                  "The one she never should have wanted",
                   "A reunion 10 years too long",
-                  "The colleague who finally said it",
-                  "Forbidden, inevitable, unfinished",
-                  "The night that changed everything",
-                  "Slow burn, finally breaking",
-                  "Rivals who couldn't help it",
+                  "Forbidden — and she knew it from the start",
+                  "Slow burn. It finally broke.",
+                  "The night she stopped pretending",
+                  "He knew exactly what she wanted",
                 ].map((label) => (
                   <div
                     key={label}

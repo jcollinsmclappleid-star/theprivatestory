@@ -1,0 +1,477 @@
+Design and build a premium product experience for a female-first private audio storytelling platform called “The Private Story”.
+
+This is a private, personalised, luxury digital experience.
+The product is not just a content library and not a generic AI app.
+It should feel like a high-end private members product built around:
+- personalisation
+- privacy
+- emotional intimacy
+- premium storytelling
+- female-first luxury tone
+
+==================================================
+PRIMARY PRODUCT STRATEGY
+==================================================
+
+The platform must be structured around two distinct but connected content layers:
+
+1. Private Library
+2. Curated Collection
+
+These must be visually and strategically separated.
+
+The hierarchy is:
+
+- Private Library = primary value
+- Curated Collection = supporting value
+
+The user should immediately understand:
+
+“This is where my own stories live.”
+“This is where I can explore curated releases.”
+“My private stories are the core experience.”
+“The curated collection is a premium extra, not the main product.”
+
+==================================================
+CORE POSITIONING
+==================================================
+
+The product should communicate:
+
+- stories are created specifically for the user
+- stories are saved privately to their own account
+- no one else sees their private library
+- the curated collection exists as an elegant, supporting experience between their own creations
+
+Do NOT design this like:
+- Netflix
+- Audible
+- a content farm
+- a productivity SaaS app
+- a generic AI generator
+
+Instead, design it like:
+- a luxury private listening product
+- a discreet premium emotional experience
+- a refined, female-first, intimate members platform
+
+==================================================
+INFORMATION ARCHITECTURE
+==================================================
+
+Build the logged-in product experience with two main areas in navigation:
+
+1. My Stories
+2. Collection
+
+Use these exact ideas but improve wording if needed to sound more premium.
+
+The default landing area after login should be:
+My Stories
+
+==================================================
+1. MY STORIES — PRIVATE LIBRARY
+==================================================
+
+This is the primary destination and should feel the most important.
+
+Purpose:
+- store all user-generated stories
+- provide replay/resume access
+- reinforce privacy, ownership, and personalisation
+
+Key requirements:
+- every newly generated story should automatically save here
+- clearly communicate that these stories are private and visible only to the user
+- include clean premium cards or list items for stories
+- allow resume, replay, continue, and optional delete
+- design this area to feel intimate, calm, and personal
+
+Messaging direction:
+- “Your private collection”
+- “Saved only to your account”
+- “Return to your stories anytime”
+- “Created around you”
+
+Do not make this area feel like a generic media library.
+It should feel like a private archive of emotionally personal experiences.
+
+Include elegant empty-state design for new users:
+- explain that stories created for them will appear here
+- reinforce privacy and discretion
+- provide CTA to create first story
+
+==================================================
+2. COLLECTION — CURATED LIBRARY
+==================================================
+
+This is the secondary destination.
+
+Purpose:
+- provide access to pre-curated stories
+- support retention between personalised generations
+- create a sense of an evolving premium collection
+
+Positioning:
+This is not a “shared library” in a social sense.
+It is a curated collection available to paying members.
+
+This area should feel editorial, refined, and intentional.
+
+Requirements:
+- clearly separate from My Stories
+- feature a section for “This Month’s Release”
+- include “Previous Releases” or archive of earlier monthly releases
+- design this with a premium editorial feel, not a feed
+- avoid social signals entirely
+- no likes, comments, public profiles, or discovery features
+
+Messaging direction:
+- “A curated collection, available whenever you want something immediate”
+- “A monthly release added to your collection”
+- “Stories selected for quieter moments between your own creations”
+- “A collection that evolves each month”
+
+Do not use language like:
+- unlimited shared library
+- public library
+- browse what others are reading
+- catalog size
+- community picks
+
+This collection must feel private, premium, and curated.
+
+==================================================
+MONTHLY RELEASE MODEL
+==================================================
+
+Implement the product and pricing language around:
+- monthly curated releases
+
+Internally there may be 4 new curated stories each month, but do not make “4 stories” the hero framing.
+
+Instead use premium language such as:
+- “A curated monthly release”
+- “New additions, released monthly”
+- “A monthly collection, thoughtfully selected”
+
+Add a featured section in Collection:
+- This Month’s Release
+with premium visual treatment
+
+This should feel like an editorial event, not constant content churn.
+
+==================================================
+UPDATED PRICING STRUCTURE
+==================================================
+
+Implement the pricing system and all related messaging with the following structure:
+
+MONTHLY PLAN
+- £29 / month
+- Includes 5 personalised story generations per month
+- Includes full access to curated collection
+- Includes monthly curated releases
+- Includes private library storage
+
+ANNUAL PLAN
+- £179 / year
+- Includes 50 personalised story generations per year
+- Includes full access to curated collection
+- Includes monthly curated releases
+- Includes private library storage
+
+ADDITIONAL STORIES
+- £3.99 per additional personalised story
+
+Important:
+Do not frame this in a cheap or tokenised way.
+Do not overuse words like credits, tokens, or allowances in the interface.
+Use language like:
+- “Additional stories available for £3.99”
+- “Continue your experience whenever you want”
+- “Add another story without changing your plan”
+
+==================================================
+PRICING PAGE OBJECTIVE
+==================================================
+
+Design and create a premium pricing page that makes the offer feel:
+
+- exclusive
+- emotionally valuable
+- private
+- personalised
+- easy to trust
+
+The page should sell:
+1. personalisation
+2. privacy
+3. premium ongoing access
+4. curated monthly releases
+5. a private collection that grows over time
+
+Do not make the pricing page feel like a SaaS dashboard.
+
+It should feel like choosing a level of private access.
+
+==================================================
+PRICING PAGE STRUCTURE
+==================================================
+
+Create the pricing page with this structure:
+
+1. Hero
+2. Premium reassurance strip
+3. Pricing cards
+4. Included in every plan
+5. Why it feels different
+6. Monthly release section
+7. Add-on stories section
+8. FAQ
+9. Final CTA
+
+==================================================
+PRICING PAGE COPY DIRECTION
+==================================================
+
+Hero headline direction:
+- “Choose your private access”
+- “Private, personalised stories — on your terms”
+- “A more personal kind of access”
+
+Subheadline should explain:
+- every story is created for the user
+- stories are saved privately
+- each plan also includes access to a curated collection with monthly releases
+
+Premium reassurance strip themes:
+- Created just for you
+- Visible only to you
+- Curated monthly releases
+- Designed for private listening
+
+Pricing cards should be elegant, calm, and premium.
+
+MONTHLY CARD:
+- £29 / month
+- 5 personalised story generations each month
+- Full access to curated collection
+- Monthly curated releases
+- Private library storage
+
+ANNUAL CARD:
+- £179 / year
+- 50 personalised story generations each year
+- Full access to curated collection
+- Monthly curated releases
+- Private library storage
+- Mark as “Best value” or “Most popular”
+
+Add supporting copy that makes annual feel like the best ongoing choice without making monthly feel weak.
+
+==================================================
+“INCLUDED IN EVERY PLAN” SECTION
+==================================================
+
+Include premium benefit blocks such as:
+- Personalised story creation
+- Private library access
+- Full curated collection access
+- Monthly curated releases
+- Discreet listening experience
+- Stories saved only to your account
+
+==================================================
+“WHY IT FEELS DIFFERENT” SECTION
+==================================================
+
+Add a strategic comparison-style section without naming competitors.
+
+Possible headings:
+- “More personal than a catalogue”
+- “Why access feels different here”
+- “Created for you, not pulled from a library”
+
+Use 3 premium columns or cards:
+1. Personalised
+2. Private
+3. Curated
+
+Explain:
+- Personalised = your own stories are created around your mood and choices
+- Private = stories live only inside your account
+- Curated = monthly releases are there whenever you want something immediate
+
+==================================================
+MONTHLY RELEASE SECTION
+==================================================
+
+Create a dedicated premium section for the curated monthly release.
+
+Possible heading:
+- “A collection that evolves”
+- “A curated release, every month”
+- “Something new, each month”
+
+Use copy like:
+“Alongside the stories created for you, a curated release is added each month — giving you something immediate to return to between your own creations.”
+
+This section should visually feel editorial and premium.
+
+==================================================
+ADD-ON STORIES SECTION
+==================================================
+
+Add a concise, elegant section explaining:
+- additional personalised stories are available for £3.99 each
+
+Use soft, premium framing:
+- “Continue your experience whenever you want”
+- “Add another story without changing your plan”
+- “Additional stories available when the moment calls for it”
+
+Avoid:
+- tokens
+- pack language
+- gamer language
+- anything cheap or mechanical
+
+==================================================
+FAQ SECTION
+==================================================
+
+Include questions such as:
+- What is the difference between My Stories and Collection?
+- Are my generated stories private?
+- What do I get with each plan?
+- What is included in the curated collection?
+- Are new stories added to the collection?
+- Can I buy more personalised stories?
+- Can I cancel monthly anytime?
+
+Answers should be short, polished, and reassuring.
+
+==================================================
+DESIGN DIRECTION
+==================================================
+
+The entire product experience and pricing page should feel:
+
+- luxurious
+- dark and intimate
+- elegant
+- uncluttered
+- female-first
+- private
+- premium
+- emotionally intelligent
+
+Use:
+- dark charcoal / black base
+- muted warm accents such as amber, soft gold, deep plum, muted burgundy
+- refined typography
+- soft shadows and gentle glows
+- rounded cards
+- spacious layout
+- subtle motion if elegant
+- strong mobile design
+
+The interface should feel like:
+- a luxury private listening environment
+- not a bright consumer app
+- not a cheap adult platform
+
+==================================================
+COPY TONE
+==================================================
+
+All user-facing copy should feel:
+
+- premium
+- private
+- intimate
+- quietly seductive
+- emotionally aware
+- controlled and refined
+
+Avoid:
+- explicit language
+- tacky erotic phrasing
+- overly technical SaaS wording
+- aggressive urgency
+- loud sales copy
+
+Use themes of:
+- personalisation
+- privacy
+- anticipation
+- discretion
+- emotional quality
+- stories created for the user
+
+==================================================
+UX REQUIREMENTS
+==================================================
+
+Make conversion and navigation frictionless.
+
+Requirements:
+- clear distinction between My Stories and Collection
+- private library is the emotional centre of the product
+- collection is a premium supporting experience
+- all key actions have reassuring microcopy
+- premium CTAs such as:
+  - “Create My Story”
+  - “Begin Privately”
+  - “Continue”
+  - “Choose Your Plan”
+
+Add subtle reassurance near important actions:
+- “Saved privately”
+- “Visible only to you”
+- “Available from your account”
+- “Curated for quieter moments”
+
+==================================================
+IMPLEMENTATION TASKS
+==================================================
+
+Please do the following:
+
+1. Create or redesign the product navigation to include:
+   - My Stories
+   - Collection
+
+2. Design My Stories as the user’s private library:
+   - elegant story cards or list
+   - private messaging
+   - replay / continue / delete options
+   - premium empty state
+
+3. Design Collection as a curated editorial-style library:
+   - This Month’s Release
+   - Previous Releases
+   - premium monthly release presentation
+
+4. Build or redesign pricing page using:
+   - £29 monthly
+   - £179 annual
+   - £3.99 additional stories
+
+5. Ensure pricing page sells:
+   - private access
+   - personalisation
+   - curated monthly releases
+   - premium value
+
+6. Add supporting copy throughout to reinforce:
+   - private ownership of generated stories
+   - curated supporting collection
+   - monthly editorial-style releases
+
+7. Make all output production-ready, polished, responsive, and premium
+
+Do not return generic placeholder design.
+Do not build this like a standard SaaS dashboard.
+Build it like a luxury direct-to-consumer private storytelling platform.

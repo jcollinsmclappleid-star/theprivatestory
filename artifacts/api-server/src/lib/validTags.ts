@@ -105,11 +105,11 @@ const STANDARD_TAGS: string[] = [
 
 const AFTER_DARK_TAGS: string[] = [
   // Top Fantasies (non-substituted)
-  "They find every limit",
   "They get caught",
   "Someone else is watching",
   // Top Fantasies — pronoun-substituted
   ...variants(p => `They take, ${p.sub} receives`),
+  ...variants(p => `They find every limit ${p.sub} has`),
   ...variants(p => `${p.sub} gives ${p.refl} over completely`),
   ...variants(p => `${p.sub} begs for it`),
   ...variants(p => `${p.sub} lets ${p.refl} be completely powerless`),
@@ -126,9 +126,9 @@ const AFTER_DARK_TAGS: string[] = [
   "Commands what they want",
   "Takes their time",
   "Watches closely",
-  "Covers their mouth",
   "Uses only their hands first",
   // What You Want Them To Do — pronoun-substituted
+  ...variants(p => `Covers ${p.poss} mouth`),
   ...variants(p => `Makes ${p.obj} ask for it`),
   ...variants(p => `Holds ${p.obj} in place`),
   ...variants(p => `Undoes ${p.obj} slowly`),

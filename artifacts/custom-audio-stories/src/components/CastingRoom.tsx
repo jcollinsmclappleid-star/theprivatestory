@@ -38,14 +38,18 @@ interface Props {
 }
 
 /* ── Perspective helpers ──────────────────────────────────────────── */
-function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "his" | "your"> {
+function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "his" | "your" | "their"> {
   const pairing = PAIRINGS.find(p => p.id === pairingId);
-  switch (pairing?.protagonistPronouns) {
-    case "she/her":   return ["her", "your"];
-    case "he/him":    return ["his", "your"];
-    case "they/them": return ["your", "their"];
-    default:          return ["her", "his", "your"];
-  }
+  if (!pairing) return ["her", "his", "your", "their"];
+
+  // "Your Story" is always available — listener's immersion perspective
+  const result: Array<"her" | "his" | "your" | "their"> = ["your"];
+  // Show a perspective tile for every pronoun set present in the pairing
+  const pronounSets = new Set([pairing.protagonistPronouns, pairing.partnerPronouns]);
+  if (pronounSets.has("she/her"))   result.push("her");
+  if (pronounSets.has("he/him"))    result.push("his");
+  if (pronounSets.has("they/them")) result.push("their");
+  return result;
 }
 
 /* ── Abstract art tiles ───────────────────────────────────────────── */

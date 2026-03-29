@@ -137,7 +137,7 @@ function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
       sub: "The ones people rarely say out loud. Select what's true for you.",
       tags: [
         `They take, ${p.sub} receives`,
-        "They find every limit",
+        `They find every limit ${p.sub} has`,
         `${p.sub} gives ${p.refl} over completely`,
         `${p.sub} begs for it`,
         `${p.sub} lets ${p.refl} be completely powerless`,
@@ -166,7 +166,7 @@ function buildAfterDarkExtraCategories(p: PronounCtx): TagCategory[] {
         `Won't let ${p.obj} hide`,
         "Watches closely",
         `Keeps ${p.obj} at the edge`,
-        "Covers their mouth",
+        `Covers ${p.poss} mouth`,
         `Doesn't let ${p.obj} finish until they say`,
         `Takes ${p.obj} to every edge`,
         "Uses only their hands first",

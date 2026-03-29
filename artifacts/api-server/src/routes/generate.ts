@@ -116,6 +116,18 @@ export function checkRiskThreshold(
   return null;
 }
 
+// Categories that are hard-blocked regardless of platform context.
+// Generic "sexual", "violence", "harassment", and "hate" are expected in adult
+// literary fiction and pass through to Layer 2 (Mistral) for targeted QC.
+// Applied identically to both input and output moderation.
+const OPENAI_HARD_BLOCK = new Set([
+  "sexual/minors",
+  "hate/threatening",
+  "harassment/threatening",
+  "self-harm/instructions",
+  "violence/graphic",
+]);
+
 export async function moderateInput(text: string): Promise<ModerationResult> {
   // Layer 0: prompt injection / jailbreak detection
   const injectionResult = isInjectionAttempt(text);
@@ -133,16 +145,26 @@ export async function moderateInput(text: string): Promise<ModerationResult> {
   // mark the result and use enhanced safety instructions if the LLM call proceeds.
   const tier2Result = isNearBoundaryInput(text);
 
-  // Layer 2: OpenAI Moderation API — fail-closed: if unavailable, block the request
+  // Layer 2: OpenAI Moderation API — CSAM and hard-prohibited detection only.
+  //
+  // This platform serves verified adult users and intentionally generates adult
+  // literary fiction. Generic "sexual", "violence", "harassment", and "hate" flags
+  // are expected from story tags and parameters — we only hard-block on the same
+  // specific subcategories used for output moderation (see OPENAI_HARD_BLOCK above).
+  // Fail-closed: if the API is unavailable, block the request.
   try {
     const moderation = await openaiDirect.moderations.create({ input: text });
     const result = moderation.results[0];
     if (result?.flagged) {
-      const flaggedCategories = Object.entries(result.categories)
-        .filter(([, flagged]) => flagged)
-        .map(([cat]) => cat)
-        .join(", ");
-      return { blocked: true, tier2Flagged: false, reason: flaggedCategories, source: "openai" };
+      const hardViolations = Object.entries(result.categories)
+        .filter(([cat, flagged]) => flagged && OPENAI_HARD_BLOCK.has(cat))
+        .map(([cat]) => cat);
+
+      if (hardViolations.length > 0) {
+        return { blocked: true, tier2Flagged: false, reason: hardViolations.join(", "), source: "openai" };
+      }
+      // flagged only for generic adult-content categories — expected on this platform,
+      // pass through (Mistral secondary QC will evaluate the generated output)
     }
   } catch (err) {
     logger.error({ err }, "[moderation] OpenAI Moderation API unavailable — blocking request (fail-closed)");
@@ -199,29 +221,9 @@ export async function moderateOutput(text: string): Promise<ModerationResult> {
     return { blocked: true, tier2Flagged: false, reason: "prompt_leakage_detected", source: "blocklist" };
   }
   // Layer 1: OpenAI Moderation API — CSAM and hard-prohibited detection only.
-  //
-  // This platform serves verified adult users and intentionally generates adult
-  // literary fiction. OpenAI's generic "sexual" flag covers all adult content and
-  // would block every valid story. We therefore only hard-block on categories that
-  // are prohibited regardless of platform context:
-  //
-  //   sexual/minors          — CSAM (legal requirement, always block)
-  //   hate/threatening       — hate speech combined with threats
-  //   harassment/threatening — targeted harassment combined with threats
-  //   self-harm/instructions — instructions for self-harm
-  //   violence/graphic       — graphic gore
-  //
-  // The generic "sexual", "violence", "harassment", and "hate" categories are
-  // expected in adult literary fiction and are passed through to Layer 2 (Mistral)
-  // which evaluates against the platform's six specific prohibited content rules.
-  const OPENAI_HARD_BLOCK = new Set([
-    "sexual/minors",
-    "hate/threatening",
-    "harassment/threatening",
-    "self-harm/instructions",
-    "violence/graphic",
-  ]);
-
+  // See OPENAI_HARD_BLOCK (module-level) for the list and rationale.
+  // Generic "sexual", "violence", "harassment", and "hate" are expected in adult
+  // literary fiction and are passed through to Layer 2 (Mistral) for targeted QC.
   try {
     const moderation = await openaiDirect.moderations.create({ input: text });
     const result = moderation.results[0];

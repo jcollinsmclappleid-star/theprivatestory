@@ -438,6 +438,93 @@ const COUNTRY_CITIES: Record<string, string[]> = {
   "Fiji":               ["Nadi", "Suva", "Mamanuca Islands", "Yasawa Islands"],
 };
 
+const COUNTRY_CULTURAL_PREVIEW: Record<string, string> = {
+  // Europe
+  "France":           "Wine-dark afternoons, café tables at dusk, and a city that has always known desire.",
+  "United Kingdom":   "Rain on Georgian stone, pub warmth after midnight, and a restraint that breaks slowly.",
+  "Italy":            "Heat on terracotta, voices spilling from every window, and passion worn openly.",
+  "Spain":            "Late dinners, flamenco after midnight, and a heat that never quite fades.",
+  "Monaco":           "Old money, salt air off the harbour, and the intimacy of a very small world.",
+  "Greece":           "Whitewashed walls, cobalt water, and afternoons that stretch until they become evenings.",
+  "Turkey":           "Bosphorus light, spice-market air, and the collision of two continents in one city.",
+  "Portugal":         "Fado somewhere below, golden tram-light, and a melancholy that turns tender.",
+  "Switzerland":      "Alpine quiet, precision and luxury, and the tension of things unsaid in beautiful rooms.",
+  "Austria":          "Imperial grandeur, café culture, and Viennese waltzes that feel like a slow seduction.",
+  "Germany":          "Berlin's electric underground or Munich's baroque weight — intensity, differently expressed.",
+  "Netherlands":      "Canal reflections at night, a frankness that is its own kind of intimacy.",
+  "Denmark":          "Hygge and candlelight — Nordic cool that runs warm underneath.",
+  "Sweden":           "Midnight sun or polar dark — Swedish restraint masking deep feeling.",
+  "Norway":           "Fjord silence, raw nature, and long evenings where the light doesn't leave.",
+  "Finland":          "Sauna heat and forest quiet — honesty worn like a second skin.",
+  "Belgium":          "Chocolate-and-rain afternoons in Brussels, medieval stillness in Bruges.",
+  "Poland":           "Kraków's old squares at golden hour — Slavic warmth held carefully close.",
+  "Croatia":          "Adriatic blue, Dalmatian stone, and long summer evenings on the water.",
+  "Czechia":          "Prague's Gothic spires at dusk, beer halls and baroque intimacy.",
+  "Hungary":          "Budapest's thermal baths, the Danube lit from both banks, and romance bordering on melancholy.",
+  "Ireland":          "Green against grey sky, pub storytelling, and warmth disguised as wit.",
+  "Iceland":          "Geothermal heat against the cold, northern lights, and utter solitude.",
+  // Americas
+  "USA":              "A continent of contrasts — New York's electricity, New Orleans' heat, LA's golden hour.",
+  "Mexico":           "Tequila and ancient cities, Tulum's jungle cenotes — full-colour desire.",
+  "Cuba":             "Havana's crumbling grandeur, rum and son cubano, heat that never sleeps.",
+  "Argentina":        "Buenos Aires' tango and steak dinners, and a Latin passion worn without apology.",
+  "Brazil":           "Rio's carnival rhythm, caipirinha afternoons, and a sensuality that is cultural.",
+  "Colombia":         "Cartagena's colonial walls, cumbia at night, and Caribbean warmth.",
+  "Peru":             "Lima's Pacific mist, Incan history, and ancient flavour in everything.",
+  // Caribbean
+  "Jamaica":          "Reggae rhythms, rum punch on white sand, and island warmth that moves slow and sure.",
+  "Barbados":         "Bajan rum, coral sand, and the particular ease of a beautiful island at rest.",
+  "Trinidad & Tobago":"Carnival energy, calypso and soca, and the spice of a dual-island culture.",
+  "St. Lucia":        "Piton silhouettes, volcanic heat, and a lushness that feels almost indecent.",
+  "Bahamas":          "Turquoise and coral, Nassau's colonial elegance, island light that makes everything golden.",
+  "Antigua & Barbuda":"Reefs and rum, English Harbour's yachting world, and 365 beaches for 365 days.",
+  "Cayman Islands":   "Reef-calm water and the quiet wealth of a world that knows exactly what pleasure means.",
+  "St. Barths":       "French sophistication in the tropics — Gustavia's yachts, rosé on white sand.",
+  "Turks & Caicos":   "Grace Bay's translucent water and the privacy that comes with serious luxury.",
+  "Grenada":          "Nutmeg and cocoa, Grand Anse's curved shore, and the warmth of a spice island.",
+  "Martinique":       "French Antilles creole — rhum agricole and beaches where Europe meets the tropics.",
+  "Guadeloupe":       "Butterfly island — mangroves, rum, and Creole cuisine at the edge of the Caribbean.",
+  // Africa
+  "South Africa":     "Cape's mountains and oceans, vineyard evenings in Stellenbosch, the charge of the continent's edge.",
+  "Morocco":          "Marrakech's labyrinth, riad courtyards, lantern light and spice — the Orient at Africa's edge.",
+  "Egypt":            "Nile at dusk, incense and antiquity — a civilisation pressing into every stone.",
+  "Kenya":            "Savanna at dawn, Lamu's Swahili coast, and a landscape that dwarfs everything.",
+  "Tanzania":         "Zanzibar's clove air and Swahili architecture, Serengeti's primal scale.",
+  "Nigeria":          "Lagos' energy — one of Africa's most vital cities, fast, loud, and impossible to ignore.",
+  "Ghana":            "Accra's coastal heat, Ashanti gold, and the warmth of West African hospitality.",
+  "Senegal":          "Dakar's Teranga spirit — hospitality as culture, and the Atlantic horizon off Ngor.",
+  "Ethiopia":         "Addis Ababa's highland cool, ancient churches, and coffee at its origin.",
+  "Rwanda":           "Kigali's surprising modernity, gorillas in the mist, a country rebuilding with dignity.",
+  "Ivory Coast":      "Abidjan's cosmopolitan energy and the pulse of Francophone West Africa.",
+  "Mozambique":       "Indian Ocean coast, dhow-sailing culture, and a beach world barely discovered.",
+  "Mauritius":        "Lagoon blue and sugar cane, French Creole culture, and the luxury of a perfect island.",
+  "Seychelles":       "Primordial granite and coral — the most beautiful beaches on earth, with absolute privacy.",
+  "Réunion":          "French island of volcanoes — cirque valleys and a Creole culture that burns.",
+  // Middle East
+  "UAE":              "Dubai's vertical excess and Abu Dhabi's cultural ambition — desert luxury at its limit.",
+  "Saudi Arabia":     "AlUla's ancient Nabataean rock, Jeddah's Red Sea coral, a country opening from within.",
+  "Jordan":           "Petra's rose-red city, Wadi Rum's silence at night, and Bedouin hospitality in the desert.",
+  "Lebanon":          "Cedar and nightlife, Beirut's resilience — a city that always comes back dressed in beauty.",
+  "Oman":             "Muscat's incense and Nizwa's forts — Arabia before the skyscrapers, still warm and itself.",
+  "Qatar":            "Doha's Museum of Islamic Art at dusk — where old and new negotiate over the water.",
+  // Asia
+  "India":            "Goa's Portuguese spice, Udaipur's lake palace, Mumbai's monsoon — sensation in every direction.",
+  "Thailand":         "Bangkok's temple-and-traffic charge, island evenings where sea and firelight meet.",
+  "Japan":            "Kyoto's wabi-sabi restraint, Tokyo's neon overstimulation — precision masking feeling.",
+  "South Korea":      "Seoul's layered modernity and Korean han — a particular, beautiful kind of sadness.",
+  "Vietnam":          "Hội An's lantern evenings, Hanoi's old-quarter coffee, a country with ancient bones.",
+  "Bali":             "Ubud's rice-terrace quiet and a Hindu-Balinese spirituality woven into everything.",
+  "Sri Lanka":        "Ceylon tea and spice, Galle's Dutch fort walls — a tropical island running a thousand years deep.",
+  "Singapore":        "The most ordered city in Asia — and underneath the precision, a heat that never fully left.",
+  "Hong Kong":        "Harbour neon at night, Cantonese intensity, a city that never decided if it was East or West.",
+  // Pacific & Oceania
+  "Australia":        "Sydney's harbour drama, Byron Bay's coast — a country-sized confidence by the water.",
+  "New Zealand":      "Queenstown's adrenaline, landscape so overwhelming it changes how you breathe.",
+  "Maldives":         "Overwater bungalows and bioluminescent lagoons — the world reduced to water, light, and privacy.",
+  "French Polynesia": "Bora Bora at sunrise, black pearls and vanilla — paradise before it became a word.",
+  "Fiji":             "Fijian warmth — 'bula' is more than hello — and the South Pacific's unhurried sweetness.",
+};
+
 const ATMOSPHERES = [
   "Stormy", "Candlelit", "Midnight", "Golden Hour",
   "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid",
@@ -903,6 +990,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
               </div>
             </div>
+
+            {/* ── Cultural preview — shown when country is selected ── */}
+            {data.country && COUNTRY_CULTURAL_PREVIEW[data.country] && (
+              <p className="text-xs text-primary/70 italic leading-relaxed mb-7 -mt-3 px-1">
+                {COUNTRY_CULTURAL_PREVIEW[data.country]}
+              </p>
+            )}
 
             {/* ── Scenario (required) ── */}
             {afterDark && (

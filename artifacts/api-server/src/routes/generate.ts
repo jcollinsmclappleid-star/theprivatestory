@@ -1437,9 +1437,9 @@ Return JSON in exactly this shape:
 }`;
 
   async function attemptPlan(): Promise<StoryBrief> {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      max_completion_tokens: 2048,
+    const completion = await openrouter.chat.completions.create({
+      model: MISTRAL_MODEL,
+      max_tokens: 2048,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

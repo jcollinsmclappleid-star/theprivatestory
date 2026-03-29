@@ -742,7 +742,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, handoff, ha
   // Scroll to top whenever the step changes
   const topRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
   const TOTAL_STEPS = 11;

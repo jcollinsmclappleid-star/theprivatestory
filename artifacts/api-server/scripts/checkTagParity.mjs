@@ -62,6 +62,24 @@ const UI_STANDARD = [
   "It was always going to happen",
   "The relationship is complicated",
   "No one gets hurt",
+
+  // What does she really want?
+  "She leads",
+  "She initiates",
+  "She sets the terms",
+  "She stays in control",
+  "She chooses how far it goes",
+  "She makes the first move",
+  "She gives control over completely",
+  "She lets herself go",
+  "She doesn't have to think",
+  "She lets herself be taken care of",
+  "She's wanted this for a long time",
+  "She comes back for more",
+  "This is the version she never admits to",
+  "She doesn't feel guilty",
+  "It changes something in her",
+  "She owns what she wants",
 ];
 
 // buildAfterDarkCategories() — only what it currently returns
@@ -162,6 +180,24 @@ const BACKEND_STANDARD = [
   ...v(p => `${p.sub} could be me`),
   ...v(p => `${p.sub} doesn't tell anyone`),
   ...v(p => `${p.sub} tells one person`),
+
+  // What Does She Really Want?
+  "She leads",
+  "She initiates",
+  "She sets the terms",
+  "She stays in control",
+  "She chooses how far it goes",
+  "She makes the first move",
+  "She gives control over completely",
+  "She lets herself go",
+  "She doesn't have to think",
+  "She lets herself be taken care of",
+  "She's wanted this for a long time",
+  "She comes back for more",
+  "This is the version she never admits to",
+  "She doesn't feel guilty",
+  "It changes something in her",
+  "She owns what she wants",
 ];
 
 // Mirror of AFTER_DARK_TAGS in validTags.ts (trimmed to current UI)

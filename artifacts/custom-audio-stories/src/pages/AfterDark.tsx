@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, BookOpen } from "lucide-react";
+import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -831,7 +831,6 @@ export default function AfterDark() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
   const [presetSaved, setPresetSaved] = useState(false);
-  const [isGeneratingEp2, setIsGeneratingEp2] = useState(false);
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
     casting: CastingRoomResult;
@@ -895,6 +894,7 @@ export default function AfterDark() {
       },
       onError: () => {
         stopLoadingPhase();
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setPhase("casting");
       },
     },
@@ -916,31 +916,6 @@ export default function AfterDark() {
     } catch { /* ignore */ }
   }, [lastCastingData, isAuthenticated]);
 
-  const handleWriteEpisode2 = useCallback(async () => {
-    if (!result || isGeneratingEp2) return;
-    setIsGeneratingEp2(true);
-    setPhase("generating");
-    startLoadingPhase();
-    try {
-      const res = await fetch(`${API_BASE}/api/continue-story`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ storyId: result.id, continuation_mode: "keep_same_mood" }),
-      });
-      if (!res.ok) throw new Error("Episode 2 failed");
-      const data = await res.json() as FullGeneratedStory;
-      stopLoadingPhase();
-      setResult(data);
-      setPhase("result");
-      applyResultToPlayer(data);
-    } catch {
-      stopLoadingPhase();
-      setPhase("result");
-    } finally {
-      setIsGeneratingEp2(false);
-    }
-  }, [result, isGeneratingEp2, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
@@ -1184,6 +1159,7 @@ export default function AfterDark() {
               <button
                 onClick={() => {
                   if (selectedScenario) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                     setPhase("casting");
                   }
                 }}
@@ -1450,21 +1426,6 @@ export default function AfterDark() {
                 </div>
               </div>
             </div>
-
-            {/* Episode 2 CTA */}
-            <button
-              onClick={handleWriteEpisode2}
-              disabled={isGeneratingEp2}
-              className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/60 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: "rgba(192,57,43,0.15)", border: "1px solid rgba(192,57,43,0.4)" }}
-            >
-              {isGeneratingEp2 ? (
-                <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              ) : (
-                <BookOpen className="w-4 h-4" />
-              )}
-              Write Episode 2 →
-            </button>
 
             <button
               onClick={() => {

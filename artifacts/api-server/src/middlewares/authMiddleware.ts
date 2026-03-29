@@ -21,8 +21,6 @@ declare global {
       twoFactorEnabled?: boolean;
       /** Non-null only when the session was created via TOTP or backup-code verification. */
       twoFactorVerifiedAt?: Date | null;
-      approvedListenerName?: string | null;
-      approvedPartnerName?: string | null;
     }
 
     interface Request {
@@ -79,8 +77,6 @@ export async function authMiddleware(
       let isAdmin = false;
       let riskScore = 0;
       let deletedAt: Date | null = null;
-      let approvedListenerName: string | null = null;
-      let approvedPartnerName: string | null = null;
       let twoFactorEnabled = false;
       let twoFactorVerifiedAt: Date | null = null;
       try {
@@ -89,8 +85,6 @@ export async function authMiddleware(
             isAdmin: usersTable.isAdmin,
             riskScore: usersTable.riskScore,
             deletedAt: usersTable.deletedAt,
-            approvedListenerName: usersTable.approvedListenerName,
-            approvedPartnerName: usersTable.approvedPartnerName,
             twoFactorEnabled: usersTable.twoFactorEnabled,
           })
           .from(usersTable)
@@ -99,8 +93,6 @@ export async function authMiddleware(
         isAdmin = dbUser?.isAdmin ?? false;
         riskScore = dbUser?.riskScore ?? 0;
         deletedAt = dbUser?.deletedAt ?? null;
-        approvedListenerName = dbUser?.approvedListenerName ?? null;
-        approvedPartnerName = dbUser?.approvedPartnerName ?? null;
         twoFactorEnabled = dbUser?.twoFactorEnabled ?? false;
 
         // An "effective admin" is one with the DB isAdmin flag OR whose email
@@ -162,8 +154,6 @@ export async function authMiddleware(
         riskScore,
         twoFactorEnabled,
         twoFactorVerifiedAt,
-        approvedListenerName,
-        approvedPartnerName,
       };
     }
   } catch {

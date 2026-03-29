@@ -723,6 +723,8 @@ export default function Create() {
   const [castingAppearColouring, setCastingAppearColouring] = useState<string | undefined>();
   const [castingAppearEyes, setCastingAppearEyes] = useState<string | undefined>();
   const [castingAppearFeatures, setCastingAppearFeatures] = useState<string[] | undefined>();
+  const [castingListenerName, setCastingListenerName] = useState<string | undefined>();
+  const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
@@ -1090,6 +1092,8 @@ export default function Create() {
     setCastingAppearColouring(casting.appearColouring || undefined);
     setCastingAppearEyes(casting.appearEyes || undefined);
     setCastingAppearFeatures(casting.appearFeatures || undefined);
+    setCastingListenerName(casting.listenerName || undefined);
+    setCastingPartnerName(casting.partnerName || undefined);
     setPresetSaved(false);
 
     form.setValue("whoIsHe", casting.archetype);
@@ -1134,6 +1138,8 @@ export default function Create() {
           appearColouring: casting.appearColouring || undefined,
           appearEyes: casting.appearEyes || undefined,
           appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+          listenerName: casting.listenerName || undefined,
+          partnerName: casting.partnerName || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -1182,12 +1188,14 @@ export default function Create() {
           appearColouring: castingAppearColouring || undefined,
           appearEyes: castingAppearEyes || undefined,
           appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
+          listenerName: castingListenerName || undefined,
+          partnerName: castingPartnerName || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];

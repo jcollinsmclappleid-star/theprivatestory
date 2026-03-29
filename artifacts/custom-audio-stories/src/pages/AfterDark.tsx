@@ -988,6 +988,8 @@ export default function AfterDark() {
             appearColouring: casting.appearColouring || undefined,
             appearEyes: casting.appearEyes || undefined,
             appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+            listenerName: casting.listenerName || undefined,
+            partnerName: casting.partnerName || undefined,
           },
         });
       } finally {

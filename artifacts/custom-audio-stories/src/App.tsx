@@ -26,6 +26,7 @@ import ContentPolicy from "@/pages/ContentPolicy";
 import NotFound from "@/pages/not-found";
 import MySeriesDetailPage from "@/pages/MySeriesDetail";
 import ResetPassword from "@/pages/ResetPassword";
+import Contact from "@/pages/Contact";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +58,7 @@ function Router() {
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />
             <Route path="/content-policy" component={ContentPolicy} />
+            <Route path="/contact" component={Contact} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

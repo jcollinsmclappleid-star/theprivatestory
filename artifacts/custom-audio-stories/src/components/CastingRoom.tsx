@@ -25,7 +25,34 @@ export interface CastingRoomResult {
   appearColouring?: string;
   appearEyes?: string;
   appearFeatures?: string[];
+  // Name selections — dropdown only, validated server-side against allowlist
+  listenerName?: string;
+  partnerName?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Name arrays — must match VALID_LISTENER_NAMES / VALID_PARTNER_NAMES on backend
+// ---------------------------------------------------------------------------
+export const LISTENER_NAMES_FEMALE = [
+  "Emma", "Sophie", "Charlotte", "Olivia", "Amelia", "Isabella", "Ava", "Mia",
+  "Luna", "Aria", "Chloe", "Elena", "Victoria", "Clara", "Grace", "Lily",
+  "Rose", "Julia", "Alice", "Natasha",
+];
+export const LISTENER_NAMES_MALE = [
+  "James", "Oliver", "William", "Harry", "Jack", "Charlie", "Noah", "Liam",
+  "Ethan", "Daniel", "Henry", "Thomas", "Alexander", "Sebastian", "Lucas",
+  "Finn", "Leo", "Max", "Nathan", "Ryan",
+];
+export const PARTNER_NAMES_MALE = [
+  "James", "Marco", "Luca", "Alessandro", "Ethan", "Rafael", "Kai", "Dominic",
+  "Noah", "Sebastian", "Leo", "Matteo", "Christian", "Xavier", "Adrian",
+  "Dante", "Roman", "Hunter", "Blake", "Cain",
+];
+export const PARTNER_NAMES_FEMALE = [
+  "Sophia", "Isabella", "Elena", "Valentina", "Camille", "Vivienne", "Aurora",
+  "Scarlett", "Juliette", "Celeste", "Serena", "Aria", "Estelle", "Lila",
+  "Margot", "Nina", "Cleo", "Zara", "Iris", "Bianca",
+];
 
 interface Props {
   onComplete: (result: CastingRoomResult) => void;
@@ -522,6 +549,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     mood: "Emotional",
   });
   const [customTags, setCustomTags] = useState<string[]>([]);
+  const [listenerName, setListenerName] = useState<string>("");
+  const [partnerName, setPartnerName] = useState<string>("");
   // Appearance
   const [appearBuild, setAppearBuild] = useState<string>("");
   const [appearHeight, setAppearHeight] = useState<string>("");
@@ -529,7 +558,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [appearEyes, setAppearEyes] = useState<string>("");
   const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
 
-  const TOTAL_STEPS = 7;
+  const TOTAL_STEPS = 9;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => ({ ...d, [key]: value }));
@@ -553,6 +582,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       case 4: return !!data.setting;
       case 5: return !!data.intensity && !!data.mood;
       case 6: return true;
+      case 7: return true;
+      case 8: return true;
       default: return true;
     }
   };
@@ -593,11 +624,25 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       appearColouring: appearColouring || undefined,
       appearEyes: appearEyes || undefined,
       appearFeatures: appearFeatures.length > 0 ? appearFeatures : undefined,
+      // Name selections — validated server-side against allowlist
+      listenerName: listenerName || undefined,
+      partnerName: partnerName || undefined,
     };
     onComplete(result);
   };
 
   const accentColor = afterDark ? "#c0392b" : "#c9a227";
+
+  // Derive name lists from pairing selection
+  const protagonistIsMale = data.pairing?.startsWith("Him") ?? false;
+  const loveInterestIsMale = (data.pairing === "Her & Him" || data.pairing === "Him & Him");
+  const loveInterestIsFemale = (data.pairing === "Her & Her");
+  const listenerNameOptions = protagonistIsMale ? LISTENER_NAMES_MALE : [...LISTENER_NAMES_FEMALE, ...LISTENER_NAMES_MALE].filter(
+    (n, i, a) => a.indexOf(n) === i
+  );
+  const partnerNameOptions = loveInterestIsMale ? PARTNER_NAMES_MALE
+    : loveInterestIsFemale ? PARTNER_NAMES_FEMALE
+    : [...PARTNER_NAMES_MALE, ...PARTNER_NAMES_FEMALE];
 
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
   const activePairing = PAIRINGS.find(p => p.id === data.pairing);
@@ -975,7 +1020,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               </div>
               <button
                 type="button"
-                onClick={handleFinish}
+                onClick={next}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ml-4 mt-1 flex-shrink-0"
               >
                 Skip this step →
@@ -989,6 +1034,90 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               accentColor={accentColor}
               protagonistPronouns={rawProtagonistPronouns}
             />
+          </motion.div>
+        )}
+
+        {/* ── Step 7 — Your Name ───────────────────────────────────── */}
+        {step === 7 && (
+          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name.</h2>
+            <p className="text-muted-foreground text-sm mb-2">Select your name and the narrator will use it throughout your story.</p>
+            <p className="text-xs text-muted-foreground/70 mb-6 italic">
+              Leave blank if your name isn't listed — the narrator will refer to you as "you".
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {listenerNameOptions.map(name => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setListenerName(listenerName === name ? "" : name)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                    listenerName === name
+                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  }`}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+
+            {listenerName && (
+              <p className="text-sm text-primary/80 mb-4">
+                The narrator will call you <span className="font-semibold">{listenerName}</span>.
+              </p>
+            )}
+
+            <a
+              href="/contact"
+              className="text-xs text-muted-foreground hover:text-primary underline underline-offset-2 transition-colors"
+            >
+              My name isn't listed — request it here →
+            </a>
+          </motion.div>
+        )}
+
+        {/* ── Step 8 — Partner Name ────────────────────────────────── */}
+        {step === 8 && (
+          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
+              {partnerHeadingVerb.replace("Who is", "Name")}
+            </h2>
+            <p className="text-muted-foreground text-sm mb-2">Give your love interest a name, or leave it for the story to decide.</p>
+            <p className="text-xs text-muted-foreground/70 mb-6 italic">
+              Leave blank if a name isn't listed — the narrator will give them a name that fits.
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {partnerNameOptions.map(name => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setPartnerName(partnerName === name ? "" : name)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                    partnerName === name
+                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  }`}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+
+            {partnerName && (
+              <p className="text-sm text-primary/80 mb-4">
+                Your love interest will be called <span className="font-semibold">{partnerName}</span>.
+              </p>
+            )}
+
+            <a
+              href="/contact"
+              className="text-xs text-muted-foreground hover:text-primary underline underline-offset-2 transition-colors"
+            >
+              This name isn't listed — request it here →
+            </a>
           </motion.div>
         )}
 

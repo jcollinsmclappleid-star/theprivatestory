@@ -396,11 +396,15 @@ export interface GenerateStoryRequest {
   appearEyes?: string;
   /** Distinguishing features from VALID_APPEAR_FEATURES chip set (array). */
   appearFeatures?: string[];
+  /** The listener's name — must be in VALID_LISTENER_NAMES; silently dropped if not in allowlist. */
+  listenerName?: string;
+  /** The partner/love-interest name — must be in VALID_PARTNER_NAMES; silently dropped if not in allowlist. */
+  partnerName?: string;
 }
 
 /** Internal server-only extension of GenerateStoryRequest.
  *  scenarioPrompt is constructed server-side from validated structured fields — never accepted from the client.
- *  Names are never accepted from the client — always injected from req.user after normalisation. */
+ *  listenerName and partnerName are validated against VALID_LISTENER_NAMES / VALID_PARTNER_NAMES in normaliseIntake. */
 export interface InternalGenerateRequest extends GenerateStoryRequest {
   listenerName: string;
   partnerName?: string;
@@ -982,6 +986,33 @@ const VALID_ENDINGS = [
 
 const VALID_PAIRINGS = ["Her & Him", "Her & Her", "Him & Him", "Her & Them", "Him & Them", "Them & Them"];
 
+// ---------------------------------------------------------------------------
+// Name allowlists — dropdown selections from CastingRoom only.
+// Any value not in these sets is silently dropped in normaliseIntake.
+// Frontend and backend must be kept in sync.
+// ---------------------------------------------------------------------------
+export const VALID_LISTENER_NAMES = new Set([
+  // Female
+  "Emma", "Sophie", "Charlotte", "Olivia", "Amelia", "Isabella", "Ava", "Mia",
+  "Luna", "Aria", "Chloe", "Elena", "Victoria", "Clara", "Grace", "Lily",
+  "Rose", "Julia", "Alice", "Natasha",
+  // Male
+  "James", "Oliver", "William", "Harry", "Jack", "Charlie", "Noah", "Liam",
+  "Ethan", "Daniel", "Henry", "Thomas", "Alexander", "Sebastian", "Lucas",
+  "Finn", "Leo", "Max", "Nathan", "Ryan",
+]);
+
+export const VALID_PARTNER_NAMES = new Set([
+  // Male
+  "James", "Marco", "Luca", "Alessandro", "Ethan", "Rafael", "Kai", "Dominic",
+  "Noah", "Sebastian", "Leo", "Matteo", "Christian", "Xavier", "Adrian",
+  "Dante", "Roman", "Hunter", "Blake", "Cain",
+  // Female
+  "Sophia", "Isabella", "Elena", "Valentina", "Camille", "Vivienne", "Aurora",
+  "Scarlett", "Juliette", "Celeste", "Serena", "Aria", "Estelle", "Lila",
+  "Margot", "Nina", "Cleo", "Zara", "Iris", "Bianca",
+]);
+
 const VALID_HERITAGES = ["Latina", "Black", "South Asian", "European", "East Asian", "Middle Eastern", "Indigenous", "Ambiguous"];
 
 const VALID_ATMOSPHERES = ["Stormy", "Candlelit", "Midnight", "Golden Hour", "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid"];
@@ -1215,10 +1246,14 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     ? Math.max(1, Math.min(5, Math.round(rawNumeric)))
     : undefined;
 
+  // Validate names against allowlists — silently drop anything not in the set.
+  const listenerName = raw.listenerName?.trim() && VALID_LISTENER_NAMES.has(raw.listenerName.trim())
+    ? raw.listenerName.trim() : "";
+  const partnerName = raw.partnerName?.trim() && VALID_PARTNER_NAMES.has(raw.partnerName.trim())
+    ? raw.partnerName.trim() : undefined;
+
   return {
-    // listenerName and partnerName are NOT taken from the request body.
-    // They are injected from req.user.approvedListenerName/approvedPartnerName after this call.
-    listenerName: "",
+    listenerName,
     mood,
     intensity,
     voiceFeel,
@@ -1237,7 +1272,7 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     ending: raw.ending && VALID_ENDINGS.includes(raw.ending.trim()) ? raw.ending.trim() : undefined,
     setting: raw.setting && VALID_SETTINGS.includes(raw.setting.trim()) ? raw.setting.trim() : undefined,
     pairing: raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim()) ? raw.pairing.trim() : undefined,
-    partnerName: undefined,
+    partnerName,
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,
     numericIntensity,
@@ -2318,9 +2353,6 @@ router.post("/plan-story", async (req, res) => {
   // Normalise first — validates allowlists and constructs scenarioPrompt server-side
   const body = normaliseIntake(req.body as GenerateStoryRequest);
 
-  // Inject approved names from authenticated user profile — never from request body
-  body.listenerName = req.user?.approvedListenerName?.trim() ?? "";
-  body.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
 
   const hasCustomInput = !!(body.whoIsHe || body.setting || body.dynamic || body.scenarioCard);
   const riskError = checkRiskThreshold(req, hasCustomInput);
@@ -2500,8 +2532,6 @@ router.post("/generate-images", async (req, res) => {
   // Accept the same structured intake as the main pipeline — no raw prompt strings.
   // All fields are validated against allowlists; the prompt is built server-side.
   const intake = normaliseIntake(req.body as GenerateStoryRequest);
-  intake.listenerName = req.user?.approvedListenerName?.trim() ?? "";
-  intake.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
 
   const isCastingBased = !!(intake.heritage || intake.atmosphere || intake.chemistry);
   const coverPrompt = isCastingBased
@@ -2545,10 +2575,6 @@ router.post("/generate-full-story", async (req, res) => {
   // Step 1: Normalise input
   const intake = normaliseIntake(rawIntake);
 
-  // Inject approved names from authenticated user profile — never from request body.
-  // normaliseIntake already zeroes these out; we override here with DB-sourced values.
-  intake.listenerName = req.user?.approvedListenerName?.trim() ?? "";
-  intake.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
 
   // Step 1a: Input length validation
   const lengthError = validateInputLengths(intake);

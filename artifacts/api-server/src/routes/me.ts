@@ -457,16 +457,6 @@ router.get("/quick-create-params", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// GET /api/me/profile-names — return user's current approved story names
-// ---------------------------------------------------------------------------
-router.get("/profile-names", (req, res) => {
-  return res.json({
-    listenerName: req.user.approvedListenerName ?? null,
-    partnerName: req.user.approvedPartnerName ?? null,
-  });
-});
-
-// ---------------------------------------------------------------------------
 // POST /api/me/name-submissions — submit a custom name for admin review.
 // Only admin approval writes the name to the user profile.
 // ---------------------------------------------------------------------------

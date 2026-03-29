@@ -14,7 +14,7 @@ export interface CastingRoomResult {
   city?: string;
   setting: string;
   atmosphere: string;
-  intensity: "Tender" | "Heated" | "Explicit" | "Scorching";
+  intensity: "Subtle" | "Warm" | "Elevated" | "Intense";
   mood: string;
   whoIsHe: string;
   dynamic: string;
@@ -199,7 +199,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     {
       id: "Power Play",
       label: "Power Play",
-      sub: `${P.subject} holds the advantage. Tonight ${P.subject === "They" ? "they use it" : `${P.possessive} using it`}.`,
+      sub: `${P.subject} holds the advantage. ${ME.subject} already decided. That's what made it possible.`,
       dynamic: "Dominant and yielding",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
     },
@@ -282,14 +282,15 @@ const HERITAGES = [
 
 /* ── Archetypes — pronoun-aware, 21 options ───────────────────────── */
 function buildArchetypes(pairingId: string | undefined) {
-  const { partner: P } = derivePronouns(pairingId);
+  const { partner: P, protagonist: ME } = derivePronouns(pairingId);
   const s = P.subject; const o = P.object; const p = P.possessive;
+  const me = ME.subject;
   return [
     { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227", image: "images/energy/executive.png" },
     { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                                  gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280", image: "images/energy/stranger.png" },
     { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                     gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa", image: "images/energy/artist.png" },
     { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399", image: "images/energy/protector.png" },
-    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
+    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${me} knows it.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
     { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa", image: "images/energy/professor.png" },
     { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185", image: "images/energy/wanderer.png" },
     { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                                 gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d", image: "images/energy/old_friend.png" },
@@ -542,19 +543,19 @@ const ATMOSPHERES = [
 ];
 
 const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: string; color: string }[] = [
-  { id: "Tender",    label: "Tender",    desc: "Emotional, slow burn",     color: "#60a5fa" },
-  { id: "Heated",    label: "Heated",    desc: "Desire building, charged", color: "#c9a227" },
-  { id: "Explicit",  label: "Explicit",  desc: "Fully rendered",           color: "#f97316" },
-  { id: "Scorching", label: "Scorching", desc: "Maximum intensity",        color: "#ef4444" },
+  { id: "Subtle",   label: "Subtle",   desc: "Something building beneath the surface",  color: "#60a5fa" },
+  { id: "Warm",     label: "Warm",     desc: "Presence, attention, and what comes next", color: "#c9a227" },
+  { id: "Elevated", label: "Elevated", desc: "Nothing left unspoken",                   color: "#f97316" },
+  { id: "Intense",  label: "Intense",  desc: "Full immersion — every moment felt",      color: "#ef4444" },
 ];
 
 const MOODS = [
   "Romantic", "Emotional", "Raw", "Playful", "Dark",
   "Nostalgic", "Urgent", "Possessive", "Electric", "Bittersweet",
   "Forbidden", "Vulnerable", "Healing", "Complicated", "Obsessive",
-  "Desperate", "Fevered", "Wicked", "Decadent", "Volatile",
-  "Hungry", "Savage", "Aching", "Burning", "Shameless",
-  "Breathless", "Primal", "Reckless",
+  "Desperate", "Wicked", "Decadent", "Aching", "Burning",
+  "Breathless", "Reckless", "Yearning", "Unravelling", "Certain",
+  "Surrender", "Luminous", "Quiet",
 ];
 
 /* ── Appearance options (pronoun-aware) ───────────────────────────── */
@@ -636,7 +637,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
     perspective: "her",
-    intensity: afterDark ? "Explicit" : "Heated",
+    intensity: afterDark ? "Elevated" : "Warm",
     mood: "Emotional",
   });
   const [customTags, setCustomTags] = useState<string[]>([]);
@@ -713,11 +714,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       city: city || undefined,
       setting,
       atmosphere,
-      intensity: data.intensity ?? "Heated",
+      intensity: data.intensity ?? "Warm",
       mood: data.mood ?? "Emotional",
       whoIsHe,
       dynamic,
-      storyMode: afterDark ? "unrestrained" : (data.intensity === "Tender" || data.intensity === "Heated" ? "passionate" : "unrestrained"),
+      storyMode: afterDark ? "unrestrained" : (data.intensity === "Subtle" || data.intensity === "Warm" ? "passionate" : "unrestrained"),
       customTags,
       // Structured appearance fields — sent individually to the API, reconstructed server-side
       appearBuild: appearBuild || undefined,
@@ -1089,7 +1090,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Intensity</p>
               <div className="grid grid-cols-2 gap-2.5">
-                {INTENSITIES.filter(i => afterDark ? ["Explicit", "Scorching"].includes(i.id) : true).map(i => (
+                {INTENSITIES.filter(i => afterDark ? ["Elevated", "Intense"].includes(i.id) : true).map(i => (
                   <button
                     key={i.id}
                     type="button"

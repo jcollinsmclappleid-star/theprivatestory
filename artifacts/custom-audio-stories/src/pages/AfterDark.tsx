@@ -104,7 +104,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "he_decides",
     label: "He Decides Everything",
-    sub: "Total dominance. Her only role is to feel. He's precise about every instruction.",
+    sub: "She wanted to feel everything. She gave him that permission. He made it worth every second.",
     room: "power_exchange",
     darkness: "Deep Night",
     gradient: "from-[#140000] via-[#220000] to-[#0a0000]",
@@ -170,7 +170,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_lesson",
     label: "The Lesson",
-    sub: "He's patient. He has time. He intends to use every minute of it teaching her something new.",
+    sub: "She wanted to learn. He understood exactly how to show her. Neither of them was in a hurry.",
     room: "power_exchange",
     darkness: "Deep Night",
     gradient: "from-[#100005] via-[#1c000a] to-[#080003]",
@@ -249,7 +249,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_boss",
     label: "The Boss",
-    sub: "He signs her paychecks. He also hasn't stopped watching her cross the room all week.",
+    sub: "She noticed him watching. She kept walking. That was her first decision.",
     room: "the_forbidden",
     darkness: "After Dark",
     gradient: "from-[#0a000e] via-[#140018] to-[#06000a]",
@@ -374,7 +374,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_billionaire",
     label: "The Billionaire",
-    sub: "He can have anything he wants. He's wanted her for months. Tonight he finally asks.",
+    sub: "He asked. That was the only thing that mattered. She took her time deciding.",
     room: "in_character",
     darkness: "Deep Night",
     gradient: "from-[#0e0a00] via-[#1a1400] to-[#070600]",
@@ -420,7 +420,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_mirror",
     label: "The Mirror",
-    sub: "He makes her look. She can't. He waits. He makes her look again. She does.",
+    sub: "She wanted to look. Something in her resisted. He held the space. When she finally did, it was entirely her choice.",
     room: "eyes_on_us",
     darkness: "No Limits",
     gradient: "from-[#001414] via-[#001e1e] to-[#000c0c]",
@@ -499,7 +499,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_sweet_spot",
     label: "The Sweet Spot",
-    sub: "He knows exactly what she needs. He takes his time making sure she knows it too.",
+    sub: "She knew what she needed. He knew how to listen. Everything that followed was the answer.",
     room: "sweet_and_savage",
     darkness: "After Dark",
     gradient: "from-[#160010] via-[#220018] to-[#0e0008]",

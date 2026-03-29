@@ -838,10 +838,10 @@ function buildCoverPromptFromFormData(intake: GenerateStoryRequest): string {
 
   // --- Intensity → lighting atmosphere (whitelist) ---
   const INTENSITY_VISUAL: Record<string, string> = {
-    "Tender":    "soft diffused light, delicate shadow",
-    "Heated":    "warm amber light, building shadow contrast",
-    "Explicit":  "deep contrast, intense shadow play",
-    "Scorching": "high-contrast dramatic shadow, electric tension",
+    "Subtle":   "soft diffused light, delicate shadow",
+    "Warm":     "warm amber light, building shadow contrast",
+    "Elevated": "deep contrast, intense shadow play",
+    "Intense":  "high-contrast dramatic shadow, electric tension",
   };
   const intensityDesc = INTENSITY_VISUAL[intake.intensity?.trim() ?? ""] ?? "";
 
@@ -965,7 +965,7 @@ const voiceMap: Record<string, "nova" | "onyx" | "shimmer" | "echo"> = {
 // ---------------------------------------------------------------------------
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
-const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
+const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
 const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
 const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
 
@@ -1256,14 +1256,14 @@ function sanitiseTextField(raw: string | undefined, maxChars: number): string | 
  * Maps the 4 user-facing intensity label strings to the detailed 5-level
  * intensity directive from buildIntensityLayer. This ensures all stories use
  * the full, specific intensity instructions rather than a single weak paragraph.
- * Tender→1, Heated→3, Explicit→4, Scorching→5
+ * Subtle→1, Warm→3, Elevated→4, Intense→5
  */
 function labelToIntensityLevel(label: string): number {
   const map: Record<string, number> = {
-    Tender: 1,
-    Heated: 3,
-    Explicit: 4,
-    Scorching: 5,
+    Subtle: 1,
+    Warm: 3,
+    Elevated: 4,
+    Intense: 5,
   };
   return map[label] ?? 3;
 }
@@ -1312,7 +1312,7 @@ function derivePairingPronouns(pairing: string): string {
 
 function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
-  const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Heated";
+  const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Warm";
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
 
@@ -1539,10 +1539,10 @@ INTENSITY CONSTRAINT — STRUCTURAL (non-negotiable):
 This story operates at "${intake.intensity}" level (${labelToIntensityLevel(intake.intensity)}/5).
 ${intensityGuidance}
 The scene_plan MUST reflect this intensity level structurally:
-- At Tender/level-1: favour more SIMMER and RESONATE scenes, keep IGNITE minimal (1 scene)
-- At Heated/level-3: standard distribution — 1-2 IGNITE scenes with clear physical presence
-- At Explicit/level-4: 2-3 IGNITE scenes, each fully rendered and specific
-- At Scorching/level-5: maximum IGNITE scenes possible, nothing implied, everything described
+- At Subtle/level-1: favour more SIMMER and RESONATE scenes, keep IGNITE minimal (1 scene)
+- At Warm/level-3: standard distribution — 1-2 IGNITE scenes with clear physical presence
+- At Elevated/level-4: 2-3 IGNITE scenes, each fully rendered and specific
+- At Intense/level-5: maximum IGNITE scenes possible, nothing implied, everything described
 
 User Input:
 - Name: ${intake.listenerName || "the listener"}
@@ -1709,7 +1709,7 @@ interface OriginalUserInput {
   scenarioRoom?: string;
 }
 
-export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated", originalInput?: OriginalUserInput): Promise<WrittenStory> {
+export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Warm", originalInput?: OriginalUserInput): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
   const isSeries = originalInput?.isSeries === true;
 

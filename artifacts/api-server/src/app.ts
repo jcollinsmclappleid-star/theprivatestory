@@ -190,7 +190,6 @@ app.use("/api/reports", reportLimiter);
 app.use("/api/admin", adminLimiter);
 
 app.use("/api/plan-story", generationLimiter);
-app.use("/api/generate-story", generationLimiter);
 app.use("/api/generate-full-story", generationLimiter);
 app.use("/api/generate-variation", generationLimiter);
 app.use("/api/continue-story", generationLimiter);

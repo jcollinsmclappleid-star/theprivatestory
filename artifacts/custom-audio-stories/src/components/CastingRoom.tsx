@@ -36,10 +36,37 @@ export interface CastingRoomResult {
   situationId?: string;
 }
 
+export interface CastingRoomHandoff {
+  pairing?: string;
+  chemistry?: string;
+  perspective?: "her" | "his" | "your" | "their";
+  archetype?: string;
+  heritage?: string;
+  dynamic?: string;
+  whoIsHe?: string;
+  mood?: string;
+  setting?: string;
+  atmosphere?: string;
+  country?: string;
+  city?: string;
+  listenerName?: string;
+  partnerName?: string;
+  appearBuild?: string;
+  appearHeight?: string;
+  appearColouring?: string;
+  appearEyes?: string;
+  appearFeatures?: string[];
+  situation?: string;
+  situationId?: string;
+  customTags?: string[];
+}
+
 interface Props {
   onComplete: (result: CastingRoomResult) => void;
   onSkip: () => void;
   afterDark?: boolean;
+  handoff?: CastingRoomHandoff;
+  handoffStep?: number;
 }
 
 /* ── Perspective helpers ──────────────────────────────────────────── */
@@ -684,28 +711,30 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 }
 
 /* ── Main component ───────────────────────────────────────────────── */
-export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
-  const [step, setStep] = useState(0);
+export function CastingRoom({ onComplete, onSkip, afterDark = false, handoff, handoffStep }: Props) {
+  const [step, setStep] = useState(handoffStep ?? 0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
     perspective: "her",
     intensity: afterDark ? "Elevated" : "Warm",
     mood: "Emotional",
+    // Spread handoff data — intensity excluded so After Dark users must confirm
+    ...(handoff ? (({ listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData }) => castData)(handoff) : {}),
   });
-  const [customTags, setCustomTags] = useState<string[]>([]);
-  const [listenerName, setListenerName] = useState<string>("");
-  const [partnerName, setPartnerName] = useState<string>("");
+  const [customTags, setCustomTags] = useState<string[]>(handoff?.customTags ?? []);
+  const [listenerName, setListenerName] = useState<string>(handoff?.listenerName ?? "");
+  const [partnerName, setPartnerName] = useState<string>(handoff?.partnerName ?? "");
   // Appearance
-  const [appearBuild, setAppearBuild] = useState<string>("");
-  const [appearHeight, setAppearHeight] = useState<string>("");
-  const [appearColouring, setAppearColouring] = useState<string>("");
-  const [appearEyes, setAppearEyes] = useState<string>("");
-  const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
+  const [appearBuild, setAppearBuild] = useState<string>(handoff?.appearBuild ?? "");
+  const [appearHeight, setAppearHeight] = useState<string>(handoff?.appearHeight ?? "");
+  const [appearColouring, setAppearColouring] = useState<string>(handoff?.appearColouring ?? "");
+  const [appearEyes, setAppearEyes] = useState<string>(handoff?.appearEyes ?? "");
+  const [appearFeatures, setAppearFeatures] = useState<string[]>(handoff?.appearFeatures ?? []);
 
   const [showAfterDarkTeaser, setShowAfterDarkTeaser] = useState(false);
 
   // Situation step state
-  const [situationLabel, setSituationLabel] = useState<string>("");
-  const [situationId, setSituationId] = useState<string>("");
+  const [situationLabel, setSituationLabel] = useState<string>(handoff?.situation ?? "");
+  const [situationId, setSituationId] = useState<string>(handoff?.situationId ?? "");
   const [situationCategory, setSituationCategory] = useState<string>("");
   const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([SITUATION_CATEGORIES[0]]));
@@ -867,6 +896,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
           {afterDark ? "After Dark" : "The Casting Room"} · Step {step + 1} of {TOTAL_STEPS}
         </p>
       </div>
+
+      {/* Handoff banner — shown when carrying selections from standard casting */}
+      {handoff && (
+        <div className="mx-4 mb-4 rounded-xl px-4 py-2.5 flex items-center gap-2.5 border border-[#c0392b]/25 bg-[#c0392b]/5">
+          <Moon className="w-3.5 h-3.5 shrink-0" style={{ color: "#c0392b" }} />
+          <p className="text-xs text-muted-foreground">
+            Your selections are carried across. Just confirm these final steps.
+          </p>
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
 
@@ -1285,13 +1324,43 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                       <p className="text-xs text-muted-foreground leading-relaxed mb-3">
                         After Dark is a separate world: unrestrained intensity, explicit scenarios, and every casting option fully unlocked. Nothing held back, nothing left unwritten.
                       </p>
-                      <a
-                        href={`${import.meta.env.BASE_URL}after-dark`}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const handoffPayload: CastingRoomHandoff = {
+                            pairing: data.pairing,
+                            chemistry: data.chemistry,
+                            perspective: data.perspective,
+                            archetype: data.archetype,
+                            heritage: data.heritage,
+                            dynamic: data.dynamic,
+                            whoIsHe: data.whoIsHe,
+                            mood: data.mood,
+                            setting: data.setting,
+                            atmosphere: data.atmosphere,
+                            country: data.country,
+                            city: data.city,
+                            listenerName,
+                            partnerName,
+                            appearBuild,
+                            appearHeight,
+                            appearColouring,
+                            appearEyes,
+                            appearFeatures,
+                            situation: situationLabel,
+                            situationId,
+                            customTags,
+                          };
+                          try {
+                            sessionStorage.setItem("afterDarkHandoff", JSON.stringify(handoffPayload));
+                          } catch { /* ignore quota errors */ }
+                          window.location.href = `${import.meta.env.BASE_URL}after-dark`;
+                        }}
                         className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:opacity-80"
                         style={{ color: "#c0392b" }}
                       >
-                        Enter After Dark <ChevronRight className="w-3.5 h-3.5" />
-                      </a>
+                        Continue your selections in After Dark <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, BookOpen } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
@@ -6,7 +6,7 @@ import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
-import type { CastingRoomResult } from "@/components/CastingRoom";
+import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -814,6 +814,19 @@ export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [castingHandoff, setCastingHandoff] = useState<CastingRoomHandoff | null>(null);
+
+  // Read any handoff state saved by the standard casting room gateway
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("afterDarkHandoff");
+      if (raw) {
+        setCastingHandoff(JSON.parse(raw) as CastingRoomHandoff);
+        sessionStorage.removeItem("afterDarkHandoff");
+      }
+    } catch { /* ignore parse errors */ }
+  }, []);
+
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
@@ -1238,6 +1251,8 @@ export default function AfterDark() {
                 })
               }
               afterDark={true}
+              handoff={castingHandoff ?? undefined}
+              handoffStep={castingHandoff ? 5 : undefined}
             />
           </motion.div>
         )}

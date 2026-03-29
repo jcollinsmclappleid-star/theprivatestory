@@ -105,18 +105,18 @@ const STANDARD_TAGS: string[] = [
 
 const AFTER_DARK_TAGS: string[] = [
   // Top Fantasies (non-substituted)
-  "They find every limit",
   "They get caught",
   "Someone else is watching",
   // Top Fantasies — pronoun-substituted
-  ...variants(p => `They take, ${p.sub} receives`),
+  ...variants(p => `${p.sub} wants them to take the lead`),
+  ...variants(p => `${p.sub} lets them find every limit`),
   ...variants(p => `${p.sub} gives ${p.refl} over completely`),
   ...variants(p => `${p.sub} begs for it`),
   ...variants(p => `${p.sub} lets ${p.refl} be completely powerless`),
   ...variants(p => `${p.sub} watches ${p.refl}`),
   ...variants(p => `${p.sub} doesn't want them to stop`),
   ...variants(p => `${p.sub} wears what they choose`),
-  ...variants(p => `They make ${p.obj} say it out loud`),
+  ...variants(p => `${p.sub} loses the fight to stay quiet`),
   ...variants(p => `${p.sub} doesn't know what comes next`),
   ...variants(p => `They keep ${p.obj} at the edge`),
   ...variants(p => `${p.sub} surrenders completely`),
@@ -126,18 +126,17 @@ const AFTER_DARK_TAGS: string[] = [
   "Commands what they want",
   "Takes their time",
   "Watches closely",
-  "Covers their mouth",
   "Uses only their hands first",
   // What You Want Them To Do — pronoun-substituted
-  ...variants(p => `Makes ${p.obj} ask for it`),
+  ...variants(p => `Waits until ${p.sub} asks for it`),
   ...variants(p => `Holds ${p.obj} in place`),
   ...variants(p => `Undoes ${p.obj} slowly`),
-  ...variants(p => `Makes ${p.obj} earn it`),
+  ...variants(p => `${p.sub} earns every moment`),
   ...variants(p => `Won't let ${p.obj} hide`),
   ...variants(p => `Keeps ${p.obj} at the edge`),
   ...variants(p => `Doesn't let ${p.obj} finish until they say`),
   ...variants(p => `Takes ${p.obj} to every edge`),
-  ...variants(p => `Makes ${p.obj} count`),
+  ...variants(p => `${p.sub} counts for them`),
 
   // The Scene (non-substituted)
   "Slow undressing",

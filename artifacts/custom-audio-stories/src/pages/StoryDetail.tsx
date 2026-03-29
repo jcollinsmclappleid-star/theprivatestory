@@ -6,12 +6,27 @@ import { useStoryFallback } from "@/hooks/use-api-fallbacks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { Slider } from "@/components/ui/slider";
 import { ReportModal } from "@/components/ReportModal";
+import { CastSituation } from "@/components/CastSituation";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+interface CastingData {
+  pairing?: string;
+  archetype?: string;
+  chemistry?: string;
+  setting?: string;
+  country?: string;
+  city?: string;
+  atmosphere?: string;
+  intensity?: string;
+  situation?: string;
+  situationId?: string;
+}
+
 export default function StoryDetail() {
   const { id } = useParams();
-  const { data: story } = useStoryFallback(id || "");
+  const { data: rawStory } = useStoryFallback(id || "");
+  const story = rawStory as (typeof rawStory) & { castingData?: CastingData };
   const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress } = useAudioPlayer();
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
@@ -225,6 +240,9 @@ export default function StoryDetail() {
             </div>
           </div>
         )}
+
+        {/* Cast & Situation — visible only when casting data is present */}
+        <CastSituation data={story.castingData} />
       </div>
 
       {/* ------------------------------------------------------------------ */}

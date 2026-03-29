@@ -3045,6 +3045,20 @@ router.post("/generate-full-story", async (req, res) => {
       image: images.scenes[i],
     }));
 
+    // Assemble casting selections so the detail view can display what built this story.
+    // Only truthy values are included — the frontend treats absence as "not selected".
+    const castingData: Record<string, string | undefined> = {};
+    if (intake.pairing)    castingData.pairing    = intake.pairing;
+    if (intake.whoIsHe)    castingData.archetype  = intake.whoIsHe;
+    if (intake.chemistry)  castingData.chemistry  = intake.chemistry;
+    if (intake.setting)    castingData.setting    = intake.setting;
+    if (intake.country)    castingData.country    = intake.country;
+    if (intake.city)       castingData.city       = intake.city;
+    if (intake.atmosphere) castingData.atmosphere = intake.atmosphere;
+    if (intake.intensity)  castingData.intensity  = intake.intensity;
+    if (brief.situation)   castingData.situation  = brief.situation;
+    if (brief.situationId) castingData.situationId = brief.situationId;
+
     const result = {
       id: requestHash,
       title: story.title,
@@ -3061,6 +3075,7 @@ router.post("/generate-full-story", async (req, res) => {
       qc: qcResult,
       recommendation_tags: brief.recommendation_tags ?? [intake.mood],
       cached: false,
+      ...(Object.keys(castingData).length > 0 ? { castingData } : {}),
     };
 
     // Step 10: Persist to database.

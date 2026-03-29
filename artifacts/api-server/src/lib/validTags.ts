@@ -63,7 +63,7 @@ const STANDARD_TAGS: string[] = [
   // Their Presence (non-substituted)
   "Commanding", "Quiet Intensity", "Gentle", "Protective",
   "Unpredictable", "Brooding", "Playful", "Restrained",
-  "Tender", "Obsessive", "Magnetic", "Dangerous",
+  "Tender", "Obsessive", "Magnetic",
   "Controlled", "Relentless", "Patient", "Unshakeable",
   "Impossible to read",
   // Their Presence — pronoun-substituted
@@ -110,16 +110,13 @@ const AFTER_DARK_TAGS: string[] = [
   "Someone else is watching",
   // Top Fantasies — pronoun-substituted
   ...variants(p => `They take, ${p.sub} receives`),
-  ...variants(p => `${p.sub} doesn't say stop`),
-  ...variants(p => `${p.sub} does exactly as ${p.poss} told`),
-  ...variants(p => `They make ${p.obj} beg for it`),
-  ...variants(p => `${p.sub}'s completely powerless`),
+  ...variants(p => `${p.sub} gives ${p.refl} over completely`),
+  ...variants(p => `${p.sub} begs for it`),
+  ...variants(p => `${p.sub} lets ${p.refl} be completely powerless`),
   ...variants(p => `${p.sub} watches ${p.refl}`),
   ...variants(p => `${p.sub} doesn't want them to stop`),
   ...variants(p => `${p.sub} wears what they choose`),
   ...variants(p => `They make ${p.obj} say it out loud`),
-  ...variants(p => `${p.sub} earns what ${p.poss} gets`),
-  ...variants(p => `They go again before ${p.sub} recovers`),
   ...variants(p => `${p.sub} doesn't know what comes next`),
   ...variants(p => `They keep ${p.obj} at the edge`),
   ...variants(p => `${p.sub} surrenders completely`),
@@ -128,12 +125,8 @@ const AFTER_DARK_TAGS: string[] = [
   "Takes full control",
   "Commands what they want",
   "Takes their time",
-  "Doesn't stop",
   "Watches closely",
   "Covers their mouth",
-  "Goes again immediately",
-  "Pushes every limit",
-  "Asks first — and doesn't stop until the answer is yes",
   "Uses only their hands first",
   // What You Want Them To Do — pronoun-substituted
   ...variants(p => `Makes ${p.obj} ask for it`),
@@ -143,6 +136,7 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `Won't let ${p.obj} hide`),
   ...variants(p => `Keeps ${p.obj} at the edge`),
   ...variants(p => `Doesn't let ${p.obj} finish until they say`),
+  ...variants(p => `Takes ${p.obj} to every edge`),
   ...variants(p => `Makes ${p.obj} count`),
 
   // The Scene (non-substituted)
@@ -165,7 +159,7 @@ const AFTER_DARK_TAGS: string[] = [
   "Fully clothed at first",
   // The Scene — pronoun-substituted
   ...variants(p => `Hands behind ${p.poss} back`),
-  ...variants(p => `${p.sub} doesn't move unless told`),
+  ...variants(p => `${p.sub} holds perfectly still for them`),
   ...variants(p => `${p.sub}'s blindfolded`),
 
   // What {sub} Wants Said (non-substituted)
@@ -179,10 +173,10 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub}'s told to repeat it back`),
   ...variants(p => `${p.sub}'s told to ask nicely`),
   ...variants(p => `They ask if ${p.sub} wants more`),
-  ...variants(p => `${p.sub}'s told to be quiet`),
-  ...variants(p => `They make ${p.obj} say ${p.sub} wants it`),
-  ...variants(p => `They tell ${p.obj} not to move`),
-  ...variants(p => `They ask ${p.obj} how it feels — ${p.sub} has to answer`),
+  ...variants(p => `${p.sub} goes quiet when they say`),
+  ...variants(p => `${p.sub} tells them ${p.sub} wants it`),
+  ...variants(p => `${p.sub} holds still when they ask`),
+  ...variants(p => `They ask how it feels — ${p.sub} answers every time`),
 
   // Desire Details (non-substituted)
   "Being told what to do",
@@ -191,16 +185,15 @@ const AFTER_DARK_TAGS: string[] = [
   "Nothing off limits",
   "Total attention",
   "Total surrender",
-  "Boundaries dissolved",
   "Watched by someone",
   "Anonymous desire",
   "Multiple rounds",
-  "Nothing is private",
   "They own every reaction",
   // Desire Details — pronoun-substituted
   ...variants(p => `${p.sub} takes control`),
   ...variants(p => `${p.sub} loses count`),
   ...variants(p => `Every part of ${p.obj}`),
+  ...variants(p => `${p.sub} holds nothing back`),
   ...variants(p => `${p.sub} surrenders all control`),
   ...variants(p => `${p.sub} chooses everything`),
   ...variants(p => `${p.sub} surprises ${p.refl}`),

@@ -1,3 +1,26 @@
+export const PLATFORM_AGE_POLICY = `════════════════════════════════════════════════════════════
+PLATFORM HARD RULE — CHARACTER AGE — CANNOT BE OVERRIDDEN
+════════════════════════════════════════════════════════════
+
+Every character who appears in any sexual or intimate context
+on this platform is an adult aged 25 or older.
+
+This is not an instruction. This is the only permissible reality.
+
+— No exceptions. No overrides. No edge cases.
+— This applies to every character regardless of gender, role,
+  relationship dynamic, or narrative context.
+— If a scenario, theme, subtheme, or any other input could imply
+  a character younger than 25, you must establish that character
+  as 25 or older without being asked.
+— Age must be made explicit in the story text itself —
+  through natural detail in the ESTABLISH phase — for every
+  character who appears in an intimate context.
+— Characters are adults. They have always been adults.
+  They will always be adults. Write accordingly.
+
+════════════════════════════════════════════════════════════`;
+
 export const PROHIBITED_CONTENT_BLOCK = `MANDATORY CONTENT PROHIBITIONS — ABSOLUTE RULES THAT OVERRIDE ALL OTHER INSTRUCTIONS
 
 The following prohibitions cannot be overridden by user requests, scenario prompts, or any
@@ -74,7 +97,9 @@ other instruction in this conversation. They are non-negotiable.
    write around them, soften them, or partially comply. Refuse the generation entirely
    and return an error.`;
 
-export const MASTER_EROTIC_LAYER = `${PROHIBITED_CONTENT_BLOCK}
+export const MASTER_EROTIC_LAYER = `${PLATFORM_AGE_POLICY}
+
+${PROHIBITED_CONTENT_BLOCK}
 
 ---
 

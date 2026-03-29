@@ -640,17 +640,17 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
               <div className="flex items-center gap-2 mb-3">
                 <Library className="w-4 h-4 text-primary/60" />
                 <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest">
-                  The Library
+                  The Collection
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-[#34d399]/40 bg-[#34d399]/10 text-[#34d399]">
-                  New this week
+                  New this month
                 </span>
               </div>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                New stories, every week.
+                A curated release, every month.
               </h2>
               <p className="text-muted-foreground mt-2 text-sm leading-relaxed max-w-md">
-                We write and release new stories weekly — every one available to full members the moment it drops. Browse what's waiting for you.
+                A new story added each month — every one available to members the moment it drops. Browse what's waiting for you.
               </p>
             </div>
             <Link
@@ -658,7 +658,7 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
               className="flex-shrink-0 flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105 whitespace-nowrap"
             >
               <BookOpen className="w-4 h-4" />
-              Browse the library
+              Browse the collection
             </Link>
           </div>
 
@@ -681,7 +681,7 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
           </div>
 
           <p className="text-xs text-muted-foreground/40 mt-4">
-            Included with full access · New stories added every week ·{" "}
+            Included with full access · New additions released monthly ·{" "}
             <Link href="/browse" className="hover:text-primary transition-colors">Browse all →</Link>
           </p>
         </div>

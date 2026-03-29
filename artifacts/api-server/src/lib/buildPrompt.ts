@@ -1,7 +1,7 @@
 import { MASTER_EROTIC_LAYER, STORY_DNA_INSTRUCTION } from "./masterEroticLayer.js";
 import { STORY_CATEGORIES } from "./storyCategories.js";
 import { getArcStage, SERIES_POV_RULE, FIVE_EPISODE_EROTIC_ARC } from "./seriesArc.js";
-import { getSituationByLabel } from "./situations.js";
+import { getSituationById } from "./situations.js";
 
 /**
  * Per-category narrator identity layer injected into the system prompt.
@@ -62,8 +62,8 @@ export interface BuildPromptOptions {
   totalEpisodes?: number;
   seriesArc?: string;
   priorStoryRegistry?: StoryRegistryEntry[];
-  /** Situation label from the Casting Room — validated against the 200-item allowlist. */
-  situation?: string;
+  /** Situation ID from the Casting Room (e.g. "fc_01") — validated against the 200-item allowlist. */
+  situationId?: string;
 }
 
 export interface StoryRegistryEntry {
@@ -265,8 +265,8 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
 
   // ── Situation anchor — injected after subtheme premise, before intensity ──
   const situationBlock = (() => {
-    if (!options.situation) return "";
-    const sit = getSituationByLabel(options.situation);
+    if (!options.situationId) return "";
+    const sit = getSituationById(options.situationId);
     if (!sit) return "";
     return `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}`;
   })();

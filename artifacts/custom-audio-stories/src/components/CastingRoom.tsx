@@ -32,6 +32,8 @@ export interface CastingRoomResult {
   partnerName?: string;
   // Situation — one of 220 predefined situations from SITUATIONS
   situation?: string;
+  /** Machine-readable ID — used for API validation (e.g. "fc_01"). */
+  situationId?: string;
 }
 
 interface Props {
@@ -670,6 +672,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
 
   // Situation step state
   const [situationLabel, setSituationLabel] = useState<string>("");
+  const [situationId, setSituationId] = useState<string>("");
   const [situationCategory, setSituationCategory] = useState<string>("");
   const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
   const [browseSitTab, setBrowseSitTab] = useState<string>(SITUATION_CATEGORIES[0]);
@@ -757,6 +760,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       partnerName: partnerName || undefined,
       // Situation — the selected situation label (one of 220 predefined)
       situation: situationLabel || undefined,
+      situationId: situationId || undefined,
     };
     onComplete(result);
   };
@@ -1225,6 +1229,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                       onClick={() => {
                         const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
                         setSituationLabel(pick.label);
+                        setSituationId(pick.id);
                         setSituationCategory(pick.category);
                         setBrowseSitTab(pick.category);
                       }}
@@ -1235,7 +1240,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                     <span className="text-border/40">·</span>
                     <button
                       type="button"
-                      onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
+                      onClick={() => { setSituationLabel(""); setSituationId(""); setSituationCategory(""); setCfmMode("none"); }}
                       className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <X size={12} /> Clear
@@ -1253,7 +1258,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   </div>
                   <button
                     type="button"
-                    onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
+                    onClick={() => { setSituationLabel(""); setSituationId(""); setSituationCategory(""); setCfmMode("none"); }}
                     className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-1"
                   >
                     <X size={12} /> Clear
@@ -1268,6 +1273,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                     onClick={() => {
                       const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
                       setSituationLabel(pick.label);
+                      setSituationId(pick.id);
                       setSituationCategory(pick.category);
                       setBrowseSitTab(pick.category);
                       setCfmMode("cfm");
@@ -1302,7 +1308,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             {/* 2-column grid for the active tab */}
             <div className="grid grid-cols-2 gap-1.5">
               {getSituationsByCategory(browseSitTab).map(sit => {
-                const isSelected = situationLabel === sit.label;
+                const isSelected = situationId === sit.id;
                 return (
                   <button
                     key={sit.id}
@@ -1310,10 +1316,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                     onClick={() => {
                       if (isSelected) {
                         setSituationLabel("");
+                        setSituationId("");
                         setSituationCategory("");
                         setCfmMode("none");
                       } else {
                         setSituationLabel(sit.label);
+                        setSituationId(sit.id);
                         setSituationCategory(sit.category);
                         setCfmMode("none");
                       }

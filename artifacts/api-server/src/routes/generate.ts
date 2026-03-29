@@ -11,7 +11,7 @@ import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
-import { VALID_SITUATION_LABELS, getSituationByLabel } from "../lib/situations.js";
+import { VALID_SITUATION_IDS, getSituationById } from "../lib/situations.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
@@ -512,8 +512,8 @@ export interface GenerateStoryRequest {
   city?: string;
   /** After Dark room ID (e.g. "more_than_two", "power_exchange") — used for group-scene detection. */
   scenarioRoom?: string;
-  /** Situation label from the Casting Room (one of 220 predefined — validated server-side). */
-  situation?: string;
+  /** Situation ID from the Casting Room (e.g. "fc_01") — validated against 200-item allowlist server-side. */
+  situationId?: string;
 }
 
 /** Internal server-only extension of GenerateStoryRequest.
@@ -553,7 +553,10 @@ export interface StoryBrief {
   image_style_direction: string;
   recommendation_tags?: string[];
   quality_target?: string;
+  /** Human-readable label of the selected situation (for display in downstream consumers). */
   situation?: string;
+  /** Machine-readable ID of the selected situation (e.g. "fc_01") — authoritative reference. */
+  situationId?: string;
 }
 
 export interface Scene {
@@ -1436,9 +1439,9 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
       raw.scenarioRoom?.trim() === GROUP_SCENE_ROOM ||
       (Array.isArray(raw.experienceTags) && raw.experienceTags.some(t => GROUP_IMPLICATION_TAGS.has(t)))
     ) ? true : undefined,
-    // Situation — validate against the 220-item allowlist, silently drop if unknown.
-    situation: raw.situation?.trim() && VALID_SITUATION_LABELS.has(raw.situation.trim())
-      ? raw.situation.trim() : undefined,
+    // Situation — validate against the 200-item allowlist by ID, silently drop if unknown.
+    situationId: raw.situationId?.trim() && VALID_SITUATION_IDS.has(raw.situationId.trim())
+      ? raw.situationId.trim() : undefined,
   };
 }
 
@@ -1465,7 +1468,7 @@ function makeRequestHash(intake: GenerateStoryRequest): string {
     intake.country ?? "",
     intake.city ?? "",
     intake.scenarioRoom ?? "",
-    intake.situation ?? "",
+    intake.situationId ?? "",
   ].join("|");
   return crypto.createHash("md5").update(key).digest("hex");
 }
@@ -1569,7 +1572,7 @@ User Input:
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
-- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situation ? (() => { const sit = getSituationByLabel(intake.situation); return sit ? `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}` : ""; })() : ""}
+- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situationId ? (() => { const sit = getSituationById(intake.situationId); return sit ? `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}` : ""; })() : ""}
 
 You must infer and return:
 - emotional_arc (from the variety pools above — choose intelligently)
@@ -1649,7 +1652,11 @@ Return JSON in exactly this shape:
     const brief = JSON.parse(cleaned) as StoryBrief;
     // Stamp the intake situation onto the brief so downstream consumers
     // (cache, persist, writeStoryFromBrief) always have it in structured data.
-    if (intake.situation) brief.situation = intake.situation;
+    if (intake.situationId) {
+      brief.situationId = intake.situationId;
+      const sit = getSituationById(intake.situationId);
+      if (sit) brief.situation = sit.label;
+    }
     return brief;
   }
 
@@ -2914,7 +2921,7 @@ router.post("/generate-full-story", async (req, res) => {
       city: intake.city,
       isGroupScene: intake.isGroupScene,
       scenarioRoom: intake.scenarioRoom,
-      situation: intake.situation,
+      situationId: intake.situationId,
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 

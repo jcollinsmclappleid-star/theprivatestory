@@ -1228,7 +1228,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: "pl_20",
-    label: "She promoted him. He's now her peer. Everything that wasn't possible before now is.",
+    label: "She used her own authority to bring him level with her. What was containable before is not containable now.",
     category: "Professional & Crossing Lines",
     internalInject: "She used her authority to advance him to a level beside her own. The hierarchical barrier that made certain feelings manageable has dissolved by her own decision. Both are adjusting to what the dissolution means. The story is the first encounter as equals after the change.",
   },
@@ -1247,10 +1247,20 @@ export const SITUATION_CATEGORIES: string[] = [
   "Professional & Crossing Lines",
 ];
 
+export const VALID_SITUATION_IDS: Set<string> = new Set(
+  SITUATIONS.map((s) => s.id)
+);
+
+/** @deprecated Use getSituationById — label-based lookup is ambiguous. */
 export const VALID_SITUATION_LABELS: Set<string> = new Set(
   SITUATIONS.map((s) => s.label)
 );
 
+export function getSituationById(id: string): Situation | undefined {
+  return SITUATIONS.find((s) => s.id === id);
+}
+
+/** @deprecated Use getSituationById instead. */
 export function getSituationByLabel(label: string): Situation | undefined {
   return SITUATIONS.find((s) => s.label === label);
 }

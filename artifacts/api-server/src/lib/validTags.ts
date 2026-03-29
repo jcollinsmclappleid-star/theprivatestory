@@ -127,15 +127,7 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub} wanted to be used and adored`),
   ...variants(p => `${p.sub} wanted to be made to beg`),
 
-  // How It Ends — explicit agency-led climax
-  ...variants(p => `${p.sub} comes apart completely`),
-  ...variants(p => `${p.sub} finishes while they watch`),
-  ...variants(p => `${p.sub} loses count of how many times`),
-  ...variants(p => `${p.sub} comes the moment they say to`),
-  ...variants(p => `${p.sub} asks to go again before they've stopped`),
-  ...variants(p => `${p.sub} is shaking and wants more`),
-  ...variants(p => `${p.sub} gets everything that was promised`),
-  // How It Ends — aftermath
+  // How It Ends
   ...variants(p => `${p.sub} falls asleep in their arms`),
   "They don't leave until morning",
   ...variants(p => `${p.sub} asks for more`),

@@ -1668,6 +1668,10 @@ interface OriginalUserInput {
   previousChapterSummary?: string;
   /** For series episodes: the chapter number (1-indexed) */
   chapterNumber?: number;
+  /** Country selected in WorldPicker — anchored as REQUIRED world-location driver */
+  country?: string;
+  /** City selected in WorldPicker — anchored as REQUIRED world-location driver */
+  city?: string;
 }
 
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Heated", originalInput?: OriginalUserInput): Promise<WrittenStory> {
@@ -2779,6 +2783,8 @@ router.post("/generate-full-story", async (req, res) => {
       storyMode: intake.storyMode,
       experienceTags: intake.experienceTags,
       ending: intake.ending,
+      country: intake.country,
+      city: intake.city,
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 

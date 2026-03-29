@@ -4,7 +4,86 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>The Private Story</title>
-    <meta name="description" content="The Private Story — AI-written romantic and adult audio stories, written for you and private to you. No history shared. No social. Just your story, your way." />
+    <meta name="description" content="The Private Story — AI-written romantic and intimate audio stories, created around your choices and private to you alone. No history shared. No social. Heard only by you." />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Private Story" />
+    <meta property="og:title" content="The Private Story — Personalised AI Audio Stories" />
+    <meta property="og:description" content="AI-written romantic and intimate audio stories, created around your choices and private to you alone. No history shared. No social. Heard only by you." />
+    <meta property="og:image" content="https://theprivatestory.com/opengraph.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://theprivatestory.com/" />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Private Story — Personalised AI Audio Stories" />
+    <meta name="twitter:description" content="AI-written romantic and intimate audio stories, created around your choices and private to you alone. No history shared. No social. Heard only by you." />
+    <meta name="twitter:image" content="https://theprivatestory.com/opengraph.jpg" />
+
+    <!-- Canonical (SPA default — overridden per-page by useSEO hook) -->
+    <link rel="canonical" href="https://theprivatestory.com/" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://theprivatestory.com/#organization",
+          "name": "The Private Story",
+          "url": "https://theprivatestory.com",
+          "logo": "https://theprivatestory.com/favicon.svg",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "hello@theprivatestory.com"
+          },
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://theprivatestory.com/#website",
+          "url": "https://theprivatestory.com",
+          "name": "The Private Story",
+          "description": "AI-written personalised audio stories for adults — private, literary, and created around your choices.",
+          "publisher": { "@id": "https://theprivatestory.com/#organization" },
+          "inLanguage": "en-GB"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://theprivatestory.com/#webapp",
+          "name": "The Private Story",
+          "url": "https://theprivatestory.com",
+          "applicationCategory": "EntertainmentApplication",
+          "operatingSystem": "Web",
+          "description": "Create personalised AI audio stories tailored to your mood, cast, and world. Private to your account. Narrated by ElevenLabs voices.",
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Monthly",
+              "price": "29.00",
+              "priceCurrency": "GBP",
+              "billingPeriod": "P1M",
+              "description": "5 personalised story generations per month"
+            },
+            {
+              "@type": "Offer",
+              "name": "Annual",
+              "price": "179.00",
+              "priceCurrency": "GBP",
+              "billingPeriod": "P1Y",
+              "description": "50 personalised story generations per year"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

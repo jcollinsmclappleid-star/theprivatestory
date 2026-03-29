@@ -3,7 +3,7 @@ import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
 const config: SEOPageConfig = {
   meta: {
     title: "Personalised Audio Stories | The Private Story",
-    description: "Audio stories created around how you want to feel tonight. Not selected from a library — generated for you, privately. Adults only.",
+    description: "Personalised audio stories created around how you want to feel tonight. Not selected from a library — generated around your choices and private to you alone.",
   },
   hero: {
     badge: "Personalised · Private · For Adults",

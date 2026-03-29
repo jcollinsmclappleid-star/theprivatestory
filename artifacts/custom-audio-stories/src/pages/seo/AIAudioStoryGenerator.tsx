@@ -3,7 +3,7 @@ import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
 const config: SEOPageConfig = {
   meta: {
     title: "AI Audio Story Generator | The Private Story",
-    description: "An AI audio story generator that creates personalised stories around your mood, tone, and preferences. Private, adult, emotionally intelligent. Not a library — a creation tool.",
+    description: "An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.",
   },
   hero: {
     badge: "AI-Generated · Emotionally Intelligent · Private",

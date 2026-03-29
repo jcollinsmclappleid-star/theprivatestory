@@ -3,7 +3,7 @@ import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
 const config: SEOPageConfig = {
   meta: {
     title: "Late Night Audio Stories | The Private Story",
-    description: "Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Create yours tonight.",
+    description: "Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Your story, created for tonight.",
   },
   hero: {
     badge: "After Dark · Private · Adults Only",

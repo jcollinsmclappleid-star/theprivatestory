@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft } from "lucide-react";
 import { NAMES } from "../data/names";
@@ -675,7 +675,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [situationId, setSituationId] = useState<string>("");
   const [situationCategory, setSituationCategory] = useState<string>("");
   const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
-  const [browseSitTab, setBrowseSitTab] = useState<string>(SITUATION_CATEGORIES[0]);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([SITUATION_CATEGORIES[0]]));
+
+  // Scroll to top whenever the step changes
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
 
   const TOTAL_STEPS = 11;
 
@@ -790,7 +796,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 w-full">
+    <div ref={topRef} className="max-w-2xl mx-auto px-4 py-8 w-full">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -1231,7 +1237,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                         setSituationLabel(pick.label);
                         setSituationId(pick.id);
                         setSituationCategory(pick.category);
-                        setBrowseSitTab(pick.category);
+                        setExpandedCategories(prev => { const n = new Set(prev); n.add(pick.category); return n; });
                       }}
                       className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
                     >
@@ -1275,7 +1281,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                       setSituationLabel(pick.label);
                       setSituationId(pick.id);
                       setSituationCategory(pick.category);
-                      setBrowseSitTab(pick.category);
+                      setExpandedCategories(prev => { const n = new Set(prev); n.add(pick.category); return n; });
                       setCfmMode("cfm");
                     }}
                     className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-primary/30 bg-primary/5 text-sm font-semibold text-primary hover:bg-primary/10 hover:border-primary/50 transition-all"
@@ -1287,53 +1293,83 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               )}
             </div>
 
-            {/* Tab strip — 10 categories */}
-            <div className="flex gap-1.5 overflow-x-auto pb-1 mb-3 scrollbar-none">
-              {SITUATION_CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setBrowseSitTab(cat)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    browseSitTab === cat
-                      ? "bg-primary/15 text-primary border border-primary/40"
-                      : "border border-border/30 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* 2-column grid for the active tab */}
-            <div className="grid grid-cols-2 gap-1.5">
-              {getSituationsByCategory(browseSitTab).map(sit => {
-                const isSelected = situationId === sit.id;
+            {/* Accordion — one collapsible section per category */}
+            <div className="space-y-2">
+              {SITUATION_CATEGORIES.map(cat => {
+                const situations = getSituationsByCategory(cat);
+                const isOpen = expandedCategories.has(cat);
+                const hasSelected = situations.some(s => s.id === situationId);
                 return (
-                  <button
-                    key={sit.id}
-                    type="button"
-                    onClick={() => {
-                      if (isSelected) {
-                        setSituationLabel("");
-                        setSituationId("");
-                        setSituationCategory("");
-                        setCfmMode("none");
-                      } else {
-                        setSituationLabel(sit.label);
-                        setSituationId(sit.id);
-                        setSituationCategory(sit.category);
-                        setCfmMode("none");
-                      }
-                    }}
-                    className={`text-left px-3 py-2.5 rounded-xl text-xs leading-snug border transition-all ${
-                      isSelected
-                        ? "border-primary/60 bg-primary/10 text-primary font-medium"
-                        : "border-border/20 text-muted-foreground hover:border-primary/30 hover:text-foreground hover:bg-primary/5"
+                  <div
+                    key={cat}
+                    className={`rounded-xl border overflow-hidden transition-colors ${
+                      hasSelected ? "border-primary/40" : "border-border/25"
                     }`}
                   >
-                    {sit.label}
-                  </button>
+                    {/* Section header */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedCategories(prev => {
+                          const n = new Set(prev);
+                          if (n.has(cat)) n.delete(cat);
+                          else n.add(cat);
+                          return n;
+                        })
+                      }
+                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/5 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        {hasSelected && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        )}
+                        <span className={`text-sm font-semibold ${hasSelected ? "text-primary" : "text-foreground"}`}>
+                          {cat}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground/60">{situations.length}</span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        />
+                      </div>
+                    </button>
+
+                    {/* Situation list */}
+                    {isOpen && (
+                      <div className="border-t border-border/20 divide-y divide-border/10">
+                        {situations.map(sit => {
+                          const isSelected = situationId === sit.id;
+                          return (
+                            <button
+                              key={sit.id}
+                              type="button"
+                              onClick={() => {
+                                if (isSelected) {
+                                  setSituationLabel("");
+                                  setSituationId("");
+                                  setSituationCategory("");
+                                  setCfmMode("none");
+                                } else {
+                                  setSituationLabel(sit.label);
+                                  setSituationId(sit.id);
+                                  setSituationCategory(sit.category);
+                                  setCfmMode("none");
+                                }
+                              }}
+                              className={`w-full text-left px-4 py-3 text-sm leading-snug transition-all ${
+                                isSelected
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                              }`}
+                            >
+                              {sit.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -1513,12 +1549,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
       </AnimatePresence>
 
       {/* Navigation */}
-      <div className="mt-8">
+      <div className="mt-8 flex gap-3">
+        {step > 0 && (
+          <button
+            onClick={back}
+            className="flex items-center justify-center gap-1.5 px-5 py-4 rounded-2xl font-semibold text-sm border border-border/40 text-muted-foreground hover:text-foreground hover:border-border/70 transition-all flex-shrink-0"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+        )}
         {step < TOTAL_STEPS - 1 ? (
           <button
             onClick={next}
             disabled={!canProceed()}
-            className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all ${
+            className={`flex-1 py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all ${
               canProceed()
                 ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
                 : "bg-card/40 text-muted-foreground cursor-not-allowed border border-border/30"
@@ -1530,7 +1575,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
         ) : (
           <button
             onClick={handleFinish}
-            className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
+            className="flex-1 py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5 shadow-glow"
             style={afterDark ? { background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 30px rgba(192,57,43,0.3)" } : {}}
           >
             <Sparkles className="w-5 h-5" />

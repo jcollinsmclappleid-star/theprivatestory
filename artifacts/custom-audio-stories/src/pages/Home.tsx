@@ -194,8 +194,8 @@ function WorldIntroCard() {
             <Globe className="w-3.5 h-3.5 text-[#34d399]/70" />
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#34d399]/70">Your World</span>
           </div>
-          <p className="text-base font-bold text-white/90 mb-1 leading-snug">Set your story anywhere.</p>
-          <p className="text-xs text-white/40 leading-relaxed mb-4">50+ countries · 400+ cities · 12 historical eras</p>
+          <p className="text-base font-bold text-white/90 mb-1 leading-snug">Place your story anywhere on earth.</p>
+          <p className="text-xs text-white/40 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
 
           <div className="overflow-hidden mb-2 -mx-1">
             <div
@@ -214,7 +214,7 @@ function WorldIntroCard() {
             </div>
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-2">Or another era entirely</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-2">Or step into another era entirely</p>
           <div className="overflow-hidden -mx-1">
             <div
               className="flex gap-2"
@@ -234,7 +234,7 @@ function WorldIntroCard() {
         </div>
 
         <div className="relative z-10 mx-4 mb-4 mt-3 rounded-xl border p-3" style={{ borderColor: "#34d39920", background: "#34d3990a" }}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#34d39966" }}>Example</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#34d39966" }}>The scene you chose</p>
           <p className="text-xs text-white/60 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
         </div>
 
@@ -254,8 +254,16 @@ function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
       <div className="relative z-10 p-5 pb-3">
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: s.accent }}>Step {s.step}</span>
-        <p className="text-base font-bold text-white/90 mt-2 mb-1 leading-snug">{s.label}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
+            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
+          >
+            {s.category}
+          </span>
+          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+        </div>
+        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
         <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
       </div>
 
@@ -310,8 +318,16 @@ function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
       <div className="relative z-10 p-5 pb-3">
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: s.accent }}>Step {s.step}</span>
-        <p className="text-base font-bold text-white/90 mt-2 mb-1 leading-snug">{s.label}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
+            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
+          >
+            {s.category}
+          </span>
+          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+        </div>
+        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
         <p className="text-xs text-white/45 leading-relaxed mb-4">{s.sub}</p>
 
         <div className="space-y-2">
@@ -352,9 +368,14 @@ function FinalOutputCard({ s }: { s: StepCard }) {
       <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 70% 25%, #c9a22728 0%, transparent 60%)" }} />
 
       <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: "#c9a227" }}>Step {s.step}</span>
-          <span className="text-[10px] font-medium tracking-widest uppercase text-primary/60">✦ The Result</span>
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
+            style={{ color: "#c9a227", borderColor: "#c9a22730", background: "#c9a2270d" }}
+          >
+            {s.category}
+          </span>
+          <span className="text-[9px] text-white/20 tracking-widest">✦ Your result</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
         <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
@@ -379,7 +400,12 @@ function FinalOutputCard({ s }: { s: StepCard }) {
       </div>
 
       <div className="relative z-10 mx-4 mb-4 space-y-1.5">
-        {["Narrated — just press play", "Cover art created", "Saved to your private library", "Visible only to you"].map((item) => (
+        {[
+          "Narrated — ready to listen immediately",
+          "Original cover art generated for this story",
+          "Saved privately — visible only to you",
+          "No record shared with anyone, ever",
+        ].map((item) => (
           <div key={item} className="flex items-center gap-2">
             <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -399,8 +425,16 @@ function StandardCard({ s }: { s: StepCard }) {
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
       <div className="relative z-10 p-5 pb-3">
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: s.accent }}>Step {s.step}</span>
-        <p className="text-base font-bold text-white/90 mt-2 mb-1 leading-snug">{s.label}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
+            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
+          >
+            {s.category}
+          </span>
+          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+        </div>
+        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
         <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
       </div>
 
@@ -426,14 +460,13 @@ function StandardCard({ s }: { s: StepCard }) {
 
       {s.example && s.selected && (
         <div className="relative z-10 mx-4 mb-3 mt-2 rounded-xl border p-3" style={{ borderColor: `${s.accent}25`, background: `${s.accent}0d` }}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: `${s.accent}70` }}>Selected · {s.selected}</p>
+          <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5 opacity-60" style={{ color: s.accent }}>{s.selected}</p>
           <p className="text-xs italic leading-relaxed" style={{ color: `${s.accent}cc` }}>{s.example}</p>
         </div>
       )}
 
       {!s.example && s.selected && (
         <div className="relative z-10 mx-4 mb-3 mt-2 rounded-xl border p-3" style={{ borderColor: `${s.accent}25`, background: `${s.accent}0d` }}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: `${s.accent}70` }}>Selected</p>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: s.accent }} />
             <p className="text-sm font-semibold" style={{ color: s.accent }}>{s.selected}</p>
@@ -561,15 +594,22 @@ function CastingPreview() {
         ))}
 
         {/* CTA card */}
-        <div className="flex-shrink-0 w-64 snap-start flex items-center justify-center">
-          <Link href="/create" className="flex flex-col items-center gap-3 text-center group">
-            <div className="w-14 h-14 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center group-hover:bg-primary/25 group-hover:scale-105 transition-all">
+        <div className="flex-shrink-0 w-72 snap-start flex items-center justify-center px-4">
+          <Link href="/create" className="flex flex-col items-center gap-4 text-center group w-full">
+            <div className="w-16 h-16 rounded-full bg-primary/12 border border-primary/25 flex items-center justify-center group-hover:bg-primary/22 group-hover:scale-105 transition-all group-hover:shadow-[0_0_32px_rgba(201,162,39,0.2)]">
               <Sparkles className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Begin your story</p>
-              <p className="text-xs text-muted-foreground/50 mt-0.5">60 seconds to start</p>
+              <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
+                Begin your story
+              </p>
+              <p className="text-xs text-muted-foreground/45 mt-1.5 leading-relaxed max-w-[180px] mx-auto">
+                Written for you. Narrated. Private from the first word.
+              </p>
             </div>
+            <span className="text-xs text-primary/50 group-hover:text-primary/80 transition-colors tracking-widest uppercase">
+              Create My Story →
+            </span>
           </Link>
         </div>
       </div>
@@ -819,12 +859,12 @@ export default function Home() {
               },
               {
                 img: "home-visual-2.png",
-                quote: "Heard only by you — exactly as you wanted it.",
+                quote: "Private. Intimate. Heard only by you.",
                 accent: "#a78bfa",
               },
               {
                 img: "home-visual-3.png",
-                quote: "Written for tonight. Private from the first word.",
+                quote: "Written for tonight. Saved only to yours.",
                 accent: "#e879a0",
               },
             ].map(({ img, quote, accent }) => (

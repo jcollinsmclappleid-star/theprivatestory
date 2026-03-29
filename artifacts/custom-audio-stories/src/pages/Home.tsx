@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Zap, Moon,
   EyeOff, WifiOff, Trash2, Lock, Shield, BookOpen, Star,
-  ChevronLeft, Globe, Library,
+  ChevronLeft, Globe, Library, Shuffle,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
@@ -84,6 +84,7 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: false,
     isIntensity: false,
+    isSituation: false,
   },
   {
     step: "02",
@@ -98,6 +99,7 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: false,
     isIntensity: false,
+    isSituation: false,
   },
   {
     step: "03",
@@ -112,6 +114,7 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: false,
     isIntensity: false,
+    isSituation: false,
   },
   {
     step: "04",
@@ -126,6 +129,7 @@ const STEP_CARDS = [
     isSetting: true,
     isFinal: false,
     isIntensity: false,
+    isSituation: false,
     settingCategories: {
       contemporary: ["Luxury Hotel", "Private Yacht", "Rooftop Bar", "Mountain Retreat", "European Villa", "Private Estate"],
       historical: ["Victorian London", "Roaring Twenties", "Belle Époque Paris", "Regency England", "Feudal Japan", "Wartime 1940s"],
@@ -146,6 +150,7 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: false,
     isIntensity: true,
+    isSituation: false,
   },
   {
     step: "06",
@@ -160,9 +165,25 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: false,
     isIntensity: false,
+    isSituation: false,
   },
   {
     step: "07",
+    category: "The Situation",
+    label: "The story behind the story",
+    sub: "220 situations across 11 categories — or one chosen for you. The dramatic context that makes every story feel different.",
+    accent: "#e11d48",
+    gradient: "from-[#1a0008] via-[#250010] to-[#100006]",
+    options: null,
+    selected: null,
+    example: null,
+    isSetting: false,
+    isFinal: false,
+    isIntensity: false,
+    isSituation: true,
+  },
+  {
+    step: "08",
     category: "Your Story",
     label: "Written. Narrated. Yours alone.",
     sub: "Your story written, a voice selected, cover art created — private from the very first word.",
@@ -174,6 +195,7 @@ const STEP_CARDS = [
     isSetting: false,
     isFinal: true,
     isIntensity: false,
+    isSituation: false,
   },
 ] as const;
 
@@ -351,6 +373,82 @@ function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
             );
           })}
         </div>
+      </div>
+
+      <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
+        <ChevronRight className="w-4 h-4 rotate-90" style={{ color: `${s.accent}50` }} />
+      </div>
+    </div>
+  );
+}
+
+const SITUATION_CATEGORIES = [
+  "Forbidden & Complicated",
+  "Reunion & Return",
+  "First & Unknown",
+  "Power & Tension",
+  "Psychological & Obsessive",
+  "Circumstance & Proximity",
+  "Secrets & Unspoken",
+  "Dark & Dangerous",
+  "Slow Burn & Patience",
+  "Professional & Crossing Lines",
+  "Drama & Psychological Thriller",
+];
+
+const SITUATION_EXAMPLES = [
+  "The evidence points to him. She's the one who buried it.",
+  "One of them is leaving. Tonight is all there is.",
+];
+
+function SituationCard({ s }: { s: StepCard }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border flex flex-col border-white/10">
+      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
+      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
+
+      <div className="relative z-10 p-5 pb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <span
+            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
+            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
+          >
+            {s.category}
+          </span>
+          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+        </div>
+        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
+        <p className="text-xs text-white/45 leading-relaxed mb-3">{s.sub}</p>
+
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-xl border mb-3"
+          style={{ borderColor: `${s.accent}30`, background: `${s.accent}10` }}
+        >
+          <Shuffle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.accent }} />
+          <span className="text-xs font-semibold" style={{ color: s.accent }}>Choose For Me</span>
+          <span className="text-[10px] text-white/30 ml-auto">or pick yours →</span>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {SITUATION_CATEGORIES.map((cat) => (
+            <span
+              key={cat}
+              className="px-2 py-0.5 rounded-full text-[10px] font-medium border"
+              style={{ borderColor: `${s.accent}25`, color: `${s.accent}80`, background: `${s.accent}0a` }}
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative z-10 mx-4 mb-4 rounded-xl border p-3" style={{ borderColor: `${s.accent}20`, background: `${s.accent}08` }}>
+        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: `${s.accent}60` }}>Example situations</p>
+        {SITUATION_EXAMPLES.map((ex) => (
+          <p key={ex} className="text-xs italic leading-relaxed mb-1 last:mb-0" style={{ color: `${s.accent}b0` }}>
+            "{ex}"
+          </p>
+        ))}
       </div>
 
       <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
@@ -587,6 +685,8 @@ function CastingPreview() {
               <SettingCard s={s as StepCard & { isSetting: true }} />
             ) : s.isIntensity ? (
               <IntensityCard s={s as StepCard & { isIntensity: true }} />
+            ) : s.isSituation ? (
+              <SituationCard s={s} />
             ) : (
               <StandardCard s={s} />
             )}
@@ -903,7 +1003,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
                   {[
                     { label: "Your mood", desc: "The emotional register. How you want to feel." },
-                    { label: "Your world", desc: "The person, the setting, the chemistry." },
+                    { label: "Your situation", desc: "220 situations. Or let us choose the perfect one for you." },
                     { label: "Your voice", desc: "Narrated in the tone that fits tonight." },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl bg-background/40 border border-border/20 p-4">
@@ -928,12 +1028,12 @@ export default function Home() {
                   Stories waiting to be written
                 </p>
                 {[
-                  "The one she never should have wanted",
-                  "A reunion 10 years too long",
-                  "Forbidden — and she knew it from the start",
-                  "Slow burn. It finally broke.",
-                  "The night she stopped pretending",
-                  "The one who saw it before she said a word",
+                  "She's been watching him for three years. He just started watching back.",
+                  "One of them is leaving. Tonight is all there is.",
+                  "The evidence points to him. She's the one who buried it.",
+                  "A reunion 10 years too late — and neither of them is sorry.",
+                  "Forbidden for reasons that stopped mattering.",
+                  "The handler and the asset. The mission is over. They're still here.",
                 ].map((label) => (
                   <div
                     key={label}

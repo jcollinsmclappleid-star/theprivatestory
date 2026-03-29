@@ -383,6 +383,32 @@ const AFTER_DARK_SETTINGS = [
 ];
 
 /* ── Country / City data ──────────────────────────────────────────── */
+const COUNTRY_FLAGS: Record<string, string> = {
+  "France": "🇫🇷", "United Kingdom": "🇬🇧", "Italy": "🇮🇹", "Spain": "🇪🇸",
+  "Monaco": "🇲🇨", "Greece": "🇬🇷", "Turkey": "🇹🇷", "Portugal": "🇵🇹",
+  "Switzerland": "🇨🇭", "Austria": "🇦🇹", "Germany": "🇩🇪", "Netherlands": "🇳🇱",
+  "Denmark": "🇩🇰", "Sweden": "🇸🇪", "Norway": "🇳🇴", "Finland": "🇫🇮",
+  "Belgium": "🇧🇪", "Poland": "🇵🇱", "Croatia": "🇭🇷", "Czechia": "🇨🇿",
+  "Hungary": "🇭🇺", "Ireland": "🇮🇪", "Iceland": "🇮🇸",
+  "USA": "🇺🇸", "Mexico": "🇲🇽", "Cuba": "🇨🇺", "Argentina": "🇦🇷",
+  "Brazil": "🇧🇷", "Colombia": "🇨🇴", "Peru": "🇵🇪",
+  "Jamaica": "🇯🇲", "Barbados": "🇧🇧", "Trinidad & Tobago": "🇹🇹",
+  "St. Lucia": "🇱🇨", "Bahamas": "🇧🇸", "Antigua & Barbuda": "🇦🇬",
+  "Cayman Islands": "🇰🇾", "St. Barths": "🇧🇱", "Turks & Caicos": "🇹🇨",
+  "Grenada": "🇬🇩", "Martinique": "🇲🇶", "Guadeloupe": "🇬🇵",
+  "South Africa": "🇿🇦", "Morocco": "🇲🇦", "Egypt": "🇪🇬",
+  "Kenya": "🇰🇪", "Tanzania": "🇹🇿", "Nigeria": "🇳🇬", "Ghana": "🇬🇭",
+  "Senegal": "🇸🇳", "Ethiopia": "🇪🇹", "Rwanda": "🇷🇼", "Ivory Coast": "🇨🇮",
+  "Mozambique": "🇲🇿", "Mauritius": "🇲🇺", "Seychelles": "🇸🇨", "Réunion": "🇷🇪",
+  "UAE": "🇦🇪", "Saudi Arabia": "🇸🇦", "Jordan": "🇯🇴", "Lebanon": "🇱🇧",
+  "Oman": "🇴🇲", "Qatar": "🇶🇦",
+  "India": "🇮🇳", "Thailand": "🇹🇭", "Japan": "🇯🇵", "South Korea": "🇰🇷",
+  "Vietnam": "🇻🇳", "Bali": "🇮🇩", "Sri Lanka": "🇱🇰", "Singapore": "🇸🇬",
+  "Hong Kong": "🇭🇰",
+  "Australia": "🇦🇺", "New Zealand": "🇳🇿", "Maldives": "🇲🇻",
+  "French Polynesia": "🇵🇫", "Fiji": "🇫🇯",
+};
+
 const COUNTRY_CITIES: Record<string, string[]> = {
   // Europe
   "France":             ["Paris", "Nice", "Cannes", "Bordeaux", "Biarritz", "Antibes", "Saint-Tropez", "Lyon", "Marseille"],
@@ -1027,11 +1053,33 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 >
                   <option value="">Choose a country…</option>
                   {Object.keys(COUNTRY_CITIES).sort().map(c => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>{COUNTRY_FLAGS[c] ? `${COUNTRY_FLAGS[c]} ${c}` : c}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
+              {/* Country confirmed badge */}
+              {data.country && (
+                <motion.div
+                  key={data.country}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-3 flex items-center gap-2"
+                >
+                  {COUNTRY_FLAGS[data.country] && (
+                    <span className="text-2xl leading-none">{COUNTRY_FLAGS[data.country]}</span>
+                  )}
+                  <span className="text-sm font-semibold text-foreground">{data.country}</span>
+                  <span className="text-xs text-muted-foreground/60">selected</span>
+                  <button
+                    type="button"
+                    onClick={() => { update("country", ""); update("city", ""); }}
+                    className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5"
+                  >
+                    <X size={11} /> Clear
+                  </button>
+                </motion.div>
+              )}
             </div>
 
             {/* City — shown only when country selected */}
@@ -1041,21 +1089,33 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-6"
               >
-                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: accentColor, opacity: 0.7 }}>City</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: accentColor, opacity: 0.7 }}>City</p>
+                  {data.city && (
+                    <span className="text-xs text-muted-foreground/60 italic">
+                      {COUNTRY_FLAGS[data.country] && `${COUNTRY_FLAGS[data.country]} `}{data.city}
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
                   <select
                     value={data.city ?? ""}
                     onChange={e => update("city", e.target.value)}
-                    className="w-full bg-card/50 border border-border/40 rounded-2xl px-5 py-4 text-base text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-10"
+                    className={`w-full bg-card/50 border rounded-2xl px-5 py-4 text-base text-foreground appearance-none focus:outline-none transition-all cursor-pointer pr-10 ${
+                      data.city ? "border-primary/50 bg-primary/5" : "border-border/40 focus:border-primary/50"
+                    }`}
                     style={{ colorScheme: "dark" }}
                   >
-                    <option value="">Any city…</option>
+                    <option value="">Any city in {data.country}…</option>
                     {(COUNTRY_CITIES[data.country] ?? []).map(city => (
                       <option key={city} value={city}>{city}</option>
                     ))}
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 </div>
+                {!data.city && (
+                  <p className="mt-2 text-xs text-muted-foreground/50 italic">Optional — leave as "any city" to let the story choose.</p>
+                )}
               </motion.div>
             )}
 
@@ -1426,10 +1486,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </p>
 
             {listenerName ? (
-              <div className="flex items-center gap-3 mb-6">
-                <span className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground">
-                  {listenerName}
-                </span>
+              <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">
+                <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                <span className="text-base font-semibold text-foreground flex-1">{listenerName}</span>
                 <button
                   type="button"
                   onClick={() => { setListenerName(""); setListenerSearch(""); setTimeout(() => listenerInputRef.current?.focus(), 50); }}
@@ -1440,6 +1499,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               </div>
             ) : (
               <div className="relative mb-6">
+                {/* No selection notice */}
+                {!listenerSearch && (
+                  <p className="text-xs text-muted-foreground/50 mb-3 flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-border/60" />
+                    No name selected yet
+                  </p>
+                )}
                 <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
                   <Search size={14} className="text-muted-foreground shrink-0" />
                   <input
@@ -1459,18 +1525,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   )}
                 </div>
                 {filteredListenerNames.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {filteredListenerNames.map(name => (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={() => { setListenerName(name); setListenerSearch(""); }}
-                        className="px-4 py-2 rounded-full text-sm font-medium border border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
-                      >
-                        {name}
-                      </button>
-                    ))}
-                  </div>
+                  <>
+                    <p className="mt-3 mb-2 text-xs text-muted-foreground/60">Tap a name to select it</p>
+                    <div className="flex flex-wrap gap-2">
+                      {filteredListenerNames.map(name => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => { setListenerName(name); setListenerSearch(""); }}
+                          className="px-4 py-2 rounded-full text-sm font-medium border border-primary/25 text-foreground bg-primary/5 hover:border-primary/60 hover:bg-primary/15 transition-all"
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 )}
                 {listenerSearch.trim().length >= 1 && filteredListenerNames.length === 0 && (
                   <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>
@@ -1492,10 +1561,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </p>
 
             {partnerName ? (
-              <div className="flex items-center gap-3 mb-6">
-                <span className="px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground">
-                  {partnerName}
-                </span>
+              <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">
+                <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                <span className="text-base font-semibold text-foreground flex-1">{partnerName}</span>
                 <button
                   type="button"
                   onClick={() => { setPartnerName(""); setPartnerSearch(""); setTimeout(() => partnerInputRef.current?.focus(), 50); }}
@@ -1506,6 +1574,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               </div>
             ) : (
               <div className="relative mb-6">
+                {/* No selection notice */}
+                {!partnerSearch && (
+                  <p className="text-xs text-muted-foreground/50 mb-3 flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-border/60" />
+                    No name selected yet
+                  </p>
+                )}
                 <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
                   <Search size={14} className="text-muted-foreground shrink-0" />
                   <input
@@ -1525,18 +1600,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   )}
                 </div>
                 {filteredPartnerNames.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {filteredPartnerNames.map(name => (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={() => { setPartnerName(name); setPartnerSearch(""); }}
-                        className="px-4 py-2 rounded-full text-sm font-medium border border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
-                      >
-                        {name}
-                      </button>
-                    ))}
-                  </div>
+                  <>
+                    <p className="mt-3 mb-2 text-xs text-muted-foreground/60">Tap a name to select it</p>
+                    <div className="flex flex-wrap gap-2">
+                      {filteredPartnerNames.map(name => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => { setPartnerName(name); setPartnerSearch(""); }}
+                          className="px-4 py-2 rounded-full text-sm font-medium border border-primary/25 text-foreground bg-primary/5 hover:border-primary/60 hover:bg-primary/15 transition-all"
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 )}
                 {partnerSearch.trim().length >= 1 && filteredPartnerNames.length === 0 && (
                   <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>

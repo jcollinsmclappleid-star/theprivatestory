@@ -725,7 +725,8 @@ router.post("/seed-library", async (req, res) => {
   const total = LIBRARY_SEED_MANIFEST.length;
   send("start", { total, message: `Starting library seed — ${total} stories` });
 
-  let done = 0;
+  let created = 0;
+  let skipped = 0;
   let failed = 0;
 
   for (const entry of LIBRARY_SEED_MANIFEST) {
@@ -752,7 +753,7 @@ router.post("/seed-library", async (req, res) => {
         existingId: existing.id,
         message: `Already seeded — skipping`,
       });
-      done++;
+      skipped++;
       continue;
     }
 
@@ -818,7 +819,7 @@ router.post("/seed-library", async (req, res) => {
         castingData,
       });
 
-      done++;
+      created++;
       send("story_done", {
         index: idx,
         total,
@@ -826,7 +827,8 @@ router.post("/seed-library", async (req, res) => {
         title: story.title,
         storyId,
         coverUrl: images.cover,
-        done,
+        created,
+        skipped,
         failed,
       });
     } catch (err) {
@@ -838,13 +840,14 @@ router.post("/seed-library", async (req, res) => {
         situationId: entry.situationId,
         label: entry.label,
         error: message,
-        done,
+        created,
+        skipped,
         failed,
       });
     }
   }
 
-  send("complete", { total, done, failed, message: `Seed complete — ${done} stories created, ${failed} failed` });
+  send("complete", { total, created, skipped, failed, message: `Seed complete — ${created} created, ${skipped} skipped, ${failed} failed` });
   res.end();
 });
 

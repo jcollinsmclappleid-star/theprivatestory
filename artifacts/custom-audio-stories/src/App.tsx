@@ -28,6 +28,10 @@ import MySeriesDetailPage from "@/pages/MySeriesDetail";
 import ResetPassword from "@/pages/ResetPassword";
 import Contact from "@/pages/Contact";
 import Pricing from "@/pages/Pricing";
+import PersonalisedAudioStories from "@/pages/seo/PersonalisedAudioStories";
+import PrivateAudioStories from "@/pages/seo/PrivateAudioStories";
+import CreateYourOwnAudioStory from "@/pages/seo/CreateYourOwnAudioStory";
+import SleepAudioStories from "@/pages/seo/SleepAudioStories";
 
 function MySeriesDetailRoute() {
   const { id } = useParams<{ id: string }>();
@@ -61,6 +65,10 @@ function Router() {
             <Route path="/content-policy" component={ContentPolicy} />
             <Route path="/contact" component={Contact} />
             <Route path="/pricing" component={Pricing} />
+            <Route path="/personalised-audio-stories" component={PersonalisedAudioStories} />
+            <Route path="/private-audio-stories" component={PrivateAudioStories} />
+            <Route path="/create-your-own-audio-story" component={CreateYourOwnAudioStory} />
+            <Route path="/sleep-audio-stories" component={SleepAudioStories} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

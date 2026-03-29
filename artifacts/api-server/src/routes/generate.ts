@@ -2496,13 +2496,20 @@ router.post("/generate-images", async (req, res) => {
     res.status(401).json({ error: "Authentication required" });
     return;
   }
-  if (!req.user?.isAdmin) {
-    res.status(403).json({ error: "Admin access required" });
-    return;
-  }
 
-  const body = req.body as { coverPrompt: string; scenePrompts: string[] };
-  const cacheKey = getCacheKey(body);
+  // Accept the same structured intake as the main pipeline — no raw prompt strings.
+  // All fields are validated against allowlists; the prompt is built server-side.
+  const intake = normaliseIntake(req.body as GenerateStoryRequest);
+  intake.listenerName = req.user?.approvedListenerName?.trim() ?? "";
+  intake.partnerName = req.user?.approvedPartnerName?.trim() || undefined;
+
+  const isCastingBased = !!(intake.heritage || intake.atmosphere || intake.chemistry);
+  const coverPrompt = isCastingBased
+    ? buildCoverPromptFromCasting(intake)
+    : buildCoverPromptFromFormData(intake);
+
+  const imagePrompts: ImagePrompts = { coverPrompt, scenePrompts: [] };
+  const cacheKey = getCacheKey(imagePrompts);
 
   if (imageCache.has(cacheKey)) {
     res.json(imageCache.get(cacheKey));
@@ -2510,11 +2517,7 @@ router.post("/generate-images", async (req, res) => {
   }
 
   try {
-    const prompts: ImagePrompts = {
-      coverPrompt: body.coverPrompt,
-      scenePrompts: body.scenePrompts.map((p, i) => ({ sceneId: i + 1, prompt: p })),
-    };
-    const result = await generateAllImages(prompts, cacheKey);
+    const result = await generateAllImages(imagePrompts, cacheKey);
     imageCache.set(cacheKey, result);
     res.json(result);
   } catch (err) {

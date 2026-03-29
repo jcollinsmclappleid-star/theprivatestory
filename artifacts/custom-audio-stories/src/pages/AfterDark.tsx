@@ -960,8 +960,8 @@ export default function AfterDark() {
       setPhase("generating");
       startLoadingPhase();
 
-      // perspective: CastingRoom uses "your"/"her"/"his" but API uses "you"/"her"/"his"
-      const apiPerspective = casting.perspective === "your" ? "you" : casting.perspective;
+      // perspective: CastingRoom uses "your"/"her"/"his"/"their" but API uses "you"/"her"/"his"/"they"
+      const apiPerspective = casting.perspective === "your" ? "you" : casting.perspective === "their" ? "they" : casting.perspective;
 
       try {
         await generateMutation.mutateAsync({

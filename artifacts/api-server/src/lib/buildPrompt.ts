@@ -226,6 +226,7 @@ ${JSON.stringify(forcedFields, null, 2)}
 
 These are not suggestions. They are locked. The story must be built around them.
 If "narrative_perspective" is "close third person", refer to the protagonist as "she" throughout.
+If "narrative_perspective" is "close third person (they/them)", refer to the protagonist as "they" throughout — never "she" or "he".
 If "narrative_perspective" is "alternating close perspective", begin in third person then shift to second person at the CRACK moment.
 `;
 

@@ -712,7 +712,7 @@ export default function Create() {
 
   const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingCastingData, setPendingCastingData] = useState<Record<string, unknown> | null>(null);
-  const [perspective, setPerspective] = useState<"your" | "her" | "his">("your");
+  const [perspective, setPerspective] = useState<"your" | "her" | "his" | "their">("your");
   const [castingPairing, setCastingPairing] = useState<string | undefined>();
   const [castingHeritage, setCastingHeritage] = useState<string | undefined>();
   const [castingAtmosphere, setCastingAtmosphere] = useState<string | undefined>();
@@ -938,7 +938,7 @@ export default function Create() {
     if (typeof p.setting === "string") form.setValue("setting", p.setting);
     if (typeof p.timeOfDay === "string") setTimeOfDay(p.timeOfDay);
     if (typeof p.season === "string") setSeason(p.season);
-    if (p.perspective === "your" || p.perspective === "her" || p.perspective === "his") setPerspective(p.perspective);
+    if (p.perspective === "your" || p.perspective === "her" || p.perspective === "his" || p.perspective === "their") setPerspective(p.perspective);
     setFormPresetFlash(true);
     setTimeout(() => setFormPresetFlash(false), 1500);
   }, [formPreset, form]);
@@ -1121,7 +1121,7 @@ export default function Create() {
           scenarioCard: form.getValues("scenarioCard") || undefined,
           timeOfDay: timeOfDay || undefined,
           season: season || undefined,
-          perspective: casting.perspective === "your" ? "you" : casting.perspective,
+          perspective: casting.perspective === "your" ? "you" : casting.perspective === "their" ? "they" : casting.perspective,
           cinematicVisuals: true,
           emotionalFocus: casting.mood === "Emotional",
           whoIsHe: casting.archetype || undefined,
@@ -1158,8 +1158,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
-    // perspective: CastingRoom uses "your"/"her"/"his" but API uses "you"/"her"/"his"
-    const apiPerspective = perspective === "your" ? "you" : perspective;
+    // perspective: CastingRoom uses "your"/"her"/"his"/"their" but API uses "you"/"her"/"his"/"they"
+    const apiPerspective = perspective === "your" ? "you" : perspective === "their" ? "they" : perspective;
 
     try {
       await generateMutation.mutateAsync({
@@ -1288,8 +1288,8 @@ export default function Create() {
     setStep("generating");
     startLoadingPhase();
 
-    // perspective: form state uses "your"/"her"/"his", API uses "you"/"her"/"his"
-    const apiPerspective = perspective === "your" ? "you" : perspective;
+    // perspective: form state uses "your"/"her"/"his"/"their", API uses "you"/"her"/"his"/"they"
+    const apiPerspective = perspective === "your" ? "you" : perspective === "their" ? "they" : perspective;
 
     try {
       await generateMutation.mutateAsync({

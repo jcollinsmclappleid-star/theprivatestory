@@ -1084,8 +1084,8 @@ const VALID_SCENARIO_CARDS = new Set([
 
 const VALID_TIME_OF_DAY = new Set(["Dawn", "Morning", "Afternoon", "Evening", "Midnight"]);
 const VALID_SEASONS = new Set(["Spring", "Summer", "Autumn", "Winter"]);
-/** "her" / "his" → third-person close. "you" → second person (default). */
-const VALID_PERSPECTIVES = new Set(["her", "his", "you"]);
+/** "her" / "his" / "they" → third-person close. "you" → second person (default). */
+const VALID_PERSPECTIVES = new Set(["her", "his", "you", "they"]);
 
 /** Appearance chip options — union of all pronoun variants from CastingRoom. */
 const VALID_APPEAR_BUILD = new Set(["Lean", "Athletic", "Broad", "Muscular", "Tall & lean", "Stocky", "Slight"]);
@@ -1209,6 +1209,8 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     ? "[Third-person close: write from her perspective using she/her throughout — never 'you'] "
     : perspective === "his"
     ? "[Third-person close: write from his perspective using he/him throughout — never 'you'] "
+    : perspective === "they"
+    ? "[Third-person close: write from their perspective using they/them throughout — never 'you'] "
     : "";
   const scenarioPrompt = povPrefix + scenarioBase;
 

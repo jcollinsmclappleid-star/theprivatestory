@@ -5,7 +5,7 @@ import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 
 export interface CastingRoomResult {
-  perspective: "her" | "his" | "your";
+  perspective: "her" | "his" | "your" | "their";
   pairing?: string;
   heritage: string;
   archetype: string;
@@ -43,7 +43,7 @@ function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "h
   switch (pairing?.protagonistPronouns) {
     case "she/her":   return ["her", "your"];
     case "he/him":    return ["his", "your"];
-    case "they/them": return ["your"];
+    case "they/them": return ["your", "their"];
     default:          return ["her", "his", "your"];
   }
 }
@@ -81,9 +81,10 @@ function ArtTile({ gradient, accent, children, selected, onClick }: {
 
 /* ── Step data ────────────────────────────────────────────────────── */
 const PERSPECTIVES = [
-  { id: "her" as const, label: "Her Story", sub: "She feels it. She decides.", gradient: "from-[#1a0810] via-[#2a1020] to-[#120508]", accent: "#e879a0" },
-  { id: "your" as const, label: "Your Story", sub: "You're the one in this world.", gradient: "from-[#100d00] via-[#1e1900] to-[#0c0a00]", accent: "#c9a227" },
-  { id: "his" as const, label: "His Story", sub: "Follow him. Feel everything.", gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce" },
+  { id: "her" as const,   label: "Her Story",   sub: "She feels it. She decides.",    gradient: "from-[#1a0810] via-[#2a1020] to-[#120508]", accent: "#e879a0" },
+  { id: "your" as const,  label: "Your Story",  sub: "You're the one in this world.", gradient: "from-[#100d00] via-[#1e1900] to-[#0c0a00]", accent: "#c9a227" },
+  { id: "his" as const,   label: "His Story",   sub: "Follow him. Feel everything.",  gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce" },
+  { id: "their" as const, label: "Their Story", sub: "Follow them. Feel everything.", gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]",  accent: "#9ca3af" },
 ];
 
 interface PairingOption {
@@ -575,7 +576,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
     switch (step) {
       case 0: return !!data.pairing;
       case 1: return !!data.chemistry;
-      case 2: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your");
+      case 2: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your" | "their");
       case 3: return !!data.heritage && !!data.archetype;
       case 4: return !!data.setting;
       case 5: return !!data.intensity && !!data.mood;

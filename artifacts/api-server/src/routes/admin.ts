@@ -738,6 +738,24 @@ router.post("/seed-library", async (req, res) => {
       mood: entry.mood,
     });
 
+    // Skip if a library story already exists for this situationId
+    const [existing] = await db
+      .select({ id: generatedStories.id })
+      .from(generatedStories)
+      .where(like(generatedStories.id, `lib-${entry.situationId}-%`))
+      .limit(1);
+    if (existing) {
+      send("story_skipped", {
+        index: idx,
+        total,
+        situationId: entry.situationId,
+        existingId: existing.id,
+        message: `Already seeded — skipping`,
+      });
+      done++;
+      continue;
+    }
+
     try {
       const intake: GenerateStoryRequest = {
         mood: entry.mood,

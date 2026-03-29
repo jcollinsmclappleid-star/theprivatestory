@@ -3,6 +3,27 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
+/* ── Brand scrollbar (deep crimson) ─────────────────────────────────────────
+   Apply .scrollbar-brand to any overflow container that needs a branded bar.  */
+.scrollbar-brand {
+  scrollbar-width: thin;
+  scrollbar-color: #8b0000 transparent;
+}
+.scrollbar-brand::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+.scrollbar-brand::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-brand::-webkit-scrollbar-thumb {
+  background: #8b0000;
+  border-radius: 2px;
+}
+.scrollbar-brand::-webkit-scrollbar-thumb:hover {
+  background: #c0392b;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

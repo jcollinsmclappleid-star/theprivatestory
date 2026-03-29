@@ -28,6 +28,7 @@ interface Room {
   name: string;
   sub: string;
   accent: string;
+  image?: string;
 }
 
 /* ── Fantasy Rooms ──────────────────────────────────────────────────── */
@@ -37,54 +38,63 @@ const ROOMS: Room[] = [
     name: "Power Exchange",
     sub: "Control given. Or taken. Either way, everything changes.",
     accent: "#c0392b",
+    image: "images/rooms/power_exchange.png",
   },
   {
     id: "the_forbidden",
     name: "The Forbidden",
     sub: "The reason it's wrong is the reason it's everything.",
     accent: "#8b5cf6",
+    image: "images/rooms/the_forbidden.png",
   },
   {
     id: "slow_burn",
     name: "Slow Burn",
     sub: "Weeks of tension. One moment of finally. Everything held back until now.",
     accent: "#e07840",
+    image: "images/rooms/slow_burn.png",
   },
   {
     id: "in_character",
     name: "In Character",
     sub: "A role, a premise, a fiction that becomes completely real.",
     accent: "#d97706",
+    image: "images/rooms/in_character.png",
   },
   {
     id: "eyes_on_us",
     name: "Eyes On Us",
     sub: "Watched. Watching. Every motion deliberate and felt.",
     accent: "#14b8a6",
+    image: "images/rooms/eyes_on_us.png",
   },
   {
     id: "sweet_and_savage",
     name: "Sweet & Savage",
     sub: "Tenderness that turns feral. Softness that breaks into something wilder.",
     accent: "#db2777",
+    image: "images/rooms/sweet_and_savage.png",
   },
   {
     id: "more_than_two",
     name: "More Than Two",
     sub: "Desire doesn't always arrive in pairs.",
     accent: "#6366f1",
+    image: "images/rooms/more_than_two.png",
   },
   {
     id: "the_edge",
     name: "The Edge",
     sub: "Psychological intensity. Obsession. The kind of wanting that unsettles.",
     accent: "#7c3aed",
+    image: "images/rooms/the_edge.png",
   },
   {
     id: "dark_territory",
     name: "Dark Territory",
     sub: "Past the edge. Written without restraint or apology.",
     accent: "#c0392b",
+    image: "images/rooms/dark_territory.png",
   },
 ];
 
@@ -1102,27 +1112,39 @@ export default function AfterDark() {
                 const roomScenarios = SCENARIOS.filter((s) => s.room === room.id);
                 return (
                   <div key={room.id}>
-                    {/* Room heading */}
-                    <div className="mb-4 flex items-baseline gap-3">
-                      <motion.div
-                        animate={{ opacity: [0.5, 0.9, 0.5] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="w-1 h-4 rounded-full flex-shrink-0"
-                        style={{ background: room.accent }}
-                      />
-                      <div>
-                        <h2
-                          className="font-display text-lg font-bold"
-                          style={{ color: room.accent }}
-                        >
-                          {room.name}
-                        </h2>
-                        <p className="text-xs text-muted-foreground mt-0.5">{room.sub}</p>
+                    {/* Room heading — image-backed banner */}
+                    <div className="mb-4 relative overflow-hidden rounded-xl border" style={{ borderColor: `${room.accent}22` }}>
+                      {room.image && (
+                        <img
+                          src={`${import.meta.env.BASE_URL}${room.image}`}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          style={{ opacity: 0.14 }}
+                        />
+                      )}
+                      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${room.accent}12 0%, transparent 70%)` }} />
+                      <div className="relative flex items-center gap-3 px-4 py-3">
+                        <motion.div
+                          animate={{ opacity: [0.5, 0.9, 0.5] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                          className="w-1 h-4 rounded-full flex-shrink-0"
+                          style={{ background: room.accent }}
+                        />
+                        <div>
+                          <h2
+                            className="font-display text-lg font-bold"
+                            style={{ color: room.accent }}
+                          >
+                            {room.name}
+                          </h2>
+                          <p className="text-xs text-muted-foreground mt-0.5">{room.sub}</p>
+                        </div>
                       </div>
                     </div>
 
                     {/* Horizontal scroll row */}
-                    <div className="overflow-x-auto pb-2 -mx-4 px-4">
+                    <div className="overflow-x-auto pb-2 -mx-4 px-4 scrollbar-brand">
                       <div className="flex gap-3 w-max">
                         {roomScenarios.map((scenario) => (
                           <ScenarioCard

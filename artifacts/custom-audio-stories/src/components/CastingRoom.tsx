@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin } from "lucide-react";
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 
@@ -53,9 +53,9 @@ function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "h
 }
 
 /* ── Abstract art tiles ───────────────────────────────────────────── */
-function ArtTile({ gradient, accent, children, selected, onClick }: {
+function ArtTile({ gradient, accent, children, selected, onClick, image }: {
   gradient: string; accent: string; children: React.ReactNode;
-  selected?: boolean; onClick?: () => void;
+  selected?: boolean; onClick?: () => void; image?: string;
 }) {
   return (
     <motion.button
@@ -69,7 +69,18 @@ function ArtTile({ gradient, accent, children, selected, onClick }: {
           : "border-white/10 hover:border-primary/40"
       }`}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
+      {image && (
+        <img
+          src={`${import.meta.env.BASE_URL}${image}`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${gradient}`}
+        style={image ? { opacity: 0.80 } : undefined}
+      />
       <motion.div
         animate={{ opacity: selected ? [0.4, 0.7, 0.4] : [0.2, 0.35, 0.2] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -259,90 +270,90 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
 }
 
 const HERITAGES = [
-  { id: "Latina", label: "Latina", sub: "Warm, magnetic, fire beneath calm", gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840" },
-  { id: "Black", label: "Black", sub: "Radiant, commanding presence", gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc" },
-  { id: "South Asian", label: "South Asian", sub: "Layered beauty, quiet intensity", gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24" },
-  { id: "European", label: "European", sub: "Refined edges, complicated wanting", gradient: "from-[#040814] via-[#081220] to-[#02060e]", accent: "#94a3b8" },
-  { id: "East Asian", label: "East Asian", sub: "Elegant, precise, quietly devastating", gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#2dd4bf" },
-  { id: "Middle Eastern", label: "Middle Eastern", sub: "Striking depth, magnetic gravity", gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#f59e0b" },
-  { id: "Indigenous", label: "Indigenous", sub: "Rooted, fierce, unapologetically present", gradient: "from-[#060e02] via-[#0e1a04] to-[#030800]", accent: "#86efac" },
-  { id: "Ambiguous", label: "Ambiguous", sub: "Leave it open. Let imagination fill it.", gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af" },
+  { id: "Latina",         label: "Latina",         sub: "Warm, magnetic, fire beneath calm",         gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840", image: "images/heritage/latina.png" },
+  { id: "Black",          label: "Black",           sub: "Radiant, commanding presence",              gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc", image: "images/heritage/black.png" },
+  { id: "South Asian",    label: "South Asian",     sub: "Layered beauty, quiet intensity",           gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24", image: "images/heritage/south_asian.png" },
+  { id: "European",       label: "European",        sub: "Refined edges, complicated wanting",        gradient: "from-[#040814] via-[#081220] to-[#02060e]", accent: "#94a3b8", image: "images/heritage/european.png" },
+  { id: "East Asian",     label: "East Asian",      sub: "Elegant, precise, quietly devastating",     gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#2dd4bf", image: "images/heritage/east_asian.png" },
+  { id: "Middle Eastern", label: "Middle Eastern",  sub: "Striking depth, magnetic gravity",          gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#f59e0b", image: "images/heritage/middle_eastern.png" },
+  { id: "Indigenous",     label: "Indigenous",      sub: "Rooted, fierce, unapologetically present",  gradient: "from-[#060e02] via-[#0e1a04] to-[#030800]", accent: "#86efac", image: "images/heritage/indigenous.png" },
+  { id: "Ambiguous",      label: "Ambiguous",       sub: "Leave it open. Let imagination fill it.",   gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af", image: "images/heritage/ambiguous.png" },
 ];
 
-/* ── Archetypes — pronoun-aware, 14 options ───────────────────────── */
+/* ── Archetypes — pronoun-aware, 21 options ───────────────────────── */
 function buildArchetypes(pairingId: string | undefined) {
   const { partner: P } = derivePronouns(pairingId);
   const s = P.subject; const o = P.object; const p = P.possessive;
   return [
-    { id: "The Executive",    label: "The Executive",    sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                      gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227" },
-    { id: "The Stranger",     label: "The Stranger",     sub: `No backstory. No promises. Only this moment.`,                                               gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280" },
-    { id: "The Artist",       label: "The Artist",       sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                  gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa" },
-    { id: "The Protector",    label: "The Protector",    sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                            gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399" },
-    { id: "The Bad One",      label: "The Bad One",      sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                                        gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444" },
-    { id: "The Professor",    label: "The Professor",    sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                             gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa" },
-    { id: "The Wanderer",     label: "The Wanderer",     sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                    gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185" },
-    { id: "The Old Friend",   label: "The Old Friend",   sub: `Years of knowing each other. Tonight something finally breaks.`,                              gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d" },
-    { id: "The Detective",    label: "The Detective",    sub: `${s} notices everything. Nothing slips past ${o}. That attention has a cost.`,                gradient: "from-[#040808] via-[#081010] to-[#020404]", accent: "#67e8f9" },
-    { id: "The Doctor",       label: "The Doctor",       sub: `Clinical precision. Unshakeable calm. Until ${s} isn't.`,                                    gradient: "from-[#00080a] via-[#000c10] to-[#000406]", accent: "#a3e635" },
-    { id: "The Musician",     label: "The Musician",     sub: `${s} plays like ${s.toLowerCase()} already knows how this ends. ${s} might.`,                 gradient: "from-[#0a0002] via-[#140004] to-[#050001]", accent: "#f9a8d4" },
-    { id: "The Athlete",      label: "The Athlete",      sub: `Physical command. Total focus. That discipline doesn't stop here.`,                           gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80" },
-    { id: "The Chef",         label: "The Chef",         sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                        gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c" },
-    { id: "The Soldier",      label: "The Soldier",      sub: `Discipline runs through ${o}. So does something much harder to control.`,                    gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264" },
-    { id: "The Charmer",      label: "The Charmer",      sub: `Effortless with people. ${s} could have anyone. Somehow ${p} focus on ${o} is the whole point.`, gradient: "from-[#0a0008] via-[#160010] to-[#060005]", accent: "#f472b6" },
-    { id: "The Good One",     label: "The Good One",     sub: `No games, no pretence. This is genuinely who ${s} is. You keep waiting for the catch.`,          gradient: "from-[#001208] via-[#001e10] to-[#000a04]", accent: "#6ee7b7" },
-    { id: "The Funny One",    label: "The Funny One",    sub: `Makes ${o} laugh first. Then does something that makes laughing impossible.`,                    gradient: "from-[#0a0800] via-[#160e00] to-[#050500]", accent: "#fbbf24" },
-    { id: "The Refined One",  label: "The Refined One",  sub: `Old-fashioned in the best ways. ${s} notices the small things and means everything behind them.`, gradient: "from-[#060008] via-[#0e0012] to-[#030005]", accent: "#c4b5fd" },
-    { id: "The Introvert",    label: "The Introvert",    sub: `Quiet until ${s} isn't. You didn't expect the person underneath.`,                              gradient: "from-[#000810] via-[#001018] to-[#000408]", accent: "#93c5fd" },
-    { id: "The Softie",       label: "The Softie",       sub: `Looks one way. Is entirely another. You figure it out before ${s} admits it.`,                  gradient: "from-[#0a0002] via-[#140004] to-[#060001]", accent: "#fda4af" },
-    { id: "The Adventurer",   label: "The Adventurer",   sub: `Always somewhere new. This time ${s} wants ${o} to see it too.`,                                gradient: "from-[#001006] via-[#001a0a] to-[#000803]", accent: "#86efac" },
+    { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227", image: "images/energy/executive.png" },
+    { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                                  gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280", image: "images/energy/stranger.png" },
+    { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                     gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa", image: "images/energy/artist.png" },
+    { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399", image: "images/energy/protector.png" },
+    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${s} knows it.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
+    { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa", image: "images/energy/professor.png" },
+    { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185", image: "images/energy/wanderer.png" },
+    { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                                 gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d", image: "images/energy/old_friend.png" },
+    { id: "The Detective",   label: "The Detective",   sub: `${s} notices everything. Nothing slips past ${o}. That attention has a cost.`,                   gradient: "from-[#040808] via-[#081010] to-[#020404]", accent: "#67e8f9", image: "images/energy/detective.png" },
+    { id: "The Doctor",      label: "The Doctor",      sub: `Clinical precision. Unshakeable calm. Until ${s} isn't.`,                                        gradient: "from-[#00080a] via-[#000c10] to-[#000406]", accent: "#a3e635", image: "images/energy/doctor.png" },
+    { id: "The Musician",    label: "The Musician",    sub: `${s} plays like ${s.toLowerCase()} already knows how this ends. ${s} might.`,                    gradient: "from-[#0a0002] via-[#140004] to-[#050001]", accent: "#f9a8d4", image: "images/energy/musician.png" },
+    { id: "The Athlete",     label: "The Athlete",     sub: `Physical command. Total focus. That discipline doesn't stop here.`,                              gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80", image: "images/energy/athlete.png" },
+    { id: "The Chef",        label: "The Chef",        sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                           gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c", image: "images/energy/chef.png" },
+    { id: "The Soldier",     label: "The Soldier",     sub: `Discipline runs through ${o}. So does something much harder to control.`,                        gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264", image: "images/energy/soldier.png" },
+    { id: "The Charmer",     label: "The Charmer",     sub: `Effortless with people. ${s} could have anyone. Somehow ${p} focus on ${o} is the whole point.`, gradient: "from-[#0a0008] via-[#160010] to-[#060005]", accent: "#f472b6", image: "images/energy/charmer.png" },
+    { id: "The Good One",    label: "The Good One",    sub: `No games, no pretence. This is genuinely who ${s} is. You keep waiting for the catch.`,          gradient: "from-[#001208] via-[#001e10] to-[#000a04]", accent: "#6ee7b7", image: "images/energy/good_one.png" },
+    { id: "The Funny One",   label: "The Funny One",   sub: `Makes ${o} laugh first. Then does something that makes laughing impossible.`,                    gradient: "from-[#0a0800] via-[#160e00] to-[#050500]", accent: "#fbbf24", image: "images/energy/funny_one.png" },
+    { id: "The Refined One", label: "The Refined One", sub: `Old-fashioned in the best ways. ${s} notices the small things and means everything behind them.`, gradient: "from-[#060008] via-[#0e0012] to-[#030005]", accent: "#c4b5fd", image: "images/energy/refined_one.png" },
+    { id: "The Introvert",   label: "The Introvert",   sub: `Quiet until ${s} isn't. You didn't expect the person underneath.`,                              gradient: "from-[#000810] via-[#001018] to-[#000408]", accent: "#93c5fd", image: "images/energy/introvert.png" },
+    { id: "The Softie",      label: "The Softie",      sub: `Looks one way. Is entirely another. You figure it out before ${s} admits it.`,                  gradient: "from-[#0a0002] via-[#140004] to-[#060001]", accent: "#fda4af", image: "images/energy/softie.png" },
+    { id: "The Adventurer",  label: "The Adventurer",  sub: `Always somewhere new. This time ${s} wants ${o} to see it too.`,                                gradient: "from-[#001006] via-[#001a0a] to-[#000803]", accent: "#86efac", image: "images/energy/adventurer.png" },
   ];
 }
 
 /* ── Settings — tile data ─────────────────────────────────────────── */
 const CONTEMPORARY_SETTINGS = [
-  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce" },
-  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227" },
-  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706" },
-  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9" },
-  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80" },
-  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc" },
-  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8" },
-  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8" },
-  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0" },
-  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8" },
-  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d" },
-  { id: "Orient Express Style",     label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c" },
-  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef" },
-  { id: "Ski Chalet",               label: "Ski Chalet",               sub: "Snowstorm outside. Nowhere to go until morning.",  gradient: "from-[#030812] via-[#060e1c] to-[#020509]", accent: "#7dd3fc" },
+  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce", image: "images/settings/late_night_city.png" },
+  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: "images/settings/luxury_hotel.png" },
+  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706", image: "images/settings/european_villa.png" },
+  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9", image: "images/settings/private_yacht.png" },
+  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80", image: "images/settings/mountain_retreat.png" },
+  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc", image: "images/settings/penthouse_suite.png" },
+  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8", image: "images/settings/art_gallery.png" },
+  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8", image: "images/settings/office_after_hours.png" },
+  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0", image: "images/settings/rooftop_bar.png" },
+  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8", image: "images/settings/beach_house.png" },
+  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d", image: "images/settings/private_members_club.png" },
+  { id: "Orient Express Style",     label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c", image: "images/settings/orient_express.png" },
+  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef", image: "images/settings/concert_backstage.png" },
+  { id: "Ski Chalet",               label: "Ski Chalet",               sub: "Snowstorm outside. Nowhere to go until morning.",  gradient: "from-[#030812] via-[#060e1c] to-[#020509]", accent: "#7dd3fc", image: "images/settings/ski_chalet.png" },
   { id: "Private Estate",           label: "Private Estate",           sub: "Countryside house. Acres. Locked gates.",         gradient: "from-[#040a04] via-[#081208] to-[#020502]", accent: "#86efac" },
   { id: "Casino High-Stakes Room",  label: "Casino — High Stakes",     sub: "Chips down. Everyone's watching. Except them.",    gradient: "from-[#0a0800] via-[#181200] to-[#050400]", accent: "#fbbf24" },
 ];
 
 const HISTORICAL_SETTINGS = [
-  { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d" },
-  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af" },
-  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b" },
-  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",      sub: "1920s — speakeasies, jazz, smoke and consequence",   gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6" },
-  { id: "Wartime (1940s)",            label: "Wartime",               sub: "1940s — last night together, everything at stake",   gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac" },
+  { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d", image: "images/settings/regency_england.png" },
+  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: "images/settings/victorian_london.png" },
+  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b", image: "images/settings/belle_epoque.png" },
+  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",      sub: "1920s — speakeasies, jazz, smoke and consequence",   gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6", image: "images/settings/roaring_twenties.png" },
+  { id: "Wartime (1940s)",            label: "Wartime",               sub: "1940s — last night together, everything at stake",   gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac", image: "images/settings/wartime.png" },
   { id: "Swinging Sixties (1960s)",   label: "Swinging Sixties",      sub: "1960s — revolution, hotel rooms, free desire",       gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
-  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",        sub: "1970s — heat, mirror balls, all night long",         gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0" },
+  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",        sub: "1970s — heat, mirror balls, all night long",         gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0", image: "images/settings/disco_velvet.png" },
   { id: "Neon Decade (1980s)",        label: "Neon Decade",           sub: "1980s — excess, power, after hours at the top",      gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
-  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean",  sub: "Marble, olives, conquest, and the gods watching",   gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24" },
-  { id: "Renaissance Italy",         label: "Renaissance Italy",      sub: "Florence, 1490s — art, ambition, private chambers",  gradient: "from-[#0c0600] via-[#1a0e00] to-[#060300]", accent: "#f59e0b" },
-  { id: "Feudal Japan",              label: "Feudal Japan",           sub: "Silk screens, silence, honour at risk",              gradient: "from-[#080010] via-[#10001a] to-[#040008]", accent: "#c084fc" },
-  { id: "Georgian Scotland",         label: "Georgian Scotland",      sub: "Highland estate, candlelight, a storm coming",       gradient: "from-[#020a04] via-[#041208] to-[#010502]", accent: "#6ee7b7" },
+  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean",  sub: "Marble, olives, conquest, and the gods watching",   gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24", image: "images/settings/ancient_mediterranean.png" },
+  { id: "Renaissance Italy",         label: "Renaissance Italy",      sub: "Florence, 1490s — art, ambition, private chambers",  gradient: "from-[#0c0600] via-[#1a0e00] to-[#060300]", accent: "#f59e0b", image: "images/settings/renaissance_italy.png" },
+  { id: "Feudal Japan",              label: "Feudal Japan",           sub: "Silk screens, silence, honour at risk",              gradient: "from-[#080010] via-[#10001a] to-[#040008]", accent: "#c084fc", image: "images/settings/feudal_japan.png" },
+  { id: "Georgian Scotland",         label: "Georgian Scotland",      sub: "Highland estate, candlelight, a storm coming",       gradient: "from-[#020a04] via-[#041208] to-[#010502]", accent: "#6ee7b7", image: "images/settings/georgian_scotland.png" },
 ];
 
 const AFTER_DARK_SETTINGS = [
-  { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185" },
-  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e" },
+  { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185", image: "images/settings/private_club.png" },
+  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: "images/settings/vip_suite.png" },
   { id: "The Back Room",         label: "The Back Room",            sub: "Velvet curtains. Low light. No questions.",           gradient: "from-[#0c0004] via-[#180008] to-[#060002]", accent: "#e11d48" },
   { id: "Moving Elevator",       label: "Moving Elevator",          sub: "Thirty floors of anticipation.",                     gradient: "from-[#08000a] via-[#130010] to-[#040005]", accent: "#c026d3" },
   { id: "Private Cinema",        label: "Private Cinema",           sub: "The film is not what they're watching.",             gradient: "from-[#080004] via-[#120008] to-[#040002]", accent: "#dc2626" },
   { id: "Hotel Balcony",         label: "Hotel Balcony",            sub: "Floor above the party. No one can see them.",        gradient: "from-[#06000a] via-[#0e0012] to-[#030005]", accent: "#9333ea" },
   { id: "Dressing Room",         label: "Dressing Room",            sub: "After the show ends. The adrenaline hasn't.",        gradient: "from-[#0a0002] via-[#160004] to-[#050001]", accent: "#e11d48" },
   { id: "Locked Room",           label: "Locked Room",              sub: "House full of people. Only they know.",              gradient: "from-[#0c0003] via-[#1a0005] to-[#060002]", accent: "#f43f5e" },
-  { id: "Rooftop 3am",           label: "Rooftop, 3am",             sub: "City below. No witnesses.",                          gradient: "from-[#02020a] via-[#04041a] to-[#010108]", accent: "#6366f1" },
+  { id: "Rooftop 3am",           label: "Rooftop, 3am",             sub: "City below. No witnesses.",                          gradient: "from-[#02020a] via-[#04041a] to-[#010108]", accent: "#6366f1", image: "images/settings/rooftop_3am.png" },
   { id: "First-Class Cabin",     label: "First-Class Cabin",        sub: "Overnight. No names. Nowhere to go.",                gradient: "from-[#02050a] via-[#040a16] to-[#010306]", accent: "#3b82f6" },
   { id: "The Glass House",       label: "The Glass House",          sub: "Floor-to-ceiling windows. No curtains.",             gradient: "from-[#04080a] via-[#080e14] to-[#020406]", accent: "#0ea5e9" },
   { id: "Yacht Cabin",           label: "Yacht Cabin",              sub: "Open water. No escape. No reason to want one.",      gradient: "from-[#001018] via-[#001a26] to-[#000810]", accent: "#38bdf8" },
@@ -839,7 +850,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {HERITAGES.map(h => (
-                <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} selected={data.heritage === h.id} onClick={() => update("heritage", h.id)}>
+                <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id} onClick={() => update("heritage", h.id)}>
                   <p className="font-semibold text-white text-base">{h.label}</p>
                   <p className="text-white/60 text-sm mt-0.5 leading-snug">{h.sub}</p>
                 </ArtTile>
@@ -855,6 +866,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                   key={a.id}
                   gradient={a.gradient}
                   accent={a.accent}
+                  image={a.image}
                   selected={data.archetype === a.id}
                   onClick={() => update("archetype", a.id)}
                 >
@@ -865,78 +877,84 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             </div>
 
             {/* ── Appearance (all optional) ─────────────────────── */}
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-1">
-              {capFirst(partnerP.possessive)} Appearance{" "}
-              <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
-            </p>
-            <p className="text-xs text-muted-foreground mb-4">Describe how they look — as much or as little as you want.</p>
+            <div className="glass-panel rounded-2xl p-5 border border-white/8 mt-2">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
+                    {capFirst(partnerP.possessive)} Appearance
+                    <span className="font-normal text-muted-foreground normal-case tracking-normal ml-2">(optional)</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Describe how they look — as much or as little as you want.</p>
+                </div>
+              </div>
 
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Build</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {BUILD_OPTIONS.map(opt => (
-                    <button key={opt} type="button"
-                      onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
-                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                        appearBuild === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >{opt}</button>
-                  ))}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Build</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BUILD_OPTIONS.map(opt => (
+                      <button key={opt} type="button"
+                        onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
+                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                          appearBuild === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                        }`}
+                      >{opt}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Height</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {HEIGHT_OPTIONS.map(opt => (
-                    <button key={opt} type="button"
-                      onClick={() => setAppearHeight(prev => prev === opt ? "" : opt)}
-                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                        appearHeight === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >{opt}</button>
-                  ))}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Height</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {HEIGHT_OPTIONS.map(opt => (
+                      <button key={opt} type="button"
+                        onClick={() => setAppearHeight(prev => prev === opt ? "" : opt)}
+                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                          appearHeight === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                        }`}
+                      >{opt}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Colouring</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {COLOURING_OPTIONS.map(opt => (
-                    <button key={opt} type="button"
-                      onClick={() => setAppearColouring(prev => prev === opt ? "" : opt)}
-                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                        appearColouring === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >{opt}</button>
-                  ))}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Colouring</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {COLOURING_OPTIONS.map(opt => (
+                      <button key={opt} type="button"
+                        onClick={() => setAppearColouring(prev => prev === opt ? "" : opt)}
+                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                          appearColouring === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                        }`}
+                      >{opt}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Eye Colour</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {EYE_OPTIONS.map(opt => (
-                    <button key={opt} type="button"
-                      onClick={() => setAppearEyes(prev => prev === opt ? "" : opt)}
-                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                        appearEyes === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >{opt}</button>
-                  ))}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Eye Colour</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {EYE_OPTIONS.map(opt => (
+                      <button key={opt} type="button"
+                        onClick={() => setAppearEyes(prev => prev === opt ? "" : opt)}
+                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                          appearEyes === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                        }`}
+                      >{opt}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {buildFeatureOptions(rawPartnerPronouns).map(opt => (
-                    <button key={opt} type="button"
-                      onClick={() => setAppearFeatures(prev =>
-                        prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
-                      )}
-                      className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                        appearFeatures.includes(opt) ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >{opt}</button>
-                  ))}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {buildFeatureOptions(rawPartnerPronouns).map(opt => (
+                      <button key={opt} type="button"
+                        onClick={() => setAppearFeatures(prev =>
+                          prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
+                        )}
+                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                          appearFeatures.includes(opt) ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
+                        }`}
+                      >{opt}</button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -950,53 +968,60 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">Where in the world?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose a location and it shapes the story's cultural texture — its sounds, customs, and atmosphere — not just the backdrop.</p>
 
-            {/* ── Country & City (optional specificity) ── */}
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
-              Country &amp; City <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional — plants the story in a real place, with its culture woven in)</span>
-            </p>
-            <div className="grid grid-cols-2 gap-3 mb-7">
-              {/* Country */}
-              <div className="relative">
-                <select
-                  value={data.country ?? ""}
-                  onChange={e => {
-                    update("country", e.target.value);
-                    update("city", "");
-                  }}
-                  className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8"
-                  style={{ colorScheme: "dark" }}
-                >
-                  <option value="">Country…</option>
-                  {Object.keys(COUNTRY_CITIES).sort().map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+            {/* ── Country & City — prominent glass card ── */}
+            <div className="glass-panel rounded-2xl p-5 border border-primary/25 mb-7" style={{ background: "rgba(201,162,39,0.04)" }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border border-primary/30" style={{ background: "rgba(201,162,39,0.12)" }}>
+                  <MapPin className="w-4 h-4" style={{ color: "#c9a227" }} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground leading-tight">Place it in a real world</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Optional — weaves real cultural texture, sounds, and atmosphere into the story</p>
+                </div>
               </div>
-              {/* City — filtered by country */}
-              <div className="relative">
-                <select
-                  value={data.city ?? ""}
-                  onChange={e => update("city", e.target.value)}
-                  disabled={!data.country}
-                  className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8 disabled:opacity-35 disabled:cursor-not-allowed"
-                  style={{ colorScheme: "dark" }}
-                >
-                  <option value="">City…</option>
-                  {(data.country ? (COUNTRY_CITIES[data.country] ?? []) : []).map(city => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+              <div className="grid grid-cols-2 gap-3">
+                {/* Country */}
+                <div className="relative">
+                  <select
+                    value={data.country ?? ""}
+                    onChange={e => {
+                      update("country", e.target.value);
+                      update("city", "");
+                    }}
+                    className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8"
+                    style={{ colorScheme: "dark" }}
+                  >
+                    <option value="">Country…</option>
+                    {Object.keys(COUNTRY_CITIES).sort().map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                </div>
+                {/* City — filtered by country */}
+                <div className="relative">
+                  <select
+                    value={data.city ?? ""}
+                    onChange={e => update("city", e.target.value)}
+                    disabled={!data.country}
+                    className="w-full bg-card/60 border border-border/40 rounded-xl px-3 py-3 text-sm text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-8 disabled:opacity-35 disabled:cursor-not-allowed"
+                    style={{ colorScheme: "dark" }}
+                  >
+                    <option value="">City…</option>
+                    {(data.country ? (COUNTRY_CITIES[data.country] ?? []) : []).map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                </div>
               </div>
+              {/* Cultural preview — shown when country is selected */}
+              {data.country && COUNTRY_CULTURAL_PREVIEW[data.country] && (
+                <p className="text-xs italic leading-relaxed mt-3 px-1" style={{ color: "#c9a227", opacity: 0.8 }}>
+                  {COUNTRY_CULTURAL_PREVIEW[data.country]}
+                </p>
+              )}
             </div>
-
-            {/* ── Cultural preview — shown when country is selected ── */}
-            {data.country && COUNTRY_CULTURAL_PREVIEW[data.country] && (
-              <p className="text-xs text-primary/70 italic leading-relaxed mb-7 -mt-3 px-1">
-                {COUNTRY_CULTURAL_PREVIEW[data.country]}
-              </p>
-            )}
 
             {/* ── Scenario (required) ── */}
             {afterDark && (
@@ -1004,7 +1029,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">After Dark Exclusive</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
                   {AFTER_DARK_SETTINGS.map(s => (
-                    <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                    <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                       <p className="font-semibold text-white text-base">{s.label}</p>
                       <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                     </ArtTile>
@@ -1016,7 +1041,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {CONTEMPORARY_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
                   <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
@@ -1026,7 +1051,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {HISTORICAL_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
                   <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
@@ -1061,43 +1086,48 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
             <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
 
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {INTENSITIES.filter(i => afterDark ? ["Explicit", "Scorching"].includes(i.id) : true).map(i => (
-                <button
-                  key={i.id}
-                  type="button"
-                  onClick={() => update("intensity", i.id)}
-                  className={`p-4 rounded-2xl border text-left transition-all ${
-                    data.intensity === i.id
-                      ? "border-primary bg-primary/10 shadow-glow"
-                      : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full" style={{ background: i.color }} />
-                    <p className={`font-semibold text-sm ${data.intensity === i.id ? "text-primary" : "text-foreground"}`}>{i.label}</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{i.desc}</p>
-                </button>
-              ))}
+            <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Intensity</p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {INTENSITIES.filter(i => afterDark ? ["Explicit", "Scorching"].includes(i.id) : true).map(i => (
+                  <button
+                    key={i.id}
+                    type="button"
+                    onClick={() => update("intensity", i.id)}
+                    className={`p-4 rounded-2xl border text-left transition-all ${
+                      data.intensity === i.id
+                        ? "border-primary bg-primary/10 shadow-glow"
+                        : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-2 h-2 rounded-full" style={{ background: i.color }} />
+                      <p className={`font-semibold text-sm ${data.intensity === i.id ? "text-primary" : "text-foreground"}`}>{i.label}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{i.desc}</p>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Mood</p>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {MOODS.map(m => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => update("mood", m)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
-                    data.mood === m
-                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  {m}
-                </button>
-              ))}
+            <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Mood</p>
+              <div className="flex flex-wrap gap-2">
+                {MOODS.map(m => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => update("mood", m)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
+                      data.mood === m
+                        ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                        : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    }`}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Story preview */}

@@ -232,7 +232,7 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "The risk is part of the pull",
   "Something between you that should be forbidden",
   "Unfinished business",
-  "The danger makes it real",
+
   "Complicated wanting",
   "A line that keeps moving",
   "Being the only thing he is thinking about",

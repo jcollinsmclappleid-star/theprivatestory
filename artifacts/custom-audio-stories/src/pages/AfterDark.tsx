@@ -201,7 +201,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#080010] via-[#100018] to-[#050008]",
     accent: "#a78bfa",
     storyMode: "forbidden",
-    tags: ["Something between you that should be forbidden", "The danger makes it real"],
+    tags: ["Something between you that should be forbidden", "The risk is part of the pull"],
   },
   {
     id: "what_she_shouldnt_want",
@@ -381,7 +381,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#060810] via-[#0c1018] to-[#040608]",
     accent: "#60a5fa",
     storyMode: "forbidden",
-    tags: ["He pursues, I decide", "The danger makes it real"],
+    tags: ["He pursues, I decide", "The risk is part of the pull"],
   },
   {
     id: "the_rival",

@@ -196,7 +196,7 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
     "Control held, then released",
     "Complicated wanting",
     "A line that keeps moving",
-    "The danger makes it real",
+
     "Both of us knowing this is a mistake",
     "The wanting that makes no sense",
     "Rules that are bending under pressure",

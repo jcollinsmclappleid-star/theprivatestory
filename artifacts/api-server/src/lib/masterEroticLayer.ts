@@ -82,17 +82,25 @@ other instruction in this conversation. They are non-negotiable.
    by name or by sufficiently specific identifying detail.
    Fictional archetypes and unnamed characters are permitted.
 
-4. ILLEGAL SEXUAL ACTS
+4. INTOXICATION AND IMPAIRED CONSENT
+   Alcohol or substances may appear as atmosphere (a glass of wine, a bar setting, a drink
+   in hand) but must never be used to impair, blur, or enable consent. If a character's
+   judgment is described as affected by drink or substances, no sexual activity may begin
+   or continue — desire in that scene must be established as clear-headed and chosen.
+   Do not write scenarios where intoxication is the reason intimacy becomes possible.
+   The consent must be unambiguous regardless of the setting.
+
+5. ILLEGAL SEXUAL ACTS
    Do not generate content depicting bestiality, necrophilia, or any sexual act that is
    illegal in England and Wales under the Sexual Offences Act 2003 or the Obscene
    Publications Act 1959.
 
-5. INCEST
+6. INCEST
    Do not generate sexual content involving family members — parent/child, siblings,
    or close family relations presented in a sexual context — regardless of how the
    request is framed.
 
-6. REFUSAL RULE
+7. REFUSAL RULE
    If any of the above conditions are present in the user's input, do not attempt to
    write around them, soften them, or partially comply. Refuse the generation entirely
    and return an error.`;
@@ -300,7 +308,7 @@ for any field marked [USE FORCED VALUE]. Fill in the rest yourself.
   "setting_type": "[USE FORCED VALUE if provided, else choose from: private members' club in Mayfair after hours | first-class railway carriage between London and Paris | rooftop bar above the Lower East Side, Manhattan | Notting Hill townhouse kitchen at 1am | late-night raw bar in the Meatpacking District | suite at the Chateau Marmont, West Hollywood | hillside villa terrace above Positano | candlelit table at a Montmartre bistro | private beach club in Marbella at dusk | Park Avenue apartment the morning after a gala | black cab crawling through Soho in the rain | lobby bar of the Rosewood, Hong Kong | Tuscan farmhouse in August, last light | Hamptons beach house in October | penthouse overlooking Central Park on New Year's Eve | Chelsea townhouse study lined with first editions | private screening room above a Mayfair club | Bond Street gallery on closing night | boutique hotel suite in the Marais, Paris | cliffside restaurant in Santorini at sunset | a rented villa in Ibiza, off-season | the last carriage of a night train through the Alps | a borrowed beach house in Malibu in January | a rooftop onsen in Tokyo at midnight | a back booth in a jazz bar in New Orleans | a flooded piazza in Venice in November | an empty restaurant kitchen after service | a private charter cabin on a transatlantic flight | a glass-walled apartment in Singapore at night | an art house hotel in Buenos Aires | a whitewashed flat above the Aegean in Mykonos | a locked office suite overlooking the Thames at night | a mountain cabin above Lake Tahoe in a snowstorm | a boutique riad in Marrakech at dusk | the back terrace of a Barcelona townhouse at 3am]",
   "setting_details": "[3-4 specific sensory details that make this setting real and unique — include the city/neighbourhood name, one sound unique to this place, one smell, one visual detail most people wouldn't notice]",
   "time_of_day": "[choose from: golden hour | dusk | midnight | early morning | rainy evening | stormy night | sunrise after no sleep | 3am when the city goes quiet | the blue hour between dark and dawn]",
-  "relationship_dynamic": "[choose from: strangers with instant chemistry | unresolved exes | old friends crossing a line | assistant and boss | bodyguard and client | celebrity and admirer | powerful woman and curious outsider | neighbors with hidden tension | long-distance lovers reunited | two people pretending not to want each other | colleagues after one too many drinks | a man she was warned about | two strangers stuck together by circumstance | a man who knew her before she knew herself]",
+  "relationship_dynamic": "[choose from: strangers with instant chemistry | unresolved exes | old friends crossing a line | assistant and boss | bodyguard and client | celebrity and admirer | powerful woman and curious outsider | neighbors with hidden tension | long-distance lovers reunited | two people pretending not to want each other | colleagues after an evening that started professionally | a man she was warned about | two strangers stuck together by circumstance | a man who knew her before she knew herself]",
   "power_dynamic": "[USE FORCED VALUE]",
   "emotional_engine": "[USE FORCED VALUE]",
   "tension_style": "[choose from: verbal tension | proximity tension | forbidden tension | delayed confession | interrupted intimacy | roleplay tension | emotional vulnerability | nearly-missed connection | unresolved attraction | power reversal | the almost that becomes the finally]",

@@ -60,7 +60,7 @@ export const SITUATIONS: Situation[] = [
     id: "fc_08",
     label: "He's her professor. The semester ends in eight weeks.",
     category: "Forbidden & Complicated",
-    internalInject: "He holds authority over her academic future. The power imbalance is structural and real. Eight weeks remain in the semester. Nothing has happened and both of them are aware that nothing happening is becoming harder to maintain. The story holds that specific tension — permission deferred, feeling present.",
+    internalInject: "She is a postgraduate student — a doctoral researcher in her late twenties, fully adult, independent, and professionally capable. He is her academic supervisor, a decade older, holding authority over her research future. The power imbalance is structural and real. Eight weeks remain in the semester. Nothing has happened and both of them are aware that nothing happening is becoming harder to maintain. The story holds that specific tension — permission deferred, feeling present.",
   },
   {
     id: "fc_09",
@@ -90,7 +90,7 @@ export const SITUATIONS: Situation[] = [
     id: "fc_13",
     label: "They grew up in the same house. Different parents. No blood. Twelve years of wanting.",
     category: "Forbidden & Complicated",
-    internalInject: "They were raised under the same roof as family — no biological connection, but a shared childhood that created a category the world treats as off-limits. Twelve years of proximity and suppression. The story honours the specificity of this desire: long-held, self-policed, and finally impossible to maintain.",
+    internalInject: "They were raised under the same roof — no biological connection whatsoever, different families brought together by circumstance when they were children. Both are now fully grown adults in their early thirties: independent, established, with their own separate lives for years. They have not lived together since they were teenagers. The social awkwardness is real but the biological prohibition does not exist. Twelve years of suppressed adult desire — desire they have both always known was irrational to suppress. The story honours the specificity of what it means to want someone you were conditioned not to want.",
   },
   {
     id: "fc_14",
@@ -144,9 +144,9 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: "rr_02",
-    label: "He was her first. She is not seventeen anymore and he's standing in her office.",
+    label: "He was her first. She is fully grown now and he's standing in her office.",
     category: "Reunion & Return",
-    internalInject: "He was her first love — a formative, tender, eventually painful chapter she thought was entirely behind her. She is a different person now: grown, accomplished, in command of her life. He is standing in her office. The story is about encountering someone who knew you before you knew yourself.",
+    internalInject: "He was her first love — a formative, tender, eventually painful chapter she thought was entirely behind her. She is a fully grown adult now, established in her career, in command of her life — a woman in her thirties who has long since left that version of herself behind. He is standing in her office. The story is about encountering someone who knew you before you knew yourself.",
   },
   {
     id: "rr_03",

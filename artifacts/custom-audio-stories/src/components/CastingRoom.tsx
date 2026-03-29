@@ -671,7 +671,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   // Situation step state
   const [situationLabel, setSituationLabel] = useState<string>("");
   const [situationCategory, setSituationCategory] = useState<string>("");
-  const [cfmMode, setCfmMode] = useState<"none" | "all" | "category">("none");
+  const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
+  const [browseSitTab, setBrowseSitTab] = useState<string>(SITUATION_CATEGORIES[0]);
 
   const TOTAL_STEPS = 11;
 
@@ -1207,128 +1208,138 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
               </button>
             </div>
 
-            {/* Selected situation display */}
-            {situationLabel && (
-              <div className="glass-panel rounded-2xl p-4 border mb-4 flex items-start justify-between gap-3" style={{ borderColor: `${accentColor}60` }}>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
-                    {situationCategory}
-                  </p>
-                  <p className="font-semibold text-foreground text-base">{situationLabel}</p>
+            {/* Choose For Me — always prominent at top */}
+            <div className="glass-panel rounded-2xl p-4 border border-white/8 mb-4">
+              {situationLabel && cfmMode === "cfm" ? (
+                /* Selected via CFM — show selected + re-roll + clear */
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
+                      {situationCategory}
+                    </p>
+                    <p className="font-semibold text-foreground text-sm leading-snug">{situationLabel}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
+                        setSituationLabel(pick.label);
+                        setSituationCategory(pick.category);
+                        setBrowseSitTab(pick.category);
+                      }}
+                      className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                    >
+                      <Shuffle size={12} /> Re-roll
+                    </button>
+                    <span className="text-border/40">·</span>
+                    <button
+                      type="button"
+                      onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
+                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <X size={12} /> Clear
+                    </button>
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
-                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-1"
-                >
-                  <X size={12} /> Clear
-                </button>
-              </div>
-            )}
-
-            {/* Choose For Me */}
-            {!situationLabel && (
-              <div className="glass-panel rounded-2xl p-4 border border-white/8 mb-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Choose For Me</p>
-                <div className="grid grid-cols-2 gap-2">
+              ) : situationLabel ? (
+                /* Selected via tab browse — show selected + clear */
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
+                      {situationCategory}
+                    </p>
+                    <p className="font-semibold text-foreground text-sm leading-snug">{situationLabel}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setSituationLabel(""); setSituationCategory(""); setCfmMode("none"); }}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-1"
+                  >
+                    <X size={12} /> Clear
+                  </button>
+                </div>
+              ) : (
+                /* Nothing selected — show CFM button */
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Choose For Me</p>
                   <button
                     type="button"
                     onClick={() => {
                       const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
                       setSituationLabel(pick.label);
                       setSituationCategory(pick.category);
-                      setCfmMode("all");
+                      setBrowseSitTab(pick.category);
+                      setCfmMode("cfm");
                     }}
-                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border/30 text-sm font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/5 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-primary/30 bg-primary/5 text-sm font-semibold text-primary hover:bg-primary/10 hover:border-primary/50 transition-all"
                   >
-                    <Shuffle size={14} />
-                    Surprise me
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCfmMode(cfmMode === "category" ? "none" : "category")}
-                    className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-medium transition-all ${
-                      cfmMode === "category"
-                        ? "border-primary/60 text-primary bg-primary/10"
-                        : "border-border/30 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/5"
-                    }`}
-                  >
-                    <Sparkles size={14} />
-                    From a category
+                    <Shuffle size={15} />
+                    Surprise me — pick one for me
                   </button>
                 </div>
+              )}
+            </div>
 
-                {/* Category mode — pick category, then randomise */}
-                {cfmMode === "category" && (
-                  <div className="mt-3">
-                    <p className="text-xs text-muted-foreground/70 mb-2">Pick a category and we'll choose one for you:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {SITUATION_CATEGORIES.map(cat => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => {
-                            const pool = getSituationsByCategory(cat);
-                            const pick = pool[Math.floor(Math.random() * pool.length)];
-                            setSituationLabel(pick.label);
-                            setSituationCategory(pick.category);
-                          }}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium border border-border/30 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Tab strip — 10 categories */}
+            <div className="flex gap-1.5 overflow-x-auto pb-1 mb-3 scrollbar-none">
+              {SITUATION_CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setBrowseSitTab(cat)}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    browseSitTab === cat
+                      ? "bg-primary/15 text-primary border border-primary/40"
+                      : "border border-border/30 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-            {/* Browse by category */}
-            {!situationLabel && (
-              <div className="space-y-2">
-                {SITUATION_CATEGORIES.map(cat => {
-                  const isOpen = situationCategory === cat;
-                  const catSituations = getSituationsByCategory(cat);
-                  return (
-                    <div key={cat} className="glass-panel rounded-2xl border border-white/8 overflow-hidden">
-                      <button
-                        type="button"
-                        onClick={() => setSituationCategory(isOpen ? "" : cat)}
-                        className="w-full flex items-center justify-between px-5 py-4 text-left"
-                      >
-                        <div>
-                          <span className="font-semibold text-sm text-foreground">{cat}</span>
-                          <span className="text-xs text-muted-foreground ml-2">{catSituations.length} situations</span>
-                        </div>
-                        <ChevronDown
-                          size={16}
-                          className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
-                        />
-                      </button>
-                      {isOpen && (
-                        <div className="px-5 pb-4 grid grid-cols-1 gap-1.5">
-                          {catSituations.map(sit => (
-                            <button
-                              key={sit.id}
-                              type="button"
-                              onClick={() => {
-                                setSituationLabel(sit.label);
-                                setSituationCategory(sit.category);
-                                setCfmMode("none");
-                              }}
-                              className="text-left px-3 py-2.5 rounded-xl text-sm text-muted-foreground border border-border/20 hover:border-primary/40 hover:text-foreground hover:bg-primary/5 transition-all"
-                            >
-                              {sit.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            {/* 2-column grid for the active tab */}
+            <div className="grid grid-cols-2 gap-1.5">
+              {getSituationsByCategory(browseSitTab).map(sit => {
+                const isSelected = situationLabel === sit.label;
+                return (
+                  <button
+                    key={sit.id}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        setSituationLabel("");
+                        setSituationCategory("");
+                        setCfmMode("none");
+                      } else {
+                        setSituationLabel(sit.label);
+                        setSituationCategory(sit.category);
+                        setCfmMode("none");
+                      }
+                    }}
+                    className={`text-left px-3 py-2.5 rounded-xl text-xs leading-snug border transition-all ${
+                      isSelected
+                        ? "border-primary/60 bg-primary/10 text-primary font-medium"
+                        : "border-border/20 text-muted-foreground hover:border-primary/30 hover:text-foreground hover:bg-primary/5"
+                    }`}
+                  >
+                    {sit.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Skip link at the bottom */}
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={next}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                Skip — no specific situation
+              </button>
+            </div>
           </motion.div>
         )}
 

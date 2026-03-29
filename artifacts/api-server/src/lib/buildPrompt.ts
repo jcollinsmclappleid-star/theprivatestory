@@ -1,6 +1,7 @@
 import { MASTER_EROTIC_LAYER, STORY_DNA_INSTRUCTION } from "./masterEroticLayer.js";
 import { STORY_CATEGORIES } from "./storyCategories.js";
 import { getArcStage, SERIES_POV_RULE, FIVE_EPISODE_EROTIC_ARC } from "./seriesArc.js";
+import { getSituationByLabel } from "./situations.js";
 
 /**
  * Per-category narrator identity layer injected into the system prompt.
@@ -61,6 +62,8 @@ export interface BuildPromptOptions {
   totalEpisodes?: number;
   seriesArc?: string;
   priorStoryRegistry?: StoryRegistryEntry[];
+  /** Situation label from the Casting Room — validated against the 200-item allowlist. */
+  situation?: string;
 }
 
 export interface StoryRegistryEntry {
@@ -260,8 +263,16 @@ If "narrative_perspective" is "alternating close perspective", begin in third pe
     ? `\n\nSERIES EPISODE WORD COUNT OVERRIDE — SUPERSEDES ALL OTHER LENGTH INSTRUCTIONS:\nThe "TARGET LENGTH: 2,000–2,500 words" instruction in PART 2 does NOT apply to series episodes.\nFor this episode (Episode ${options.episodeNumber}), the authoritative target is: ${episodeArc.word_count}.\nDo not exceed the top of that range by padding. Do not compress below the bottom of that range by cutting. Write within it with quality as the goal.\nIf the prose becomes repetitive, looping, or generic before the target is reached — stop. Quality determines length, the range provides the envelope.`
     : "";
 
+  // ── Situation anchor — injected after subtheme premise, before intensity ──
+  const situationBlock = (() => {
+    if (!options.situation) return "";
+    const sit = getSituationByLabel(options.situation);
+    if (!sit) return "";
+    return `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}`;
+  })();
+
   const system = `${MASTER_EROTIC_LAYER}\n\n${category.system_prompt}${narratorVoice ? `\n\n${narratorVoice}` : ""}\n\n${STORY_DNA_INSTRUCTION}${forcedFieldsBlock}${registryContext}${seriesLengthOverride}`;
-  const user = `${storyPrompt}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
+  const user = `${storyPrompt}${situationBlock}\n\n${intensityLayer}${seriesLayer ? `\n\n${seriesLayer}` : ""}
 
 REMINDER: Complete all structural phases fully as specified above. Do not stop early. Honour the episode-specific word count range exactly (shown above under TARGET WORD COUNT). Do not pad to reach any generic floor — and do not compress to fit under any floor. The episode word count target is authoritative. Quality within that range is the standard, not length alone. If you find yourself repeating phrases, looping descriptions, or adding filler to hit a number, stop — the quality drops before the count matters.`;
 

@@ -553,6 +553,7 @@ export interface StoryBrief {
   image_style_direction: string;
   recommendation_tags?: string[];
   quality_target?: string;
+  situation?: string;
 }
 
 export interface Scene {
@@ -1568,11 +1569,7 @@ User Input:
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
-- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situation ? (() => { const sit = getSituationByLabel(intake.situation); return sit ? `
-
-SITUATION ANCHOR (MANDATORY — treat this as non-negotiable structural DNA; the plot engine of the story must be built on this foundation):
-Situation: ${sit.label} (${sit.category})
-${sit.internalInject}` : ""; })() : ""}
+- Emotional Emphasis: ${intake.emotionalFocus ? "high" : "standard"}${intake.situation ? (() => { const sit = getSituationByLabel(intake.situation); return sit ? `\n\nSITUATION ANCHOR — The story's opening circumstance is grounded in the following situation. Use it as the narrative hook that explains why these two people are in the same space tonight. Do not state it literally — let the prose embody it:\n${sit.internalInject}` : ""; })() : ""}
 
 You must infer and return:
 - emotional_arc (from the variety pools above — choose intelligently)

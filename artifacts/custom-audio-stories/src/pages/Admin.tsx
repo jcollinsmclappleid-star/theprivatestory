@@ -1674,7 +1674,7 @@ export default function Admin() {
               <div className="text-xs text-white/30 mb-3 font-medium uppercase tracking-widest">30 Situations</div>
               <div className="space-y-1 text-xs text-white/40 leading-relaxed">
                 <div>3 per category · Forbidden / Reunion / First / Power / Psychological / Circumstance / Secrets / Dark / Slow Burn / Professional</div>
-                <div className="mt-2 text-white/20">Cover images generated with gpt-image-1 · Story written by Mistral Large · No audio (library mode)</div>
+                <div className="mt-2 text-white/20">Story written by Mistral Large · Cover image generated · No audio (library mode)</div>
               </div>
             </div>
           </div>

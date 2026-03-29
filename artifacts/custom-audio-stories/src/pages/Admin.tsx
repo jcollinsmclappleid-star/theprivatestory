@@ -714,52 +714,50 @@ export default function Admin() {
       <div className="w-full md:w-80 flex-shrink-0 border-r border-white/10 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-white/10">
-          <div className="flex items-center justify-between mb-1">
-            <h1 className="text-base font-semibold tracking-tight">Admin — Story Engine</h1>
-            <div className="flex gap-1">
+          <h1 className="text-base font-semibold tracking-tight mb-2">Admin — Story Engine</h1>
+          <div className="flex gap-1 overflow-x-auto pb-1 flex-nowrap">
               <button
                 onClick={() => setActiveView("generate")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "generate" ? "bg-white/20" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "generate" ? "bg-white/20" : "text-white/50 hover:text-white"}`}
               >
                 Generate
               </button>
               <button
                 onClick={() => setActiveView("review")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "review" ? "bg-white/20" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "review" ? "bg-white/20" : "text-white/50 hover:text-white"}`}
               >
                 Review ({drafts.length})
               </button>
               <button
                 onClick={() => setActiveView("series")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "series" ? "bg-[#c9a227]/30 text-[#c9a227]" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "series" ? "bg-[#c9a227]/30 text-[#c9a227]" : "text-white/50 hover:text-white"}`}
               >
                 Series
               </button>
               <button
                 onClick={() => setActiveView("moderation")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "moderation" ? "bg-red-500/30 text-red-300" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "moderation" ? "bg-red-500/30 text-red-300" : "text-white/50 hover:text-white"}`}
               >
                 Moderation
               </button>
               <button
                 onClick={() => setActiveView("security")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "security" ? "bg-emerald-500/30 text-emerald-300" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "security" ? "bg-emerald-500/30 text-emerald-300" : "text-white/50 hover:text-white"}`}
               >
                 🔐 Security
               </button>
               <button
                 onClick={() => setActiveView("audit")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "audit" ? "bg-amber-500/30 text-amber-300" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "audit" ? "bg-amber-500/30 text-amber-300" : "text-white/50 hover:text-white"}`}
               >
                 Audit
               </button>
               <button
                 onClick={() => setActiveView("library")}
-                className={`text-xs px-2 py-1 rounded ${activeView === "library" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "library" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
               >
-                Seed Library
+                📚 Seed Library
               </button>
-            </div>
           </div>
           {activeView === "generate" && (
             <div className="flex items-center gap-2 mt-3">

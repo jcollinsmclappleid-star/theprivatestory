@@ -860,12 +860,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
         {/* ── Step 4 — World ───────────────────────────────────────── */}
         {step === 4 && (
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your world.</h2>
-            <p className="text-muted-foreground text-sm mb-6">Where — and when — does this happen?</p>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Where in the world?</h2>
+            <p className="text-muted-foreground text-sm mb-6">Choose a location and it shapes the story's cultural texture — its sounds, customs, and atmosphere — not just the backdrop.</p>
 
             {/* ── Country & City (optional specificity) ── */}
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
-              Country &amp; City <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional — adds real-world specificity)</span>
+              Country &amp; City <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional — plants the story in a real place, with its culture woven in)</span>
             </p>
             <div className="grid grid-cols-2 gap-3 mb-7">
               {/* Country */}

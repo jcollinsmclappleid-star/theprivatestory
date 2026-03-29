@@ -990,6 +990,8 @@ export default function AfterDark() {
             appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
             listenerName: casting.listenerName || undefined,
             partnerName: casting.partnerName || undefined,
+            country: casting.country || undefined,
+            city: casting.city || undefined,
           },
         });
       } finally {

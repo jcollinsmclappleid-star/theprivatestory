@@ -113,16 +113,41 @@ export interface RewriteStoryRequest {
 }
 
 export interface GenerateStoryRequest {
-  listenerName: string;
+  listenerName?: string;
   mood: string;
   intensity: string;
   voiceFeel: string;
   storyLength: string;
-  scenarioPrompt: string;
+  scenarioPrompt?: string;
+  scenarioCard?: string;
+  timeOfDay?: string;
+  season?: string;
+  perspective?: string;
   cinematicVisuals?: boolean;
   emotionalFocus?: boolean;
   /** When true, skips request-hash cache lookup (used for variation and continuation requests) */
   bypassCache?: boolean;
+  whoIsHe?: string;
+  dynamic?: string;
+  ending?: string;
+  setting?: string;
+  storyMode?: string;
+  experienceTags?: string[];
+  pairing?: string;
+  categoryId?: string;
+  subthemeId?: string;
+  numericIntensity?: number;
+  heritage?: string;
+  atmosphere?: string;
+  chemistry?: string;
+  appearBuild?: string;
+  appearHeight?: string;
+  appearColouring?: string;
+  appearEyes?: string;
+  appearFeatures?: string[];
+  partnerName?: string;
+  country?: string;
+  city?: string;
 }
 
 export interface GenerateStoryFromBriefRequest {

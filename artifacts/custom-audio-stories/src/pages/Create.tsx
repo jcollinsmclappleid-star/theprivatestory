@@ -725,6 +725,8 @@ export default function Create() {
   const [castingAppearFeatures, setCastingAppearFeatures] = useState<string[] | undefined>();
   const [castingListenerName, setCastingListenerName] = useState<string | undefined>();
   const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
+  const [castingCountry, setCastingCountry] = useState<string | undefined>();
+  const [castingCity, setCastingCity] = useState<string | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
   const [season, setSeason] = useState("");
@@ -1076,6 +1078,8 @@ export default function Create() {
       heritage: casting.heritage || undefined,
       atmosphere: casting.atmosphere || undefined,
       chemistry: casting.chemistry || undefined,
+      country: casting.country || undefined,
+      city: casting.city || undefined,
       voiceFeel: form.getValues("voiceFeel"),
       storyLength: form.getValues("storyLength"),
     };
@@ -1086,6 +1090,8 @@ export default function Create() {
     setCastingHeritage(casting.heritage || undefined);
     setCastingAtmosphere(casting.atmosphere || undefined);
     setCastingChemistry(casting.chemistry || undefined);
+    setCastingCountry(casting.country || undefined);
+    setCastingCity(casting.city || undefined);
     // Structured appearance fields
     setCastingAppearBuild(casting.appearBuild || undefined);
     setCastingAppearHeight(casting.appearHeight || undefined);
@@ -1140,6 +1146,8 @@ export default function Create() {
           appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
           listenerName: casting.listenerName || undefined,
           partnerName: casting.partnerName || undefined,
+          country: casting.country || undefined,
+          city: casting.city || undefined,
         },
       }).finally(() => stopLoadingPhase());
     }
@@ -1190,12 +1198,14 @@ export default function Create() {
           appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
           listenerName: castingListenerName || undefined,
           partnerName: castingPartnerName || undefined,
+          country: castingCountry || undefined,
+          city: castingCity || undefined,
         },
       });
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName, castingCountry, castingCity]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];
@@ -1861,8 +1871,8 @@ export default function Create() {
                 {/* World / Setting */}
                 <div className="mt-5 pt-5 border-t border-border/20">
                   <label className="block text-xs font-medium text-muted-foreground mb-2">
-                    Where does it take place?{" "}
-                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
+                    Where does it happen?{" "}
+                    <span className="text-muted-foreground/60 font-normal">(optional — sets the world and cultural texture of the story)</span>
                   </label>
                   <WorldPicker
                     value={watchedSetting}

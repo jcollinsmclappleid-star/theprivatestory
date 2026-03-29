@@ -104,6 +104,29 @@ const STANDARD_TAGS: string[] = [
 // ---------------------------------------------------------------------------
 
 const AFTER_DARK_TAGS: string[] = [
+  // What do you want? — Sensation & Restraint
+  ...variants(p => `${p.sub} wanted to be tied up`),
+  ...variants(p => `${p.sub} wanted to be blindfolded`),
+  ...variants(p => `${p.sub} wanted to be held down`),
+  ...variants(p => `${p.sub} wanted to be told not to move`),
+  ...variants(p => `${p.sub} wanted ${p.poss} mouth covered`),
+  ...variants(p => `${p.sub} wanted to be on display`),
+  ...variants(p => `${p.sub} wanted to be kneeling for them`),
+  ...variants(p => `${p.sub} wanted to be completely powerless`),
+  // What do you want? — Words & Praise
+  ...variants(p => `${p.sub} wanted to be praised`),
+  ...variants(p => `${p.sub} wanted to be told what ${p.sub} is`),
+  ...variants(p => `${p.sub} wanted to be narrated through it`),
+  ...variants(p => `${p.sub} wanted to be made to ask nicely`),
+  ...variants(p => `${p.sub} wanted to be made to repeat it back`),
+  // What do you want? — Surrender & Power
+  ...variants(p => `${p.sub} wanted to be degraded`),
+  ...variants(p => `${p.sub} wanted to be spanked`),
+  ...variants(p => `${p.sub} wanted to be edged`),
+  ...variants(p => `${p.sub} wanted to be worshipped`),
+  ...variants(p => `${p.sub} wanted to be used and adored`),
+  ...variants(p => `${p.sub} wanted to be made to beg`),
+
   // Top Fantasies (non-substituted)
   "They get caught",
   "Someone else is watching",

@@ -77,6 +77,29 @@ const UI_STANDARD = [
 ];
 
 const UI_AFTER_DARK = [
+  // Sensation & Restraint
+  ...v(p => `${p.sub} wanted to be tied up`),
+  ...v(p => `${p.sub} wanted to be blindfolded`),
+  ...v(p => `${p.sub} wanted to be held down`),
+  ...v(p => `${p.sub} wanted to be told not to move`),
+  ...v(p => `${p.sub} wanted ${p.poss} mouth covered`),
+  ...v(p => `${p.sub} wanted to be on display`),
+  ...v(p => `${p.sub} wanted to be kneeling for them`),
+  ...v(p => `${p.sub} wanted to be completely powerless`),
+  // Words & Praise
+  ...v(p => `${p.sub} wanted to be praised`),
+  ...v(p => `${p.sub} wanted to be told what ${p.sub} is`),
+  ...v(p => `${p.sub} wanted to be narrated through it`),
+  ...v(p => `${p.sub} wanted to be made to ask nicely`),
+  ...v(p => `${p.sub} wanted to be made to repeat it back`),
+  // Surrender & Power
+  ...v(p => `${p.sub} wanted to be degraded`),
+  ...v(p => `${p.sub} wanted to be spanked`),
+  ...v(p => `${p.sub} wanted to be edged`),
+  ...v(p => `${p.sub} wanted to be worshipped`),
+  ...v(p => `${p.sub} wanted to be used and adored`),
+  ...v(p => `${p.sub} wanted to be made to beg`),
+
   "They find every limit","They get caught","Someone else is watching",
   ...v(p => `They take, ${p.sub} receives`),
   ...v(p => `${p.sub} doesn't say stop`),

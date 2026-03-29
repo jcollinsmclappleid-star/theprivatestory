@@ -82,17 +82,40 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
 function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
   return [
     {
-      heading: "What do you want?",
+      heading: "Sensation & Restraint",
       sub: "The things you rarely say out loud",
       tags: [
-        `They find every limit ${p.sub} has`,
-        `${p.sub} surrenders completely`,
-        `${p.sub} loses the fight to stay quiet`,
-        `${p.sub} takes control`,
-        `They keep ${p.obj} at the edge`,
-        "They get caught",
-        `${p.sub} doesn't know what comes next`,
-        "Being fully taken care of",
+        `${p.sub} wanted to be tied up`,
+        `${p.sub} wanted to be blindfolded`,
+        `${p.sub} wanted to be held down`,
+        `${p.sub} wanted to be told not to move`,
+        `${p.sub} wanted ${p.poss} mouth covered`,
+        `${p.sub} wanted to be on display`,
+        `${p.sub} wanted to be kneeling for them`,
+        `${p.sub} wanted to be completely powerless`,
+      ],
+    },
+    {
+      heading: "Words & Praise",
+      sub: "What you want said while it happens",
+      tags: [
+        `${p.sub} wanted to be praised`,
+        `${p.sub} wanted to be told what ${p.sub} is`,
+        `${p.sub} wanted to be narrated through it`,
+        `${p.sub} wanted to be made to ask nicely`,
+        `${p.sub} wanted to be made to repeat it back`,
+      ],
+    },
+    {
+      heading: "Surrender & Power",
+      sub: "How deep the surrender goes",
+      tags: [
+        `${p.sub} wanted to be degraded`,
+        `${p.sub} wanted to be spanked`,
+        `${p.sub} wanted to be edged`,
+        `${p.sub} wanted to be worshipped`,
+        `${p.sub} wanted to be used and adored`,
+        `${p.sub} wanted to be made to beg`,
       ],
     },
     {

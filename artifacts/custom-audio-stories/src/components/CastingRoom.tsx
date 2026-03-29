@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon } from "lucide-react";
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory } from "../data/situations";
@@ -701,6 +701,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
   const [appearEyes, setAppearEyes] = useState<string>("");
   const [appearFeatures, setAppearFeatures] = useState<string[]>([]);
 
+  const [showAfterDarkTeaser, setShowAfterDarkTeaser] = useState(false);
+
   // Situation step state
   const [situationLabel, setSituationLabel] = useState<string>("");
   const [situationId, setSituationId] = useState<string>("");
@@ -1226,25 +1228,74 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false }: Props) {
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Intensity</p>
               <div className="grid grid-cols-2 gap-2.5">
-                {INTENSITIES.filter(i => afterDark ? ["Elevated", "Intense"].includes(i.id) : true).map(i => (
-                  <button
-                    key={i.id}
-                    type="button"
-                    onClick={() => update("intensity", i.id)}
-                    className={`p-4 rounded-2xl border text-left transition-all ${
-                      data.intensity === i.id
-                        ? "border-primary bg-primary/10 shadow-glow"
-                        : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-2 h-2 rounded-full" style={{ background: i.color }} />
-                      <p className={`font-semibold text-sm ${data.intensity === i.id ? "text-primary" : "text-foreground"}`}>{i.label}</p>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{i.desc}</p>
-                  </button>
-                ))}
+                {INTENSITIES.filter(i => afterDark ? ["Elevated", "Intense"].includes(i.id) : true).map(i => {
+                  const isGateway = !afterDark && i.id === "Intense";
+                  return (
+                    <button
+                      key={i.id}
+                      type="button"
+                      onClick={() => {
+                        if (isGateway) {
+                          setShowAfterDarkTeaser(v => !v);
+                        } else {
+                          setShowAfterDarkTeaser(false);
+                          update("intensity", i.id);
+                        }
+                      }}
+                      className={`p-4 rounded-2xl border text-left transition-all ${
+                        isGateway
+                          ? showAfterDarkTeaser
+                            ? "border-[#c0392b]/40 bg-[#c0392b]/8 opacity-75"
+                            : "border-[#c0392b]/25 bg-[#c0392b]/5 opacity-50 hover:opacity-70 hover:border-[#c0392b]/35"
+                          : data.intensity === i.id
+                            ? "border-primary bg-primary/10 shadow-glow"
+                            : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        {isGateway ? (
+                          <Moon className="w-3 h-3 shrink-0" style={{ color: "#c0392b99" }} />
+                        ) : (
+                          <div className="w-2 h-2 rounded-full shrink-0" style={{ background: i.color }} />
+                        )}
+                        <p className={`font-semibold text-sm ${
+                          isGateway ? "text-[#c0392b]/60" : data.intensity === i.id ? "text-primary" : "text-foreground"
+                        }`}>{i.label}</p>
+                        {isGateway && (
+                          <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-[#c0392b]/50">After Dark</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">{i.desc}</p>
+                    </button>
+                  );
+                })}
               </div>
+
+              {/* After Dark gateway teaser */}
+              {showAfterDarkTeaser && !afterDark && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 rounded-2xl p-4 border border-[#c0392b]/30 bg-[#c0392b]/6"
+                >
+                  <div className="flex items-start gap-3">
+                    <Moon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#c0392b" }} />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground mb-1">After Dark — where your deepest fantasies live</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                        After Dark is a separate world: unrestrained intensity, explicit scenarios, and every casting option fully unlocked. Nothing held back, nothing left unwritten.
+                      </p>
+                      <a
+                        href={`${import.meta.env.BASE_URL}after-dark`}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:opacity-80"
+                        style={{ color: "#c0392b" }}
+                      >
+                        Enter After Dark <ChevronRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">

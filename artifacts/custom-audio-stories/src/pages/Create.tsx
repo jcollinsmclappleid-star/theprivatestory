@@ -727,7 +727,6 @@ export default function Create() {
   const [castingPartnerName, setCastingPartnerName] = useState<string | undefined>();
   const [castingCountry, setCastingCountry] = useState<string | undefined>();
   const [castingCity, setCastingCity] = useState<string | undefined>();
-  const [castingSituation, setCastingSituation] = useState<string | undefined>();
   const [castingSituationId, setCastingSituationId] = useState<string | undefined>();
 
   const [timeOfDay, setTimeOfDay] = useState("");
@@ -1102,7 +1101,6 @@ export default function Create() {
     setCastingAppearFeatures(casting.appearFeatures || undefined);
     setCastingListenerName(casting.listenerName || undefined);
     setCastingPartnerName(casting.partnerName || undefined);
-    setCastingSituation(casting.situation || undefined);
     setCastingSituationId(casting.situationId || undefined);
     setPresetSaved(false);
 
@@ -1211,7 +1209,7 @@ export default function Create() {
     } finally {
       stopLoadingPhase();
     }
-  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName, castingCountry, castingCity, castingSituation, castingSituationId]);
+  }, [form, generateMutation, pendingCastingData, startLoadingPhase, stopLoadingPhase, perspective, timeOfDay, season, castingPairing, castingHeritage, castingAtmosphere, castingChemistry, castingAppearBuild, castingAppearHeight, castingAppearColouring, castingAppearEyes, castingAppearFeatures, castingListenerName, castingPartnerName, castingCountry, castingCity, castingSituationId]);
 
   const selectedMode = form.watch("storyMode");
   const selectedTags = form.watch("experienceTags") ?? [];

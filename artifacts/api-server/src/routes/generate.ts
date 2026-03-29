@@ -11,7 +11,7 @@ import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
-import { VALID_SITUATION_IDS, getSituationById } from "../lib/situations.js";
+import { VALID_SITUATION_IDS, getSituationById, getSituationByLabel } from "../lib/situations.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
@@ -514,6 +514,8 @@ export interface GenerateStoryRequest {
   scenarioRoom?: string;
   /** Situation ID from the Casting Room (e.g. "fc_01") — validated against 200-item allowlist server-side. */
   situationId?: string;
+  /** @deprecated Use situationId. Accepted for backward compatibility — normalised to ID server-side. */
+  situation?: string;
 }
 
 /** Internal server-only extension of GenerateStoryRequest.
@@ -1439,9 +1441,17 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
       raw.scenarioRoom?.trim() === GROUP_SCENE_ROOM ||
       (Array.isArray(raw.experienceTags) && raw.experienceTags.some(t => GROUP_IMPLICATION_TAGS.has(t)))
     ) ? true : undefined,
-    // Situation — validate against the 200-item allowlist by ID, silently drop if unknown.
-    situationId: raw.situationId?.trim() && VALID_SITUATION_IDS.has(raw.situationId.trim())
-      ? raw.situationId.trim() : undefined,
+    // Situation — validate by ID (preferred) or fall back to label for old clients.
+    situationId: (() => {
+      const rawId = raw.situationId?.trim();
+      if (rawId && VALID_SITUATION_IDS.has(rawId)) return rawId;
+      // Backward-compat: accept situation label, resolve to ID
+      if (raw.situation) {
+        const found = getSituationByLabel(raw.situation.trim());
+        if (found) return found.id;
+      }
+      return undefined;
+    })(),
   };
 }
 

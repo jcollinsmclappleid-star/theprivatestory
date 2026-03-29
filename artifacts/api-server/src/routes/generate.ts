@@ -1690,17 +1690,31 @@ Return JSON only in this exact format — no markdown, no explanation:
   ]
 }`;
 
-  const completion = await openrouter.chat.completions.create({
-    model: MISTRAL_MODEL,
-    max_tokens: 8192,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-  });
+  async function attemptWrite(): Promise<Record<string, unknown>> {
+    const completion = await openrouter.chat.completions.create({
+      model: MISTRAL_MODEL,
+      max_tokens: 8192,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    });
+    const raw = completion.choices[0]?.message?.content ?? "{}";
+    return parseLlmJson<Record<string, unknown>>(raw, "generate");
+  }
 
-  const raw = completion.choices[0]?.message?.content ?? "{}";
-  const parsed = parseLlmJson<Record<string, unknown>>(raw, "generate");
+  let parsed: Record<string, unknown>;
+  try {
+    parsed = await attemptWrite();
+  } catch (err) {
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[writeStory] Parse failed — retrying once");
+    try {
+      parsed = await attemptWrite();
+    } catch (retryErr) {
+      logger.error({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Retry also failed — giving up");
+      throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
+    }
+  }
 
   return {
     title: parsed.title,

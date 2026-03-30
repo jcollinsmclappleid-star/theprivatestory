@@ -865,12 +865,12 @@ export default function Home() {
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
-              Tonight, a story<br className="hidden md:block" /> written entirely<br className="hidden md:block" />
+              A story written<br className="hidden md:block" /> entirely{" "}
               <span className="text-primary">for you.</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              Tell us who you want in it, where it happens, the tension between you, and how far it goes. We write it, narrate it, and keep it private — heard only by you.
+              Tell us who you want in it, where it happens, the tension between you, and how far it goes. We write it, narrate it, and keep it private — yours to listen to wherever you are.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">
@@ -912,10 +912,10 @@ export default function Home() {
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground/60 leading-relaxed max-w-sm">
                 <Lock className="w-3 h-3 inline-block mr-1.5 text-primary/40 -mt-0.5" />
-                No record kept. No one will ever know it exists — including us.
+                Your library is private — only you can open it. We never share your stories or data with anyone.
               </p>
               <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground/40 tracking-wide">
-                {["No profile", "No social", "No trace", "Heard only by you"].map((item) => (
+                {["No profile", "No social", "No sharing", "Heard only by you"].map((item) => (
                   <span key={item} className="flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
                     {item}
@@ -946,11 +946,11 @@ export default function Home() {
           />
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
             {[
-              { icon: <EyeOff className="w-4 h-4" />, text: "No one will ever know" },
+              { icon: <EyeOff className="w-4 h-4" />, text: "Your library is visible only to you" },
               { icon: <WifiOff className="w-4 h-4" />, text: "No profile. No discovery." },
-              { icon: <Lock className="w-4 h-4" />, text: "Can't be traced — not even to us" },
+              { icon: <Lock className="w-4 h-4" />, text: "Never sold or shared with anyone" },
               { icon: <Headphones className="w-4 h-4" />, text: "For your ears alone" },
-              { icon: <Trash2 className="w-4 h-4" />, text: "Remove the evidence any time" },
+              { icon: <Trash2 className="w-4 h-4" />, text: "Delete any story, any time" },
             ].map((item) => (
               <div
                 key={item.text}
@@ -988,7 +988,7 @@ export default function Home() {
                 step: "01",
                 icon: <Globe className="w-5 h-5" />,
                 accent: "#c9a227",
-                heading: "Tell us who you want tonight",
+                heading: "Tell us exactly who you want in it",
                 body: "Choose who he is, the pull between you, where it happens, the mood you want to be in, and how far it goes. Every detail set in advance — none of it left to chance.",
               },
               {
@@ -996,14 +996,14 @@ export default function Home() {
                 icon: <PenLine className="w-5 h-5" />,
                 accent: "#e879a0",
                 heading: "We write it around you",
-                body: "A literary story built to your exact brief — not generic, not templated. Narrated by a voice that fits tonight, with original cover art generated for this story alone.",
+                body: "A literary story built to your exact brief — not generic, not templated. Narrated by a voice that fits the mood, with original cover art generated for this story alone.",
               },
               {
                 step: "03",
                 icon: <Headphones className="w-5 h-5" />,
                 accent: "#a78bfa",
-                heading: "Press play. Only you will ever hear it.",
-                body: "Your story lives privately in your account. No trace, no history, no one who will ever know it exists. Yours to keep, or quietly remove — whenever you're ready.",
+                heading: "Press play — wherever you are.",
+                body: "Your story lives privately in your account. On your commute, at home, at your desk — it's ready when you are. Yours to keep or quietly delete, any time.",
               },
             ].map((item) => (
               <div
@@ -1136,7 +1136,7 @@ export default function Home() {
                 {/* Privacy note */}
                 <div className="flex items-center gap-2 text-xs text-white/20">
                   <Lock className="w-3 h-3 text-primary/30 flex-shrink-0" />
-                  <span>Private · Saved to your account only · No record shared with anyone, ever</span>
+                  <span>Private · Visible only in your account · Never shared with anyone, ever</span>
                 </div>
               </div>
             </div>
@@ -1194,8 +1194,8 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
                   {[
                     { label: "The mood you want", desc: "The feeling you're chasing — and where you want to end up." },
-                    { label: "The situation", desc: "220 starting points. Or let us pick the one that fits tonight." },
-                    { label: "The voice", desc: "Narrated in the tone that suits the story you chose." },
+                    { label: "The situation", desc: "220 starting points. Or let us pick the right one for you." },
+                    { label: "The voice", desc: "Narrated in a voice that fits the mood you've chosen." },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl bg-background/40 border border-border/20 p-4">
                       <p className="font-semibold text-foreground text-sm mb-1">{item.label}</p>
@@ -1432,8 +1432,8 @@ export default function Home() {
         ) : (
           <>
             <RowSlider
-              title={isAuthenticated && recs.has_taste_profile ? "For You" : "For tonight"}
-              subtitle={isAuthenticated && recs.has_taste_profile ? "Picked from what you love" : "Stories that know what tonight calls for"}
+              title={isAuthenticated && recs.has_taste_profile ? "For You" : "Start here"}
+              subtitle={isAuthenticated && recs.has_taste_profile ? "Picked from what you love" : "Stories for wherever you are and whatever you're feeling"}
               stories={tonightPicks}
             />
             {recs.has_taste_profile && recs.because_you_liked.length > 0 && (
@@ -1465,7 +1465,7 @@ export default function Home() {
           <div className="mb-8">
             <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Explore by mood</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-              Find the story that fits tonight.
+              Find the story that fits the moment.
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

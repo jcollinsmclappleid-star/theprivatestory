@@ -382,7 +382,6 @@ function Footer() {
             { label: "After Dark", href: "/after-dark" },
             { label: "Drift — Bedtime", href: "/drift" },
             { label: "My library", href: "/library" },
-            { label: "Gift a story", href: "/gift" },
             { label: "About", href: "/about" },
             { label: "Discover all types", href: "/discover" },
           ]} />

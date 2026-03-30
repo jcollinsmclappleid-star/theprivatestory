@@ -33,7 +33,7 @@ const config: SEOPageConfig = {
       h2: "What the Story Does That Scrolling Doesn't",
       paragraphs: [
         "There is a particular kind of wanting that arrives in the evening — not always physical, not always purely emotional, but a desire for something that makes you feel like yourself. Appealing to that feeling. Like the world contains possibility.",
-        "Scrolling does not address it. Social media processes quickly and leaves you precisely where you were, often slightly worse. Romance content on general platforms sits either too far toward explicit or too far toward sanitised — rarely in the register that actually speaks to an adult woman with a sophisticated inner life.",
+        "Scrolling does not address it. Social media processes quickly and leaves you precisely where you were, often slightly worse. Romance content on general platforms sits either too far toward the overtly adult or too far toward the sanitised — rarely in the register that actually speaks to an adult woman with a sophisticated inner life.",
         "A romantic audio story does something different. It gives that wanting somewhere to be. A voice, a world, a presence — the sense that something is happening specifically for you, because it is. You are not a passive consumer of content made for someone else. You described what you needed and something was made around that. The experience of being responded to — of having your preferences matter — is itself part of what makes romantic audio stories work.",
         "You are not adapting to the content. The content was shaped around you. For a form of experience that is as private and individual as romantic feeling, that responsiveness is not a small thing.",
       ],
@@ -112,8 +112,8 @@ const config: SEOPageConfig = {
   fullPicture: {
     h2: "Romantic Audio Stories — The Full Picture",
     paragraphs: [
-      "The category of romantic audio stories for adults sits in a gap that most platforms have filled imperfectly, if at all. Romance audiobooks serve one need. Explicit audio content serves another. What sits between them — emotionally sophisticated, romantically calibrated, private, personalised, and narrated for listening — has been genuinely underserved.",
-      "Romantic audio stories for women, in particular, have tended toward either the sanitised or the explicitly adult — rarely in the register that reflects how complex romantic feeling actually is. The Private Story was built for that register.",
+      "The category of romantic audio stories for adults sits in a gap that most platforms have filled imperfectly, if at all. Romance audiobooks serve one need. Overtly adult audio content serves another. What sits between them — emotionally sophisticated, romantically calibrated, private, personalised, and narrated for listening — has been genuinely underserved.",
+      "Romantic audio stories for women, in particular, have tended toward either the sanitised or the overtly adult — rarely in the register that reflects how complex romantic feeling actually is. The Private Story was built for that register.",
       "Romantic stories to listen to, at their best, understand the difference between the slow burn listener and the tender-connection listener. Audio romance stories for adults that treat these as the same experience — and produce a composite that satisfies neither — are missing the point. Personalisation is not a feature. It is the mechanism.",
       "Intimate romantic audio stories require intimacy in the production, not just the content. The voice quality, the pacing, the first-person narration, the sense that this was made for your ears specifically — these qualities produce the experience of intimacy rather than just describing it. The best romantic audio stories feel close. Private. Personal. Like something that exists for you.",
       "Whatever your version of romantic sounds like tonight — the best romantic audio stories are the ones made around the version you're actually experiencing, rather than approximated from a fixed catalogue.",
@@ -140,7 +140,7 @@ const config: SEOPageConfig = {
       a: "Romantic audio stories are narrated audio pieces created around a romantic emotional experience — slow burn tension, tender connection, emotional closeness, cinematic charged scenarios. At The Private Story, they are generated around your specific choices before each session, which means the tone, pacing, dynamic, and world of the story are shaped around what you described wanting, rather than pre-authored and retrieved from a library.",
     },
     {
-      q: "How explicit are the romantic stories?",
+      q: "What intensity level do the romantic stories reach?",
       a: "The Private Story creates content that is adult in register — emotionally sophisticated, romantically and sensually calibrated, written for grown-up listeners. The intensity of your story is shaped by the choices you make in the creation flow. The platform is designed for adult women who want content that takes their inner life seriously — not content that either sanitises or reduces.",
     },
     {

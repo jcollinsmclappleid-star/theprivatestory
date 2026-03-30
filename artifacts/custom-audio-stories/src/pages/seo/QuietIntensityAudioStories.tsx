@@ -16,7 +16,7 @@ const config: SEOPageConfig = {
       paragraphs: [
         "Quiet intensity is not the absence of feeling. It is feeling at its most concentrated — held under pressure rather than released, communicated through restraint rather than expression.",
         "It is the specific quality of a room in which something is understood between two people without being said. The charged silence after a sentence that stopped just short of what it was really about. The awareness of someone standing close enough that the awareness itself becomes significant. The look that lasts a beat longer than it needed to, carrying everything that neither person has spoken.",
-        "This is a different kind of intimacy from the overtly stated. It is psychological rather than declarative — it lives in the gap between what is said and what is meant, in the space between almost and acknowledgement. And it produces a specific kind of tension that is, for the right listener, more arresting than anything explicit could be.",
+        "This is a different kind of intimacy from the overtly stated. It is psychological rather than declarative — it lives in the gap between what is said and what is meant, in the space between almost and acknowledgement. And it produces a specific kind of tension that is, for the right listener, more arresting than anything more overtly stated could be.",
         "Quiet intensity audio stories are built entirely inside this register. The story does not announce what it contains. It renders the experience of being inside a moment in which everything is implied and nothing is stated — and trusts the listener to feel the full weight of what is not being said.",
       ],
     },
@@ -111,7 +111,7 @@ const config: SEOPageConfig = {
   fullPicture: {
     h2: "Quiet Intensity Audio Stories — The Full Picture",
     paragraphs: [
-      "Psychological audio romance stories occupy a specific space in the landscape of adult audio content — one that has been largely empty. The dominant modes are explicit or warmly romantic. Quiet intensity sits apart from both: restrained where explicit content is direct, psychologically complex where warmly romantic content is emotionally straightforward.",
+      "Psychological audio romance stories occupy a specific space in the landscape of adult audio content — one that has been largely empty. The dominant modes are overtly adult or warmly romantic. Quiet intensity sits apart from both: restrained where more direct content speaks plainly, psychologically complex where warmly romantic content is emotionally straightforward.",
       "Quiet romantic tension audio requires a different kind of writing than most intimate content. The skill is not in what is described but in what is withheld — and in how precisely the withheld thing is communicated through the gap. This is the craft of literary fiction applied to intimate storytelling, and it produces an experience unlike any other register.",
       "Restrained desire audio stories are for listeners who know that the most powerful version of something is often the version that does not fully state itself. Who find half-finished sentences more charged than completed ones. Who read subtext automatically and find fiction that doesn't offer it strangely flat.",
       "Understated romantic audio, done well, is not mild or gentle. It is intense — the intensity simply operates at a different register than volume. The quiet intensity story contains everything that a louder story contains; it simply holds it differently, communicates it differently, produces its effect through concentration rather than declaration.",
@@ -142,7 +142,7 @@ const config: SEOPageConfig = {
       a: "Slow burn is temporal — it accumulates tension across the arc of a story, building toward a resolution the listener knows is coming. Quiet intensity is spatial — it lives inside a moment rather than across a sequence of moments. The charge is present and concentrated rather than built over time. A quiet intensity story may not resolve in the conventional sense; the sustained state of charged awareness can be the point rather than the approach to something beyond it.",
     },
     {
-      q: "Are these stories explicit or restrained?",
+      q: "Are these stories restrained or adult in their register?",
       a: "Restrained — deliberately and by design. Quiet intensity works through implication rather than statement. The story communicates through what is not said, which engages the imagination rather than resolving it. This is not a limitation — for the right listener, implication is significantly more powerful than direct description. The intensity is real; only the mode of its communication is quiet.",
     },
     {

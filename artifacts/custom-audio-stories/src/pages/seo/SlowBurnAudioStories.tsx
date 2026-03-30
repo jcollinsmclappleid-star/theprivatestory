@@ -43,7 +43,7 @@ const config: SEOPageConfig = {
       paragraphs: [
         "Slow burn has a particular quality in audio that it shares with no other format. The narration is close. First person, so the tension is not observed but inhabited — you are the person for whom every moment of almost is acutely felt. The voice is aware of what is accumulating in a way that a third-person narrator cannot be: present to every small signal, feeling every degree of charge.",
         "The pacing of a slow burn audio story is its own kind of art. The voice does not rush. It does not skip past the loaded moments to get somewhere. It inhabits each moment fully — lingers in the silences, gives the almost-touches space, lets the charged exchange breathe before moving on. The slowness is not timidity. It is confidence: the story knows how this ends, and it is sufficiently certain of the destination to take its time.",
-        "The restraint in the writing mirrors the restraint in the story. Slow burn prose does not describe explicitly what the tension contains. It describes the tension itself — the quality of awareness, the specific weight of proximity, the way a voice sounds when it is carrying something it has not yet said. The imagination of the listener does the rest, which is precisely why slow burn audio is often more immersive than more direct content.",
+        "The restraint in the writing mirrors the restraint in the story. Slow burn prose does not directly describe what the tension contains. It describes the tension itself — the quality of awareness, the specific weight of proximity, the way a voice sounds when it is carrying something it has not yet said. The imagination of the listener does the rest, which is precisely why slow burn audio is often more immersive than more direct content.",
       ],
     },
   ],
@@ -147,8 +147,8 @@ const config: SEOPageConfig = {
       a: "Yes. The creation flow allows you to shape the pace and nature of the tension — a slow build over weeks of professional proximity, the accumulated electricity of five near-misses, the specific texture of friends-to-more with its high emotional stakes. The scenario you choose shapes the character of the slow burn. The generation is built to reflect that precisely.",
     },
     {
-      q: "Are slow burn stories romantic or explicit?",
-      a: "Slow burn stories at The Private Story are adult and intimate in register — charged, close, and honest about desire. The approach is through tension and implication rather than direct explicitness, which is consistent with how slow burn actually works: it engages the imagination rather than bypassing it. The resolution, when it arrives, reflects the intensity of what was built. The intensity of your story is shaped by your creation choices.",
+      q: "Are slow burn stories romantic or adult in tone?",
+      a: "Slow burn stories at The Private Story are adult and intimate in register — charged, close, and honest about desire. The approach is through tension and implication rather than direct statement, which is consistent with how slow burn actually works: it engages the imagination rather than bypassing it. The resolution, when it arrives, reflects the intensity of what was built. The intensity of your story is shaped by your creation choices.",
     },
     {
       q: "What scenarios work well for slow burn?",

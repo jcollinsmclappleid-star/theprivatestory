@@ -151,7 +151,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Can I choose how dark the story is?",
-      a: "Yes. The creation flow lets you define the specific character and dynamic — the moral weight he carries, the nature of the world he inhabits, the intensity of the pull. You also set the story's intensity level separately. Dark romance is a tonal register, not a fixed content level — the story can be brooding and charged without being explicit, or it can be fully adult in its register. You shape both dimensions separately.",
+      a: "Yes. The creation flow lets you define the specific character and dynamic — the moral weight he carries, the nature of the world he inhabits, the intensity of the pull. You also set the story's intensity level separately. Dark romance is a tonal register, not a fixed content level — the story can be brooding and charged and restrained, or it can be deeply adult in its register. You shape both dimensions separately.",
     },
     {
       q: "Is there overlap between dark romance and other genres on the platform?",

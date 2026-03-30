@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +16,6 @@ import Browse from "@/pages/Browse";
 import Search from "@/pages/Search";
 import StoryDetail from "@/pages/StoryDetail";
 import Create from "@/pages/Create";
-import Gift from "@/pages/Gift";
 import Library from "@/pages/Library";
 import Admin from "@/pages/Admin";
 import AdminModeration from "@/pages/AdminModeration";
@@ -75,7 +74,7 @@ function Router() {
             <Route path="/search" component={Search} />
             <Route path="/story/:id" component={StoryDetail} />
             <Route path="/create" component={Create} />
-            <Route path="/gift" component={Gift} />
+            <Route path="/gift"><Redirect to="/" /></Route>
             <Route path="/library" component={Library} />
             <Route path="/after-dark" component={AfterDark} />
             <Route path="/drift" component={Drift} />

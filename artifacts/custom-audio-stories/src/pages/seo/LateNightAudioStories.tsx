@@ -145,8 +145,8 @@ const config: SEOPageConfig = {
       a: "Yes. The creation flow allows you to choose the world your story inhabits — a late night phone call, a city at night, a hotel room, or another atmospheric setting. The story is built into that world from the beginning, which means the setting shapes the narrative rather than being added as description afterward.",
     },
     {
-      q: "Are these stories explicit?",
-      a: "The Private Story creates adult content in a literary register — honest about desire and charged with the specific atmosphere of late night. The intensity is shaped by your choices in the creation flow, from atmospheric and suggestive through to fully explicit. The writing works through atmosphere, precision, and the quality of the encounter across all intensity levels.",
+      q: "How intimate are the late night stories?",
+      a: "The Private Story creates adult content in a literary register — honest about desire and charged with the specific atmosphere of late night. The intensity is shaped by your choices in the creation flow, from atmospheric and suggestive through to deeply adult in tone. The writing works through atmosphere, precision, and the quality of the encounter across all intensity levels.",
     },
     {
       q: "How long are late night audio stories?",

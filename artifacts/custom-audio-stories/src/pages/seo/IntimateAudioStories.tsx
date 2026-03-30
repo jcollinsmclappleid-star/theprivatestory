@@ -25,8 +25,8 @@ const config: SEOPageConfig = {
       paragraphs: [
         "There is a considerable difference between content that is technically intimate and a story that creates an intimate experience.",
         "Explicit content exists in abundance. It is immediate, direct, and entirely impersonal — made for a general audience, designed to function regardless of who is listening. For some purposes, in some moods, that is the point. But it is not intimate. Intimacy requires specificity. It requires that the experience feel as though it exists for you — not for an imagined average listener, but for this version of you, on this particular evening, in this particular mood.",
-        "An intimate audio story created at The Private Story is specific by design. The choices you make before generation — the emotional register, the dynamic between the people in the story, the tone of the voice, the pacing — translate into a story that reflects you rather than approximating you. The result is not explicit in the sense of being crudely direct. It is intimate in the sense of being genuinely close.",
-        "That distinction matters. Intimacy, done well, is more powerful than explicitness because it engages the imagination rather than bypassing it. The story describes what is happening with enough precision that you inhabit it — not from outside it as a viewer, but from inside it as the person it is happening to.",
+        "An intimate audio story created at The Private Story is specific by design. The choices you make before generation — the emotional register, the dynamic between the people in the story, the tone of the voice, the pacing — translate into a story that reflects you rather than approximating you. The result is not bluntly direct. It is intimate in the sense of being genuinely close.",
+        "That distinction matters. Intimacy, done well, is more powerful than direct statement because it engages the imagination rather than bypassing it. The story describes what is happening with enough precision that you inhabit it — not from outside it as a viewer, but from inside it as the person it is happening to.",
       ],
     },
     {
@@ -100,8 +100,8 @@ const config: SEOPageConfig = {
         body: "First person narration places you inside the experience rather than at a distance from it. Not an observer. The person it is happening to. This distinction changes the quality of the experience considerably.",
       },
       {
-        heading: "Imagination over explicitness",
-        body: "The story engages your imagination rather than bypassing it — which is more powerful, more immersive, and more genuinely intimate than direct description. You inhabit the experience rather than consuming it.",
+        heading: "Imagination over statement",
+        body: "The story engages your imagination rather than bypassing it — which is more powerful, more immersive, and more genuinely intimate than blunt description. You inhabit the experience rather than consuming it.",
       },
       {
         heading: "Private by design",
@@ -121,7 +121,7 @@ const config: SEOPageConfig = {
     h2: "Intimate Audio Stories — The Full Picture",
     paragraphs: [
       "Intimate audio stories for women sit at the intersection of several things that content platforms have historically produced in isolation: adult subject matter, literary quality, genuine personalisation, and private delivery. Most platforms provide one or two of these. The Private Story is built around all four together — because the intimate audio experience only works when all of them are present.",
-      "Intimate romantic audio occupies a specific register that is distinct from both general romance content and explicitly adult content. It requires the emotional intelligence of good literary fiction and the honesty of writing for adults who know their own desire. It requires pacing that understands what intimacy actually feels like — not just what it looks like from outside.",
+      "Intimate romantic audio occupies a specific register that is distinct from both general romance content and overtly adult content. It requires the emotional intelligence of good literary fiction and the honesty of writing for adults who know their own desire. It requires pacing that understands what intimacy actually feels like — not just what it looks like from outside.",
       "Private intimate stories are not simply intimate stories with a privacy setting toggled on. Privacy is constitutive of the intimate experience — it is what allows the listener to inhabit the story rather than maintain the slight distance that social visibility always creates. The Private Story's architecture reflects this.",
       "An intimate story generator that produces genuinely intimate content needs to understand the difference between the slow burn listener and the charged-encounter listener and the tender-closeness listener — and write distinctly for each rather than producing a composite that serves none of them fully. The Private Story's creation flow exists to make that distinction precise, and the generation is built to honour it.",
       "Adult intimate audio experiences, at their best, leave the listener feeling something specific — not just aroused, not just entertained, but met. Encountered by something that was shaped around who she is and what she needs tonight. That is the experience The Private Story is built to create.",
@@ -151,8 +151,8 @@ const config: SEOPageConfig = {
       a: "This is shaped by the choices you make in the creation flow. The Private Story creates across the full range of intimate experience — from quietly close and emotionally present to charged and electric to slow burn tension that builds deliberately. You choose the intensity. The story is built to deliver it.",
     },
     {
-      q: "Are intimate audio stories explicit?",
-      a: "The Private Story creates content that is adult and intimate in register — honest about desire, emotionally sophisticated, written for grown-up listeners who know what they want. The intensity is shaped by your choices in the creation flow, from quietly sensual through to fully explicit. Across all intensity levels, the approach is literary — the writing works through precision, atmosphere, and the specific texture of desire rather than bluntness for its own sake.",
+      q: "What level of intimacy can the stories reach?",
+      a: "The Private Story creates content that is adult and intimate in register — honest about desire, emotionally sophisticated, written for grown-up listeners who know what they want. The intensity is shaped by your choices in the creation flow, from quietly sensual through to deeply adult in tone. Across all intensity levels, the approach is literary — the writing works through precision, atmosphere, and the specific texture of desire rather than bluntness for its own sake.",
     },
     {
       q: "Who are intimate audio stories for?",

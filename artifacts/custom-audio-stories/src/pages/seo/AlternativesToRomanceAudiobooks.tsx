@@ -38,7 +38,7 @@ const config: SEOPageConfig = {
         "The gap is specific and worth naming precisely.",
         "A romance audiobook was written by an author who had a vision — a story they wanted to tell, characters they had conceived, a narrative arc they had decided on before you arrived. The book was edited, produced, and published for a readership of millions. It exists as a fixed object in the world, identical for every listener.",
         "When that vision happens to align with what you need tonight — when the pacing, the dynamic, the emotional register, the kind of heat and the kind of tenderness in the story happen to match your current mood — the experience is close to perfect.",
-        "When it doesn't align — when the story you downloaded is slower than you needed, or more explicit than you wanted, or centred on a dynamic that isn't quite right for tonight — the experience is a polite disappointment. You listen. You finish. You return to the catalogue and try again.",
+        "When it doesn't align — when the story you downloaded is slower than you needed, or more intense than you wanted, or centred on a dynamic that isn't quite right for tonight — the experience is a polite disappointment. You listen. You finish. You return to the catalogue and try again.",
         "The catalogue cannot solve this problem. It can only offer more options, which means more scrolling and more polite disappointments alongside the genuine finds.",
         "Romance audio stories created for you solve the problem the catalogue cannot solve. Not by offering more pre-existing options — by creating the specific option you need tonight from scratch, around your current preferences, in the emotional register you specified.",
         "The author's vision is replaced by your preferences. The fixed narrative is replaced by a created one. The story exists not for a general romance readership but for the specific version of you who sat down tonight and said: this is what I need.",
@@ -203,8 +203,8 @@ const config: SEOPageConfig = {
       a: "Yes. The creation process takes less than two minutes. You choose your mood and the dynamic you want — the kind of romantic tension, the emotional register, the pacing — and a story is generated around those choices. The story is private, saved to your account, and heard only by you.",
     },
     {
-      q: "Are personalised romance audio stories explicit?",
-      a: "The intensity depends on the choices you make in the creation flow. The Private Story creates adult content from sensual and atmospheric through to fully explicit — shaped by your preferences, not by a platform default. Across all intensity levels, the focus is on desire, tension, connection, and emotional experience that feels genuinely yours rather than assembled for a general audience.",
+      q: "What intensity level can personalised romance audio stories reach?",
+      a: "The intensity depends on the choices you make in the creation flow. The Private Story creates adult content from quietly sensual and atmospheric through to deeply adult in tone — shaped by your preferences, not by a platform default. Across all intensity levels, the focus is on desire, tension, connection, and emotional experience that feels genuinely yours rather than assembled for a general audience.",
     },
     {
       q: "How long are romantic personalised audio stories?",

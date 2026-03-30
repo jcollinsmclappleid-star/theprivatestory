@@ -53,7 +53,7 @@ export default function About() {
 
           <div className="glass-panel rounded-2xl p-8 border-primary/20 bg-primary/5">
             <p className="text-foreground text-lg leading-relaxed italic">
-              For many people, especially women, what makes an experience feel compelling is not excess. It is <strong>attention.</strong> It is <strong>privacy.</strong> It is <strong>emotional tone.</strong> It is the sense that something is unfolding at the right pace, in the right way, and with the right feeling.
+              What makes an experience compelling is rarely excess. It is <strong>attention.</strong> It is <strong>privacy.</strong> It is <strong>emotional tone.</strong> It is the sense that something is unfolding at the right pace, in the right way, with the right feeling. That is what we design around.
             </p>
           </div>
         </motion.div>
@@ -150,7 +150,7 @@ export default function About() {
                 "More personal than a standard library",
                 "More discreet than a social platform",
                 "More emotionally aware than a generic app",
-                "More refined than typical adult content spaces",
+                "More refined than most digital story platforms",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />

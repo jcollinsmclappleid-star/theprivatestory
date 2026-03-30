@@ -41,8 +41,8 @@ declare global {
   }
 }
 
-/** Admin sessions are hard-expired after 30 minutes of inactivity */
-const ADMIN_SESSION_MAX_IDLE_MS = 30 * 60 * 1000;
+/** Admin sessions are hard-expired after 2 hours of inactivity */
+const ADMIN_SESSION_MAX_IDLE_MS = 2 * 60 * 60 * 1000;
 
 /**
  * The ADMIN_EMAIL env var defines the email address that is treated as admin

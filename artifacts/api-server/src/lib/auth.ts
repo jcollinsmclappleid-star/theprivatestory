@@ -115,14 +115,14 @@ export const auth = betterAuth({
   },
 
   session: {
-    // Sessions expire after 7 days of absolute time for regular users.
-    // Admin sessions are hard-expired at 30 minutes of inactivity by authMiddleware,
+    // Sessions expire after 30 days of absolute time for regular users.
+    // Admin sessions are hard-expired at 2 hours of inactivity by authMiddleware,
     // so this value only controls the outer envelope (not reached in practice for admins).
-    expiresIn: 60 * 60 * 24 * 7,
+    expiresIn: 60 * 60 * 24 * 30,
     // Refresh the session record (updatedAt) every 10 minutes of activity.
-    // This must be shorter than the 30-minute admin idle threshold so that
+    // This must be shorter than the 2-hour admin idle threshold so that
     // authMiddleware's inactivity check based on session.updatedAt is accurate
-    // within a 10-minute window. Without this, updatedAt could be up to 24 h stale,
+    // within a 10-minute window. Without this, updatedAt could be stale,
     // making the admin inactivity check unreliable.
     updateAge: 10 * 60,
     // Sessions are considered "fresh" (eligible for re-confirmation prompts) for 24 h.

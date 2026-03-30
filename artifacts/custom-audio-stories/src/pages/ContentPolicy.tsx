@@ -257,7 +257,7 @@ export default function ContentPolicy() {
           </div>
           <div className="pl-14 space-y-3 text-muted-foreground text-sm leading-relaxed">
             <p><strong className="text-foreground/80">You can report stories</strong> that appear to violate this policy. When you report, we will review the story, the selections used, and moderation records to determine if action is needed.</p>
-            <p><strong className="text-foreground/80">Account appeals:</strong> If you believe your account was terminated or a request was blocked in error, you may appeal by emailing <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>. Include your account email and a brief description of the issue. We will respond within 5 business days.</p>
+            <p><strong className="text-foreground/80">Account appeals:</strong> If you believe your account was terminated or a request was blocked in error, you may appeal by emailing <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>. Include your account email and a brief description of the issue. We will respond within 5 business days.</p>
             <p><strong className="text-foreground/80 text-xs">Note:</strong> Appeals are not available for violations involving minors or non-consensual content. These are final.</p>
           </div>
         </section>
@@ -289,7 +289,7 @@ export default function ContentPolicy() {
             If a story generated on this platform contains content that appears to violate this policy, please report it.
           </p>
           <a
-            href="mailto:support@theprivatestory.co.uk"
+            href="mailto:support@theprivatestory.com"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors"
           >
             <MessageSquare className="w-4 h-4" />

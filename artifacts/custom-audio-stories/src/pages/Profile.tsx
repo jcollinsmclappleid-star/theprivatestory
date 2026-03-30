@@ -536,8 +536,28 @@ export default function Profile() {
           )}
           {usageData.plan === "free" && (
             <p className="mt-3 text-xs text-muted-foreground">
-              Upgrade to generate stories. <Link href="/subscribe" className="text-primary hover:underline underline-offset-2">See plans →</Link>
+              Upgrade to generate stories. <Link href="/pricing" className="text-primary hover:underline underline-offset-2">See plans →</Link>
             </p>
+          )}
+          {usageData.plan !== "free" && (
+            <div className="mt-4 pt-4 border-t border-border/20 flex flex-col sm:flex-row gap-2">
+              <button
+                onClick={async () => {
+                  const res = await fetch(`${API_BASE}/api/stripe/portal`, { credentials: "include" });
+                  const data = await res.json();
+                  if (data.url) window.location.href = data.url;
+                }}
+                className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+              >
+                Manage billing
+              </button>
+              <Link
+                href="/pricing"
+                className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all text-center"
+              >
+                Add more stories — £3.99
+              </Link>
+            </div>
           )}
         </section>
       )}
@@ -916,7 +936,7 @@ export default function Profile() {
         {deleteDone && (
           <p className="text-xs text-muted-foreground">
             Your deletion request has been received. All personal data will be removed within 30 days.
-            You can contact <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a> with any questions.
+            You can contact <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a> with any questions.
           </p>
         )}
       </div>

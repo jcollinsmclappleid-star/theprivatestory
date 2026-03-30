@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
 import { AuthModal } from "@/components/AuthModal";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { TermsGate } from "@/components/TermsGate";
 
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
@@ -118,17 +120,20 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AudioProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <AuthModal />
-            <Router />
-          </WouterRouter>
-        </AudioProvider>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AudioProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <AuthModal />
+              <TermsGate />
+              <Router />
+            </WouterRouter>
+          </AudioProvider>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

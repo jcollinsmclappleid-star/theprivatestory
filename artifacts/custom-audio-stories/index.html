@@ -84,6 +84,23 @@
     }
     </script>
 
+    <!-- Google Analytics 4 — cookie-less consent mode (no identifiers stored, GDPR compliant) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 0
+      });
+      gtag('js', new Date());
+    </script>
+    <!-- Replace G-XXXXXXXXXX with your GA4 Measurement ID from Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script> -->
+    <!-- <script>gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true, allow_google_signals: false });</script> -->
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

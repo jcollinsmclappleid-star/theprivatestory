@@ -50,6 +50,10 @@ export const usersTable = pgTable("users", {
   storiesGeneratedThisYear: integer("stories_generated_this_year").notNull().default(0),
   subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),
   subscriptionRenewDate: timestamp("subscription_renew_date", { withTimezone: true }),
+  // Stripe billing identifiers
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  subscriptionStatus: text("subscription_status", { enum: ["active", "past_due", "canceled", "incomplete", "trialing"] }),
   // GDPR / legal compliance
   termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
 });

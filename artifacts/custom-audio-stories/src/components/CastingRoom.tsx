@@ -1764,7 +1764,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   <div className="mt-3">
                     <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
                     <a
-                      href={`mailto:support@theprivatestory.co.uk?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(listenerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                      href={`mailto:support@theprivatestory.com?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(listenerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
                       className="text-xs text-primary/80 hover:text-primary underline transition-colors"
                     >
                       Request this name via email →
@@ -1847,7 +1847,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   <div className="mt-3">
                     <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
                     <a
-                      href={`mailto:support@theprivatestory.co.uk?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(partnerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                      href={`mailto:support@theprivatestory.com?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(partnerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
                       className="text-xs text-primary/80 hover:text-primary underline transition-colors"
                     >
                       Request this name via email →

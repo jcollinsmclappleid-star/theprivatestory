@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, ChevronRight, Check, Star, Moon,
-  EyeOff, Bookmark, Calendar, Plus,
+  EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const BASE = import.meta.env.BASE_URL;
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REASSURANCE = [
   { icon: <Sparkles className="w-4 h-4" />, label: "Created just for you", sub: "Every story written around your choices" },
@@ -113,6 +115,39 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Pricing() {
+  const { isAuthenticated, openSignUp } = useAuth();
+  const search = useSearch();
+  const checkoutResult = new URLSearchParams(search).get("checkout");
+  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const startCheckout = async (plan: "monthly" | "annual" | "addon") => {
+    if (!isAuthenticated) {
+      openSignUp();
+      return;
+    }
+    setLoadingPlan(plan);
+    setCheckoutError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        setCheckoutError(data.error ?? "Could not start checkout. Please try again.");
+      } else {
+        window.location.href = data.url;
+      }
+    } catch {
+      setCheckoutError("Network error — please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -138,6 +173,26 @@ export default function Pricing() {
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto">
+          {checkoutResult === "success" && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm"
+            >
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+              <span>Your subscription is active — welcome. Head to your profile to see your plan details.</span>
+            </motion.div>
+          )}
+          {checkoutError && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-sm"
+            >
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{checkoutError}</span>
+            </motion.div>
+          )}
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-6">
             Private access
           </span>
@@ -197,12 +252,17 @@ export default function Pricing() {
                 ))}
               </div>
 
-              <Link
-                href="/create"
-                className="block w-full text-center py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/10 hover:border-primary/60 transition-all"
+              <button
+                onClick={() => startCheckout("monthly")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/10 hover:border-primary/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Begin with monthly
-              </Link>
+                {loadingPlan === "monthly" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : (
+                  isAuthenticated ? "Subscribe monthly" : "Sign up to begin"
+                )}
+              </button>
             </div>
           </div>
 
@@ -236,12 +296,17 @@ export default function Pricing() {
                 ))}
               </div>
 
-              <Link
-                href="/create"
-                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)]"
+              <button
+                onClick={() => startCheckout("annual")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Begin with annual
-              </Link>
+                {loadingPlan === "annual" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : (
+                  isAuthenticated ? "Subscribe annually" : "Sign up to begin"
+                )}
+              </button>
               <p className="text-center text-[10px] text-muted-foreground/30 mt-3">
                 The most complete experience, at the best rate.
               </p>

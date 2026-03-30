@@ -23,7 +23,7 @@ export default function Terms() {
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
           The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
           <strong>Registered office:</strong> 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, England<br />
-          <strong>Contact:</strong> <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+          <strong>Contact:</strong> <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
         </p>
       </div>
 
@@ -123,7 +123,7 @@ export default function Terms() {
           <p className="text-sm">
             Refunds, where available, are limited because the service includes immediate-access digital features and generated content. Refunds may not be available once a subscription has started, stories have been generated, or content access has begun, except where required by law.
           </p>
-          <p className="mt-3 text-sm">For refund questions, contact <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>.</p>
+          <p className="mt-3 text-sm">For refund questions, contact <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>.</p>
         </Section>
 
         <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="9. Intellectual property">
@@ -182,8 +182,8 @@ export default function Terms() {
 
         <div className="glass-panel rounded-2xl p-6 border-primary/20 text-center">
           <p className="text-muted-foreground text-sm mb-3">Questions about these terms?</p>
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline text-sm font-medium">
-            support@theprivatestory.co.uk
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline text-sm font-medium">
+            support@theprivatestory.com
           </a>
           <p className="text-muted-foreground text-xs mt-4">
             Registered company: Ianson System Ltd<br />

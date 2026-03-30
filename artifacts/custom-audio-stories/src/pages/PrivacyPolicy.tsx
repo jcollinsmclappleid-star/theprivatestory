@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
           <p><span className="text-foreground/60 font-medium">Trading as:</span> The Private Story</p>
           <p><span className="text-foreground/60 font-medium">Registered office:</span> 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
           <p><span className="text-foreground/60 font-medium">Contact:</span>{" "}
-            <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+            <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed">
@@ -134,7 +134,7 @@ export default function PrivacyPolicy() {
         </P>
         <P>
           If you have any questions about this Privacy Policy or wish to exercise your rights, contact us at:{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>.
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>.
         </P>
 
         {/* 3 */}
@@ -202,7 +202,7 @@ export default function PrivacyPolicy() {
 
         <SubHeading>4.6 Communications and support data</SubHeading>
         <Ul items={[
-          "emails and support requests sent to support@theprivatestory.co.uk;",
+          "emails and support requests sent to support@theprivatestory.com;",
           "information you provide when asking for help, reporting a problem, or requesting account support or deletion.",
         ]} />
 
@@ -380,6 +380,7 @@ export default function PrivacyPolicy() {
             { name: "OpenAI", role: "AI image generation for story cover art. Under our API agreement, inputs are not used to train OpenAI models.", location: "USA (Standard Contractual Clauses)" },
             { name: "ElevenLabs", role: "Text-to-speech audio narration. Audio is generated for delivery only and is not retained by ElevenLabs beyond generation.", location: "USA (Standard Contractual Clauses)" },
             { name: "Replit / hosting infrastructure", role: "The cloud platform on which the service runs. Personal data is stored on servers operated within this infrastructure.", location: "USA (Standard Contractual Clauses)" },
+            { name: "Google Analytics 4", role: "Aggregate usage analytics, loaded in cookie-less consent mode (analytics_storage: denied). No cookies are set and no personal data is transmitted to Google in this configuration.", location: "USA (Standard Contractual Clauses)" },
           ].map((p) => (
             <div key={p.name} className="py-3 border-b border-border/20 last:border-0">
               <p className="font-semibold text-foreground text-sm">{p.name}</p>
@@ -442,7 +443,7 @@ export default function PrivacyPolicy() {
         </div>
 
         <P>These rights are not absolute and may be subject to legal exceptions. To exercise any of these rights, email us at{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>. We will respond within one calendar month.
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>. We will respond within one calendar month.
         </P>
 
         {/* 15 */}
@@ -456,20 +457,21 @@ export default function PrivacyPolicy() {
         ]} />
         <P>
           To request deletion of your data if you cannot access your account, email{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>{" "}
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>{" "}
           from the email address associated with your account.
         </P>
 
         {/* 16 */}
         <SectionHeading number="16" title="Cookies and similar technologies" />
         <P>We use strictly necessary session cookies to maintain your authenticated login session. These are essential for the service to function and do not require consent under the Privacy and Electronic Communications Regulations (PECR).</P>
-        <P>We do not currently use third-party advertising cookies, behavioural tracking cookies, or analytics cookies that identify individual users.</P>
+        <P>We use Google Analytics 4 in a privacy-preserving configuration. Google Analytics is loaded with <strong className="text-foreground/80">analytics_storage denied</strong> — meaning no cookies are set, no client identifiers are stored, and no personal data is transmitted to Google. Only aggregate, non-identifiable usage signals (such as pageview counts) may be collected in this configuration.</P>
+        <P>We do not use third-party advertising cookies, behavioural tracking cookies, or any analytics configuration that identifies individual users.</P>
         <P>If we introduce any non-essential cookies in the future, we will seek your consent before placing them.</P>
 
         {/* 17 */}
         <SectionHeading number="17" title="Marketing communications" />
         <P>We do not send marketing emails unless you have specifically opted in to receive them. If you have opted in, you can unsubscribe at any time using the link in any marketing email, or by emailing{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>.
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>.
         </P>
 
         {/* 18 */}
@@ -481,7 +483,7 @@ export default function PrivacyPolicy() {
         {/* 19 */}
         <SectionHeading number="19" title="Adults only" />
         <P>This service is intended for adults aged 18 and over and is not directed at children. We do not knowingly provide the service to anyone under 18 or intentionally collect personal data from anyone under 18. If you become aware that a person under 18 has created an account, please contact us at{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>.
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>.
         </P>
 
         {/* 20 */}
@@ -491,7 +493,7 @@ export default function PrivacyPolicy() {
         {/* 21 */}
         <SectionHeading number="21" title="Complaints" />
         <P>If you have concerns about how we handle your personal data, please contact us first at{" "}
-          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>{" "}
+          <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>{" "}
           so we can try to resolve the issue.
         </P>
         <P>If you are not satisfied with our response, you have the right to complain to the UK Information Commissioner's Office (ICO):</P>
@@ -512,7 +514,7 @@ export default function PrivacyPolicy() {
         <div className="glass-panel rounded-xl p-5 mb-6">
           <p className="font-display font-bold text-foreground mb-3">Ianson System Ltd (trading as The Private Story)</p>
           <div className="space-y-1.5 text-sm text-muted-foreground">
-            <p>Email: <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a></p>
+            <p>Email: <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a></p>
             <p>Address: 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
             <p className="text-xs text-muted-foreground/60 mt-2">We aim to respond to all data subject requests within one calendar month of receipt.</p>
           </div>

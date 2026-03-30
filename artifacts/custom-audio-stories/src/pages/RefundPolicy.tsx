@@ -22,7 +22,7 @@ export default function RefundPolicy() {
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
           The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
-          <strong>Billing inquiries:</strong> <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+          <strong>Billing inquiries:</strong> <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
         </p>
       </div>
 
@@ -182,7 +182,7 @@ export default function RefundPolicy() {
         </Section>
 
         <Section icon={<Mail className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="13. How to request a refund">
-          <p className="text-sm mb-2">Contact us at <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a> with:</p>
+          <p className="text-sm mb-2">Contact us at <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a> with:</p>
           <ul className="list-disc list-inside space-y-0.5 text-muted-foreground text-sm">
             <li>Your account email address.</li>
             <li>Your order or subscription details.</li>
@@ -217,7 +217,7 @@ export default function RefundPolicy() {
         <Section icon={<Mail className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="18. Contact">
           <p className="text-sm">
             For refund, billing, or cancellation queries, contact:<br />
-            <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+            <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </Section>
 

@@ -140,7 +140,7 @@ export default function Privacy() {
             {[
               {
                 right: "Right of access",
-                desc: "You can request a copy of all personal data we hold about you. Email us at support@theprivatestory.co.uk and we'll respond within 30 days.",
+                desc: "You can request a copy of all personal data we hold about you. Email us at support@theprivatestory.com and we'll respond within 30 days.",
               },
               {
                 right: "Right to erasure (Article 17)",
@@ -148,7 +148,7 @@ export default function Privacy() {
               },
               {
                 right: "Right to data portability",
-                desc: "You can request your data in a machine-readable format. Email us at support@theprivatestory.co.uk.",
+                desc: "You can request your data in a machine-readable format. Email us at support@theprivatestory.com.",
               },
               {
                 right: "Right to rectification",
@@ -275,7 +275,7 @@ export default function Privacy() {
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed">
               To request deletion of your data if you cannot access your account, email{" "}
-              <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>{" "}
+              <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>{" "}
               from the email associated with your account.
             </p>
           </div>
@@ -309,7 +309,7 @@ export default function Privacy() {
           </p>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md mx-auto">
             Questions about this policy:{" "}
-            <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+            <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </section>
 

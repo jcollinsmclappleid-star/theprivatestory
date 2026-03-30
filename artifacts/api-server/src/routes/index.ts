@@ -14,6 +14,7 @@ import categoriesRouter from "./categories.js";
 import presetsRouter from "./presets.js";
 import userSeriesRouter from "./user-series.js";
 import mediaRouter from "./media.js";
+import stripeRouter from "./stripe.js";
 
 const router: IRouter = Router();
 
@@ -34,5 +35,6 @@ router.use(namesRouter);
 router.use(categoriesRouter);
 router.use("/presets", presetsRouter);
 router.use("/user/series", userSeriesRouter);
+router.use("/stripe", stripeRouter);
 
 export default router;

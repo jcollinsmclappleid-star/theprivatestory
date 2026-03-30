@@ -219,7 +219,7 @@ router.get("/export", async (req, res) => {
     res.json(exportData);
   } catch (err) {
     logger.error({ err, userId }, "Failed to export user data");
-    res.status(500).json({ error: "Failed to export data. Please contact support@theprivatestory.co.uk." });
+    res.status(500).json({ error: "Failed to export data. Please contact support@theprivatestory.com." });
   }
 });
 
@@ -717,6 +717,23 @@ router.get("/name-submissions", async (req, res) => {
   } catch (err) {
     logger.error({ err, userId }, "Failed to load name submissions");
     return res.status(500).json({ error: "Failed to load name submissions." });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// PATCH /api/me/accept-terms — record terms + age declaration acceptance
+// ---------------------------------------------------------------------------
+router.patch("/accept-terms", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    await db
+      .update(usersTable)
+      .set({ termsAcceptedAt: new Date(), ageDeclarationAt: new Date() })
+      .where(eq(usersTable.id, userId));
+    res.json({ ok: true });
+  } catch (err) {
+    logger.error({ err, userId }, "[accept-terms] Failed to record acceptance");
+    res.status(500).json({ error: "Failed to record acceptance. Please try again." });
   }
 });
 

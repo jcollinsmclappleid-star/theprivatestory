@@ -2699,7 +2699,7 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
 
   const plan = user.subscriptionPlan ?? "free";
   if (plan === "free") {
-    return "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.co.uk.";
+    return "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.com.";
   }
 
   const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
@@ -2731,9 +2731,9 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
       ? new Date(renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
       : "your renewal date";
     if (plan === "monthly") {
-      return `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. To add more stories now, email support@theprivatestory.co.uk.`;
+      return `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. To add more stories now, email support@theprivatestory.com.`;
     }
-    return `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. To add more stories, email support@theprivatestory.co.uk.`;
+    return `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. To add more stories, email support@theprivatestory.com.`;
   }
 
   return null; // Within limits

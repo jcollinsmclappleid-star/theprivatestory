@@ -231,8 +231,8 @@ export default function About() {
       <section className="bg-background/50 border-t border-border/40 py-12 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-muted-foreground text-sm">
-            <strong className="text-foreground">The Private Story</strong> is operated by Ianson System Ltd, trading as The Private Story.<br />
-            For any inquiries, contact <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+            Questions?{" "}
+            <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </div>
       </section>

@@ -111,7 +111,7 @@ export function ReportModal({ storyId, onClose }: ReportModalProps) {
             {error && (
               <p className="text-xs text-destructive mb-2 text-center">
                 Submission failed. Please try again or email{" "}
-                <a href="mailto:support@theprivatestory.co.uk" className="underline">support@theprivatestory.co.uk</a>.
+                <a href="mailto:support@theprivatestory.com" className="underline">support@theprivatestory.com</a>.
               </p>
             )}
             <button

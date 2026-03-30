@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag } from "lucide-react";
+import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
@@ -23,15 +23,18 @@ function ProgressBar({ value }: { value: number }) {
   );
 }
 
-function StoryCard({ story, showProgress, progress, onUnsave, isSaved }: {
+function StoryCard({ story, showProgress, progress, onUnsave, isSaved, onDeleted, isGenerated }: {
   story: Story;
   showProgress?: boolean;
   progress?: Record<string, unknown>;
   onUnsave?: () => void;
   isSaved?: boolean;
+  onDeleted?: () => void;
+  isGenerated?: boolean;
 }) {
   const { play } = useAudioPlayer();
   const [reportOpen, setReportOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const sceneCount = story.scenes?.length ?? 0;
   const progressSeconds = (progress?.audioProgressSeconds as number) ?? 0;
   const sceneIndex = (progress?.sceneIndex as number) ?? 0;
@@ -52,6 +55,24 @@ function StoryCard({ story, showProgress, progress, onUnsave, isSaved }: {
         credentials: "include",
         body: JSON.stringify({ storyId: story.id }),
       });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Delete this story? This cannot be undone.")) return;
+    setDeleting(true);
+    try {
+      await fetch(`${API_BASE}/api/generated-story`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ storyId: story.id }),
+      });
+      onDeleted?.();
+    } catch (err) {
+      console.error("Failed to delete story", err);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -99,6 +120,16 @@ function StoryCard({ story, showProgress, progress, onUnsave, isSaved }: {
               >
                 <Play className="w-4 h-4" />
               </button>
+              {isGenerated && (
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="p-1.5 rounded-full text-muted-foreground/40 hover:text-destructive transition-colors disabled:opacity-50"
+                  title="Delete story"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
                 onClick={() => setReportOpen(true)}
                 className="p-1.5 rounded-full text-muted-foreground/40 hover:text-muted-foreground transition-colors"
@@ -394,7 +425,11 @@ export default function Library() {
                           Continued
                         </div>
                       )}
-                      <StoryCard story={s as Story} />
+                      <StoryCard 
+                        story={s as Story} 
+                        isGenerated
+                        onDeleted={() => setGenerated(prev => prev.filter(st => st.id !== s.id))}
+                      />
                     </div>
                   );
                 })
@@ -442,7 +477,11 @@ export default function Library() {
                           {varLabel}
                         </div>
                       )}
-                      <StoryCard story={storyAsStory} />
+                      <StoryCard 
+                        story={storyAsStory} 
+                        isGenerated
+                        onDeleted={() => setVariations(prev => prev.filter(st => st.id !== story.id))}
+                      />
                     </div>
                   );
                 })

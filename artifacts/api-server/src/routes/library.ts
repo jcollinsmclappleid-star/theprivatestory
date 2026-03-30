@@ -149,6 +149,30 @@ router.delete("/progress", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// DELETE /generated-story — delete a user-generated story
+// ---------------------------------------------------------------------------
+router.delete("/generated-story", async (req, res) => {
+  const userId = getUserId(req, res);
+  if (!userId) return;
+
+  const { storyId } = req.body as { storyId: string };
+  if (!storyId) {
+    res.status(400).json({ error: "storyId is required" });
+    return;
+  }
+
+  // Remove from user's generated stories list
+  await libraryStore.removeGenerated(userId, storyId);
+  // Also remove progress and saved entry if present
+  await Promise.all([
+    progressStore.delete(userId, storyId),
+    libraryStore.removeSaved(userId, storyId),
+  ]).catch(() => {});
+
+  res.json({ deleted: true });
+});
+
+// ---------------------------------------------------------------------------
 // GET /continue-listening
 // ---------------------------------------------------------------------------
 router.get("/continue-listening", async (req, res) => {

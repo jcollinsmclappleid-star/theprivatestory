@@ -1556,6 +1556,9 @@ export default function Create() {
               key={castingResetKey}
               onComplete={handleCastingComplete}
               onSkip={() => setStep("form")}
+              onAfterDark={() => {
+                window.location.href = `${import.meta.env.BASE_URL}after-dark`;
+              }}
             />
           </motion.div>
         )}

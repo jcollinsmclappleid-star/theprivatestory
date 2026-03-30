@@ -59,6 +59,8 @@ export interface CastingRoomHandoff {
   situation?: string;
   situationId?: string;
   customTags?: string[];
+  /** When set, the CastingRoom will open directly at this step number. */
+  handoffStep?: number;
 }
 
 interface Props {
@@ -68,6 +70,7 @@ interface Props {
   bedtime?: boolean;
   handoff?: CastingRoomHandoff;
   handoffStep?: number;
+  onAfterDark?: () => void;
 }
 
 /* ── Perspective helpers ──────────────────────────────────────────── */
@@ -715,7 +718,7 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 /* ── Main component ───────────────────────────────────────────────── */
 const CASTING_STORAGE_KEY = "casting-room-session";
 
-export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep }: Props) {
+export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark }: Props) {
   // Load from localStorage if no handoff provided
   const getInitialState = () => {
     if (handoff) return handoff;
@@ -1684,6 +1687,26 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               accentColor={accentColor}
               protagonistPronouns={rawProtagonistPronouns}
               partnerPronouns={rawPartnerPronouns}
+              onAfterDark={!afterDark && onAfterDark ? () => {
+                const handoffData: CastingRoomHandoff = {
+                  ...data,
+                  listenerName: listenerName || undefined,
+                  partnerName: partnerName || undefined,
+                  appearBuild: appearBuild || undefined,
+                  appearHeight: appearHeight || undefined,
+                  appearColouring: appearColouring || undefined,
+                  appearEyes: appearEyes || undefined,
+                  appearFeatures: appearFeatures.length ? appearFeatures : undefined,
+                  situation: situationLabel || undefined,
+                  situationId: situationId || undefined,
+                  customTags: customTags.length ? customTags : undefined,
+                  handoffStep: 8,
+                };
+                try {
+                  sessionStorage.setItem("afterDarkHandoff", JSON.stringify(handoffData));
+                } catch { /* ignore */ }
+                onAfterDark();
+              } : undefined}
             />
           </motion.div>
         )}

@@ -179,21 +179,6 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       ],
     },
     {
-      heading: "Fantasy & The Impossible",
-      sub: "When reality is negotiable",
-      maxSelect: 3,
-      tags: [
-        `${partnerS}'s not entirely human`,
-        "The rules of this world don't apply here",
-        "Time works differently",
-        `${p.sub} has power neither of them can explain`,
-        "No consequences, no morning",
-        `${partnerS} can sense what ${p.sub === "She" ? "she" : p.sub === "He" ? "he" : "they"} needs`,
-        "The impossible is part of why it works",
-        "Magic, mythology, something older",
-      ],
-    },
-    {
       heading: "Praise & Devotion",
       sub: "When being wanted is its own kind of story",
       maxSelect: 3,
@@ -361,6 +346,7 @@ interface Props {
   accentColor?: string;
   protagonistPronouns?: string;
   partnerPronouns?: string;
+  onAfterDark?: () => void;
 }
 
 export function StoryTagStudio({
@@ -371,6 +357,7 @@ export function StoryTagStudio({
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
   partnerPronouns = "he/him",
+  onAfterDark,
 }: Props) {
   const { isAuthenticated } = useAuth();
   const [usualTags, setUsualTags] = useState<Set<string>>(new Set());
@@ -577,6 +564,17 @@ export function StoryTagStudio({
       )}
       {activeCategories.map((cat) => renderCategory(cat, false))}
       {lockedCategories.map((cat) => renderCategory(cat, true))}
+      {!afterDark && !bedtime && onAfterDark && (
+        <div className="pt-2 pb-1 text-center">
+          <button
+            type="button"
+            onClick={onAfterDark}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors underline-offset-2 hover:underline"
+          >
+            Want fantasy or something more immersive? After Dark takes it further →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

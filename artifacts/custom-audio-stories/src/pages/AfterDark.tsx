@@ -1092,8 +1092,11 @@ export default function AfterDark() {
     try {
       const raw = sessionStorage.getItem("afterDarkHandoff");
       if (raw) {
-        setCastingHandoff(JSON.parse(raw) as CastingRoomHandoff);
+        const parsed = JSON.parse(raw) as CastingRoomHandoff;
+        setCastingHandoff(parsed);
         sessionStorage.removeItem("afterDarkHandoff");
+        // Skip scenario selection — user is coming straight from the standard create flow
+        setPhase("casting");
       }
     } catch { /* ignore parse errors */ }
   }, []);
@@ -1190,19 +1193,19 @@ export default function AfterDark() {
 
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
-      if (!selectedScenario) return;
+      const storyMode = selectedScenario?.storyMode ?? "unrestrained";
 
       const castingSnapshot = {
         archetype: casting.archetype,
         dynamic: casting.dynamic,
         intensity: casting.intensity,
-        storyMode: selectedScenario.storyMode,
+        storyMode,
       };
 
       setLastCastingData(castingSnapshot);
       setPresetSaved(false);
 
-      const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
+      const allTags = [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
       setPendingAfterDarkCast({ casting, allTags });
 
       const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "After Dark Cast";
@@ -1214,7 +1217,7 @@ export default function AfterDark() {
 
   const handleAfterDarkStartGenerating = useCallback(
     async (savePreset: boolean, presetName: string) => {
-      if (!pendingAfterDarkCast || !selectedScenario) return;
+      if (!pendingAfterDarkCast) return;
       const { casting, allTags } = pendingAfterDarkCast;
 
       if (savePreset && presetName.trim() && lastCastingData) {
@@ -1245,8 +1248,8 @@ export default function AfterDark() {
             cinematicVisuals: true,
             emotionalFocus: false,
             whoIsHe: casting.archetype || undefined,
-            dynamic: casting.dynamic || selectedScenario.tags[0] || undefined,
-            storyMode: selectedScenario.storyMode,
+            dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
+            storyMode: selectedScenario?.storyMode ?? "unrestrained",
             experienceTags: allTags,
             pairing: casting.pairing || undefined,
             heritage: casting.heritage || undefined,
@@ -1262,7 +1265,7 @@ export default function AfterDark() {
             partnerName: casting.partnerName || undefined,
             country: casting.country || undefined,
             city: casting.city || undefined,
-            scenarioRoom: selectedScenario.room,
+            scenarioRoom: selectedScenario?.room,
             situationId: casting.situationId || undefined,
           },
         });
@@ -1500,7 +1503,7 @@ export default function AfterDark() {
               }
               afterDark={true}
               handoff={castingHandoff ?? undefined}
-              handoffStep={castingHandoff ? 5 : undefined}
+              handoffStep={castingHandoff ? (castingHandoff.handoffStep ?? 5) : undefined}
             />
           </motion.div>
         )}

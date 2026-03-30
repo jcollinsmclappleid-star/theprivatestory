@@ -609,10 +609,10 @@ function CastingPreview() {
             The Casting Room
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            The version of him<br className="hidden md:block" /> that's been in your head.
+            The version of them<br className="hidden md:block" /> that's been in your head.
           </h2>
           <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
-            Choose who he is, how he makes you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
+            Choose who they are, how they make you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
           </p>
           <div className="flex items-center gap-3 mt-3">
             {[

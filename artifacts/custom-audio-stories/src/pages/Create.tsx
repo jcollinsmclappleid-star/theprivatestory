@@ -1014,6 +1014,13 @@ export default function Create() {
       setResultSaved(false);
       setStep("result");
       applyResultToPlayer(data);
+      // Refresh usage after successful variation generation
+      if (isAuthenticated) {
+        fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+          .then((r) => r.ok ? r.json() : null)
+          .then((d) => { if (d) setUsageData(d); })
+          .catch(() => {});
+      }
     } catch {
       stopLoadingPhase();
       setStep("result");

@@ -677,6 +677,12 @@ export default function Create() {
     try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
   });
   const [step, setStep] = useState<"casting" | "preset-prompt" | "form" | "generating" | "result">("casting");
+  
+  // Scroll to top whenever step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
+  
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [resultSaved, setResultSaved] = useState(false);

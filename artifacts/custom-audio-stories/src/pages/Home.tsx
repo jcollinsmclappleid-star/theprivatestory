@@ -841,7 +841,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative w-full h-auto md:h-[90vh] min-h-auto md:min-h-[760px] flex flex-col justify-center md:justify-end pt-20 md:pt-0 pb-16">
+      <section className="relative w-full h-auto md:h-[90vh] min-h-auto md:min-h-[760px] flex flex-col justify-center md:justify-end pt-6 md:pt-0 pb-16">
         <div className="absolute inset-0 z-0">
           <img
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
@@ -874,10 +874,6 @@ export default function Home() {
                 <span>Private</span>
               </div>
             </div>
-
-            <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              Narrated for the parts of you nobody else gets to know
-            </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
               A story narrated<br className="hidden md:block" /> entirely{" "}

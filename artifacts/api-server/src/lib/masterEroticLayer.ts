@@ -231,6 +231,23 @@ IMMERSION RULES
 - ${protSub} internal experience is as important as external action: describe what ${protSubLc} feels in ${protPoss} body, in ${protPoss} chest, in the specific physical signs of ${protPoss} arousal — not in summary but in present, real-time physical detail
 - ${protSub} should discover something about ${protRefl} by the end of every story — about ${protPoss} desire, ${protPoss} capacity, what ${protSubLc} needs that ${protSubLc} didn't know ${protSubLc} needed
 
+INTERIORITY MANDATE — NON-NEGOTIABLE
+Every story must contain at minimum 3 distinct moments of genuine internal monologue — not emotional summary, but the actual texture of ${protPoss} thinking in that moment:
+- What ${protSubLc} notices before ${protSubLc} understands why
+- The gap between what ${protSubLc} can say and what ${protSubLc} actually feels
+- A thought ${protSubLc} doesn't complete, interrupted by what ${protPoss} body does before ${protPoss} mind catches up
+These must be distributed across ESTABLISH/SIMMER/IGNITE — not clustered in one scene. Interiority is the proof that the listener is inside ${protObj}, not watching ${protObj}.
+
+BODY-FIRST NARRATION RULE:
+Physical sensation must precede emotional interpretation throughout. Do not write "she felt vulnerable" — write what vulnerability feels like in the body: the specific tightening, the change in breath, the awareness of ${protPoss} own hands. The body is the primary narrator. Emotion is what the body names after the fact.
+Write this way: body first → sensation specific → then (if at all) what ${protSubLc} understands it to mean.
+Never write this way: emotion summary → physical evidence. That is observation. This is immersion.
+
+POV-SPECIFIC DEPTH:
+- Second person ("you"): every sensation happens TO the listener, not to a character the listener is watching. "Your breath catches" not "she felt her breath catch." The listener's body is the story's location.
+- Third-person close: the camera is inside ${protPoss} skull — never pulls back to an outside view. ${protSub} doesn't "look" beautiful; ${protSubLc} is aware of how ${partnSub} is looking at ${protObj} and what it does in ${protPoss} chest.
+- Series (third-person fixed): maintain continuous interiority with the named protagonist — ${protPoss} history, ${protPoss} recognition of what this person does to ${protObj}, what ${protSubLc} carries forward from previous encounters.
+
 SENSORY REQUIREMENTS — MANDATORY
 Every story must include all five:
 - Touch: specific, located, pressured or gentle with clear intention
@@ -295,8 +312,21 @@ SEVEN MANDATORY HOOKS — embed ALL of these into every story:
    as possible before anything is given.
 
 2. RADICAL IMMERSION
-   ${protSub} IS the experience. Every sentence pulls ${protObj} deeper and makes it
-   impossible to maintain observer distance. Never break this.
+   ${protSub} IS the experience — not a character the listener observes, but a body the listener inhabits.
+   Every sentence must pull ${protObj} deeper and make observer distance impossible.
+
+   HOW:
+   — Sensations narrated from inside the body, not described from outside it. "Something tightens in your chest" not "she seemed tense."
+   — Thoughts appear before they are completed — the body interrupts the mind, which is the truth of arousal.
+   — The partner's body described only through ${protPoss} noticing of it — what ${protSubLc} fixates on, what ${protSubLc} cannot stop looking at, what ${protSubLc} becomes aware of before ${protSubLc} means to.
+   — At least one moment in ESTABLISH where the listener is already inside the protagonist's body, oriented by sensation, before the scene's action begins.
+   — At least one moment in IGNITE where the prose rhythm itself fragments — shorter, faster, interrupted — because what is happening is happening faster than it can be organised into syntax.
+
+   NEVER:
+   — Pull back to an authorial vantage point (describing the scene from outside)
+   — Summarise sensation with an emotion label ("she felt turned on")
+   — Describe what the protagonist looks like from the outside during intimacy — write what ${protSubLc} feels, not how ${protSubLc} appears
+   — Allow even one beat of observer distance once IGNITE has begun
 
 3. SENSORY SPECIFICITY
    Not "one touched the other" — but exactly where, with exactly how much pressure,

@@ -20,6 +20,7 @@ import AdminModeration from "@/pages/AdminModeration";
 import AfterDark from "@/pages/AfterDark";
 import Profile from "@/pages/Profile";
 import Privacy from "@/pages/Privacy";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Terms from "@/pages/Terms";
 import ContentPolicy from "@/pages/ContentPolicy";
 import NotFound from "@/pages/not-found";
@@ -68,6 +69,7 @@ function Router() {
             <Route path="/after-dark" component={AfterDark} />
             <Route path="/me" component={Profile} />
             <Route path="/privacy" component={Privacy} />
+            <Route path="/privacy-policy" component={PrivacyPolicy} />
             <Route path="/terms" component={Terms} />
             <Route path="/content-policy" component={ContentPolicy} />
             <Route path="/contact" component={Contact} />

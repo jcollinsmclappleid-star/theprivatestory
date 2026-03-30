@@ -774,7 +774,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#1a1200] via-[#261c00] to-[#100a00]",
     accent: "#c9a227",
     storyMode: "unrestrained",
-    tags: ["He's completely in control", "Black masculine dominance", "She is completely wanted by all of them"],
+    tags: ["He's completely in control", "Black masculine dominance", "The object of all their wanting"],
   },
   {
     id: "room_end_of_hall",

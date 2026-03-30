@@ -421,7 +421,7 @@ const BACKEND_SCENARIO_PRESETS = new Set([
   "Multiple men, undivided attention",
   "Black masculine dominance",
   "Physical dominance and commanding presence",
-  "She is completely wanted by all of them",
+  "The object of all their wanting",
   // Dark Fantasy
   "Something not entirely human",
   "Ancient claiming",

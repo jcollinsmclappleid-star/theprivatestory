@@ -276,7 +276,7 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "Multiple men, undivided attention",
   "Black masculine dominance",
   "Physical dominance and commanding presence",
-  "She is completely wanted by all of them",
+  "The object of all their wanting",
 
   // Dark Fantasy room presets
   "Something not entirely human",

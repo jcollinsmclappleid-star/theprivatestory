@@ -564,6 +564,7 @@ export default function Drift() {
                 })
               }
               afterDark={false}
+              bedtime={true}
             />
           </motion.div>
         )}

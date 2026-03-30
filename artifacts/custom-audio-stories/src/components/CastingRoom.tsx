@@ -65,6 +65,7 @@ interface Props {
   onComplete: (result: CastingRoomResult) => void;
   onSkip: () => void;
   afterDark?: boolean;
+  bedtime?: boolean;
   handoff?: CastingRoomHandoff;
   handoffStep?: number;
 }
@@ -711,7 +712,7 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 }
 
 /* ── Main component ───────────────────────────────────────────────── */
-export function CastingRoom({ onComplete, onSkip, afterDark = false, handoff, handoffStep }: Props) {
+export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep }: Props) {
   const [step, setStep] = useState(handoffStep ?? 0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
     perspective: "her",
@@ -1602,6 +1603,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, handoff, ha
               selectedTags={customTags}
               onTagToggle={toggleTag}
               afterDark={afterDark}
+              bedtime={bedtime}
               accentColor={accentColor}
               protagonistPronouns={rawProtagonistPronouns}
             />

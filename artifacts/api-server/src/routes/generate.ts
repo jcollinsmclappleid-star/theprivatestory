@@ -1608,7 +1608,7 @@ User Input:
 - Who They Are: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}${intake.partnerName ? ` — their name is ${intake.partnerName}` : ""}
 - Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}
 - Chemistry: ${intake.chemistry || "(not specified — infer from pairing and scenario)"}
-- Heritage: ${intake.heritage || "European (no selection made — default to European appearance and background)"}
+- Heritage: ${intake.heritage || "(not specified)"}
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}

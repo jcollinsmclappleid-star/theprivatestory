@@ -2687,6 +2687,7 @@ const PLAN_LIMITS_GEN: Record<string, { period: "month" | "year"; limit: number 
 async function checkSubscriptionLimit(userId: string): Promise<string | null> {
   const [user] = await db
     .select({
+      isAdmin: usersTable.isAdmin,
       subscriptionPlan: usersTable.subscriptionPlan,
       storiesGeneratedThisMonth: usersTable.storiesGeneratedThisMonth,
       storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
@@ -2696,6 +2697,8 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
     .where(eq(usersTable.id, userId));
 
   if (!user) return "Account not found.";
+
+  if (user.isAdmin) return null; // Admins have unlimited stories
 
   const plan = user.subscriptionPlan ?? "free";
   if (plan === "free") {

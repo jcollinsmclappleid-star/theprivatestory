@@ -3641,7 +3641,7 @@ router.post("/generate-full-story", async (req, res) => {
     }
   }
 
-  const TIMEOUT_MS = 300_000; // 5 minutes for full pipeline (plan + write + images)
+  const TIMEOUT_MS = 600_000; // 10 minutes for full pipeline (plan + write + images)
 
   const pipeline = async () => {
     // Step 3: Plan
@@ -3949,7 +3949,7 @@ router.post("/generate-variation", async (req, res) => {
 
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
 
-  const TIMEOUT_MS = 300_000; // 5 minutes for variation pipeline
+  const TIMEOUT_MS = 600_000; // 10 minutes for variation pipeline
 
   const pipeline = async () => {
     const variedStory = await rewriteStoryAsVariation(brief, originalStory, variation_type);
@@ -4019,7 +4019,7 @@ router.post("/continue-story", async (req, res) => {
 
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
 
-  const TIMEOUT_MS = 300_000; // 5 minutes for continuation pipeline
+  const TIMEOUT_MS = 600_000; // 10 minutes for continuation pipeline
 
   const pipeline = async () => {
     const continuation = await writeStoryContinuation(brief, originalStory, continuation_mode);

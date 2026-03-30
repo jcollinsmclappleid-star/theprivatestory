@@ -1403,7 +1403,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 {MOODS.filter(m =>
                   !bedtime
                     ? true
-                    : ["Romantic", "Emotional", "Tender", "Healing", "Quiet", "Nostalgic", "Aching", "Yearning", "Bittersweet"].includes(m)
+                    : ["Romantic", "Emotional", "Tender", "Vulnerable", "Healing", "Quiet", "Nostalgic", "Aching", "Yearning", "Bittersweet"].includes(m)
                 ).map(m => (
                   <button
                     key={m}

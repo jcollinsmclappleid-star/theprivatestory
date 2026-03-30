@@ -366,7 +366,6 @@ const OUTPUT_HARD_BLOCK_PATTERNS: RegExp[] = [
   /\b(pubescent|prepubescent)\b/i,
   /\b(baby|babies|infant|infants|toddler|toddlers)\b/i,
   /\b(juvenile|juveniles)\b/i,
-  /\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen)\b/i,
   /\b(underaged?|under.?aged?|preteen|pre.?teen|jailbait)\b/i,
   /\b(schoolgirl|schoolboy|school.?girl|school.?boy)\b/i,
   /\b(barely.?legal)\b/i,

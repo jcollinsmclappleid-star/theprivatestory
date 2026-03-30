@@ -745,6 +745,32 @@ export default function Create() {
     },
   });
 
+  const resetToFreshCasting = useCallback(() => {
+    setPerspective("your");
+    setCastingPairing(undefined);
+    setCastingHeritage(undefined);
+    setCastingAtmosphere(undefined);
+    setCastingChemistry(undefined);
+    setCastingAppearBuild(undefined);
+    setCastingAppearHeight(undefined);
+    setCastingAppearColouring(undefined);
+    setCastingAppearEyes(undefined);
+    setCastingAppearFeatures(undefined);
+    setCastingListenerName(undefined);
+    setCastingPartnerName(undefined);
+    setCastingCountry(undefined);
+    setCastingCity(undefined);
+    setCastingSituationId(undefined);
+    setResult(null);
+    setResultSaved(false);
+    setSavePending(false);
+    setPresetSaved(false);
+    setFormPreset(null);
+    setLastCastingData(null);
+    form.reset();
+    setStep("casting");
+  }, [form]);
+
   const handleSavePreset = useCallback(async () => {
     if (!lastCastingData || !isAuthenticated) return;
     const archetype = lastCastingData.archetype as string ?? "";
@@ -2185,7 +2211,7 @@ export default function Create() {
             className="max-w-3xl mx-auto px-4 py-8 space-y-8"
           >
             <button
-              onClick={() => setStep("casting")}
+              onClick={resetToFreshCasting}
               className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
             >
               <ChevronLeft className="w-4 h-4" /> Create another

@@ -120,6 +120,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
   ];
 
   const isAfterDark = location === "/after-dark";
+  const isDrift = location === "/drift";
 
   return (
     <>
@@ -146,6 +147,13 @@ function Navbar({ streakDays }: { streakDays: number }) {
               >
                 <Moon className="w-3.5 h-3.5" />
                 After Dark
+              </Link>
+              <Link
+                href="/drift"
+                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isDrift ? "text-[#6366f1]" : "text-muted-foreground/70 hover:text-[#6366f1]"}`}
+              >
+                <Moon className="w-3.5 h-3.5 opacity-60" />
+                Drift
               </Link>
             </div>
           </div>
@@ -256,8 +264,8 @@ function Navbar({ streakDays }: { streakDays: number }) {
             ))}
           </div>
 
-          {/* After Dark mobile link */}
-          <div className="px-2 pb-1">
+          {/* After Dark + Drift mobile links */}
+          <div className="px-2 pb-1 space-y-0.5">
             <Link
               href="/after-dark"
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
@@ -266,6 +274,15 @@ function Navbar({ streakDays }: { streakDays: number }) {
             >
               <Moon className="w-4 h-4" />
               After Dark
+            </Link>
+            <Link
+              href="/drift"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                isDrift ? "bg-[#6366f1]/10 text-[#6366f1]" : "text-muted-foreground hover:text-[#6366f1] hover:bg-[#6366f1]/5"
+              }`}
+            >
+              <Moon className="w-4 h-4 opacity-60" />
+              Drift
             </Link>
           </div>
 
@@ -339,6 +356,7 @@ function Footer() {
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
     { label: "After Dark", href: "/after-dark" },
+    { label: "Drift", href: "/drift" },
     { label: "My Library", href: "/library" },
     { label: "Gift a Story", href: "/gift" },
   ];

@@ -115,14 +115,66 @@ const STANDARD_TAGS: string[] = [
   "She doesn't feel guilty",
   "It changes something in her",
   "She owns what she wants",
+
+  // Pure Romance
+  "The tenderness is the whole thing",
+  "He treats her like the only thing in the room",
+  "Slow hands, full attention",
+  "She feels adored, not just wanted",
+  "Every gesture deliberate",
+  "He remembers what she said",
+  "Romance that earns what follows",
+  "Softness that doesn't break",
+
+  // Fantasy & The Impossible
+  "He's not entirely human",
+  "The rules of this world don't apply here",
+  "Time works differently",
+  "She has power neither of them can explain",
+  "No consequences, no morning",
+  "He can sense what she needs",
+  "The impossible is part of why it works",
+  "Magic, mythology, something older",
+
+  // Praise & Devotion
+  "He can't stop looking at her",
+  "She is the obsession and she knows it",
+  "He catalogues everything about her",
+  "Every compliment specific and earned",
+  "He makes her feel like a revelation",
+  "The devotion is the whole story",
+  "He names what he sees in her",
+  "She is everything and he tells her",
+
+  // Story Arc & Plot
+  "There's a complication first",
+  "The obstacle makes the ending better",
+  "Second chance — different this time",
+  "They almost didn't make it",
+  "The misunderstanding that almost cost everything",
+  "The story earns its ending",
+  "Feelings are the whole problem",
+  "Something between them that neither will say",
+
+  // Nocturne / Drift — What do you need tonight?
+  "The day is done and you can finally stop",
+  "Company without performance",
+  "Warmth, no urgency",
+  "Someone present, nothing required",
+  "Slow enough to drift",
+  "Just enough tension to carry you somewhere else",
+  "The quiet kind of wanted",
+  "Something to fall into",
+  "Rest that comes from connection",
+  "A voice that takes its time",
 ];
 
 // ---------------------------------------------------------------------------
-// After Dark extra categories (buildAfterDarkExtraCategories in StoryTagStudio.tsx)
+// After Dark extra categories (buildAfterDarkCategories in StoryTagStudio.tsx)
 // ---------------------------------------------------------------------------
 
 const AFTER_DARK_TAGS: string[] = [
-  // What do you want? — Sensation & Restraint
+  // Sensation & Restraint
   ...variants(p => `${p.sub} wanted to be tied up`),
   ...variants(p => `${p.sub} wanted to be blindfolded`),
   ...variants(p => `${p.sub} wanted to be held down`),
@@ -131,19 +183,46 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub} wanted to be on display`),
   ...variants(p => `${p.sub} wanted to be kneeling for them`),
   ...variants(p => `${p.sub} wanted to be completely powerless`),
-  // What do you want? — Words & Praise
+  // Sensation & Restraint — new extensions
+  ...variants(p => `${p.sub} wanted something around ${p.poss} wrists`),
+  ...variants(p => `${p.sub} wanted to be undressed very slowly`),
+  ...variants(p => `${p.sub} wanted to be kept completely still`),
+  ...variants(p => `${p.sub} wanted to be wrapped and contained`),
+
+  // Words & Praise
   ...variants(p => `${p.sub} wanted to be praised`),
   ...variants(p => `${p.sub} wanted to be told what ${p.sub} is`),
   ...variants(p => `${p.sub} wanted to be narrated through it`),
   ...variants(p => `${p.sub} wanted to be made to ask nicely`),
   ...variants(p => `${p.sub} wanted to be made to repeat it back`),
-  // What do you want? — Surrender & Power
+  // Words & Praise — new extensions
+  ...variants(p => `${p.sub} wanted to be told ${p.refl} was perfect`),
+  ...variants(p => `${p.sub} wanted every moment described as it happened`),
+  ...variants(p => `${p.sub} wanted to hear how much they needed ${p.obj}`),
+  ...variants(p => `${p.sub} wanted to be called ${p.poss} name when it happened`),
+
+  // Surrender & Power
   ...variants(p => `${p.sub} wanted to be degraded`),
   ...variants(p => `${p.sub} wanted to be spanked`),
   ...variants(p => `${p.sub} wanted to be edged`),
   ...variants(p => `${p.sub} wanted to be worshipped`),
   ...variants(p => `${p.sub} wanted to be used and adored`),
   ...variants(p => `${p.sub} wanted to be made to beg`),
+
+  // Dark Fantasy
+  ...variants(p => `${p.sub} wanted something that wasn't entirely human`),
+  ...variants(p => `${p.sub} wanted to be claimed by something ancient and certain`),
+  ...variants(p => `${p.sub} wanted the rules of this world suspended`),
+  ...variants(p => `${p.sub} wanted power that couldn't be explained`),
+  ...variants(p => `${p.sub} wanted to be taken somewhere impossible`),
+
+  // Just the Scene
+  "No backstory — start in the moment",
+  "Skip the tension — we're already there",
+  "Pure sensation, nothing required before it",
+  "Just the part that matters",
+  "In medias res — already past the beginning",
+  "No plot, no premise — just this",
 
   // How It Ends
   ...variants(p => `${p.sub} falls asleep in their arms`),
@@ -161,11 +240,12 @@ const AFTER_DARK_TAGS: string[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// AfterDark scenario preset tags (hardcoded in AfterDark.tsx selectedScenario.tags)
-// These are added by the frontend before the API call, not by user text input.
+// AfterDark + Drift scenario preset tags
+// (hardcoded in selectedScenario.tags arrays in AfterDark.tsx and Drift.tsx)
 // ---------------------------------------------------------------------------
 
 const SCENARIO_PRESET_TAGS: string[] = [
+  // Original After Dark preset tags
   "He's completely in control",
   "Nothing implied where it can be named",
   "I'm completely in control",
@@ -178,7 +258,7 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "The risk is part of the pull",
   "Something between you that should be forbidden",
   "Unfinished business",
-
+  "The danger makes it real",
   "Complicated wanting",
   "A line that keeps moving",
   "Being the only thing he is thinking about",
@@ -191,6 +271,28 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "Adoration and surrender",
   "He knows exactly what you need",
   "Desire without apology",
+
+  // All of Them room presets
+  "Multiple men, undivided attention",
+  "Black masculine dominance",
+  "Physical dominance and commanding presence",
+  "She is completely wanted by all of them",
+
+  // Dark Fantasy room presets
+  "Something not entirely human",
+  "Ancient claiming",
+
+  // The Praise Room presets
+  "Every word of praise named specifically",
+  "He catalogues what she is",
+  "She is described and adored as it happens",
+  "The words are part of the act",
+
+  // Drift (nocturne) room presets
+  "Warmth with nowhere to go",
+  "The night is private and unhurried",
+  "Warmth interrupted slowly",
+  "He knows without asking",
 ];
 
 // ---------------------------------------------------------------------------

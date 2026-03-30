@@ -96,6 +96,62 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
         "She owns what she wants",
       ],
     },
+    {
+      heading: "Pure Romance",
+      sub: "When tenderness is the whole story",
+      tags: [
+        "The tenderness is the whole thing",
+        "He treats her like the only thing in the room",
+        "Slow hands, full attention",
+        "She feels adored, not just wanted",
+        "Every gesture deliberate",
+        "He remembers what she said",
+        "Romance that earns what follows",
+        "Softness that doesn't break",
+      ],
+    },
+    {
+      heading: "Fantasy & The Impossible",
+      sub: "When reality is negotiable",
+      tags: [
+        "He's not entirely human",
+        "The rules of this world don't apply here",
+        "Time works differently",
+        "She has power neither of them can explain",
+        "No consequences, no morning",
+        "He can sense what she needs",
+        "The impossible is part of why it works",
+        "Magic, mythology, something older",
+      ],
+    },
+    {
+      heading: "Praise & Devotion",
+      sub: "When being wanted is its own kind of story",
+      tags: [
+        "He can't stop looking at her",
+        "She is the obsession and she knows it",
+        "He catalogues everything about her",
+        "Every compliment specific and earned",
+        "He makes her feel like a revelation",
+        "The devotion is the whole story",
+        "He names what he sees in her",
+        "She is everything and he tells her",
+      ],
+    },
+    {
+      heading: "Story Arc & Plot",
+      sub: "For stories with something more to say",
+      tags: [
+        "There's a complication first",
+        "The obstacle makes the ending better",
+        "Second chance — different this time",
+        "They almost didn't make it",
+        "The misunderstanding that almost cost everything",
+        "The story earns its ending",
+        "Feelings are the whole problem",
+        "Something between them that neither will say",
+      ],
+    },
   ];
 }
 
@@ -113,6 +169,10 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
         `${p.sub} wanted to be on display`,
         `${p.sub} wanted to be kneeling for them`,
         `${p.sub} wanted to be completely powerless`,
+        `${p.sub} wanted something around ${p.poss} wrists`,
+        `${p.sub} wanted to be undressed very slowly`,
+        `${p.sub} wanted to be kept completely still`,
+        `${p.sub} wanted to be wrapped and contained`,
       ],
     },
     {
@@ -124,6 +184,10 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
         `${p.sub} wanted to be narrated through it`,
         `${p.sub} wanted to be made to ask nicely`,
         `${p.sub} wanted to be made to repeat it back`,
+        `${p.sub} wanted to be told ${p.refl} was perfect`,
+        `${p.sub} wanted every moment described as it happened`,
+        `${p.sub} wanted to hear how much they needed ${p.obj}`,
+        `${p.sub} wanted to be called ${p.poss} name when it happened`,
       ],
     },
     {
@@ -136,6 +200,29 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
         `${p.sub} wanted to be worshipped`,
         `${p.sub} wanted to be used and adored`,
         `${p.sub} wanted to be made to beg`,
+      ],
+    },
+    {
+      heading: "Dark Fantasy",
+      sub: "When the fantasy doesn't follow natural rules",
+      tags: [
+        `${p.sub} wanted something that wasn't entirely human`,
+        `${p.sub} wanted to be claimed by something ancient and certain`,
+        `${p.sub} wanted the rules of this world suspended`,
+        `${p.sub} wanted power that couldn't be explained`,
+        `${p.sub} wanted to be taken somewhere impossible`,
+      ],
+    },
+    {
+      heading: "Just the Scene",
+      sub: "No buildup. Start in the middle of it.",
+      tags: [
+        "No backstory — start in the moment",
+        "Skip the tension — we're already there",
+        "Pure sensation, nothing required before it",
+        "Just the part that matters",
+        "In medias res — already past the beginning",
+        "No plot, no premise — just this",
       ],
     },
     {
@@ -159,10 +246,30 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
   ];
 }
 
+function buildNocturneCategory(): TagCategory {
+  return {
+    heading: "What do you need tonight?",
+    sub: "The specific version of tonight you're carrying into sleep",
+    tags: [
+      "The day is done and you can finally stop",
+      "Company without performance",
+      "Warmth, no urgency",
+      "Someone present, nothing required",
+      "Slow enough to drift",
+      "Just enough tension to carry you somewhere else",
+      "The quiet kind of wanted",
+      "Something to fall into",
+      "Rest that comes from connection",
+      "A voice that takes its time",
+    ],
+  };
+}
+
 interface Props {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
   afterDark?: boolean;
+  bedtime?: boolean;
   accentColor?: string;
   protagonistPronouns?: string;
 }
@@ -171,6 +278,7 @@ export function StoryTagStudio({
   selectedTags,
   onTagToggle,
   afterDark = false,
+  bedtime = false,
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
 }: Props) {
@@ -198,6 +306,8 @@ export function StoryTagStudio({
   const p = getPronounCtx(protagonistPronouns);
   const categories: TagCategory[] = afterDark
     ? [...buildStandardCategories(p), ...buildAfterDarkCategories(p)]
+    : bedtime
+    ? [...buildStandardCategories(p), buildNocturneCategory()]
     : buildStandardCategories(p);
   const contradictionPairs = buildContradictionPairs(p);
 

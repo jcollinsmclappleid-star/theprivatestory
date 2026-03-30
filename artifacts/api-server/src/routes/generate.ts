@@ -847,6 +847,7 @@ function buildCoverPromptFromFormData(intake: GenerateStoryRequest): string {
     "passionate":   "passionate emotional heat",
     "forbidden":    "dangerous forbidden draw",
     "unrestrained": "raw unchecked desire",
+    "nocturne":     "slow atmospheric warmth, winding-down intimacy",
   };
   const storyModeDesc = STORYMODE_VISUAL[intake.storyMode?.trim() ?? ""] ?? "";
 
@@ -1146,7 +1147,7 @@ const VALID_HERITAGES = ["Latina", "Black", "South Asian", "European", "East Asi
 
 const VALID_ATMOSPHERES = ["Stormy", "Candlelit", "Midnight", "Golden Hour", "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid"];
 
-const VALID_STORY_MODES = ["romance", "slow_burn", "passionate", "forbidden", "unrestrained"];
+const VALID_STORY_MODES = ["romance", "slow_burn", "passionate", "forbidden", "unrestrained", "nocturne"];
 
 // ---------------------------------------------------------------------------
 // Structured scenario & appearance allowlists — replaces all free-text fields
@@ -1246,6 +1247,10 @@ const VALID_APPEAR_FEATURES = new Set([
 const VALID_SCENARIO_ROOMS = new Set([
   "power_exchange", "the_forbidden", "slow_burn", "in_character",
   "eyes_on_us", "sweet_and_savage", "more_than_two", "the_edge", "dark_territory",
+  // New After Dark rooms
+  "all_of_them", "dark_fantasy", "the_praise_room", "just_the_scene", "novel_arc",
+  // Drift (nocturne) rooms
+  "the_late_night", "come_home", "the_long_week", "warm_weight", "anchored", "still_here",
 ]);
 
 /** The After Dark room that requires three active participants in every scene. */

@@ -126,7 +126,7 @@ const config: SEOPageConfig = {
       "A story made for how you actually feel tonight changes that.",
       "Tell it what you need. It creates something around that — paced for sleep, toned for calm, private and entirely yours. Two minutes to make. The rest of the night to work.",
     ],
-    primary: { label: "Create tonight's bedtime story", href: "/create" },
+    primary: { label: "Start your bedtime story", href: "/drift" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Relaxing audio stories", href: "/relaxing-audio-stories" },

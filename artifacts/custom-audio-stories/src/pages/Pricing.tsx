@@ -200,8 +200,11 @@ export default function Pricing() {
             Private, personalised stories —<br className="hidden md:block" />
             <span className="text-primary">on your terms.</span>
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-5">
             Every story is created specifically for you and saved privately to your account. Each plan also includes access to a curated collection with monthly releases.
+          </p>
+          <p className="text-xs text-muted-foreground/50 tracking-wide">
+            Billed discreetly. No subscription name appears on your statement.
           </p>
         </div>
       </section>

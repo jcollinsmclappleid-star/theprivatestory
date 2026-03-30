@@ -872,8 +872,12 @@ export default function Home() {
               <span className="text-primary">the feeling you're after.</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
+            <p className="text-lg md:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl">
               Choose the mood, the setting, the energy, and the voice. We write it, narrate it, and save it privately to your account.
+            </p>
+
+            <p className="text-xs text-muted-foreground/50 tracking-wide mb-8">
+              Written for the female imagination.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">

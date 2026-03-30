@@ -130,7 +130,7 @@ const config: SEOPageConfig = {
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
-      { label: "Romantic audio stories", href: "/romantic-audio-stories" },
+      { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
   faqs: [

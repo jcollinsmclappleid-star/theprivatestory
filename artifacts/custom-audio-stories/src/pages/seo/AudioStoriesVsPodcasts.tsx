@@ -163,8 +163,8 @@ const config: SEOPageConfig = {
     primary: { label: "Create your first story", href: "/create" },
     links: [
       { label: "See pricing", href: "/pricing" },
-      { label: "Explore relaxing audio stories", href: "/relaxing-audio-stories" },
-      { label: "Explore sleep audio stories", href: "/sleep-audio-stories" },
+      { label: "Personalised audio stories — how it works", href: "/personalised-audio-stories" },
+      { label: "Create your own audio story", href: "/create-your-own-audio-story" },
     ],
   },
   faqs: [

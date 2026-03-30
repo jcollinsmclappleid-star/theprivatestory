@@ -292,6 +292,27 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </div>
         </section>
 
+        {/* USP bridge — links every SEO page back to the core USP content pages */}
+        <section className="mb-8">
+          <p className="text-[11px] text-muted-foreground/40 uppercase tracking-widest font-medium mb-3">How The Private Story works</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              href="/personalised-audio-stories"
+              className="group rounded-xl border border-border/30 bg-white/[0.02] hover:border-primary/30 hover:bg-primary/[0.03] p-4 transition-all duration-200"
+            >
+              <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors mb-1">Personalised audio stories</p>
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">What personalisation means — and why it's different from choosing from a library.</p>
+            </Link>
+            <Link
+              href="/create-your-own-audio-story"
+              className="group rounded-xl border border-border/30 bg-white/[0.02] hover:border-primary/30 hover:bg-primary/[0.03] p-4 transition-all duration-200"
+            >
+              <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors mb-1">Create your own audio story</p>
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">The choices you make — and how they shape the story that's created for you.</p>
+            </Link>
+          </div>
+        </section>
+
         {/* Discover more */}
         <section className="mb-16">
           <div className="rounded-xl border border-border/20 bg-white/[0.01] px-6 py-5 flex items-center justify-between gap-4">

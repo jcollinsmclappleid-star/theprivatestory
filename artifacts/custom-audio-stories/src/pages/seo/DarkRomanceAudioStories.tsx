@@ -127,9 +127,9 @@ const config: SEOPageConfig = {
     ],
     primary: { label: "Create your dark romance story", href: "/create" },
     links: [
-      { label: "Forbidden romance stories", href: "/forbidden-romance-audio-stories" },
+      { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
-      { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+      { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
   faqs: [

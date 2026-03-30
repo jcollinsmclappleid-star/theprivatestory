@@ -177,8 +177,8 @@ const config: SEOPageConfig = {
     primary: { label: "Create your romance story", href: "/create" },
     links: [
       { label: "See pricing", href: "/pricing" },
-      { label: "Explore romantic audio stories", href: "/romantic-audio-stories" },
-      { label: "Explore intimate audio stories", href: "/intimate-audio-stories" },
+      { label: "Personalised audio stories — what this is", href: "/personalised-audio-stories" },
+      { label: "Create your own audio story", href: "/create-your-own-audio-story" },
     ],
   },
   faqs: [

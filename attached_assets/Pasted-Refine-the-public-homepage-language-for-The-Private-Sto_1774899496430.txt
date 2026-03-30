@@ -1,0 +1,323 @@
+Refine the public homepage language for The Private Story so the Casting Room / customisation preview feels premium, emotionally charged, and clearly personalised — without reading too explicit, too dark, or too adult-forward on the public-facing homepage.
+
+This is a cleanup pass, not a redesign.
+
+==================================================
+GOAL
+==================================================
+
+Keep:
+- the premium luxury feel
+- the sense of depth and choice
+- the emotional charge
+- the idea that the user can shape the story precisely
+
+Reduce:
+- borderline explicit wording
+- taboo-heavy wording
+- dark / dangerous / obsessive wording
+- public homepage language that could weaken trust, brand elegance, or SEO/SafeSearch positioning
+
+The homepage should feel:
+- intimate
+- premium
+- emotionally intelligent
+- suggestive
+- female-first
+- private
+
+It should NOT feel:
+- porn-adjacent
+- overtly explicit
+- thriller-dark
+- extreme
+- aggressive
+
+==================================================
+RULE
+==================================================
+
+On the public homepage, show the SHAPE of the choices, not the furthest edge of the product.
+
+Stronger language can exist:
+- inside the create flow
+- inside signed-in experience
+- inside After Dark
+
+But not in the visible homepage preview cards.
+
+==================================================
+SPECIFIC CHANGES REQUIRED
+==================================================
+
+1. INTENSITY CARD CLEANUP
+
+Current card title:
+“You set the temperature”
+
+Keep the title if it still works visually.
+
+Replace the supporting copy:
+Current:
+“From slow burn to scorching. We write exactly to the level you choose.”
+
+Replace with:
+“From soft and slow to more charged. We shape the atmosphere to the level you choose.”
+
+Replace the intensity levels as follows:
+
+Current → Replace with
+Tender → Tender
+Heated → Warm
+Deeply Intimate → Elevated
+Scorching → Deep
+
+Replace descriptions as follows:
+
+Tender
+Current: “Emotional, slow burn”
+Replace with: “Soft, emotional, slow burn”
+
+Heated / Warm
+Current: “Desire building, charged”
+Replace with: “More charged, desire building”
+
+Deep / Elevated
+Current: “Fully rendered”
+Replace with: “Richer, more immersive”
+
+Scorching / Deep
+Current: “At full depth”
+Replace with: “At its most intense”
+
+Final preferred intensity stack:
+- Tender
+- Warm
+- Elevated
+- Deep
+
+Do not use:
+- Scorching
+- Deeply Intimate
+- Fully rendered
+- At full depth
+
+==================================================
+2. MOOD CARD CLEANUP
+==================================================
+
+Current card title:
+“The emotional register”
+
+Keep title or slightly refine to:
+“The emotional tone”
+
+Replace the subheading:
+Current:
+“28 moods to tune exactly how you want to feel inside the story.”
+
+Replace with:
+“Choose the emotional tone you want the story to carry.”
+
+Replace the visible homepage mood chips.
+
+Remove these from public homepage:
+- Forbidden
+- Urgent
+- Dark
+- Desperate
+- Wicked
+- Breathless
+- All-Consuming
+- Burning
+- Reckless
+
+Replace with this homepage-safe set:
+- Slow Burn
+- Magnetic
+- Quiet Intensity
+- Late Night
+- Lingering
+- Charged
+- Unspoken
+- Restless
+- Deep Pull
+- Emotional Tension
+
+Preferred visible homepage chips:
+- Slow Burn
+- Magnetic
+- Quiet Intensity
+- Late Night
+- Lingering
+- Charged
+- Unspoken
+- Emotional Tension
+
+If one chip must be selected by default, use:
+- Slow Burn
+or
+- Magnetic
+
+Do not use “Forbidden” as the default public homepage mood.
+
+==================================================
+3. SITUATION CARD CLEANUP
+==================================================
+
+Current card title:
+“The story behind the story”
+
+Keep this title.
+
+Replace the supporting copy:
+Current:
+“220 situations across 11 categories — or one chosen for you. The dramatic context that makes every story feel different.”
+
+Replace with:
+“220 starting points across 11 categories — or one chosen for you. The context that gives every story its own energy.”
+
+Keep the “Choose For Me” control.
+
+Replace homepage-visible situation tags.
+
+Remove these from public homepage:
+- Forbidden & Complicated
+- Power & Tension
+- Psychological & Obsessive
+- Dark & Dangerous
+- Professional & Crossing Lines
+- Drama & Psychological Thriller
+
+Replace with:
+- Unexpected Reunion
+- Close Quarters
+- Private Tension
+- Slow Burn & Patience
+- Secrets & Unspoken
+- Complicated Timing
+- Almost Too Late
+- Wrong Time, Right Pull
+- A Quiet Return
+- Emotional Distance
+- First & Unknown
+- Circumstance & Proximity
+
+Preferred homepage situation set:
+- Unexpected Reunion
+- First & Unknown
+- Close Quarters
+- Slow Burn & Patience
+- Secrets & Unspoken
+- Circumstance & Proximity
+- Complicated Timing
+- Emotional Distance
+
+==================================================
+4. REMOVE / REWRITE EXAMPLE LINES
+==================================================
+
+Current example lines are too dark and thriller-coded for the public homepage.
+
+Remove:
+“The evidence points to him. She’s the one who buried it.”
+“One of them is leaving. Tonight is all there is.”
+
+Replace with homepage-safe examples like:
+- “They were never meant to meet again. Then he walked back into the room.”
+- “The message came late. The reply changed everything.”
+- “The night was supposed to be simple. It stopped feeling that way the moment he arrived.”
+- “They both knew the timing was wrong. Neither of them stepped away.”
+- “Nothing had been said yet, but the energy had already shifted.”
+
+Use 2–3 examples maximum.
+Keep them atmospheric, emotionally charged, and elegant.
+Do not make them dark, criminal, obsessive, or dangerous.
+
+==================================================
+5. AFTER DARK SEPARATION
+==================================================
+
+Keep stronger language and more intense mood labels out of the main homepage customisation preview.
+
+If needed:
+- move darker or more taboo language into After Dark only
+- keep the homepage preview as the premium public-safe version
+- make After Dark the place where the stronger variant is introduced later
+
+==================================================
+6. VISUAL CLEANUP
+==================================================
+
+Reduce visible chip density on mobile.
+
+Tasks:
+- show fewer chips at once on homepage preview cards
+- prioritise the most elegant, broad, premium labels
+- avoid overcrowding each card with too many options
+- keep enough visible to show depth, but not so many that it becomes visually noisy
+
+Aim for:
+- 6 to 8 visible mood chips max
+- 6 to 8 visible situation chips max
+- 4 intensity levels max
+
+==================================================
+7. MICROCOPY DIRECTION
+==================================================
+
+All public-facing preview copy should feel:
+- premium
+- restrained
+- intimate
+- emotionally intelligent
+- suggestive without being explicit
+
+Use words like:
+- mood
+- tone
+- chemistry
+- atmosphere
+- charge
+- tension
+- pull
+- lingering
+- private
+- emotional
+- magnetic
+- slow burn
+
+Avoid words like:
+- explicit
+- no limits
+- obsessive
+- dangerous
+- wicked
+- desperate
+- scorching
+- crossing lines
+
+==================================================
+8. FINAL CHECK
+==================================================
+
+Review all visible homepage customisation cards and make sure they now feel like:
+- a luxury personalisation engine
+- a private emotional storytelling product
+- a premium female-first experience
+
+Not:
+- an explicit selector
+- a fetish menu
+- a dark thriller engine
+- an adult content homepage
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Implement the wording cleanup directly on the public homepage.
+Keep the feature.
+Keep the product depth.
+Soften the visible vocabulary.
+Make the section feel more polished, brand-safe, and commercially strong.

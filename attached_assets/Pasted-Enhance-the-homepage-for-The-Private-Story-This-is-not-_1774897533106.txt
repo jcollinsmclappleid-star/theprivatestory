@@ -1,0 +1,419 @@
+Enhance the homepage for The Private Story.
+
+This is not a redesign from scratch. This is a refinement pass to improve:
+- mobile conversion
+- hierarchy
+- premium feel
+- privacy reassurance
+- public-safe positioning
+- clarity of the core product
+
+The brand direction is already strong:
+- luxury
+- dark, intimate, premium
+- female-first
+- private
+- emotionally intelligent
+
+Do not lose that world.
+Refine it.
+
+==================================================
+PRIMARY GOAL
+==================================================
+
+Make the homepage feel:
+- easier to understand in the first 5 seconds
+- easier to trust
+- easier to buy from
+- less visually crowded on mobile
+- more clearly built around privacy + personalisation
+
+The user should immediately understand:
+1. This creates a private story for me
+2. I control the feeling, mood, and setting
+3. It is saved privately and not shared
+4. I can buy access simply and confidently
+
+==================================================
+HIGH PRIORITY IMPROVEMENTS
+==================================================
+
+1. Reduce mobile header height
+2. Strengthen hero messaging
+3. Improve CTA hierarchy
+4. Tighten section order
+5. Add direct conversion buttons to pricing cards
+6. Make public homepage language safer and more premium
+7. Reduce visual density and repetition
+8. Keep recommendation/personalised rails only for logged-in users
+9. Move SEO-heavy category links lower and style them more editorially
+
+==================================================
+1. MOBILE HEADER
+==================================================
+
+The mobile header is too tall and takes too much vertical space.
+
+Tasks:
+- reduce overall header height by 20–30%
+- make logo slightly smaller
+- reduce vertical padding around logo and icons
+- keep the premium look
+- implement a compact sticky header after scroll
+- ensure more of the hero content is visible above the fold
+
+Do not remove the logo or icons. Just make the header more efficient.
+
+==================================================
+2. HERO SECTION
+==================================================
+
+The current hero should be rewritten and tightened.
+
+The hero must lead with:
+- private
+- personalised
+- emotionally specific
+- easy to understand
+
+Use this headline direction:
+“A private story built around the feeling you’re after.”
+
+Use this supporting copy direction:
+“Choose the mood, the setting, the energy, and the voice. We write it, narrate it, and save it privately to your account.”
+
+The hero should communicate:
+- it is built around the user
+- it is private
+- it is fast
+- it is premium
+
+Add a small trust strip under the main CTA:
+- Visible only to you
+- No sharing
+- No profile
+- Saved privately
+
+Keep the primary CTA:
+“Create my story”
+
+Add a secondary CTA if useful:
+- “Listen to a sample”
+or
+- “See how it works”
+
+Do not let “After Dark” compete too strongly with the main hero CTA.
+
+==================================================
+3. SECTION ORDER
+==================================================
+
+Reorder the homepage to improve clarity and conversion.
+
+Recommended homepage order:
+
+1. Hero
+2. Privacy reassurance strip
+3. How it works
+4. Casting Room / customisation depth
+5. Finished story preview
+6. Pricing
+7. Curated collection
+8. After Dark
+9. Explore by mood / SEO categories
+10. Final CTA
+
+The current page has strong sections, but the order is too expansive and slightly scattered.
+Make the experience feel more guided.
+
+==================================================
+4. PRIVACY SELL
+==================================================
+
+Privacy is one of the strongest differentiators and should be treated as a conversion asset.
+
+Keep and refine the privacy cards:
+- Your library is visible only to you
+- No profile. No discovery.
+- Never sold or shared with anyone
+- For your ears alone
+- Delete any story, any time
+
+Enhancements:
+- improve spacing and readability
+- make these feel more premium and calm
+- ensure this section appears early enough to reduce hesitation
+- keep tone elegant, not legalistic
+
+Add one short supporting paragraph above or below this section:
+“This is a private experience by design. Your stories stay in your account, and your listening is never made public.”
+
+==================================================
+5. HOW IT WORKS
+==================================================
+
+This section is strong conceptually but can be slightly tightened.
+
+Keep the headline:
+“In under a minute, your story is ready to play.”
+
+Refine supporting copy to be sharper and more elegant.
+
+Keep the 3-step structure but improve body copy clarity:
+
+01 Cast your story
+Set the mood, the chemistry, the setting, and how far it goes before a word is written.
+
+02 We write and narrate it
+An original story shaped around your choices, narrated in a voice that fits.
+
+03 Press play, wherever you are
+Ready in minutes, saved privately to your account, and yours alone to return to.
+
+Increase spacing and improve card legibility on mobile.
+
+==================================================
+6. CASTING ROOM / CUSTOMISATION
+==================================================
+
+This is one of the strongest sections.
+It proves the product is more than a content library.
+
+Keep this section high on the page.
+Enhance it by:
+- making card content easier to scan on mobile
+- increasing spacing between stat row and cards
+- making the narrative feel emotionally sharper
+
+Keep strong lines like:
+“The version of him that’s been in your head.”
+
+Do not overcomplicate the card UI.
+The goal is to make the product depth obvious without overwhelming the user.
+
+==================================================
+7. FINISHED STORY PREVIEW
+==================================================
+
+This section is good and should stay.
+
+It successfully makes the product tangible.
+
+Enhance it by:
+- slightly increasing contrast and readability
+- tightening copy
+- making the play button even more visually authoritative
+- keeping the privacy reassurance visible near the output
+
+Use privacy line like:
+“Private · Visible only in your account · Never shared”
+
+Make sure the story card, play button, runtime, and excerpt all feel polished and believable.
+
+==================================================
+8. PRICING SECTION
+==================================================
+
+The pricing section looks good, but it needs to convert more directly.
+
+Tasks:
+- add direct CTA buttons on both pricing cards
+- monthly card button: “Choose Monthly”
+- annual card button: “Choose Annual”
+- keep annual visually highlighted as best value
+- keep “See all plan details” as a secondary link, not the main conversion action
+
+Pricing structure to preserve:
+- £29 / month
+- 5 personalised stories / month
+- full curated collection
+- monthly new releases
+- premium narration
+
+- £179 / year
+- 50 personalised stories / year
+- full curated collection
+- monthly new releases
+- premium narration
+
+- £3.99 / additional story
+
+Important wording change:
+Replace “ElevenLabs narration” with a benefit-led phrase:
+- “Premium narration”
+or
+- “Cinematic narration”
+
+Users care about the experience, not the vendor name.
+
+Add small reassurance under pricing:
+- Private library included
+- Cancel monthly anytime
+- Add more stories whenever you want
+
+==================================================
+9. CURATED COLLECTION
+==================================================
+
+This section is good and supports retention.
+
+Enhance it by:
+- making it feel more editorial and premium
+- slightly increasing spacing between heading, subcopy, button, and story cards
+- ensuring this reads as a supporting feature, not the core product
+
+Use the framing:
+“A curated release, every month.”
+
+Keep it clear that:
+- this is included with access
+- it is something to return to between personalised creations
+
+Do not let the collection overshadow the private custom story creation proposition.
+
+==================================================
+10. AFTER DARK
+==================================================
+
+The design is visually strong, but public-facing language is currently too aggressive.
+
+Keep the section, but soften the homepage version.
+
+Avoid:
+- no bounds
+- no limits
+- without restraint
+- no apology
+
+Replace with more premium public-safe phrasing such as:
+- “A deeper, darker side of the experience”
+- “For moments that call for something more intense”
+- “The same private storytelling, with a more charged atmosphere”
+
+Keep “Enter After Dark” as the CTA.
+
+The dedicated After Dark page can be stronger.
+The homepage teaser should remain premium and controlled.
+
+==================================================
+11. PERSONALISED / RECOMMENDATION RAILS
+==================================================
+
+The “For You” and “Because you liked...” rails should only appear for logged-in users with real taste/history data.
+
+For logged-out users:
+replace these with:
+- “Editor’s picks”
+- “Popular in Late Night”
+- “From the collection”
+- “This month’s release”
+
+Do not show fake personalisation on the public homepage.
+
+==================================================
+12. EXPLORE BY MOOD / SEO CATEGORY LINKS
+==================================================
+
+Keep these for SEO, but move them lower on the homepage.
+They currently feel too much like a sitemap.
+
+Enhancements:
+- place them near the end of the homepage
+- add a short editorial intro above them
+- reduce visible links per group
+- add “View all” where needed
+- make the blocks feel more curated and less utility-driven
+
+Use section intro like:
+“Explore by mood, feeling, and story type.”
+
+Keep categories like:
+- Personalised
+- Relaxation
+- Romantic
+- Intimate & Genre
+
+But make them feel like curated pathways, not raw SEO architecture.
+
+==================================================
+13. VISUAL SPACING + MOBILE POLISH
+==================================================
+
+Across the entire homepage:
+- increase section separation slightly
+- add more breathing room around headlines
+- reduce body copy line length where possible
+- slightly tighten some paragraphs
+- improve consistency of card padding
+- ensure CTA buttons are never visually crowded by adjacent content
+
+The page should feel expensive and calm, not packed.
+
+==================================================
+14. FINAL CTA
+==================================================
+
+Add a strong closing section at the bottom of the homepage.
+
+Use heading direction like:
+“A private story, built around you.”
+
+Supporting copy:
+“Choose the feeling, the setting, and the energy. We write it, narrate it, and keep it where it belongs — yours.”
+
+Primary CTA:
+“Create my story”
+
+Secondary CTA:
+“View pricing”
+
+==================================================
+15. LOGGED-OUT VS LOGGED-IN STATE
+==================================================
+
+Create cleaner separation between public homepage state and signed-in homepage state.
+
+LOGGED-OUT:
+- premium brand narrative
+- no fake personalised rails
+- conversion-focused
+
+LOGGED-IN:
+- For You
+- Because you liked...
+- continue listening
+- collection picks based on taste
+
+This improves trust and makes the product feel smarter.
+
+==================================================
+16. DO NOT CHANGE
+==================================================
+
+Keep:
+- overall black/gold/plum luxury palette
+- logo and general brand direction
+- premium typography
+- privacy-first product positioning
+- casting/customisation depth
+- story output preview concept
+- curated collection concept
+
+This is a refinement pass, not a rebrand.
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Implement a polished refined homepage with:
+- improved section order
+- more efficient mobile header
+- stronger hero
+- stronger pricing conversion
+- better mobile spacing
+- cleaner public-safe positioning
+- more premium editorial hierarchy
+- logged-in vs logged-out homepage logic
+
+Return production-ready, responsive improvements, not wireframes or rough placeholders.

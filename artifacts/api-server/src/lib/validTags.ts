@@ -98,53 +98,118 @@ const STANDARD_TAGS: string[] = [
   ...variants(p => `${p.sub} doesn't tell anyone`),
   ...variants(p => `${p.sub} tells one person`),
 
-  // What Does She Really Want?
-  "She leads",
-  "She initiates",
-  "She sets the terms",
-  "She stays in control",
-  "She chooses how far it goes",
-  "She makes the first move",
-  "She gives control over completely",
-  "She lets herself go",
-  "She doesn't have to think",
-  "She lets herself be taken care of",
-  "She's wanted this for a long time",
-  "She comes back for more",
-  "This is the version she never admits to",
-  "She doesn't feel guilty",
-  "It changes something in her",
-  "She owns what she wants",
+  // What Does She/He/They Really Want? — all 4 protagonist pronoun forms
+  // She/Her
+  "She leads", "She initiates", "She sets the terms", "She stays in control",
+  "She chooses how far it goes", "She makes the first move", "She gives control over completely",
+  "She lets herself go", "She doesn't have to think", "She lets herself be taken care of",
+  "She's wanted this for a long time", "She comes back for more",
+  "This is the version she never admits to", "She doesn't feel guilty",
+  "It changes something in her", "She owns what she wants",
+  // He/Him
+  "He leads", "He initiates", "He sets the terms", "He stays in control",
+  "He chooses how far it goes", "He makes the first move", "He gives control over completely",
+  "He lets himself go", "He doesn't have to think", "He lets himself be taken care of",
+  "He's wanted this for a long time", "He comes back for more",
+  "This is the version he never admits to", "He doesn't feel guilty",
+  "It changes something in him", "He owns what he wants",
+  // They/Them
+  "They lead", "They initiate", "They set the terms", "They stay in control",
+  "They choose how far it goes", "They make the first move", "They give control over completely",
+  "They let themselves go", "They don't have to think", "They let themselves be taken care of",
+  "They've wanted this for a long time", "They come back for more",
+  "This is the version they never admit to", "They don't feel guilty",
+  "It changes something in them", "They own what they want",
 
-  // Pure Romance
+  // Pure Romance — all 6 pairing combinations (protagonist × partner pronouns)
   "The tenderness is the whole thing",
-  "He treats her like the only thing in the room",
   "Slow hands, full attention",
-  "She feels adored, not just wanted",
   "Every gesture deliberate",
-  "He remembers what she said",
   "Romance that earns what follows",
   "Softness that doesn't break",
+  // partner treats protagonist
+  "He treats her like the only thing in the room",
+  "She treats her like the only thing in the room",
+  "He treats him like the only thing in the room",
+  "They treat her like the only thing in the room",
+  "They treat him like the only thing in the room",
+  "They treat them like the only thing in the room",
+  // protagonist feels adored
+  "She feels adored, not just wanted",
+  "He feels adored, not just wanted",
+  "They feel adored, not just wanted",
+  // partner remembers
+  "He remembers what she said",
+  "She remembers what she said",
+  "He remembers what he said",
+  "They remember what she said",
+  "They remember what he said",
+  "They remember what they said",
 
-  // Fantasy & The Impossible
-  "He's not entirely human",
+  // Fantasy & The Impossible — all pairing combinations
   "The rules of this world don't apply here",
   "Time works differently",
-  "She has power neither of them can explain",
   "No consequences, no morning",
-  "He can sense what she needs",
   "The impossible is part of why it works",
   "Magic, mythology, something older",
+  // partner not entirely human
+  "He's not entirely human",
+  "She's not entirely human",
+  "They're not entirely human",
+  // protagonist has power
+  "She has power neither of them can explain",
+  "He has power neither of them can explain",
+  "They have power neither of them can explain",
+  // partner can sense what protagonist needs
+  "He can sense what she needs",
+  "She can sense what she needs",
+  "He can sense what he needs",
+  "They can sense what she needs",
+  "They can sense what he needs",
+  "They can sense what they needs",
 
-  // Praise & Devotion
-  "He can't stop looking at her",
-  "She is the obsession and she knows it",
-  "He catalogues everything about her",
+  // Praise & Devotion — all pairing combinations
   "Every compliment specific and earned",
-  "He makes her feel like a revelation",
   "The devotion is the whole story",
+  // partner can't stop looking at protagonist
+  "He can't stop looking at her",
+  "She can't stop looking at her",
+  "He can't stop looking at him",
+  "They can't stop looking at her",
+  "They can't stop looking at him",
+  "They can't stop looking at them",
+  // protagonist is the obsession
+  "She is the obsession and she knows it",
+  "He is the obsession and he knows it",
+  "They is the obsession and they knows it",
+  // partner catalogues protagonist
+  "He catalogues everything about her",
+  "She catalogues everything about her",
+  "He catalogues everything about him",
+  "They catalogue everything about her",
+  "They catalogue everything about him",
+  "They catalogue everything about them",
+  // partner makes protagonist feel
+  "He makes her feel like a revelation",
+  "She makes her feel like a revelation",
+  "He makes him feel like a revelation",
+  "They make her feel like a revelation",
+  "They make him feel like a revelation",
+  "They make them feel like a revelation",
+  // partner names what they see in protagonist
   "He names what he sees in her",
+  "She names what she sees in her",
+  "He names what he sees in him",
+  "They name what they see in her",
+  "They name what they see in him",
+  "They name what they see in them",
+  // protagonist is everything and partner tells them
   "She is everything and he tells her",
+  "She is everything and she tells her",
+  "He is everything and he tells him",
+  "She is everything and they tell her",
+  "He is everything and they tell him",
+  "They is everything and they tell them",
 
   // Story Arc & Plot
   "There's a complication first",

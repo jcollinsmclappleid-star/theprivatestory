@@ -1639,6 +1639,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               bedtime={bedtime}
               accentColor={accentColor}
               protagonistPronouns={rawProtagonistPronouns}
+              partnerPronouns={rawPartnerPronouns}
             />
           </motion.div>
         )}

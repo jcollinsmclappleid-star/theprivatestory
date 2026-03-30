@@ -33,7 +33,18 @@ function buildContradictionPairs(_p: PronounCtx): [string, string][] {
   ];
 }
 
-function buildStandardCategories(p: PronounCtx): TagCategory[] {
+/** Pick the correct pronoun form for the protagonist. */
+function pSub(p: PronounCtx, sheV: string, heV: string, theyV: string): string {
+  if (p.sub === "He") return heV;
+  if (p.sub === "They" || p.sub === "You") return theyV;
+  return sheV;
+}
+
+function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategory[] {
+  const protagonistHeading = pSub(p, "she", "he", "they");
+  const partnerS = partner.sub;
+  const partnerObj = partner.obj;
+
   return [
     {
       heading: "How do you want to feel?",
@@ -75,25 +86,25 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
       ],
     },
     {
-      heading: "What does she really want?",
+      heading: `What does ${protagonistHeading} really want?`,
       sub: "The desire at the core of it",
       tags: [
-        "She leads",
-        "She initiates",
-        "She sets the terms",
-        "She stays in control",
-        "She chooses how far it goes",
-        "She makes the first move",
-        "She gives control over completely",
-        "She lets herself go",
-        "She doesn't have to think",
-        "She lets herself be taken care of",
-        "She's wanted this for a long time",
-        "She comes back for more",
-        "This is the version she never admits to",
-        "She doesn't feel guilty",
-        "It changes something in her",
-        "She owns what she wants",
+        pSub(p, "She leads",                             "He leads",                              "They lead"),
+        pSub(p, "She initiates",                         "He initiates",                          "They initiate"),
+        pSub(p, "She sets the terms",                    "He sets the terms",                     "They set the terms"),
+        pSub(p, "She stays in control",                  "He stays in control",                   "They stay in control"),
+        pSub(p, "She chooses how far it goes",           "He chooses how far it goes",            "They choose how far it goes"),
+        pSub(p, "She makes the first move",              "He makes the first move",               "They make the first move"),
+        pSub(p, "She gives control over completely",     "He gives control over completely",      "They give control over completely"),
+        pSub(p, "She lets herself go",                   "He lets himself go",                    "They let themselves go"),
+        pSub(p, "She doesn't have to think",             "He doesn't have to think",              "They don't have to think"),
+        pSub(p, "She lets herself be taken care of",     "He lets himself be taken care of",      "They let themselves be taken care of"),
+        pSub(p, "She's wanted this for a long time",     "He's wanted this for a long time",      "They've wanted this for a long time"),
+        pSub(p, "She comes back for more",               "He comes back for more",                "They come back for more"),
+        pSub(p, "This is the version she never admits to", "This is the version he never admits to", "This is the version they never admit to"),
+        pSub(p, "She doesn't feel guilty",               "He doesn't feel guilty",                "They don't feel guilty"),
+        pSub(p, "It changes something in her",           "It changes something in him",           "It changes something in them"),
+        pSub(p, "She owns what she wants",               "He owns what he wants",                 "They own what they want"),
       ],
     },
     {
@@ -101,11 +112,11 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
       sub: "When tenderness is the whole story",
       tags: [
         "The tenderness is the whole thing",
-        "He treats her like the only thing in the room",
+        `${partnerS} treats ${p.obj} like the only thing in the room`,
         "Slow hands, full attention",
-        "She feels adored, not just wanted",
+        `${p.sub} feels adored, not just wanted`,
         "Every gesture deliberate",
-        "He remembers what she said",
+        `${partnerS} remembers what ${pSub(p, "she", "he", "they")} said`,
         "Romance that earns what follows",
         "Softness that doesn't break",
       ],
@@ -114,12 +125,12 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
       heading: "Fantasy & The Impossible",
       sub: "When reality is negotiable",
       tags: [
-        "He's not entirely human",
+        `${partnerS}'s not entirely human`,
         "The rules of this world don't apply here",
         "Time works differently",
-        "She has power neither of them can explain",
+        `${p.sub} has power neither of them can explain`,
         "No consequences, no morning",
-        "He can sense what she needs",
+        `${partnerS} can sense what ${p.sub === "She" ? "she" : p.sub === "He" ? "he" : "they"} needs`,
         "The impossible is part of why it works",
         "Magic, mythology, something older",
       ],
@@ -128,14 +139,14 @@ function buildStandardCategories(p: PronounCtx): TagCategory[] {
       heading: "Praise & Devotion",
       sub: "When being wanted is its own kind of story",
       tags: [
-        "He can't stop looking at her",
-        "She is the obsession and she knows it",
-        "He catalogues everything about her",
+        `${partnerS} can't stop looking at ${p.obj}`,
+        `${p.sub} is the obsession and ${pSub(p, "she", "he", "they")} knows it`,
+        `${partnerS} catalogues everything about ${p.obj}`,
         "Every compliment specific and earned",
-        "He makes her feel like a revelation",
+        `${partnerS} makes ${p.obj} feel like a revelation`,
         "The devotion is the whole story",
-        "He names what he sees in her",
-        "She is everything and he tells her",
+        `${partnerS} names what ${partnerObj === "him" ? "he" : partnerObj === "her" ? "she" : "they"} sees in ${p.obj}`,
+        `${p.sub} is everything and ${partnerObj === "him" ? "he" : partnerObj === "her" ? "she" : "they"} tells ${p.obj}`,
       ],
     },
     {
@@ -272,6 +283,7 @@ interface Props {
   bedtime?: boolean;
   accentColor?: string;
   protagonistPronouns?: string;
+  partnerPronouns?: string;
 }
 
 export function StoryTagStudio({
@@ -281,6 +293,7 @@ export function StoryTagStudio({
   bedtime = false,
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
+  partnerPronouns = "he/him",
 }: Props) {
   const { isAuthenticated } = useAuth();
   const [usualTags, setUsualTags] = useState<Set<string>>(new Set());
@@ -304,17 +317,15 @@ export function StoryTagStudio({
   }, [isAuthenticated]);
 
   const p = getPronounCtx(protagonistPronouns);
+  const partner = getPronounCtx(partnerPronouns);
 
-  // Bedtime (Drift) mode: only the nocturne category is active.
-  // Standard/After Dark categories are shown greyed-out so the user can
-  // see they exist but understand they don't belong in a drift-to-sleep story.
   const activeCategories: TagCategory[] = afterDark
-    ? [...buildStandardCategories(p), ...buildAfterDarkCategories(p)]
+    ? [...buildStandardCategories(p, partner), ...buildAfterDarkCategories(p)]
     : bedtime
     ? [buildNocturneCategory()]
-    : buildStandardCategories(p);
+    : buildStandardCategories(p, partner);
 
-  const lockedCategories: TagCategory[] = bedtime ? buildStandardCategories(p) : [];
+  const lockedCategories: TagCategory[] = bedtime ? buildStandardCategories(p, partner) : [];
 
   const contradictionPairs = buildContradictionPairs(p);
 
@@ -387,30 +398,17 @@ export function StoryTagStudio({
           </div>
         </div>
       ))}
-
-      {lockedCategories.length > 0 && (
-        <div className="mt-8 pt-8 border-t border-white/6">
-          <p className="text-xs text-muted-foreground/40 uppercase tracking-widest font-semibold mb-1">
-            Not available in Drift mode
-          </p>
-          <p className="text-xs text-muted-foreground/30 mb-6 leading-snug">
-            Drift is calm, warm, and unhurried. The options below belong to other modes.
-          </p>
-          <div className="space-y-8 opacity-30 pointer-events-none select-none">
-            {lockedCategories.map((cat) => (
-              <div key={cat.heading}>
-                <p className="text-sm font-semibold text-foreground mb-1">{cat.heading}</p>
-                {cat.sub && (
-                  <p className="text-xs text-muted-foreground mb-3 leading-snug">{cat.sub}</p>
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {cat.tags.map((tag) => renderTag(tag, cat.tags, true))}
-                </div>
-              </div>
-            ))}
+      {lockedCategories.map((cat) => (
+        <div key={cat.heading} className="opacity-30">
+          <p className="text-base font-semibold text-foreground mb-1">{cat.heading}</p>
+          {cat.sub && (
+            <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {cat.tags.map((tag) => renderTag(tag, cat.tags, true))}
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }

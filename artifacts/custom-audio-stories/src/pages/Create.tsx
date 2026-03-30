@@ -1210,7 +1210,21 @@ export default function Create() {
     setPendingCastingData(null);
     setPresetNameDraft("");
     setGenerationError(null);
-    form.reset();
+    form.reset({
+      mood: "Emotional",
+      intensity: "Tender",
+      voiceFeel: "Soft Voice",
+      storyLength: "5 min",
+      scenarioCard: "",
+      cinematicVisuals: true,
+      emotionalFocus: false,
+      whoIsHe: "",
+      dynamic: "",
+      ending: "",
+      setting: "",
+      storyMode: "romance",
+      experienceTags: [],
+    });
     setStep("casting");
   }, [form]);
 

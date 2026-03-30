@@ -3,6 +3,8 @@ import { openai } from "@workspace/integrations-openai-ai-server";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
 import { openaiDirect } from "../lib/openai-direct.js";
+// ElevenLabs TTS via Replit Connectors — handles auth/token refresh automatically
+import { ReplitConnectors } from "@replit/connectors-sdk";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
@@ -1066,11 +1068,12 @@ export function getCacheKey(data: object): string {
 // Voice IDs
 // ---------------------------------------------------------------------------
 
-const voiceMap: Record<string, "nova" | "onyx" | "shimmer" | "echo"> = {
-  "Soft Voice": "nova",
-  "Deep Voice": "onyx",
-  "Breathy Voice": "shimmer",
-  "Confident Voice": "echo",
+// ElevenLabs voice IDs — mapped to the four voice feels available in the Casting Room
+const voiceMap: Record<string, string> = {
+  "Soft Voice":      "21m00Tcm4TlvDq8ikWAM", // Rachel — warm, soft female
+  "Deep Voice":      "pNInz6obpgDQGcFmaJgB", // Adam — deep, authoritative male
+  "Breathy Voice":   "XB0fDUnXU5powFXDhCwa", // Charlotte — soft, breathy female
+  "Confident Voice": "9BWtsMINqrJLrRacOk9x", // Aria — clear, confident female
 };
 
 // ---------------------------------------------------------------------------
@@ -2894,15 +2897,13 @@ export async function generateAllImages(
 }
 
 export async function generateAudioFile(
-  _scenes: Scene[],
-  _voiceFeel: string,
-  _cacheKey: string
+  scenes: Scene[],
+  voiceFeel: string,
+  cacheKey: string
 ): Promise<string> {
-  // Audio generation temporarily disabled — re-enable when TTS is ready
-  return "";
-
-  const voice = voiceMap[_voiceFeel] ?? voiceMap["Soft Voice"];
-  const TTS_CHAR_LIMIT = 4000;
+  const voiceId = voiceMap[voiceFeel] ?? voiceMap["Soft Voice"];
+  // ElevenLabs max chars per request is 5,000 — use 4,500 to stay safe
+  const TTS_CHAR_LIMIT = 4500;
 
   // Build chunks that respect the TTS character limit, splitting at scene boundaries
   const chunks: string[] = [];
@@ -2914,7 +2915,7 @@ export async function generateAudioFile(
         chunks.push(current.trim());
         current = "";
       }
-      // If a single scene exceeds the limit, split it mid-text
+      // If a single scene exceeds the limit, split it at sentence boundaries
       if (sceneText.length > TTS_CHAR_LIMIT) {
         for (let i = 0; i < sceneText.length; i += TTS_CHAR_LIMIT) {
           chunks.push(sceneText.slice(i, i + TTS_CHAR_LIMIT));
@@ -2928,18 +2929,34 @@ export async function generateAudioFile(
   }
   if (current.length > 0) chunks.push(current.trim());
 
-  // Generate TTS for each chunk in parallel, then concatenate
-  const buffers = await Promise.all(
-    chunks.map(async (chunk) => {
-      const res = await openaiDirect.audio.speech.create({
-        model: "tts-1",
-        voice,
-        input: chunk,
-        response_format: "mp3",
-      });
-      return Buffer.from(await res.arrayBuffer());
-    })
-  );
+  // Generate TTS for each chunk sequentially (ElevenLabs is stateful per voice session)
+  const connectors = new ReplitConnectors();
+  const buffers: Buffer[] = [];
+  for (const chunk of chunks) {
+    const res = await connectors.proxy(
+      "elevenlabs",
+      `/v1/text-to-speech/${voiceId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "audio/mpeg" },
+        body: JSON.stringify({
+          text: chunk,
+          model_id: "eleven_multilingual_v2",
+          voice_settings: {
+            stability: 0.45,
+            similarity_boost: 0.80,
+            style: 0.25,
+            use_speaker_boost: true,
+          },
+        }),
+      }
+    );
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`ElevenLabs TTS error ${res.status}: ${errText}`);
+    }
+    buffers.push(Buffer.from(await res.arrayBuffer()));
+  }
 
   const audioDir = getPublicAudioDir();
   const filename = `audio-${cacheKey}.mp3`;

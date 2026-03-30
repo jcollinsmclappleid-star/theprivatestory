@@ -305,7 +305,7 @@ function ScenarioCard({
 type Phase = "scenario" | "casting" | "generating" | "result";
 
 export default function Drift() {
-  const { authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [phase, setPhase] = useState<Phase>("scenario");
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
@@ -314,10 +314,17 @@ export default function Drift() {
   const setStory = useAudioPlayer((s) => s.setStory);
 
   const generateMutation = useGenerateFullStory({
-    onSuccess: (data) => {
-      setResult(data);
-      setStory(data);
-      setPhase("result");
+    mutation: {
+      onSuccess: (data) => {
+        stopLoadingPhase();
+        setResult(data);
+        setStory(data);
+        setPhase("result");
+      },
+      onError: () => {
+        stopLoadingPhase();
+        setPhase("casting");
+      },
     },
   });
 

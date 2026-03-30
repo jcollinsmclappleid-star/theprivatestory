@@ -1608,7 +1608,7 @@ User Input:
 - Who They Are: ${intake.whoIsHe || "(not specified — infer from scenario and mood)"}${intake.partnerName ? ` — their name is ${intake.partnerName}` : ""}
 - Power Dynamic: ${intake.dynamic || "(not specified — infer from scenario)"}
 - Chemistry: ${intake.chemistry || "(not specified — infer from pairing and scenario)"}
-- Heritage: ${intake.heritage || "(not specified)"}
+- Heritage: ${intake.heritage || "European (no selection made — default to European appearance and background)"}
 - Atmosphere: ${intake.atmosphere || "(not specified)"}${intake.categoryId ? `\n- Story Category: ${getCategoryById(intake.categoryId)?.name ?? intake.categoryId}${intake.subthemeId ? ` → ${getSubthemeById(intake.categoryId, intake.subthemeId)?.name ?? intake.subthemeId}` : ""}` : ""}${intake.numericIntensity ? `\n- Numeric Intensity: ${intake.numericIntensity}/5` : ""}
 - Preferred Ending: ${intake.ending || "(not specified — choose from variety pools)"}
 - Visual Emphasis: ${intake.cinematicVisuals ? "high" : "standard"}
@@ -2678,13 +2678,18 @@ router.post("/plan-story", async (req, res) => {
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
-      logBlockedRequest(
-        req.isAuthenticated() ? String(req.user.id) : undefined,
-        req.sessionID,
-        mod.source,
-        mod.reason,
-        inputToModerate,
-      );
+      const uid = req.isAuthenticated() ? String(req.user.id) : undefined;
+      logBlockedRequest(uid, req.sessionID, mod.source, mod.reason, inputToModerate);
+      logModerationEvent({
+        userId: uid ?? null,
+        requestId: req.sessionID,
+        eventType: "input_blocked",
+        severity: "high",
+        reason: mod.reason ?? "Input failed moderation (plan-story)",
+        flagsJson: { source: mod.source },
+        inputSnapshotJson: { text: inputToModerate.slice(0, 500) },
+        actionTaken: "block",
+      });
       res.status(422).json({ error: "Your request contains content that cannot be processed. Please revise and try again." });
       return;
     }
@@ -2900,13 +2905,18 @@ router.post("/generate-full-story", async (req, res) => {
   if (inputToModerate.trim()) {
     const mod = await moderateInput(inputToModerate);
     if (mod.blocked) {
-      logBlockedRequest(
-        req.isAuthenticated() ? String(req.user.id) : undefined,
-        req.sessionID,
-        mod.source,
-        mod.reason,
-        inputToModerate,
-      );
+      const uid = req.isAuthenticated() ? String(req.user.id) : undefined;
+      logBlockedRequest(uid, req.sessionID, mod.source, mod.reason, inputToModerate);
+      logModerationEvent({
+        userId: uid ?? null,
+        requestId: req.sessionID,
+        eventType: "input_blocked",
+        severity: "high",
+        reason: mod.reason ?? "Input failed moderation (generate-full-story)",
+        flagsJson: { source: mod.source },
+        inputSnapshotJson: { text: inputToModerate.slice(0, 500) },
+        actionTaken: "block",
+      });
       res.status(422).json({
         error: "Your request contains content that cannot be processed. Please revise and try again.",
       });
@@ -3030,6 +3040,16 @@ router.post("/generate-full-story", async (req, res) => {
           blockReason: outputMod.reason ?? "output_flagged",
           inputHash: crypto.createHash("sha256").update(outputText.slice(0, 500)).digest("hex"),
         }).catch((err: unknown) => logger.error({ err }, "[output-moderation] Failed to persist output block to DB"));
+        logModerationEvent({
+          userId: req.user?.id ? String(req.user.id) : null,
+          requestId: req.sessionID,
+          eventType: "output_blocked",
+          severity: "critical",
+          reason: outputMod.reason ?? "Output failed OpenAI moderation",
+          flagsJson: { source: outputMod.source },
+          outputExcerpt: outputText.slice(0, 500),
+          actionTaken: "block",
+        });
         throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
       }
 
@@ -3059,6 +3079,16 @@ router.post("/generate-full-story", async (req, res) => {
             .where(eq(usersTable.id, String(req.user.id)))
             .catch((err: unknown) => logger.error({ err }, "[output-blocklist] Failed to update riskScore"));
         }
+        logModerationEvent({
+          userId: req.user?.id ? String(req.user.id) : null,
+          requestId: req.sessionID,
+          eventType: "output_blocked",
+          severity: "high",
+          reason: `Blocklist match: ${outputBlocklistResult.reason ?? "unknown"}`,
+          flagsJson: { source: "output-scan", term: outputBlocklistResult.reason },
+          outputExcerpt: outputText.slice(0, 500),
+          actionTaken: "block",
+        });
         throw Object.assign(new Error("Generated content did not pass safety review."), { statusCode: 422 });
       }
     }

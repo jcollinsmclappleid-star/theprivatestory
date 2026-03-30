@@ -735,7 +735,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "three_of_them",
     label: "Three of Them",
-    sub: "She didn't plan for three. None of them were planning anything. They all understood the same moment.",
+    sub: "No one planned this many. Not a single one of them. They all understood the same moment.",
     room: "all_of_them",
     darkness: "No Limits",
     gradient: "from-[#1a1400] via-[#261e00] to-[#100c00]",
@@ -746,7 +746,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_one_who_sent_others",
     label: "The One Who Sent the Others",
-    sub: "He arranged it. She didn't ask. He knew exactly what she hadn't said out loud.",
+    sub: "He arranged it. Nothing was asked for. He knew exactly what hadn't been said out loud.",
     room: "all_of_them",
     darkness: "No Limits",
     gradient: "from-[#1c1600] via-[#281e00] to-[#120e00]",
@@ -757,7 +757,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "the_two_he_brought",
     label: "The Two He Brought",
-    sub: "He said he was bringing someone. He brought two. She stood in the doorway and made her decision quickly.",
+    sub: "He said he was bringing someone. He brought two. A decision was made in the doorway, quickly.",
     room: "all_of_them",
     darkness: "Deep Night",
     gradient: "from-[#181200] via-[#221a00] to-[#0e0a00]",
@@ -768,7 +768,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "their_terms",
     label: "Their Terms",
-    sub: "They had specific ideas about how tonight would go. She had one idea: yes.",
+    sub: "They had specific ideas about how tonight would go. One answer to all of it: yes.",
     room: "all_of_them",
     darkness: "No Limits",
     gradient: "from-[#1a1200] via-[#261c00] to-[#100a00]",
@@ -779,7 +779,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "room_end_of_hall",
     label: "The Room at the End of the Hall",
-    sub: "She'd been told what to expect. They made sure she felt every second of exactly that.",
+    sub: "The briefing had been clear. They made sure every second was felt as exactly that.",
     room: "all_of_them",
     darkness: "No Limits",
     gradient: "from-[#160e00] via-[#221600] to-[#0c0800]",

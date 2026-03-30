@@ -1250,7 +1250,7 @@ const VALID_SCENARIO_ROOMS = new Set([
   // New After Dark rooms
   "all_of_them", "dark_fantasy", "the_praise_room", "just_the_scene", "novel_arc",
   // Drift (nocturne) rooms
-  "the_late_night", "come_home", "the_long_week", "warm_weight", "anchored", "still_here",
+  "the_late_night", "come_home", "the_long_week", "warm_weight", "last_hour", "the_hour_before",
 ]);
 
 /** The After Dark room that requires three active participants in every scene. */

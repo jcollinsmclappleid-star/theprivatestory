@@ -55,15 +55,15 @@ const ROOMS: DriftRoom[] = [
     accent: "#d97706",
   },
   {
-    id: "anchored",
-    name: "Anchored",
-    sub: "A voice, a presence, the feeling of being held in place by something warm.",
+    id: "last_hour",
+    name: "Last Hour",
+    sub: "The hour before sleep. Slow and certain. The day is almost over and nothing is required.",
     accent: "#059669",
   },
   {
-    id: "still_here",
-    name: "Still Here",
-    sub: "She thought they'd left. They hadn't. They were waiting for her to notice.",
+    id: "the_hour_before",
+    name: "The Hour Before",
+    sub: "Before either of you has to be anything. Just this — warm, unhurried, and entirely private.",
     accent: "#db2777",
   },
 ];
@@ -186,12 +186,12 @@ const SCENARIOS: DriftScenario[] = [
     tags: ["Rest that comes from connection", "The quiet kind of wanted"],
   },
 
-  /* Anchored ─── */
+  /* Last Hour ─── */
   {
     id: "voice_in_dark",
     label: "A Voice in the Dark",
-    sub: "Low, close, just for her. The voice as the whole story: pace, warmth, presence.",
-    room: "anchored",
+    sub: "Low, close, just for tonight. The voice as the whole story: pace, warmth, presence.",
+    room: "last_hour",
     gradient: "from-[#001008] via-[#001a10] to-[#000806]",
     accent: "#059669",
     tags: ["A voice that takes its time", "The quiet kind of wanted"],
@@ -199,8 +199,8 @@ const SCENARIOS: DriftScenario[] = [
   {
     id: "weight_of_being_held",
     label: "The Weight of Being Held",
-    sub: "She wanted to feel the specific weight of not floating away. They understood without needing it explained.",
-    room: "anchored",
+    sub: "The specific weight of not floating away. No explanation needed. Just presence.",
+    room: "last_hour",
     gradient: "from-[#000e08] via-[#001610] to-[#000804]",
     accent: "#10b981",
     tags: ["Warmth, no urgency", "Rest that comes from connection"],
@@ -208,19 +208,19 @@ const SCENARIOS: DriftScenario[] = [
   {
     id: "nothing_required",
     label: "Nothing Required",
-    sub: "She didn't have to be anything tonight. They made that clear before either of them said a word.",
-    room: "anchored",
+    sub: "Nothing to perform tonight. They made that clear before anyone said a word.",
+    room: "last_hour",
     gradient: "from-[#001008] via-[#001c10] to-[#000806]",
     accent: "#34d399",
     tags: ["Company without performance", "Warmth, no urgency"],
   },
 
-  /* Still Here ─── */
+  /* The Hour Before ─── */
   {
-    id: "she_thought_hed_left",
-    label: "She Thought They'd Left",
-    sub: "She came out of sleep to check. They were still there. That was the whole thing.",
-    room: "still_here",
+    id: "almost_asleep",
+    label: "Almost Asleep",
+    sub: "The halfway place. Not quite gone, not quite here. Someone stays close through all of it.",
+    room: "the_hour_before",
     gradient: "from-[#14000a] via-[#200012] to-[#0c0006]",
     accent: "#db2777",
     tags: ["The quiet kind of wanted", "Rest that comes from connection"],
@@ -228,8 +228,8 @@ const SCENARIOS: DriftScenario[] = [
   {
     id: "morning_before_morning",
     label: "Morning Before It's Morning",
-    sub: "Not quite night, not yet day. Warm and quiet and theirs.",
-    room: "still_here",
+    sub: "Not quite night, not yet day. Warm and quiet and entirely theirs.",
+    room: "the_hour_before",
     gradient: "from-[#160008] via-[#220010] to-[#0e0006]",
     accent: "#f472b6",
     tags: ["Warmth with nowhere to go", "Slow enough to drift"],
@@ -237,8 +237,8 @@ const SCENARIOS: DriftScenario[] = [
   {
     id: "dont_go_yet",
     label: "Don't Go Yet",
-    sub: "She said it quietly. They put down the thing they were about to do and stayed.",
-    room: "still_here",
+    sub: "Said quietly. The thing being reached for was put down. They stayed.",
+    room: "the_hour_before",
     gradient: "from-[#12000a] via-[#1e0012] to-[#0a0006]",
     accent: "#ec4899",
     tags: ["The quiet kind of wanted", "Company without performance"],

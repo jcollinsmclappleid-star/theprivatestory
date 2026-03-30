@@ -3,13 +3,14 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Zap, Moon,
   EyeOff, WifiOff, Trash2, Lock, Shield, BookOpen, Star,
-  ChevronLeft, Globe, Library, Shuffle,
+  ChevronLeft, Globe, Library, Shuffle, Check, PenLine,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
 import { useAuth } from "@/hooks/useAuth";
+import { useSEO } from "@/hooks/useSEO";
 import type { Story } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -802,6 +803,11 @@ export default function Home() {
   const [, navigate] = useLocation();
   const [quickCreateLoading, setQuickCreateLoading] = useState(false);
 
+  useSEO({
+    title: "The Private Story — Personalised AI Audio Stories",
+    description: "AI-written romantic and intimate audio stories, created around your choices and private to you alone. You choose the cast, the chemistry, the world. We write it, narrate it, and keep it entirely yours.",
+  });
+
   const handleQuickCreate = useCallback(async () => {
     setQuickCreateLoading(true);
     try {
@@ -958,6 +964,80 @@ export default function Home() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
+        {/* How it works                                                      */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-12">
+            <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
+              How it works
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+              Three steps. One story.<br className="hidden md:block" />
+              <span className="text-muted-foreground font-normal"> Entirely yours.</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            {/* Connector line — desktop only */}
+            <div className="hidden md:block absolute top-10 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
+
+            {[
+              {
+                step: "01",
+                icon: <Globe className="w-5 h-5" />,
+                accent: "#c9a227",
+                heading: "Cast your world",
+                body: "Choose who's in your story, the chemistry between you, where it happens, the mood, and how far it goes. Every detail is yours — from archetype to city to era.",
+              },
+              {
+                step: "02",
+                icon: <PenLine className="w-5 h-5" />,
+                accent: "#e879a0",
+                heading: "We write it",
+                body: "A literary, original story is created around your exact choices — then narrated in the voice that fits tonight, with original cover art generated just for it.",
+              },
+              {
+                step: "03",
+                icon: <Headphones className="w-5 h-5" />,
+                accent: "#a78bfa",
+                heading: "Listen in private",
+                body: "Your story lives in your private library — visible only to you. No feeds, no history, no trace. Press play whenever you're ready. Delete it at any time.",
+              },
+            ].map((item) => (
+              <div
+                key={item.step}
+                className="relative rounded-2xl border border-border/20 bg-card/20 p-8 hover:border-primary/20 hover:bg-primary/4 transition-all"
+              >
+                <div
+                  className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+                  style={{ background: `${item.accent}12` }}
+                />
+                <div className="flex items-start gap-4 mb-4 relative z-10">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border"
+                    style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="text-[11px] font-bold tracking-[0.2em] text-muted-foreground/30 pt-3 uppercase">{item.step}</span>
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2 relative z-10">{item.heading}</h3>
+                <p className="text-sm text-muted-foreground/65 leading-relaxed relative z-10">{item.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
+            >
+              <Sparkles className="w-4 h-4" />
+              Begin your story
+            </Link>
+            <p className="text-xs text-muted-foreground/35 mt-3">60 seconds to begin. Private from the first moment.</p>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
         {/* CastingRoom preview                                               */}
         {/* ---------------------------------------------------------------- */}
         <CastingPreview />
@@ -1044,6 +1124,90 @@ export default function Home() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Pricing teaser                                                    */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="rounded-3xl border border-border/25 bg-card/20 p-8 md:p-12">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
+              <div className="flex-1">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Access</p>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
+                  Private stories, on a subscription<br className="hidden md:block" /> that fits how often you listen.
+                </h2>
+              </div>
+              <Link
+                href="/pricing"
+                className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-all whitespace-nowrap"
+              >
+                See all plan details
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              {/* Monthly */}
+              <div className="rounded-2xl border border-border/25 bg-background/30 p-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Monthly</p>
+                <div className="flex items-end gap-1.5 mb-1">
+                  <span className="font-display text-3xl font-bold text-foreground">£29</span>
+                  <span className="text-muted-foreground/50 text-sm mb-0.5">/ month</span>
+                </div>
+                <p className="text-xs text-muted-foreground/40 mb-4">Cancel any time.</p>
+                <div className="space-y-2">
+                  {["5 personalised stories / month", "Full curated collection", "Monthly new releases", "ElevenLabs narration"].map((f) => (
+                    <div key={f} className="flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
+                      <span className="text-xs text-muted-foreground/70 leading-snug">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Annual */}
+              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)]">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+                <div className="flex items-center gap-2 mb-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Annual</p>
+                  <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">Best value</span>
+                </div>
+                <div className="flex items-end gap-1.5 mb-1">
+                  <span className="font-display text-3xl font-bold text-foreground">£179</span>
+                  <span className="text-muted-foreground/50 text-sm mb-0.5">/ year</span>
+                </div>
+                <p className="text-xs text-muted-foreground/40 mb-4">£14.91/month — less than half monthly price.</p>
+                <div className="space-y-2">
+                  {["50 personalised stories / year", "Full curated collection", "Monthly new releases", "ElevenLabs narration"].map((f) => (
+                    <div key={f} className="flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-xs text-foreground/80 leading-snug">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Add-on */}
+              <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Additional stories</p>
+                  <div className="flex items-end gap-1.5 mb-1">
+                    <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
+                    <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground/50 leading-relaxed mt-3">
+                    Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground/35 text-center">
+              Every plan includes: private library · original cover art · ElevenLabs narration · full curated collection ·{" "}
+              <Link href="/pricing" className="text-primary/50 hover:text-primary transition-colors">full plan details →</Link>
+            </p>
           </div>
         </section>
 

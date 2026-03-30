@@ -53,6 +53,7 @@ import AudioStoriesForWomen from "@/pages/seo/AudioStoriesForWomen";
 import AudioStoriesVsAudiobooks from "@/pages/seo/AudioStoriesVsAudiobooks";
 import AudioStoriesVsPodcasts from "@/pages/seo/AudioStoriesVsPodcasts";
 import BestAudioStoryAppForAdults from "@/pages/seo/BestAudioStoryAppForAdults";
+import AlternativesToRomanceAudiobooks from "@/pages/seo/AlternativesToRomanceAudiobooks";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,7 @@ function Router() {
             <Route path="/audio-stories-vs-audiobooks" component={AudioStoriesVsAudiobooks} />
             <Route path="/audio-stories-vs-podcasts" component={AudioStoriesVsPodcasts} />
             <Route path="/best-audio-story-app-for-adults" component={BestAudioStoryAppForAdults} />
+            <Route path="/alternatives-to-romance-audiobooks" component={AlternativesToRomanceAudiobooks} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

@@ -9,6 +9,7 @@ import { AuthModal } from "@/components/AuthModal";
 
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
+import About from "@/pages/About";
 import Browse from "@/pages/Browse";
 import Search from "@/pages/Search";
 import StoryDetail from "@/pages/StoryDetail";
@@ -62,6 +63,7 @@ function Router() {
         <Layout>
           <Switch>
             <Route path="/" component={Home} />
+            <Route path="/about" component={About} />
             <Route path="/browse" component={Browse} />
             <Route path="/search" component={Search} />
             <Route path="/story/:id" component={StoryDetail} />

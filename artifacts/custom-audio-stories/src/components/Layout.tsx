@@ -355,6 +355,7 @@ function Footer() {
   const footerLinks = [
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
+    { label: "About", href: "/about" },
     { label: "After Dark", href: "/after-dark" },
     { label: "Drift", href: "/drift" },
     { label: "My Library", href: "/library" },

@@ -860,17 +860,32 @@ export default function Home() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="max-w-2xl"
           >
+            {/* Format signal */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
+                <Headphones className="w-3.5 h-3.5 text-primary/70" />
+                <span className="text-[11px] font-semibold text-primary/70 uppercase tracking-widest">Personalised audio story</span>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground/35 tracking-wide">
+                <span>AI-written</span>
+                <span>·</span>
+                <span>Narrated</span>
+                <span>·</span>
+                <span>Private</span>
+              </div>
+            </div>
+
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              Written for the parts of you nobody else gets to know
+              Narrated for the parts of you nobody else gets to know
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
-              A story written<br className="hidden md:block" /> entirely{" "}
+              A story narrated<br className="hidden md:block" /> entirely{" "}
               <span className="text-primary">for you.</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              Tell us who you want in it, where it happens, the tension between you, and how far it goes. We write it, narrate it, and keep it private — yours to listen to wherever you are.
+              Tell us who you want in it, where it happens, the tension between you, and how far it goes. We write it, narrate it in a voice that fits, and keep it private — yours to listen to wherever you are.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">
@@ -904,10 +919,39 @@ export default function Home() {
                   ) : (
                     <Zap className="w-3 h-3" />
                   )}
-                  Write one for me based on my taste
+                  Narrate one for me based on my taste
                 </button>
               </div>
             )}
+
+            {/* Customisation preview chips */}
+            <div className="mb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/35 mb-2.5">
+                You choose every detail —
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "Forbidden lover", color: "border-[#e879a0]/25 text-[#e879a0]/60 bg-[#e879a0]/5" },
+                  { label: "Victorian London", color: "border-primary/20 text-primary/55 bg-primary/5" },
+                  { label: "Slow burn", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
+                  { label: "Explicit", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
+                  { label: "Dominant archetype", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
+                  { label: "His name: James", color: "border-primary/20 text-primary/55 bg-primary/5" },
+                  { label: "Her name: Sofia", color: "border-primary/20 text-primary/55 bg-primary/5" },
+                  { label: "Mediterranean villa", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
+                ].map((chip) => (
+                  <span
+                    key={chip.label}
+                    className={`inline-block px-2.5 py-1 rounded-full border text-[11px] font-medium ${chip.color}`}
+                  >
+                    {chip.label}
+                  </span>
+                ))}
+                <span className="inline-block px-2.5 py-1 rounded-full border border-border/20 text-[11px] text-muted-foreground/30">
+                  + 200 more…
+                </span>
+              </div>
+            </div>
 
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground/60 leading-relaxed max-w-sm">

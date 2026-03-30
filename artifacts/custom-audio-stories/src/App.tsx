@@ -68,7 +68,6 @@ function Router() {
       <Route path="/admin/moderation" component={AdminModeration} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route>
-        <ScrollToTop />
         <Layout>
           <Switch>
             <Route path="/" component={Home} />
@@ -130,6 +129,7 @@ function App() {
         <TooltipProvider>
           <AudioProvider>
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <ScrollToTop />
               <AuthModal />
               <TermsGate />
               <Router />

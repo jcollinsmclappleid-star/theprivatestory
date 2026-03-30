@@ -1058,16 +1058,16 @@ export default function Home() {
           {/* Product mockup */}
           <div className="max-w-3xl mx-auto">
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.8)]"
-              style={{ background: "linear-gradient(160deg, #0e0a14 0%, #100812 50%, #0a0e18 100%)" }}>
+              style={{ background: "linear-gradient(160deg, #0f0d0a 0%, #120e0b 50%, #0e0c09 100%)" }}>
 
               {/* Cover art area */}
               <div className="relative h-56 md:h-72 overflow-hidden">
                 <div className="absolute inset-0" style={{
-                  background: "linear-gradient(135deg, #1a0810 0%, #0e0c1a 30%, #060e1a 60%, #0a0814 100%)"
+                  background: "linear-gradient(135deg, #1a0f08 0%, #130e0b 30%, #0d0c09 60%, #100e0a 100%)"
                 }} />
                 {/* Atmospheric overlays */}
                 <div className="absolute inset-0" style={{
-                  background: "radial-gradient(ellipse at 25% 35%, #c9a22722 0%, transparent 55%), radial-gradient(ellipse at 75% 65%, #6b8cce1a 0%, transparent 50%), radial-gradient(ellipse at 60% 20%, #e879a014 0%, transparent 45%)"
+                  background: "radial-gradient(ellipse at 25% 35%, #c9a22726 0%, transparent 55%), radial-gradient(ellipse at 75% 65%, #a0784014 0%, transparent 50%), radial-gradient(ellipse at 60% 20%, #e879a014 0%, transparent 45%)"
                 }} />
                 {/* Grain texture */}
                 <div className="absolute inset-0 opacity-[0.04]" style={{
@@ -1075,7 +1075,7 @@ export default function Home() {
                   backgroundSize: "128px 128px",
                 }} />
                 {/* Bottom gradient fade */}
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0e0a14] to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#120e0b] to-transparent" />
                 {/* Top chrome */}
                 <div className="absolute top-4 left-5 right-5 flex items-center justify-between z-10">
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Heated</span>

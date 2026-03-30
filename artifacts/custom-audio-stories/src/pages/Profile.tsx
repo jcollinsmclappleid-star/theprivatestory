@@ -744,6 +744,23 @@ export default function Profile() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
+      {/* Subscription management */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="border border-border/30 rounded-2xl p-5 mt-2">
+        <h3 className="font-display font-semibold text-sm text-foreground mb-1">Subscription</h3>
+        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+          To cancel or modify your subscription, email us and we'll handle it within one business day.
+          You keep access until the end of your current billing period.
+        </p>
+        <a
+          href="mailto:support@theprivatestory.com?subject=Cancel%20Subscription&body=Hi%2C%20I%27d%20like%20to%20cancel%20my%20subscription.%20My%20account%20email%20is%3A%20"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+        >
+          Email support@theprivatestory.com
+        </a>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
       {/* Danger zone — account deletion (GDPR Art.17 right to erasure) */}
       {/* ------------------------------------------------------------------ */}
       <div className="border border-destructive/20 rounded-2xl p-5 mt-4">

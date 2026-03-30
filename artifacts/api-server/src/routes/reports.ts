@@ -1,102 +1,124 @@
 import { Router } from "express";
-import { db, userReports } from "@workspace/db";
-import { sendEmail, SAFETY_EMAIL } from "../lib/email.js";
+import { db, storyReports, generatedStories } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import { alertUserReport } from "../lib/adminNotify.js";
+import { logger } from "../lib/logger.js";
 
 const router = Router();
 
-const ALLOWED_CATEGORIES = [
-  "csam",
-  "non-consent",
-  "real-person",
-  "bestiality",
-  "harassment",
-  "other",
+export const REPORT_REASON_CATEGORIES = [
+  "Inappropriate content",
+  "Content felt non-consensual or uncomfortable",
+  "Story did not match the intended tone",
+  "Other",
 ] as const;
 
+export type ReportReasonCategory = (typeof REPORT_REASON_CATEGORIES)[number];
+
 /**
- * POST /api/reports
+ * POST /api/story-report
  *
- * Frictionless user report endpoint. Anonymous or authenticated users can
- * report any story. Stores to the dedicated user_reports table and fires an
- * email to the safety team.
+ * Authenticated users report a story from their library. Stores a full record
+ * to story_reports with the story's input snapshot and a brief output excerpt
+ * for admin review. Fires an email alert to the support inbox.
  *
- * Body: { category, notes?, storyId?, generationSessionId? }
+ * Body: { storyId, reasonCategory, reason, note? }
  */
-router.post("/reports", async (req, res) => {
-  const { category, notes, storyId, generationSessionId } = req.body as {
-    category?: string;
-    notes?: string;
+router.post("/story-report", async (req, res) => {
+  if (!req.isAuthenticated() || !req.user?.id) {
+    res.status(401).json({ error: "Authentication required." });
+    return;
+  }
+
+  const { storyId, reasonCategory, reason, note } = req.body as {
     storyId?: string;
-    generationSessionId?: string;
+    reasonCategory?: string;
+    reason?: string;
+    note?: string;
   };
 
-  if (!category || !ALLOWED_CATEGORIES.includes(category as (typeof ALLOWED_CATEGORIES)[number])) {
+  if (!storyId || !reasonCategory || !reason) {
+    res.status(400).json({ error: "storyId, reasonCategory and reason are required." });
+    return;
+  }
+
+  if (!REPORT_REASON_CATEGORIES.includes(reasonCategory as ReportReasonCategory)) {
     res.status(400).json({
-      error: "invalid category",
-      allowed: ALLOWED_CATEGORIES,
+      error: "Invalid reason category.",
+      allowed: REPORT_REASON_CATEGORIES,
     });
     return;
   }
 
-  const user = req.user as { id?: string; email?: string } | undefined;
-  const userId = user?.id ?? null;
-  const ip =
-    (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim() ??
-    req.socket?.remoteAddress ??
-    null;
+  const userId = req.user.id;
 
   try {
+    // Fetch the story for metadata + input snapshot
+    const [story] = await db
+      .select({
+        id: generatedStories.id,
+        title: generatedStories.title,
+        description: generatedStories.description,
+        brief: generatedStories.brief,
+        castingData: generatedStories.castingData,
+      })
+      .from(generatedStories)
+      .where(eq(generatedStories.id, storyId))
+      .limit(1);
+
+    const storyTitle = story?.title ?? null;
+    const inputSnapshot = story ? { brief: story.brief, castingData: story.castingData } : null;
+    const outputExcerpt = story?.description ? String(story.description).slice(0, 500) : null;
+
     const [record] = await db
-      .insert(userReports)
+      .insert(storyReports)
       .values({
         userId,
-        storyId: storyId ?? null,
-        generationSessionId: generationSessionId ?? null,
-        category,
-        notes: notes?.trim().slice(0, 500) ?? null,
-        ipAddress: ip,
+        storyId,
+        storyTitle,
+        reason,
+        reasonCategory,
+        note: note?.trim().slice(0, 800) ?? null,
+        inputSnapshot,
+        outputExcerpt,
+        status: "pending",
       })
-      .returning({ id: userReports.id });
+      .returning();
 
-    console.log(
-      `[reports] Filed: id=${record.id} category=${category} storyId=${storyId ?? "n/a"} user=${userId ?? "anon"}`,
+    logger.info(
+      { reportId: record.id, storyId, userId, reasonCategory },
+      "[reports] Story report submitted",
     );
 
-    const bodyLines = [
-      `A safety report has been submitted on The Private Story.`,
-      ``,
-      `Report ID: ${record.id}`,
-      `Category: ${category}`,
-      storyId ? `Story ID: ${storyId}` : null,
-      generationSessionId ? `Generation session: ${generationSessionId}` : null,
-      `User: ${userId ?? "anonymous"}`,
-      `IP: ${ip ?? "unknown"}`,
-      ``,
-      notes?.trim() ? `Notes: ${notes.trim()}` : null,
-      ``,
-      `Review in admin: /admin (Moderation tab)`,
-    ]
-      .filter((l) => l !== null)
-      .join("\n");
-
-    await sendEmail({
-      to: SAFETY_EMAIL,
-      subject: `[Safety Report] ${category} — Report #${record.id}`,
-      text: bodyLines,
+    alertUserReport({
+      reportId: record.id,
+      userId,
+      storyId,
+      storyTitle,
+      reasonCategory,
+      reason,
+      note: note ?? null,
+      createdAt: record.createdAt,
     });
 
     res.json({
       ok: true,
-      message:
-        "Thank you. Your report has been received and our safety team will review it within 24 hours. Reports are anonymous.",
-      reportId: record.id,
+      message: "Thank you. Your report has been received and will be reviewed.",
     });
   } catch (err) {
-    console.error("[reports] DB error", err);
-    res.status(500).json({
-      error: "Failed to submit report. Please contact " + SAFETY_EMAIL,
-    });
+    logger.error({ err, storyId, userId }, "[reports] Failed to save story report");
+    res.status(500).json({ error: "Failed to submit report. Please try again." });
   }
+});
+
+/**
+ * Legacy POST /api/reports — kept for backward compatibility (old user_reports table).
+ * New story reports go to /api/story-report.
+ */
+router.post("/reports", async (req, res) => {
+  res.status(410).json({
+    error: "This endpoint has been superseded. Please use POST /api/story-report.",
+  });
 });
 
 export default router;

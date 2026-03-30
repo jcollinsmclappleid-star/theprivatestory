@@ -10,21 +10,19 @@ import { AuthModal } from "@/components/AuthModal";
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
 import Browse from "@/pages/Browse";
-import SeriesList from "@/pages/SeriesList";
-import SeriesDetail from "@/pages/SeriesDetail";
 import Search from "@/pages/Search";
 import StoryDetail from "@/pages/StoryDetail";
 import Create from "@/pages/Create";
 import Gift from "@/pages/Gift";
 import Library from "@/pages/Library";
 import Admin from "@/pages/Admin";
+import AdminModeration from "@/pages/AdminModeration";
 import AfterDark from "@/pages/AfterDark";
 import Profile from "@/pages/Profile";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import ContentPolicy from "@/pages/ContentPolicy";
 import NotFound from "@/pages/not-found";
-import MySeriesDetailPage from "@/pages/MySeriesDetail";
 import ResetPassword from "@/pages/ResetPassword";
 import Contact from "@/pages/Contact";
 import Pricing from "@/pages/Pricing";
@@ -49,32 +47,25 @@ import EnemiesToLoversAudioStories from "@/pages/seo/EnemiesToLoversAudioStories
 import AdultAudioStories from "@/pages/seo/AdultAudioStories";
 import AudioStoriesForWomen from "@/pages/seo/AudioStoriesForWomen";
 
-function MySeriesDetailRoute() {
-  const { id } = useParams<{ id: string }>();
-  return <MySeriesDetailPage seriesId={id ?? ""} />;
-}
-
 const queryClient = new QueryClient();
 
 function Router() {
   return (
     <Switch>
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/moderation" component={AdminModeration} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route>
         <Layout>
           <Switch>
             <Route path="/" component={Home} />
             <Route path="/browse" component={Browse} />
-            <Route path="/series" component={SeriesList} />
-            <Route path="/series/:id" component={SeriesDetail} />
             <Route path="/search" component={Search} />
             <Route path="/story/:id" component={StoryDetail} />
             <Route path="/create" component={Create} />
             <Route path="/gift" component={Gift} />
             <Route path="/library" component={Library} />
             <Route path="/after-dark" component={AfterDark} />
-            <Route path="/my-series/:id" component={MySeriesDetailRoute} />
             <Route path="/me" component={Profile} />
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />

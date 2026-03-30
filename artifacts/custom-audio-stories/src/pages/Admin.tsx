@@ -740,6 +740,12 @@ export default function Admin() {
               >
                 Moderation
               </button>
+              <a
+                href="/admin/moderation"
+                className="text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 text-white/50 hover:text-white bg-orange-500/10 border border-orange-500/20"
+              >
+                Reports
+              </a>
               <button
                 onClick={() => setActiveView("security")}
                 className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "security" ? "bg-emerald-500/30 text-emerald-300" : "text-white/50 hover:text-white"}`}

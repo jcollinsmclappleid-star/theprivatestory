@@ -6,11 +6,12 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, seriesStore } from "../lib/storage.js";
+import { logger } from "../lib/logger.js";
 import { db } from "@workspace/db";
-import { generatedStories, contentBlocks, csamReports, userReports, usersTable, adminAuditLog } from "@workspace/db/schema";
-import { eq, like, asc, and, sql, isNull, desc, lt } from "drizzle-orm";
+import { generatedStories, contentBlocks, csamReports, userReports, usersTable, adminAuditLog, storyReports, moderationEvents } from "@workspace/db/schema";
+import { eq, like, asc, and, sql, isNull, desc, lt, or, ilike } from "drizzle-orm";
 import { writeAuditLog } from "../lib/auditLog.js";
-import { notifyAdmin } from "../lib/adminNotify.js";
+import { notifyAdmin, alertModerationEvent } from "../lib/adminNotify.js";
 import { isAdmin, requireAdmin, requireAdminIdentity } from "../middlewares/requireAdmin.js";
 import { buildPrompt, buildSeriesLayer, type StoryRegistryEntry } from "../lib/buildPrompt.js";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
@@ -1712,6 +1713,308 @@ router.get("/audit-log", async (req, res) => {
     res.json({ entries: rows });
   } catch {
     res.status(500).json({ error: "Failed to load audit log" });
+  }
+});
+
+// ===========================================================================
+// MODERATION SYSTEM — Story Reports + Moderation Events + User Bans
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// GET /admin/story-reports — list all user-submitted story reports
+// ---------------------------------------------------------------------------
+router.get("/story-reports", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  try {
+    const { status, limit = "100", offset = "0" } = req.query as Record<string, string>;
+    const rows = await db
+      .select()
+      .from(storyReports)
+      .where(status ? eq(storyReports.status, status) : undefined)
+      .orderBy(desc(storyReports.createdAt))
+      .limit(Math.min(parseInt(limit, 10) || 100, 500))
+      .offset(parseInt(offset, 10) || 0);
+    res.json({ reports: rows, count: rows.length });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to fetch story reports");
+    res.status(500).json({ error: "Failed to fetch story reports" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/story-reports/:id — single report with full detail
+// ---------------------------------------------------------------------------
+router.get("/story-reports/:id", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+  try {
+    const [report] = await db
+      .select()
+      .from(storyReports)
+      .where(eq(storyReports.id, id))
+      .limit(1);
+    if (!report) { res.status(404).json({ error: "Not found" }); return; }
+
+    // Fetch linked moderation events
+    const events = report.storyId
+      ? await db
+          .select()
+          .from(moderationEvents)
+          .where(eq(moderationEvents.storyId, report.storyId))
+          .orderBy(desc(moderationEvents.createdAt))
+          .limit(20)
+      : [];
+
+    res.json({ report, events });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to fetch story report");
+    res.status(500).json({ error: "Failed to fetch report" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// PATCH /admin/story-reports/:id — update status / admin notes / action taken
+// ---------------------------------------------------------------------------
+const VALID_STATUSES = ["pending", "reviewed", "action_taken", "closed"] as const;
+const VALID_ACTIONS = [
+  "No issue found",
+  "Story removed",
+  "Story regenerated",
+  "User warned",
+  "User restricted",
+  "Closed with no further action",
+] as const;
+
+router.patch("/story-reports/:id", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+
+  const { status, adminNotes, actionTaken } = req.body as {
+    status?: string;
+    adminNotes?: string;
+    actionTaken?: string;
+  };
+
+  if (status && !VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])) {
+    res.status(400).json({ error: "Invalid status", allowed: VALID_STATUSES });
+    return;
+  }
+  if (actionTaken && !VALID_ACTIONS.includes(actionTaken as (typeof VALID_ACTIONS)[number])) {
+    res.status(400).json({ error: "Invalid action", allowed: VALID_ACTIONS });
+    return;
+  }
+
+  try {
+    const adminUser = req.user as { id?: string; email?: string } | undefined;
+    const updates: Partial<typeof storyReports.$inferInsert> = {
+      updatedAt: new Date(),
+    };
+    if (status) updates.status = status;
+    if (adminNotes !== undefined) updates.adminNotes = adminNotes.slice(0, 2000);
+    if (actionTaken) updates.actionTaken = actionTaken;
+    if (status && status !== "pending") {
+      updates.reviewedBy = adminUser?.email ?? adminUser?.id ?? "admin";
+      updates.reviewedAt = new Date();
+    }
+
+    const [updated] = await db
+      .update(storyReports)
+      .set(updates)
+      .where(eq(storyReports.id, id))
+      .returning();
+
+    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ ok: true, report: updated });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to update story report");
+    res.status(500).json({ error: "Failed to update report" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/moderation-events — filterable log of auto-moderation events
+// ---------------------------------------------------------------------------
+router.get("/moderation-events", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  try {
+    const {
+      severity,
+      eventType,
+      userId,
+      storyId,
+      limit = "100",
+      offset = "0",
+    } = req.query as Record<string, string>;
+
+    const filters = [];
+    if (severity) filters.push(eq(moderationEvents.severity, severity));
+    if (eventType) filters.push(eq(moderationEvents.eventType, eventType));
+    if (userId) filters.push(eq(moderationEvents.userId, userId));
+    if (storyId) filters.push(eq(moderationEvents.storyId, storyId));
+
+    const rows = await db
+      .select()
+      .from(moderationEvents)
+      .where(filters.length > 0 ? and(...filters) : undefined)
+      .orderBy(desc(moderationEvents.createdAt))
+      .limit(Math.min(parseInt(limit, 10) || 100, 500))
+      .offset(parseInt(offset, 10) || 0);
+
+    res.json({ events: rows, count: rows.length });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to fetch moderation events");
+    res.status(500).json({ error: "Failed to fetch moderation events" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/moderation-events/:id — single moderation event with full detail
+// ---------------------------------------------------------------------------
+router.get("/moderation-events/:id", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+  try {
+    const [event] = await db
+      .select()
+      .from(moderationEvents)
+      .where(eq(moderationEvents.id, id))
+      .limit(1);
+    if (!event) { res.status(404).json({ error: "Not found" }); return; }
+
+    // Fetch linked story report if any
+    const linkedReport = event.linkedReportId
+      ? await db
+          .select()
+          .from(storyReports)
+          .where(eq(storyReports.id, event.linkedReportId))
+          .limit(1)
+      : [];
+
+    res.json({ event, linkedReport: linkedReport[0] ?? null });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to fetch moderation event");
+    res.status(500).json({ error: "Failed to fetch moderation event" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/users/:userId/moderation-profile — user risk / block summary
+// ---------------------------------------------------------------------------
+router.get("/users/:userId/moderation-profile", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { userId } = req.params;
+  try {
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        name: usersTable.name,
+        isBanned: usersTable.isBanned,
+        bannedAt: usersTable.bannedAt,
+        bannedReason: usersTable.bannedReason,
+        blockedGenerationCount: usersTable.blockedGenerationCount,
+        riskScore: usersTable.riskScore,
+        createdAt: usersTable.createdAt,
+        deletedAt: usersTable.deletedAt,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+
+    if (!user) { res.status(404).json({ error: "User not found" }); return; }
+
+    const reports = await db
+      .select({ id: storyReports.id, reasonCategory: storyReports.reasonCategory, status: storyReports.status, createdAt: storyReports.createdAt })
+      .from(storyReports)
+      .where(eq(storyReports.userId, userId))
+      .orderBy(desc(storyReports.createdAt))
+      .limit(20);
+
+    const recentEvents = await db
+      .select({ id: moderationEvents.id, eventType: moderationEvents.eventType, severity: moderationEvents.severity, reason: moderationEvents.reason, createdAt: moderationEvents.createdAt })
+      .from(moderationEvents)
+      .where(eq(moderationEvents.userId, userId))
+      .orderBy(desc(moderationEvents.createdAt))
+      .limit(20);
+
+    res.json({ user, reports, recentEvents });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to fetch user moderation profile");
+    res.status(500).json({ error: "Failed to fetch user profile" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/users/:userId/ban — ban a user (remove access)
+// ---------------------------------------------------------------------------
+router.post("/users/:userId/ban", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { userId } = req.params;
+  const { reason } = req.body as { reason?: string };
+
+  if (!reason?.trim()) {
+    res.status(400).json({ error: "A reason is required to ban a user." });
+    return;
+  }
+
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+
+  try {
+    const [updated] = await db
+      .update(usersTable)
+      .set({
+        isBanned: true,
+        bannedAt: new Date(),
+        bannedReason: reason.trim().slice(0, 500),
+        bannedByAdminId: adminUser?.id ?? adminUser?.email ?? "admin",
+      })
+      .where(eq(usersTable.id, userId))
+      .returning({ id: usersTable.id, email: usersTable.email });
+
+    if (!updated) { res.status(404).json({ error: "User not found" }); return; }
+
+    writeAuditLog(adminUser?.id, adminUser?.email, "risk_score_change", "user", userId, {
+      action: "ban",
+      reason: reason.trim(),
+    });
+
+    logger.warn({ userId, adminId: adminUser?.id, reason }, "[admin] User banned");
+    res.json({ ok: true, userId, banned: true });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to ban user");
+    res.status(500).json({ error: "Failed to ban user" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/users/:userId/unban — restore a banned user's access
+// ---------------------------------------------------------------------------
+router.post("/users/:userId/unban", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { userId } = req.params;
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+
+  try {
+    const [updated] = await db
+      .update(usersTable)
+      .set({ isBanned: false, bannedAt: null, bannedReason: null, bannedByAdminId: null })
+      .where(eq(usersTable.id, userId))
+      .returning({ id: usersTable.id, email: usersTable.email });
+
+    if (!updated) { res.status(404).json({ error: "User not found" }); return; }
+
+    writeAuditLog(adminUser?.id, adminUser?.email, "risk_score_change", "user", userId, {
+      action: "unban",
+    });
+
+    logger.info({ userId, adminId: adminUser?.id }, "[admin] User unbanned");
+    res.json({ ok: true, userId, banned: false });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to unban user");
+    res.status(500).json({ error: "Failed to unban user" });
   }
 });
 

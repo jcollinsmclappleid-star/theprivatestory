@@ -18,6 +18,7 @@ import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
 import { sql as drizzleSql } from "drizzle-orm";
+import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -667,12 +668,11 @@ export function buildCoverPromptFromCasting(intake: GenerateStoryRequest): strin
   const heritageKey = intake.heritage?.trim() ?? "";
   const heritageLabel = HERITAGE_VISUAL[heritageKey];
 
-  // When no heritage selected, hint at global diversity rather than defaulting to European features.
-  // The city/country context from casting gives additional visual grounding.
-  const cityHint = intake.city ? ` in ${intake.city}` : "";
   const subjectDesc = heritageLabel
     ? `a ${heritageLabel} ${loveInterestNoun}`
-    : `a ${loveInterestNoun} with distinctly non-European features, rich warm skin tone${cityHint}`;
+    : heritageKey === "Ambiguous"
+    ? `a ${loveInterestNoun}`
+    : `a European ${loveInterestNoun}`;
 
   // --- partnerAppearance → build and colouring descriptors (whitelist only) ---
   // Parse the structured "Build: X, Colouring: Y" string emitted by CastingRoom.
@@ -2647,9 +2647,14 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
+  const userId = String(req.user!.id);
+  if (await isUserBanned(userId)) {
+    res.status(403).json({ error: "Your account has been suspended. Please contact support@theprivatestory.com if you believe this is an error." });
+    return;
+  }
+
   // Normalise first — validates allowlists and constructs scenarioPrompt server-side
   const body = normaliseIntake(req.body as GenerateStoryRequest);
-
 
   const hasCustomInput = !!(body.whoIsHe || body.setting || body.dynamic || body.scenarioCard);
   const riskError = checkRiskThreshold(req, hasCustomInput);
@@ -2856,6 +2861,11 @@ router.post("/generate-images", async (req, res) => {
 router.post("/generate-full-story", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
+  if (await isUserBanned(String(req.user!.id))) {
+    res.status(403).json({ error: "Your account has been suspended. Please contact support@theprivatestory.com if you believe this is an error." });
     return;
   }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 const ReportModal = lazy(() => import("./ReportModal").then((m) => ({ default: m.ReportModal })));
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, Library, BookOpen, Settings, Moon } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -114,7 +114,6 @@ function Navbar({ streakDays }: { streakDays: number }) {
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
-    { label: "Series", href: "/series", icon: <Library className="w-4 h-4" /> },
     { label: "My Library", href: isAuthenticated ? "/me" : "/library", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
@@ -339,7 +338,6 @@ function Footer() {
   const footerLinks = [
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
-    { label: "Series", href: "/series" },
     { label: "After Dark", href: "/after-dark" },
     { label: "My Library", href: "/library" },
     { label: "Gift a Story", href: "/gift" },

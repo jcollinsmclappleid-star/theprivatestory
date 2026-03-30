@@ -38,6 +38,12 @@ export const usersTable = pgTable("users", {
   // These are read by generation endpoints and never accepted from request bodies.
   approvedListenerName: varchar("approved_listener_name", { length: 20 }),
   approvedPartnerName: varchar("approved_partner_name", { length: 20 }),
+  // Moderation / trust-and-safety
+  isBanned: boolean("is_banned").notNull().default(false),
+  bannedAt: timestamp("banned_at", { withTimezone: true }),
+  bannedReason: text("banned_reason"),
+  bannedByAdminId: varchar("banned_by_admin_id"),
+  blockedGenerationCount: integer("blocked_generation_count").notNull().default(0),
 });
 
 // better-auth sessions

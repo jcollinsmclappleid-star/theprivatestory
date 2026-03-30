@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon } from "lucide-react";
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
-import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory } from "../data/situations";
+import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your" | "their";
@@ -850,8 +850,19 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
   const { partner: partnerP, protagonist: protagonistP } = derivePronouns(data.pairing);
   const activePairing = PAIRINGS.find(p => p.id === data.pairing);
+
   const rawPartnerPronouns     = activePairing?.partnerPronouns     ?? "he/him";
   const rawProtagonistPronouns = activePairing?.protagonistPronouns ?? "she/her";
+
+  // Helper: return the interpolated situation label for display, given current pairing pronouns.
+  const interpSit = (sit: { id: string; label: string; template: string; category: string }) =>
+    interpolateSituation(sit, rawProtagonistPronouns, rawPartnerPronouns);
+  // The currently-selected situation's display label (pronoun-substituted for the active pairing).
+  const displayedSitLabel = (() => {
+    if (!situationId) return situationLabel;
+    const found = SITUATIONS.find(s => s.id === situationId);
+    return found ? interpSit(found) : situationLabel;
+  })();
   const partnerHeadingVerb = partnerP.subject === "They" ? "Who are they?" : `Who is ${partnerP.object}?`;
 
   // Appearance step always describes the love interest from the active perspective's viewpoint.
@@ -1455,7 +1466,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
                       {situationCategory}
                     </p>
-                    <p className="font-semibold text-foreground text-sm leading-snug">{situationLabel}</p>
+                    <p className="font-semibold text-foreground text-sm leading-snug">{displayedSitLabel}</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0 mt-1">
                     <button
@@ -1488,7 +1499,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
                       {situationCategory}
                     </p>
-                    <p className="font-semibold text-foreground text-sm leading-snug">{situationLabel}</p>
+                    <p className="font-semibold text-foreground text-sm leading-snug">{displayedSitLabel}</p>
                   </div>
                   <button
                     type="button"
@@ -1591,7 +1602,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                                   : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
                               }`}
                             >
-                              {sit.label}
+                              {interpSit(sit)}
                             </button>
                           );
                         })}

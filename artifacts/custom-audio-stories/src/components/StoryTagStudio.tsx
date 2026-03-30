@@ -556,18 +556,23 @@ export function StoryTagStudio({
     <div className="space-y-10">
       {/* Global tag counter */}
       {!bedtime && (
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">
-            Choose what shapes your story — the more specific, the better.
+        <div className="rounded-lg border border-white/10 bg-black/20 p-4 mb-2">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm font-semibold text-foreground">
+              Select up to <span style={{ color: accentColor }}>{totalCap} tags</span>
+            </p>
+            <span
+              className={`text-sm tabular-nums font-semibold transition-colors ${
+                globalAtCap ? "font-bold" : "text-muted-foreground"
+              }`}
+              style={globalAtCap ? { color: accentColor } : undefined}
+            >
+              {totalSelected}/{totalCap} selected
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            The more specific your choices, the better we can craft your story. Choose what shapes your experience.
           </p>
-          <span
-            className={`text-xs tabular-nums font-medium transition-colors ${
-              globalAtCap ? "font-semibold" : "text-muted-foreground/50"
-            }`}
-            style={globalAtCap ? { color: accentColor } : undefined}
-          >
-            {totalSelected}/{totalCap}
-          </span>
         </div>
       )}
       {activeCategories.map((cat) => renderCategory(cat, false))}

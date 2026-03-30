@@ -597,47 +597,46 @@ export interface VarietyProfile {
   openingPosition: string;
 }
 
-const VARIETY_STRUCTURE_APPROACHES = [
-  "WORDLESS DELIVERY — every desired element arrives through action only. Nothing is telegraphed by dialogue before it happens. The body enacts; the voice does not announce.",
-  "PROTAGONIST-INITIATED — the protagonist's own desire drives each element. She/he/they ask for, reach toward, or choose each thing. Desire belongs to them first.",
-  "DELAYED ARRIVAL — each desired element is withheld past the scene where it would be expected, arriving later with greater intensity. The wait is architectural, not accidental.",
-  "PARTNER ANNOUNCES THEN DELIVERS — the partner speaks the intent before acting. Anticipation built through explicit statement, then full delivery. Words before action, every time.",
-  "MID-SCENE INTEGRATION — each desired element arrives inside an already-established scene, woven into ongoing action rather than as a separate beat. Nothing stops to announce itself.",
-  "INCREMENTAL ESCALATION — each element approaches in stages: hint first, then a half-step, then full arrival. Three-phase approach to every desired element.",
-];
-
-const VARIETY_TIMING_VARIANTS = [
-  "DISTRIBUTED DELIVERY — desired elements spread evenly across SIMMER, CRACK, and IGNITE. No phase carries all the weight.",
-  "FRONT-WEIGHTED — most elements arrive in SIMMER building toward CRACK. The story's structural weight lives in the build, not the climax.",
-  "BACK-WEIGHTED — elements withheld until late IGNITE. Restraint all the way through, then full delivery at once. The story saves everything for the end.",
-  "SINGULAR PEAK — all desired elements converge in one IGNITE scene. Everything the story has built arrives in a single concentrated beat.",
-  "CASCADING — each element triggers the next, building in sequence. One desire's satisfaction opens the door to the next. Chain reaction structure.",
-];
-
-const VARIETY_PARTNER_EXPRESSIONS = [
-  "VERBAL EXPRESSION — the partner's desire expressed primarily through specific spoken words. What they say, what they name, what they tell the protagonist. Language is the primary vehicle of wanting.",
-  "PHYSICAL PRECISION — desire shown exclusively through deliberate, specific touch. No words announce it. The hands, the body, the deliberate gesture speaks instead of the voice.",
-  "WITHHELD RESTRAINT — desire expressed through what the partner doesn't yet do. The space between wanting and acting. The specific gap between intention and contact.",
-  "INDIRECT ATTENTION — desire shown by how the partner notices specific, particular details about the protagonist. What they fixate on, what they name, what they cannot stop observing.",
-  "OBSESSIVE NARROWING — the partner's attention described as narrowing to a single specific quality about the protagonist. One thing has taken over their thinking entirely.",
-  "INSTRUCTIONAL — desire expressed by directing the protagonist. Commands, requests, instructions that are also expressions of want. Telling is wanting.",
-  "RESPONSIVE — desire expressed entirely by reacting to the protagonist's actions. The partner's responses are the declaration. Their body answers before their words do.",
-];
-
-const VARIETY_INTERIORITY_WEIGHTS = [
-  "SENSATION-FORWARD — the protagonist's body responds before the mind. Physical sensation narrated before thought in every scene. The body knows first.",
-  "THOUGHT-FORWARD — internal monologue leads and sensation follows. Thoughts interrupt the action throughout. The mind processes what the body is experiencing in real time.",
-  "DIALOGUE-WEIGHTED — the spoken exchange between characters carries the story's desire. What is said matters as much as what is done. Conversation is the primary erotic act.",
-  "OBSERVATIONAL — the protagonist's interiority shaped entirely by watching the partner. What she/he/they notices, fixates on, cannot stop seeing. The partner's body is the primary text.",
-];
-
-const VARIETY_OPENING_POSITIONS = [
-  "PRE-CONTACT OPEN — ESTABLISH opens in the tension before anything has happened. Atmosphere, anticipation, physical awareness before any action. The story begins in the space between.",
-  "MID-CONVERSATION OPEN — opens already speaking, already close, desire already present in the exchange. The listener arrives in the middle of something already in motion.",
-  "PHYSICAL PROXIMITY OPEN — opens through immediate sensory immersion in the partner's specific physical presence. Temperature, smell, the specific way they occupy the space.",
-  "INTERIOR-FIRST OPEN — opens inside the protagonist's head. Desire already running before any external action begins. The listener is in the mind before the room.",
-  "ACTION-FIRST OPEN — opens inside an action already in progress. No preamble, no approach, no setup. The listener arrives mid-moment.",
-];
+/** All five variety dimension arrays, keyed by dimension name for easy reference. */
+const STORY_VARIETY_DIMENSIONS = {
+  structureApproaches: [
+    "WORDLESS DELIVERY — every desired element arrives through action only. Nothing is telegraphed by dialogue before it happens. The body enacts; the voice does not announce.",
+    "PROTAGONIST-INITIATED — the protagonist's own desire drives each element. She/he/they ask for, reach toward, or choose each thing. Desire belongs to them first.",
+    "DELAYED ARRIVAL — each desired element is withheld past the scene where it would be expected, arriving later with greater intensity. The wait is architectural, not accidental.",
+    "PARTNER ANNOUNCES THEN DELIVERS — the partner speaks the intent before acting. Anticipation built through explicit statement, then full delivery. Words before action, every time.",
+    "MID-SCENE INTEGRATION — each desired element arrives inside an already-established scene, woven into ongoing action rather than as a separate beat. Nothing stops to announce itself.",
+    "INCREMENTAL ESCALATION — each element approaches in stages: hint first, then a half-step, then full arrival. Three-phase approach to every desired element.",
+  ],
+  timingVariants: [
+    "DISTRIBUTED DELIVERY — desired elements spread evenly across SIMMER, CRACK, and IGNITE. No phase carries all the weight.",
+    "FRONT-WEIGHTED — most elements arrive in SIMMER building toward CRACK. The story's structural weight lives in the build, not the climax.",
+    "BACK-WEIGHTED — elements withheld until late IGNITE. Restraint all the way through, then full delivery at once. The story saves everything for the end.",
+    "SINGULAR PEAK — all desired elements converge in one IGNITE scene. Everything the story has built arrives in a single concentrated beat.",
+    "CASCADING — each element triggers the next, building in sequence. One desire's satisfaction opens the door to the next. Chain reaction structure.",
+  ],
+  partnerExpressions: [
+    "VERBAL EXPRESSION — the partner's desire expressed primarily through specific spoken words. What they say, what they name, what they tell the protagonist. Language is the primary vehicle of wanting.",
+    "PHYSICAL PRECISION — desire shown exclusively through deliberate, specific touch. No words announce it. The hands, the body, the deliberate gesture speaks instead of the voice.",
+    "WITHHELD RESTRAINT — desire expressed through what the partner doesn't yet do. The space between wanting and acting. The specific gap between intention and contact.",
+    "INDIRECT ATTENTION — desire shown by how the partner notices specific, particular details about the protagonist. What they fixate on, what they name, what they cannot stop observing.",
+    "OBSESSIVE NARROWING — the partner's attention described as narrowing to a single specific quality about the protagonist. One thing has taken over their thinking entirely.",
+    "INSTRUCTIONAL — desire expressed by directing the protagonist. Commands, requests, instructions that are also expressions of want. Telling is wanting.",
+    "RESPONSIVE — desire expressed entirely by reacting to the protagonist's actions. The partner's responses are the declaration. Their body answers before their words do.",
+  ],
+  interiorityWeights: [
+    "SENSATION-FORWARD — the protagonist's body responds before the mind. Physical sensation narrated before thought in every scene. The body knows first.",
+    "THOUGHT-FORWARD — internal monologue leads and sensation follows. Thoughts interrupt the action throughout. The mind processes what the body is experiencing in real time.",
+    "DIALOGUE-WEIGHTED — the spoken exchange between characters carries the story's desire. What is said matters as much as what is done. Conversation is the primary erotic act.",
+    "OBSERVATIONAL — the protagonist's interiority shaped entirely by watching the partner. What she/he/they notices, fixates on, cannot stop seeing. The partner's body is the primary text.",
+  ],
+  openingPositions: [
+    "PRE-CONTACT OPEN — ESTABLISH opens in the tension before anything has happened. Atmosphere, anticipation, physical awareness before any action. The story begins in the space between.",
+    "MID-CONVERSATION OPEN — opens already speaking, already close, desire already present in the exchange. The listener arrives in the middle of something already in motion.",
+    "PHYSICAL PROXIMITY OPEN — opens through immediate sensory immersion in the partner's specific physical presence. Temperature, smell, the specific way they occupy the space.",
+    "INTERIOR-FIRST OPEN — opens inside the protagonist's head. Desire already running before any external action begins. The listener is in the mind before the room.",
+    "ACTION-FIRST OPEN — opens inside an action already in progress. No preamble, no approach, no setup. The listener arrives mid-moment.",
+  ],
+};
 
 /**
  * Compute all five variety dimensions from a user's story count.
@@ -645,11 +644,11 @@ const VARIETY_OPENING_POSITIONS = [
  */
 export function computeVarietyProfile(count: number): VarietyProfile {
   return {
-    structureApproach: VARIETY_STRUCTURE_APPROACHES[count % 6],
-    timingVariant:     VARIETY_TIMING_VARIANTS[count % 5],
-    partnerExpression: VARIETY_PARTNER_EXPRESSIONS[count % 7],
-    interiorityWeight: VARIETY_INTERIORITY_WEIGHTS[count % 4],
-    openingPosition:   VARIETY_OPENING_POSITIONS[count % 5],
+    structureApproach: STORY_VARIETY_DIMENSIONS.structureApproaches[count % 6],
+    timingVariant:     STORY_VARIETY_DIMENSIONS.timingVariants[count % 5],
+    partnerExpression: STORY_VARIETY_DIMENSIONS.partnerExpressions[count % 7],
+    interiorityWeight: STORY_VARIETY_DIMENSIONS.interiorityWeights[count % 4],
+    openingPosition:   STORY_VARIETY_DIMENSIONS.openingPositions[count % 5],
   };
 }
 
@@ -2616,10 +2615,7 @@ Return only JSON — no explanation, no markdown.`;
     }
     if (originalInput.varietyProfile) {
       const { structureApproach, partnerExpression } = originalInput.varietyProfile;
-      const structureName = structureApproach.split(" — ")[0];
-      const partnerName = partnerExpression.split(" — ")[0];
-      castingLines.push(`Structural approach: ${structureName} — tag delivery and desired elements must arrive according to this structural vehicle. Check: are desired elements delivered via this specific approach, or did the model default to a generic pattern?`);
-      castingLines.push(`Partner expression: ${partnerName} — the partner's desire must be shown through this specific mode. Check: is this the primary vehicle for the partner's wanting, or did the model substitute a default expression style?`);
+      castingLines.push(`Structural variety compliance — Structural approach: ${structureApproach} — desired elements must arrive via this specific vehicle throughout. Partner expression: ${partnerExpression} — the partner's desire must be shown through this specific mode. Check: did the story honour both of these directives, or did the model default to its most-likely structural pattern?`);
     }
   }
 

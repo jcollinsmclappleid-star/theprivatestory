@@ -114,6 +114,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
 
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
+    { label: "How It Works", href: "/how-it-works", icon: <Sparkles className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "My Library", href: isAuthenticated ? "/me" : "/library", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
@@ -376,6 +377,7 @@ function Footer() {
 
           <FooterColumn heading="Navigate" links={[
             { label: "Home", href: "/" },
+            { label: "How It Works", href: "/how-it-works" },
             { label: "Browse stories", href: "/browse" },
             { label: "Create your story", href: "/create" },
             { label: "Pricing", href: "/pricing" },

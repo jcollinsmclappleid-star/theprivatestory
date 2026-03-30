@@ -8,6 +8,7 @@ import { AudioProvider } from "@/components/AudioProvider";
 import { AuthModal } from "@/components/AuthModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { TermsGate } from "@/components/TermsGate";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
@@ -56,6 +57,7 @@ import AudioStoriesVsPodcasts from "@/pages/seo/AudioStoriesVsPodcasts";
 import BestAudioStoryAppForAdults from "@/pages/seo/BestAudioStoryAppForAdults";
 import AlternativesToRomanceAudiobooks from "@/pages/seo/AlternativesToRomanceAudiobooks";
 import Discover from "@/pages/Discover";
+import HowItWorks from "@/pages/HowItWorks";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,7 @@ function Router() {
       <Route path="/admin/moderation" component={AdminModeration} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route>
+        <ScrollToTop />
         <Layout>
           <Switch>
             <Route path="/" component={Home} />
@@ -111,6 +114,7 @@ function Router() {
             <Route path="/best-audio-story-app-for-adults" component={BestAudioStoryAppForAdults} />
             <Route path="/alternatives-to-romance-audiobooks" component={AlternativesToRomanceAudiobooks} />
             <Route path="/discover" component={Discover} />
+            <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

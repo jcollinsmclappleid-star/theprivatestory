@@ -197,7 +197,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     {
       id: `${P.subject} Takes Charge`,
       label: `${conjugateTakes(P.subject)} Charge`,
-      sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Inevitable.`,
+      sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Certain.`,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
       image: "images/chemistry/takes_charge.png",
@@ -213,7 +213,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     {
       id: `${ME.subject} Leads`,
       label: `${conjugateLeads(ME.subject)}`,
-      sub: `${ME.subject} decides the pace. ${P.subject} stays exactly where ${P.subject === "They" ? "they're" : `${P.subject.toLowerCase()}'s`} told.`,
+      sub: `${ME.subject} decides the pace. ${P.subject} follows ${ME.possessive} lead.`,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
       image: "images/chemistry/leads.png",
@@ -235,10 +235,10 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       image: "images/chemistry/slow_surrender.png",
     },
     {
-      id: "Power Play",
-      label: "Power Play",
+      id: "Charged Dynamic",
+      label: "Charged Dynamic",
       sub: `${P.subject} holds the advantage. ${ME.subject} already decided. That's what made it possible.`,
-      dynamic: "Dominant and yielding",
+      dynamic: "Leading and following",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
       image: "images/chemistry/power_play.png",
     },
@@ -251,10 +251,10 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       image: "images/chemistry/forbidden_pull.png",
     },
     {
-      id: "Worship",
-      label: "Worship",
+      id: "Pure Devotion",
+      label: "Pure Devotion",
       sub: `${P.subject} makes ${ME.object} feel like the only thing in the room. The world.`,
-      dynamic: "Adoration and surrender",
+      dynamic: "Adoration and devotion",
       gradient: "from-[#001010] via-[#001e1e] to-[#000a0a]", accent: "#2dd4bf",
       image: "images/chemistry/worship.png",
     },
@@ -338,7 +338,7 @@ function buildArchetypes(pairingId: string | undefined) {
     { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                                  gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280", image: "images/energy/stranger.png" },
     { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                     gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa", image: "images/energy/artist.png" },
     { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399", image: "images/energy/protector.png" },
-    { id: "The Bad One",     label: "The Bad One",     sub: `Dangerous to want. Impossible not to. ${me} knows it.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
+    { id: "The Risk",        label: "The Risk",        sub: `Everything says this is complicated. Impossible to walk away from.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
     { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa", image: "images/energy/professor.png" },
     { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185", image: "images/energy/wanderer.png" },
     { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                                 gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d", image: "images/energy/old_friend.png" },
@@ -624,12 +624,13 @@ const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: st
 ];
 
 const MOODS = [
-  "Romantic", "Emotional", "Raw", "Playful", "Dark",
-  "Nostalgic", "Urgent", "Possessive", "Electric", "Bittersweet",
-  "Forbidden", "Vulnerable", "Healing", "Complicated", "Obsessive",
-  "Desperate", "Wicked", "Decadent", "Aching", "Burning",
+  "Romantic", "Emotional", "Raw", "Playful", "Slow Burn",
+  "Nostalgic", "Urgent", "Magnetic", "Electric", "Bittersweet",
+  "Forbidden", "Vulnerable", "Healing", "Complicated", "Quiet Intensity",
+  "Restless", "Charged", "Decadent", "Aching", "Burning",
   "Breathless", "Reckless", "Yearning", "Unravelling", "Certain",
-  "Surrender", "Luminous", "Quiet",
+  "Surrender", "Luminous", "Quiet", "Late Night", "Lingering",
+  "Unspoken", "Emotional Tension",
 ];
 
 /* ── Appearance options (pronoun-aware) ───────────────────────────── */
@@ -987,7 +988,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 .filter(c =>
                   !bedtime
                     ? true
-                    : ["Lovers", "Slow Surrender", "Romantic", "Sweet & Tender", "Worship", "The Best Friend", "Nervous Energy", "Playful", "Equal Tension", "Push & Pull"].includes(c.label)
+                    : ["Lovers", "Slow Surrender", "Romantic", "Sweet & Tender", "Pure Devotion", "The Best Friend", "Nervous Energy", "Playful", "Equal Tension", "Push & Pull"].includes(c.label)
                 )
                 .map(c => (
                   <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>

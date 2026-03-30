@@ -69,7 +69,7 @@ function buildContradictionPairs(p: PronounCtx): [string, string][] {
     ["Slow Build", "Skip the tension — we're already there"],
 
     // "What makes this yours?" opposites
-    ["It shouldn't have happened", "It was always going to happen"],
+    ["The timing was complicated", "It was always going to happen"],
 
     // "Just the Scene" vs story structure
     ["No backstory — start in the moment", "There's a complication first"],
@@ -115,7 +115,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       maxSelect: 2,
       tags: [
         "Slow Build", "Instant Chemistry", "Forbidden", "Push & Pull",
-        "Inevitable", "Unfinished Business", "One night only", "Rivals to lovers",
+        "A pull neither can explain", "Unfinished Business", "One night only", "Rivals to lovers",
       ],
     },
     {
@@ -134,7 +134,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       tags: [
         "They remind me of someone",
         "It happens just once",
-        "It shouldn't have happened",
+        "The timing was complicated",
         "It was always going to happen",
         "The relationship is complicated",
         "No one gets hurt",
@@ -199,7 +199,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       maxSelect: 3,
       tags: [
         `${partnerS} can't stop looking at ${p.obj}`,
-        `${p.sub} is the obsession and ${pSub(p, "she", "he", "they")} knows it`,
+        `${p.sub} is all ${pSub(p, "she's", "he's", "they're")} thinking about — and ${pSub(p, "she", "he", "they")} knows it`,
         `${partnerS} catalogues everything about ${p.obj}`,
         "Every compliment specific and earned",
         `${partnerS} makes ${p.obj} feel like a revelation`,

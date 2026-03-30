@@ -106,9 +106,9 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: "fc_16",
-    label: "She's been hired to seduce him. She didn't expect to mean it.",
+    label: "They're both actors playing lovers in a film. The attraction wasn't in the script.",
     category: "Forbidden & Complicated",
-    internalInject: "She was hired — by a client she hasn't questioned closely enough — to cultivate his attention. She is professional, precise, and experienced at keeping distance between performance and feeling. She is no longer certain that distance is intact. The story explores the specific confusion of desire that begins as assignment.",
+    internalInject: "They are playing lovers in a production — the role is defined, the script is clear, the professional boundary is firm. Both understand the line between performance and reality. She is experienced at maintaining that distance. She is no longer certain that distance is intact. The story explores the specific confusion of desire that begins as performance.",
   },
   {
     id: "fc_17",
@@ -130,9 +130,9 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: "fc_20",
-    label: "He's the investigator. She's what he's investigating. He hasn't filed the report.",
+    label: "He was assigned to investigate her. The investigation cleared her completely. He's been waiting for permission to contact her.",
     category: "Forbidden & Complicated",
-    internalInject: "He was assigned to investigate her — her activities, her associations, her credibility. He has completed his investigation. He has not filed the report. The story is about what he knows, what he's chosen to suppress, and what wanting her is costing him.",
+    internalInject: "He was assigned to investigate her — her activities, her associations, her credibility. The investigation concluded: she is cleared, exonerated, completely without fault. The professional barrier that made contact inappropriate has dissolved by the evidence. He has been waiting for ethical permission to reach out. The story is what happens when the obstruction dissolves.",
   },
 
   // ── REUNION & RETURN ───────────────────────────────────────────────────────

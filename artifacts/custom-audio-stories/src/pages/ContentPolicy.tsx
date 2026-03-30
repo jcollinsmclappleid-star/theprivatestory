@@ -140,7 +140,7 @@ export default function ContentPolicy() {
           </div>
           <div className="pl-14 text-muted-foreground text-sm leading-relaxed">
             <p className="mb-3">
-              If you believe your account was terminated or a request was blocked in error, you may appeal by emailing <a href="mailto:safety@theprivatestory.com" className="text-primary hover:underline">safety@theprivatestory.com</a>. Include your account email and a brief description of the issue. We will respond within 5 business days.
+              If you believe your account was terminated or a request was blocked in error, you may appeal by emailing <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>. Include your account email and a brief description of the issue. We will respond within 5 business days.
             </p>
             <p>
               <strong className="text-foreground/80">Note:</strong> Appeals are not available for violations involving prohibited content related to minors or non-consensual content. These are final.
@@ -155,7 +155,7 @@ export default function ContentPolicy() {
             If a story generated on this platform contains content that appears to violate this policy, please report it.
           </p>
           <a
-            href="mailto:safety@theprivatestory.com"
+            href="mailto:support@theprivatestory.co.uk"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors"
           >
             <MessageSquare className="w-4 h-4" />

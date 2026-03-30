@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { FileText, Shield, AlertTriangle, Scale, Mail } from "lucide-react";
+import { FileText, Shield, AlertTriangle, Scale, Mail, Download } from "lucide-react";
 
 export default function Terms() {
   return (
@@ -8,118 +8,187 @@ export default function Terms() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-2xl mx-auto px-4 py-16"
+      className="max-w-3xl mx-auto px-4 py-16"
     >
       <div className="mb-12">
         <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
           Legal
         </span>
         <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight">
-          Terms of Service
+          Terms and Conditions
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Last updated: March 2025. These terms are governed by the laws of England and Wales.{" "}
-          <strong className="text-foreground/70">
-            ⚠ DRAFT — must be reviewed by a solicitor with adult content experience before public launch.
-          </strong>
+          <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2025
         </p>
+        <p className="text-muted-foreground text-sm leading-relaxed mt-3">
+          The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
+          <strong>Registered office:</strong> 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, England<br />
+          <strong>Contact:</strong> <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
+        </p>
+      </div>
+
+      <div className="glass-panel rounded-2xl p-6 border-primary/20 bg-primary/5 mb-12">
+        <div className="flex items-start gap-3">
+          <Download className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-foreground mb-2">Full Terms Document</p>
+            <p className="text-xs text-muted-foreground mb-3">
+              For a complete and detailed version of these terms, please download our full Terms and Conditions document (PDF).
+            </p>
+            <a 
+              href="/documents/terms-and-conditions.pdf" 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+              download
+            >
+              <Download className="w-4 h-4" />
+              Download Full Document
+            </a>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-10">
 
-        <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="1. Who may use this service">
-          <p>This platform is an adults-only service. By accessing or using the service you confirm that:</p>
+        <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="1. About the service">
+          <p className="text-sm">
+            The Private Story is a private digital storytelling service that provides AI-generated written and audio stories based on your selections and preferences. The service is designed for personal, private use and is not a social platform.
+          </p>
+        </Section>
+
+        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="2. Adults only">
+          <p className="text-sm">This service is intended for adults aged 18 and over only. By using the service, you confirm that:</p>
           <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li>You are at least 18 years of age (or the age of majority in your jurisdiction, whichever is higher).</li>
-            <li>It is legal to access adult content in your jurisdiction.</li>
-            <li>You are accessing this service for your own personal, private use only.</li>
+            <li>You are at least 18 years of age.</li>
+            <li>You are legally permitted to use the service in your jurisdiction.</li>
           </ul>
-          <p className="mt-3">We reserve the right to terminate accounts and report to relevant authorities if we have reason to believe a user is under 18 or is misusing the service.</p>
+          <p className="mt-3 text-sm">We may suspend or terminate access if we reasonably believe a user is under 18 or is using the service unlawfully.</p>
         </Section>
 
-        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="2. Prohibited content and conduct">
-          <p>You must not use this service to generate, request, or attempt to generate:</p>
+        <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="3. Your account">
+          <p className="text-sm">To use features of the service, you may need to create an account. You agree to:</p>
           <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li><strong className="text-foreground/70">Any content involving minors</strong> in a sexual or sexualised context. This is illegal and will be reported to the National Center for Missing &amp; Exploited Children (NCMEC) and the Internet Watch Foundation (IWF) where required by law.</li>
-            <li>Non-consensual sexual scenarios depicted approvingly or erotically.</li>
-            <li>Sexual content involving real, identifiable individuals without clear evidence of their consent.</li>
-            <li>Content designed to harass, threaten, or facilitate harm to any person.</li>
-            <li>Bestiality or zoophilic content.</li>
-            <li>Content that violates any applicable law in England and Wales or in your jurisdiction.</li>
+            <li>Provide accurate and up-to-date information.</li>
+            <li>Keep your login credentials confidential.</li>
+            <li>Use the account only for your own personal use.</li>
+            <li>Notify us promptly if you suspect unauthorised access.</li>
           </ul>
-          <p className="mt-3">Attempts to circumvent our content filters — including the use of coded language, character substitution, or prompt injection — are a violation of these terms and will result in immediate account termination.</p>
+          <p className="mt-3 text-sm">You are responsible for activity carried out through your account. We may suspend, restrict, or close accounts where necessary for safety, fraud prevention, legal compliance, or breach of these terms.</p>
         </Section>
 
-        <Section icon={<FileText className="w-5 h-5 text-blue-400" />} iconBg="bg-blue-500/10 border-blue-500/20" title="3. Subscription and payment">
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
-            <li>Subscriptions are billed annually. The current price is displayed at checkout.</li>
-            <li>Payment is processed by Stripe. We do not store your card details.</li>
-            <li>Subscriptions renew automatically. You may cancel at any time from your account settings.</li>
-            <li>Refunds are offered within 14 days of the initial purchase where no stories have been generated, in accordance with UK consumer law. Contact us at <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a>.</li>
-          </ul>
-        </Section>
-
-        <Section icon={<Shield className="w-5 h-5 text-emerald-400" />} iconBg="bg-emerald-500/10 border-emerald-500/20" title="4. Intellectual property">
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
-            <li>The platform, its design, and underlying technology are owned by us.</li>
-            <li>Stories generated for you are for your personal, private use only. You may not redistribute, sell, or publish generated content.</li>
-            <li>You grant us no rights to your stories except those needed to deliver the service (generating audio, saving to your library).</li>
-          </ul>
-        </Section>
-
-        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="5. Account termination">
-          <p>We may suspend or terminate your account immediately and without refund if:</p>
+        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="4. Acceptable use and prohibited content">
+          <p className="text-sm">You must use the service lawfully and in accordance with these terms. You must <strong>not</strong> use the service to request or create content that:</p>
           <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li>You violate the prohibited content rules in Section 2.</li>
-            <li>You attempt to circumvent our safety systems.</li>
-            <li>We receive a valid law enforcement request requiring us to do so.</li>
-            <li>Your use poses a legal or reputational risk to the platform.</li>
+            <li><strong className="text-foreground/70">Involves minors or age ambiguity</strong> — this is illegal and will be reported to relevant authorities.</li>
+            <li>Is non-consensual, coercive, exploitative, or abusive.</li>
+            <li>Is otherwise unlawful in your jurisdiction.</li>
+            <li>Is intended to harass, threaten, intimidate, or harm.</li>
+            <li>Infringes another person's rights.</li>
+            <li>Attempts to bypass, test, or undermine our moderation systems.</li>
+            <li>Is used for commercial resale, redistribution, or scraping without written consent.</li>
           </ul>
-          <p className="mt-3">Where we detect prohibited content involving minors, we are legally required to preserve relevant data and report to NCMEC and/or IWF. Account deletion requests will not result in deletion of preserved safety evidence.</p>
+          <p className="mt-3 text-sm">We may refuse requests, block content, remove stories, restrict accounts, or terminate access where necessary to enforce these terms or protect the service.</p>
         </Section>
 
-        <Section icon={<Scale className="w-5 h-5 text-violet-400" />} iconBg="bg-violet-500/10 border-violet-500/20" title="6. Limitation of liability">
-          <p>To the fullest extent permitted by law:</p>
+        <Section icon={<FileText className="w-5 h-5 text-blue-400" />} iconBg="bg-blue-500/10 border-blue-500/20" title="5. Story generation and AI outputs">
+          <p className="text-sm">The service uses AI tools to generate stories and audio. You acknowledge that:</p>
           <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li>The service is provided "as is" without warranties of any kind.</li>
-            <li>We are not liable for any indirect, incidental, or consequential damages arising from your use of the service.</li>
-            <li>Our total liability to you for any claim shall not exceed the amount you paid us in the 12 months preceding the claim.</li>
+            <li>Outputs are generated automatically and are fictional.</li>
+            <li>Output quality, style, and suitability may vary.</li>
+            <li>Outputs may not always be error-free or available on demand.</li>
+            <li>We may moderate, refuse, remove, or regenerate outputs.</li>
+          </ul>
+          <p className="mt-3 text-sm">We do not guarantee that any generated story will match every expectation or preference.</p>
+        </Section>
+
+        <Section icon={<Shield className="w-5 h-5 text-emerald-400" />} iconBg="bg-emerald-500/10 border-emerald-500/20" title="6. Your private library">
+          <p className="text-sm">
+            Stories generated through your account are saved to your private library, visible only to you. However, we may access content where necessary for moderation, safety, support, technical maintenance, legal compliance, and fraud prevention.
+          </p>
+          <p className="mt-3 text-sm">You may be able to delete stories using account controls, subject to backups, technical retention, and moderation records as required by law.</p>
+        </Section>
+
+        <Section icon={<FileText className="w-5 h-5 text-blue-400" />} iconBg="bg-blue-500/10 border-blue-500/20" title="7. Fees, subscriptions, and billing">
+          <p className="text-sm"><strong>Subscription models:</strong></p>
+          <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
+            <li>Monthly subscriptions (£29/month for 5 stories)</li>
+            <li>Annual subscriptions (£179/year for 50 stories)</li>
+            <li>Additional story purchases (£3.99 per story)</li>
+          </ul>
+          <p className="mt-3 text-sm"><strong>Automatic renewal:</strong> Subscriptions renew automatically until cancelled. You are responsible for cancelling before renewal if you do not want the next charge.</p>
+          <p className="mt-3 text-sm"><strong>Price changes:</strong> We may change subscription prices for future billing periods with reasonable notice.</p>
+          <p className="mt-3 text-sm">Payment is processed securely through our payment provider. We do not store your card details.</p>
+        </Section>
+
+        <Section icon={<Scale className="w-5 h-5 text-violet-400" />} iconBg="bg-violet-500/10 border-violet-500/20" title="8. Refund policy">
+          <p className="text-sm">
+            Refunds, where available, are limited because the service includes immediate-access digital features and generated content. Refunds may not be available once a subscription has started, stories have been generated, or content access has begun, except where required by law.
+          </p>
+          <p className="mt-3 text-sm">For refund questions, contact <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>.</p>
+        </Section>
+
+        <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="9. Intellectual property">
+          <p className="text-sm">
+            All rights in the website, app, software, branding, and design belong to us or our licensors. Generated outputs are provided to you for personal use under a limited licence and are not a transfer of underlying platform rights.
+          </p>
+          <p className="mt-3 text-sm">You may not redistribute, sell, publish, or commercially exploit generated content without our written permission.</p>
+        </Section>
+
+        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="10. Moderation and enforcement">
+          <p className="text-sm">
+            We use automated and manual moderation to maintain safety, quality, and legal compliance. We may:
+          </p>
+          <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
+            <li>Block generation requests or prevent story release.</li>
+            <li>Regenerate, remove, or restrict stories.</li>
+            <li>Record moderation outcomes and take enforcement action.</li>
+            <li>Suspend or terminate accounts.</li>
+          </ul>
+          <p className="mt-3 text-sm">Moderation decisions may be made to protect users, the service, and ensure legal compliance.</p>
+        </Section>
+
+        <Section icon={<Mail className="w-5 h-5 text-muted-foreground" />} iconBg="bg-muted/20 border-border/20" title="11. Suspension and termination">
+          <p className="text-sm">We may suspend or terminate your access immediately where:</p>
+          <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
+            <li>You breach these terms or our content policy.</li>
+            <li>We suspect fraud, abuse, or unlawful conduct.</li>
+            <li>Payment fails or is reversed.</li>
+            <li>Your use poses a legal or safety risk.</li>
+          </ul>
+          <p className="mt-3 text-sm">Where we detect prohibited content involving minors, we are legally required to preserve evidence and report to relevant authorities. Account deletion will not remove preserved safety evidence.</p>
+        </Section>
+
+        <Section icon={<Shield className="w-5 h-5 text-primary" />} iconBg="bg-primary/10 border-primary/20" title="12. Limitation of liability">
+          <p className="text-sm">To the fullest extent permitted by law:</p>
+          <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
+            <li>The service is provided "as is" without warranties.</li>
+            <li>We are not liable for indirect, incidental, or consequential damages.</li>
+            <li>Our total liability shall not exceed the amount you paid us in the 12 months before the claim.</li>
           </ul>
         </Section>
 
-        <Section icon={<Scale className="w-5 h-5 text-violet-400" />} iconBg="bg-violet-500/10 border-violet-500/20" title="7. Dispute resolution and governing law">
+        <Section icon={<Scale className="w-5 h-5 text-violet-400" />} iconBg="bg-violet-500/10 border-violet-500/20" title="13. Governing law and disputes">
           <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
             <li>These terms are governed by the laws of England and Wales.</li>
-            <li>Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</li>
-            <li>We aim to resolve disputes informally first. Contact us at <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a> before initiating formal proceedings.</li>
+            <li>Disputes are subject to the exclusive jurisdiction of the English courts.</li>
+            <li>We aim to resolve disputes informally first. Contact us before formal proceedings.</li>
           </ul>
         </Section>
 
-        <Section icon={<AlertTriangle className="w-5 h-5 text-amber-500" />} iconBg="bg-amber-500/10 border-amber-500/20" title="8. DMCA / Copyright">
-          <p>If you believe content on this platform infringes your copyright, contact us at <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a> with:</p>
-          <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li>Identification of the copyrighted work you claim has been infringed.</li>
-            <li>Identification of the material claimed to be infringing.</li>
-            <li>Your contact information.</li>
-            <li>A statement of good faith belief that the use is not authorised.</li>
-            <li>A statement, under penalty of perjury, that the information in your notice is accurate.</li>
-          </ul>
-        </Section>
-
-        <Section icon={<Mail className="w-5 h-5 text-muted-foreground" />} iconBg="bg-muted/20 border-border/20" title="9. Changes to these terms">
-          <p>We may update these terms from time to time. Continued use of the service after changes constitutes acceptance of the new terms. We will notify subscribers of material changes by email.</p>
+        <Section icon={<Mail className="w-5 h-5 text-muted-foreground" />} iconBg="bg-muted/20 border-border/20" title="14. Changes to these terms">
+          <p className="text-sm">
+            We may update these terms from time to time. Material changes will be notified via email. Continued use after updates constitutes acceptance of the revised terms.
+          </p>
         </Section>
 
         <div className="glass-panel rounded-2xl p-6 border-primary/20 text-center">
           <p className="text-muted-foreground text-sm mb-3">Questions about these terms?</p>
-          <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline text-sm font-medium">
-            hello@theprivatestory.com
+          <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline text-sm font-medium">
+            support@theprivatestory.co.uk
           </a>
-          <p className="text-muted-foreground text-xs mt-3">
-            Safety concerns:{" "}
-            <a href="mailto:safety@theprivatestory.com" className="text-amber-400 hover:underline">
-              safety@theprivatestory.com
-            </a>
+          <p className="text-muted-foreground text-xs mt-4">
+            Registered company: Ianson System Ltd<br />
+            Registered in England and Wales<br />
+            71-75 Shelton Street, Covent Garden, London, WC2H 9JQ
           </p>
         </div>
 

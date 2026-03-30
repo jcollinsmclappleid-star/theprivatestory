@@ -812,7 +812,7 @@ export default function Profile() {
         {deleteDone && (
           <p className="text-xs text-muted-foreground">
             Your deletion request has been received. All personal data will be removed within 30 days.
-            You can contact <a href="mailto:safety@theprivatestory.com" className="text-primary hover:underline">safety@theprivatestory.com</a> with any questions.
+            You can contact <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a> with any questions.
           </p>
         )}
       </div>

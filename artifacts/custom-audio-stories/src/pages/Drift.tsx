@@ -373,6 +373,7 @@ export default function Drift() {
             dynamic: casting.dynamic || undefined,
             storyMode: "nocturne",
             experienceTags: allTags,
+            pairing: casting.pairing || undefined,
             heritage: casting.heritage || undefined,
             atmosphere: casting.atmosphere || undefined,
             chemistry: casting.chemistry || undefined,

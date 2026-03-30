@@ -1248,6 +1248,7 @@ export default function AfterDark() {
             dynamic: casting.dynamic || selectedScenario.tags[0] || undefined,
             storyMode: selectedScenario.storyMode,
             experienceTags: allTags,
+            pairing: casting.pairing || undefined,
             heritage: casting.heritage || undefined,
             atmosphere: casting.atmosphere || undefined,
             chemistry: casting.chemistry || undefined,

@@ -123,14 +123,18 @@ export default function HowItWorks() {
     <div className="flex flex-col w-full">
 
       {/* ── Hero ── */}
-      <section className="relative w-full pt-12 pb-20 px-4 md:px-8 overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0 z-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 50% at 60% 20%, rgba(201,162,39,0.06) 0%, transparent 70%), radial-gradient(ellipse 60% 60% at 20% 80%, rgba(232,121,160,0.05) 0%, transparent 70%)",
-          }}
-        />
+      <section className="relative w-full min-h-[600px] md:min-h-[720px] flex flex-col justify-center pt-12 pb-20 px-4 md:px-8 overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={`${import.meta.env.BASE_URL}images/hiw-hero-bg.png`}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+        </div>
         <div className="relative z-10 max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

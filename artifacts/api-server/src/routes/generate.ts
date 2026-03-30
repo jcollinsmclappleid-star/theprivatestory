@@ -19,6 +19,7 @@ import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
+import { isAdmin as isAdminUser } from "../middlewares/requireAdmin.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -2758,7 +2759,7 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
-  const subError = await checkSubscriptionLimit(userId);
+  const subError = isAdminUser(req) ? null : await checkSubscriptionLimit(userId);
   if (subError) {
     res.status(402).json({ error: subError, code: "SUBSCRIPTION_LIMIT" });
     return;
@@ -2985,7 +2986,7 @@ router.post("/generate-full-story", async (req, res) => {
     return;
   }
 
-  const subLimitError = await checkSubscriptionLimit(String(req.user!.id));
+  const subLimitError = isAdminUser(req) ? null : await checkSubscriptionLimit(String(req.user!.id));
   if (subLimitError) {
     res.status(402).json({ error: subLimitError, code: "SUBSCRIPTION_LIMIT" });
     return;

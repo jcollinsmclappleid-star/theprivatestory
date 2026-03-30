@@ -1204,6 +1204,7 @@ export default function Create() {
     setResultSaved(false);
     setSavePending(false);
     setPresetSaved(false);
+    setMyUsualApplied(false);
     setFormPreset(null);
     setLastCastingData(null);
     form.reset();

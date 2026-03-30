@@ -841,7 +841,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative w-full h-[90vh] min-h-[760px] flex flex-col justify-end pt-24 md:pt-0 pb-16">
+      <section className="relative w-full h-auto md:h-[90vh] min-h-auto md:min-h-[760px] flex flex-col justify-center md:justify-end pt-20 md:pt-0 pb-16">
         <div className="absolute inset-0 z-0">
           <img
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}

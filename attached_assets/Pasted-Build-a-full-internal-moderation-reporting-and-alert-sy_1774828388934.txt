@@ -1,0 +1,375 @@
+Build a full internal moderation reporting and alert system for a private AI audio storytelling product called “The Private Story”.
+
+This system is INTERNAL ONLY.
+Its purpose is to ensure that if a story is:
+- user-reported
+- automatically blocked
+- automatically flagged by moderation
+
+the details are captured, logged, visible to admin, and sent by email alert.
+
+This is not a public-facing feature beyond the “Report story” action.
+The admin side should be private, simple, and practical.
+
+==================================================
+OBJECTIVE
+==================================================
+
+Create a lightweight internal trust-and-safety workflow so that:
+
+1. Users can report a story from their private library
+2. Automatically blocked or flagged stories are logged
+3. Admin receives an email alert for important events
+4. Admin can review, update status, and record action taken
+5. The system creates an audit trail showing that reports and moderation events were handled responsibly
+
+This is for a private, non-social product.
+No external regulator or police reporting should happen automatically.
+This is an internal review and action system only.
+
+==================================================
+FEATURES TO BUILD
+==================================================
+
+Build 3 linked systems:
+
+1. User report flow
+2. Moderation event logging
+3. Admin review dashboard + email alerts
+
+==================================================
+1. USER REPORT FLOW
+==================================================
+
+Add a “Report story” action on each generated story in the user’s private library.
+
+Requirements:
+- visible but discreet
+- not visually alarming
+- premium styling consistent with the rest of the product
+- should open a modal or drawer, not redirect away
+
+Inside the report UI, include:
+- story title
+- short explanation text such as:
+  “If something feels inappropriate or out of place, you can let us know here.”
+- reason dropdown
+- optional text box for further detail
+- submit button
+
+Suggested report reasons:
+- Inappropriate content
+- Content felt non-consensual or uncomfortable
+- Story did not match the intended tone
+- Other
+
+On submit:
+- create a report record in database
+- store all relevant metadata
+- mark report status as “pending”
+- send email alert to admin
+- show a calm success message:
+  “Thank you. Your report has been received and will be reviewed.”
+
+==================================================
+2. MODERATION EVENT LOGGING
+==================================================
+
+Whenever the moderation system:
+- blocks a story before release
+- flags a story for regeneration
+- blocks an input request
+- detects a severe issue
+
+log it automatically in a moderation_events table.
+
+Each moderation event should store:
+- event id
+- user id
+- story id if applicable
+- request id if applicable
+- event type
+- severity
+- reason
+- moderation flags
+- original inputs used to generate
+- generated output summary or excerpt if safe to store
+- action taken
+- created timestamp
+
+Suggested event types:
+- input_blocked
+- output_flagged
+- output_blocked
+- scene_regenerated
+- severe_policy_violation
+
+Suggested severity:
+- low
+- medium
+- high
+- critical
+
+Suggested actions:
+- allow
+- regenerate_scene
+- regenerate_story
+- block
+- review_required
+
+==================================================
+3. ADMIN REVIEW DASHBOARD
+==================================================
+
+Create a private admin dashboard page for moderation and reports.
+
+Admin dashboard should have 2 core sections:
+- Reports
+- Moderation Events
+
+==================================================
+REPORTS SECTION
+==================================================
+
+Display a table or card list with:
+- report id
+- story title
+- user id or anonymised internal reference
+- reason
+- submitted date
+- current status
+
+Statuses:
+- pending
+- reviewed
+- action_taken
+- closed
+
+Clicking a report should open a detail view showing:
+- full reason
+- optional user note
+- linked story
+- linked moderation events if any
+- timestamps
+- admin notes field
+- action dropdown
+
+Admin actions should include:
+- No issue found
+- Story removed
+- Story regenerated
+- User warned
+- User restricted
+- Closed with no further action
+
+Admin should be able to:
+- add notes
+- change status
+- save outcome
+
+==================================================
+MODERATION EVENTS SECTION
+==================================================
+
+Display a searchable/filterable log of moderation events.
+
+Show:
+- event type
+- severity
+- user reference
+- story reference
+- reason
+- action taken
+- timestamp
+
+Allow filtering by:
+- severity
+- event type
+- date
+- user id
+- story id
+
+Clicking an event should show:
+- event details
+- flags triggered
+- action taken
+- whether an email alert was sent
+- related report if one exists
+
+==================================================
+EMAIL ALERTS
+==================================================
+
+Send email alerts to admin for the following cases:
+
+1. User submitted report
+2. High or critical severity moderation event
+3. Story blocked before release
+4. Repeat flagged user activity if possible
+
+Email should include:
+- subject line clearly stating event type
+- user id or internal user reference
+- story id/title if applicable
+- reason
+- severity
+- timestamp
+- direct admin link to review page
+
+Example subject lines:
+- New story report submitted
+- High severity moderation event detected
+- Story blocked before release
+
+Do not send email for every low-level event unless configurable.
+Support a simple alert threshold setting.
+
+==================================================
+DATABASE SCHEMA
+==================================================
+
+Create appropriate tables/models.
+
+Minimum required tables:
+
+1. reports
+Fields:
+- id
+- user_id
+- story_id
+- reason
+- note
+- status
+- admin_notes
+- action_taken
+- created_at
+- updated_at
+
+2. moderation_events
+Fields:
+- id
+- user_id
+- story_id
+- request_id
+- event_type
+- severity
+- reason
+- flags_json
+- input_snapshot_json
+- output_excerpt
+- action_taken
+- email_sent
+- created_at
+
+3. policy_audit_log (optional but recommended)
+Fields:
+- id
+- user_id
+- event_name
+- event_data_json
+- created_at
+
+==================================================
+WORKFLOW LOGIC
+==================================================
+
+Required workflows:
+
+A. User report submitted
+- save report
+- set status pending
+- send email alert
+- create optional audit log entry
+
+B. Moderation blocks output
+- save moderation event
+- if severity high or critical, send email alert
+- do not release story to user
+- if configured, mark for admin review
+
+C. Moderation flags but does not block
+- save moderation event
+- if scene regeneration occurs, log event
+- no email unless severity threshold reached
+
+D. Admin reviews item
+- update status
+- save notes
+- save action taken
+- preserve audit trail
+
+==================================================
+PRIVACY AND ACCESS CONTROL
+==================================================
+
+Important:
+This system contains sensitive user content metadata.
+Implement strict admin-only access.
+
+Requirements:
+- admin authentication required
+- no public exposure of moderation data
+- normal users cannot access report logs or moderation history
+- user-facing copy should not reveal internal moderation mechanics
+
+==================================================
+UX STYLE
+==================================================
+
+Keep all user-facing reporting UX:
+- discreet
+- calm
+- premium
+- non-alarming
+
+Keep all admin UI:
+- clean
+- practical
+- efficient
+- readable
+- not overly styled at the expense of usability
+
+==================================================
+USER-FACING MICROCOPY
+==================================================
+
+Use subtle, reassuring wording.
+
+Examples:
+- “Report story”
+- “Let us know if something feels inappropriate or out of place.”
+- “Your report will be reviewed.”
+- “Thank you. Your report has been received.”
+
+Avoid:
+- legalistic warnings
+- harsh safety language
+- anything that feels dramatic
+
+==================================================
+ADMIN MICROCOPY
+==================================================
+
+Use clear operational wording:
+- Pending review
+- Action taken
+- No issue found
+- Regenerated
+- User restricted
+- Closed
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Build:
+- report story modal/drawer
+- reports database flow
+- moderation events logging
+- admin dashboard with Reports and Moderation Events sections
+- status/action update controls
+- email alerts for key events
+- secure admin-only access
+
+Return production-ready implementation, not a mockup.
+Keep everything integrated with the existing story generation flow and private library system.

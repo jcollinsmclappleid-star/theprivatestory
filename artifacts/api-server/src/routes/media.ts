@@ -129,6 +129,15 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
     return res.status(400).json({ error: "Invalid filename." });
   }
 
+  // Category images are public assets — serve without auth or story ownership check.
+  if (/^category-[a-z0-9_]+-[a-z0-9_]+\.png$/.test(filename) || /^category-[a-z0-9_]+\.png$/.test(filename)) {
+    const filePath = path.join(publicDir, "images", filename);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File not found." });
+    }
+    return res.sendFile(filePath);
+  }
+
   const allowed = await checkOwnership(req, res, "image", filename);
   if (!allowed) return;
 

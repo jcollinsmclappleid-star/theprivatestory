@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "wouter";
 
 type TileTheme = {
   gradient: string;
@@ -111,6 +111,8 @@ function PatternSVG({ pattern, accent }: { pattern: TileTheme["pattern"]; accent
   }
 }
 
+const API_BASE = (typeof import.meta !== "undefined" && (import.meta as any).env?.BASE_URL?.replace(/\/$/, "")) || "";
+
 interface CategoryTileProps {
   id: string;
   label: string;
@@ -122,6 +124,8 @@ interface CategoryTileProps {
 
 export function CategoryTile({ id, label, count, isActive, onClick, compact }: CategoryTileProps) {
   const theme = TILE_THEMES[id] ?? { gradient: "from-[#0a0a0a] via-[#141414] to-[#080808]", accent: "#c9a227", pattern: "waves" as const };
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <motion.button
@@ -136,16 +140,30 @@ export function CategoryTile({ id, label, count, isActive, onClick, compact }: C
           : "border-white/8 hover:border-primary/40"
       }`}
     >
+      {/* Gradient background — always present as fallback */}
       <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
 
+      {/* Category photo — fades in when loaded, hidden on error */}
+      {!imgError && (
+        <img
+          src={`${API_BASE}/api/images/category-${id}.png`}
+          alt=""
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgError(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imgLoaded ? "opacity-75" : "opacity-0"}`}
+        />
+      )}
+
+      {/* Animated SVG pattern — subtle texture over image */}
       <motion.div
         animate={{ opacity: [0.8, 1, 0.8] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute inset-0"
+        className={`absolute inset-0 ${imgLoaded && !imgError ? "opacity-30" : ""}`}
       >
         <PatternSVG pattern={theme.pattern} accent={theme.accent} />
       </motion.div>
 
+      {/* Accent glow */}
       <motion.div
         animate={{ opacity: [0.15, 0.3, 0.15] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
@@ -153,7 +171,8 @@ export function CategoryTile({ id, label, count, isActive, onClick, compact }: C
         style={{ background: `radial-gradient(ellipse at 70% 50%, ${theme.accent}22 0%, transparent 65%)` }}
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+      {/* Bottom gradient for text legibility — stronger when image is showing */}
+      <div className={`absolute inset-0 bg-gradient-to-t ${imgLoaded && !imgError ? "from-black/85 via-black/30 to-black/10" : "from-black/70 via-transparent to-transparent"}`} />
 
       {isActive && (
         <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/50" />

@@ -3,7 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
-import { rm } from "node:fs/promises";
+import { rm, cp, mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -118,6 +119,19 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     `,
     },
   });
+
+  // Copy pre-generated static assets (e.g. category images) into public/ so
+  // the server can serve them at runtime.  The server's publicDir resolves to
+  // artifacts/api-server/public/ (one level above dist/), NOT dist/public/.
+  // public-static/ is committed to git and is the authoritative source for
+  // these files; public/ is the runtime serving directory.
+  const staticSrc = path.resolve(artifactDir, "public-static");
+  if (existsSync(staticSrc)) {
+    const staticDest = path.resolve(artifactDir, "public");
+    await mkdir(staticDest, { recursive: true });
+    await cp(staticSrc, staticDest, { recursive: true });
+    console.log("Copied public-static → public");
+  }
 }
 
 buildAll().catch((err) => {

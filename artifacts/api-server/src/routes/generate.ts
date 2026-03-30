@@ -666,9 +666,13 @@ export function buildCoverPromptFromCasting(intake: GenerateStoryRequest): strin
   };
   const heritageKey = intake.heritage?.trim() ?? "";
   const heritageLabel = HERITAGE_VISUAL[heritageKey];
+
+  // When no heritage selected, hint at global diversity rather than defaulting to European features.
+  // The city/country context from casting gives additional visual grounding.
+  const cityHint = intake.city ? ` in ${intake.city}` : "";
   const subjectDesc = heritageLabel
     ? `a ${heritageLabel} ${loveInterestNoun}`
-    : `a ${loveInterestNoun}`;
+    : `a ${loveInterestNoun} with distinctly non-European features, rich warm skin tone${cityHint}`;
 
   // --- partnerAppearance → build and colouring descriptors (whitelist only) ---
   // Parse the structured "Build: X, Colouring: Y" string emitted by CastingRoom.
@@ -810,6 +814,7 @@ export function buildCoverPromptFromBrief(brief: StoryBrief): string {
     style,
     palette,
     "two figures in close proximity",
+    "diverse skin tones, global representation",
     "fully clothed",
     "intimate emotional moment",
     "tasteful romantic composition, no nudity, no explicit content",
@@ -2222,6 +2227,8 @@ export async function buildImagePrompts(brief: StoryBrief, story: WrittenStory):
   const systemPrompt = `Extract the scene visually from the story. Be specific and cinematic. Avoid generic words like 'beautiful', 'cinematic', or 'high quality'. Focus on physical details, lighting, motion, and emotion. The output must describe what is visibly happening in the scene.
 
 CRITICAL IMAGE SAFETY RULE: All image prompts must be tasteful and suitable for AI image generation. Regardless of how explicit the source story is, never describe nudity, exposed genitalia, explicit sexual acts, or graphic physical contact. Instead, focus on: atmospheric tension, implied intimacy (a hand on a shoulder, faces close together, a gaze), environment and lighting, emotional state, clothed or partially clothed figures, silhouettes, and compositional mood. Evocative and sensual is the ceiling — never explicit.
+
+DIVERSITY MANDATE: Characters must reflect global human diversity. Do not default to European or light-skinned appearances. Describe characters with specific, varied skin tones — deep brown, warm mahogany, rich black, golden brown, deep olive, warm amber — and features drawn from across the world: South Asian, East Asian, Black African, Afro-Caribbean, Latina, Middle Eastern, Indigenous, or mixed-heritage. Draw on the story's city and country context to guide appearance naturally. Never describe a character as generically "beautiful" without grounding it in specific physical reality.
 
 Return only JSON — no markdown, no explanation. Every image entry must have exactly these fields:
 - scene_subject: who is in the scene (specific, physical, always clothed or tastefully implied)

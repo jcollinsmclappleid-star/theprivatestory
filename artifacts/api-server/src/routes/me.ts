@@ -175,6 +175,49 @@ router.get("/usage", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /api/me/debug — Check admin status (temporary)
+// ---------------------------------------------------------------------------
+router.get("/debug", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        isAdmin: usersTable.isAdmin,
+        subscriptionPlan: usersTable.subscriptionPlan,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json(user);
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to load debug info");
+    res.status(500).json({ error: "Failed to load debug info" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/me/debug/set-admin — Set admin status (temporary)
+// ---------------------------------------------------------------------------
+router.post("/debug/set-admin", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    await db
+      .update(usersTable)
+      .set({ isAdmin: true })
+      .where(eq(usersTable.id, userId));
+
+    res.json({ ok: true, message: "Admin status set to true" });
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to set admin status");
+    res.status(500).json({ error: "Failed to set admin status" });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/me/export — GDPR Article 15 data export (download all personal data)
 // ---------------------------------------------------------------------------
 router.get("/export", async (req, res) => {

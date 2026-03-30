@@ -745,32 +745,6 @@ export default function Create() {
     },
   });
 
-  const resetToFreshCasting = useCallback(() => {
-    setPerspective("your");
-    setCastingPairing(undefined);
-    setCastingHeritage(undefined);
-    setCastingAtmosphere(undefined);
-    setCastingChemistry(undefined);
-    setCastingAppearBuild(undefined);
-    setCastingAppearHeight(undefined);
-    setCastingAppearColouring(undefined);
-    setCastingAppearEyes(undefined);
-    setCastingAppearFeatures(undefined);
-    setCastingListenerName(undefined);
-    setCastingPartnerName(undefined);
-    setCastingCountry(undefined);
-    setCastingCity(undefined);
-    setCastingSituationId(undefined);
-    setResult(null);
-    setResultSaved(false);
-    setSavePending(false);
-    setPresetSaved(false);
-    setFormPreset(null);
-    setLastCastingData(null);
-    form.reset();
-    setStep("casting");
-  }, [form]);
-
   const handleSavePreset = useCallback(async () => {
     if (!lastCastingData || !isAuthenticated) return;
     const archetype = lastCastingData.archetype as string ?? "";
@@ -1205,6 +1179,36 @@ export default function Create() {
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedSubthemeId, setSelectedSubthemeId] = useState<string | null>(null);
+
+  const resetToFreshCasting = useCallback(() => {
+    setPerspective("your");
+    setCastingPairing(undefined);
+    setCastingHeritage(undefined);
+    setCastingAtmosphere(undefined);
+    setCastingChemistry(undefined);
+    setCastingAppearBuild(undefined);
+    setCastingAppearHeight(undefined);
+    setCastingAppearColouring(undefined);
+    setCastingAppearEyes(undefined);
+    setCastingAppearFeatures(undefined);
+    setCastingListenerName(undefined);
+    setCastingPartnerName(undefined);
+    setCastingCountry(undefined);
+    setCastingCity(undefined);
+    setCastingSituationId(undefined);
+    setTimeOfDay("");
+    setSeason("");
+    setSelectedCategoryId(null);
+    setSelectedSubthemeId(null);
+    setResult(null);
+    setResultSaved(false);
+    setSavePending(false);
+    setPresetSaved(false);
+    setFormPreset(null);
+    setLastCastingData(null);
+    form.reset();
+    setStep("casting");
+  }, [form]);
 
   const { data: apiCategories = [] } = useQuery<ApiCategory[]>({
     queryKey: ["story-categories"],

@@ -611,10 +611,10 @@ function CastingPreview() {
             The Casting Room
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Every detail is yours to write.
+            The version of him<br className="hidden md:block" /> that's been in your head.
           </h2>
           <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
-            Cast your lead, set the chemistry between you, choose your world and exactly how far it goes. This is your story — built choice by choice, before a word is written.
+            Choose who he is, how he makes you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
           </p>
           <div className="flex items-center gap-3 mt-3">
             {[
@@ -865,12 +865,12 @@ export default function Home() {
             </span>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
-              A story built<br className="hidden md:block" /> exactly as you<br className="hidden md:block" />
-              <span className="text-primary">want it.</span>
+              Tonight, a story<br className="hidden md:block" /> written entirely<br className="hidden md:block" />
+              <span className="text-primary">for you.</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              You choose the cast, the chemistry, where it happens and how far it goes. We write it, narrate it, and keep it entirely private — heard only by you.
+              Tell us who you want in it, where it happens, the tension between you, and how far it goes. We write it, narrate it, and keep it private — heard only by you.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">
@@ -879,7 +879,7 @@ export default function Home() {
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
               >
                 <Sparkles className="w-5 h-5" />
-                Begin your story
+                Create my story
               </Link>
 
               <a
@@ -912,10 +912,10 @@ export default function Home() {
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground/60 leading-relaxed max-w-sm">
                 <Lock className="w-3 h-3 inline-block mr-1.5 text-primary/40 -mt-0.5" />
-                Built so we can't share it — not even if asked. Your stories are yours alone.
+                No record kept. No one will ever know it exists — including us.
               </p>
               <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground/40 tracking-wide">
-                {["No feeds", "No history", "No trace", "Heard only by you"].map((item) => (
+                {["No profile", "No social", "No trace", "Heard only by you"].map((item) => (
                   <span key={item} className="flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
                     {item}
@@ -946,11 +946,11 @@ export default function Home() {
           />
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
             {[
-              { icon: <EyeOff className="w-4 h-4" />, text: "Visible only to you" },
-              { icon: <WifiOff className="w-4 h-4" />, text: "No social features, no feeds" },
-              { icon: <Lock className="w-4 h-4" />, text: "Built so we can't share it" },
-              { icon: <Headphones className="w-4 h-4" />, text: "Designed for private listening" },
-              { icon: <Trash2 className="w-4 h-4" />, text: "Delete everything, anytime" },
+              { icon: <EyeOff className="w-4 h-4" />, text: "No one will ever know" },
+              { icon: <WifiOff className="w-4 h-4" />, text: "No profile. No discovery." },
+              { icon: <Lock className="w-4 h-4" />, text: "Can't be traced — not even to us" },
+              { icon: <Headphones className="w-4 h-4" />, text: "For your ears alone" },
+              { icon: <Trash2 className="w-4 h-4" />, text: "Remove the evidence any time" },
             ].map((item) => (
               <div
                 key={item.text}
@@ -972,9 +972,12 @@ export default function Home() {
               How it works
             </span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              Three steps. One story.<br className="hidden md:block" />
-              <span className="text-muted-foreground font-normal"> Entirely yours.</span>
+              In under a minute, your story<br className="hidden md:block" />
+              <span className="text-muted-foreground font-normal"> is ready to play.</span>
             </h2>
+            <p className="text-muted-foreground mt-3 max-w-lg mx-auto text-base leading-relaxed">
+              No browsing a catalogue hoping something fits. No compromising on details. A story that starts exactly where your imagination already is.
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             {/* Connector line — desktop only */}
@@ -985,22 +988,22 @@ export default function Home() {
                 step: "01",
                 icon: <Globe className="w-5 h-5" />,
                 accent: "#c9a227",
-                heading: "Cast your world",
-                body: "Choose who's in your story, the chemistry between you, where it happens, the mood, and how far it goes. Every detail is yours — from archetype to city to era.",
+                heading: "Tell us who you want tonight",
+                body: "Choose who he is, the pull between you, where it happens, the mood you want to be in, and how far it goes. Every detail set in advance — none of it left to chance.",
               },
               {
                 step: "02",
                 icon: <PenLine className="w-5 h-5" />,
                 accent: "#e879a0",
-                heading: "We write it",
-                body: "A literary, original story is created around your exact choices — then narrated in the voice that fits tonight, with original cover art generated just for it.",
+                heading: "We write it around you",
+                body: "A literary story built to your exact brief — not generic, not templated. Narrated by a voice that fits tonight, with original cover art generated for this story alone.",
               },
               {
                 step: "03",
                 icon: <Headphones className="w-5 h-5" />,
                 accent: "#a78bfa",
-                heading: "Listen in private",
-                body: "Your story lives in your private library — visible only to you. No feeds, no history, no trace. Press play whenever you're ready. Delete it at any time.",
+                heading: "Press play. Only you will ever hear it.",
+                body: "Your story lives privately in your account. No trace, no history, no one who will ever know it exists. Yours to keep, or quietly remove — whenever you're ready.",
               },
             ].map((item) => (
               <div
@@ -1020,7 +1023,7 @@ export default function Home() {
                   </div>
                   <span className="text-[11px] font-bold tracking-[0.2em] text-muted-foreground/30 pt-3 uppercase">{item.step}</span>
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2 relative z-10">{item.heading}</h3>
+                <h3 className="text-base font-bold text-foreground mb-2 relative z-10 leading-snug">{item.heading}</h3>
                 <p className="text-sm text-muted-foreground/65 leading-relaxed relative z-10">{item.body}</p>
               </div>
             ))}
@@ -1031,9 +1034,117 @@ export default function Home() {
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
             >
               <Sparkles className="w-4 h-4" />
-              Begin your story
+              Create my story
             </Link>
-            <p className="text-xs text-muted-foreground/35 mt-3">60 seconds to begin. Private from the first moment.</p>
+            <p className="text-xs text-muted-foreground/35 mt-3">Under a minute to begin. Private from the first word.</p>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Product shot — the finished story                                 */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">What you get at the end</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+              A complete immersive story —<br className="hidden md:block" />
+              <span className="text-primary"> written, narrated, illustrated.</span>
+            </h2>
+            <p className="text-muted-foreground mt-3 max-w-md mx-auto text-base leading-relaxed">
+              Not a text file. Not a rough draft. A fully finished story, ready to play the moment it's created.
+            </p>
+          </div>
+
+          {/* Product mockup */}
+          <div className="max-w-3xl mx-auto">
+            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.8)]"
+              style={{ background: "linear-gradient(160deg, #0e0a14 0%, #100812 50%, #0a0e18 100%)" }}>
+
+              {/* Cover art area */}
+              <div className="relative h-56 md:h-72 overflow-hidden">
+                <div className="absolute inset-0" style={{
+                  background: "linear-gradient(135deg, #1a0810 0%, #0e0c1a 30%, #060e1a 60%, #0a0814 100%)"
+                }} />
+                {/* Atmospheric overlays */}
+                <div className="absolute inset-0" style={{
+                  background: "radial-gradient(ellipse at 25% 35%, #c9a22722 0%, transparent 55%), radial-gradient(ellipse at 75% 65%, #6b8cce1a 0%, transparent 50%), radial-gradient(ellipse at 60% 20%, #e879a014 0%, transparent 45%)"
+                }} />
+                {/* Grain texture */}
+                <div className="absolute inset-0 opacity-[0.04]" style={{
+                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+                  backgroundSize: "128px 128px",
+                }} />
+                {/* Bottom gradient fade */}
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0e0a14] to-transparent" />
+                {/* Top chrome */}
+                <div className="absolute top-4 left-5 right-5 flex items-center justify-between z-10">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Heated</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/50 border border-white/8">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    <span className="text-[10px] text-white/50 font-medium">Now Playing</span>
+                  </div>
+                </div>
+                {/* Setting badge */}
+                <div className="absolute bottom-12 right-5 z-10">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/40">Victorian London, 1884</span>
+                </div>
+                {/* Title overlay */}
+                <div className="absolute bottom-4 left-5 z-10">
+                  <p className="font-display text-2xl md:text-3xl font-bold text-white/92 leading-tight drop-shadow-lg">The Fog Between Us</p>
+                </div>
+              </div>
+
+              {/* Story details + player */}
+              <div className="p-6 md:p-8">
+                {/* Description */}
+                <p className="text-sm text-white/50 leading-relaxed mb-6 max-w-lg">
+                  He shouldn't be in her study at this hour. She should have locked the door. Neither of them mentions the letter still folded in his pocket.
+                </p>
+
+                {/* Audio player */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-4 mb-3">
+                    {/* Play button */}
+                    <button className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)] cursor-default">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      Play Story
+                    </button>
+                    <div className="flex items-center gap-3 text-xs text-white/30">
+                      <span>5 min</span>
+                      <span>·</span>
+                      <span>4 scenes</span>
+                    </div>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-white/25 font-mono w-8">0:42</span>
+                    <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
+                      <div className="h-full rounded-full bg-primary/70" style={{ width: "14%" }} />
+                    </div>
+                    <span className="text-[10px] text-white/25 font-mono w-8 text-right">5:00</span>
+                  </div>
+                </div>
+
+                {/* Story excerpt — "reading along" panel */}
+                <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5 mb-5">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Reading Along · Scene 1 of 4</p>
+                  <p className="text-sm text-white/75 leading-[1.9] font-light">
+                    The fog had come in early, pressing itself against the windowpanes as though it wanted to be invited inside. She didn't look up when she heard the door — she knew the sound of him now, the particular way he entered a room as if he'd already decided whether to stay.
+                  </p>
+                </div>
+
+                {/* Privacy note */}
+                <div className="flex items-center gap-2 text-xs text-white/20">
+                  <Lock className="w-3 h-3 text-primary/30 flex-shrink-0" />
+                  <span>Private · Saved to your account only · No record shared with anyone, ever</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground/30 mt-5">
+              Every story is original — written, narrated, and illustrated for this moment only.{" "}
+              <Link href="/create" className="text-primary/50 hover:text-primary transition-colors">Create yours →</Link>
+            </p>
           </div>
         </section>
 
@@ -1070,21 +1181,21 @@ export default function Home() {
                   </span>
                 </div>
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-                  Every detail exactly<br className="hidden md:block" />
-                  <span className="text-primary">as you want it.</span>
+                  A story built around<br className="hidden md:block" />
+                  <span className="text-primary">the feeling you're after.</span>
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                  Cast who they are. Name them. Set where it happens and exactly how far it goes. Choose the tension, the tone, the feeling you want to be left with. This story is built entirely around you.
+                  Not a generic romance. Not someone else's fantasy. Tell us the mood you want to be left with, who you want in it, how far you want it to go. We write it around you.
                 </p>
                 <p className="text-muted-foreground/60 text-sm leading-relaxed mb-8">
-                  Written for the moment you're in right now — then narrated and kept private, heard only by you. Yours from the very first word.
+                  Every story is original — written for this moment, narrated in a voice that fits, and kept private. No one will ever know it exists. Including us.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
                   {[
-                    { label: "Your mood", desc: "The emotional register. How you want to feel." },
-                    { label: "Your situation", desc: "220 situations. Or let us choose the perfect one for you." },
-                    { label: "Your voice", desc: "Narrated in the tone that fits tonight." },
+                    { label: "The mood you want", desc: "The feeling you're chasing — and where you want to end up." },
+                    { label: "The situation", desc: "220 starting points. Or let us pick the one that fits tonight." },
+                    { label: "The voice", desc: "Narrated in the tone that suits the story you chose." },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl bg-background/40 border border-border/20 p-4">
                       <p className="font-semibold text-foreground text-sm mb-1">{item.label}</p>
@@ -1098,9 +1209,9 @@ export default function Home() {
                   className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-semibold hover:bg-primary/90 transition-all hover:scale-105"
                 >
                   <Sparkles className="w-4 h-4" />
-                  Begin your story
+                  Create my story
                 </Link>
-                <p className="text-xs text-muted-foreground/40 mt-3">60 seconds to begin. Private from the first moment.</p>
+                <p className="text-xs text-muted-foreground/40 mt-3">Under a minute to begin. Private from the first word.</p>
               </div>
 
               <div className="hidden md:flex flex-col gap-3 flex-shrink-0 w-56 pt-4">
@@ -1136,7 +1247,7 @@ export default function Home() {
               <div className="flex-1">
                 <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Access</p>
                 <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                  Private stories, on a subscription<br className="hidden md:block" /> that fits how often you listen.
+                  One subscription.<br className="hidden md:block" /> Private stories whenever the moment calls for it.
                 </h2>
               </div>
               <Link
@@ -1462,23 +1573,23 @@ export default function Home() {
             <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
               <Shield className="w-6 h-6 text-primary" />
             </div>
-            <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Your world. Your story. Kept entirely yours.</p>
+            <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Entirely yours. Entirely private.</p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-              A story built for you.<br className="hidden md:block" />
-              <span className="text-muted-foreground font-normal">Heard only by you.</span>
+              The story you've been<br className="hidden md:block" />
+              <span className="text-muted-foreground font-normal"> imagining is waiting.</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-8 leading-relaxed">
-              Tell us your world, your moment, the feeling you're after. We write it, narrate it, and keep it private — from the very first word.
+              Tell us who you want in it, what you want to feel, and how far it goes. We'll handle everything else — in private, from the very first word.
             </p>
             <Link
               href="/create"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 hover:-translate-y-0.5 shadow-[0_0_48px_-12px_hsl(37_42%_68%_/_0.45)]"
             >
               <Sparkles className="w-5 h-5" />
-              Begin your story
+              Create my story
             </Link>
             <p className="text-xs text-muted-foreground/40 mt-4">
-              60 seconds to begin. Private from the first moment.{" "}
+              Under a minute to begin. Private from the first word.{" "}
               <Link href="/privacy" className="hover:text-primary transition-colors">How we protect it →</Link>
             </p>
           </div>

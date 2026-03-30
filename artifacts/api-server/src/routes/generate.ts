@@ -2685,7 +2685,10 @@ const PLAN_LIMITS_GEN: Record<string, { period: "month" | "year"; limit: number 
  * or null if they may proceed with generation.
  * Resets counters lazily when the billing period has rolled over.
  */
-async function checkSubscriptionLimit(userId: string): Promise<string | null> {
+/** Result of checkSubscriptionLimit. error=null means proceed; useAddon=true means an addon credit should be consumed post-generation. */
+type SubLimitResult = { error: string | null; useAddon: boolean };
+
+async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
   const [user] = await db
     .select({
       isAdmin: usersTable.isAdmin,
@@ -2693,17 +2696,22 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
       storiesGeneratedThisMonth: usersTable.storiesGeneratedThisMonth,
       storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
       subscriptionRenewDate: usersTable.subscriptionRenewDate,
+      addonStoriesRemaining: usersTable.addonStoriesRemaining,
     })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
-  if (!user) return "Account not found.";
+  if (!user) return { error: "Account not found.", useAddon: false };
 
-  if (user.isAdmin) return null; // Admins have unlimited stories
+  if (user.isAdmin) return { error: null, useAddon: false }; // Admins have unlimited stories
 
   const plan = user.subscriptionPlan ?? "free";
+  const addonCredits = user.addonStoriesRemaining ?? 0;
+
   if (plan === "free") {
-    return "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.com.";
+    // Free users can only generate if they have addon credits
+    if (addonCredits > 0) return { error: null, useAddon: true };
+    return { error: "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.com.", useAddon: false };
   }
 
   const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
@@ -2723,7 +2731,7 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
         .set({ storiesGeneratedThisYear: 0, subscriptionRenewDate: newRenewDate })
         .where(eq(usersTable.id, userId));
     }
-    return null; // Counter reset — they can generate
+    return { error: null, useAddon: false }; // Counter reset — they can generate
   }
 
   const used = planConfig.period === "year"
@@ -2731,16 +2739,29 @@ async function checkSubscriptionLimit(userId: string): Promise<string | null> {
     : (user.storiesGeneratedThisMonth ?? 0);
 
   if (used >= planConfig.limit) {
+    // Over plan limit — fall back to addon credits if available
+    if (addonCredits > 0) return { error: null, useAddon: true };
     const renewStr = renewDate
       ? new Date(renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
       : "your renewal date";
     if (plan === "monthly") {
-      return `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. To add more stories now, email support@theprivatestory.com.`;
+      return { error: `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false };
     }
-    return `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. To add more stories, email support@theprivatestory.com.`;
+    return { error: `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false };
   }
 
-  return null; // Within limits
+  return { error: null, useAddon: false }; // Within limits
+}
+
+/** Decrement addon story credit by 1 after generation. Non-blocking — failure is logged but doesn't affect response. */
+async function consumeAddonCredit(userId: string): Promise<void> {
+  try {
+    await db.update(usersTable)
+      .set({ addonStoriesRemaining: drizzleSql`GREATEST(0, ${usersTable.addonStoriesRemaining} - 1)` })
+      .where(eq(usersTable.id, userId));
+  } catch (err) {
+    logger.error({ err, userId }, "[addon] Failed to decrement addon story credit");
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -2759,9 +2780,9 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
-  const subError = isAdminUser(req) ? null : await checkSubscriptionLimit(userId);
-  if (subError) {
-    res.status(402).json({ error: subError, code: "SUBSCRIPTION_LIMIT" });
+  const subResult = isAdminUser(req) ? { error: null, useAddon: false } : await checkSubscriptionLimit(userId);
+  if (subResult.error) {
+    res.status(402).json({ error: subResult.error, code: "SUBSCRIPTION_LIMIT" });
     return;
   }
 
@@ -2986,11 +3007,12 @@ router.post("/generate-full-story", async (req, res) => {
     return;
   }
 
-  const subLimitError = isAdminUser(req) ? null : await checkSubscriptionLimit(String(req.user!.id));
-  if (subLimitError) {
-    res.status(402).json({ error: subLimitError, code: "SUBSCRIPTION_LIMIT" });
+  const subLimitResult = isAdminUser(req) ? { error: null, useAddon: false } : await checkSubscriptionLimit(String(req.user!.id));
+  if (subLimitResult.error) {
+    res.status(402).json({ error: subLimitResult.error, code: "SUBSCRIPTION_LIMIT" });
     return;
   }
+  const _useAddonForThisGeneration = subLimitResult.useAddon;
 
   const rawIntake = req.body as GenerateStoryRequest;
 
@@ -3305,6 +3327,10 @@ router.post("/generate-full-story", async (req, res) => {
 
   try {
     const result = await Promise.race([pipeline(), timeoutPromise]);
+    // Consume addon credit if this generation was permitted by an addon credit
+    if (_useAddonForThisGeneration && req.isAuthenticated()) {
+      consumeAddonCredit(String(req.user!.id)).catch(() => {});
+    }
     res.json(result);
   } catch (err) {
     const statusCode = (err instanceof Error && (err as Error & { statusCode?: number }).statusCode) ?? 500;

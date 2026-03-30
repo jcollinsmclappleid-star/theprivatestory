@@ -50,6 +50,8 @@ export const usersTable = pgTable("users", {
   storiesGeneratedThisYear: integer("stories_generated_this_year").notNull().default(0),
   subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),
   subscriptionRenewDate: timestamp("subscription_renew_date", { withTimezone: true }),
+  // Addon story credits (each £3.99 purchase credits 1 story)
+  addonStoriesRemaining: integer("addon_stories_remaining").notNull().default(0),
   // Stripe billing identifiers
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),

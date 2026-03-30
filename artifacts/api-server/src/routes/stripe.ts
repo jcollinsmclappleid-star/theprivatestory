@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import Stripe from "stripe";
 import { db, usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 
 const router = Router();
@@ -159,13 +159,14 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         if (!userId || !plan) break;
 
         if (plan === "addon") {
+          // Credit 1 addon story — increments the remaining addon counter
           await db
             .update(usersTable)
             .set({
-              storiesGeneratedThisMonth: 0,
+              addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
             })
             .where(eq(usersTable.id, userId));
-          logger.info({ userId }, "[stripe-webhook] Addon story credited");
+          logger.info({ userId }, "[stripe-webhook] Addon story credited (+1)");
         } else {
           const isMonthly = plan === "monthly";
           const renewDate = new Date();

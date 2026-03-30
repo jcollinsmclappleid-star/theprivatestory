@@ -1,0 +1,263 @@
+Content Policy
+
+Effective date: [Insert date]
+Last updated: [Insert date]
+
+This Content Policy explains what kind of content is and is not allowed on The Private Story.
+
+The Private Story is a private, personalised audio storytelling service for adults. Stories are generated using structured user selections and are designed to be saved privately to the relevant user account. The service is not a public-sharing platform and is not designed for social posting, public distribution, or user-to-user interaction.
+
+This policy exists to:
+	•	maintain a safe and lawful service;
+	•	define the boundaries of permitted content;
+	•	explain how moderation works in principle;
+	•	support consistent handling of reports, blocked content, and account restrictions.
+
+By using the service, you agree to follow this Content Policy together with our Terms and Conditions.
+
+1. Adults-only service
+
+The Private Story is intended for adults aged 18 and over only.
+
+You must not use the service if you are under 18. You must not use the service to request, imply, generate, simulate, or refer to content involving anyone under 18, or anyone whose age is ambiguous or unclear.
+
+This includes any attempt to suggest, imply, roleplay, disguise, code, or frame underage content indirectly.
+
+2. What the service is for
+
+The service is intended for:
+	•	fictional storytelling for adults;
+	•	private, personal listening and reading experiences;
+	•	emotionally immersive, personalised audio stories;
+	•	intimate, romantic, or mood-led storytelling within lawful and permitted boundaries.
+
+The service is not intended for:
+	•	illegal content;
+	•	abusive or exploitative content;
+	•	public publishing or content distribution;
+	•	harassment, intimidation, or harmful conduct;
+	•	attempts to bypass moderation or safety systems.
+
+3. Core content standard
+
+All content created or accessed through the service must remain within the following standard:
+	•	all characters must be adults;
+	•	all interactions must be consensual;
+	•	the service must not be used to generate unlawful, exploitative, or abusive material;
+	•	content must remain within the product’s intended tone and safety boundaries.
+
+The product is designed around private, adult, fictional storytelling. It is not a tool for generating anything without limits.
+
+4. Content that is not allowed
+
+The following content is not allowed under any circumstances.
+
+4.1 Minors or age ambiguity
+
+You must not request, create, attempt to create, or reference content involving:
+	•	minors;
+	•	school-age characters;
+	•	age ambiguity;
+	•	youthful framing intended to suggest a minor;
+	•	“barely legal” style framing;
+	•	parent/child, guardian/minor, teacher/student where age ambiguity or exploitation is present;
+	•	any wording or setup intended to evade age restrictions.
+
+4.2 Non-consensual, coercive, or exploitative content
+
+You must not request, create, or attempt to create content involving:
+	•	non-consensual conduct;
+	•	coercion;
+	•	pressure or intimidation;
+	•	manipulation presented as sexual or intimate;
+	•	blackmail or threats;
+	•	abuse of vulnerability;
+	•	exploitative dependency;
+	•	forced secrecy connected to abuse;
+	•	content where consent is absent, unclear, reluctant, overridden, or treated as optional.
+
+4.3 Abuse, violence, or criminal exploitation
+
+You must not use the service for content involving:
+	•	sexual violence;
+	•	abuse framed as intimacy;
+	•	criminal exploitation;
+	•	incest or familial sexual content;
+	•	trafficking;
+	•	unlawful confinement;
+	•	extortion;
+	•	sadistic harm;
+	•	severe violence connected to intimate content;
+	•	content that would reasonably amount to illegal abuse or exploitation.
+
+4.4 Harassment, intimidation, or harmful targeting
+
+You must not use the service to create or support content intended to:
+	•	harass a real person;
+	•	humiliate, threaten, or intimidate someone;
+	•	target someone maliciously;
+	•	imitate or sexualise a real individual without permission;
+	•	create content that is abusive, threatening, or intended to cause distress.
+
+4.5 Evasion and moderation bypass
+
+You must not:
+	•	test the limits of the system through coded requests;
+	•	use indirect phrasing to bypass safety rules;
+	•	deliberately combine selections to produce prohibited content;
+	•	repeatedly attempt to generate blocked themes;
+	•	manipulate the service to produce content outside its permitted scope.
+
+5. Content that may be restricted, softened, or regenerated
+
+Some content may not be fully prohibited, but may still be restricted, rewritten, softened, or regenerated if it falls outside the intended tone of the service.
+
+This may include content that is:
+	•	too explicit for the product’s intended positioning;
+	•	too graphic or crude;
+	•	inconsistent with an agency-led, mutual, adult tone;
+	•	too aggressive, vulgar, or demeaning;
+	•	outside the selected category or emotional pacing;
+	•	inconsistent with the premium, private, female-first brand direction of the service.
+
+The Private Story is designed around emotional quality, privacy, and intentionality. Content that breaks that experience may be moderated even where it is not clearly unlawful.
+
+6. Moderation approach
+
+We may use a combination of automated systems and human review to:
+	•	assess generation requests;
+	•	review generated content;
+	•	block stories before release;
+	•	regenerate all or part of a story;
+	•	investigate reported stories;
+	•	record moderation decisions and outcomes.
+
+Moderation exists to support:
+	•	legal compliance;
+	•	safety;
+	•	product integrity;
+	•	user trust;
+	•	consistent enforcement of our policies.
+
+A story may be blocked, altered, regenerated, removed, or restricted even if it has not been publicly shared, because the service is designed to apply boundaries before or after generation where needed.
+
+7. What happens if content is blocked
+
+If content is blocked or restricted, we may do one or more of the following:
+	•	stop the generation request;
+	•	prevent the story from being shown;
+	•	prevent the story from being converted to audio;
+	•	regenerate all or part of the story;
+	•	remove the story from a private library;
+	•	flag the account for review;
+	•	restrict or suspend access;
+	•	keep an internal moderation record.
+
+We are not required to provide detailed reasoning in every case, but we may provide general feedback where appropriate.
+
+8. Reporting content
+
+Users may be able to report a story through the service.
+
+Reports may be submitted where content appears:
+	•	inappropriate;
+	•	outside the intended tone;
+	•	non-consensual or uncomfortable;
+	•	inconsistent with this policy;
+	•	otherwise concerning.
+
+When a report is made, we may:
+	•	review the relevant story;
+	•	review the generation selections used;
+	•	review moderation records and flags;
+	•	remove or regenerate content;
+	•	record the outcome internally;
+	•	restrict the account if repeated or serious misuse is identified.
+
+9. Account action and enforcement
+
+Where we reasonably believe this policy has been breached, we may take action including:
+	•	warning the user;
+	•	disabling a generation request;
+	•	removing a story;
+	•	restricting features;
+	•	suspending access;
+	•	permanently closing the account.
+
+We may also preserve internal records where reasonably necessary for:
+	•	safety;
+	•	abuse prevention;
+	•	legal compliance;
+	•	audit and moderation review;
+	•	repeated misuse tracking.
+
+10. Private library and policy enforcement
+
+Although user-generated stories are intended to be private, private status does not exempt content from moderation or policy enforcement.
+
+Stories stored in a private library may still be:
+	•	reviewed where reported;
+	•	reviewed where blocked or flagged by moderation;
+	•	removed if they breach this policy;
+	•	retained in limited form in moderation records where reasonably necessary.
+
+The fact that content is private does not give users permission to request or store prohibited material.
+
+11. Curated collection standards
+
+Content in the curated collection is selected and maintained by us.
+
+We aim for the curated collection to remain consistent with:
+	•	adult-only fictional storytelling;
+	•	lawful and moderated content;
+	•	the product’s premium, emotionally intelligent tone;
+	•	a private, non-social user experience.
+
+We may add, remove, replace, or revise curated content at any time.
+
+12. Repeated misuse
+
+Repeated misuse may include:
+	•	repeated attempts to trigger blocked content;
+	•	repeated reports about a user’s generated stories;
+	•	repeated attempts to evade system restrictions;
+	•	repeated creation requests that fall outside policy boundaries.
+
+Where repeated misuse is detected, we may impose stronger restrictions, including suspension or permanent account closure.
+
+13. No guarantee of unrestricted generation
+
+The Private Story does not guarantee that every selected combination, request, or generated output will be accepted, released, or preserved.
+
+Use of the service is subject to:
+	•	our moderation and safety systems;
+	•	our Terms and Conditions;
+	•	our legal obligations;
+	•	this Content Policy;
+	•	service integrity and product design choices.
+
+14. Policy updates
+
+We may update this Content Policy from time to time to reflect:
+	•	changes in law or regulation;
+	•	product changes;
+	•	moderation learnings;
+	•	new risks or misuse patterns;
+	•	safety improvements.
+
+The latest version will always be available on this page with the updated effective date.
+
+15. Contact
+
+If you have questions about this Content Policy, contact us at:
+
+Email: [Insert email address]
+
+⸻
+
+Optional short version for the top of the page
+
+If you want a cleaner opening section before the full policy, use this summary:
+
+The Private Story is an adults-only, private storytelling service.
+We do not allow content involving minors, non-consensual conduct, coercion, exploitation, or other unlawful or abusive themes. We may block, regenerate, remove, or review content where needed to keep the service safe, lawful, and aligned with our intended product experience.

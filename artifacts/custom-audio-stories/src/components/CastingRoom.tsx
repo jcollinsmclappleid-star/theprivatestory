@@ -712,31 +712,69 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 }
 
 /* ── Main component ───────────────────────────────────────────────── */
+const CASTING_STORAGE_KEY = "casting-room-session";
+
 export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep }: Props) {
-  const [step, setStep] = useState(handoffStep ?? 0);
+  // Load from localStorage if no handoff provided
+  const getInitialState = () => {
+    if (handoff) return handoff;
+    try {
+      const stored = localStorage.getItem(CASTING_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const initialHandoff = getInitialState();
+
+  const [step, setStep] = useState(initialHandoff?.handoffStep ?? handoffStep ?? 0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
     perspective: "her",
     intensity: afterDark ? "Elevated" : bedtime ? "Subtle" : "Warm",
     mood: "Emotional",
-    // Spread handoff data — intensity excluded so After Dark users must confirm
-    ...(handoff ? (({ listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData }) => castData)(handoff) : {}),
+    // Spread handoff/stored data — intensity excluded so After Dark users must confirm
+    ...(initialHandoff ? (({ listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData }) => castData)(initialHandoff) : {}),
   });
-  const [customTags, setCustomTags] = useState<string[]>(handoff?.customTags ?? []);
-  const [listenerName, setListenerName] = useState<string>(handoff?.listenerName ?? "");
-  const [partnerName, setPartnerName] = useState<string>(handoff?.partnerName ?? "");
+  const [customTags, setCustomTags] = useState<string[]>(initialHandoff?.customTags ?? []);
+  const [listenerName, setListenerName] = useState<string>(initialHandoff?.listenerName ?? "");
+  const [partnerName, setPartnerName] = useState<string>(initialHandoff?.partnerName ?? "");
   // Appearance
-  const [appearBuild, setAppearBuild] = useState<string>(handoff?.appearBuild ?? "");
-  const [appearHeight, setAppearHeight] = useState<string>(handoff?.appearHeight ?? "");
-  const [appearColouring, setAppearColouring] = useState<string>(handoff?.appearColouring ?? "");
-  const [appearEyes, setAppearEyes] = useState<string>(handoff?.appearEyes ?? "");
-  const [appearFeatures, setAppearFeatures] = useState<string[]>(handoff?.appearFeatures ?? []);
+  const [appearBuild, setAppearBuild] = useState<string>(initialHandoff?.appearBuild ?? "");
+  const [appearHeight, setAppearHeight] = useState<string>(initialHandoff?.appearHeight ?? "");
+  const [appearColouring, setAppearColouring] = useState<string>(initialHandoff?.appearColouring ?? "");
+  const [appearEyes, setAppearEyes] = useState<string>(initialHandoff?.appearEyes ?? "");
+  const [appearFeatures, setAppearFeatures] = useState<string[]>(initialHandoff?.appearFeatures ?? []);
 
   const [showAfterDarkTeaser, setShowAfterDarkTeaser] = useState(false);
 
   // Situation step state
-  const [situationLabel, setSituationLabel] = useState<string>(handoff?.situation ?? "");
-  const [situationId, setSituationId] = useState<string>(handoff?.situationId ?? "");
+  const [situationLabel, setSituationLabel] = useState<string>(initialHandoff?.situation ?? "");
+  const [situationId, setSituationId] = useState<string>(initialHandoff?.situationId ?? "");
   const [situationCategory, setSituationCategory] = useState<string>("");
+
+  // Save casting state to localStorage whenever any field changes
+  useEffect(() => {
+    const sessionData = {
+      handoffStep: step,
+      ...data,
+      customTags,
+      listenerName,
+      partnerName,
+      appearBuild,
+      appearHeight,
+      appearColouring,
+      appearEyes,
+      appearFeatures,
+      situation: situationLabel,
+      situationId,
+    };
+    try {
+      localStorage.setItem(CASTING_STORAGE_KEY, JSON.stringify(sessionData));
+    } catch (e) {
+      // localStorage quota exceeded or unavailable — silently fail
+    }
+  }, [step, data, customTags, listenerName, partnerName, appearBuild, appearHeight, appearColouring, appearEyes, appearFeatures, situationLabel, situationId]);
   const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([SITUATION_CATEGORIES[0]]));
 
@@ -1723,7 +1761,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </>
                 )}
                 {listenerSearch.trim().length >= 1 && filteredListenerNames.length === 0 && (
-                  <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>
+                  <div className="mt-3">
+                    <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
+                    <a
+                      href={`mailto:support@theprivatestory.co.uk?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(listenerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                      className="text-xs text-primary/80 hover:text-primary underline transition-colors"
+                    >
+                      Request this name via email →
+                    </a>
+                  </div>
                 )}
               </div>
             )}
@@ -1798,7 +1844,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </>
                 )}
                 {partnerSearch.trim().length >= 1 && filteredPartnerNames.length === 0 && (
-                  <p className="mt-3 text-xs text-muted-foreground/60 italic">No names found — try a different spelling.</p>
+                  <div className="mt-3">
+                    <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
+                    <a
+                      href={`mailto:support@theprivatestory.co.uk?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(partnerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                      className="text-xs text-primary/80 hover:text-primary underline transition-colors"
+                    >
+                      Request this name via email →
+                    </a>
+                  </div>
                 )}
               </div>
             )}

@@ -716,7 +716,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const [step, setStep] = useState(handoffStep ?? 0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
     perspective: "her",
-    intensity: afterDark ? "Elevated" : "Warm",
+    intensity: afterDark ? "Elevated" : bedtime ? "Subtle" : "Warm",
     mood: "Emotional",
     // Spread handoff data — intensity excluded so After Dark users must confirm
     ...(handoff ? (({ listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData }) => castData)(handoff) : {}),
@@ -816,7 +816,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       mood: data.mood ?? "Emotional",
       whoIsHe,
       dynamic,
-      storyMode: afterDark ? "unrestrained" : (data.intensity === "Subtle" || data.intensity === "Warm" ? "passionate" : "unrestrained"),
+      storyMode: afterDark ? "unrestrained" : bedtime ? "nocturne" : (data.intensity === "Subtle" || data.intensity === "Warm" ? "passionate" : "unrestrained"),
       customTags,
       // Structured appearance fields — sent individually to the API, reconstructed server-side
       appearBuild: appearBuild || undefined,
@@ -1262,14 +1262,24 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 6 — Intensity + Mood ────────────────────────────── */}
         {step === 6 && (
           <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
-            <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
+            {bedtime ? (
+              <>
+                <h2 className="font-display text-3xl font-bold text-foreground mb-2">How gentle?</h2>
+                <p className="text-muted-foreground text-sm mb-6">Drift stories stay calm and unhurried. Set the warmth of this one.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
+                <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
+              </>
+            )}
 
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Intensity</p>
               <div className="grid grid-cols-2 gap-2.5">
                 {INTENSITIES.filter(i => afterDark ? ["Elevated", "Intense"].includes(i.id) : true).map(i => {
-                  const isGateway = !afterDark && i.id === "Intense";
+                  const isGateway = !afterDark && !bedtime && i.id === "Intense";
+                  const isDriftLocked = bedtime && (i.id === "Elevated" || i.id === "Intense");
                   return (
                     <button
                       key={i.id}
@@ -1277,13 +1287,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                       onClick={() => {
                         if (isGateway) {
                           setShowAfterDarkTeaser(v => !v);
-                        } else {
+                        } else if (!isDriftLocked) {
                           setShowAfterDarkTeaser(false);
                           update("intensity", i.id);
                         }
                       }}
+                      disabled={isDriftLocked}
+                      title={isDriftLocked ? "Not available in Drift mode" : undefined}
                       className={`p-4 rounded-2xl border text-left transition-all ${
-                        isGateway
+                        isDriftLocked
+                          ? "border-white/5 bg-white/2 opacity-30 cursor-not-allowed"
+                          : isGateway
                           ? showAfterDarkTeaser
                             ? "border-[#c0392b]/40 bg-[#c0392b]/8 opacity-75"
                             : "border-[#c0392b]/25 bg-[#c0392b]/5 opacity-50 hover:opacity-70 hover:border-[#c0392b]/35"
@@ -1296,13 +1310,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                         {isGateway ? (
                           <Moon className="w-3 h-3 shrink-0" style={{ color: "#c0392b99" }} />
                         ) : (
-                          <div className="w-2 h-2 rounded-full shrink-0" style={{ background: i.color }} />
+                          <div className="w-2 h-2 rounded-full shrink-0" style={{ background: isDriftLocked ? "#444" : i.color }} />
                         )}
                         <p className={`font-semibold text-sm ${
-                          isGateway ? "text-[#c0392b]/60" : data.intensity === i.id ? "text-primary" : "text-foreground"
+                          isDriftLocked ? "text-muted-foreground/40" : isGateway ? "text-[#c0392b]/60" : data.intensity === i.id ? "text-primary" : "text-foreground"
                         }`}>{i.label}</p>
                         {isGateway && (
                           <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-[#c0392b]/50">After Dark</span>
+                        )}
+                        {isDriftLocked && (
+                          <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">Drift</span>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">{i.desc}</p>

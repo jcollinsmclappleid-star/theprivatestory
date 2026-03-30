@@ -1,0 +1,381 @@
+Terms and Conditions
+
+Effective date: [Insert date]
+Last updated: [Insert date]
+
+These Terms and Conditions govern your access to and use of The Private Story website, app, products, and related services.
+
+The Private Story is operated by [Insert Legal Company Name] trading as The Private Story.
+If you are a limited company, include the following in your footer and legal pages:
+	•	Registered company name: [Insert legal company name]
+	•	Company number: [Insert company number]
+	•	Registered in: [England and Wales / Scotland / Northern Ireland]
+	•	Registered office: [Insert registered office address]
+	•	Contact email: [Insert contact email]
+
+By accessing or using the service, creating an account, purchasing a subscription, generating a story, or otherwise using the platform, you agree to these Terms.
+
+If you do not agree, do not use the service.
+
+1. About the service
+
+The Private Story is a private digital storytelling service that provides AI-generated written and audio stories based on user selections and preferences.
+
+The service may include:
+	•	personalised story generation;
+	•	access to a private library containing stories generated through your account;
+	•	access to a curated collection of stories, where included in your plan;
+	•	account, billing, and subscription features;
+	•	related support, moderation, and safety features.
+
+The service is designed for private, personal use and is not a social platform.
+
+2. Adults only
+
+The service is intended for adults aged 18 and over only.
+
+By using the service, you confirm that:
+	•	you are at least 18 years old; and
+	•	you are legally permitted to use the service in your jurisdiction.
+
+We may suspend or terminate access if we reasonably believe a user is under 18 or is using the service unlawfully.
+
+3. Changes to these Terms
+
+We may update these Terms from time to time.
+
+If we make material changes, we may notify users through the website, app, email, or account notice. The latest version will always be posted with the updated effective date.
+
+By continuing to use the service after updated Terms take effect, you agree to the revised Terms.
+
+4. Your account
+
+To use some or all features, you may need to create an account.
+
+You agree to:
+	•	provide accurate and up-to-date information;
+	•	keep your login credentials confidential;
+	•	use the account only for your own personal use unless we expressly allow otherwise;
+	•	notify us promptly if you suspect unauthorised access to your account.
+
+You are responsible for activity carried out through your account unless you can show it resulted from our failure or a third party’s unauthorised act outside your control.
+
+We may suspend, restrict, or close accounts where reasonably necessary for safety, fraud prevention, legal compliance, non-payment, or breach of these Terms.
+
+5. Acceptable use
+
+You must use the service lawfully and in accordance with these Terms.
+
+You must not use the service to request, create, attempt to create, store, publish, reproduce, distribute, or otherwise use content that:
+	•	involves minors or age ambiguity;
+	•	is non-consensual, coercive, exploitative, or abusive;
+	•	is otherwise unlawful;
+	•	is intended to harass, threaten, intimidate, or harm;
+	•	infringes another person’s rights;
+	•	attempts to bypass, test, probe, or undermine our moderation or safety controls;
+	•	is used for commercial resale, redistribution, scraping, or automated extraction without our written consent.
+
+We may refuse requests, regenerate outputs, block content, remove stories, suspend features, or terminate accounts where reasonably necessary to enforce these Terms or protect the service and its users.
+
+6. Story generation and AI outputs
+
+The service uses automated systems and AI tools to generate stories and audio.
+
+You acknowledge and agree that:
+	•	outputs are generated automatically;
+	•	outputs are fictional and for entertainment purposes;
+	•	output quality, style, and suitability may vary;
+	•	outputs may not always be error-free, uninterrupted, or available on demand;
+	•	we may moderate, refuse, remove, regenerate, or restrict outputs.
+
+We do not guarantee that any generated story will match every expectation, preference, or interpretation.
+
+7. Structured selections and story creation
+
+The service generates stories based on structured user selections, such as mood, tone, setting, dynamic, intensity, and similar options made available through the product.
+
+We may change, add, remove, or refine these options over time to improve the service or maintain safety and quality.
+
+8. Private library
+
+Stories generated through your account may be saved to your private library.
+
+Your private library is intended to be visible only to you within your authenticated account. However, we may access or process content in your private library where reasonably necessary for:
+	•	moderation and safety;
+	•	support and troubleshooting;
+	•	technical maintenance;
+	•	backups and recovery;
+	•	legal compliance;
+	•	fraud or abuse prevention;
+	•	enforcement of these Terms.
+
+You may be able to delete stories from your library using account controls, subject to backups, technical retention, moderation records, and legal obligations.
+
+9. Curated collection
+
+Some paid plans may include access to a curated collection of pre-prepared stories and periodic releases.
+
+Curated collection access is:
+	•	personal to the account holder;
+	•	subject to the user’s active subscription or entitlement;
+	•	subject to change over time, including additions, removals, substitutions, or reorganisation.
+
+We do not guarantee that any specific curated story will remain available permanently.
+
+10. Personal use licence
+
+Subject to these Terms and your payment of any applicable fees, we grant you a limited, non-exclusive, non-transferable, revocable licence to access and use the service and its outputs for your own personal, private, non-commercial use.
+
+You must not, without our prior written permission:
+	•	resell or commercially exploit the service or outputs;
+	•	copy, reproduce, republish, upload, distribute, or publicly display our curated content;
+	•	use automated means to scrape or extract content or data;
+	•	reverse engineer, decompile, or attempt to derive source code from the service;
+	•	use the service to create a competing product or service.
+
+11. Ownership and intellectual property
+
+All rights in the website, app, software, branding, design, curated collection, and related materials belong to us or our licensors.
+
+As between you and us:
+	•	you retain any rights you may have in your own lawful account information;
+	•	we retain all rights in the platform, system design, curated materials, and service features;
+	•	generated outputs are provided to you for personal use under the licence above and not as a transfer of all underlying platform or system rights.
+
+You must not remove copyright, trademark, or proprietary notices from any materials.
+
+12. Fees, subscriptions, and billing
+
+We may offer:
+	•	monthly subscriptions;
+	•	annual subscriptions;
+	•	one-off purchases, including additional story purchases;
+	•	trial offers, introductory prices, or promotional access.
+
+All pricing will be shown at checkout. Prices are stated in the currency shown and may include taxes where applicable.
+
+By purchasing, you authorise the relevant payment to be taken through our payment provider.
+
+12.1 Subscription renewal
+
+Unless otherwise stated at checkout, subscriptions renew automatically at the end of each billing cycle until cancelled.
+
+You are responsible for cancelling before renewal if you do not want the next billing charge to be taken.
+
+12.2 Billing period
+
+Your subscription billing period will be stated at checkout and in your account settings.
+
+12.3 Price changes
+
+We may change subscription prices for future billing periods. If we do, we will give reasonable notice before the new price takes effect.
+
+13. Additional story purchases
+
+Where offered, you may purchase additional personalised stories separately from your subscription.
+
+Any such purchase is personal to your account and may be subject to:
+	•	feature availability;
+	•	moderation controls;
+	•	technical limits;
+	•	the Terms and Content Policy.
+
+Unless required by law, one-off digital purchases are generally non-refundable once used or supplied.
+
+14. Cooling-off rights and digital content
+
+If you are a consumer in the UK or another jurisdiction with mandatory cancellation rights, you may have a statutory right to cancel certain distance contracts within a cooling-off period.
+
+Because the service involves digital content and/or digital services supplied online, different rules may apply depending on what you buy and when access begins.
+
+14.1 Immediate access and digital content
+
+If, during any applicable cooling-off period, you ask us to begin supplying digital content or digital services immediately, you expressly request immediate performance.
+
+Where the law permits, and where we have properly informed you and obtained the necessary acknowledgement at checkout:
+	•	you may lose the right to cancel digital content once supply has begun; and/or
+	•	you may be required to pay for the part of the service already provided before cancellation takes effect.
+
+14.2 Statutory rights preserved
+
+Nothing in these Terms removes or limits any mandatory consumer rights you have under applicable law.
+
+14.3 Refunds and cancellations
+
+Our operational refund and cancellation approach is set out in our Refund Policy, which should be read together with these Terms.
+
+15. Refund Policy
+
+Refunds, where available, are governed by our Refund Policy.
+
+Because the service includes immediate-access digital features and generated content, refunds may be limited once:
+	•	a subscription has started and access has been used;
+	•	personalised stories have been generated;
+	•	additional purchased stories have been supplied;
+	•	curated content access has begun,
+
+except where required by law.
+
+16. Promotions, discounts, and trials
+
+We may offer promotions, trials, discount codes, or introductory plans from time to time.
+
+Unless expressly stated otherwise:
+	•	promotions cannot be combined;
+	•	we may withdraw or change promotions at any time for future users or future purchases;
+	•	trial or discounted access may convert to a paid subscription if clearly disclosed at checkout.
+
+17. Availability and changes to the service
+
+We may update, improve, change, suspend, or discontinue parts of the service at any time.
+
+This may include changes to:
+	•	features;
+	•	generation flow;
+	•	available voice options;
+	•	curated collection content;
+	•	pricing for future periods;
+	•	product design;
+	•	moderation and safety systems.
+
+We aim to keep the service available, but we do not guarantee uninterrupted or error-free availability.
+
+18. Moderation, reporting, and enforcement
+
+We may use automated and manual moderation processes to maintain safety, quality, legal compliance, and adherence to our rules.
+
+Users may also be able to report stories.
+
+Where reasonably necessary, we may:
+	•	block a generation request;
+	•	prevent a story from being released;
+	•	regenerate all or part of a story;
+	•	remove a story from a library;
+	•	restrict an account;
+	•	record moderation and report outcomes;
+	•	take enforcement action.
+
+You agree that moderation decisions may be made to protect users, the service, and legal compliance.
+
+19. Privacy and data protection
+
+Our Privacy Policy explains how we collect, use, store, and protect personal data.
+
+By using the service, you acknowledge that your personal data will be processed in accordance with our Privacy Policy.
+
+20. Third-party providers
+
+We may rely on third-party providers to operate the service, including providers for:
+	•	hosting;
+	•	payments;
+	•	authentication;
+	•	analytics;
+	•	AI generation;
+	•	audio generation;
+	•	customer support.
+
+We are not responsible for separate products or services offered directly to you by third parties under their own terms.
+
+21. Prohibited technical behaviour
+
+You must not:
+	•	interfere with the security or operation of the service;
+	•	attempt unauthorised access;
+	•	use bots, scripts, or scraping tools in a prohibited way;
+	•	upload or transmit malicious code;
+	•	probe or test vulnerabilities without permission.
+
+We may take technical and legal action in response to such conduct.
+
+22. Suspension and termination
+
+We may suspend or terminate your access immediately or on notice where reasonably necessary, including where:
+	•	you breach these Terms or the Content Policy;
+	•	we suspect fraud, abuse, or unlawful conduct;
+	•	payment fails or is reversed;
+	•	we need to protect users, the service, or third parties;
+	•	we are required to do so by law.
+
+You may stop using the service at any time. If you wish to avoid subscription renewal, you must cancel in accordance with your billing settings before the next renewal date.
+
+Termination does not affect rights or obligations that accrued before termination.
+
+23. Consumer rights and statutory protections
+
+Nothing in these Terms is intended to exclude or limit any consumer rights that cannot lawfully be excluded or limited.
+
+If any term in these Terms is found unenforceable, the rest will continue in force to the extent permitted by law.
+
+24. Disclaimers
+
+To the fullest extent permitted by law, the service is provided on an “as available” and “as is” basis.
+
+We do not promise that:
+	•	the service will always be available, uninterrupted, or error-free;
+	•	every story will meet your expectations;
+	•	the service will be compatible with every device, browser, or environment;
+	•	all outputs will always be suitable for every personal preference or use.
+
+The service is for entertainment only and does not constitute medical, mental health, legal, financial, or relationship advice.
+
+25. Limitation of liability
+
+Nothing in these Terms excludes or limits liability for:
+	•	death or personal injury caused by negligence;
+	•	fraud or fraudulent misrepresentation;
+	•	any other liability that cannot lawfully be excluded or limited.
+
+Subject to the above, and to the extent permitted by law:
+	•	we are not liable for indirect or consequential loss;
+	•	we are not liable for losses not reasonably foreseeable at the time the contract was formed;
+	•	our total liability arising out of or in connection with the service will not exceed the total amount paid by you to us in the 12 months preceding the event giving rise to the claim, or £100 if greater.
+
+This clause does not affect any rights you may have under mandatory consumer law.
+
+26. Indemnity for business misuse
+
+If you use the service in breach of these Terms, for unlawful purposes, or in a way not intended for consumer/private use, you agree to indemnify us for losses, costs, and liabilities arising from that misuse, to the extent permitted by law.
+
+This clause is not intended to override mandatory consumer protections.
+
+27. Complaints and support
+
+If you have a complaint or need support, contact us at:
+
+Email: [Insert support email]
+
+We aim to deal with complaints reasonably and in good faith.
+
+28. Entire agreement
+
+These Terms, together with our Privacy Policy, Content Policy, Refund Policy, Cookie Policy, and any clearly referenced checkout terms, form the agreement between you and us regarding the service.
+
+29. Severability
+
+If any provision of these Terms is held invalid, unlawful, or unenforceable, that provision shall be treated as severed and the remaining provisions shall remain in full force to the extent permitted by law.
+
+30. Waiver
+
+If we do not immediately enforce any part of these Terms, that does not mean we waive our right to enforce it later.
+
+31. Assignment
+
+We may transfer or assign our rights and obligations under these Terms as part of a business sale, merger, restructuring, or other legitimate business transaction.
+
+You may not transfer your rights or obligations under these Terms without our prior written consent.
+
+32. Governing law and jurisdiction
+
+These Terms are governed by the laws of England and Wales, unless mandatory law in your country of residence provides otherwise.
+
+If you are a consumer, you may have the right to bring proceedings in the courts of your usual place of residence, where applicable.
+
+⸻
+
+Optional checkout wording you should also use
+
+This should not sit only in the Terms. It should also appear clearly at checkout if you want to rely on it operationally:
+
+Immediate access consent
+
+I want access to begin immediately and understand that, where digital content or digital services are supplied straight away, my statutory cancellation rights may be reduced or lost to the extent permitted by law.

@@ -304,81 +304,113 @@ export function StoryTagStudio({
   }, [isAuthenticated]);
 
   const p = getPronounCtx(protagonistPronouns);
-  const categories: TagCategory[] = afterDark
+
+  // Bedtime (Drift) mode: only the nocturne category is active.
+  // Standard/After Dark categories are shown greyed-out so the user can
+  // see they exist but understand they don't belong in a drift-to-sleep story.
+  const activeCategories: TagCategory[] = afterDark
     ? [...buildStandardCategories(p), ...buildAfterDarkCategories(p)]
     : bedtime
-    ? [...buildStandardCategories(p), buildNocturneCategory()]
+    ? [buildNocturneCategory()]
     : buildStandardCategories(p);
+
+  const lockedCategories: TagCategory[] = bedtime ? buildStandardCategories(p) : [];
+
   const contradictionPairs = buildContradictionPairs(p);
+
+  function renderTag(tag: string, catTags: string[], locked: boolean) {
+    const selected = !locked && selectedTags.includes(tag);
+    const isUsual = !locked && usualTags.has(tag) && !selected;
+
+    const contradictionPartners = contradictionPairs
+      .filter(([a, b]) => a === tag || b === tag)
+      .map(([a, b]) => (a === tag ? b : a));
+    const blockedByContradiction = !selected && contradictionPartners.some(
+      partner => catTags.includes(partner) && selectedTags.includes(partner)
+    );
+
+    const isDisabled = locked || blockedByContradiction;
+    const titleText = locked
+      ? "Not available in Drift mode"
+      : blockedByContradiction
+      ? "Conflicts with another selection"
+      : undefined;
+
+    return (
+      <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
+        <button
+          type="button"
+          onClick={() => !isDisabled && onTagToggle(tag)}
+          disabled={isDisabled}
+          title={titleText}
+          className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+            selected
+              ? "border-transparent text-black"
+              : isDisabled
+              ? "border-white/5 text-muted-foreground/20 cursor-not-allowed"
+              : isUsual
+              ? "border-primary/40 text-foreground hover:border-primary/60"
+              : "border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground"
+          }`}
+          style={
+            selected
+              ? { background: accentColor, borderColor: accentColor }
+              : isUsual && !isDisabled
+              ? { background: `${accentColor}14` }
+              : undefined
+          }
+        >
+          {tag}
+        </button>
+        {isUsual && !isDisabled && (
+          <span
+            className="text-[8px] font-semibold uppercase tracking-widest px-1.5 leading-tight"
+            style={{ color: accentColor, opacity: 0.85 }}
+          >
+            Your Usual
+          </span>
+        )}
+      </span>
+    );
+  }
 
   return (
     <div className="space-y-10">
-      {categories.map((cat) => {
-        return (
-          <div key={cat.heading}>
-            <p
-              className="text-base font-semibold text-foreground mb-1"
-            >
-              {cat.heading}
-            </p>
-            {cat.sub && (
-              <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
-            )}
-            <div className="flex flex-wrap gap-2">
-              {cat.tags.map((tag) => {
-                const selected = selectedTags.includes(tag);
-                const isUsual = usualTags.has(tag) && !selected;
-
-                const contradictionPartners = contradictionPairs
-                  .filter(([a, b]) => a === tag || b === tag)
-                  .map(([a, b]) => (a === tag ? b : a));
-                const blockedByContradiction = !selected && contradictionPartners.some(
-                  partner => cat.tags.includes(partner) && selectedTags.includes(partner)
-                );
-
-                const isDisabled = blockedByContradiction;
-
-                return (
-                  <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
-                    <button
-                      type="button"
-                      onClick={() => !isDisabled && onTagToggle(tag)}
-                      disabled={isDisabled}
-                      title={blockedByContradiction ? "Conflicts with another selection" : undefined}
-                      className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                        selected
-                          ? "border-transparent text-black"
-                          : isDisabled
-                          ? "border-white/5 text-muted-foreground/25 cursor-not-allowed"
-                          : isUsual
-                          ? "border-primary/40 text-foreground hover:border-primary/60"
-                          : "border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground"
-                      }`}
-                      style={
-                        selected
-                          ? { background: accentColor, borderColor: accentColor }
-                          : isUsual && !isDisabled
-                          ? { background: `${accentColor}14` }
-                          : undefined
-                      }
-                    >
-                      {tag}
-                    </button>
-                    {isUsual && !isDisabled && (
-                      <span
-                        className="text-[8px] font-semibold uppercase tracking-widest px-1.5 leading-tight"
-                        style={{ color: accentColor, opacity: 0.85 }}
-                      >
-                        Your Usual
-                      </span>
-                    )}
-                  </span>
-                );
-              })}
-            </div>
+      {activeCategories.map((cat) => (
+        <div key={cat.heading}>
+          <p className="text-base font-semibold text-foreground mb-1">{cat.heading}</p>
+          {cat.sub && (
+            <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {cat.tags.map((tag) => renderTag(tag, cat.tags, false))}
           </div>
-        );
-      })}
+        </div>
+      ))}
+
+      {lockedCategories.length > 0 && (
+        <div className="mt-8 pt-8 border-t border-white/6">
+          <p className="text-xs text-muted-foreground/40 uppercase tracking-widest font-semibold mb-1">
+            Not available in Drift mode
+          </p>
+          <p className="text-xs text-muted-foreground/30 mb-6 leading-snug">
+            Drift is calm, warm, and unhurried. The options below belong to other modes.
+          </p>
+          <div className="space-y-8 opacity-30 pointer-events-none select-none">
+            {lockedCategories.map((cat) => (
+              <div key={cat.heading}>
+                <p className="text-sm font-semibold text-foreground mb-1">{cat.heading}</p>
+                {cat.sub && (
+                  <p className="text-xs text-muted-foreground mb-3 leading-snug">{cat.sub}</p>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {cat.tags.map((tag) => renderTag(tag, cat.tags, true))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

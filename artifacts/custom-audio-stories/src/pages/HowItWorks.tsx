@@ -36,7 +36,7 @@ const CASTING_FEATURES = [
     icon: <Users className="w-4 h-4" />,
     accent: "#e879a0",
     label: "The Pairing",
-    desc: "Six pairings. Choose the dynamic and we write to it.",
+    desc: "Five pairings. Choose the dynamic and we write to it.",
     examples: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
   },
   {
@@ -71,7 +71,7 @@ const CASTING_FEATURES = [
     icon: <Layers className="w-4 h-4" />,
     accent: "#e11d48",
     label: "The Situation",
-    desc: "220 starting points — or let us choose one for you. The context that gives every story its own charge.",
+    desc: "200+ starting points — or let us choose one for you. The context that gives every story its own charge.",
     examples: ["She works for him", "One night only", "Seven years later", "Strangers, delayed"],
   },
 ];
@@ -191,7 +191,7 @@ export default function HowItWorks() {
               {[
                 { n: "50+", label: "Countries & settings" },
                 { n: "14", label: "Character archetypes" },
-                { n: "220+", label: "Story situations" },
+                { n: "200+", label: "Story situations" },
               ].map(({ n, label }) => (
                 <div key={label} className="text-center">
                   <p className="text-sm font-bold text-primary">{n}</p>

@@ -1,0 +1,233 @@
+Clean up the public homepage of The Private Story to make the casting/customisation preview feel premium, emotionally charged, and clearly personalised — without using borderline explicit language in the public-facing experience.
+
+This is not a full redesign.
+This is a refinement pass focused on:
+- safer public positioning
+- stronger premium tone
+- better trust
+- cleaner SEO/public-page discipline
+- preserving the strength of the casting feature
+
+==================================================
+OBJECTIVE
+==================================================
+
+The Casting Room / customisation preview is one of the strongest differentiators on the site.
+Do NOT remove the feature.
+Do NOT weaken the sense of choice or depth.
+
+Instead:
+- keep the feature visible
+- keep it desirable
+- keep it emotionally rich
+- remove or soften any borderline explicit or too-forward public wording
+
+The public homepage should communicate:
+- depth of personalisation
+- emotional specificity
+- control
+- privacy
+- premium quality
+
+It should NOT feel:
+- porn-adjacent
+- overly explicit
+- too aggressive
+- tacky
+- unsafe for public-facing SEO and trust
+
+==================================================
+STRATEGIC RULE
+==================================================
+
+On the public homepage, show:
+- the shape of choice
+- the emotional tone
+- the elegance of customisation
+
+Do NOT show:
+- the most sexually charged wording
+- overtly explicit chips
+- forceful dynamics
+- high-risk phrasing
+
+The homepage should make users think:
+“This can be shaped exactly to my taste.”
+
+Not:
+“This is already pushing into explicit territory.”
+
+==================================================
+WHAT TO KEEP
+==================================================
+
+Keep:
+- the Casting Room section
+- the stat line showing breadth (countries, eras, archetypes, etc.)
+- the card-based preview of how customisation works
+- the premium editorial tone
+- the sense that the user controls the experience
+
+==================================================
+WHAT TO CLEAN UP
+==================================================
+
+Review all public-facing casting preview language, including:
+- chips
+- labels
+- subheadings
+- explanatory copy
+- example scenarios
+- card examples
+- mood references
+- dynamic references
+
+Identify and replace anything that feels:
+- too explicit
+- too overtly sexual
+- too aggressive
+- too male-gaze
+- too pornographic
+- too much like an adult site rather than a premium private storytelling product
+
+==================================================
+REPLACEMENT LANGUAGE DIRECTION
+==================================================
+
+Use language that is:
+- emotionally intelligent
+- suggestive but restrained
+- intimate without being explicit
+- premium
+- female-first
+- private
+- built around anticipation, mood, and chemistry
+
+Good public-facing directions include:
+- Slow burn
+- Late night
+- Quiet intensity
+- Magnetic tension
+- Confident energy
+- Forbidden connection
+- Emotional pull
+- Private escape
+- Lingering chemistry
+- Unspoken energy
+- A quiet pull
+- Something that builds
+- Hard to ignore
+- A story that unfolds slowly
+- The energy between you
+- Choose the feeling
+- Set the chemistry
+- Shape the atmosphere
+
+==================================================
+LANGUAGE TO REMOVE OR SOFTEN
+==================================================
+
+Remove or replace public-facing wording that sounds like:
+- Explicit
+- No limits
+- Without restraint
+- Dominant archetype
+- Power play
+- Submission
+- Taken
+- Anything forceful or overly sexual
+- Anything that makes the public homepage feel openly explicit
+
+If any stronger language is important to the product, move it deeper into the user journey:
+- inside the create flow
+- inside signed-in experiences
+- inside After Dark
+- after the user has already clicked into the experience
+
+==================================================
+COPY CLEANUP TASKS
+==================================================
+
+1. Review all casting preview chips and replace any risky ones with premium alternatives
+2. Review all casting-related body copy and tighten it to focus on:
+   - mood
+   - setting
+   - chemistry
+   - tension
+   - atmosphere
+   - pacing
+3. Ensure the section still clearly communicates depth of customisation
+4. Keep the emotional charge, but remove the public-facing edge that feels too explicit
+5. Make sure this section reinforces:
+   - personalisation
+   - control
+   - privacy
+   - premium storytelling
+
+==================================================
+EXAMPLE TRANSFORMATION DIRECTION
+==================================================
+
+Replace examples like:
+- Explicit → Deep / Charged / Late Night
+- Dominant archetype → Confident presence / Assured energy
+- Forbidden lover → Forbidden connection
+- Power Exchange → Magnetic imbalance / Charged dynamic
+- No limits → More intense / Deeper atmosphere
+
+Do not use these exact replacements mechanically.
+Rewrite them naturally so they feel like part of the brand world.
+
+==================================================
+SECTION FRAMING
+==================================================
+
+The Casting Room section should feel like:
+- a luxury personalisation engine
+- an intimate brief for a private story
+- a place where the user shapes feeling, not just selects content
+
+It should not feel like:
+- a fetish menu
+- a public adult catalogue
+- a high-risk explicit selector
+
+==================================================
+AFTER DARK SEPARATION
+==================================================
+
+If stronger language or more intense customisation exists, keep it in After Dark only.
+
+The public homepage should tease After Dark carefully, but should not carry its strongest vocabulary into the main homepage customisation preview.
+
+Make sure the main homepage remains:
+- premium
+- controlled
+- elegant
+- public-safe
+
+==================================================
+VISUAL CLEANUP
+==================================================
+
+As part of cleanup:
+- ensure chip density is not too high
+- reduce visual clutter if too many tags are visible at once
+- prioritise the most elegant and broadly appealing labels
+- keep card layouts breathable and easy to scan on mobile
+
+The public homepage should feel curated, not overloaded.
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Return a cleaned-up homepage version where:
+- the Casting Room/customisation preview remains one of the strongest sections
+- wording is premium and emotionally charged
+- public-facing language is safer and more elegant
+- any borderline explicit terms are removed, softened, or pushed deeper into the user journey
+- the homepage still sells control, taste, and personalisation clearly
+
+Do not remove the feature.
+Refine it so the public homepage feels more polished, premium, and commercially safe.

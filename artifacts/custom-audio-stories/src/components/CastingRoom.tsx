@@ -933,12 +933,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           ) : (
             <div />
           )}
-          <button
-            onClick={onSkip}
-            className="text-xs text-muted-foreground hover:text-primary transition-colors"
-          >
-            Use classic form →
-          </button>
         </div>
 
         <StepBar current={step} total={TOTAL_STEPS} />

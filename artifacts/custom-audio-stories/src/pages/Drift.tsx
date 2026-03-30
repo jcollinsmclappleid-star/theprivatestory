@@ -311,14 +311,14 @@ export default function Drift() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(0);
 
-  const setStory = useAudioPlayer((s) => s.setStory);
+  const play = useAudioPlayer((s) => s.play);
 
   const generateMutation = useGenerateFullStory({
     mutation: {
       onSuccess: (data) => {
         stopLoadingPhase();
         setResult(data);
-        setStory(data);
+        play(data);
         setPhase("result");
       },
       onError: () => {

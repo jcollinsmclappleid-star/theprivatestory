@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Heart, BookOpen, Flame, User, ChevronRight,
   Trash2, Wand2, Play, Library, ArrowRight, Star, Zap, LogIn,
+  CreditCard, Download,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -375,6 +376,36 @@ export default function Profile() {
   const { data: library, loading: libraryLoading } = useLibrary(isAuthenticated);
   const { items: continueItems, loading: continueLoading } = useContinueListening(isAuthenticated);
   const { items: reactionHistory } = useReactionHistory(isAuthenticated);
+  const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; renewDate: string | null } | null>(null);
+  const [exportLoading, setExportLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setUsageData(d); })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  const handleExport = useCallback(async () => {
+    if (exportLoading) return;
+    setExportLoading(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/me/export`, { credentials: "include" });
+      if (!r.ok) throw new Error("Export failed");
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "my-private-story-data.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // silent
+    } finally {
+      setExportLoading(false);
+    }
+  }, [exportLoading]);
 
   const handleUsePreset = useCallback((preset: CastingPreset) => {
     sessionStorage.setItem("castingPreset", JSON.stringify(preset.castingData));
@@ -461,6 +492,55 @@ export default function Profile() {
           value={savedCount}
         />
       </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Subscription */}
+      {/* ------------------------------------------------------------------ */}
+      {usageData && (
+        <section className="glass-panel rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <CreditCard className="w-4 h-4 text-primary" />
+            <h2 className="font-display font-semibold text-sm text-foreground">Subscription</h2>
+          </div>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Current plan</p>
+              <p className="font-semibold text-foreground capitalize">
+                {usageData.plan === "free" ? "Free" : usageData.plan === "monthly" ? "Monthly" : "Annual"}
+              </p>
+            </div>
+            {usageData.plan !== "free" && (
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Stories used</p>
+                <p className="font-semibold text-foreground">
+                  {usageData.used} / {usageData.limit}
+                </p>
+              </div>
+            )}
+          </div>
+          {usageData.plan !== "free" && (
+            <div className="mt-4">
+              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${usageData.storiesRemaining === 0 ? "bg-amber-400" : "bg-primary"}`}
+                  style={{ width: `${Math.min(100, (usageData.used / usageData.limit) * 100)}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {usageData.storiesRemaining > 0
+                  ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "story" : "stories"} remaining</span> — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</>
+                  : <span className="text-amber-400">Allowance reached — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</span>
+                }
+              </p>
+            </div>
+          )}
+          {usageData.plan === "free" && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Upgrade to generate stories. <Link href="/subscribe" className="text-primary hover:underline underline-offset-2">See plans →</Link>
+            </p>
+          )}
+        </section>
+      )}
 
       {/* ------------------------------------------------------------------ */}
       {/* Taste Profile */}
@@ -761,6 +841,30 @@ export default function Profile() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
+      {/* GDPR data export */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="rounded-2xl p-5 bg-card/30 border border-border/20">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-primary/10 rounded-xl flex-shrink-0">
+            <Download className="w-4 h-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-display font-semibold text-sm text-foreground mb-1">Download your data</h3>
+            <p className="text-xs text-muted-foreground mb-3">
+              Export all your personal data as a JSON file — your profile, stories, taste data, and preferences. You have the right to receive your data under GDPR Art.20.
+            </p>
+            <button
+              onClick={handleExport}
+              disabled={exportLoading}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              {exportLoading ? "Preparing download…" : "Download my data"}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Danger zone — account deletion (GDPR Art.17 right to erasure) */}
       {/* ------------------------------------------------------------------ */}
       <div className="border border-destructive/20 rounded-2xl p-5 mt-4">

@@ -2,7 +2,7 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
 import { db, usersTable } from "@workspace/db";
 import { nameSubmissions } from "@workspace/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
@@ -86,6 +86,140 @@ router.get("/taste", async (req, res) => {
     });
   } catch {
     res.status(500).json({ error: "Failed to load taste profile" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Subscription plan helpers
+// ---------------------------------------------------------------------------
+
+const PLAN_LIMITS: Record<string, { period: "month" | "year"; limit: number }> = {
+  free: { period: "month", limit: 0 },
+  monthly: { period: "month", limit: 5 },
+  annual: { period: "year", limit: 50 },
+};
+
+/** Returns the user's current usage stats, resetting counters if the renewal period has passed. */
+export async function getOrResetUsage(userId: string): Promise<{
+  plan: string;
+  used: number;
+  limit: number;
+  renewDate: string | null;
+  canGenerate: boolean;
+  storiesRemaining: number;
+}> {
+  const [user] = await db
+    .select({
+      subscriptionPlan: usersTable.subscriptionPlan,
+      storiesGeneratedThisMonth: usersTable.storiesGeneratedThisMonth,
+      storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
+      subscriptionRenewDate: usersTable.subscriptionRenewDate,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId));
+
+  if (!user) {
+    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0 };
+  }
+
+  const plan = user.subscriptionPlan ?? "free";
+  const planConfig = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
+  const renewDate = user.subscriptionRenewDate;
+
+  let used = planConfig.period === "year"
+    ? (user.storiesGeneratedThisYear ?? 0)
+    : (user.storiesGeneratedThisMonth ?? 0);
+
+  // Lazy counter reset: if renewal date has passed, reset counters and advance renewal date
+  if (renewDate && plan !== "free" && new Date() > renewDate) {
+    const newRenewDate = new Date(renewDate);
+    if (planConfig.period === "month") {
+      newRenewDate.setMonth(newRenewDate.getMonth() + 1);
+      await db.update(usersTable)
+        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
+        .where(eq(usersTable.id, userId));
+    } else {
+      newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
+      await db.update(usersTable)
+        .set({ storiesGeneratedThisYear: 0, subscriptionRenewDate: newRenewDate })
+        .where(eq(usersTable.id, userId));
+    }
+    used = 0;
+  }
+
+  const storiesRemaining = Math.max(0, planConfig.limit - used);
+  const canGenerate = plan !== "free" && used < planConfig.limit;
+
+  return {
+    plan,
+    used,
+    limit: planConfig.limit,
+    renewDate: renewDate ? renewDate.toISOString() : null,
+    canGenerate,
+    storiesRemaining,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/me/usage — current subscription plan + usage
+// ---------------------------------------------------------------------------
+router.get("/usage", async (req, res) => {
+  const userId = getUserId(req);
+  try {
+    const usage = await getOrResetUsage(userId);
+    res.json(usage);
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to load usage");
+    res.status(500).json({ error: "Failed to load usage" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/me/export — GDPR Article 15 data export (download all personal data)
+// ---------------------------------------------------------------------------
+router.get("/export", async (req, res) => {
+  const userId = getUserId(req);
+
+  try {
+    const [userRow] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    const [taste, progressMap, savedIds, generatedRows, presets] = await Promise.all([
+      tasteStore.get(userId),
+      progressStore.getUserProgress(userId),
+      libraryStore.getSavedStoryIds(userId),
+      libraryStore.getGeneratedStoryIds(userId),
+      presetsStore.getAll(userId),
+    ]);
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      account: {
+        id: userRow?.id,
+        email: userRow?.email,
+        name: userRow?.name,
+        firstName: userRow?.firstName,
+        lastName: userRow?.lastName,
+        createdAt: userRow?.createdAt,
+        subscriptionPlan: userRow?.subscriptionPlan,
+        termsAcceptedAt: userRow?.termsAcceptedAt,
+        ageDeclarationAt: userRow?.ageDeclarationAt,
+      },
+      tasteProfile: taste,
+      listeningProgress: Object.values(progressMap),
+      savedStoryIds: savedIds,
+      generatedStoryIds: generatedRows.map((r) => r.storyId),
+      castingPresets: presets,
+    };
+
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", `attachment; filename="private-story-data-export-${Date.now()}.json"`);
+    res.json(exportData);
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to export user data");
+    res.status(500).json({ error: "Failed to export data. Please contact support@theprivatestory.co.uk." });
   }
 });
 

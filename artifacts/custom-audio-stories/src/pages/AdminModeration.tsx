@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Flag, Zap, User, ChevronDown, ChevronUp, RefreshCw, Ban, CheckCircle } from "lucide-react";
+import { Flag, Zap, User, ChevronDown, ChevronUp, RefreshCw, Ban, CheckCircle, BarChart2, Users, BookOpen, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -624,10 +624,114 @@ function EventsTab() {
 }
 
 // ---------------------------------------------------------------------------
+// Stats tab
+// ---------------------------------------------------------------------------
+
+interface AdminStats {
+  users: { total: number; free: number; monthly: number; annual: number };
+  stories: { today: number; week: number; month: number; total: number };
+  moderation: { pendingReports: number; eventsLast30Days: number };
+}
+
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number | string }) {
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-3">
+      <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">{icon}</div>
+      <div>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-xl font-bold text-foreground">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function StatsTab() {
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const r = await fetch(`${API_BASE}/admin/stats`, { credentials: "include" });
+      if (!r.ok) throw new Error("Failed");
+      const d = await r.json();
+      setStats(d);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="h-20 bg-card/40 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="text-center py-12">
+        <AlertTriangle className="w-8 h-8 mx-auto mb-3 text-destructive/50" />
+        <p className="text-sm text-muted-foreground mb-3">Failed to load stats</p>
+        <Button variant="outline" size="sm" onClick={load}>Retry</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Users</p>
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard icon={<Users className="w-4 h-4 text-primary" />} label="Total users" value={stats.users.total} />
+          <StatCard icon={<Users className="w-4 h-4 text-primary" />} label="Monthly subscribers" value={stats.users.monthly} />
+          <StatCard icon={<Users className="w-4 h-4 text-primary" />} label="Annual subscribers" value={stats.users.annual} />
+          <StatCard icon={<User className="w-4 h-4 text-muted-foreground" />} label="Free accounts" value={stats.users.free} />
+        </div>
+      </div>
+      <div>
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Story Generation</p>
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="Today" value={stats.stories.today} />
+          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="This week" value={stats.stories.week} />
+          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="This month" value={stats.stories.month} />
+          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="All time" value={stats.stories.total} />
+        </div>
+      </div>
+      <div>
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Moderation</p>
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard icon={<Flag className="w-4 h-4 text-amber-400" />} label="Pending reports" value={stats.moderation.pendingReports} />
+          <StatCard icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} label="Events (30d)" value={stats.moderation.eventsLast30Days} />
+        </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={load}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Refresh stats
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main page
 // ---------------------------------------------------------------------------
 
-type ModerationTab = "reports" | "events";
+type ModerationTab = "reports" | "events" | "stats";
 
 export default function AdminModeration() {
   const { user, isLoading } = useAuth();
@@ -684,24 +788,28 @@ export default function AdminModeration() {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-6 bg-white/5 rounded-xl p-1 border border-white/10">
-          {(["reports", "events"] as const).map((t) => (
+          {([
+            { id: "reports", label: "User Reports", icon: Flag },
+            { id: "events", label: "Auto-flagged", icon: Zap },
+            { id: "stats", label: "Stats", icon: BarChart2 },
+          ] as { id: ModerationTab; label: string; icon: React.ElementType }[]).map(({ id, label, icon: Icon }) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={id}
+              onClick={() => setTab(id)}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                tab === t
+                tab === id
                   ? "bg-primary/15 text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "reports" ? <Flag className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
-              {t === "reports" ? "User Reports" : "Auto-flagged Events"}
+              <Icon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{label}</span>
             </button>
           ))}
         </div>
 
         {/* Tab content */}
-        {tab === "reports" ? <ReportsTab /> : <EventsTab />}
+        {tab === "reports" ? <ReportsTab /> : tab === "events" ? <EventsTab /> : <StatsTab />}
       </div>
     </div>
   );

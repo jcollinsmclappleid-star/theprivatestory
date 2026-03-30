@@ -2670,6 +2670,76 @@ export class ContentModerationError extends Error {
 }
 
 // ---------------------------------------------------------------------------
+// Subscription enforcement
+// ---------------------------------------------------------------------------
+
+const PLAN_LIMITS_GEN: Record<string, { period: "month" | "year"; limit: number }> = {
+  free: { period: "month", limit: 0 },
+  monthly: { period: "month", limit: 5 },
+  annual: { period: "year", limit: 50 },
+};
+
+/**
+ * Returns an error message string if the user has exceeded their subscription limit,
+ * or null if they may proceed with generation.
+ * Resets counters lazily when the billing period has rolled over.
+ */
+async function checkSubscriptionLimit(userId: string): Promise<string | null> {
+  const [user] = await db
+    .select({
+      subscriptionPlan: usersTable.subscriptionPlan,
+      storiesGeneratedThisMonth: usersTable.storiesGeneratedThisMonth,
+      storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
+      subscriptionRenewDate: usersTable.subscriptionRenewDate,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId));
+
+  if (!user) return "Account not found.";
+
+  const plan = user.subscriptionPlan ?? "free";
+  if (plan === "free") {
+    return "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.co.uk.";
+  }
+
+  const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
+  const renewDate = user.subscriptionRenewDate;
+
+  // Lazy counter reset when billing period has rolled over
+  if (renewDate && new Date() > renewDate) {
+    const newRenewDate = new Date(renewDate);
+    if (planConfig.period === "month") {
+      newRenewDate.setMonth(newRenewDate.getMonth() + 1);
+      await db.update(usersTable)
+        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
+        .where(eq(usersTable.id, userId));
+    } else {
+      newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
+      await db.update(usersTable)
+        .set({ storiesGeneratedThisYear: 0, subscriptionRenewDate: newRenewDate })
+        .where(eq(usersTable.id, userId));
+    }
+    return null; // Counter reset — they can generate
+  }
+
+  const used = planConfig.period === "year"
+    ? (user.storiesGeneratedThisYear ?? 0)
+    : (user.storiesGeneratedThisMonth ?? 0);
+
+  if (used >= planConfig.limit) {
+    const renewStr = renewDate
+      ? new Date(renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      : "your renewal date";
+    if (plan === "monthly") {
+      return `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. To add more stories now, email support@theprivatestory.co.uk.`;
+    }
+    return `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. To add more stories, email support@theprivatestory.co.uk.`;
+  }
+
+  return null; // Within limits
+}
+
+// ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
 
@@ -2682,6 +2752,12 @@ router.post("/plan-story", async (req, res) => {
   const userId = String(req.user!.id);
   if (await isUserBanned(userId)) {
     res.status(403).json({ error: "Your account has been suspended. Please contact support@theprivatestory.com if you believe this is an error." });
+    return;
+  }
+
+  const subError = await checkSubscriptionLimit(userId);
+  if (subError) {
+    res.status(402).json({ error: subError, code: "SUBSCRIPTION_LIMIT" });
     return;
   }
 
@@ -2903,6 +2979,12 @@ router.post("/generate-full-story", async (req, res) => {
 
   if (await isUserBanned(String(req.user!.id))) {
     res.status(403).json({ error: "Your account has been suspended. Please contact support@theprivatestory.com if you believe this is an error." });
+    return;
+  }
+
+  const subLimitError = await checkSubscriptionLimit(String(req.user!.id));
+  if (subLimitError) {
+    res.status(402).json({ error: subLimitError, code: "SUBSCRIPTION_LIMIT" });
     return;
   }
 

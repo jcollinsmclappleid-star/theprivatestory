@@ -9,7 +9,7 @@ import { storiesStore, seriesStore } from "../lib/storage.js";
 import { logger } from "../lib/logger.js";
 import { db } from "@workspace/db";
 import { generatedStories, contentBlocks, csamReports, userReports, usersTable, adminAuditLog, storyReports, moderationEvents } from "@workspace/db/schema";
-import { eq, like, asc, and, sql, isNull, desc, lt, or, ilike } from "drizzle-orm";
+import { eq, like, asc, and, sql, isNull, isNotNull, desc, lt, or, ilike } from "drizzle-orm";
 import { writeAuditLog } from "../lib/auditLog.js";
 import { notifyAdmin, alertModerationEvent } from "../lib/adminNotify.js";
 import { isAdmin, requireAdmin, requireAdminIdentity } from "../middlewares/requireAdmin.js";
@@ -1986,6 +1986,77 @@ router.post("/users/:userId/ban", async (req, res) => {
   } catch (err) {
     logger.error({ err }, "[admin] Failed to ban user");
     res.status(500).json({ error: "Failed to ban user" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /admin/stats — platform health & usage statistics
+// ---------------------------------------------------------------------------
+router.get("/stats", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+
+  try {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(startOfToday);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const [
+      totalUsersResult,
+      activeUsersResult,
+      bannedUsersResult,
+      monthlyPlanResult,
+      annualPlanResult,
+      freePlanResult,
+      totalStoriesResult,
+      storiesTodayResult,
+      storiesThisWeekResult,
+      storiesThisMonthResult,
+      pendingModResult,
+      totalModerationResult,
+    ] = await Promise.all([
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(isNull(usersTable.deletedAt)),
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(and(isNull(usersTable.deletedAt), sql`${usersTable.createdAt} >= ${thirtyDaysAgo}`)),
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(and(eq(usersTable.isBanned, true), isNull(usersTable.deletedAt))),
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(and(eq(usersTable.subscriptionPlan, "monthly"), isNull(usersTable.deletedAt))),
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(and(eq(usersTable.subscriptionPlan, "annual"), isNull(usersTable.deletedAt))),
+      db.select({ count: sql<number>`count(*)::int` }).from(usersTable).where(and(eq(usersTable.subscriptionPlan, "free"), isNull(usersTable.deletedAt))),
+      db.select({ count: sql<number>`count(*)::int` }).from(generatedStories).where(isNotNull(generatedStories.ownerUserId)),
+      db.select({ count: sql<number>`count(*)::int` }).from(generatedStories).where(and(sql`${generatedStories.createdAt} >= ${startOfToday}`, isNotNull(generatedStories.ownerUserId))),
+      db.select({ count: sql<number>`count(*)::int` }).from(generatedStories).where(and(sql`${generatedStories.createdAt} >= ${startOfWeek}`, isNotNull(generatedStories.ownerUserId))),
+      db.select({ count: sql<number>`count(*)::int` }).from(generatedStories).where(and(sql`${generatedStories.createdAt} >= ${startOfMonth}`, isNotNull(generatedStories.ownerUserId))),
+      db.select({ count: sql<number>`count(*)::int` }).from(storyReports).where(eq(storyReports.status, "pending")),
+      db.select({ count: sql<number>`count(*)::int` }).from(moderationEvents).where(sql`${moderationEvents.createdAt} >= ${thirtyDaysAgo}`),
+    ]);
+
+    res.json({
+      users: {
+        total: totalUsersResult[0]?.count ?? 0,
+        active: activeUsersResult[0]?.count ?? 0,
+        banned: bannedUsersResult[0]?.count ?? 0,
+        byPlan: {
+          free: freePlanResult[0]?.count ?? 0,
+          monthly: monthlyPlanResult[0]?.count ?? 0,
+          annual: annualPlanResult[0]?.count ?? 0,
+        },
+      },
+      stories: {
+        total: totalStoriesResult[0]?.count ?? 0,
+        today: storiesTodayResult[0]?.count ?? 0,
+        thisWeek: storiesThisWeekResult[0]?.count ?? 0,
+        thisMonth: storiesThisMonthResult[0]?.count ?? 0,
+      },
+      moderation: {
+        pendingReports: pendingModResult[0]?.count ?? 0,
+        eventsLast30Days: totalModerationResult[0]?.count ?? 0,
+      },
+      generatedAt: now.toISOString(),
+    });
+  } catch (err) {
+    logger.error({ err }, "[admin/stats] Failed to load stats");
+    res.status(500).json({ error: "Failed to load stats" });
   }
 });
 

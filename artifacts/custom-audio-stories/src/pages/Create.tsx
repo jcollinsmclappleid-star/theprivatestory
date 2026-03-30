@@ -692,6 +692,9 @@ export default function Create() {
   const [formPresetFlash, setFormPresetFlash] = useState(false);
   const [showFormPresetSavePrompt, setShowFormPresetSavePrompt] = useState(false);
 
+  const [generationError, setGenerationError] = useState<{ message: string; isSubscriptionLimit: boolean } | null>(null);
+  const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; renewDate: string | null } | null>(null);
+
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
   const [isGeneratingVariation, setIsGeneratingVariation] = useState(false);
@@ -824,17 +827,38 @@ export default function Create() {
     }
   }, [play]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setUsageData(d); })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
   const generateMutation = useGenerateFullStory({
     mutation: {
       onSuccess: (data) => {
         stopLoadingPhase();
+        setGenerationError(null);
         setResult(data);
         setResultSaved(false);
         setStep("result");
         applyResultToPlayer(data);
+        // Refresh usage after successful generation
+        if (isAuthenticated) {
+          fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+            .then((r) => r.ok ? r.json() : null)
+            .then((d) => { if (d) setUsageData(d); })
+            .catch(() => {});
+        }
       },
-      onError: () => {
+      onError: (err: unknown) => {
         stopLoadingPhase();
+        const status = (err as { status?: number }).status;
+        const rawMessage = err instanceof Error ? err.message : "Generation failed. Please try again.";
+        const message = rawMessage.replace(/^HTTP \d{3} [^:]+:\s*/, "").trim();
+        const isSubscriptionLimit = status === 402;
+        setGenerationError({ message, isSubscriptionLimit });
         setStep("form");
       },
     },
@@ -1527,11 +1551,44 @@ export default function Create() {
                 <ChevronLeft className="w-4 h-4" />
                 Back to Casting Room
               </button>
+              {generationError && (
+                <div className={`rounded-2xl p-4 mb-6 border ${generationError.isSubscriptionLimit ? "bg-amber-950/30 border-amber-500/30" : "bg-destructive/10 border-destructive/30"}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className={`text-sm font-semibold mb-1 ${generationError.isSubscriptionLimit ? "text-amber-300" : "text-destructive"}`}>
+                        {generationError.isSubscriptionLimit ? "Story allowance reached" : "Generation failed"}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{generationError.message}</p>
+                      {!generationError.isSubscriptionLimit && (
+                        <button
+                          type="button"
+                          onClick={() => { setGenerationError(null); form.handleSubmit(onSubmit)(); }}
+                          className="mt-2 text-xs text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
+                        >
+                          Try again
+                        </button>
+                      )}
+                    </div>
+                    <button type="button" onClick={() => setGenerationError(null)} className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-0.5">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-start justify-between gap-4 mb-2">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
                   <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Private Story</h1>
                   <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
+                  {usageData && usageData.plan !== "free" && (
+                    <p className="text-xs text-muted-foreground/70 mt-1">
+                      {usageData.storiesRemaining > 0
+                        ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "story" : "stories"} remaining</span> this {usageData.plan === "annual" ? "year" : "month"}</>
+                        : <span className="text-amber-400">Story allowance used — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "soon"}</span>
+                      }
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col items-end gap-2 mt-1 flex-shrink-0">
                   <div className="flex items-center gap-1.5">

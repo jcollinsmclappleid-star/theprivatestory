@@ -5,6 +5,10 @@ import {
   progressStore,
   storiesStore,
 } from "../lib/storage.js";
+import { db } from "@workspace/db";
+import { usersTable } from "@workspace/db/schema";
+import { sql as drizzleSql, eq } from "drizzle-orm";
+import { logger } from "../lib/logger.js";
 
 const router = Router();
 
@@ -284,6 +288,15 @@ export async function trackGeneratedStory(
   }
 
   await tasteStore.upsert(userId, taste);
+
+  // Increment subscription usage counters (non-blocking — counter failure never stops the response)
+  db.update(usersTable)
+    .set({
+      storiesGeneratedThisMonth: drizzleSql`${usersTable.storiesGeneratedThisMonth} + 1`,
+      storiesGeneratedThisYear: drizzleSql`${usersTable.storiesGeneratedThisYear} + 1`,
+    })
+    .where(eq(usersTable.id, userId))
+    .catch((err: unknown) => logger.error({ err, userId }, "[library] Failed to increment story counters"));
 }
 
 // ---------------------------------------------------------------------------

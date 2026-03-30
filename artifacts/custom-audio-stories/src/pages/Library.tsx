@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag, Trash2 } from "lucide-react";
+import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag, Trash2, Search, X, SortAsc, SortDesc } from "lucide-react";
 import { Link } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
@@ -259,6 +259,8 @@ export default function Library() {
   const [variations, setVariations] = useState<FullGeneratedStory[]>([]);
   const [inProgress, setInProgress] = useState<(Story & { progress?: Record<string, unknown> })[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   const VARIATION_LABELS: Record<string, string> = {
     softer: "Softer",
@@ -300,6 +302,36 @@ export default function Library() {
   const handleUnsave = (storyId: string) => {
     setSaved((prev) => prev.filter((s) => s.id !== storyId));
   };
+
+  const filterAndSort = useCallback((stories: Story[]) => {
+    let result = stories;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (s) =>
+          (s.title ?? "").toLowerCase().includes(q) ||
+          (s.mood ?? "").toLowerCase().includes(q) ||
+          (s.description ?? "").toLowerCase().includes(q)
+      );
+    }
+    if (sortOrder === "oldest") {
+      result = [...result].sort((a, b) => {
+        const aDate = (a as Record<string, unknown>).createdAt as string | undefined;
+        const bDate = (b as Record<string, unknown>).createdAt as string | undefined;
+        return new Date(aDate ?? 0).getTime() - new Date(bDate ?? 0).getTime();
+      });
+    } else {
+      result = [...result].sort((a, b) => {
+        const aDate = (a as Record<string, unknown>).createdAt as string | undefined;
+        const bDate = (b as Record<string, unknown>).createdAt as string | undefined;
+        return new Date(bDate ?? 0).getTime() - new Date(aDate ?? 0).getTime();
+      });
+    }
+    return result;
+  }, [searchQuery, sortOrder]);
+
+  const filteredSaved = useMemo(() => filterAndSort(saved), [filterAndSort, saved]);
+  const filteredGenerated = useMemo(() => filterAndSort(generated), [filterAndSort, generated]);
 
   if (authLoading) {
     return (
@@ -368,6 +400,37 @@ export default function Library() {
         ))}
       </div>
 
+      {(activeTab === "saved" || activeTab === "generated") && (
+        <div className="flex gap-2 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or mood…"
+              className="w-full pl-9 pr-8 py-2 rounded-xl bg-card/40 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/40 focus:bg-card/60 transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+          <button
+            onClick={() => setSortOrder((prev) => prev === "newest" ? "oldest" : "newest")}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card/40 border border-border/30 text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all flex-shrink-0"
+            title={sortOrder === "newest" ? "Showing newest first" : "Showing oldest first"}
+          >
+            {sortOrder === "newest" ? <SortDesc className="w-3.5 h-3.5" /> : <SortAsc className="w-3.5 h-3.5" />}
+            <span className="hidden sm:inline">{sortOrder === "newest" ? "Newest" : "Oldest"}</span>
+          </button>
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
@@ -398,10 +461,17 @@ export default function Library() {
             className="space-y-3"
           >
             {activeTab === "saved" && (
-              saved.length === 0 ? (
-                <EmptyState tab="saved" />
+              filteredSaved.length === 0 ? (
+                searchQuery ? (
+                  <div className="py-12 text-center">
+                    <p className="text-sm text-muted-foreground">No stories match &ldquo;{searchQuery}&rdquo;</p>
+                    <button onClick={() => setSearchQuery("")} className="mt-2 text-xs text-primary hover:text-primary/80 underline underline-offset-2">Clear search</button>
+                  </div>
+                ) : (
+                  <EmptyState tab="saved" />
+                )
               ) : (
-                saved.map((story) => (
+                filteredSaved.map((story) => (
                   <StoryCard
                     key={story.id}
                     story={story}
@@ -413,10 +483,17 @@ export default function Library() {
             )}
 
             {activeTab === "generated" && (
-              generated.length === 0 ? (
-                <EmptyState tab="generated" />
+              filteredGenerated.length === 0 ? (
+                searchQuery ? (
+                  <div className="py-12 text-center">
+                    <p className="text-sm text-muted-foreground">No stories match &ldquo;{searchQuery}&rdquo;</p>
+                    <button onClick={() => setSearchQuery("")} className="mt-2 text-xs text-primary hover:text-primary/80 underline underline-offset-2">Clear search</button>
+                  </div>
+                ) : (
+                  <EmptyState tab="generated" />
+                )
               ) : (
-                generated.map((story) => {
+                filteredGenerated.map((story) => {
                   const s = story as Story & { parent_story_id?: string };
                   return (
                     <div key={s.id} className="relative">

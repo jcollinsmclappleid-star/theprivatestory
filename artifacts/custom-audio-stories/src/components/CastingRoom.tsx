@@ -962,7 +962,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 0 — Pairing ─────────────────────────────────────── */}
         {step === 0 && (
           <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose the pairing — this shapes everything that follows.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {PAIRINGS.map(p => (
@@ -978,7 +978,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 1 — Chemistry / Dynamic ─────────────────────────── */}
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
               Between {protagonistP.object} and {partnerP.object}.
             </h2>
             <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
@@ -1002,7 +1002,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 2 — Perspective ─────────────────────────────────── */}
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Whose story?</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Whose story?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose who the story follows.</p>
             <div className="grid gap-3">
               {PERSPECTIVES.filter(p => getValidPerspectiveIds(data.pairing).includes(p.id)).map(p => (
@@ -1018,7 +1018,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 3 — Character ───────────────────────────────────── */}
         {step === 3 && (
           <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
             <p className="text-muted-foreground text-sm mb-6">
               Choose {partnerP.possessive} heritage and the energy {partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.
             </p>
@@ -1149,7 +1149,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-center gap-3 mb-3">
               <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: accentColor }} />
-              <h2 className="font-display text-3xl font-bold text-foreground">Where in the world?</h2>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Where in the world?</h2>
             </div>
             <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
               A real country and city weave genuine cultural texture into your story — its sounds, its light, its customs. Entirely optional.
@@ -1260,7 +1260,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 5 — Setting ─────────────────────────────────────── */}
         {step === 5 && (
           <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">What's the world of this story?</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the world of this story?</h2>
             <p className="text-muted-foreground text-sm mb-6">The setting shapes what's possible — and how everything feels.</p>
 
             {/* ── Scenario (required) ── */}
@@ -1325,12 +1325,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             {bedtime ? (
               <>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-2">How gentle?</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How gentle?</h2>
                 <p className="text-muted-foreground text-sm mb-6">Drift stories stay calm and unhurried. Set the warmth of this one.</p>
               </>
             ) : (
               <>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-2">How far?</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How far?</h2>
                 <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
               </>
             )}
@@ -1483,7 +1483,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-2">What's the situation?</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the situation?</h2>
                 <p className="text-muted-foreground text-sm">Choose the engine of your story — or let us pick one for you.</p>
               </div>
               <button
@@ -1669,7 +1669,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="font-display text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
                 <p className="text-muted-foreground text-sm">Select only what feels right — everything you choose shapes the story.</p>
               </div>
               <button
@@ -1696,7 +1696,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 9 — Your Name ───────────────────────────────────── */}
         {step === 9 && (
           <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Your name.</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Your name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — the narrator will use it throughout your story.
             </p>
@@ -1779,7 +1779,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 10 — Partner Name ───────────────────────────────── */}
         {step === 10 && (
           <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">Their name.</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Their name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.
             </p>

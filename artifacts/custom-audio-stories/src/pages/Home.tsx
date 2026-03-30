@@ -1010,8 +1010,8 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         {/* How it works                                                      */}
         {/* ---------------------------------------------------------------- */}
-        <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="text-center mb-12">
+        <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-10">
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
               How it works
             </span>
@@ -1019,70 +1019,70 @@ export default function Home() {
               In under a minute, your story<br className="hidden md:block" />
               <span className="text-muted-foreground font-normal"> is ready to play.</span>
             </h2>
-            <p className="text-muted-foreground mt-3 max-w-lg mx-auto text-base leading-relaxed">
-              No browsing a catalogue hoping something fits. No compromising on details. A story that starts exactly where your imagination already is.
+            <p className="text-muted-foreground mt-3 max-w-md mx-auto text-sm leading-relaxed">
+              No browsing hoping something fits. No compromising. A story that starts exactly where your imagination already is.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connector line — desktop only */}
-            <div className="hidden md:block absolute top-10 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+            <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
             {[
               {
                 step: "01",
-                icon: <Globe className="w-5 h-5" />,
+                icon: <Globe className="w-4 h-4" />,
                 accent: "#c9a227",
-                heading: "Tell us exactly who you want in it",
-                body: "Choose who he is, the pull between you, where it happens, the mood you want to be in, and how far it goes. Every detail set in advance — none of it left to chance.",
+                heading: "Cast your story",
+                body: "Set the lead, the chemistry, the setting, the mood, and how far it goes. Every detail, before a word is written.",
               },
               {
                 step: "02",
-                icon: <PenLine className="w-5 h-5" />,
+                icon: <PenLine className="w-4 h-4" />,
                 accent: "#e879a0",
-                heading: "We write it around you",
-                body: "A literary story built to your exact brief — not generic, not templated. Narrated by a voice that fits the mood, with original cover art generated for this story alone.",
+                heading: "We write and narrate it",
+                body: "An original story built to your exact brief — narrated in a voice that fits, with unique cover art generated for it.",
               },
               {
                 step: "03",
-                icon: <Headphones className="w-5 h-5" />,
+                icon: <Headphones className="w-4 h-4" />,
                 accent: "#a78bfa",
-                heading: "Press play — wherever you are.",
-                body: "Your story lives privately in your account. On your commute, at home, at your desk — it's ready when you are. Yours to keep or quietly delete, any time.",
+                heading: "Press play, wherever you are",
+                body: "Ready in minutes. Private in your account. Commute, home, any time — it's waiting when you are.",
               },
             ].map((item) => (
               <div
                 key={item.step}
-                className="relative rounded-2xl border border-border/20 bg-card/20 p-8 hover:border-primary/20 hover:bg-primary/4 transition-all"
+                className="relative rounded-2xl border border-border/20 bg-card/20 p-6 hover:border-primary/20 hover:bg-primary/4 transition-all"
               >
                 <div
-                  className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+                  className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl pointer-events-none"
                   style={{ background: `${item.accent}12` }}
                 />
-                <div className="flex items-start gap-4 mb-4 relative z-10">
+                <div className="flex items-center gap-3 mb-3 relative z-10">
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border"
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border"
                     style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
                   >
                     {item.icon}
                   </div>
-                  <span className="text-[11px] font-bold tracking-[0.2em] text-muted-foreground/30 pt-3 uppercase">{item.step}</span>
+                  <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/30 uppercase">{item.step}</span>
                 </div>
-                <h3 className="text-base font-bold text-foreground mb-2 relative z-10 leading-snug">{item.heading}</h3>
-                <p className="text-sm text-muted-foreground/65 leading-relaxed relative z-10">{item.body}</p>
+                <h3 className="text-sm font-bold text-foreground mb-1.5 relative z-10 leading-snug">{item.heading}</h3>
+                <p className="text-xs text-muted-foreground/60 leading-relaxed relative z-10">{item.body}</p>
               </div>
             ))}
           </div>
-          <div className="text-center mt-8">
-            <Link
-              href="/create"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
-            >
-              <Sparkles className="w-4 h-4" />
-              Create my story
-            </Link>
-            <p className="text-xs text-muted-foreground/35 mt-3">Under a minute to begin. Private from the first word.</p>
+
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <div className="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-primary/20" />
+            <p className="text-xs text-muted-foreground/35 text-center">Try step one right now — the Casting Room is below</p>
+            <div className="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-primary/20" />
           </div>
         </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* CastingRoom preview — directly after How it works                 */}
+        {/* ---------------------------------------------------------------- */}
+        <CastingPreview />
 
         {/* ---------------------------------------------------------------- */}
         {/* Product shot — the finished story                                 */}
@@ -1148,7 +1148,6 @@ export default function Home() {
                 {/* Audio player */}
                 <div className="mb-6">
                   <div className="flex items-center gap-4 mb-3">
-                    {/* Play button */}
                     <button className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)] cursor-default">
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                       Play Story
@@ -1159,7 +1158,6 @@ export default function Home() {
                       <span>4 scenes</span>
                     </div>
                   </div>
-                  {/* Progress bar */}
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-white/25 font-mono w-8">0:42</span>
                     <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
@@ -1177,7 +1175,6 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Privacy note */}
                 <div className="flex items-center gap-2 text-xs text-white/20">
                   <Lock className="w-3 h-3 text-primary/30 flex-shrink-0" />
                   <span>Private · Visible only in your account · Never shared with anyone, ever</span>
@@ -1191,11 +1188,6 @@ export default function Home() {
             </p>
           </div>
         </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* CastingRoom preview                                               */}
-        {/* ---------------------------------------------------------------- */}
-        <CastingPreview />
 
         {/* ---------------------------------------------------------------- */}
         {/* Create Your Private Story — for novelists & romantics            */}

@@ -934,12 +934,18 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             </h2>
             <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
             <div className="grid gap-3">
-              {chemistries.map(c => (
-                <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
-                  <p className="font-semibold text-white text-base">{c.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
-                </ArtTile>
-              ))}
+              {chemistries
+                .filter(c =>
+                  !bedtime
+                    ? true
+                    : ["Lovers", "Slow Surrender", "Romantic", "Sweet & Tender", "Worship", "The Best Friend", "Nervous Energy", "Playful", "Equal Tension", "Push & Pull"].includes(c.label)
+                )
+                .map(c => (
+                  <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
+                    <p className="font-semibold text-white text-base">{c.label}</p>
+                    <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
+                  </ArtTile>
+                ))}
             </div>
           </motion.div>
         )}
@@ -1394,7 +1400,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Mood</p>
               <div className="flex flex-wrap gap-2">
-                {MOODS.map(m => (
+                {MOODS.filter(m =>
+                  !bedtime
+                    ? true
+                    : ["Romantic", "Emotional", "Tender", "Vulnerable", "Healing", "Quiet", "Nostalgic", "Aching", "Yearning", "Bittersweet"].includes(m)
+                ).map(m => (
                   <button
                     key={m}
                     type="button"

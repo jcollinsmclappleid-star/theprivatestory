@@ -19,7 +19,7 @@ const REASSURANCE = [
 ];
 
 const MONTHLY_FEATURES = [
-  "5 personalised story generations each month",
+  "5 Immersive Stories each month",
   "Full access to the curated collection",
   "Monthly curated releases",
   "Private library storage",
@@ -28,7 +28,7 @@ const MONTHLY_FEATURES = [
 ];
 
 const ANNUAL_FEATURES = [
-  "50 personalised story generations per year",
+  "50 Immersive Stories per year",
   "Full access to the curated collection",
   "Monthly curated releases",
   "Private library storage",
@@ -74,7 +74,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do I get with each plan?",
-    a: "Both plans include personalised story generations, full access to the curated collection, monthly releases, private library storage, narrated audio, and original cover art. The annual plan includes 50 generations per year at better value.",
+    a: "Both plans include Immersive Story credits — 5 per month or 50 per year — full access to the curated collection, monthly releases, private library storage, narrated audio, and original cover art. The annual plan is equivalent to £14.91 per month.",
   },
   {
     q: "What is included in the curated collection?",

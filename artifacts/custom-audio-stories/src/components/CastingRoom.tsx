@@ -882,6 +882,21 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const [partnerSearch, setPartnerSearch] = useState("");
   const listenerInputRef = useRef<HTMLInputElement>(null);
   const partnerInputRef = useRef<HTMLInputElement>(null);
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState("");
+  const countryDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!countryDropdownOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(e.target as Node)) {
+        setCountryDropdownOpen(false);
+        setCountrySearch("");
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [countryDropdownOpen]);
 
   const filteredListenerNames = listenerSearch.trim().length >= 1
     ? NAMES.filter(n => n.toLowerCase().startsWith(listenerSearch.toLowerCase())).slice(0, 8)
@@ -1156,22 +1171,60 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             {/* Country */}
             <div className="mb-4">
               <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: accentColor, opacity: 0.7 }}>Country</p>
-              <div className="relative">
-                <select
-                  value={data.country ?? ""}
-                  onChange={e => {
-                    update("country", e.target.value);
-                    update("city", "");
-                  }}
-                  className="w-full bg-card/50 border border-border/40 rounded-2xl px-5 py-4 text-base text-foreground appearance-none focus:outline-none focus:border-primary/50 transition-all cursor-pointer pr-10"
-                  style={{ colorScheme: "dark" }}
+              <div className="relative" ref={countryDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => { setCountryDropdownOpen(o => !o); setCountrySearch(""); }}
+                  className="w-full bg-card/50 border border-border/40 rounded-2xl px-5 py-4 text-base text-foreground text-left flex items-center justify-between gap-3 focus:outline-none focus:border-primary/50 transition-all cursor-pointer"
                 >
-                  <option value="">Choose a country…</option>
-                  {Object.keys(COUNTRY_CITIES).sort().map(c => (
-                    <option key={c} value={c}>{COUNTRY_FLAGS[c] ? `${COUNTRY_FLAGS[c]} ${c}` : c}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  <span className="flex items-center gap-2">
+                    {data.country && COUNTRY_FLAGS[data.country] && (
+                      <span className="text-xl leading-none">{COUNTRY_FLAGS[data.country]}</span>
+                    )}
+                    <span className={data.country ? "text-foreground" : "text-muted-foreground"}>
+                      {data.country || "Choose a country…"}
+                    </span>
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground flex-shrink-0 transition-transform ${countryDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                {countryDropdownOpen && (
+                  <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-card border border-border/60 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="p-2 border-b border-border/40">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                        <input
+                          autoFocus
+                          type="text"
+                          placeholder="Search countries…"
+                          value={countrySearch}
+                          onChange={e => setCountrySearch(e.target.value)}
+                          className="w-full bg-background/50 rounded-xl pl-8 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="max-h-56 overflow-y-auto">
+                      {Object.keys(COUNTRY_CITIES)
+                        .sort()
+                        .filter(c => !countrySearch || c.toLowerCase().includes(countrySearch.toLowerCase()))
+                        .map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => {
+                              update("country", c);
+                              update("city", "");
+                              setCountryDropdownOpen(false);
+                              setCountrySearch("");
+                            }}
+                            className={`w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-white/5 transition-colors ${data.country === c ? "text-primary" : "text-foreground"}`}
+                          >
+                            <span className="text-xl leading-none w-7 text-center">{COUNTRY_FLAGS[c] || "🌍"}</span>
+                            <span>{c}</span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
               {/* Country confirmed badge */}
               {data.country && (

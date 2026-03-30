@@ -152,7 +152,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Are intimate audio stories explicit?",
-      a: "The Private Story creates content that is adult and intimate in register — honest about desire, emotionally sophisticated, written for grown-up listeners who know what they want. The approach is literary rather than crudely explicit — the writing works through precision and atmosphere rather than direct description, which tends to produce a more genuinely intimate experience. The intensity is shaped by your choices in the creation flow.",
+      a: "The Private Story creates content that is adult and intimate in register — honest about desire, emotionally sophisticated, written for grown-up listeners who know what they want. The intensity is shaped by your choices in the creation flow, from quietly sensual through to fully explicit. Across all intensity levels, the approach is literary — the writing works through precision, atmosphere, and the specific texture of desire rather than bluntness for its own sake.",
     },
     {
       q: "Who are intimate audio stories for?",

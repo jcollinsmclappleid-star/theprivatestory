@@ -1095,8 +1095,7 @@ export default function AfterDark() {
         const parsed = JSON.parse(raw) as CastingRoomHandoff;
         setCastingHandoff(parsed);
         sessionStorage.removeItem("afterDarkHandoff");
-        // Skip scenario selection — user is coming straight from the standard create flow
-        setPhase("casting");
+        // Keep on scenario phase — user must choose a fantasy before casting begins
       }
     } catch { /* ignore parse errors */ }
   }, []);
@@ -1634,7 +1633,7 @@ export default function AfterDark() {
             className="max-w-3xl mx-auto px-4 py-8 space-y-8"
           >
             <button
-              onClick={() => setPhase("scenario")}
+              onClick={() => { setPhase("scenario"); setSelectedScenario(null); setResult(null); setCastingHandoff(null); }}
               className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
             >
               <ChevronLeft className="w-4 h-4" /> Start another fantasy
@@ -1707,6 +1706,7 @@ export default function AfterDark() {
                 setPhase("scenario");
                 setSelectedScenario(null);
                 setResult(null);
+                setCastingHandoff(null);
               }}
               className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/50"
               style={{ background: "rgba(192,57,43,0.07)", border: "1px solid rgba(192,57,43,0.25)" }}

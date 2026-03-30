@@ -1655,7 +1655,7 @@ export default function Create() {
                   {usageData && usageData.plan !== "free" && (
                     <p className="text-xs text-muted-foreground/70 mt-1">
                       {usageData.storiesRemaining > 0
-                        ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "story" : "stories"} remaining</span> this {usageData.plan === "annual" ? "year" : "month"}</>
+                        ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "Immersive Story" : "Immersive Stories"} remaining</span> this {usageData.plan === "annual" ? "year" : "month"}</>
                         : <span className="text-amber-400">Story allowance used — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "soon"}</span>
                       }
                     </p>

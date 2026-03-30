@@ -178,15 +178,6 @@ function Navbar({ streakDays }: { streakDays: number }) {
             {!isLoading && (
               isAuthenticated && user ? (
                 <div className="flex items-center gap-2">
-                  {streakDays >= 2 && (
-                    <span
-                      className="hidden md:inline text-[10px] font-semibold tracking-wide px-2 py-1 rounded-full border border-primary/30 bg-primary/8"
-                      style={{ color: "#c9a227" }}
-                      title={`${streakDays} evenings in a row`}
-                    >
-                      {streakDays} evenings
-                    </span>
-                  )}
                   <Link href="/me" className="flex-shrink-0">
                     {user.profileImageUrl || user.image ? (
                       <img

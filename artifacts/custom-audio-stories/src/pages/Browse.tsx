@@ -12,7 +12,7 @@ const CATEGORIES = [
   { id: "forbidden_desire",    label: "Forbidden Desire" },
   { id: "dominant_surrendered", label: "Power & Surrender" },
   { id: "late_night",          label: "Late Night" },
-  { id: "explicit_collection", label: "Explicit" },
+  { id: "explicit_collection", label: "After Dark" },
   { id: "slow_burn",           label: "Slow Burn" },
   { id: "emotional_desire",    label: "Emotional Desire" },
   { id: "second_chance",       label: "Second Chances" },

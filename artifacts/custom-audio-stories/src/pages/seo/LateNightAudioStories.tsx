@@ -146,7 +146,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Are these stories explicit?",
-      a: "The Private Story creates adult content in a literary register — honest about desire and charged with the specific atmosphere of late night, without being crudely explicit. The writing works through atmosphere, precision, and the quality of the encounter rather than direct description. The intensity is shaped by your choices in the creation flow.",
+      a: "The Private Story creates adult content in a literary register — honest about desire and charged with the specific atmosphere of late night. The intensity is shaped by your choices in the creation flow, from atmospheric and suggestive through to fully explicit. The writing works through atmosphere, precision, and the quality of the encounter across all intensity levels.",
     },
     {
       q: "How long are late night audio stories?",

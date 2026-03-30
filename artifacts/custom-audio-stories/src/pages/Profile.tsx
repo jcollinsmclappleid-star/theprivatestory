@@ -528,7 +528,7 @@ export default function Profile() {
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 {usageData.storiesRemaining > 0
-                  ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "story" : "stories"} remaining</span> — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</>
+                  ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "Immersive Story" : "Immersive Stories"} remaining</span> — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</>
                   : <span className="text-amber-400">Allowance reached — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</span>
                 }
               </p>

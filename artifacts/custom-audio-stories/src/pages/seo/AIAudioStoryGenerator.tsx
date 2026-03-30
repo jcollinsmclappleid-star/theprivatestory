@@ -173,7 +173,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Is the AI content safe and moderated?",
-      a: "Yes. The Private Story operates under a content policy that defines what the AI produces. Generation is guided toward specific emotional and narrative outcomes and away from content that falls outside the platform's guidelines. The system is designed for adult listeners and calibrated for emotional intelligence, not explicit or harmful content.",
+      a: "Yes. The Private Story operates under a content policy that defines what the AI produces. The system is designed for adult listeners — calibrated for emotional intelligence and adult intimacy, with intensity shaped by your choices in the creation flow, from sensual and atmospheric through to fully explicit. The content policy prevents harmful content; it does not prevent adult fiction. The AI writes toward your chosen brief, not toward a platform default.",
     },
     {
       q: "Can I regenerate if I want something different?",

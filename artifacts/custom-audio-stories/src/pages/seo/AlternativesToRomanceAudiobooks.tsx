@@ -204,7 +204,7 @@ const config: SEOPageConfig = {
     },
     {
       q: "Are personalised romance audio stories explicit?",
-      a: "The Private Story creates content that is emotionally immersive and intimate — subtly sensual rather than explicitly sexual. The focus is on desire, tension, connection, and emotional experience rather than explicit content. The experience is adult and sophisticated without being graphic.",
+      a: "The intensity depends on the choices you make in the creation flow. The Private Story creates adult content from sensual and atmospheric through to fully explicit — shaped by your preferences, not by a platform default. Across all intensity levels, the focus is on desire, tension, connection, and emotional experience that feels genuinely yours rather than assembled for a general audience.",
     },
     {
       q: "How long are romantic personalised audio stories?",

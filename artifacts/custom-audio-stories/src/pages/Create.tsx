@@ -1188,6 +1188,9 @@ export default function Create() {
   const [selectedSubthemeId, setSelectedSubthemeId] = useState<string | null>(null);
 
   const resetToFreshCasting = useCallback(() => {
+    // Clear CastingRoom localStorage so it starts completely fresh
+    localStorage.removeItem("casting-room-session");
+    
     setPerspective("your");
     setCastingPairing(undefined);
     setCastingHeritage(undefined);

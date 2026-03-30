@@ -342,6 +342,18 @@ export const libraryStore = {
       .values({ userId, storyId, type })
       .onConflictDoNothing();
   },
+
+  async removeGenerated(userId: string, storyId: string): Promise<void> {
+    await db
+      .delete(userLibrary)
+      .where(
+        and(
+          eq(userLibrary.userId, userId),
+          eq(userLibrary.storyId, storyId),
+          inArray(userLibrary.type, ["generated", "variation"]),
+        ),
+      );
+  },
 };
 
 // ---------------------------------------------------------------------------

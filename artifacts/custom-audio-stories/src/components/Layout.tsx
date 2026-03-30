@@ -8,6 +8,7 @@ import { AuthModal } from "./AuthModal";
 import { useAuth } from "../hooks/useAuth";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { StoryReactionOverlay } from "./StoryReactionOverlay";
+import { AgeGate, hasConfirmedAge } from "./AgeGate";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -412,6 +413,7 @@ function Footer() {
 export function Layout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   const { streakDays, setStreakDays } = useStreak(isAuthenticated);
+  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
 
   return (
     <div className="relative min-h-screen bg-background font-sans text-foreground selection:bg-primary/30">
@@ -419,6 +421,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         className="pointer-events-none fixed inset-0 z-50 h-full w-full opacity-20 mix-blend-overlay"
         style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/noise-texture.png)` }}
       />
+
+      {!ageConfirmed && <AgeGate onConfirmed={() => setAgeConfirmed(true)} />}
 
       <Navbar streakDays={streakDays} />
       <StoryLifecycleManager

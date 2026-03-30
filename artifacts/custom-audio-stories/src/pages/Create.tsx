@@ -1207,6 +1207,9 @@ export default function Create() {
     setMyUsualApplied(false);
     setFormPreset(null);
     setLastCastingData(null);
+    setPendingCastingData(null);
+    setPresetNameDraft("");
+    setGenerationError(null);
     form.reset();
     setStep("casting");
   }, [form]);

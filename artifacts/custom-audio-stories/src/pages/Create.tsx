@@ -677,6 +677,7 @@ export default function Create() {
     try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
   });
   const [step, setStep] = useState<"casting" | "preset-prompt" | "form" | "generating" | "result">("casting");
+  const [castingResetKey, setCastingResetKey] = useState(0);
   
   // Scroll to top whenever step changes
   useEffect(() => {
@@ -1241,6 +1242,8 @@ export default function Create() {
       storyMode: "romance",
       experienceTags: [],
     });
+    // Force CastingRoom component to remount by changing the key
+    setCastingResetKey(prev => prev + 1);
     setStep("casting");
   }, [form]);
 
@@ -1550,6 +1553,7 @@ export default function Create() {
               </div>
             )}
             <CastingRoom
+              key={castingResetKey}
               onComplete={handleCastingComplete}
               onSkip={() => setStep("form")}
             />

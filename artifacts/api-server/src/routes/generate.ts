@@ -9,7 +9,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
-import { MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
+import { getMasterEroticLayer, MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
 import { buildPrompt, buildIntensityLayer as buildNumericIntensityLayer, getCategoryById, getSubthemeById } from "../lib/buildPrompt.js";
 import { VALID_SITUATION_IDS, getSituationById, getSituationByLabel } from "../lib/situations.js";
 import { STORY_CATEGORIES } from "../lib/storyCategories.js";
@@ -1810,7 +1810,7 @@ export async function writeStoryFromBrief(brief: StoryBrief, listenerName: strin
 
   const tier2SafetyLayer = originalInput?.tier2Enhanced ? TIER2_ENHANCED_SAFETY : "";
 
-  const systemPrompt = `${MASTER_EROTIC_LAYER}${categorySystemLayer}${tier2SafetyLayer}
+  const systemPrompt = `${getMasterEroticLayer(originalInput?.pairing)}${categorySystemLayer}${tier2SafetyLayer}
 
 ${intensityGuidance}${numericIntensityLayer}
 ${wordCountDirective}${povDirective}

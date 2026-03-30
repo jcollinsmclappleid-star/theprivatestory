@@ -342,6 +342,16 @@ function buildNocturneCategory(): TagCategory {
   };
 }
 
+/**
+ * Category-group exclusions.
+ * If any tag from category A is selected, the entire category B is blocked, and vice versa.
+ * Identified by category heading.
+ */
+const CATEGORY_EXCLUSION_PAIRS: [string, string][] = [
+  ["Just the Scene",            "Story Arc & Plot"],
+  ["Fantasy & The Impossible",  "Dark Fantasy"],
+];
+
 interface Props {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
@@ -395,11 +405,37 @@ export function StoryTagStudio({
 
   const contradictionPairs = buildContradictionPairs(p);
 
+  // Global cap: 10 standard, 12 after dark, 5 nocturne/bedtime
+  const totalCap = afterDark ? 12 : bedtime ? 5 : 10;
+  const totalSelected = selectedTags.length;
+  const globalAtCap = totalSelected >= totalCap;
+
+  // Build a lookup: category heading → all tags in that category (active only)
+  const categoryTagMap = new Map<string, string[]>(
+    activeCategories.map((c) => [c.heading, c.tags]),
+  );
+
+  /** Returns the heading of the category that is blocking this heading, or null. */
+  function getExcludedBy(heading: string): string | null {
+    for (const [a, b] of CATEGORY_EXCLUSION_PAIRS) {
+      if (heading === b) {
+        const aTags = categoryTagMap.get(a) ?? [];
+        if (aTags.some((t) => selectedTags.includes(t))) return a;
+      }
+      if (heading === a) {
+        const bTags = categoryTagMap.get(b) ?? [];
+        if (bTags.some((t) => selectedTags.includes(t))) return b;
+      }
+    }
+    return null;
+  }
+
   function renderTag(
     tag: string,
     catSelectedCount: number,
     maxSelect: number | undefined,
     locked: boolean,
+    categoryExcluded: boolean,
   ) {
     const selected = !locked && selectedTags.includes(tag);
     const isUsual = !locked && usualTags.has(tag) && !selected;
@@ -412,16 +448,24 @@ export function StoryTagStudio({
       (cp) => selectedTags.includes(cp),
     );
 
-    // Cap check — disabled when category is full and this tag isn't selected
+    // Per-category cap
     const blockedByCap = !selected && maxSelect !== undefined && catSelectedCount >= maxSelect;
 
-    const isDisabled = locked || blockedByContradiction || blockedByCap;
+    // Global cap
+    const blockedByGlobalCap = !selected && globalAtCap;
+
+    const isDisabled = locked || categoryExcluded || blockedByContradiction || blockedByCap || blockedByGlobalCap;
+
     const titleText = locked
       ? "Not available in Drift mode"
+      : categoryExcluded
+      ? "Not available with your current selections"
       : blockedByContradiction
       ? "Conflicts with another selection"
       : blockedByCap
       ? `Limit reached (${maxSelect} per section)`
+      : blockedByGlobalCap
+      ? `Total limit reached (${totalCap} tags)`
       : undefined;
 
     return (
@@ -467,28 +511,40 @@ export function StoryTagStudio({
       ? 0
       : cat.tags.filter((t) => selectedTags.includes(t)).length;
     const atCap = cat.maxSelect !== undefined && catSelectedCount >= cat.maxSelect;
+    const excludedBy = locked ? null : getExcludedBy(cat.heading);
+    const categoryExcluded = excludedBy !== null;
 
     return (
-      <div key={cat.heading} className={locked ? "opacity-30" : undefined}>
+      <div
+        key={cat.heading}
+        className={`transition-opacity ${locked || categoryExcluded ? "opacity-30" : ""}`}
+      >
         <div className="flex items-baseline justify-between mb-1">
           <p className="text-base font-semibold text-foreground">{cat.heading}</p>
-          {!locked && cat.maxSelect !== undefined && (
-            <span
-              className={`text-xs tabular-nums transition-colors ${
-                atCap ? "font-semibold" : "text-muted-foreground/50"
-              }`}
-              style={atCap ? { color: accentColor } : undefined}
-            >
-              {catSelectedCount}/{cat.maxSelect}
-            </span>
-          )}
+          <div className="flex items-center gap-3">
+            {categoryExcluded && (
+              <span className="text-[10px] text-muted-foreground/60 italic">
+                not available with {excludedBy}
+              </span>
+            )}
+            {!locked && !categoryExcluded && cat.maxSelect !== undefined && (
+              <span
+                className={`text-xs tabular-nums transition-colors ${
+                  atCap ? "font-semibold" : "text-muted-foreground/50"
+                }`}
+                style={atCap ? { color: accentColor } : undefined}
+              >
+                {catSelectedCount}/{cat.maxSelect}
+              </span>
+            )}
+          </div>
         </div>
         {cat.sub && (
           <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
         )}
         <div className="flex flex-wrap gap-2">
           {cat.tags.map((tag) =>
-            renderTag(tag, catSelectedCount, cat.maxSelect, locked),
+            renderTag(tag, catSelectedCount, cat.maxSelect, locked, categoryExcluded),
           )}
         </div>
       </div>
@@ -497,6 +553,22 @@ export function StoryTagStudio({
 
   return (
     <div className="space-y-10">
+      {/* Global tag counter */}
+      {!bedtime && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            Choose what shapes your story — the more specific, the better.
+          </p>
+          <span
+            className={`text-xs tabular-nums font-medium transition-colors ${
+              globalAtCap ? "font-semibold" : "text-muted-foreground/50"
+            }`}
+            style={globalAtCap ? { color: accentColor } : undefined}
+          >
+            {totalSelected}/{totalCap}
+          </span>
+        </div>
+      )}
       {activeCategories.map((cat) => renderCategory(cat, false))}
       {lockedCategories.map((cat) => renderCategory(cat, true))}
     </div>

@@ -350,6 +350,8 @@ function buildNocturneCategory(): TagCategory {
 const CATEGORY_EXCLUSION_PAIRS: [string, string][] = [
   ["Just the Scene",            "Story Arc & Plot"],
   ["Fantasy & The Impossible",  "Dark Fantasy"],
+  ["Pure Romance",              "Surrender & Power"],
+  ["Praise & Devotion",         "Surrender & Power"],
 ];
 
 interface Props {

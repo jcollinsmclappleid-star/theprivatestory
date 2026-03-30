@@ -21,7 +21,7 @@ export default function Privacy() {
           This isn't just a legal document. It's a plain explanation of what we do and don't hold on to — because you have a right to know, and you deserve a straight answer.
         </p>
         <p className="text-muted-foreground text-sm mt-3">
-          For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is My Private Story Ltd (trading as The Private Story).
+          For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is Ianson System Ltd (trading as The Private Story), registered in England and Wales. Registered address: 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ.
         </p>
       </div>
 
@@ -35,7 +35,7 @@ export default function Privacy() {
             </div>
             <div>
               <h2 className="font-display text-xl font-bold text-foreground mb-1">What we store</h2>
-              <p className="text-muted-foreground text-sm">Three things. Nothing more.</p>
+              <p className="text-muted-foreground text-sm">The minimum necessary to run the service.</p>
             </div>
           </div>
           <div className="space-y-3 pl-14">
@@ -46,11 +46,19 @@ export default function Privacy() {
               },
               {
                 title: "Your stories",
-                desc: "The stories you've created are saved to your private library. Only you can see them. No one else — not us, not a moderator, not an algorithm — is reading your stories.",
+                desc: "The stories you've created are saved to your private library. Only you can see them. No one else — not us, not a moderator, not an algorithm — is reading your stories in the normal course of service.",
               },
               {
-                title: "Your progress",
-                desc: "Where you left off in a story, so you can pick up exactly where you stopped. That's it.",
+                title: "Your listening progress",
+                desc: "Where you left off in a story, so you can pick up exactly where you stopped.",
+              },
+              {
+                title: "Your taste preferences",
+                desc: "The moods, tones, and styles you've responded to — used only to improve your personal recommendations, never shared.",
+              },
+              {
+                title: "Subscription and billing records",
+                desc: "The fact of your subscription (active, cancelled, tier). Your payment card details are handled entirely by our payment processor — we never see or store them.",
               },
             ].map((item) => (
               <div key={item.title} className="glass-panel rounded-xl p-4">
@@ -76,8 +84,8 @@ export default function Privacy() {
             {[
               { category: "Account and story data", period: "Deleted immediately on account deletion (see below)" },
               { category: "Safety event logs (blocked requests)", period: "90 days, then automatically deleted — unless legally preserved" },
+              { category: "User-submitted reports", period: "Retained as long as necessary for moderation and legal compliance" },
               { category: "Payment records", period: "7 years, as required by UK financial regulations (HMRC)" },
-              { category: "Age verification records", period: "7 years from the date of verification, as required by the Online Safety Act 2023" },
               { category: "Safety reports and preserved evidence", period: "Retained indefinitely for legal compliance — see Content Policy" },
             ].map(({ category, period }) => (
               <div key={category} className="glass-panel rounded-xl p-4">
@@ -103,7 +111,7 @@ export default function Privacy() {
             {[
               "Your real name",
               "Your location",
-              "Your payment card details (handled entirely by our payment processor — we never see them)",
+              "Your payment card details (handled entirely by Stripe — we never see them)",
               "Your browsing behaviour outside of this site",
               "Any social graph or activity feed",
               "What you searched for, clicked on, or nearly chose",
@@ -132,15 +140,15 @@ export default function Privacy() {
             {[
               {
                 right: "Right of access",
-                desc: "You can request a copy of all personal data we hold about you. Email us at hello@theprivatestory.com and we'll respond within 30 days.",
+                desc: "You can request a copy of all personal data we hold about you. Email us at support@theprivatestory.co.uk and we'll respond within 30 days.",
               },
               {
                 right: "Right to erasure (Article 17)",
-                desc: "You can delete your account at any time. When you do, we permanently and irreversibly delete your stories, email address, and profile. Safety event logs are retained for 90 days per our legal obligations, then deleted. Preserved safety evidence (if applicable) cannot be deleted.",
+                desc: "You can delete your account at any time. When you do, we permanently and irreversibly delete your stories, email address, and profile within 30 days. Safety event logs are retained for 90 days per our legal obligations, then deleted. Preserved safety evidence (if applicable) cannot be deleted.",
               },
               {
                 right: "Right to data portability",
-                desc: "You can request your data in a machine-readable format. Email us at hello@theprivatestory.com.",
+                desc: "You can request your data in a machine-readable format. Email us at support@theprivatestory.co.uk.",
               },
               {
                 right: "Right to rectification",
@@ -175,7 +183,7 @@ export default function Privacy() {
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Where our automated systems detect or we receive a report of content that may constitute child sexual abuse material (CSAM) or other serious illegal content, we are legally required to preserve relevant metadata and report to the NCMEC CyberTipline (US) and/or Internet Watch Foundation (UK). This data is retained for law enforcement purposes and <strong className="text-foreground/70">cannot be deleted by account deletion request</strong>. This is a legal requirement under US 18 USC 2258A and equivalent UK law.
+              Where our automated systems detect or we receive a report of content that may constitute child sexual abuse material (CSAM) or other serious illegal content, we are legally required to preserve relevant metadata and report to the appropriate authorities. This data is retained for law enforcement purposes and <strong className="text-foreground/70">cannot be deleted by account deletion request</strong>. This is a legal requirement under applicable UK law.
             </p>
           </div>
         </section>
@@ -212,7 +220,7 @@ export default function Privacy() {
               We don't run ads. We don't sell your data. We don't share your information with third parties for marketing purposes.
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              We are also web-only by design. There's no app to download, no icon on your phone, no push notifications. Nothing that leaves a trace you didn't choose to leave.
+              We are web-only by design. There's no app to download, no icon on your phone, no push notifications. Nothing that leaves a trace you didn't choose to leave.
             </p>
           </div>
         </section>
@@ -229,13 +237,15 @@ export default function Privacy() {
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              We do not share your data with third parties. However, the product requires a small number of technical processors to function — companies that handle data on our behalf, under strict instructions, only to deliver the service. They cannot use your data for their own purposes.
+              We do not share your data with third parties for their own purposes. However, the product requires a small number of technical processors to function — companies that handle data on our behalf, under strict instructions, only to deliver the service.
             </p>
             <div className="space-y-2">
               {[
-                { name: "OpenAI", role: "Generates your story text from your inputs. Under our API agreement, inputs are not used to train OpenAI models." },
-                { name: "ElevenLabs", role: "Converts the story text to narrated audio in your chosen voice. Audio is generated for delivery only, not retained." },
-                { name: "Stripe", role: "Processes payment. Your card details go directly to Stripe — we never see them, store them, or have access to them." },
+                { name: "OpenAI", role: "Generates your story text from your inputs. Under our API agreement, inputs are not used to train OpenAI models. Servers in the United States (covered by standard contractual clauses)." },
+                { name: "Mistral AI", role: "An alternative story generation model used for certain formats. Servers in the EU." },
+                { name: "ElevenLabs", role: "Converts story text to narrated audio in your chosen voice. Audio is generated for delivery only, not retained. Servers in the United States (covered by standard contractual clauses)." },
+                { name: "Stripe", role: "Processes payment. Your card details go directly to Stripe — we never see them, store them, or have access to them. Stripe is PCI DSS Level 1 certified." },
+                { name: "Replit / hosting infrastructure", role: "The platform on which the service runs. Personal data is stored on servers operated within this infrastructure." },
               ].map((s) => (
                 <div key={s.name} className="glass-panel rounded-xl p-4">
                   <p className="font-semibold text-foreground text-sm mb-1">{s.name}</p>
@@ -258,13 +268,15 @@ export default function Privacy() {
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              You can delete your account and everything associated with it at any time. When you do, we permanently remove your stories, your progress, and your email from our systems within 30 days.
+              You can delete your account and everything associated with it at any time from your profile page. When you do, we permanently remove your stories, your progress, and your email from our systems within 30 days.
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
               Deletion is not hidden behind a form or a support ticket. It is a single action, and it is irreversible.
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              To request deletion of your data if you cannot access your account, email <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a> from the email associated with your account.
+              To request deletion of your data if you cannot access your account, email{" "}
+              <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>{" "}
+              from the email associated with your account.
             </p>
           </div>
         </section>
@@ -296,11 +308,26 @@ export default function Privacy() {
             Privacy isn't a policy we wrote to cover ourselves. It's a design decision we made at the start. We deliberately chose not to build social features, public profiles, or listening histories because we believe what you listen to privately should stay that way.
           </p>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md mx-auto">
-            Questions about this policy: <a href="mailto:hello@theprivatestory.com" className="text-primary hover:underline">hello@theprivatestory.com</a>
-            <br />
-            Safety concerns: <a href="mailto:safety@theprivatestory.com" className="text-amber-400 hover:underline">safety@theprivatestory.com</a>
+            Questions about this policy:{" "}
+            <a href="mailto:support@theprivatestory.co.uk" className="text-primary hover:underline">support@theprivatestory.co.uk</a>
           </p>
         </section>
+
+        {/* Full policy link */}
+        <div className="glass-panel rounded-2xl p-6 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-display font-semibold text-foreground text-sm mb-1">Full Privacy Policy</p>
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              The complete formal privacy notice for Ianson System Ltd (trading as The Private Story), including all lawful bases, international transfers, and your full UK GDPR rights.
+            </p>
+          </div>
+          <Link
+            href="/privacy-policy"
+            className="flex-shrink-0 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors whitespace-nowrap"
+          >
+            Read in full →
+          </Link>
+        </div>
 
         <div className="text-center pt-4 flex gap-6 justify-center flex-wrap">
           <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>

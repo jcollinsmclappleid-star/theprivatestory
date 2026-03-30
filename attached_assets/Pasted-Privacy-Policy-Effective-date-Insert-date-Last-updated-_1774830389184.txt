@@ -1,0 +1,375 @@
+Privacy Policy
+
+Effective date: [Insert date]
+Last updated: [Insert date]
+Company name: [Insert legal entity name]
+Trading name: The Private Story
+Registered office: [Insert address, if applicable]
+Contact email: [Insert email address]
+
+1. Introduction
+
+This Privacy Policy explains how The Private Story collects, uses, stores, shares, and protects personal data when you use our website, create an account, generate stories, purchase a subscription, contact us, or otherwise interact with our services.
+
+The Private Story is a private, personalised audio storytelling service. Stories are generated using structured selections made by users and are intended to be available only within the relevant user account, subject to our moderation, support, security, legal, and operational needs.
+
+We are committed to handling personal data in a lawful, fair, and transparent way.
+
+2. Who we are
+
+For the purposes of UK data protection law, [Insert legal entity name] is the controller of your personal data.
+
+If you have any questions about this Privacy Policy or wish to exercise your rights, you can contact us at:
+
+Email: [Insert email address]
+Postal address: [Insert address, if applicable]
+
+3. Scope of this policy
+
+This Privacy Policy applies to personal data we collect through:
+	•	our website and app;
+	•	account creation and account management;
+	•	story generation and private library features;
+	•	subscriptions, billing, and customer support;
+	•	moderation, trust and safety, and abuse prevention;
+	•	cookies and similar technologies, where used.
+
+4. The personal data we collect
+
+We collect only the personal data we reasonably need to operate, secure, and improve the service.
+
+4.1 Account and identity data
+
+This may include:
+	•	email address;
+	•	account username or display name, if used;
+	•	encrypted or securely managed login credentials;
+	•	account status and subscription status;
+	•	age-gate confirmation records;
+	•	records showing when you accepted our Terms, Privacy Policy, and other policies.
+
+4.2 Story generation and product-use data
+
+Because the service uses structured selections rather than open free-text prompts, we may collect:
+	•	mood, tone, dynamic, setting, intensity, and other selections made during story creation;
+	•	selected voice or narration preferences;
+	•	timestamps of generation requests;
+	•	generated story titles, descriptions, text, tags, and audio files;
+	•	library actions such as play, pause, continue, replay, or delete.
+
+4.3 Private library and collection data
+
+We may store:
+	•	stories generated through your account;
+	•	metadata associated with those stories;
+	•	whether content has been saved, resumed, deleted, or reported;
+	•	your access to curated collection content included in your plan.
+
+4.4 Payment and billing data
+
+Payments are typically processed by third-party payment providers. We do not intentionally store full payment card details ourselves.
+
+We may store or receive:
+	•	billing status;
+	•	plan type;
+	•	renewal dates;
+	•	payment transaction references;
+	•	limited billing metadata necessary to manage subscriptions and accounts.
+
+4.5 Communications and support data
+
+If you contact us, we may collect:
+	•	emails and support requests;
+	•	customer service messages;
+	•	information you provide when asking for help, reporting a problem, or requesting deletion or account support.
+
+4.6 Safety, moderation, and reporting data
+
+To operate the service safely and enforce our rules, we may collect:
+	•	moderation outcomes;
+	•	policy flags;
+	•	block, regeneration, and review decisions;
+	•	story reports submitted by users;
+	•	admin review notes and audit records connected to reports or moderation events.
+
+4.7 Technical and usage data
+
+We may automatically collect:
+	•	IP address;
+	•	browser type and version;
+	•	device type and operating system;
+	•	log files and error diagnostics;
+	•	session activity;
+	•	page views and feature usage;
+	•	referral or campaign data where relevant.
+
+4.8 Cookie and analytics data
+
+Where used, we may collect cookie and similar technology data for essential service functionality and, if you consent, analytics or similar measurement purposes.
+
+5. How we collect your personal data
+
+We collect personal data:
+	•	directly from you when you sign up, create stories, subscribe, or contact us;
+	•	automatically when you use the site or app;
+	•	from service providers such as payment processors or hosting and infrastructure partners;
+	•	from trust and safety workflows, such as moderation systems and user reports.
+
+6. How we use your personal data
+
+We use personal data for the following purposes.
+
+6.1 To provide the service
+
+We use your data to:
+	•	create and manage your account;
+	•	authenticate your access;
+	•	generate personalised stories;
+	•	save and display your private library;
+	•	provide access to curated collection content;
+	•	maintain the performance and functionality of the product.
+
+6.2 To manage subscriptions and payments
+
+We use your data to:
+	•	process purchases;
+	•	activate subscriptions;
+	•	manage renewals and billing;
+	•	handle failed payments, billing disputes, and account queries.
+
+6.3 To moderate content and maintain safety
+
+We use your data to:
+	•	enforce our Terms and Content Policy;
+	•	detect misuse or prohibited requests;
+	•	investigate reports;
+	•	block, remove, or regenerate content where appropriate;
+	•	reduce legal, safety, and abuse risks.
+
+6.4 To support users and respond to enquiries
+
+We use your data to:
+	•	answer support questions;
+	•	troubleshoot product issues;
+	•	respond to account or billing concerns;
+	•	manage complaints and requests.
+
+6.5 To improve and develop the service
+
+We use your data to:
+	•	understand how users interact with the service;
+	•	improve product design and performance;
+	•	identify bugs and technical issues;
+	•	improve moderation and quality controls;
+	•	test, refine, and optimise product features.
+
+6.6 To comply with law and protect rights
+
+We may use personal data to:
+	•	comply with legal obligations;
+	•	maintain records necessary for compliance;
+	•	establish, exercise, or defend legal claims;
+	•	protect our rights, users, service providers, and the integrity of the platform.
+
+7. Our lawful bases for processing
+
+Under UK GDPR, we must have a lawful basis for processing personal data. ICO guidance explains that at least one lawful basis must apply, and privacy notices should make clear which bases you rely on and why.  ￼
+
+Depending on the context, we rely on the following lawful bases:
+
+7.1 Contract
+
+We process much of your data because it is necessary to provide the service you asked for, including:
+	•	creating and managing your account;
+	•	generating and storing stories;
+	•	providing subscription features;
+	•	delivering customer support connected to your account.
+
+7.2 Legitimate interests
+
+We may process data where it is reasonably necessary for our legitimate interests, including:
+	•	keeping the service secure;
+	•	preventing abuse, fraud, and misuse;
+	•	moderating outputs and handling reports;
+	•	improving the service and product experience;
+	•	maintaining service reliability and performance;
+	•	protecting our business and users.
+
+Where we rely on legitimate interests, we consider the impact on your rights and aim to use data in a proportionate way.
+
+7.3 Legal obligation
+
+We may process data where necessary to comply with legal obligations, regulatory requirements, lawful requests, or record-keeping duties.
+
+7.4 Consent
+
+Where required, we rely on consent, for example for non-essential cookies or similar technologies. ICO guidance states that non-essential cookies require a clear positive action and cannot be based merely on continued browsing.  ￼
+
+8. Private stories and your library
+
+Stories generated through your account may be saved to your private library. Our intention is that these stories are visible only to you within your authenticated account.
+
+However, access may occur where reasonably necessary for:
+	•	moderation and safety review;
+	•	support and troubleshooting;
+	•	technical maintenance;
+	•	backups and disaster recovery;
+	•	legal compliance and enforcement;
+	•	security investigations.
+
+We do not operate the service as a social platform, and we do not design your private library to be visible to other users.
+
+9. Curated collection content
+
+If your plan includes access to curated collection content, we may record which collection items you access so that we can:
+	•	provide the feature correctly;
+	•	understand feature usage;
+	•	improve the collection experience;
+	•	support account, subscription, and customer service functions.
+
+10. Automated systems and moderation
+
+The service may use automated systems, including AI and moderation tools, to generate stories and to identify or restrict content that may breach our rules.
+
+This may include:
+	•	automated checks before or after generation;
+	•	tagging or flagging stories for review;
+	•	blocking certain content from being released;
+	•	regeneration workflows where content does not meet our standards.
+
+Where relevant, moderation data may be stored as part of our audit and safety processes.
+
+11. Who we share personal data with
+
+We do not sell your personal data.
+
+We may share personal data with trusted third parties who support our service, including:
+	•	hosting and cloud infrastructure providers;
+	•	payment processors;
+	•	analytics providers, where enabled;
+	•	authentication and account-management providers;
+	•	customer support tools;
+	•	AI, narration, or audio-generation providers used to operate the service;
+	•	legal, compliance, or professional advisers where needed.
+
+We require service providers to process data only as necessary for authorised purposes and subject to appropriate safeguards.
+
+We may also disclose personal data:
+	•	if required by law;
+	•	in response to lawful requests by public authorities;
+	•	to protect rights, safety, property, or the integrity of the service;
+	•	in connection with a sale, merger, restructuring, or acquisition involving our business.
+
+12. International transfers
+
+Some of our providers may process personal data outside the UK.
+
+Where personal data is transferred internationally, we aim to ensure appropriate safeguards are in place so that your data remains protected in line with applicable law.
+
+13. Data retention
+
+ICO guidance says privacy notices should explain retention periods or the criteria used to determine them.  ￼
+
+We retain personal data only for as long as reasonably necessary for the purposes described in this Privacy Policy, including service delivery, support, safety, legal compliance, and record-keeping.
+
+Typical retention approach:
+
+13.1 Account data
+
+We keep core account information while your account is active and for a reasonable period afterward where necessary for fraud prevention, dispute resolution, legal compliance, or account restoration.
+
+13.2 Generated stories and library data
+
+We keep stories and related metadata while they remain in your account, unless you delete them or request account deletion, subject to limited retention where needed for backups, security, moderation, disputes, or legal compliance.
+
+13.3 Billing and transaction data
+
+We keep transaction and accounting records for as long as reasonably necessary to meet tax, accounting, and legal obligations.
+
+13.4 Moderation and reporting records
+
+We may retain moderation records, report logs, and related admin notes for as long as reasonably necessary to investigate incidents, improve controls, demonstrate compliance, and manage disputes or repeated misuse.
+
+13.5 Technical logs
+
+Technical logs may be retained for security, product diagnostics, and fraud prevention for a limited period consistent with operational need.
+
+14. Your rights
+
+ICO guidance states that privacy notices should explain individuals’ information rights and how they can complain.  ￼
+
+Depending on your circumstances, you may have the right to:
+	•	request access to your personal data;
+	•	request correction of inaccurate data;
+	•	request deletion of personal data;
+	•	request restriction of processing;
+	•	object to certain processing;
+	•	request portability of certain data, where applicable;
+	•	withdraw consent where consent is the lawful basis.
+
+These rights are not absolute and may be subject to legal exceptions.
+
+To exercise your rights, contact us at [Insert contact email].
+
+15. Account deletion and story deletion
+
+You may be able to delete stories from your account directly.
+
+You may also request account deletion. When an account is deleted:
+	•	your account access will be disabled or removed;
+	•	we will delete or anonymise data where appropriate;
+	•	some records may be retained where reasonably necessary for legal, security, accounting, fraud-prevention, moderation, or compliance purposes.
+
+16. Cookies and similar technologies
+
+If we use cookies or similar technologies, we use them for purposes such as:
+	•	essential service functionality;
+	•	security and session management;
+	•	remembering account or user settings;
+	•	analytics and performance measurement, where consent is given.
+
+ICO guidance says non-essential cookies require prior consent and should not be placed until that consent is given. A layered notice approach is also encouraged where helpful.  ￼
+
+You can manage your cookie preferences through our cookie controls. See our Cookie Policy for more detail.
+
+17. Marketing communications
+
+If you sign up for marketing communications, we may use your email address to send product updates, offers, or announcements, subject to applicable rules.
+
+You can opt out of marketing emails at any time using the unsubscribe link or by contacting us.
+
+18. Security
+
+We use reasonable technical and organisational measures to protect personal data, including measures aimed at preventing unauthorised access, misuse, alteration, or loss.
+
+No service can guarantee absolute security, but we work to protect personal data appropriately given the nature of the service.
+
+19. Children
+
+This service is intended for adults only and is not directed at children.
+
+We do not knowingly provide the service to children or intentionally collect personal data from anyone under 18.
+
+20. Third-party links and services
+
+Our site or service may contain links to third-party websites or services. We are not responsible for the privacy practices of those third parties. You should review their privacy information separately where relevant.
+
+21. Complaints
+
+If you have concerns about how we handle your personal data, please contact us first so we can try to resolve the issue.
+
+You also have the right to complain to the UK Information Commissioner’s Office. ICO guidance says privacy notices should explain how people can complain if they have concerns about how their information is used.  ￼
+
+22. Changes to this Privacy Policy
+
+We may update this Privacy Policy from time to time to reflect legal, technical, or business changes.
+
+When we do, we will update the “Effective date” and “Last updated” date at the top of this page. Where appropriate, we may also take additional steps to notify users of material changes.
+
+23. Contact us
+
+If you have questions, requests, or concerns about this Privacy Policy or your personal data, contact:
+
+The Private Story
+Email: [Insert email address]
+Address: [Insert address, if applicable]

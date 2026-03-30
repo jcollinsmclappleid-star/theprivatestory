@@ -325,8 +325,41 @@ function EventDetailPanel({ event }: { event: ModerationEvent }) {
       </div>
 
       <div className="bg-white/5 rounded-xl p-3">
-        <p className="text-xs text-muted-foreground font-medium mb-1">Reason</p>
-        <p className="text-foreground">{event.reason}</p>
+        <p className="text-xs text-muted-foreground font-medium mb-1.5">Reason</p>
+        <p className="text-foreground text-sm mb-3">{event.reason}</p>
+        {event.flagsJson && (
+          <div className="text-xs space-y-1.5 mt-2 pt-2 border-t border-white/10">
+            {(event.flagsJson as any).pattern && (
+              <div>
+                <span className="text-muted-foreground">Pattern: </span>
+                <code className="bg-white/5 px-1.5 py-0.5 rounded text-foreground/80 font-mono break-all">
+                  {(event.flagsJson as any).pattern}
+                </code>
+              </div>
+            )}
+            {(event.flagsJson as any).matchedTerms && Array.isArray((event.flagsJson as any).matchedTerms) && (event.flagsJson as any).matchedTerms.length > 0 && (
+              <div>
+                <span className="text-muted-foreground">Matched terms: </span>
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  {(event.flagsJson as any).matchedTerms.map((term: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="bg-red-500/20 text-red-300 px-2 py-0.5 rounded text-xs font-mono border border-red-500/30"
+                    >
+                      {term}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {(event.flagsJson as any).source && (
+              <div>
+                <span className="text-muted-foreground">Source: </span>
+                <span className="text-foreground">{(event.flagsJson as any).source}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {event.userId && (

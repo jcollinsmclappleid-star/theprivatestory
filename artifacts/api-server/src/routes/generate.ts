@@ -3094,7 +3094,12 @@ router.post("/generate-full-story", async (req, res) => {
           eventType: "output_blocked",
           severity: "high",
           reason: `Blocklist match: ${outputBlocklistResult.reason ?? "unknown"}`,
-          flagsJson: { source: "output-scan", term: outputBlocklistResult.reason },
+          flagsJson: {
+            source: "output-scan",
+            pattern: outputBlocklistResult.pattern,
+            matchedTerms: outputBlocklistResult.matchedTerms,
+            reason: outputBlocklistResult.reason,
+          },
           outputExcerpt: outputText.slice(0, 500),
           actionTaken: "block",
         });

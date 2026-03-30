@@ -391,11 +391,22 @@ const OUTPUT_HARD_BLOCK_PATTERNS: RegExp[] = [
  * Use this instead of isBlockedInput() for scanning model output — it omits
  * terms that can appear innocuously in literary adult prose.
  */
-export function isBlockedOutput(text: string): { blocked: boolean; reason: string | null } {
+export function isBlockedOutput(text: string): {
+  blocked: boolean;
+  reason: string | null;
+  matchedTerms?: string[];
+  pattern?: string;
+} {
   for (const variant of getTextVariants(text)) {
     for (const pattern of OUTPUT_HARD_BLOCK_PATTERNS) {
       if (pattern.test(variant)) {
-        return { blocked: true, reason: pattern.source };
+        const matched = variant.match(pattern) || [];
+        return {
+          blocked: true,
+          reason: pattern.source,
+          matchedTerms: matched.slice(0, 5), // First 5 matches
+          pattern: pattern.source,
+        };
       }
     }
   }

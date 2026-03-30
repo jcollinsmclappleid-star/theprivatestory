@@ -1,0 +1,261 @@
+Below is a detailed Refund Policy draft tailored to your product. It is written to reflect the UK rules for distance contracts and digital content: consumers generally have a 14-day cancellation right for distance contracts, but for digital content not supplied on a tangible medium, that right can be lost once supply begins if the customer gave prior express consent and acknowledged that the cancellation right would be lost. If you do not give the required cancellation information, the cancellation period can be extended. Refunds that are due under the cancellation rules must generally be paid within 14 days.  ￼
+
+I would use the policy below together with a checkout checkbox confirming immediate access and loss of cancellation rights once digital content begins, because that is what makes the “revoked post generation” position much more enforceable under the UK rules.  ￼
+
+⸻
+
+Refund Policy
+
+Effective date: [Insert date]
+Last updated: [Insert date]
+
+This Refund Policy explains how refunds, cancellations, and billing issues are handled for The Private Story.
+
+The Private Story is operated by [Insert legal company name], trading as The Private Story.
+For any billing or refund questions, contact: [Insert support email]
+
+1. About this policy
+
+The Private Story is a digital storytelling service that may include:
+	•	paid subscriptions;
+	•	access to curated collection content;
+	•	personalised story generation;
+	•	one-off purchases such as additional story generations.
+
+Because the service provides digital content and digital services, different refund and cancellation rules may apply depending on:
+	•	whether you bought a subscription or one-off digital content;
+	•	whether access began immediately;
+	•	whether personalised story generation has already taken place;
+	•	whether the relevant legal cancellation rights were properly presented and accepted at checkout.
+
+This policy sits alongside our Terms and Conditions and should be read together with them.
+
+2. General principle
+
+We aim to be fair and transparent.
+
+However, because The Private Story provides digital access and personalised generated content, refunds are more limited once digital supply has begun or once a personalised story has been generated for your account.
+
+In simple terms:
+	•	before use begins, cancellation rights are usually broader;
+	•	once access has started and digital content has been supplied, refund rights may be reduced or lost;
+	•	once a personalised story has been generated, that part of the service is treated as used and is normally non-refundable, except where required by law or where we decide otherwise at our discretion.
+
+3. Subscription plans
+
+We may offer monthly and annual subscriptions.
+
+A subscription may include:
+	•	access to your private library;
+	•	access to curated collection content;
+	•	a set number of personalised story generations within the billing period;
+	•	the ability to purchase additional stories separately.
+
+3.1 Monthly subscriptions
+
+If you buy a monthly subscription, you are purchasing recurring access for the relevant billing month unless cancelled before the next renewal date.
+
+If you cancel:
+	•	your subscription will usually remain active until the end of the current paid billing period;
+	•	you will not usually be charged again for the next period;
+	•	we do not usually provide a pro-rata refund for unused time in a month that has already started, unless required by law or agreed by us.
+
+3.2 Annual subscriptions
+
+If you buy an annual subscription, you are purchasing access for the full annual term.
+
+If you cancel:
+	•	the subscription will usually remain active until the end of the current paid annual period;
+	•	it will not renew for the next annual term unless you choose to continue;
+	•	we do not usually provide partial refunds for the unused remainder of the annual term once access has begun, unless required by law or agreed by us.
+
+4. Additional story purchases
+
+If we offer one-off purchases for additional personalised stories, those purchases are treated as digital content or digital service purchases linked to your account.
+
+Once an additional story has been generated or supplied to your account, that purchase is normally non-refundable except where:
+	•	the purchase was made in error;
+	•	we charged you incorrectly;
+	•	the content failed to generate due to our technical issue and we did not supply it;
+	•	consumer law requires a refund.
+
+5. Cooling-off rights and immediate access
+
+If you are a consumer purchasing online, you may have legal cancellation rights under distance selling rules.
+
+However, where digital content is supplied immediately, those rights can be affected.
+
+5.1 Immediate supply of digital content
+
+At checkout, we may ask you to confirm that:
+	•	you want access to begin immediately; and
+	•	you understand that your cancellation rights may be lost once digital content or digital services begin.
+
+Where that confirmation has been properly obtained, your legal right to cancel may be reduced or lost once supply begins, in line with applicable law.
+
+5.2 What counts as supply beginning
+
+For The Private Story, supply may be treated as having begun when one or more of the following happens:
+	•	your paid subscription is activated and paid features become available;
+	•	you gain access to paid curated collection content;
+	•	a personalised story is generated for your account;
+	•	an additional paid story is generated;
+	•	paid digital content is delivered into your private library.
+
+6. Revoked post generation
+
+This section is particularly important for your product.
+
+6.1 Personalised generation is treated as used digital supply
+
+Once a personalised story has been generated specifically for your account, that part of the service has been performed and delivered.
+
+As a result:
+	•	the generation is normally treated as consumed;
+	•	the corresponding generation entitlement is normally treated as used;
+	•	any refund right connected to that generated story is normally revoked once generation has completed, except where required by law or where we choose to make an exception.
+
+6.2 Why this matters
+
+Unlike a generic library subscription alone, personalised generation creates a bespoke digital output specifically for your account.
+
+For that reason, once a story has been successfully generated and supplied to your private library, we normally do not refund that generation simply because:
+	•	you changed your mind;
+	•	you did not like the tone;
+	•	you decided not to listen to it;
+	•	you no longer want the service after the story was created.
+
+6.3 Exceptions
+
+We may still, at our discretion, offer:
+	•	a goodwill regeneration;
+	•	a replacement generation credit;
+	•	a partial refund;
+	•	a full refund,
+
+where there has been a clear technical failure, billing error, or another issue for which we are responsible.
+
+7. When refunds are likely to be refused
+
+Unless required by law, refunds will normally be refused where:
+	•	you accessed paid digital content after checkout and valid consent to immediate supply was obtained;
+	•	you used one or more included story generations;
+	•	a personalised story was generated and added to your account;
+	•	you purchased and used an additional story;
+	•	you are asking for a refund simply because you changed your mind after using the service;
+	•	the issue relates only to subjective preference rather than a product failure.
+
+8. When refunds may be considered
+
+We may consider a refund, credit, replacement, or other remedy where:
+	•	you were charged twice;
+	•	you were charged after cancelling correctly before renewal;
+	•	there was a clear pricing or billing error;
+	•	a story generation failed because of our technical issue and no usable output was supplied;
+	•	a paid feature included in your plan was unavailable for a material period due to our fault;
+	•	there was a serious product defect affecting your use of the service;
+	•	consumer law requires a refund or other remedy.
+
+9. Failed generations and technical issues
+
+If a generation fails due to our technical issue, we will usually try to resolve the issue first by one of the following:
+	•	regenerating the story;
+	•	restoring the missing output;
+	•	returning the generation entitlement to your account;
+	•	issuing a replacement credit.
+
+If we cannot reasonably provide the purchased digital content or service, we may issue a refund or account credit as appropriate.
+
+10. Moderation, blocked generations, and policy issues
+
+The Private Story uses moderation and safety controls.
+
+If a generation is blocked, regenerated, or withheld because of moderation or policy rules:
+	•	we may restore the generation entitlement where no usable story was supplied;
+	•	we may invite you to try again with adjusted selections;
+	•	we are not required to refund a subscription simply because a requested generation was not allowed under our policies.
+
+If a moderation issue occurs after a story has been generated and we remove it from your account, we may decide on a case-by-case basis whether to:
+	•	replace the story;
+	•	return the generation credit;
+	•	issue a refund or partial refund;
+	•	take no refund action where the issue arose from prohibited use.
+
+11. Automatic renewals and cancellation timing
+
+If your subscription renews automatically, you remain responsible for cancelling before the renewal date if you do not want the next billing period to begin.
+
+If you cancel after renewal has already taken place:
+	•	the current billing period will usually remain active;
+	•	the cancellation will usually apply to the next renewal;
+	•	refunds for the renewed period are not usually available unless required by law or where we choose to make an exception.
+
+12. Free trials, introductory offers, and discounts
+
+If we offer a free trial or discounted introductory period:
+	•	the terms of that offer will be explained at checkout;
+	•	once the trial or introductory period converts into a paid subscription, standard billing and refund terms apply unless otherwise stated;
+	•	you remain responsible for cancelling before conversion if you do not want to continue.
+
+13. How to request a refund
+
+To request a refund, contact us at [Insert support email] and include:
+	•	the email address on your account;
+	•	your order or subscription details;
+	•	the date of the charge;
+	•	a short explanation of the issue.
+
+We may request additional information where reasonably necessary to investigate the request.
+
+14. How we assess refund requests
+
+When reviewing a request, we may consider:
+	•	whether the purchase was a subscription or a one-off digital purchase;
+	•	whether access began immediately;
+	•	whether a story was generated or delivered;
+	•	whether the service was actually used;
+	•	whether a billing error occurred;
+	•	whether the issue was technical, subjective, or policy-related;
+	•	whether consumer law requires a refund or another remedy.
+
+15. Timing of refunds
+
+Where a refund is due, we aim to process it promptly.
+
+Where the legal cancellation rules apply, refunds due under those rules generally need to be made within 14 days. Any refund will usually be made using the same payment method used for the original transaction, unless otherwise agreed.  ￼
+
+16. Chargebacks and payment disputes
+
+If you believe you have been charged incorrectly, please contact us first so we can try to resolve the issue.
+
+If you initiate a chargeback or payment dispute without first contacting us, we may:
+	•	investigate the matter;
+	•	suspend access while the dispute is reviewed;
+	•	provide relevant account and billing records to the payment processor;
+	•	restrict future purchases where abuse is suspected.
+
+Nothing in this section affects your legal rights.
+
+17. Your statutory rights
+
+Nothing in this Refund Policy is intended to remove or limit any rights you have under applicable consumer law.
+
+If the law gives you a right to a refund, repair, repeat performance, price reduction, or other remedy, this policy should be read subject to those rights.
+
+18. Contact
+
+For refund, billing, or cancellation queries, contact:
+
+Email: [Insert support email]
+
+⸻
+
+Checkout wording you should add
+
+To make the “revoked post generation” position much stronger, add this checkbox or equivalent consent wording at checkout:
+
+I want access to begin immediately and understand that, once digital content or digital services begin — including the generation of a personalised story for my account — my legal cancellation right may be reduced or lost to the extent permitted by law.
+
+And for additional story purchases, I would add:
+
+I understand that once a personalised story is generated for my account, that purchase is treated as used digital supply and is normally non-refundable.

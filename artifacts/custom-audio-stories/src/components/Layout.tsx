@@ -365,6 +365,7 @@ function Footer() {
     { label: "Privacy", href: "/privacy" },
     { label: "Terms", href: "/terms" },
     { label: "Content Policy", href: "/content-policy" },
+    { label: "Refund Policy", href: "/refund-policy" },
   ];
 
   return (

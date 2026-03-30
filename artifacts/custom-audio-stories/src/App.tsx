@@ -24,6 +24,7 @@ import Privacy from "@/pages/Privacy";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Terms from "@/pages/Terms";
 import ContentPolicy from "@/pages/ContentPolicy";
+import RefundPolicy from "@/pages/RefundPolicy";
 import NotFound from "@/pages/not-found";
 import ResetPassword from "@/pages/ResetPassword";
 import Contact from "@/pages/Contact";
@@ -74,6 +75,7 @@ function Router() {
             <Route path="/privacy-policy" component={PrivacyPolicy} />
             <Route path="/terms" component={Terms} />
             <Route path="/content-policy" component={ContentPolicy} />
+            <Route path="/refund-policy" component={RefundPolicy} />
             <Route path="/contact" component={Contact} />
             <Route path="/pricing" component={Pricing} />
             <Route path="/personalised-audio-stories" component={PersonalisedAudioStories} />

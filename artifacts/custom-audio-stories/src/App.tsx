@@ -50,6 +50,7 @@ import ForbiddenRomanceAudioStories from "@/pages/seo/ForbiddenRomanceAudioStori
 import EnemiesToLoversAudioStories from "@/pages/seo/EnemiesToLoversAudioStories";
 import AdultAudioStories from "@/pages/seo/AdultAudioStories";
 import AudioStoriesForWomen from "@/pages/seo/AudioStoriesForWomen";
+import AudioStoriesVsAudiobooks from "@/pages/seo/AudioStoriesVsAudiobooks";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,7 @@ function Router() {
             <Route path="/enemies-to-lovers-audio-stories" component={EnemiesToLoversAudioStories} />
             <Route path="/adult-audio-stories" component={AdultAudioStories} />
             <Route path="/audio-stories-for-women" component={AudioStoriesForWomen} />
+            <Route path="/audio-stories-vs-audiobooks" component={AudioStoriesVsAudiobooks} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

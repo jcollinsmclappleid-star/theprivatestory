@@ -17,7 +17,7 @@ import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInpu
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
 import { db, contentBlocks, usersTable } from "@workspace/db";
-import { sql as drizzleSql } from "drizzle-orm";
+import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

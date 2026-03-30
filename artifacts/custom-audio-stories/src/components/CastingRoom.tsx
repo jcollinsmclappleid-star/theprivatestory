@@ -982,19 +982,25 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {capFirst(partnerP.possessive)} Energy
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-              {archetypes.map(a => (
-                <ArtTile
-                  key={a.id}
-                  gradient={a.gradient}
-                  accent={a.accent}
-                  image={a.image}
-                  selected={data.archetype === a.id}
-                  onClick={() => update("archetype", a.id)}
-                >
-                  <p className="font-semibold text-white text-base">{a.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
-                </ArtTile>
-              ))}
+              {archetypes
+                .filter(a =>
+                  !bedtime
+                    ? true
+                    : ["The Old Friend", "The Refined One", "The Protector", "The Good One", "The Softie", "The Charmer", "The Introvert"].includes(a.label)
+                )
+                .map(a => (
+                  <ArtTile
+                    key={a.id}
+                    gradient={a.gradient}
+                    accent={a.accent}
+                    image={a.image}
+                    selected={data.archetype === a.id}
+                    onClick={() => update("archetype", a.id)}
+                  >
+                    <p className="font-semibold text-white text-base">{a.label}</p>
+                    <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
+                  </ArtTile>
+                ))}
             </div>
 
             {/* ── Appearance (all optional) ─────────────────────── */}

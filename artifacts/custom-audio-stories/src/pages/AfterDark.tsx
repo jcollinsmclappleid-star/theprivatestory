@@ -763,7 +763,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#181200] via-[#221a00] to-[#0e0a00]",
     accent: "#d4a017",
     storyMode: "unrestrained",
-    tags: ["Multiple men, undivided attention", "Physical dominance and commanding presence", "Nothing implied where it can be named"],
+    tags: ["Multiple men, undivided attention", "Black masculine dominance", "Nothing implied where it can be named"],
   },
   {
     id: "their_terms",
@@ -785,7 +785,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#160e00] via-[#221600] to-[#0c0800]",
     accent: "#d4a017",
     storyMode: "unrestrained",
-    tags: ["Multiple men, undivided attention", "Nothing off limits", "Physical dominance and commanding presence"],
+    tags: ["Multiple men, undivided attention", "Black masculine dominance", "Nothing off limits"],
   },
 
   /* Dark Fantasy ─── */

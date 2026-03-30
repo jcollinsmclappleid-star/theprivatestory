@@ -1728,8 +1728,30 @@ router.get("/story-reports", async (req, res) => {
   try {
     const { status, limit = "100", offset = "0" } = req.query as Record<string, string>;
     const rows = await db
-      .select()
+      .select({
+        id: storyReports.id,
+        userId: storyReports.userId,
+        userCode: usersTable.userCode,
+        storyId: storyReports.storyId,
+        storyTitle: storyReports.storyTitle,
+        reason: storyReports.reason,
+        reasonCategory: storyReports.reasonCategory,
+        note: storyReports.note,
+        inputSnapshot: storyReports.inputSnapshot,
+        outputExcerpt: storyReports.outputExcerpt,
+        status: storyReports.status,
+        adminNotes: storyReports.adminNotes,
+        actionTaken: storyReports.actionTaken,
+        reviewedBy: storyReports.reviewedBy,
+        reviewedAt: storyReports.reviewedAt,
+        auditFlagged: storyReports.auditFlagged,
+        auditFlaggedAt: storyReports.auditFlaggedAt,
+        auditNote: storyReports.auditNote,
+        createdAt: storyReports.createdAt,
+        updatedAt: storyReports.updatedAt,
+      })
       .from(storyReports)
+      .leftJoin(usersTable, eq(storyReports.userId, usersTable.id))
       .where(status ? eq(storyReports.status, status) : undefined)
       .orderBy(desc(storyReports.createdAt))
       .limit(Math.min(parseInt(limit, 10) || 100, 500))
@@ -1834,6 +1856,30 @@ router.patch("/story-reports/:id", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /admin/story-reports/:id/add-to-audit — flag a report for the audit folder
+// ---------------------------------------------------------------------------
+router.post("/story-reports/:id/add-to-audit", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+  const { note = "" } = req.body as { note?: string };
+  try {
+    const adminUser = req.user as { id?: string; email?: string } | undefined;
+    const [updated] = await db
+      .update(storyReports)
+      .set({ auditFlagged: true, auditFlaggedAt: new Date(), auditNote: note.trim().slice(0, 1000) || null, updatedAt: new Date() })
+      .where(eq(storyReports.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
+    writeAuditLog(adminUser?.id, adminUser?.email, "moderation_reviewed", "story_report", id.toString(), { note: note.trim() || null });
+    res.json({ ok: true, report: updated });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to flag story report for audit");
+    res.status(500).json({ error: "Failed to flag for audit" });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // GET /admin/moderation-events — filterable log of auto-moderation events
 // ---------------------------------------------------------------------------
 router.get("/moderation-events", async (req, res) => {
@@ -1855,8 +1901,29 @@ router.get("/moderation-events", async (req, res) => {
     if (storyId) filters.push(eq(moderationEvents.storyId, storyId));
 
     const rows = await db
-      .select()
+      .select({
+        id: moderationEvents.id,
+        userId: moderationEvents.userId,
+        userCode: usersTable.userCode,
+        storyId: moderationEvents.storyId,
+        requestId: moderationEvents.requestId,
+        eventType: moderationEvents.eventType,
+        severity: moderationEvents.severity,
+        reason: moderationEvents.reason,
+        flagsJson: moderationEvents.flagsJson,
+        inputSnapshotJson: moderationEvents.inputSnapshotJson,
+        outputExcerpt: moderationEvents.outputExcerpt,
+        actionTaken: moderationEvents.actionTaken,
+        emailSent: moderationEvents.emailSent,
+        linkedReportId: moderationEvents.linkedReportId,
+        auditFlagged: moderationEvents.auditFlagged,
+        auditFlaggedAt: moderationEvents.auditFlaggedAt,
+        auditNote: moderationEvents.auditNote,
+        adminNotes: moderationEvents.adminNotes,
+        createdAt: moderationEvents.createdAt,
+      })
       .from(moderationEvents)
+      .leftJoin(usersTable, eq(moderationEvents.userId, usersTable.id))
       .where(filters.length > 0 ? and(...filters) : undefined)
       .orderBy(desc(moderationEvents.createdAt))
       .limit(Math.min(parseInt(limit, 10) || 100, 500))
@@ -1897,6 +1964,52 @@ router.get("/moderation-events/:id", async (req, res) => {
   } catch (err) {
     logger.error({ err }, "[admin] Failed to fetch moderation event");
     res.status(500).json({ error: "Failed to fetch moderation event" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/moderation-events/:id/add-to-audit — flag an event for the audit folder
+// ---------------------------------------------------------------------------
+router.post("/moderation-events/:id/add-to-audit", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+  const { note = "" } = req.body as { note?: string };
+  try {
+    const adminUser = req.user as { id?: string; email?: string } | undefined;
+    const [updated] = await db
+      .update(moderationEvents)
+      .set({ auditFlagged: true, auditFlaggedAt: new Date(), auditNote: note.trim().slice(0, 1000) || null })
+      .where(eq(moderationEvents.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
+    writeAuditLog(adminUser?.id, adminUser?.email, "moderation_reviewed", "moderation_event", id.toString(), { note: note.trim() || null });
+    res.json({ ok: true, event: updated });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to flag moderation event for audit");
+    res.status(500).json({ error: "Failed to flag for audit" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// PATCH /admin/moderation-events/:id — save admin notes on an auto-moderation event
+// ---------------------------------------------------------------------------
+router.patch("/moderation-events/:id", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+  const { adminNotes } = req.body as { adminNotes?: string };
+  try {
+    const [updated] = await db
+      .update(moderationEvents)
+      .set({ adminNotes: (adminNotes ?? "").slice(0, 2000) })
+      .where(eq(moderationEvents.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ ok: true, event: updated });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to update moderation event");
+    res.status(500).json({ error: "Failed to update" });
   }
 });
 

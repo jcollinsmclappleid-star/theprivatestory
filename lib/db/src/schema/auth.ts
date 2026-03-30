@@ -58,6 +58,9 @@ export const usersTable = pgTable("users", {
   subscriptionStatus: text("subscription_status", { enum: ["active", "past_due", "canceled", "incomplete", "trialing"] }),
   // GDPR / legal compliance
   termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
+  // Moderation display identifier — short human-readable code tied to this account (TPS + 6 chars)
+  // Uniqueness enforced by a separate DB index (users_user_code_unique) to avoid drizzle-kit prompt at startup
+  userCode: varchar("user_code", { length: 12 }),
 });
 
 // better-auth sessions

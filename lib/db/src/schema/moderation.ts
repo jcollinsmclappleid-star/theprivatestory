@@ -1,4 +1,5 @@
 import { boolean, integer, jsonb, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+
 import { usersTable } from "./auth";
 import { generatedStories } from "./stories";
 
@@ -23,6 +24,9 @@ export const storyReports = pgTable("story_reports", {
   actionTaken: text("action_taken"),
   reviewedBy: text("reviewed_by"),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  auditFlagged: boolean("audit_flagged").notNull().default(false),
+  auditFlaggedAt: timestamp("audit_flagged_at", { withTimezone: true }),
+  auditNote: text("audit_note"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -50,6 +54,10 @@ export const moderationEvents = pgTable("moderation_events", {
   actionTaken: text("action_taken").notNull().default("block"),
   emailSent: boolean("email_sent").notNull().default(false),
   linkedReportId: integer("linked_report_id").references(() => storyReports.id, { onDelete: "set null" }),
+  auditFlagged: boolean("audit_flagged").notNull().default(false),
+  auditFlaggedAt: timestamp("audit_flagged_at", { withTimezone: true }),
+  auditNote: text("audit_note"),
+  adminNotes: text("admin_notes"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

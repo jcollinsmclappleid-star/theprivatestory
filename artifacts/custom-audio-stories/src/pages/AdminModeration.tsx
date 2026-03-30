@@ -3,7 +3,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Flag, Zap, User, ChevronDown, ChevronUp, RefreshCw, Ban, CheckCircle, BarChart2, Users, BookOpen, AlertTriangle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Flag, Zap, User, RefreshCw, Ban, CheckCircle, BarChart2, Users, BookOpen,
+  AlertTriangle, FolderOpen, FileText, Inbox, X, ChevronRight
+} from "lucide-react";
 import { Link } from "wouter";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -15,6 +19,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 interface StoryReport {
   id: number;
   userId: string | null;
+  userCode: string | null;
   storyId: string | null;
   storyTitle: string | null;
   reason: string;
@@ -27,12 +32,16 @@ interface StoryReport {
   actionTaken: string | null;
   reviewedBy: string | null;
   reviewedAt: string | null;
+  auditFlagged: boolean;
+  auditFlaggedAt: string | null;
+  auditNote: string | null;
   createdAt: string;
 }
 
 interface ModerationEvent {
   id: number;
   userId: string | null;
+  userCode: string | null;
   storyId: string | null;
   requestId: string | null;
   eventType: string;
@@ -44,6 +53,10 @@ interface ModerationEvent {
   actionTaken: string;
   emailSent: boolean;
   linkedReportId: number | null;
+  auditFlagged: boolean;
+  auditFlaggedAt: string | null;
+  auditNote: string | null;
+  adminNotes: string | null;
   createdAt: string;
 }
 
@@ -77,58 +90,228 @@ function statusColor(status: string) {
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "numeric", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
+function UserCodeBadge({ code, userId }: { code: string | null; userId: string | null }) {
+  if (code) {
+    return (
+      <span className="inline-flex items-center gap-1 font-mono text-xs bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full">
+        <User className="w-2.5 h-2.5" />
+        {code}
+      </span>
+    );
+  }
+  if (userId) {
+    return (
+      <span className="inline-flex items-center gap-1 font-mono text-xs bg-white/5 text-muted-foreground border border-white/10 px-2 py-0.5 rounded-full">
+        <User className="w-2.5 h-2.5" />
+        {userId.slice(0, 8)}…
+      </span>
+    );
+  }
+  return <span className="text-xs text-muted-foreground/50">anonymous</span>;
+}
+
 // ---------------------------------------------------------------------------
-// Report detail panel
+// Input snapshot viewer
 // ---------------------------------------------------------------------------
 
-function ReportDetailPanel({
-  report,
-  onUpdate,
+function InputSnapshotView({ data, label = "Input snapshot" }: { data: Record<string, unknown> | null; label?: string }) {
+  if (!data) return null;
+  const entries = Object.entries(data).filter(([, v]) => v !== null && v !== undefined && v !== "" && !(Array.isArray(v) && (v as unknown[]).length === 0));
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+      <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden">
+        {entries.map(([key, value], i) => (
+          <div key={key} className={`flex gap-3 px-3 py-2 text-xs ${i > 0 ? "border-t border-white/5" : ""}`}>
+            <span className="text-muted-foreground min-w-[120px] flex-shrink-0 font-mono capitalize">
+              {key.replace(/([A-Z])/g, " $1").replace(/_/g, " ")}
+            </span>
+            <span className="text-foreground/90 break-all">
+              {Array.isArray(value)
+                ? (value as unknown[]).join(", ")
+                : typeof value === "object"
+                ? JSON.stringify(value)
+                : String(value)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Dispositioning buttons
+// ---------------------------------------------------------------------------
+
+function ActionButtons({
+  selected,
+  onSelect,
 }: {
-  report: StoryReport;
-  onUpdate: (updated: StoryReport) => void;
+  selected: string;
+  onSelect: (action: string) => void;
 }) {
-  const [adminNotes, setAdminNotes] = useState(report.adminNotes ?? "");
-  const [status, setStatus] = useState(report.status);
-  const [actionTaken, setActionTaken] = useState(report.actionTaken ?? "");
-  const [saving, setSaving] = useState(false);
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Action taken</p>
+      <div className="grid grid-cols-1 gap-1.5">
+        {VALID_ACTIONS.map((action) => {
+          const isSelected = selected === action;
+          return (
+            <button
+              key={action}
+              onClick={() => onSelect(isSelected ? "" : action)}
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-sm text-left transition-all ${
+                isSelected
+                  ? "bg-primary/15 border-primary/40 text-primary"
+                  : "bg-white/3 border-white/10 text-muted-foreground hover:text-foreground hover:border-white/20"
+              }`}
+            >
+              <span className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${
+                isSelected ? "bg-primary border-primary" : "border-white/20"
+              }`}>
+                {isSelected && <CheckCircle className="w-2.5 h-2.5 text-black" />}
+              </span>
+              {action}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StatusButtons({ selected, onSelect }: { selected: string; onSelect: (s: string) => void }) {
+  const labels: Record<string, string> = {
+    pending: "Pending",
+    reviewed: "Reviewed",
+    action_taken: "Action taken",
+    closed: "Closed",
+  };
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</p>
+      <div className="flex flex-wrap gap-2">
+        {VALID_STATUSES.map((s) => (
+          <button
+            key={s}
+            onClick={() => onSelect(s)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              selected === s
+                ? statusColor(s) + " ring-1 ring-primary/30"
+                : "bg-white/5 border-white/10 text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {labels[s] ?? s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Audit folder section
+// ---------------------------------------------------------------------------
+
+function AuditSection({
+  auditFlagged,
+  auditNote,
+  auditFlaggedAt,
+  onFlag,
+  flagging,
+}: {
+  auditFlagged: boolean;
+  auditNote: string | null;
+  auditFlaggedAt: string | null;
+  onFlag: (note: string) => void;
+  flagging: boolean;
+}) {
+  const [note, setNote] = useState(auditNote ?? "");
+  const [open, setOpen] = useState(!auditFlagged);
+
+  if (auditFlagged) {
+    return (
+      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 space-y-1.5">
+        <div className="flex items-center gap-2 text-amber-300 text-xs font-semibold">
+          <FolderOpen className="w-3.5 h-3.5" />
+          Added to audit folder
+          {auditFlaggedAt && <span className="font-normal text-amber-300/60 ml-auto">{fmtDate(auditFlaggedAt)}</span>}
+        </div>
+        {auditNote && <p className="text-xs text-amber-200/70 italic">{auditNote}</p>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-amber-500/20 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-semibold text-amber-300/80 hover:text-amber-300 transition-colors bg-amber-500/5 hover:bg-amber-500/10"
+      >
+        <FolderOpen className="w-3.5 h-3.5" />
+        Add to audit folder
+        <ChevronRight className={`w-3.5 h-3.5 ml-auto transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
+      {open && (
+        <div className="px-3 pb-3 pt-2 space-y-2 bg-amber-500/5">
+          <textarea
+            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-xs text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:border-amber-400/40 transition-colors"
+            rows={2}
+            placeholder="Audit note (optional)…"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            maxLength={500}
+          />
+          <Button
+            onClick={() => onFlag(note)}
+            disabled={flagging}
+            size="sm"
+            className="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 hover:border-amber-500/50"
+            variant="outline"
+          >
+            <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
+            {flagging ? "Adding…" : "Add to audit folder"}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Ban section (used by both Report + Event modals)
+// ---------------------------------------------------------------------------
+
+function BanSection({ userId, userCode }: { userId: string | null; userCode: string | null }) {
   const [banReason, setBanReason] = useState("");
   const [banning, setBanning] = useState(false);
   const [banDone, setBanDone] = useState(false);
   const [banError, setBanError] = useState<string | null>(null);
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/admin/story-reports/${report.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ status, adminNotes, actionTaken: actionTaken || undefined }),
-      });
-      if (res.ok) {
-        const { report: updated } = await res.json();
-        onUpdate(updated);
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
+  if (!userId) return null;
+  if (banDone) {
+    return (
+      <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 border border-green-500/20 rounded-xl p-3">
+        <CheckCircle className="w-3.5 h-3.5" />
+        User {userCode ?? userId.slice(0, 8)} has been banned.
+      </div>
+    );
+  }
 
   const handleBan = async () => {
-    if (!report.userId || !banReason.trim()) return;
+    if (!banReason.trim()) return;
     setBanning(true);
     setBanError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/admin/users/${report.userId}/ban`, {
+      const res = await fetch(`${API_BASE}/api/admin/users/${userId}/ban`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -146,258 +329,464 @@ function ReportDetailPanel({
   };
 
   return (
-    <div className="space-y-4 text-sm">
-      {/* Meta */}
-      <div className="grid grid-cols-2 gap-3 text-xs">
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">Report ID</p>
-          <p className="font-mono text-foreground">#{report.id}</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">Submitted</p>
-          <p className="text-foreground">{fmtDate(report.createdAt)}</p>
-        </div>
-        {report.userId && (
-          <div className="bg-white/5 rounded-xl p-3 col-span-2">
-            <p className="text-muted-foreground mb-1">User ID</p>
-            <p className="font-mono text-foreground break-all">{report.userId}</p>
-          </div>
-        )}
-        {report.storyTitle && (
-          <div className="bg-white/5 rounded-xl p-3 col-span-2">
-            <p className="text-muted-foreground mb-1">Story</p>
-            <p className="text-foreground">
-              {report.storyId ? (
-                <Link href={`/story/${report.storyId}`} className="text-primary hover:underline">
-                  {report.storyTitle}
-                </Link>
-              ) : (
-                report.storyTitle
-              )}
-            </p>
-          </div>
-        )}
+    <div className="border border-destructive/20 rounded-xl overflow-hidden">
+      <div className="px-3 py-2.5 bg-destructive/5 flex items-center gap-2">
+        <Ban className="w-3.5 h-3.5 text-destructive/70" />
+        <span className="text-xs font-semibold text-destructive/80">Ban this user</span>
+        {userCode && <UserCodeBadge code={userCode} userId={userId} />}
       </div>
-
-      {/* What the user reported */}
-      <div className="bg-white/5 rounded-xl p-3 space-y-1.5">
-        <p className="text-xs text-muted-foreground font-medium">Category</p>
-        <p className="text-foreground">{report.reasonCategory}</p>
-        <p className="text-xs text-muted-foreground font-medium mt-2">Reason given</p>
-        <p className="text-foreground">{report.reason}</p>
-        {report.note && (
-          <>
-            <p className="text-xs text-muted-foreground font-medium mt-2">Additional note</p>
-            <p className="text-foreground/80 italic">{report.note}</p>
-          </>
-        )}
-      </div>
-
-      {/* Output excerpt */}
-      {report.outputExcerpt && (
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-xs text-muted-foreground font-medium mb-1.5">Story excerpt (first 500 chars)</p>
-          <p className="text-foreground/70 text-xs leading-relaxed line-clamp-6">{report.outputExcerpt}</p>
-        </div>
-      )}
-
-      {/* Input snapshot */}
-      {report.inputSnapshot && (
-        <details className="bg-white/5 rounded-xl p-3">
-          <summary className="text-xs text-muted-foreground cursor-pointer select-none">
-            Input snapshot (what the user selected)
-          </summary>
-          <pre className="mt-2 text-xs text-foreground/70 overflow-auto max-h-40 whitespace-pre-wrap">
-            {JSON.stringify(report.inputSnapshot, null, 2)}
-          </pre>
-        </details>
-      )}
-
-      {/* Admin review */}
-      <div className="space-y-2">
-        <p className="text-xs font-medium text-muted-foreground">Admin Notes</p>
-        <textarea
-          className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:border-primary/40 transition-colors"
-          rows={3}
-          placeholder="Internal notes for this report…"
-          value={adminNotes}
-          onChange={(e) => setAdminNotes(e.target.value)}
-          maxLength={2000}
+      <div className="px-3 pb-3 pt-2 space-y-2 bg-destructive/3">
+        <input
+          type="text"
+          className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-destructive/40"
+          placeholder="Reason for ban (required)"
+          value={banReason}
+          onChange={(e) => setBanReason(e.target.value)}
+          maxLength={300}
         />
+        {banError && <p className="text-xs text-destructive">{banError}</p>}
+        <Button
+          onClick={handleBan}
+          disabled={!banReason.trim() || banning}
+          size="sm"
+          variant="destructive"
+          className="w-full"
+        >
+          {banning ? "Banning…" : "Ban user"}
+        </Button>
       </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">Status</p>
-          <select
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-foreground focus:outline-none focus:border-primary/40"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            {VALID_STATUSES.map((s) => (
-              <option key={s} value={s} className="bg-[#0e0e10]">
-                {s.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">Action taken</p>
-          <select
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-foreground focus:outline-none focus:border-primary/40"
-            value={actionTaken}
-            onChange={(e) => setActionTaken(e.target.value)}
-          >
-            <option value="" className="bg-[#0e0e10]">— select —</option>
-            {VALID_ACTIONS.map((a) => (
-              <option key={a} value={a} className="bg-[#0e0e10]">
-                {a}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <Button onClick={handleSave} disabled={saving} size="sm" className="w-full">
-        {saving ? "Saving…" : "Save review"}
-      </Button>
-
-      {/* Ban section */}
-      {report.userId && !banDone && (
-        <div className="border border-destructive/20 rounded-xl p-3 space-y-2 mt-2">
-          <p className="text-xs font-medium text-destructive/80 flex items-center gap-1.5">
-            <Ban className="w-3.5 h-3.5" /> Ban this user
-          </p>
-          <input
-            type="text"
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-destructive/40"
-            placeholder="Reason for ban (required)"
-            value={banReason}
-            onChange={(e) => setBanReason(e.target.value)}
-            maxLength={300}
-          />
-          {banError && <p className="text-xs text-destructive">{banError}</p>}
-          <Button
-            onClick={handleBan}
-            disabled={!banReason.trim() || banning}
-            size="sm"
-            variant="destructive"
-            className="w-full"
-          >
-            {banning ? "Banning…" : "Ban user"}
-          </Button>
-        </div>
-      )}
-      {banDone && (
-        <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 rounded-xl p-3">
-          <CheckCircle className="w-3.5 h-3.5" />
-          User has been banned. They will see an error if they attempt to generate.
-        </div>
-      )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Moderation event detail panel
+// Report modal
 // ---------------------------------------------------------------------------
 
-function EventDetailPanel({ event }: { event: ModerationEvent }) {
-  return (
-    <div className="space-y-3 text-sm">
-      <div className="grid grid-cols-2 gap-3 text-xs">
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">Event ID</p>
-          <p className="font-mono text-foreground">#{event.id}</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">When</p>
-          <p className="text-foreground">{fmtDate(event.createdAt)}</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">Type</p>
-          <p className="text-foreground font-mono text-xs">{event.eventType}</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-muted-foreground mb-1">Action taken</p>
-          <p className="text-foreground font-mono text-xs">{event.actionTaken}</p>
-        </div>
-      </div>
+type ModalTab = "details" | "inputs" | "admin";
 
-      <div className="bg-white/5 rounded-xl p-3">
-        <p className="text-xs text-muted-foreground font-medium mb-1.5">Reason</p>
-        <p className="text-foreground text-sm mb-3">{event.reason}</p>
-        {event.flagsJson && (
-          <div className="text-xs space-y-1.5 mt-2 pt-2 border-t border-white/10">
-            {(event.flagsJson as any).pattern && (
-              <div>
-                <span className="text-muted-foreground">Pattern: </span>
-                <code className="bg-white/5 px-1.5 py-0.5 rounded text-foreground/80 font-mono break-all">
-                  {(event.flagsJson as any).pattern}
-                </code>
-              </div>
-            )}
-            {(event.flagsJson as any).matchedTerms && Array.isArray((event.flagsJson as any).matchedTerms) && (event.flagsJson as any).matchedTerms.length > 0 && (
-              <div>
-                <span className="text-muted-foreground">Matched terms: </span>
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  {(event.flagsJson as any).matchedTerms.map((term: string, idx: number) => (
-                    <span
-                      key={idx}
-                      className="bg-red-500/20 text-red-300 px-2 py-0.5 rounded text-xs font-mono border border-red-500/30"
-                    >
-                      {term}
-                    </span>
-                  ))}
+function ReportModal({
+  report,
+  open,
+  onClose,
+  onUpdate,
+}: {
+  report: StoryReport;
+  open: boolean;
+  onClose: () => void;
+  onUpdate: (updated: StoryReport) => void;
+}) {
+  const [tab, setTab] = useState<ModalTab>("details");
+  const [adminNotes, setAdminNotes] = useState(report.adminNotes ?? "");
+  const [status, setStatus] = useState(report.status);
+  const [actionTaken, setActionTaken] = useState(report.actionTaken ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saveOk, setSaveOk] = useState(false);
+  const [flagging, setFlagging] = useState(false);
+  const [localAuditFlagged, setLocalAuditFlagged] = useState(report.auditFlagged);
+  const [localAuditNote, setLocalAuditNote] = useState(report.auditNote);
+  const [localAuditFlaggedAt, setLocalAuditFlaggedAt] = useState(report.auditFlaggedAt);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveOk(false);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/story-reports/${report.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ status, adminNotes, actionTaken: actionTaken || undefined }),
+      });
+      if (res.ok) {
+        const { report: updated } = await res.json();
+        onUpdate(updated);
+        setSaveOk(true);
+        setTimeout(() => setSaveOk(false), 2000);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAddToAudit = async (note: string) => {
+    setFlagging(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/story-reports/${report.id}/add-to-audit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ note }),
+      });
+      if (res.ok) {
+        const { report: updated } = await res.json();
+        onUpdate(updated);
+        setLocalAuditFlagged(true);
+        setLocalAuditNote(note || null);
+        setLocalAuditFlaggedAt(new Date().toISOString());
+      }
+    } finally {
+      setFlagging(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col bg-[#0e0e10] border-white/10">
+        <DialogHeader className="flex-shrink-0">
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <DialogTitle className="text-base font-semibold flex items-center gap-2 flex-wrap">
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColor(status)}`}>
+                  {status.replace(/_/g, " ")}
+                </span>
+                <span className="text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                  {report.reasonCategory}
+                </span>
+                {localAuditFlagged && (
+                  <span className="text-xs px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/20 flex items-center gap-1">
+                    <FolderOpen className="w-2.5 h-2.5" /> Audit
+                  </span>
+                )}
+              </DialogTitle>
+              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
+                Report #{report.id} · {fmtDate(report.createdAt)}
+                {(report.userCode || report.userId) && (
+                  <UserCodeBadge code={report.userCode} userId={report.userId} />
+                )}
+              </p>
+            </div>
+          </div>
+        </DialogHeader>
+
+        {/* Tabs */}
+        <div className="flex gap-1 border-b border-white/10 flex-shrink-0 -mt-1">
+          {(["details", "inputs", "admin"] as ModalTab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px capitalize ${
+                tab === t
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <ScrollArea className="flex-1 overflow-auto">
+          <div className="space-y-4 p-1 pr-3">
+            {tab === "details" && (
+              <>
+                {/* Reason */}
+                <div className="bg-white/5 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Reason given</p>
+                  <p className="text-sm text-foreground">{report.reason}</p>
+                  {report.note && (
+                    <p className="text-xs text-foreground/60 italic border-t border-white/5 pt-2">{report.note}</p>
+                  )}
                 </div>
-              </div>
+
+                {/* Story */}
+                {report.storyTitle && (
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Story</p>
+                    <p className="text-sm text-foreground">
+                      {report.storyId ? (
+                        <Link href={`/story/${report.storyId}`} className="text-primary hover:underline">
+                          {report.storyTitle}
+                        </Link>
+                      ) : report.storyTitle}
+                    </p>
+                  </div>
+                )}
+
+                {/* Output excerpt */}
+                {report.outputExcerpt && (
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Story excerpt</p>
+                    <p className="text-foreground/70 text-xs leading-relaxed">{report.outputExcerpt}</p>
+                  </div>
+                )}
+
+                {/* Review info */}
+                {report.reviewedAt && (
+                  <div className="bg-white/5 rounded-xl p-3 text-xs text-muted-foreground">
+                    Reviewed by {report.reviewedBy ?? "admin"} on {fmtDate(report.reviewedAt)}
+                  </div>
+                )}
+              </>
             )}
-            {(event.flagsJson as any).source && (
-              <div>
-                <span className="text-muted-foreground">Source: </span>
-                <span className="text-foreground">{(event.flagsJson as any).source}</span>
+
+            {tab === "inputs" && (
+              <>
+                {report.inputSnapshot ? (
+                  <InputSnapshotView data={report.inputSnapshot} label="What the user selected" />
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground/40">
+                    <FileText className="w-8 h-8 mx-auto mb-2" />
+                    <p className="text-sm">No input snapshot recorded</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {tab === "admin" && (
+              <div className="space-y-4">
+                <StatusButtons selected={status} onSelect={setStatus} />
+                <ActionButtons selected={actionTaken} onSelect={setActionTaken} />
+
+                <div className="space-y-1.5">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Commentary</p>
+                  <textarea
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:border-primary/40 transition-colors"
+                    rows={4}
+                    placeholder="Internal notes on this report…"
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    maxLength={2000}
+                  />
+                </div>
+
+                <Button onClick={handleSave} disabled={saving} size="sm" className="w-full">
+                  {saveOk ? <><CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Saved</> : saving ? "Saving…" : "Save review"}
+                </Button>
+
+                <AuditSection
+                  auditFlagged={localAuditFlagged}
+                  auditNote={localAuditNote}
+                  auditFlaggedAt={localAuditFlaggedAt}
+                  onFlag={handleAddToAudit}
+                  flagging={flagging}
+                />
+
+                <BanSection userId={report.userId} userCode={report.userCode} />
               </div>
             )}
           </div>
-        )}
-      </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-      {event.userId && (
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-xs text-muted-foreground font-medium mb-1">User ID</p>
-          <p className="font-mono text-xs text-foreground break-all">{event.userId}</p>
+// ---------------------------------------------------------------------------
+// Event modal
+// ---------------------------------------------------------------------------
+
+function EventModal({
+  event,
+  open,
+  onClose,
+  onUpdate,
+}: {
+  event: ModerationEvent;
+  open: boolean;
+  onClose: () => void;
+  onUpdate: (updated: ModerationEvent) => void;
+}) {
+  const [tab, setTab] = useState<ModalTab>("details");
+  const [adminNotes, setAdminNotes] = useState(event.adminNotes ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saveOk, setSaveOk] = useState(false);
+  const [flagging, setFlagging] = useState(false);
+  const [localAuditFlagged, setLocalAuditFlagged] = useState(event.auditFlagged);
+  const [localAuditNote, setLocalAuditNote] = useState(event.auditNote);
+  const [localAuditFlaggedAt, setLocalAuditFlaggedAt] = useState(event.auditFlaggedAt);
+
+  const handleSaveNotes = async () => {
+    setSaving(true);
+    setSaveOk(false);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/moderation-events/${event.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ adminNotes }),
+      });
+      if (res.ok) {
+        const { event: updated } = await res.json();
+        onUpdate(updated);
+        setSaveOk(true);
+        setTimeout(() => setSaveOk(false), 2000);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAddToAudit = async (note: string) => {
+    setFlagging(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/moderation-events/${event.id}/add-to-audit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ note }),
+      });
+      if (res.ok) {
+        const { event: updated } = await res.json();
+        onUpdate(updated);
+        setLocalAuditFlagged(true);
+        setLocalAuditNote(note || null);
+        setLocalAuditFlaggedAt(new Date().toISOString());
+      }
+    } finally {
+      setFlagging(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col bg-[#0e0e10] border-white/10">
+        <DialogHeader className="flex-shrink-0">
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <DialogTitle className="text-base font-semibold flex items-center gap-2 flex-wrap">
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${severityColor(event.severity)}`}>
+                  {event.severity}
+                </span>
+                <span className="text-xs text-muted-foreground font-mono bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                  {event.eventType}
+                </span>
+                {localAuditFlagged && (
+                  <span className="text-xs px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/20 flex items-center gap-1">
+                    <FolderOpen className="w-2.5 h-2.5" /> Audit
+                  </span>
+                )}
+              </DialogTitle>
+              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
+                Event #{event.id} · {fmtDate(event.createdAt)}
+                {(event.userCode || event.userId) && (
+                  <UserCodeBadge code={event.userCode} userId={event.userId} />
+                )}
+              </p>
+            </div>
+          </div>
+        </DialogHeader>
+
+        {/* Tabs */}
+        <div className="flex gap-1 border-b border-white/10 flex-shrink-0 -mt-1">
+          {(["details", "inputs", "admin"] as ModalTab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px capitalize ${
+                tab === t
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
         </div>
-      )}
 
-      {event.outputExcerpt && (
-        <div className="bg-white/5 rounded-xl p-3">
-          <p className="text-xs text-muted-foreground font-medium mb-1.5">Output excerpt</p>
-          <p className="text-foreground/70 text-xs leading-relaxed">{event.outputExcerpt}</p>
-        </div>
-      )}
+        <ScrollArea className="flex-1 overflow-auto">
+          <div className="space-y-4 p-1 pr-3">
+            {tab === "details" && (
+              <>
+                <div className="bg-white/5 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Reason</p>
+                  <p className="text-sm text-foreground">{event.reason}</p>
+                </div>
 
-      {event.inputSnapshotJson && (
-        <details className="bg-white/5 rounded-xl p-3">
-          <summary className="text-xs text-muted-foreground cursor-pointer select-none">
-            Input snapshot
-          </summary>
-          <pre className="mt-2 text-xs text-foreground/70 overflow-auto max-h-40 whitespace-pre-wrap">
-            {JSON.stringify(event.inputSnapshotJson, null, 2)}
-          </pre>
-        </details>
-      )}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-muted-foreground mb-1">Action taken</p>
+                    <p className="font-mono text-foreground">{event.actionTaken}</p>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-muted-foreground mb-1">Email sent</p>
+                    <p className="text-foreground">{event.emailSent ? "Yes" : "No"}</p>
+                  </div>
+                </div>
 
-      {event.flagsJson && (
-        <details className="bg-white/5 rounded-xl p-3">
-          <summary className="text-xs text-muted-foreground cursor-pointer select-none">
-            Flags JSON
-          </summary>
-          <pre className="mt-2 text-xs text-foreground/70 overflow-auto max-h-40 whitespace-pre-wrap">
-            {JSON.stringify(event.flagsJson, null, 2)}
-          </pre>
-        </details>
-      )}
-    </div>
+                {event.flagsJson && (
+                  <div className="bg-white/5 rounded-xl p-3 text-xs space-y-2">
+                    <p className="font-semibold text-muted-foreground uppercase tracking-wider">Flags</p>
+                    {(event.flagsJson as any).pattern && (
+                      <div>
+                        <span className="text-muted-foreground">Pattern: </span>
+                        <code className="bg-white/5 px-1.5 py-0.5 rounded text-foreground/80 font-mono break-all">
+                          {(event.flagsJson as any).pattern}
+                        </code>
+                      </div>
+                    )}
+                    {(event.flagsJson as any).matchedTerms?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {(event.flagsJson as any).matchedTerms.map((term: string, idx: number) => (
+                          <span key={idx} className="bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono border border-red-500/30">
+                            {term}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {(event.flagsJson as any).source && (
+                      <div>
+                        <span className="text-muted-foreground">Source: </span>
+                        <span className="text-foreground">{(event.flagsJson as any).source}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {event.outputExcerpt && (
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Output excerpt</p>
+                    <p className="text-foreground/70 text-xs leading-relaxed">{event.outputExcerpt}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {tab === "inputs" && (
+              <>
+                {event.inputSnapshotJson ? (
+                  <InputSnapshotView data={event.inputSnapshotJson} label="What the user submitted" />
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground/40">
+                    <FileText className="w-8 h-8 mx-auto mb-2" />
+                    <p className="text-sm">No input snapshot recorded</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {tab === "admin" && (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Commentary</p>
+                  <textarea
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:border-primary/40 transition-colors"
+                    rows={4}
+                    placeholder="Internal notes on this alert…"
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    maxLength={2000}
+                  />
+                </div>
+
+                <Button onClick={handleSaveNotes} disabled={saving} size="sm" className="w-full">
+                  {saveOk ? <><CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Saved</> : saving ? "Saving…" : "Save notes"}
+                </Button>
+
+                <AuditSection
+                  auditFlagged={localAuditFlagged}
+                  auditNote={localAuditNote}
+                  auditFlaggedAt={localAuditFlaggedAt}
+                  onFlag={handleAddToAudit}
+                  flagging={flagging}
+                />
+
+                <BanSection userId={event.userId} userCode={event.userCode} />
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -409,7 +798,7 @@ function ReportsTab() {
   const [reports, setReports] = useState<StoryReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("pending");
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [selected, setSelected] = useState<StoryReport | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -425,6 +814,7 @@ function ReportsTab() {
 
   const handleUpdate = (updated: StoryReport) => {
     setReports((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+    if (selected?.id === updated.id) setSelected(updated);
   };
 
   return (
@@ -446,20 +836,14 @@ function ReportsTab() {
             </button>
           ))}
         </div>
-        <button
-          onClick={load}
-          className="ml-auto p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-          title="Refresh"
-        >
+        <button onClick={load} className="ml-auto p-1.5 text-muted-foreground hover:text-foreground transition-colors" title="Refresh">
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {loading ? (
         <div className="space-y-2">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 bg-card/40 rounded-xl animate-pulse" />
-          ))}
+          {[...Array(3)].map((_, i) => <div key={i} className="h-16 bg-card/40 rounded-xl animate-pulse" />)}
         </div>
       ) : reports.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
@@ -469,50 +853,45 @@ function ReportsTab() {
       ) : (
         <div className="space-y-2">
           {reports.map((r) => (
-            <div
+            <button
               key={r.id}
-              className="border border-border/30 rounded-xl overflow-hidden"
+              className="w-full text-left border border-border/30 rounded-xl p-4 hover:bg-white/3 transition-colors flex items-center gap-3"
+              onClick={() => setSelected(r)}
             >
-              {/* Row */}
-              <button
-                className="w-full flex items-center gap-3 p-4 hover:bg-white/3 transition-colors text-left"
-                onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColor(r.status)}`}>
-                      {r.status.replace(/_/g, " ")}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColor(r.status)}`}>
+                    {r.status.replace(/_/g, " ")}
+                  </span>
+                  <span className="text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                    {r.reasonCategory}
+                  </span>
+                  <UserCodeBadge code={r.userCode} userId={r.userId} />
+                  {r.auditFlagged && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                      <FolderOpen className="w-2.5 h-2.5 inline" />
                     </span>
-                    <span className="text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                      {r.reasonCategory}
-                    </span>
-                  </div>
-                  <p className="text-sm text-foreground line-clamp-1">{r.reason}</p>
-                  {r.storyTitle && (
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      "{r.storyTitle}"
-                    </p>
                   )}
                 </div>
-                <div className="text-xs text-muted-foreground/50 text-right flex-shrink-0 mr-1">
-                  {new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                </div>
-                {expandedId === r.id ? (
-                  <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                )}
-              </button>
-
-              {/* Detail */}
-              {expandedId === r.id && (
-                <div className="border-t border-border/20 p-4 bg-black/20">
-                  <ReportDetailPanel report={r} onUpdate={handleUpdate} />
-                </div>
-              )}
-            </div>
+                <p className="text-sm text-foreground line-clamp-1">{r.reason}</p>
+                {r.storyTitle && <p className="text-xs text-muted-foreground mt-0.5 truncate">"{r.storyTitle}"</p>}
+              </div>
+              <div className="text-xs text-muted-foreground/50 flex-shrink-0 mr-1">
+                {new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            </button>
           ))}
         </div>
+      )}
+
+      {selected && (
+        <ReportModal
+          report={selected}
+          open={!!selected}
+          onClose={() => setSelected(null)}
+          onUpdate={handleUpdate}
+        />
       )}
     </div>
   );
@@ -526,7 +905,7 @@ function EventsTab() {
   const [events, setEvents] = useState<ModerationEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [severityFilter, setSeverityFilter] = useState("");
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [selected, setSelected] = useState<ModerationEvent | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -539,6 +918,11 @@ function EventsTab() {
   }, [severityFilter]);
 
   useEffect(() => { load(); }, [load]);
+
+  const handleUpdate = (updated: ModerationEvent) => {
+    setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    if (selected?.id === updated.id) setSelected(updated);
+  };
 
   return (
     <div className="space-y-4">
@@ -559,20 +943,14 @@ function EventsTab() {
             </button>
           ))}
         </div>
-        <button
-          onClick={load}
-          className="ml-auto p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-          title="Refresh"
-        >
+        <button onClick={load} className="ml-auto p-1.5 text-muted-foreground hover:text-foreground transition-colors" title="Refresh">
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {loading ? (
         <div className="space-y-2">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 bg-card/40 rounded-xl animate-pulse" />
-          ))}
+          {[...Array(3)].map((_, i) => <div key={i} className="h-16 bg-card/40 rounded-xl animate-pulse" />)}
         </div>
       ) : events.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
@@ -582,42 +960,44 @@ function EventsTab() {
       ) : (
         <div className="space-y-2">
           {events.map((ev) => (
-            <div key={ev.id} className="border border-border/30 rounded-xl overflow-hidden">
-              <button
-                className="w-full flex items-center gap-3 p-4 hover:bg-white/3 transition-colors text-left"
-                onClick={() => setExpandedId(expandedId === ev.id ? null : ev.id)}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${severityColor(ev.severity)}`}>
-                      {ev.severity}
+            <button
+              key={ev.id}
+              className="w-full text-left border border-border/30 rounded-xl p-4 hover:bg-white/3 transition-colors flex items-center gap-3"
+              onClick={() => setSelected(ev)}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className={`text-xs px-2 py-0.5 rounded-full border ${severityColor(ev.severity)}`}>
+                    {ev.severity}
+                  </span>
+                  <span className="text-xs text-muted-foreground font-mono bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                    {ev.eventType}
+                  </span>
+                  <UserCodeBadge code={ev.userCode} userId={ev.userId} />
+                  {ev.auditFlagged && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                      <FolderOpen className="w-2.5 h-2.5 inline" />
                     </span>
-                    <span className="text-xs text-muted-foreground font-mono bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                      {ev.eventType}
-                    </span>
-                    <span className="text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                      {ev.actionTaken}
-                    </span>
-                  </div>
-                  <p className="text-sm text-foreground line-clamp-1">{ev.reason}</p>
+                  )}
                 </div>
-                <div className="text-xs text-muted-foreground/50 flex-shrink-0 mr-1">
-                  {new Date(ev.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                </div>
-                {expandedId === ev.id ? (
-                  <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                )}
-              </button>
-              {expandedId === ev.id && (
-                <div className="border-t border-border/20 p-4 bg-black/20">
-                  <EventDetailPanel event={ev} />
-                </div>
-              )}
-            </div>
+                <p className="text-sm text-foreground line-clamp-1">{ev.reason}</p>
+              </div>
+              <div className="text-xs text-muted-foreground/50 flex-shrink-0 mr-1">
+                {new Date(ev.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            </button>
           ))}
         </div>
+      )}
+
+      {selected && (
+        <EventModal
+          event={selected}
+          open={!!selected}
+          onClose={() => setSelected(null)}
+          onUpdate={handleUpdate}
+        />
       )}
     </div>
   );
@@ -670,9 +1050,7 @@ function StatsTab() {
   if (loading) {
     return (
       <div className="grid grid-cols-2 gap-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-20 bg-card/40 rounded-xl animate-pulse" />
-        ))}
+        {[...Array(6)].map((_, i) => <div key={i} className="h-20 bg-card/40 rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -704,112 +1082,78 @@ function StatsTab() {
           <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="Today" value={stats.stories.today} />
           <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="This week" value={stats.stories.week} />
           <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="This month" value={stats.stories.month} />
-          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="All time" value={stats.stories.total} />
+          <StatCard icon={<BookOpen className="w-4 h-4 text-primary" />} label="Total" value={stats.stories.total} />
         </div>
       </div>
       <div>
         <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Moderation</p>
         <div className="grid grid-cols-2 gap-3">
-          <StatCard icon={<Flag className="w-4 h-4 text-amber-400" />} label="Pending reports" value={stats.moderation.pendingReports} />
-          <StatCard icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} label="Events (30d)" value={stats.moderation.eventsLast30Days} />
+          <StatCard icon={<Flag className="w-4 h-4 text-yellow-400" />} label="Pending reports" value={stats.moderation.pendingReports} />
+          <StatCard icon={<Zap className="w-4 h-4 text-orange-400" />} label="Events (30 days)" value={stats.moderation.eventsLast30Days} />
         </div>
-      </div>
-      <div className="flex justify-end">
-        <button
-          onClick={load}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          Refresh stats
-        </button>
       </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Main page
+// Main component
 // ---------------------------------------------------------------------------
 
-type ModerationTab = "reports" | "events" | "stats";
+type Tab = "reports" | "events" | "stats";
 
 export default function AdminModeration() {
-  const { user, isLoading } = useAuth();
-  const [tab, setTab] = useState<ModerationTab>("reports");
-  const [accessDenied, setAccessDenied] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const { isAuthenticated, isAdmin } = useAuth();
+  const [tab, setTab] = useState<Tab>("reports");
 
-  // Server-side admin check — same pattern as Admin.tsx
-  useEffect(() => {
-    if (!user?.id) return;
-    fetch(`${API_BASE}/api/admin/story-reports?limit=1`, { credentials: "include" })
-      .then((r) => {
-        if (r.status === 403) setAccessDenied(true);
-        setChecked(true);
-      })
-      .catch(() => setChecked(true));
-  }, [user?.id]);
-
-  if (isLoading || (!checked && user?.id)) {
+  if (!isAuthenticated || !isAdmin) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-muted-foreground text-sm">Loading…</div>
-      </div>
-    );
-  }
-
-  if (!user || accessDenied) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <p className="text-destructive font-medium">Access denied.</p>
-          <Link href="/" className="text-sm text-primary hover:underline">Go home</Link>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-muted-foreground">Access denied.</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-4 pt-8 pb-20">
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-primary/10 rounded-xl">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-primary/10 rounded-xl border border-primary/20">
             <Flag className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="font-display font-bold text-xl text-foreground">Moderation</h1>
-            <p className="text-xs text-muted-foreground">Story reports and auto-moderation events</p>
+            <h1 className="text-lg font-bold text-foreground">Moderation</h1>
+            <p className="text-xs text-muted-foreground">Trust & safety dashboard</p>
           </div>
-          <Link href="/admin" className="ml-auto text-xs text-muted-foreground hover:text-primary transition-colors">
-            ← Back to Admin
-          </Link>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 mb-6 bg-white/5 rounded-xl p-1 border border-white/10">
+        {/* Tab bar */}
+        <div className="flex gap-1 bg-white/3 rounded-xl p-1 border border-white/10">
           {([
-            { id: "reports", label: "User Reports", icon: Flag },
-            { id: "events", label: "Auto-flagged", icon: Zap },
-            { id: "stats", label: "Stats", icon: BarChart2 },
-          ] as { id: ModerationTab; label: string; icon: React.ElementType }[]).map(({ id, label, icon: Icon }) => (
+            { id: "reports", icon: <Inbox className="w-3.5 h-3.5" />, label: "Reports" },
+            { id: "events", icon: <Zap className="w-3.5 h-3.5" />, label: "Alerts" },
+            { id: "stats", icon: <BarChart2 className="w-3.5 h-3.5" />, label: "Stats" },
+          ] as { id: Tab; icon: React.ReactNode; label: string }[]).map(({ id, icon, label }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-colors ${
                 tab === id
-                  ? "bg-primary/15 text-primary"
+                  ? "bg-primary/20 text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{label}</span>
+              {icon}
+              {label}
             </button>
           ))}
         </div>
 
-        {/* Tab content */}
-        {tab === "reports" ? <ReportsTab /> : tab === "events" ? <EventsTab /> : <StatsTab />}
+        {/* Content */}
+        {tab === "reports" && <ReportsTab />}
+        {tab === "events" && <EventsTab />}
+        {tab === "stats" && <StatsTab />}
       </div>
     </div>
   );

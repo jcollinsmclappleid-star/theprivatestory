@@ -4,6 +4,16 @@ import { twoFactor } from "better-auth/plugins";
 import { db, usersTable, baSessionsTable, baAccountsTable, baVerificationsTable, baTwoFactorTable } from "@workspace/db";
 import { sendEmail } from "./email.js";
 
+const USER_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function generateUserCode(): string {
+  let code = "TPS-";
+  for (let i = 0; i < 6; i++) {
+    code += USER_CODE_CHARS[Math.floor(Math.random() * USER_CODE_CHARS.length)];
+  }
+  return code;
+}
+
 function getBaseURL(): string {
   if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL;
   if (process.env.REPLIT_DEV_DOMAIN) return `https://${process.env.REPLIT_DEV_DOMAIN}`;
@@ -63,12 +73,14 @@ export const auth = betterAuth({
           const parts = (user.name ?? "").trim().split(/\s+/);
           const firstName = parts[0] ?? "";
           const lastName = parts.slice(1).join(" ") || null;
+          const userCode = generateUserCode();
           return {
             data: {
               ...user,
               firstName,
               lastName: lastName,
               profileImageUrl: user.image ?? null,
+              userCode,
             },
           };
         },

@@ -45,13 +45,15 @@ export const adminAuditLog = pgTable(
         'name_approved', 'name_rejected',
         'risk_score_change',
         'content_block_dispositioned',
-        'story_published', 'story_rejected'
+        'story_published', 'story_rejected',
+        'moderation_reviewed'
       )`,
     ),
     check(
       "admin_audit_log_target_type_check",
       sql`${table.targetType} IN (
-        'name_submission', 'user', 'content_block', 'story'
+        'name_submission', 'user', 'content_block', 'story',
+        'moderation_event', 'story_report'
       )`,
     ),
   ],

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, Star } from "lucide-react";
+import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 
@@ -52,7 +52,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    const schema = {
+    const faqSchema = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": config.faqs.map((faq) => ({
@@ -64,15 +64,53 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
         },
       })),
     };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "faq-schema";
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
+    const faqScript = document.createElement("script");
+    faqScript.type = "application/ld+json";
+    faqScript.id = "faq-schema";
+    faqScript.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(faqScript);
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "The Private Story", "item": "https://theprivatestory.com" },
+        { "@type": "ListItem", "position": 2, "name": "Discover All Story Types", "item": "https://theprivatestory.com/discover" },
+        { "@type": "ListItem", "position": 3, "name": config.hero.h1, "item": window.location.href },
+      ],
+    };
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.id = "breadcrumb-schema";
+    breadcrumbScript.textContent = JSON.stringify(breadcrumbSchema);
+    document.head.appendChild(breadcrumbScript);
+
+    const webPageSchema = {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": config.meta.title,
+      "description": config.meta.description,
+      "url": window.location.href,
+      "dateModified": new Date().toISOString().split("T")[0],
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Private Story",
+        "url": "https://theprivatestory.com",
+      },
+      "breadcrumb": { "@id": breadcrumbScript.id },
+    };
+    const webPageScript = document.createElement("script");
+    webPageScript.type = "application/ld+json";
+    webPageScript.id = "webpage-schema";
+    webPageScript.textContent = JSON.stringify(webPageSchema);
+    document.head.appendChild(webPageScript);
+
     return () => {
       document.getElementById("faq-schema")?.remove();
+      document.getElementById("breadcrumb-schema")?.remove();
+      document.getElementById("webpage-schema")?.remove();
     };
-  }, [config.faqs]);
+  }, [config.faqs, config.hero.h1, config.meta.title, config.meta.description]);
 
   return (
     <motion.div
@@ -251,6 +289,22 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
                 </Link>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Discover more */}
+        <section className="mb-16">
+          <div className="rounded-xl border border-border/20 bg-white/[0.01] px-6 py-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium text-foreground mb-0.5">Explore all story types</p>
+              <p className="text-xs text-muted-foreground/70">Twenty-four different ways into a story made for you.</p>
+            </div>
+            <Link
+              href="/discover"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Discover <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </section>
 

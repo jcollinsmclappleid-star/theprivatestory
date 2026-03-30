@@ -350,18 +350,25 @@ function Navbar({ streakDays }: { streakDays: number }) {
   );
 }
 
+function FooterColumn({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
+  return (
+    <div>
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-3">{heading}</h3>
+      <ul className="space-y-2">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href} className="text-xs text-muted-foreground/70 hover:text-primary transition-colors leading-relaxed">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function Footer() {
   const [reportOpen, setReportOpen] = useState(false);
-
-  const footerLinks = [
-    { label: "Home", href: "/" },
-    { label: "Browse", href: "/browse" },
-    { label: "About", href: "/about" },
-    { label: "The Private Story - 'After Dark'", href: "/after-dark" },
-    { label: "Drift - Bedtime Stories", href: "/drift" },
-    { label: "My Library", href: "/library" },
-    { label: "Gift a Story", href: "/gift" },
-  ];
 
   const legalLinks = [
     { label: "Privacy", href: "/privacy" },
@@ -371,35 +378,84 @@ function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border/40 bg-background/50 py-12 mt-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
-        <div className="mb-4">
-          <Logo height={80} />
+    <footer className="border-t border-border/40 bg-background/50 pt-14 pb-10 mt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+
+          <FooterColumn heading="Navigate" links={[
+            { label: "Home", href: "/" },
+            { label: "Browse stories", href: "/browse" },
+            { label: "Create your story", href: "/create" },
+            { label: "Pricing", href: "/pricing" },
+            { label: "After Dark", href: "/after-dark" },
+            { label: "Drift — Bedtime", href: "/drift" },
+            { label: "My library", href: "/library" },
+            { label: "Gift a story", href: "/gift" },
+            { label: "About", href: "/about" },
+            { label: "Discover all types", href: "/discover" },
+          ]} />
+
+          <FooterColumn heading="Personalised" links={[
+            { label: "Personalised audio stories", href: "/personalised-audio-stories" },
+            { label: "Private audio stories", href: "/private-audio-stories" },
+            { label: "Create your own audio story", href: "/create-your-own-audio-story" },
+            { label: "AI audio story generator", href: "/ai-audio-story-generator" },
+            { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
+            { label: "Relaxing audio stories", href: "/relaxing-audio-stories" },
+            { label: "Sleep audio stories", href: "/sleep-audio-stories" },
+          ]} />
+
+          <FooterColumn heading="Romantic" links={[
+            { label: "Romantic audio stories", href: "/romantic-audio-stories" },
+            { label: "Love stories audio", href: "/love-stories-audio" },
+            { label: "Emotional audio stories", href: "/emotional-audio-stories" },
+            { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+            { label: "Late night audio stories", href: "/late-night-audio-stories" },
+            { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+            { label: "Confident energy stories", href: "/confident-energy-stories" },
+            { label: "Quiet intensity stories", href: "/quiet-intensity-stories" },
+          ]} />
+
+          <FooterColumn heading="Genre" links={[
+            { label: "Dark romance audio stories", href: "/dark-romance-audio-stories" },
+            { label: "Forbidden romance audio", href: "/forbidden-romance-audio-stories" },
+            { label: "Enemies to lovers audio", href: "/enemies-to-lovers-audio-stories" },
+            { label: "Adult audio stories", href: "/adult-audio-stories" },
+            { label: "Audio stories for women", href: "/audio-stories-for-women" },
+          ]} />
+
+          <FooterColumn heading="Compare" links={[
+            { label: "Audio stories vs audiobooks", href: "/audio-stories-vs-audiobooks" },
+            { label: "Audio stories vs podcasts", href: "/audio-stories-vs-podcasts" },
+            { label: "Best audio story app", href: "/best-audio-story-app-for-adults" },
+            { label: "Alternatives to romance audiobooks", href: "/alternatives-to-romance-audiobooks" },
+          ]} />
+
         </div>
-        <p className="text-muted-foreground text-sm max-w-md mb-6">
-          Stories written for the parts of you that nobody else gets to know.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mb-4">
-          {footerLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-primary transition-colors">
-              {link.label}
-            </Link>
-          ))}
+
+        <div className="border-t border-border/20 pt-8 flex flex-col items-center text-center">
+          <div className="mb-3">
+            <Logo height={60} />
+          </div>
+          <p className="text-muted-foreground text-xs max-w-sm mb-5">
+            Stories written for the parts of you that nobody else gets to know.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground/50 mb-3">
+            {legalLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="hover:text-primary transition-colors">
+                {link.label}
+              </Link>
+            ))}
+            <button
+              onClick={() => setReportOpen(true)}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Report a concern
+            </button>
+          </div>
+          <p className="text-[11px] text-muted-foreground/30">What you listen to here stays here. Always. · Adults 18+ only. · Ianson System Ltd t/a The Private Story.</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground/60 mb-4">
-          {legalLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-primary transition-colors">
-              {link.label}
-            </Link>
-          ))}
-          <button
-            onClick={() => setReportOpen(true)}
-            className="hover:text-amber-400 transition-colors"
-          >
-            Report a concern
-          </button>
-        </div>
-        <p className="text-xs text-muted-foreground/40">What you listen to here stays here. Always. · Adults 18+ only.</p>
       </div>
       {reportOpen && (
         <Suspense fallback={null}>

@@ -1530,7 +1530,7 @@ export default function Create() {
               <div className="flex items-start justify-between gap-4 mb-2">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
-                  <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Story</h1>
+                  <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Private Story</h1>
                   <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
                 </div>
                 <div className="flex flex-col items-end gap-2 mt-1 flex-shrink-0">

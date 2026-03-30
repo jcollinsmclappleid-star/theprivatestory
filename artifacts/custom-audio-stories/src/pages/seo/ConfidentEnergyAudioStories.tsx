@@ -119,7 +119,7 @@ const config: SEOPageConfig = {
     ],
   },
   finalCTA: {
-    h2: "Create Your Story",
+    h2: "Create Your Private Story",
     paragraphs: [
       "There is a version of you that exists when you feel entirely yourself. Confident, present, at the centre of something that has weight.",
       "A story built around that version of you is not a story about someone else. It is your story — in which you are the protagonist, the desire flows toward you, and the encounter is entirely on your terms.",

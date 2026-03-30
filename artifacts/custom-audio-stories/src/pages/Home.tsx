@@ -963,7 +963,7 @@ export default function Home() {
         <CastingPreview />
 
         {/* ---------------------------------------------------------------- */}
-        {/* Create Your Story — for novelists & romantics                     */}
+        {/* Create Your Private Story — for novelists & romantics            */}
         {/* ---------------------------------------------------------------- */}
         <section className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-3xl border border-primary/15 bg-card/30 backdrop-blur-md p-10 md:p-16">
@@ -986,7 +986,7 @@ export default function Home() {
                 <div className="flex items-center gap-2 mb-5">
                   <BookOpen className="w-4 h-4 text-primary/70" />
                   <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest">
-                    Create Your Story
+                    Create Your Private Story
                   </span>
                 </div>
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">

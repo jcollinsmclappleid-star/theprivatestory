@@ -120,7 +120,7 @@ const config: SEOPageConfig = {
     ],
   },
   finalCTA: {
-    h2: "Create Your Story",
+    h2: "Create Your Private Story",
     paragraphs: [
       "Audio fiction built for how you actually feel, around what you actually want. Not the market's version of you. Not the catalogue nearest to your preferences. Yours.",
       "Private, personalised, literary. Created around your choices and your mood for tonight.",

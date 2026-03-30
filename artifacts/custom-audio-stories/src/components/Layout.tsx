@@ -146,14 +146,14 @@ function Navbar({ streakDays }: { streakDays: number }) {
                 className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isAfterDark ? "text-[#c0392b]" : "text-muted-foreground/70 hover:text-[#c0392b]"}`}
               >
                 <Moon className="w-3.5 h-3.5" />
-                After Dark
+                The Private Story - 'After Dark'
               </Link>
               <Link
                 href="/drift"
                 className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isDrift ? "text-[#6366f1]" : "text-muted-foreground/70 hover:text-[#6366f1]"}`}
               >
                 <Moon className="w-3.5 h-3.5 opacity-60" />
-                Drift
+                Drift - Bedtime Stories
               </Link>
             </div>
           </div>
@@ -273,7 +273,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
               }`}
             >
               <Moon className="w-4 h-4" />
-              After Dark
+              The Private Story - 'After Dark'
             </Link>
             <Link
               href="/drift"
@@ -282,7 +282,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
               }`}
             >
               <Moon className="w-4 h-4 opacity-60" />
-              Drift
+              Drift - Bedtime Stories
             </Link>
           </div>
 
@@ -356,8 +356,8 @@ function Footer() {
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse" },
     { label: "About", href: "/about" },
-    { label: "After Dark", href: "/after-dark" },
-    { label: "Drift", href: "/drift" },
+    { label: "The Private Story - 'After Dark'", href: "/after-dark" },
+    { label: "Drift - Bedtime Stories", href: "/drift" },
     { label: "My Library", href: "/library" },
     { label: "Gift a Story", href: "/gift" },
   ];

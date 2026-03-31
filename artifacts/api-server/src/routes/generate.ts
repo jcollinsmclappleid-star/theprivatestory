@@ -1068,13 +1068,28 @@ export function getCacheKey(data: object): string {
 // Voice IDs
 // ---------------------------------------------------------------------------
 
-// ElevenLabs voice IDs — mapped to the four voice feels available in the Casting Room
-const voiceMap: Record<string, string> = {
-  "Soft Voice":      "21m00Tcm4TlvDq8ikWAM", // Rachel — warm, soft female
-  "Deep Voice":      "pNInz6obpgDQGcFmaJgB", // Adam — deep, authoritative male
-  "Breathy Voice":   "XB0fDUnXU5powFXDhCwa", // Charlotte — soft, breathy female
-  "Confident Voice": "9BWtsMINqrJLrRacOk9x", // Aria — clear, confident female
+// ElevenLabs voice IDs — region × gender lookup
+// Users choose UK or US accent; narrator gender is always female except for Him & Him pairing.
+const VOICE_REGION_MAP: Record<string, { female: string; male: string }> = {
+  "UK Voice": { female: "rzqhWihPTONCEYxFZNud", male: "fbKe4UoW63w7sCOkXHON" },
+  "US Voice": { female: "GnBFl759Iuvi5mfB5b2x", male: "2ctpz3S8MMMauJLcVIpN" },
 };
+
+// Legacy voiceFeel values stored in DB before the UK/US redesign
+const LEGACY_VOICE_REGION: Record<string, string> = {
+  "Soft Voice":      "UK Voice",
+  "Deep Voice":      "UK Voice",
+  "Breathy Voice":   "UK Voice",
+  "Confident Voice": "US Voice",
+};
+
+function resolveVoiceId(voiceFeel: string, pairing?: string): string {
+  const region = VOICE_REGION_MAP[voiceFeel]
+    ? voiceFeel
+    : (LEGACY_VOICE_REGION[voiceFeel] ?? "UK Voice");
+  const isMale = pairing === "Him & Him";
+  return VOICE_REGION_MAP[region][isMale ? "male" : "female"];
+}
 
 // ---------------------------------------------------------------------------
 // Validation constants
@@ -1082,7 +1097,7 @@ const voiceMap: Record<string, string> = {
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
 const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
-const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
+const VALID_VOICES = ["UK Voice", "US Voice"];
 const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
 
 // Archetype IDs from CastingRoom buildArchetypes() — sent as whoIsHe
@@ -1447,7 +1462,9 @@ function derivePairingPronouns(pairing: string): string {
 function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
   const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Warm";
-  const voiceFeel = VALID_VOICES.includes(raw.voiceFeel) ? raw.voiceFeel : "Soft Voice";
+  const voiceFeel = VALID_VOICES.includes(raw.voiceFeel)
+    ? raw.voiceFeel
+    : (LEGACY_VOICE_REGION[raw.voiceFeel] ?? "UK Voice");
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
 
   // --- Scenario construction (no free text) ---
@@ -2899,9 +2916,10 @@ export async function generateAllImages(
 export async function generateAudioFile(
   scenes: Scene[],
   voiceFeel: string,
-  cacheKey: string
+  cacheKey: string,
+  pairing?: string
 ): Promise<string> {
-  const voiceId = voiceMap[voiceFeel] ?? voiceMap["Soft Voice"];
+  const voiceId = resolveVoiceId(voiceFeel, pairing);
   // ElevenLabs max chars per request is 5,000 — use 4,500 to stay safe
   const TTS_CHAR_LIMIT = 4500;
 
@@ -3190,7 +3208,7 @@ async function runDerivedPipeline(
   const pipelineKey = getCacheKey({ storyId, ts: Date.now() });
   const [images, audioUrl] = await Promise.all([
     generateAllImages(imagePrompts, pipelineKey),
-    generateAudioFile(finalStory.scenes, voiceFeel, pipelineKey),
+    generateAudioFile(finalStory.scenes, voiceFeel, pipelineKey, brief.pairing),
   ]);
 
   // Assemble scenes
@@ -3822,7 +3840,7 @@ router.post("/generate-full-story", async (req, res) => {
     const storyHash = getCacheKey({ brief, story });
     const [images, audioUrl] = await Promise.all([
       generateAllImages(imagePrompts, storyHash),
-      generateAudioFile(story.scenes, intake.voiceFeel, storyHash),
+      generateAudioFile(story.scenes, intake.voiceFeel, storyHash, intake.pairing),
     ]);
 
     // Step 9: Assemble final result
@@ -3962,7 +3980,7 @@ router.post("/generate-variation", async (req, res) => {
   };
   const mood = (original.mood as string) ?? "Emotional";
   const duration = (original.duration as string) ?? "5 min";
-  const voiceFeel = (brief?.voice_tone?.includes("deep") ? "Deep Voice" : "Soft Voice");
+  const voiceFeel = "UK Voice";
 
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
 
@@ -4032,7 +4050,7 @@ router.post("/continue-story", async (req, res) => {
   };
   const mood = (original.mood as string) ?? "Emotional";
   const duration = (original.duration as string) ?? "5 min";
-  const voiceFeel = (brief?.voice_tone?.includes("deep") ? "Deep Voice" : "Soft Voice");
+  const voiceFeel = "UK Voice";
 
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
 

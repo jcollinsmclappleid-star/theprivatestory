@@ -16,6 +16,8 @@ const VALID_TASTE_INTENSITIES = new Set([
   "Tender", "Warm", "Heated", "Explicit", "Scorching",
 ]);
 const VALID_TASTE_VOICES = new Set([
+  "UK Voice", "US Voice",
+  // Legacy values accepted for backward compatibility with stored taste profiles
   "Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice",
 ]);
 const VALID_TASTE_ENDINGS = new Set([
@@ -596,7 +598,7 @@ router.get("/quick-create-params", async (req, res) => {
       .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Heated";
 
     const topVoice = Object.entries(taste.preferredVoiceFeel)
-      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Soft Voice";
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "UK Voice";
 
     const topDynamic = Object.entries(taste.preferredRelationshipDynamics)
       .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "";
@@ -606,11 +608,12 @@ router.get("/quick-create-params", async (req, res) => {
 
     const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
     const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
-    const VALID_VOICES = ["Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice"];
+    const VALID_VOICES = ["UK Voice", "US Voice"];
+    const LEGACY_VOICE_REGION: Record<string, string> = { "Soft Voice": "UK Voice", "Deep Voice": "UK Voice", "Breathy Voice": "UK Voice", "Confident Voice": "US Voice" };
 
     const mood = VALID_MOODS.includes(topMood) ? topMood : "Emotional";
     const intensity = VALID_INTENSITIES.includes(topIntensity) ? topIntensity : "Heated";
-    const voiceFeel = VALID_VOICES.includes(topVoice) ? topVoice : "Soft Voice";
+    const voiceFeel = VALID_VOICES.includes(topVoice) ? topVoice : (LEGACY_VOICE_REGION[topVoice] ?? "UK Voice");
 
     res.json({
       eligible: true,

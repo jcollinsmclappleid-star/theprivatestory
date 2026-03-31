@@ -41,7 +41,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "fc_05",
@@ -56,7 +56,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Paris",
     whoIsHe: "The Detective",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "fc_08",
@@ -71,7 +71,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Florence",
     whoIsHe: "The Professor",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── REUNION & RETURN ────────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Paris",
     whoIsHe: "The Old Friend",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "rr_12",
@@ -104,7 +104,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Edinburgh",
     whoIsHe: "The Wanderer",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "rr_15",
@@ -119,7 +119,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Santorini",
     whoIsHe: "The Charmer",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── FIRST & UNKNOWN ─────────────────────────────────────────────────────────
@@ -137,7 +137,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Tokyo",
     whoIsHe: "The Stranger",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "fu_04",
@@ -152,7 +152,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Rome",
     whoIsHe: "The Artist",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "fu_13",
@@ -167,7 +167,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Annecy",
     whoIsHe: "The Wanderer",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── POWER & TENSION ─────────────────────────────────────────────────────────
@@ -185,7 +185,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "New York",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "pt_02",
@@ -200,7 +200,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "pt_03",
@@ -215,7 +215,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── PSYCHOLOGICAL & OBSESSIVE ───────────────────────────────────────────────
@@ -233,7 +233,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Paris",
     whoIsHe: "The Bad One",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "po_07",
@@ -248,7 +248,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Detective",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "po_13",
@@ -263,7 +263,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Monte Carlo",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── CIRCUMSTANCE & PROXIMITY ────────────────────────────────────────────────
@@ -281,7 +281,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Edinburgh",
     whoIsHe: "The Old Friend",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "cp_07",
@@ -296,7 +296,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Tuscany",
     whoIsHe: "The Artist",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "cp_13",
@@ -311,7 +311,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Barcelona",
     whoIsHe: "The Professor",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── SECRETS & UNSPOKEN ──────────────────────────────────────────────────────
@@ -329,7 +329,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Artist",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "su_07",
@@ -344,7 +344,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Dubai",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "su_13",
@@ -359,7 +359,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Paris",
     whoIsHe: "The Old Friend",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── DARK & DANGEROUS ────────────────────────────────────────────────────────
@@ -377,7 +377,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Bad One",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "dd_07",
@@ -392,7 +392,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "New York",
     whoIsHe: "The Detective",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "dd_13",
@@ -407,7 +407,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Chamonix",
     whoIsHe: "The Wanderer",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── SLOW BURN & PATIENCE ────────────────────────────────────────────────────
@@ -425,7 +425,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Rome",
     whoIsHe: "The Artist",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "sb_07",
@@ -440,7 +440,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Old Friend",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "sb_13",
@@ -455,7 +455,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Barcelona",
     whoIsHe: "The Charmer",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 
   // ── PROFESSIONAL & CROSSING LINES ───────────────────────────────────────────
@@ -473,7 +473,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "New York",
     whoIsHe: "The Executive",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "pl_07",
@@ -488,7 +488,7 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "London",
     whoIsHe: "The Detective",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
   {
     situationId: "pl_13",
@@ -503,6 +503,6 @@ export const LIBRARY_SEED_MANIFEST: SeedEntry[] = [
     city: "Paris",
     whoIsHe: "The Artist",
     storyLength: "10 min",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
   },
 ];

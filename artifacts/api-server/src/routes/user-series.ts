@@ -346,7 +346,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       storyMode: (casting.storyMode as string) || "romance",
       mood: mood || (casting.mood as string) || (s.mood as string) || "Emotional",
       intensity: (casting.intensity as string) || "Heated",
-      voiceFeel: (casting.voiceFeel as string) || "Soft Voice",
+      voiceFeel: (casting.voiceFeel as string) || "UK Voice",
       storyLength: (casting.storyLength as string) || "5 min",
       scenarioPrompt: timeOfDay
         ? `Setting: ${timeOfDay}. The story continues from where we left off.`
@@ -402,7 +402,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       const pipelineKey = getCacheKey({ seriesId: s.id, chapter: chapterNumber, ts: Date.now() });
       const [images, audioUrl] = await Promise.all([
         generateAllImages({ coverPrompt, scenePrompts: [] }, pipelineKey),
-        generateAudioFile(story.scenes, intake.voiceFeel, pipelineKey),
+        generateAudioFile(story.scenes, intake.voiceFeel, pipelineKey, intake.pairing),
       ]);
 
       const newStoryId = `series-${s.id}-ch${chapterNumber}-${Date.now()}`;

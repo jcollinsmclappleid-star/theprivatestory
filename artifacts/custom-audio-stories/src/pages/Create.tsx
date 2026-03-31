@@ -289,10 +289,8 @@ const ENDING_OPTIONS = [
 ];
 
 const VOICE_OPTIONS = [
-  { id: "Soft Voice",      label: "Soft",      desc: "Warm, close, intimate. Like she's only speaking to you." },
-  { id: "Deep Voice",      label: "Deep",      desc: "Unhurried and low. Presence without effort." },
-  { id: "Breathy Voice",   label: "Breathy",   desc: "Each word close to your ear. Barely restrained." },
-  { id: "Confident Voice", label: "Confident", desc: "Clear, assured, slightly playful." },
+  { id: "UK Voice", label: "UK", desc: "Warm, close, classically British. Unhurried and precise." },
+  { id: "US Voice", label: "US", desc: "Clear, assured, distinctly American. Confident and direct." },
 ];
 
 const LENGTH_OPTIONS = [
@@ -738,7 +736,7 @@ export default function Create() {
     defaultValues: {
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "Soft Voice",
+      voiceFeel: "UK Voice",
       storyLength: "5 min",
       scenarioCard: "",
       cinematicVisuals: true,
@@ -1230,7 +1228,7 @@ export default function Create() {
     form.reset({
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "Soft Voice",
+      voiceFeel: "UK Voice",
       storyLength: "5 min",
       scenarioCard: "",
       cinematicVisuals: true,

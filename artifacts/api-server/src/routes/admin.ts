@@ -964,7 +964,7 @@ const SERIES_CATALOG: SeriesDef[] = [
     femaleLead: "Naomi Clarke — 34, new VP at Kane Industries, Manhattan. Spent her career being underestimated and using it. Did not come here to be managed. She surrenders when she chooses to — and that choice feels like the most powerful thing either of them has ever done.",
     maleLead: "Marcus Kane — 42, Black CEO of Kane Industries, 6ft3in, custom-tailored suits, close-cut beard. Low unhurried voice. A stillness that makes rooms reorganise around him. Dominant but never cruel. Precise. Signature line: I don't chase. But I will make it impossible for you to walk away.",
     seriesArc: "Naomi Clarke is Marcus Kane's new VP — the first person to walk through his walls without asking permission. A slow dismantling of two people used to winning. By episode five the question isn't who has the power — it's whether power matters at all when you're this lost in someone.",
-    voiceFeel: "Deep Voice",
+    voiceFeel: "UK Voice",
     episodes: [
       {
         title: "The New Variable",
@@ -1019,7 +1019,7 @@ const SERIES_CATALOG: SeriesDef[] = [
     femaleLead: "Isabella Reyes — 38, heir to Grupo Reyes hotel empire, Havana. Dominant, strategic, accustomed to getting what she decides she wants. Her desire has always been an extension of her authority. Daniel is the first thing that doesn't move on schedule.",
     maleLead: "Daniel Cole — 36, American architect, hired to restore Hotel Palacio Reyes. Quiet, unhurried. Looks at her buildings like he loves them. Responds rather than initiates — until episode four, when he initiates with a completeness that rewrites everything.",
     seriesArc: "Isabella Reyes has run everything she has ever wanted. Daniel Cole is the first thing that refuses to be run. A series about a dominant woman encountering genuine stillness — and what happens when she stops managing.",
-    voiceFeel: "Confident Voice",
+    voiceFeel: "US Voice",
     episodes: [
       {
         title: "The Architect Arrives",
@@ -1074,7 +1074,7 @@ const SERIES_CATALOG: SeriesDef[] = [
     femaleLead: "Sophia Voss — 32, made this choice with her eyes open. She didn't know what it would feel like to live at close range with someone who looks at her like that when he thinks she isn't looking. She doesn't want to want him. This makes her wanting him considerably worse.",
     maleLead: "Ethan Blackwell — 40, Anglo-American, 6ft2in. Precise, economical — says less than he means. Married strategically because he married young for love and it was the worst decision of his life. Sophia is a variable his model didn't account for. Restrained to the point of pain — and then, in episode four, not restrained at all.",
     seriesArc: "A marriage of convenience. Two people who meant to keep it professional, actually living together, discovering the person they married is inconveniently impossible to ignore. By episode five the contract is irrelevant.",
-    voiceFeel: "Deep Voice",
+    voiceFeel: "UK Voice",
     episodes: [
       {
         title: "The Terms of the Marriage",
@@ -1129,7 +1129,7 @@ const SERIES_CATALOG: SeriesDef[] = [
     femaleLead: "Zara Cole — 29, pop music's most wanted. Knows exactly how people look at her. Cannot read Caleb Reeves — the most interesting thing that has happened to her in years. She provokes not maliciously but because she needs to find the crack. She finds it in episode four and it is nothing like she expected.",
     maleLead: "Caleb Reeves — 35, ex-Navy SEAL, 6ft4in. Physical presence that makes rooms recalculate. Suppressed to the point of physical tension — and then, when it breaks, completely overwhelming. Signature line: My job is to keep you safe, Ms Cole. From everything.",
     seriesArc: "Caleb Reeves has one rule that has never been tested the way Zara Cole tests it. Five episodes of the most principled man Zara has ever met — and the specific moment principles become irrelevant.",
-    voiceFeel: "Deep Voice",
+    voiceFeel: "UK Voice",
     episodes: [
       {
         title: "New Security",
@@ -1184,7 +1184,7 @@ const SERIES_CATALOG: SeriesDef[] = [
     femaleLead: "Claire Navarro — 26, research assistant. Noticed him noticing her at end of week one and made the professional decision to ignore it. She is currently failing at the professional decision. Not a provocateur — she simply exists at close intellectual range and this turns out to be sufficient.",
     maleLead: "Dr James Alderton — 39, 6ft1in. Academic with residual physicality. Careful, precise — speaks like every word is referenced. Has spent his career in the life of the mind because it is safer. Claire makes the alternative seem, for the first time, worth the risk. Signature line: This is categorically a terrible idea. Said immediately before kissing her.",
     seriesArc: "Dr James Alderton has done everything correctly for fifteen years. Claire Navarro is the first variable that makes doing everything correctly feel insufficient. Five episodes of a brilliant, careful man coming apart at the sentence level.",
-    voiceFeel: "Soft Voice",
+    voiceFeel: "UK Voice",
     episodes: [
       {
         title: "The Research Question",

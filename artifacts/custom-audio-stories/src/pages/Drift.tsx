@@ -364,7 +364,7 @@ export default function Drift() {
           data: {
             mood: "Late Night",
             intensity: "Sensual",
-            voiceFeel: "Soft Voice",
+            voiceFeel: "UK Voice",
             storyLength: "10 min",
             perspective: apiPerspective,
             cinematicVisuals: true,

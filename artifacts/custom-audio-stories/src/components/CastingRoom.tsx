@@ -952,6 +952,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     ? rawProtagonistPronouns
     : rawPartnerPronouns;
   const loveInterestP = appearancePronouns === rawPartnerPronouns ? partnerP : protagonistP;
+
+  // Same-gender helpers — when both characters share pronouns, labels become ambiguous
+  const isSameGender = rawProtagonistPronouns === rawPartnerPronouns;
+  const partnerRoleLabel = rawPartnerPronouns === "she/her" ? "the other woman"
+    : rawPartnerPronouns === "he/him" ? "the other man"
+    : "the other person";
+
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
 
@@ -1038,7 +1045,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Whose story?</h2>
-            <p className="text-muted-foreground text-sm mb-6">Choose who the story follows.</p>
+            <p className="text-muted-foreground text-sm mb-2">Choose who the story follows.</p>
+            {isSameGender && (
+              <p className="text-xs text-muted-foreground/55 italic mb-5">
+                "Her Story" follows your character throughout. "Your Story" puts you there as yourself, in the moment.
+              </p>
+            )}
             <div className="grid gap-3">
               {PERSPECTIVES.filter(p => getValidPerspectiveIds(data.pairing).includes(p.id)).map(p => (
                 <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.perspective === p.id} onClick={() => update("perspective", p.id)}>
@@ -1053,9 +1065,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 3 — Character ───────────────────────────────────── */}
         {step === 3 && (
           <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">{partnerHeadingVerb}</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              {isSameGender ? "Your love interest." : partnerHeadingVerb}
+            </h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Choose {partnerP.possessive} heritage and the energy {partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.
+              {isSameGender
+                ? `The ${partnerRoleLabel} in your story — ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`
+                : `Choose ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
             </p>
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
@@ -1098,10 +1114,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                    {capFirst(loveInterestP.possessive)} Appearance
+                    {isSameGender
+                      ? (partnerName ? `${partnerName}'s Appearance` : "Your Love Interest's Appearance")
+                      : `${capFirst(loveInterestP.possessive)} Appearance`}
                     <span className="font-normal text-muted-foreground normal-case tracking-normal ml-2">(optional)</span>
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Describe how they look — as much or as little as you want.</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {isSameGender
+                      ? `Describe how ${partnerRoleLabel} looks — as much or as little as you want.`
+                      : "Describe how they look — as much or as little as you want."}
+                  </p>
                 </div>
               </div>
 
@@ -1752,10 +1774,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 8 — Tag Studio ──────────────────────────────────── */}
         {step === 8 && (
           <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <div className="flex items-start justify-between mb-6">
+            <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
                 <p className="text-muted-foreground text-sm">Select only what feels right — everything you choose shapes the story.</p>
+                {isSameGender && (
+                  <p className="text-xs text-muted-foreground/50 italic mt-2">
+                    Where tags use {protagonistP.subject.toLowerCase()} / {protagonistP.obj}: {protagonistP.subject.toLowerCase()} = your character, {protagonistP.obj} = your love interest.
+                  </p>
+                )}
               </div>
               <button
                 type="button"
@@ -1774,6 +1801,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               accentColor={accentColor}
               protagonistPronouns={rawProtagonistPronouns}
               partnerPronouns={rawPartnerPronouns}
+              isSameGender={isSameGender}
               onAfterDark={!afterDark && onAfterDark ? () => {
                 const handoffData: CastingRoomHandoff = {
                   ...data,
@@ -1805,9 +1833,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — the narrator will use it throughout your story.
             </p>
-            <p className="text-xs text-muted-foreground/70 mb-6 italic">
+            <p className="text-xs text-muted-foreground/70 mb-2 italic">
               Skip this step and the narrator will address you as "you".
             </p>
+            {isSameGender && (
+              <p className="text-xs text-muted-foreground/50 mb-5">
+                This is your character — not {partnerRoleLabel}. You'll name them next.
+              </p>
+            )}
 
             {listenerName ? (
               <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">
@@ -1884,13 +1917,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 10 — Partner Name ───────────────────────────────── */}
         {step === 10 && (
           <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Their name.</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              {isSameGender ? "Your love interest's name." : "Their name."}
+            </h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.
             </p>
-            <p className="text-xs text-muted-foreground/70 mb-6 italic">
+            <p className="text-xs text-muted-foreground/70 mb-2 italic">
               Optional — the story works beautifully either way.
             </p>
+            {isSameGender && (
+              <p className="text-xs text-muted-foreground/50 mb-5">
+                This is {partnerRoleLabel} — not you. Your name was the step before.
+              </p>
+            )}
 
             {partnerName ? (
               <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">

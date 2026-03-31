@@ -8,6 +8,8 @@ interface TagCategory {
   sub?: string;
   tags: string[];
   maxSelect?: number;
+  /** When true, this category mixes protagonist + partner pronouns — show a role key for same-gender pairings */
+  roleKey?: boolean;
 }
 
 type PronounCtx = {
@@ -148,6 +150,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       heading: `What does ${protagonistHeading} really want?`,
       sub: "The desire at the core of it",
       maxSelect: 5,
+      roleKey: true,
       tags: [
         pSub(p, "She leads",                             "He leads",                              "They lead"),
         pSub(p, "She initiates",                         "He initiates",                          "They initiate"),
@@ -171,6 +174,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       heading: "Pure Romance",
       sub: "When tenderness is the whole story",
       maxSelect: 5,
+      roleKey: true,
       tags: [
         "The tenderness is the whole thing",
         `${partnerS} treats ${p.obj} like the only thing in the room`,
@@ -186,6 +190,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
       heading: "Praise & Devotion",
       sub: "When being wanted is its own kind of story",
       maxSelect: 5,
+      roleKey: true,
       tags: [
         `${partnerS} can't stop looking at ${p.obj}`,
         `${p.sub} is all ${pSub(p, "she's", "he's", "they're")} thinking about — and ${pSub(p, "she", "he", "they")} knows it`,
@@ -393,6 +398,7 @@ interface Props {
   accentColor?: string;
   protagonistPronouns?: string;
   partnerPronouns?: string;
+  isSameGender?: boolean;
   onAfterDark?: () => void;
 }
 
@@ -404,6 +410,7 @@ export function StoryTagStudio({
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
   partnerPronouns = "he/him",
+  isSameGender = false,
   onAfterDark,
 }: Props) {
   const { isAuthenticated } = useAuth();
@@ -429,6 +436,12 @@ export function StoryTagStudio({
 
   const p = getPronounCtx(protagonistPronouns);
   const partner = getPronounCtx(partnerPronouns);
+
+  // Role-key legend text shown for same-gender pairings under ambiguous categories
+  // e.g. "she = you · she = your love interest" → clarified as "you · your love interest"
+  const roleKeyText = isSameGender
+    ? `${p.sub.toLowerCase()} = you · ${p.obj} = your love interest`
+    : null;
 
   const isSheProtagonist = p.sub === "She";
 
@@ -586,6 +599,11 @@ export function StoryTagStudio({
         </div>
         {cat.sub && (
           <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
+        )}
+        {roleKeyText && cat.roleKey && (
+          <p className="text-[10px] text-muted-foreground/45 italic mb-3 leading-snug tracking-wide">
+            In these tags: {roleKeyText}
+          </p>
         )}
         <div className="flex flex-wrap gap-2">
           {cat.tags.map((tag) =>

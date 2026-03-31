@@ -902,6 +902,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
   const [listenerSearch, setListenerSearch] = useState("");
   const [partnerSearch, setPartnerSearch] = useState("");
+  const [step8NoteDismissed, setStep8NoteDismissed] = useState(false);
   const listenerInputRef = useRef<HTMLInputElement>(null);
   const partnerInputRef = useRef<HTMLInputElement>(null);
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
@@ -958,6 +959,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const partnerRoleLabel = rawPartnerPronouns === "she/her" ? "the other woman"
     : rawPartnerPronouns === "he/him" ? "the other man"
     : "the other person";
+  // The "character story" perspective label depends on protagonist pronouns
+  const characterStoryLabel = rawProtagonistPronouns === "he/him" ? "His Story"
+    : rawProtagonistPronouns === "they/them" ? "Their Story"
+    : "Her Story";
 
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
@@ -1048,7 +1053,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-muted-foreground text-sm mb-2">Choose who the story follows.</p>
             {isSameGender && (
               <p className="text-xs text-muted-foreground/55 italic mb-5">
-                "Her Story" follows your character throughout. "Your Story" puts you there as yourself, in the moment.
+                "{characterStoryLabel}" follows your character throughout. "Your Story" puts you there as yourself, in the moment.
               </p>
             )}
             <div className="grid gap-3">
@@ -1778,10 +1783,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               <div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
                 <p className="text-muted-foreground text-sm">Select only what feels right — everything you choose shapes the story.</p>
-                {isSameGender && (
-                  <p className="text-xs text-muted-foreground/50 italic mt-2">
-                    Where tags use {protagonistP.subject.toLowerCase()} / {protagonistP.obj}: {protagonistP.subject.toLowerCase()} = your character, {protagonistP.obj} = your love interest.
-                  </p>
+                {isSameGender && !step8NoteDismissed && (
+                  <div className="flex items-start gap-2 mt-2">
+                    <p className="text-xs text-muted-foreground/50 italic flex-1">
+                      Where tags use {protagonistP.subject.toLowerCase()} / {protagonistP.object}: {protagonistP.subject.toLowerCase()} = your character, {protagonistP.object} = your love interest.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setStep8NoteDismissed(true)}
+                      className="text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors flex-shrink-0 mt-0.5"
+                      aria-label="Dismiss note"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
                 )}
               </div>
               <button
@@ -1836,11 +1851,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-xs text-muted-foreground/70 mb-2 italic">
               Skip this step and the narrator will address you as "you".
             </p>
-            {isSameGender && (
-              <p className="text-xs text-muted-foreground/50 mb-5">
-                This is your character — not {partnerRoleLabel}. You'll name them next.
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground/50 mb-5">
+              This is you — the character you inhabit.{isSameGender ? ` Not ${partnerRoleLabel} — you'll name them next.` : ""}
+            </p>
 
             {listenerName ? (
               <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">
@@ -1926,11 +1939,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-xs text-muted-foreground/70 mb-2 italic">
               Optional — the story works beautifully either way.
             </p>
-            {isSameGender && (
-              <p className="text-xs text-muted-foreground/50 mb-5">
-                This is {partnerRoleLabel} — not you. Your name was the step before.
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground/50 mb-5">
+              {isSameGender
+                ? `This is ${partnerRoleLabel} — not you. Your name was the step before.`
+                : `This is the ${rawPartnerPronouns === "she/her" ? "woman" : rawPartnerPronouns === "he/him" ? "man" : "person"} in your story.`}
+            </p>
 
             {partnerName ? (
               <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-2xl border border-primary/40 bg-primary/8">

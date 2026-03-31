@@ -3471,30 +3471,100 @@ export async function generateAudioFile(
   cacheKey: string,
   pairing?: string
 ): Promise<string> {
-  // Skip audio entirely if disabled. Set DISABLE_AUDIO=true to enable.
+  // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
   if (process.env.DISABLE_AUDIO === "true") {
-    console.info("[audio] DISABLE_AUDIO=true — skipping audio");
+    console.info("[audio] DISABLE_AUDIO=true — skipping ElevenLabs TTS");
     return "";
   }
 
   const voiceId = resolveVoiceId(voiceFeel, pairing);
-  const samplePath = path.join(__dirname, `../public/voice-samples/${voiceId}.mp3`);
+  // ElevenLabs max chars per request is 5,000 — use 4,500 to stay safe
+  const TTS_CHAR_LIMIT = 4500;
 
-  // Check if voice sample exists
-  if (!fs.existsSync(samplePath)) {
-    throw new Error(`Voice sample not found for ${voiceId}`);
+  // Build chunks that respect the TTS character limit, splitting at scene boundaries
+  const chunks: string[] = [];
+  let current = "";
+  for (const scene of scenes) {
+    const sceneText = scene.text.trim();
+    if (current.length + sceneText.length + 2 > TTS_CHAR_LIMIT) {
+      if (current.length > 0) {
+        chunks.push(current.trim());
+        current = "";
+      }
+      // If a single scene exceeds the limit, split it at sentence boundaries
+      if (sceneText.length > TTS_CHAR_LIMIT) {
+        for (let i = 0; i < sceneText.length; i += TTS_CHAR_LIMIT) {
+          chunks.push(sceneText.slice(i, i + TTS_CHAR_LIMIT));
+        }
+      } else {
+        current = sceneText;
+      }
+    } else {
+      current += (current.length > 0 ? "\n\n" : "") + sceneText;
+    }
+  }
+  if (current.length > 0) chunks.push(current.trim());
+
+  // Generate TTS for each chunk sequentially (ElevenLabs is stateful per voice session)
+  const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
+  if (!elevenLabsKey) throw new Error("ELEVENLABS_API_KEY is not set");
+
+  const callTTS = async (vid: string, chunk: string): Promise<Buffer> => {
+    const res = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${vid}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "audio/mpeg",
+          "xi-api-key": elevenLabsKey,
+        },
+        body: JSON.stringify({
+          text: chunk,
+          model_id: "eleven_turbo_v2_5",
+          voice_settings: {
+            stability: 0.45,
+            similarity_boost: 0.80,
+            style: 0.25,
+            use_speaker_boost: true,
+          },
+        }),
+      }
+    );
+    if (!res.ok) {
+      const errText = await res.text();
+      if (res.status === 429) {
+        throw new Error("Audio narration is temporarily unavailable due to high demand. Please try again in a few minutes.");
+      }
+      if (res.status === 401 || res.status === 403) {
+        throw new Error("Audio narration service authentication failed. Please contact support@theprivatestory.com.");
+      }
+      throw new Error(`ElevenLabs TTS error ${res.status}: ${errText}`);
+    }
+    return Buffer.from(await res.arrayBuffer());
+  };
+
+  const buffers: Buffer[] = [];
+  let activeVoiceId = voiceId;
+  for (const chunk of chunks) {
+    try {
+      buffers.push(await callTTS(activeVoiceId, chunk));
+    } catch (err) {
+      // If the selected voice fails (e.g. invalid/unavailable), fall back to the default
+      // female voice for this chunk and all remaining chunks to keep the audio consistent
+      if (activeVoiceId !== DEFAULT_VOICE_ID) {
+        activeVoiceId = DEFAULT_VOICE_ID;
+        buffers.push(await callTTS(activeVoiceId, chunk));
+      } else {
+        throw err;
+      }
+    }
   }
 
-  // Read and return the pre-recorded voice sample
-  const sampleBuffer = fs.readFileSync(samplePath);
-  const publicAudioDir = getPublicAudioDir();
-  const timestamp = Date.now();
-  const filename = `audio-${voiceId}-${timestamp}.mp3`;
-  const outputPath = path.join(publicAudioDir, filename);
-  fs.writeFileSync(outputPath, sampleBuffer);
-
-  console.info(`[audio] Used voice sample for ${voiceId} → /api/images/${filename}`);
-  return `/api/images/${filename}`;
+  const audioDir = getPublicAudioDir();
+  const filename = `audio-${cacheKey}.mp3`;
+  fs.writeFileSync(path.join(audioDir, filename), Buffer.concat(buffers));
+  return `/api/audio/${filename}`;
 }
 
 // ---------------------------------------------------------------------------

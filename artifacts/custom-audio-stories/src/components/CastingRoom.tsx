@@ -5,6 +5,7 @@ import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS, DEFAULT_FEMALE_VOICE_ID, DEFAULT_MALE_VOICE_ID } from "../lib/voices";
+import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your" | "their";
@@ -720,6 +721,7 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 
 /* ── Main component ───────────────────────────────────────────────── */
 const CASTING_STORAGE_KEY = "casting-room-session";
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark }: Props) {
   // Load from localStorage if no handoff provided
@@ -1991,13 +1993,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           )}
                         </div>
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">{voice.label}</span>
                           <span className="text-xs px-2 py-0.5 rounded-full bg-muted/40 text-muted-foreground/70 font-medium">{voice.accent}</span>
                         </div>
-                        <p className="text-sm text-muted-foreground">{voice.desc}</p>
+                        <p className="text-sm text-muted-foreground mb-0">{voice.desc}</p>
                       </div>
                       {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
                     </div>
+                    <VoiceSamplePlayer
+                      src={`${API_BASE}/api/voice-samples/${voice.id}`}
+                    />
                   </button>
                 );
               };
@@ -2008,9 +2012,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               );
             })()}
 
-            <p className="mt-4 text-xs text-muted-foreground/50 italic">
-              You can preview voices after your story is written.
-            </p>
           </motion.div>
         )}
 

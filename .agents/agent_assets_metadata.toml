@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "RsYgMHlr_k9SmqHBWn_3S"
@@ -17,4 +16,10 @@ title = "first time category cinematic"
 id = "FPU1Ouj5bkxVQr4RVhE38"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
 type = "image"
-title = "private story hero woman headphones cinematic"
+title = "private story hero cinematic absorbed tension"
+
+[[outputs]]
+id = "oQoWkIVb84iSZh36-hxG1"
+uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
+type = "image"
+title = "Refined hero image"

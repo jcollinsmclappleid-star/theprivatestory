@@ -1,0 +1,102 @@
+Refine the hero image further to increase emotional tension and curiosity while maintaining premium aesthetic.
+
+CURRENT STATE:
+- strong lighting
+- strong crop
+- good brand alignment
+
+GOAL:
+Make the image feel less “relaxed listening” and more “absorbed in a moment that is unfolding”.
+
+==================================================
+EXPRESSION ADJUSTMENT
+==================================================
+
+The subject currently appears fully relaxed.
+
+Adjust so it feels:
+- slightly anticipatory
+- subtly tense
+- emotionally engaged
+
+Do NOT:
+- add obvious emotion
+- add smile
+- make it dramatic
+
+Aim for:
+a quiet, internal moment where something is happening just beneath the surface.
+
+==================================================
+LIGHTING REFINEMENT
+==================================================
+
+- keep warm gold tone
+- slightly increase contrast again
+- deepen shadows around edges of face
+- keep highlights soft but more directional
+
+Goal:
+More cinematic, less flat.
+
+==================================================
+FOCUS AND DEPTH
+==================================================
+
+- slightly sharpen focal area (eye/upper cheek region)
+- soften outer edges subtly
+- increase sense of depth
+
+This makes the image feel more immersive.
+
+==================================================
+VIGNETTE / OVERLAY
+==================================================
+
+- apply a subtle dark vignette
+- ensure text remains highly readable
+- avoid flattening the image
+
+==================================================
+MOOD SHIFT
+==================================================
+
+Reduce:
+- “wellness / calm / sleep app” feel
+
+Increase:
+- “private moment”
+- “late night”
+- “something is happening”
+
+The image should feel like:
+she is inside a story, not just listening.
+
+==================================================
+FINAL TEST
+==================================================
+
+The image should now trigger:
+
+“What is she listening to?”
+
+If it instead feels like:
+“She’s relaxed”
+
+Then it is still too passive.
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- keep subject female
+- keep close crop
+- keep premium tone
+- keep non-explicit
+- keep elegance
+
+==================================================
+OUTPUT
+==================================================
+
+Return a refined version of the existing hero image with stronger emotional tension, deeper cinematic feel, and improved curiosity trigger, without breaking brand tone.

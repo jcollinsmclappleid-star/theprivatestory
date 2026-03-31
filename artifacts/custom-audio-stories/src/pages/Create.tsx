@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,7 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { getCachedSampleUrl, cacheSampleFromUrl } from "@/lib/voice-sample-cache";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 
@@ -679,10 +680,28 @@ export default function Create() {
   });
   const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result">("casting");
   const [castingResetKey, setCastingResetKey] = useState(0);
+  const [voiceSampleUrls, setVoiceSampleUrls] = useState<Record<string, string>>({});
+  const [loadingVoiceSamples, setLoadingVoiceSamples] = useState<Set<string>>(new Set());
   
   // Scroll to top whenever step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
+
+  // Load voice samples when voice step is shown
+  useEffect(() => {
+    if (step !== "voice") return;
+
+    const loadVoiceSamples = async () => {
+      const urls: Record<string, string> = {};
+      for (const voice of VOICES) {
+        const cachedUrl = await getCachedSampleUrl(voice.id, API_BASE);
+        urls[voice.id] = cachedUrl;
+      }
+      setVoiceSampleUrls(urls);
+    };
+
+    loadVoiceSamples();
   }, [step]);
   
   const [loadingPhase, setLoadingPhase] = useState(0);
@@ -1569,15 +1588,41 @@ export default function Create() {
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground mb-3">{voice.desc}</p>
-                        <audio 
-                          controls 
-                          className="w-full h-7 accent-primary" 
-                          onClick={(e) => e.stopPropagation()}
-                          controlsList="nodownload"
-                        >
-                          <source src={`${import.meta.env.BASE_URL}voice-samples/${voice.id}.mp3`} type="audio/mpeg" />
-                          Your browser does not support the audio element.
-                        </audio>
+                        <div className="relative">
+                          <audio 
+                            controls 
+                            className="w-full h-7 accent-primary" 
+                            onClick={(e) => e.stopPropagation()}
+                            controlsList="nodownload"
+                            onPlay={async () => {
+                              if (!loadingVoiceSamples.has(voice.id)) {
+                                setLoadingVoiceSamples(prev => new Set([...prev, voice.id]));
+                                try {
+                                  await cacheSampleFromUrl(
+                                    voice.id,
+                                    `${API_BASE}/voice-samples/${voice.id}.mp3`
+                                  );
+                                } catch (err) {
+                                  console.error(`Failed to cache sample for ${voice.id}:`, err);
+                                } finally {
+                                  setLoadingVoiceSamples(prev => {
+                                    const next = new Set(prev);
+                                    next.delete(voice.id);
+                                    return next;
+                                  });
+                                }
+                              }
+                            }}
+                          >
+                            <source src={voiceSampleUrls[voice.id] || `${API_BASE}/voice-samples/${voice.id}.mp3`} type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                          {loadingVoiceSamples.has(voice.id) && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-background/40 rounded pointer-events-none">
+                              <Loader className="w-4 h-4 text-primary animate-spin" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                       {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
                     </div>

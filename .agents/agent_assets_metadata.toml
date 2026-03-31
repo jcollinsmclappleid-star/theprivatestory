@@ -18,6 +18,24 @@ uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
 type = "image"
 title = "private story hero cinematic absorbed tension"
 
+[[generated]]
+id = "KTRtbTPJnoYCcWnTeR3a_"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-eleanor.png"
+type = "image"
+title = "Abstract Eleanor feminine silhouette gold"
+
+[[generated]]
+id = "Y9p-WbMXLHiIa34fP3Wcd"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-maya.png"
+type = "image"
+title = "Abstract Maya feminine silhouette rose"
+
+[[generated]]
+id = "UbODUkwg4no_rQkNf_J8G"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-isla.png"
+type = "image"
+title = "Abstract Isla feminine silhouette blue"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

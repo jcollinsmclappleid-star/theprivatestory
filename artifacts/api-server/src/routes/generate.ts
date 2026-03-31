@@ -536,9 +536,18 @@ export interface InternalGenerateRequest extends GenerateStoryRequest {
 
 interface ScenePlan {
   scene_number: number;
+  phase: string;
   goal: string;
   emotional_shift: string;
   visual_focus: string;
+  /** Which sensory channel governs this scene — must be distinct from adjacent scenes */
+  dominant_sense: string;
+  /** Contact escalation level for this scene — follows ESTABLISH→RESONATE arc */
+  touch_register: string;
+  /** Specific unique touch verb for this scene — must never repeat within the same story */
+  primary_touch_action: string;
+  /** Physical arrangement of characters — must vary across scenes */
+  staging_position: string;
 }
 
 export interface StoryBrief {
@@ -635,6 +644,63 @@ const STORY_VARIETY_DIMENSIONS = {
     "PHYSICAL PROXIMITY OPEN — opens through immediate sensory immersion in the partner's specific physical presence. Temperature, smell, the specific way they occupy the space.",
     "INTERIOR-FIRST OPEN — opens inside the protagonist's head. Desire already running before any external action begins. The listener is in the mind before the room.",
     "ACTION-FIRST OPEN — opens inside an action already in progress. No preamble, no approach, no setup. The listener arrives mid-moment.",
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// Scene-Level Sensory Diversity Architecture
+// These pools are used in the brief generation prompt to force genuine
+// per-scene variation. The LLM must assign distinct values from each pool
+// to each scene — no two adjacent scenes may share the same dominant_sense
+// or staging_position, and no touch verb may repeat within a story.
+// ---------------------------------------------------------------------------
+
+const SCENE_SENSORY_DIVERSITY = {
+  /**
+   * Which sensory channel should govern the READER'S experience of each scene.
+   * The writing must be grounded IN this sense — not just mention it in passing.
+   * No two adjacent scenes may share the same dominant sense.
+   */
+  dominant_senses: [
+    "sound — what is heard fills the scene: voices, silence, ambient noise, the particular quality of breath",
+    "sight — visual observation dominates: quality of light, details studied at close range, stillness watched",
+    "smell — olfactory grounding anchors the scene: the room, their skin, the particular smell of the moment",
+    "pressure — physical weight and force: the sensation of being held, pressed, resisted, the solid fact of another body",
+    "warmth — heat and temperature: body heat seeping through fabric, cold contrast, a flush spreading under the skin",
+    "texture — surface sensation governs: fabric against skin, the specific feel of hands, hair, material of things touched",
+  ],
+  /**
+   * Physical contact escalation — must follow the phase arc.
+   * ESTABLISH = absent, SIMMER = incidental, CRACK = deliberate, IGNITE = intense, RESONATE = aftermath
+   */
+  touch_registers: [
+    "absent — no physical contact; awareness of the other's presence only, anticipation in the body",
+    "incidental — accidental or ambiguous contact: fingers brush passing an object, proximity felt but not claimed",
+    "deliberate — first intentional touch: he/she/they reaches, moves toward, initiates with intent",
+    "intense — sustained full physical contact; the story's physical peak; nothing compressed or withheld",
+    "aftermath — post-contact stillness; residual sensation; held gently; the body remembering",
+  ],
+  /**
+   * Specific touch verbs — each must appear ONCE maximum across the whole story.
+   * Assign one per scene. Do not repeat any verb or its synonyms.
+   */
+  touch_verb_pools: {
+    absent:      ["(none — no touch this scene, only physical self-awareness)"],
+    incidental:  ["brush", "graze", "glance off", "drift against", "catch on", "skim past"],
+    deliberate:  ["grip", "take hold of", "pull toward", "press palm to", "cup", "anchor", "turn toward", "reach for"],
+    intense:     ["slide", "draw in", "wrap around", "hold down", "gather", "press into", "pin", "pull flush"],
+    aftermath:   ["rest against", "keep hand on", "lie against", "hold loosely", "stay close to", "trace slowly"],
+  },
+  /**
+   * Physical staging — where characters are relative to each other.
+   * Must vary across scenes; no two consecutive scenes share the same position.
+   */
+  staging_positions: [
+    "distance — physically separated; a visible gap between them; the space itself is charged",
+    "proximity — close but not touching; within reach; the air between them held",
+    "side by side — together but not facing; parallel, aligned, aware of each other obliquely",
+    "face to face — directly opposite; holding eye contact; the social geometry of confrontation or choice",
+    "intertwined — bodies fully in contact; no gap remaining; the question of closeness answered",
   ],
 };
 
@@ -2182,7 +2248,23 @@ You must infer and return:
 - point_of_view
 - voice_tone
 - scene_count (must be ${sceneCount})
-- scene_plan (array of ${sceneCount} scenes — each scene MUST include a "phase" field drawn from: ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE. For a 5-scene story the arc is: ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE, one scene each. For longer counts, IGNITE may span more scenes at high intensity. ESTABLISH and CRACK are always one scene each. RESONATE always closes.)
+- scene_plan (array of ${sceneCount} scenes — each scene MUST include the following fields):
+  • phase: drawn from ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE. Arc for 5 scenes: one scene each in order. For longer counts, IGNITE may span more scenes. ESTABLISH and CRACK are always one scene each. RESONATE always closes.
+  • goal: what this scene must accomplish narratively
+  • emotional_shift: the specific emotional movement within this scene
+  • visual_focus: what the eye/camera rests on in this scene
+  • dominant_sense: which sensory channel governs this scene's writing. Must be DISTINCT from the adjacent scenes. Choose from: ${SCENE_SENSORY_DIVERSITY.dominant_senses.map(s => `"${s.split(" — ")[0]}"`).join(" / ")}
+  • touch_register: physical contact level for this scene. Must follow the phase arc naturally (ESTABLISH = absent, SIMMER = incidental, CRACK = deliberate, IGNITE = intense, RESONATE = aftermath). Choose from: ${SCENE_SENSORY_DIVERSITY.touch_registers.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
+  • primary_touch_action: the specific primary verb for physical contact in this scene. Must NEVER repeat across scenes within the same story. If touch_register is "absent", use "(none)". Choose from the appropriate register pool: incidental: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.incidental.join(", ")} | deliberate: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.deliberate.join(", ")} | intense: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.intense.join(", ")} | aftermath: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.aftermath.join(", ")}
+  • staging_position: physical arrangement of characters in this scene. Must be DIFFERENT from adjacent scenes. Choose from: ${SCENE_SENSORY_DIVERSITY.staging_positions.map(s => `"${s.split(" — ")[0]}"`).join(" / ")}
+
+SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
+  1. No two consecutive scenes share the same dominant_sense
+  2. touch_register escalates naturally through the arc — no scene may use a higher register than the one that follows it
+  3. Every primary_touch_action is unique — no verb appears twice across the entire scene_plan
+  4. No two consecutive scenes share the same staging_position
+  5. The combination of dominant_sense + staging_position creates a genuinely different experiential world for each scene
+
 ${castingAnchorsInstruction}
 - recurring_motif
 - title_direction
@@ -2217,7 +2299,22 @@ Return JSON in exactly this shape:
       "phase": "ESTABLISH",
       "goal": "hook and atmosphere",
       "emotional_shift": "curiosity begins",
-      "visual_focus": "night setting, first glance"${castingAnchorsExample}
+      "visual_focus": "night setting, first glance",
+      "dominant_sense": "sound",
+      "touch_register": "absent",
+      "primary_touch_action": "(none)",
+      "staging_position": "distance"${castingAnchorsExample}
+    },
+    {
+      "scene_number": 2,
+      "phase": "SIMMER",
+      "goal": "desire rising under constraint",
+      "emotional_shift": "awareness becomes impossible to ignore",
+      "visual_focus": "the small movements between them",
+      "dominant_sense": "sight",
+      "touch_register": "incidental",
+      "primary_touch_action": "graze",
+      "staging_position": "proximity"
     }
   ],
   "recurring_motif": "the feeling of almost saying too much",
@@ -2528,6 +2625,20 @@ Requirements:
   CRACK     = 340-380 words (the moment something shifts, a line crossed — more weight)
   IGNITE    = 380-420 words (explicit, immersive, nothing compressed — the heart of the story)
   RESONATE  = 220-260 words (emotional aftermath, the feeling that lingers — concise, do not over-extend)
+
+SCENE-LEVEL DIVERSITY — MANDATORY. Each scene in the brief has four structural diversity fields.
+You must honour ALL FOUR for every scene:
+  • dominant_sense: Ground the scene's narration IN this sensory channel. It should be the primary mode through which the reader experiences the scene — not just mentioned, but the lens. If dominant_sense is "sound", the scene opens and closes through what is heard. If "pressure", the physical weight of presence dominates.
+  • touch_register: The level of physical contact in this scene. Do not escalate beyond it, and do not hold back within it. If the register is "incidental", contact exists but is ambiguous or accidental — never deliberate. If "intense", nothing is withheld.
+  • primary_touch_action: Use this SPECIFIC verb for the primary physical contact in this scene. Do not substitute a synonym. Do not use this verb in any other scene. It is reserved exclusively for this scene's primary contact moment.
+  • staging_position: The spatial arrangement of the characters in this scene. Open and close the scene in this configuration. If a transition occurs, arrive at this position before the scene ends.
+
+DIVERSITY SELF-CHECK — before finalising your output, verify:
+  1. Each scene's writing is genuinely grounded in its assigned dominant_sense
+  2. No touch verb appears in more than one scene
+  3. No two consecutive scenes feel like they inhabit the same physical world
+  4. The progression of touch_register follows the arc — never escalates then retreats
+
 - Match the emotional arc exactly: ${brief.emotional_arc}
 - Pacing: ${brief.pacing_style}
 - Voice tone: ${brief.voice_tone}

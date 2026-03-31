@@ -12,6 +12,20 @@ import { logger } from "../lib/logger.js";
 
 const router = Router();
 
+// ---------------------------------------------------------------------------
+// Normalise a raw storiesStore record into a shape the frontend can consume.
+// User-generated stories store their cover as images.cover ("/api/images/…")
+// but the frontend Story type expects a top-level coverImage field.
+// ---------------------------------------------------------------------------
+function normaliseStory(s: Record<string, unknown>): Record<string, unknown> {
+  const images = (s.images ?? {}) as Record<string, unknown>;
+  const coverImage =
+    (s.coverImage as string | undefined) ||
+    (images.cover as string | undefined) ||
+    "";
+  return { ...s, coverImage };
+}
+
 function getUserId(req: Request, res: Response): string | null {
   if (!req.isAuthenticated()) {
     res.status(401).json({ error: "Authentication required" });
@@ -103,13 +117,13 @@ router.get("/library", async (req, res) => {
   const savedStories = await Promise.all(
     savedIds.map((id) => storiesStore.get(id))
   );
-  const saved = savedStories.filter(Boolean) as Record<string, unknown>[];
+  const saved = savedStories.filter(Boolean).map(normaliseStory) as Record<string, unknown>[];
 
   // Fetch story objects for generated/variation IDs
   const generatedStories = await Promise.all(
     generatedRows.map(async (r) => {
       const s = await storiesStore.get(r.storyId);
-      return s ? { ...s, _libType: r.type } : null;
+      return s ? { ...normaliseStory(s), _libType: r.type } : null;
     })
   );
   const allGenerated = generatedStories.filter(Boolean) as Array<Record<string, unknown>>;
@@ -195,7 +209,7 @@ router.get("/continue-listening", async (req, res) => {
     inProgress.map(async (entry) => {
       const story = await storiesStore.get(entry.storyId);
       if (!story) return null;
-      return { ...story, progress: entry };
+      return { ...normaliseStory(story), progress: entry };
     })
   );
 

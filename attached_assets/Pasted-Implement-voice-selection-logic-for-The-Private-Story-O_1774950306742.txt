@@ -1,0 +1,264 @@
+Implement voice selection logic for The Private Story.
+
+OBJECTIVE:
+Use Jane as the default and recommended female narrator for all users.
+Allow other female voices as optional user-selected alternatives.
+Restrict male voices so they can only be selected when the story pairing/category is:
+- him and him
+- him and they
+
+Voice selection should appear near the end of the creation flow, just before final generation.
+
+==================================================
+DEFAULT VOICE RULE
+==================================================
+
+Set Jane as:
+- the default narrator for all users
+- the recommended narrator in the UI
+- the fallback narrator if any selected voice fails
+
+Jane voice details:
+- name: Jane
+- voice_id: RILOU7YmBhvwJGDGjNmP
+- label: Classic Audiobook
+- region: UK
+
+Behaviour:
+- if the user does not make a voice selection, use Jane automatically
+- if the selected voice fails, fall back to Jane
+- if a saved preference exists, only use it if it is valid for the selected pairing/category
+
+==================================================
+VOICE OPTIONS
+==================================================
+
+Use these voices:
+
+1. Jane
+- voice_id: RILOU7YmBhvwJGDGjNmP
+- label: Classic Audiobook
+- gender: female
+- region: UK
+- description: Clean, refined, emotionally intelligent narration.
+- role: default / recommended
+
+2. Ivanna
+- voice_id: tQ4MEZFJOzsahSEEZtHK
+- label: Soft Intimate
+- gender: female
+- region: US
+- description: Softer, closer, more intimate delivery.
+- role: optional female
+
+3. Ophelia Rose
+- voice_id: FA6HhUjVbervLw2rNl8M
+- label: Calm Bedtime
+- gender: female
+- region: UK
+- description: Gentle, soothing, slower-paced narration.
+- role: optional female
+
+4. Nathaniel
+- voice_id: AeRdCCKzvd23BpJoofzx
+- label: British Suspense
+- gender: male
+- region: UK
+- description: Engaging, tension-driven storytelling.
+- role: conditional male
+
+5. Michael C. Vincent
+- voice_id: n1PvBOwxb8X6m7tahp2h
+- label: Cinematic Male
+- gender: male
+- region: US
+- description: Deep, immersive, dramatic narration.
+- role: conditional male
+
+6. Oliver Silk
+- voice_id: jfIS2w2yJi0grJZPyEsk
+- label: Deep Gravel
+- gender: male
+- region: US
+- description: Heavy, textured, intense voice.
+- role: conditional male
+
+==================================================
+PAIRING / CATEGORY RESTRICTION RULE
+==================================================
+
+Male voices must ONLY be available when the selected story pairing/category is:
+- him and him
+- him and they
+
+For all other pairings/categories:
+- hide male voices completely from the selector
+- do not let male voices be selected through the UI
+- if a male voice is somehow passed in for an invalid pairing, override it and use Jane instead
+
+For valid male-pairing categories:
+- show female voices as options too only if product logic allows it
+- but male voices should become selectable only in these two pairings:
+  - him and him
+  - him and they
+
+If your product logic is intended to make male voices exclusive to those pairings, enforce that.
+
+==================================================
+PLACEMENT IN FLOW
+==================================================
+
+Place voice selection near the end of the story creation flow:
+- after mood / category / setting / dynamic / intensity selections
+- before final “Generate” action
+
+This should feel like a final refinement step.
+
+Section heading:
+Voice
+
+Supporting copy:
+Choose the voice you want to hear your story in.
+
+Keep the UI premium, simple, and not overly technical.
+
+==================================================
+UI DISPLAY RULES
+==================================================
+
+For all users, show Jane first and mark it as recommended.
+
+Example layout:
+
+Voice
+
+Classic Audiobook
+Recommended
+Clean, refined, emotionally intelligent narration.
+
+Soft Intimate
+Softer, closer, more intimate delivery.
+
+Calm Bedtime
+Gentle, soothing, slower-paced narration.
+
+When male voices are allowed for him/him or him/they, show them below female options or in a separate group.
+
+Suggested labels:
+Female Voices
+Male Voices
+
+Do not use technical vendor language.
+Do not mention ElevenLabs in the UI.
+
+==================================================
+RECOMMENDED UI COPY
+==================================================
+
+For Jane:
+Classic Audiobook
+Recommended
+Clean, refined, emotionally intelligent narration.
+
+For Ivanna:
+Soft Intimate
+Softer, closer, more intimate delivery.
+
+For Ophelia Rose:
+Calm Bedtime
+Gentle, soothing, slower-paced narration.
+
+For Nathaniel:
+British Suspense
+Engaging, tension-driven storytelling.
+
+For Michael C. Vincent:
+Cinematic Male
+Deep, immersive, dramatic narration.
+
+For Oliver Silk:
+Deep Gravel
+Heavy, textured, intense voice.
+
+==================================================
+STATE / PERSISTENCE LOGIC
+==================================================
+
+Store selected voice:
+- localStorage for guests
+- database for logged-in users
+
+However:
+- on each story generation, validate that the saved voice is allowed for the selected pairing/category
+- if not allowed, reset to Jane for that generation
+- if needed, update the saved preference to Jane or ask the user to choose again
+
+==================================================
+BACKEND GENERATION LOGIC
+==================================================
+
+Before audio generation:
+1. determine selected pairing/category
+2. determine selected voice
+3. validate whether selected voice is allowed for that pairing
+4. if invalid, replace with Jane
+5. send valid voice_id to ElevenLabs
+
+Example logic:
+
+DEFAULT_VOICE_ID = "RILOU7YmBhvwJGDGjNmP"
+
+VALID_MALE_PAIRINGS = ["him_him", "him_they"]
+
+MALE_VOICE_IDS = [
+  "AeRdCCKzvd23BpJoofzx",
+  "n1PvBOwxb8X6m7tahp2h",
+  "jfIS2w2yJi0grJZPyEsk"
+]
+
+if selectedVoiceId in MALE_VOICE_IDS and selectedPairing not in VALID_MALE_PAIRINGS:
+    selectedVoiceId = DEFAULT_VOICE_ID
+
+If selectedVoiceId is missing:
+    selectedVoiceId = DEFAULT_VOICE_ID
+
+Then generate:
+
+await elevenlabs.generate({
+  voice_id: selectedVoiceId,
+  text: storyText,
+  model_id: "eleven_turbo_v2_5"
+})
+
+==================================================
+FALLBACK LOGIC
+==================================================
+
+If any selected voice fails during generation:
+- automatically retry with Jane
+- log the failure internally
+- do not expose technical error details to the user unless necessary
+
+==================================================
+UX RULES
+==================================================
+
+- Jane is the default and recommended voice for everyone
+- other female voices are optional alternatives
+- male voices are conditional and only available for him/him and him/they
+- keep the selector elegant, simple, and premium
+- place it near the end of the flow before generation
+- do not make voice selection feel like a complicated technical step
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Implement:
+- Jane as default and recommended voice
+- other female voices as selectable options
+- male voices restricted to him/him and him/they only
+- voice step near the end of the creation flow
+- validation logic before generation
+- Jane as fallback on failure
+- premium clean UI for voice selection

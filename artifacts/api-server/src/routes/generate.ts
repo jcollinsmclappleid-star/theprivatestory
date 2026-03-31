@@ -2064,7 +2064,7 @@ INTERIORITY IN REAL TIME:
 // ---------------------------------------------------------------------------
 
 export async function planStory(intake: GenerateStoryRequest, opts?: GenerateStoryOptions): Promise<StoryBrief> {
-  const sceneCount = { "3 min": 4, "5 min": 5, "10 min": 7, "12 min": 9 }[(intake.storyLength ?? "5 min")] ?? 5;
+  const sceneCount = { "3 min": 4, "5 min": 5, "10 min": 5, "12 min": 9 }[(intake.storyLength ?? "5 min")] ?? 5;
 
   const systemPrompt = `${PROHIBITED_CONTENT_BLOCK}
 
@@ -2157,7 +2157,7 @@ You must infer and return:
 - point_of_view
 - voice_tone
 - scene_count (must be ${sceneCount})
-- scene_plan (array of ${sceneCount} scenes — each scene MUST include a "phase" field drawn from: ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE. Distribute phases across scenes intelligently based on scene count AND the intensity level above. The IGNITE phase should span the most scenes at high intensity. ESTABLISH and CRACK are typically one scene each. SIMMER can span 1-2. RESONATE closes.)
+- scene_plan (array of ${sceneCount} scenes — each scene MUST include a "phase" field drawn from: ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE. For a 5-scene story the arc is: ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE, one scene each. For longer counts, IGNITE may span more scenes at high intensity. ESTABLISH and CRACK are always one scene each. RESONATE always closes.)
 ${castingAnchorsInstruction}
 - recurring_motif
 - title_direction
@@ -2496,12 +2496,13 @@ The listener's name is: ${listenerName || "you"}
 Requirements:
 - ${isSeries ? `Use THIRD-PERSON CLOSE point of view — she/her pronouns, protagonist by name throughout. NEVER address the listener as "you" in series episodes.` : `Use ${brief.point_of_view} point of view — address the listener as "you" throughout`}
 - Write exactly ${brief.scene_count} scenes, following the scene_plan precisely
-- Each scene has a "phase" label in the scene_plan — use it to determine the word count and intensity for that scene:
-  ESTABLISH = 200-250 words (grounding, atmosphere, world-building)
-  SIMMER = 150-200 words per scene (tension building, restraint, desire rising)
-  CRACK = 200-250 words (the moment something shifts, a line crossed)
-  IGNITE = 250-350 words per scene (explicit, immersive, nothing compressed — the heart of the story)
-  RESONATE = 250-350 words (emotional aftermath, revelation, the feeling that lingers)
+- Each scene has a "phase" label in the scene_plan — use it to determine the word count and intensity for that scene.
+  Target total: ~1,600 words across all scenes (≈ 8,000 characters). Stay within 10% of each range.
+  ESTABLISH = 280-320 words (grounding, atmosphere, world-building — do not rush)
+  SIMMER    = 310-350 words (tension building, restraint, desire rising — dwell here)
+  CRACK     = 340-380 words (the moment something shifts, a line crossed — more weight)
+  IGNITE    = 380-420 words (explicit, immersive, nothing compressed — the heart of the story)
+  RESONATE  = 220-260 words (emotional aftermath, the feeling that lingers — concise, do not over-extend)
 - Match the emotional arc exactly: ${brief.emotional_arc}
 - Pacing: ${brief.pacing_style}
 - Voice tone: ${brief.voice_tone}

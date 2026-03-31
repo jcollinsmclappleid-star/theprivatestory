@@ -1990,10 +1990,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     }`}
                     style={isSelected ? { transitionDuration: "150ms", transitionTimingFunction: "ease" } : {}}
                   >
-                    <div className="flex items-start gap-3 mb-3">
-                      <VoiceAvatar voiceId={voice.id} />
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-foreground leading-tight">{displayTitle}</span>
                             {voice.recommended && (
@@ -2009,20 +2008,30 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           <p className="text-xs text-muted-foreground/50 mt-0.5">{voice.presence}</p>
                         )}
                       </div>
+                      <div className="flex-shrink-0">
+                        <VoiceAvatar voiceId={voice.id} size="md" />
+                      </div>
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed pl-[60px]">{voice.desc}</p>
+                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{voice.desc}</p>
 
                     {voice.bestFor && (
-                      <div className="mb-3 pl-[60px]">
+                      <div className="mb-4">
                         <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/40 mb-1">Best for</p>
                         <p className="text-[11px] text-primary/70 font-medium">{voice.bestFor}</p>
                       </div>
                     )}
 
-                    <VoiceSamplePlayer
-                      src={`${API_BASE}/api/voice-samples/${voice.id}`}
-                    />
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 flex-shrink-0 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center">
+                        <VoiceAvatar voiceId={voice.id} size="md" />
+                      </div>
+                      <div className="flex-1">
+                        <VoiceSamplePlayer
+                          src={`${API_BASE}/api/voice-samples/${voice.id}`}
+                        />
+                      </div>
+                    </div>
                   </button>
                 );
               };

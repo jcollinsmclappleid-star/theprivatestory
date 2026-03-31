@@ -288,10 +288,16 @@ const ENDING_OPTIONS = [
   "He says the thing he's been holding back",
 ];
 
-const VOICE_OPTIONS = [
-  { id: "UK Voice", label: "UK", desc: "Warm, close, classically British. Unhurried and precise." },
-  { id: "US Voice", label: "US", desc: "Clear, assured, distinctly American. Confident and direct." },
+const VOICES = [
+  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic", desc: "Clean, refined, emotionally intelligent narration.", gender: "female" as const, recommended: true },
+  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close", desc: "Softer, closer, more intimate delivery.", gender: "female" as const },
+  { id: "FA6HhUjVbervLw2rNl8M", label: "Unhurried", desc: "Gentle, soothing, slower-paced narration.", gender: "female" as const },
+  { id: "AeRdCCKzvd23BpJoofzx", label: "Low", desc: "Engaging, tension-driven storytelling.", gender: "male" as const },
+  { id: "n1PvBOwxb8X6m7tahp2h", label: "Deep", desc: "Deep, immersive, dramatic narration.", gender: "male" as const },
+  { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy", desc: "Heavy, textured, intense voice.", gender: "male" as const },
 ];
+
+const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
 
 const SCENARIO_GROUPS = [
@@ -669,7 +675,7 @@ export default function Create() {
   const [ageConfirmed, setAgeConfirmed] = useState(() => {
     try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
   });
-  const [step, setStep] = useState<"casting" | "preset-prompt" | "form" | "generating" | "result">("casting");
+  const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result">("casting");
   const [castingResetKey, setCastingResetKey] = useState(0);
   
   // Scroll to top whenever step changes
@@ -731,7 +737,7 @@ export default function Create() {
     defaultValues: {
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "UK Voice",
+      voiceFeel: "RILOU7YmBhvwJGDGjNmP",
       storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,
@@ -1080,46 +1086,8 @@ export default function Create() {
     const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "My Cast";
     setPresetNameDraft(suggestedName);
 
-    if (isAuthenticated) {
-      setStep("preset-prompt");
-    } else {
-      setStep("generating");
-      startLoadingPhase();
-      generateMutation.mutateAsync({
-        data: {
-          mood: casting.mood,
-          intensity: casting.intensity,
-          voiceFeel: form.getValues("voiceFeel"),
-          storyLength: form.getValues("storyLength"),
-          scenarioCard: form.getValues("scenarioCard") || undefined,
-          timeOfDay: timeOfDay || undefined,
-          season: season || undefined,
-          perspective: casting.perspective === "your" ? "you" : casting.perspective === "their" ? "they" : casting.perspective,
-          cinematicVisuals: true,
-          emotionalFocus: casting.mood === "Emotional",
-          whoIsHe: casting.archetype || undefined,
-          dynamic: casting.dynamic || undefined,
-          setting: casting.setting || undefined,
-          storyMode: casting.storyMode || undefined,
-          experienceTags: allTags.length ? allTags : undefined,
-          pairing: casting.pairing || undefined,
-          heritage: casting.heritage || undefined,
-          atmosphere: casting.atmosphere || undefined,
-          chemistry: casting.chemistry || undefined,
-          appearBuild: casting.appearBuild || undefined,
-          appearHeight: casting.appearHeight || undefined,
-          appearColouring: casting.appearColouring || undefined,
-          appearEyes: casting.appearEyes || undefined,
-          appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
-          listenerName: casting.listenerName || undefined,
-          partnerName: casting.partnerName || undefined,
-          country: casting.country || undefined,
-          city: casting.city || undefined,
-          situationId: casting.situationId || undefined,
-        },
-      }).finally(() => stopLoadingPhase());
-    }
-  }, [form, generateMutation, isAuthenticated, startLoadingPhase, stopLoadingPhase, timeOfDay, season]);
+    setStep("voice");
+  }, [form]);
 
   const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
     if (savePreset && pendingCastingData && presetName.trim()) {
@@ -1223,7 +1191,7 @@ export default function Create() {
     form.reset({
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "UK Voice",
+      voiceFeel: "RILOU7YmBhvwJGDGjNmP",
       storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,
@@ -1423,7 +1391,7 @@ export default function Create() {
   const buildPreviewSentence = (): string => {
     const path = STORY_PATHS.find(p => p.id === selectedMode);
     const watchedVoice = form.watch("voiceFeel");
-    const voiceOption = VOICE_OPTIONS.find(v => v.id === watchedVoice);
+    const voiceOption = VOICES.find(v => v.id === watchedVoice);
     const hasContent = path || watchedWhoIsHe || watchedSetting || watchedDynamic || timeOfDay || season;
     if (!hasContent) return "";
     const intro = path ? `A ${path.label} story` : "Your story";
@@ -1553,6 +1521,118 @@ export default function Create() {
                 window.location.href = `${import.meta.env.BASE_URL}after-dark`;
               }}
             />
+          </motion.div>
+        )}
+
+        {step === "voice" && (
+          <motion.div
+            key="voice"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="max-w-2xl mx-auto px-4 py-12"
+          >
+            <div className="mb-10 text-center">
+              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Voice</h2>
+              <p className="text-muted-foreground">Choose the voice you want to hear your story in.</p>
+            </div>
+
+            <div className="space-y-4">
+              {VOICES.map((voice) => {
+                const isSelected = form.watch("voiceFeel") === voice.id;
+                const isMaleVoice = voice.gender === "male";
+                const shouldHideMale = isMaleVoice && !VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
+
+                if (shouldHideMale) return null;
+
+                return (
+                  <button
+                    key={voice.id}
+                    type="button"
+                    onClick={() => form.setValue("voiceFeel", voice.id, { shouldDirty: true })}
+                    className={`w-full p-4 rounded-2xl border-2 transition-all text-left group ${
+                      isSelected
+                        ? "border-primary bg-primary/10"
+                        : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-foreground">{voice.label}</p>
+                          {voice.recommended && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                              Recommended
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">{voice.desc}</p>
+                      </div>
+                      {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-10 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setStep("casting")}
+                className="flex-1 px-6 py-3 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all text-sm font-medium"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setStep("preset-prompt");
+                  } else {
+                    setStep("generating");
+                    startLoadingPhase();
+                    generateMutation.mutateAsync({
+                      data: {
+                        mood: (lastCastingData?.mood as string) || "Emotional",
+                        intensity: (lastCastingData?.intensity as string) || "Tender",
+                        voiceFeel: form.getValues("voiceFeel"),
+                        storyLength: form.getValues("storyLength") || "10 min",
+                        scenarioCard: form.getValues("scenarioCard") || undefined,
+                        timeOfDay,
+                        season,
+                        perspective: ((lastCastingData?.pairing as string) === "Her & Him" || (lastCastingData?.pairing as string) === "Him & Him" || (lastCastingData?.pairing as string) === "Him & Them") 
+                          ? ((lastCastingData?.pairing as string).startsWith("Her") ? "her" : "his")
+                          : "your",
+                        cinematicVisuals: true,
+                        emotionalFocus: ((lastCastingData?.mood as string) || "").includes("Emotional"),
+                        whoIsHe: lastCastingData?.whoIsHe as string | undefined,
+                        dynamic: lastCastingData?.dynamic as string | undefined,
+                        setting: lastCastingData?.setting as string | undefined,
+                        storyMode: lastCastingData?.storyMode as string | undefined,
+                        experienceTags: form.getValues("experienceTags"),
+                        pairing: castingPairing,
+                        heritage: castingHeritage,
+                        atmosphere: castingAtmosphere,
+                        chemistry: castingChemistry,
+                        appearBuild: castingAppearBuild,
+                        appearHeight: castingAppearHeight,
+                        appearColouring: castingAppearColouring,
+                        appearEyes: castingAppearEyes,
+                        appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
+                        listenerName: castingListenerName,
+                        partnerName: castingPartnerName,
+                        country: castingCountry,
+                        city: castingCity,
+                      },
+                    }).finally(() => stopLoadingPhase());
+                  }
+                }}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow text-sm"
+              >
+                <Sparkles className="w-4 h-4" />
+                Continue
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -2073,7 +2153,7 @@ export default function Create() {
                   <label className="block text-sm font-medium text-foreground mb-1">Narrator Voice</label>
                   <p className="text-xs text-muted-foreground mb-3">How the story is read aloud to you.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {VOICE_OPTIONS.map((v) => {
+                    {VOICES.map((v) => {
                       const isSelected = form.watch("voiceFeel") === v.id;
                       return (
                         <button

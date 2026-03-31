@@ -1063,30 +1063,55 @@ export function getCacheKey(data: object): string {
 }
 
 // ---------------------------------------------------------------------------
-// Voice IDs
+// Voice catalogue
 // ---------------------------------------------------------------------------
 
-// ElevenLabs voice IDs — region × gender lookup
-// Users choose UK or US accent; narrator gender is always female except for Him & Him pairing.
-const VOICE_REGION_MAP: Record<string, { female: string; male: string }> = {
-  "UK Voice": { female: "29vD33N1CtxCmqQRPOHJ", male: "piTKgcLEGmPE4e6mEKli" },
-  "US Voice": { female: "21m00Tcm4TlvDq8ikWAM", male: "iP95p4xoKVk53GoZ742B" },
+const DEFAULT_VOICE_ID = "RILOU7YmBhvwJGDGjNmP"; // Jane (Classic)
+
+// All available voice IDs
+const VOICE_CATALOGUE: Record<string, { label: string; gender: "female" | "male" }> = {
+  "RILOU7YmBhvwJGDGjNmP": { label: "Classic", gender: "female" }, // Jane
+  "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },   // Ivanna
+  "FA6HhUjVbervLw2rNl8M": { label: "Unhurried", gender: "female" }, // Ophelia Rose
+  "AeRdCCKzvd23BpJoofzx": { label: "Low", gender: "male" },       // Nathaniel
+  "n1PvBOwxb8X6m7tahp2h": { label: "Deep", gender: "male" },      // Michael C. Vincent
+  "jfIS2w2yJi0grJZPyEsk": { label: "Heavy", gender: "male" },     // Oliver Silk
 };
 
-// Legacy voiceFeel values stored in DB before the UK/US redesign
-const LEGACY_VOICE_REGION: Record<string, string> = {
-  "Soft Voice":      "UK Voice",
-  "Deep Voice":      "UK Voice",
-  "Breathy Voice":   "UK Voice",
-  "Confident Voice": "US Voice",
+const MALE_VOICE_IDS = [
+  "AeRdCCKzvd23BpJoofzx",
+  "n1PvBOwxb8X6m7tahp2h",
+  "jfIS2w2yJi0grJZPyEsk",
+];
+
+const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
+
+// Legacy voice values → modern voice_id
+const LEGACY_VOICE_MAP: Record<string, string> = {
+  "UK Voice": DEFAULT_VOICE_ID,
+  "US Voice": DEFAULT_VOICE_ID,
+  "Soft Voice": DEFAULT_VOICE_ID,
+  "Deep Voice": DEFAULT_VOICE_ID,
+  "Breathy Voice": DEFAULT_VOICE_ID,
+  "Confident Voice": DEFAULT_VOICE_ID,
 };
 
-function resolveVoiceId(voiceFeel: string, pairing?: string): string {
-  const region = VOICE_REGION_MAP[voiceFeel]
-    ? voiceFeel
-    : (LEGACY_VOICE_REGION[voiceFeel] ?? "UK Voice");
-  const isMale = pairing === "Him & Him";
-  return VOICE_REGION_MAP[region][isMale ? "male" : "female"];
+function resolveVoiceId(voiceIdOrFeel: string, pairing?: string): string {
+  // If it's a modern voice_id, use it directly
+  if (VOICE_CATALOGUE[voiceIdOrFeel]) {
+    const voice = VOICE_CATALOGUE[voiceIdOrFeel];
+    // Male voices only allowed for specific pairings
+    if (voice.gender === "male" && !VALID_MALE_PAIRINGS.includes(pairing ?? "")) {
+      return DEFAULT_VOICE_ID;
+    }
+    return voiceIdOrFeel;
+  }
+  // If it's a legacy value, map it
+  if (LEGACY_VOICE_MAP[voiceIdOrFeel]) {
+    return LEGACY_VOICE_MAP[voiceIdOrFeel];
+  }
+  // Fallback
+  return DEFAULT_VOICE_ID;
 }
 
 // ---------------------------------------------------------------------------
@@ -1095,7 +1120,7 @@ function resolveVoiceId(voiceFeel: string, pairing?: string): string {
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
 const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
-const VALID_VOICES = ["UK Voice", "US Voice"];
+const VALID_VOICES = Object.keys(VOICE_CATALOGUE);
 const VALID_LENGTHS = ["10 min"];
 
 // Archetype IDs from CastingRoom buildArchetypes() — sent as whoIsHe
@@ -3983,7 +4008,7 @@ router.post("/generate-variation", async (req, res) => {
   };
   const mood = (original.mood as string) ?? "Emotional";
   const duration = (original.duration as string) ?? "10 min";
-  const voiceFeel = "UK Voice";
+  const voiceFeel = DEFAULT_VOICE_ID;
 
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
 
@@ -4053,7 +4078,7 @@ router.post("/continue-story", async (req, res) => {
   };
   const mood = (original.mood as string) ?? "Emotional";
   const duration = (original.duration as string) ?? "10 min";
-  const voiceFeel = "UK Voice";
+  const voiceFeel = DEFAULT_VOICE_ID;
 
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
 

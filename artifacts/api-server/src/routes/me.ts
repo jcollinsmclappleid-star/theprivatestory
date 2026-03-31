@@ -608,12 +608,12 @@ router.get("/quick-create-params", async (req, res) => {
 
     const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
     const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
-    const VALID_VOICES = ["UK Voice", "US Voice"];
-    const LEGACY_VOICE_REGION: Record<string, string> = { "Soft Voice": "UK Voice", "Deep Voice": "UK Voice", "Breathy Voice": "UK Voice", "Confident Voice": "US Voice" };
+    const VALID_VOICE_IDS = ["RILOU7YmBhvwJGDGjNmP", "tQ4MEZFJOzsahSEEZtHK", "FA6HhUjVbervLw2rNl8M", "AeRdCCKzvd23BpJoofzx", "n1PvBOwxb8X6m7tahp2h", "jfIS2w2yJi0grJZPyEsk"];
+    const LEGACY_VOICE_MAP: Record<string, string> = { "UK Voice": "RILOU7YmBhvwJGDGjNmP", "US Voice": "RILOU7YmBhvwJGDGjNmP", "Soft Voice": "RILOU7YmBhvwJGDGjNmP", "Deep Voice": "RILOU7YmBhvwJGDGjNmP", "Breathy Voice": "RILOU7YmBhvwJGDGjNmP", "Confident Voice": "RILOU7YmBhvwJGDGjNmP" };
 
     const mood = VALID_MOODS.includes(topMood) ? topMood : "Emotional";
     const intensity = VALID_INTENSITIES.includes(topIntensity) ? topIntensity : "Heated";
-    const voiceFeel = VALID_VOICES.includes(topVoice) ? topVoice : (LEGACY_VOICE_REGION[topVoice] ?? "UK Voice");
+    const voiceFeel = VALID_VOICE_IDS.includes(topVoice) ? topVoice : (LEGACY_VOICE_MAP[topVoice] ?? "RILOU7YmBhvwJGDGjNmP");
 
     res.json({
       eligible: true,

@@ -1,0 +1,320 @@
+Enhance the voice selection experience in The Private Story so it feels more personal, premium, and emotionally distinctive.
+
+This is not just a “voice settings” panel.
+It should feel like the user is choosing who is telling their story.
+
+The current structure is good, but it feels too functional and abstract.
+We need to make it feel:
+- more human
+- more memorable
+- more emotionally engaging
+- more premium
+- more aligned with the luxury, female-first, private brand
+
+==================================================
+OBJECTIVE
+==================================================
+
+Transform the voice selector from a technical choice into a subtle narrator identity choice.
+
+The user should feel like they are choosing:
+- a presence
+- a tone
+- a storyteller
+
+Not just:
+- a voice preset
+
+Keep the design restrained and elegant.
+Do not make this feel playful, cartoonish, or like a marketplace.
+
+==================================================
+CORE IMPLEMENTATION RULES
+==================================================
+
+1. Add a first name to each voice
+2. Keep the style label
+3. Add a small abstract visual identity per voice
+4. Improve the copy so it feels like a person, not a setting
+5. Add “Best for” guidance under each description
+6. Keep Jane / Classic as the default and recommended voice
+7. Keep UI luxury, minimal, and calm
+
+==================================================
+VOICE CARD STRUCTURE
+==================================================
+
+Each voice card should contain:
+
+- small abstract avatar / abstract feminine visual
+- voice name
+- style label
+- recommended tag if applicable
+- region (British / American)
+- short premium description
+- “Best for” line
+- audio preview player
+- selected checkmark state
+
+Example structure:
+
+[abstract avatar]  Eleanor — Classic   Recommended
+British
+
+Warm, composed narration. She takes her time. Every word lands exactly where it should.
+
+Best for: Emotional, slow burn
+
+[ preview player ]
+
+==================================================
+VOICE NAME + LABEL SYSTEM
+==================================================
+
+Rename the visible voices in the UI as follows:
+
+1. Jane
+Current label: Classic
+Display as:
+Eleanor — Classic
+
+Region:
+British
+
+Description:
+Warm, composed narration. She takes her time. Every word lands exactly where it should.
+
+Best for:
+Emotional tension, first listen, slow burn
+
+Tag:
+Recommended
+
+2. Ivanna
+Current label: Close
+Display as:
+Maya — Close
+
+Region:
+American
+
+Description:
+Softer, more intimate delivery. Feels like she is speaking just for you.
+
+Best for:
+Late night, intimacy, closer delivery
+
+3. Ophelia Rose
+Current label: Unhurried
+Display as:
+Isla — Unhurried
+
+Region:
+British
+
+Description:
+Measured and soothing. Nothing rushed. Everything allowed to breathe.
+
+Best for:
+Bedtime, calm stories, softer romance
+
+Keep the internal voice IDs unchanged.
+This is only a presentation/UI enhancement.
+
+==================================================
+VISUAL IDENTITY RULE
+==================================================
+
+Do NOT use realistic female faces.
+Do NOT use photography.
+Do NOT use anime/cartoon characters.
+
+Instead, give each voice a subtle abstract identity.
+
+Use:
+- circular or softly rounded avatar
+- abstract feminine silhouette
+- minimal line-art profile
+- soft gradient shape
+- blurred portrait-style abstract treatment
+- elegant, premium, low-detail visuals
+
+Each voice should feel visually distinct, but still part of one cohesive brand system.
+
+Suggested direction:
+
+Eleanor / Classic
+- gold / warm bronze / black
+- elegant feminine line art or abstract profile
+- poised, refined, composed
+
+Maya / Close
+- warm rose / soft plum / amber
+- softer, more intimate blur or silhouette
+- closer, more private, more sensual
+
+Isla / Unhurried
+- muted blue / soft grey / cool gold
+- calm abstract feminine profile
+- gentle, restful, measured
+
+The avatars should feel premium and symbolic, not literal.
+
+==================================================
+MICROCOPY ENHANCEMENT
+==================================================
+
+Make all descriptions feel more human and emotionally specific.
+
+Current copy is too functional.
+Upgrade it so it feels like a narrator presence.
+
+Use these exact descriptions unless better styling requires light edits:
+
+Eleanor — Classic
+Warm, composed narration. She takes her time. Every word lands exactly where it should.
+
+Maya — Close
+Softer, more intimate delivery. Feels like she is speaking just for you.
+
+Isla — Unhurried
+Measured and soothing. Nothing rushed. Everything allowed to breathe.
+
+Keep tone:
+- elegant
+- premium
+- emotionally intelligent
+- not over-written
+- not cheesy
+
+==================================================
+BEST FOR TAGS
+==================================================
+
+Add a subtle “Best for” line to each card.
+
+Use:
+
+Eleanor — Classic
+Best for: Emotional tension, first listen, slow burn
+
+Maya — Close
+Best for: Late night, intimacy, closer delivery
+
+Isla — Unhurried
+Best for: Bedtime, calm stories, softer romance
+
+This should help users choose faster and make the selector feel more intelligent.
+
+==================================================
+DEFAULT / RECOMMENDED LOGIC
+==================================================
+
+Keep Eleanor — Classic (Jane voice) as:
+- default for all users
+- recommended voice
+- preselected voice
+
+Badge:
+Recommended
+
+Optional secondary microcopy:
+Most chosen for first listen
+
+Do not change the core voice logic:
+Jane remains the default system voice.
+
+==================================================
+SELECTION BEHAVIOUR
+==================================================
+
+Keep the existing logic:
+- one voice selected at a time
+- preview available before selection
+- selected card shows checkmark
+
+Enhance the selected state visually:
+- slightly brighter border
+- subtle glow or elevated contrast
+- checkmark stays top right
+- recommended badge remains visible if selected
+
+==================================================
+AUDIO PREVIEW PLAYER
+==================================================
+
+Keep audio preview player inside each card.
+Enhance the styling slightly so it feels more integrated and premium.
+
+Do not overcomplicate:
+- play button
+- progress bar
+- replay
+- skip
+
+Make sure preview area does not dominate the card more than the voice identity.
+
+==================================================
+LAYOUT / SPACING
+==================================================
+
+Improve spacing so cards breathe more.
+
+Tasks:
+- add slightly more spacing between name, region, description, and best-for line
+- keep cards elegant and uncluttered
+- make cards easy to scan on mobile
+- do not make them too tall
+
+The section should feel:
+- premium
+- calm
+- curated
+- editorial
+
+==================================================
+UX POSITIONING
+==================================================
+
+Frame the section as:
+Voice
+
+Supporting copy:
+Choose the voice you want to hear your story in.
+
+Optional alternate version:
+Choose who tells your story.
+
+Use whichever fits the design better, but the section should feel more personal than “voice settings.”
+
+==================================================
+DO NOT DO
+==================================================
+
+Do not:
+- use realistic women’s photos
+- use overly decorative illustrations
+- use cartoon avatars
+- add too many options
+- clutter the cards
+- make it feel playful or gamified
+- make it feel technical or developer-led
+
+This must remain luxury and restrained.
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Implement a refined voice selection experience with:
+
+- names added to the female voices
+- style labels kept
+- subtle abstract visual identities
+- emotionally improved descriptions
+- “Best for” guidance
+- Jane / Classic kept as the default and recommended voice
+- premium, elegant, minimal mobile-friendly layout
+
+Keep all backend voice IDs and selection logic intact.
+This is a UI/UX and copy enhancement pass, not a change to the core voice infrastructure.

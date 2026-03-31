@@ -878,7 +878,7 @@ export default function Home() {
             </p>
 
             <p className="text-xs text-muted-foreground/50 tracking-wide mb-8">
-              Written for the female imagination.
+              Designed for the female imagination.
             </p>
 
             <div className="flex items-center gap-4 flex-wrap mb-4">

@@ -1,0 +1,187 @@
+Enhance the homepage hero image and hero section of The Private Story to improve emotional pull, distinctiveness, and conversion.
+
+This is not a full redesign.
+This is a refinement pass.
+
+==================================================
+OBJECTIVE
+==================================================
+
+The current hero image is strong in tone and premium feel, but it needs to feel:
+- more emotionally charged
+- more distinctive to this product
+- less like a generic wellness / meditation / podcast app
+- more like a private, immersive, late-night storytelling experience
+
+The image should still feel:
+- premium
+- elegant
+- female-first
+- private
+- emotionally intelligent
+- non-explicit
+
+Do NOT make it look pornographic or overly sexual.
+Do NOT make it cheap, tacky, or stock-like.
+
+The goal is to create stronger emotional curiosity:
+“What is she listening to?”
+
+==================================================
+IMAGE DIRECTION
+==================================================
+
+Keep:
+- female subject
+- close-up composition
+- headphones / listening context
+- dark luxury palette
+- warm gold / amber / bronze lighting
+- premium editorial feel
+
+Enhance:
+- slightly deeper contrast
+- stronger focal emphasis on face
+- more cinematic mood
+- subtle emotional tension / anticipation in expression
+- less “calm wellness app”
+- more “immersed in a private moment”
+
+The image should suggest:
+- she is inside the story
+- something emotionally charged is happening
+- the listening experience is personal and absorbing
+- it is intimate without being explicit
+
+==================================================
+VISUAL ADJUSTMENTS
+==================================================
+
+Apply the following refinements to the hero image treatment:
+
+1. Increase contrast slightly
+- deepen shadows
+- make highlights warmer
+- improve separation between face and background
+
+2. Add a subtle cinematic vignette
+- darken edges slightly
+- draw the eye toward the face and headline area
+
+3. Reduce the generic wellness feel
+- image should not feel like meditation, sleep, or music streaming
+- increase narrative tension subtly through expression and lighting
+
+4. Increase emotional specificity
+- expression should feel immersed, absorbed, slightly anticipatory
+- not fully passive
+- not smiling
+- not overtly sensual
+- just enough tension to suggest something is unfolding internally
+
+5. Maintain luxury finish
+- no harsh edits
+- no obvious filters
+- no artificial-looking stock treatment
+- keep everything polished, premium, and understated
+
+==================================================
+COMPOSITION RULES
+==================================================
+
+- Keep headline area readable
+- Make sure face placement supports text overlay
+- Do not allow facial features to compete too hard with typography
+- Preserve enough negative space for headline + subheadline + CTAs
+
+If necessary:
+- darken image behind copy slightly more
+- use overlay gradient to improve legibility without flattening the image
+
+==================================================
+HERO SECTION REFINEMENT
+==================================================
+
+Preserve the current hero layout and improve the overall emotional impact.
+
+Keep this general structure:
+- label / badge
+- headline
+- supporting copy
+- small female-first line
+- primary CTA
+- secondary CTA
+
+Refine visual hierarchy so the hero feels more expensive and more immediate.
+
+==================================================
+COPY ALIGNMENT
+==================================================
+
+Keep headline direction:
+“A private story built around the feeling you’re after.”
+
+Keep supporting copy direction:
+“Choose the mood, the setting, the energy, and the voice. We write it, narrate it, and save it privately to your account.”
+
+Update the female-first line:
+Current:
+“Written for the female imagination.”
+
+Replace with:
+“Designed for the female imagination.”
+
+This reads cleaner, more premium, and more intentional.
+
+==================================================
+CTA REFINEMENT
+==================================================
+
+Keep:
+- “Create my story”
+- “See how it works”
+
+Make sure CTA buttons feel:
+- premium
+- high-contrast
+- easy to tap
+- not crowded by surrounding content
+
+If useful, slightly increase breathing room around the buttons.
+
+==================================================
+MOBILE UX
+==================================================
+
+Ensure the hero on mobile:
+- shows enough of the subject’s face to feel emotionally compelling
+- does not crop awkwardly
+- keeps the image dramatic without hiding the listening context
+- retains strong text readability
+
+The mobile version is especially important.
+The image must feel premium and emotionally magnetic in the first screen view.
+
+==================================================
+FINAL GOAL
+==================================================
+
+After refinement, the homepage hero should make the user feel:
+
+- this is private
+- this is premium
+- this is built for me
+- this is not generic
+- I want to know what she is listening to
+- I want to press Create my story
+
+==================================================
+FINAL OUTPUT REQUIRED
+==================================================
+
+Return a refined hero image treatment and hero section that:
+- feels more emotionally charged
+- feels more distinctive to this product category
+- keeps the luxury, private, female-first aesthetic
+- improves first impression and conversion
+- remains elegant, non-explicit, and premium

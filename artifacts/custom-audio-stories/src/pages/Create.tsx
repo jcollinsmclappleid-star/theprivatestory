@@ -11,6 +11,7 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { getCachedSampleUrl, cacheSampleFromUrl } from "@/lib/voice-sample-cache";
 import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
+import { VoiceAvatar } from "@/components/VoiceAvatar";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
@@ -1620,61 +1621,69 @@ export default function Create() {
 
               const renderVoiceCard = (voice: typeof VOICES[0]) => {
                 const isSelected = selectedVoiceId === voice.id;
+                const displayTitle = voice.displayName
+                  ? `${voice.displayName} — ${voice.label}`
+                  : voice.label;
                 return (
                   <button
                     key={voice.id}
                     type="button"
                     onClick={() => handleVoiceSelect(voice.id)}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all text-left group ${
+                    className={`w-full p-4 rounded-2xl border-2 transition-all text-left ${
                       isSelected
-                        ? "border-primary bg-primary/10"
+                        ? "border-primary bg-primary/10 shadow-[0_0_0_1px_rgba(201,162,39,0.15)]"
                         : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-semibold text-foreground">{voice.label}</p>
-                          {voice.recommended && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
-                              Recommended
-                            </span>
-                          )}
+                    <div className="flex items-start gap-3 mb-3">
+                      <VoiceAvatar voiceId={voice.id} />
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-foreground leading-tight">{displayTitle}</span>
+                            {voice.recommended && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-semibold tracking-wide uppercase">
+                                Recommended
+                              </span>
+                            )}
+                          </div>
+                          {isSelected && <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />}
                         </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">
-                            {voice.label}
-                          </span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/40 text-muted-foreground/70 font-medium">
-                            {voice.accent}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{voice.desc}</p>
-                        <VoiceSamplePlayer
-                          src={voiceSampleUrls[voice.id] || `${API_BASE}/api/voice-samples/${voice.id}`}
-                          onPlayStart={async () => {
-                            if (!loadingVoiceSamples.has(voice.id)) {
-                              setLoadingVoiceSamples(prev => new Set([...prev, voice.id]));
-                              const apiUrl = `${API_BASE}/api/voice-samples/${voice.id}`;
-                              try {
-                                await cacheSampleFromUrl(voice.id, apiUrl);
-                                const cachedUrl = await getCachedSampleUrl(voice.id, apiUrl);
-                                setVoiceSampleUrls(prev => ({ ...prev, [voice.id]: cachedUrl }));
-                              } catch (err) {
-                                console.warn(`Failed to cache sample ${voice.id}:`, err);
-                              } finally {
-                                setLoadingVoiceSamples(prev => {
-                                  const next = new Set(prev);
-                                  next.delete(voice.id);
-                                  return next;
-                                });
-                              }
-                            }
-                          }}
-                        />
+                        <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accent}</span>
                       </div>
-                      {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
                     </div>
+
+                    <p className="text-sm text-muted-foreground mb-2 leading-relaxed pl-[60px]">{voice.desc}</p>
+
+                    {voice.bestFor && (
+                      <p className="text-[11px] text-muted-foreground/50 mb-3 pl-[60px]">
+                        <span className="text-muted-foreground/40 font-medium uppercase tracking-wide text-[10px] mr-1.5">Best for</span>
+                        {voice.bestFor}
+                      </p>
+                    )}
+
+                    <VoiceSamplePlayer
+                      src={voiceSampleUrls[voice.id] || `${API_BASE}/api/voice-samples/${voice.id}`}
+                      onPlayStart={async () => {
+                        if (!loadingVoiceSamples.has(voice.id)) {
+                          setLoadingVoiceSamples(prev => new Set([...prev, voice.id]));
+                          const apiUrl = `${API_BASE}/api/voice-samples/${voice.id}`;
+                          try {
+                            await cacheSampleFromUrl(voice.id, apiUrl);
+                            const cachedUrl = await getCachedSampleUrl(voice.id, apiUrl);
+                            setVoiceSampleUrls(prev => ({ ...prev, [voice.id]: cachedUrl }));
+                          } catch (err) {
+                            console.warn(`Failed to cache sample ${voice.id}:`, err);
+                          } finally {
+                            setLoadingVoiceSamples(prev => {
+                              const next = new Set(prev);
+                              next.delete(voice.id);
+                              return next;
+                            });
+                          }
+                        }
+                      }}
+                    />
                   </button>
                 );
               };

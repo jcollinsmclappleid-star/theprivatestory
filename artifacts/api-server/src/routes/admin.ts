@@ -340,6 +340,38 @@ router.get("/library", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /admin/library/manifest — manifest entries with DB seeding status
+// ---------------------------------------------------------------------------
+
+router.get("/library/manifest", async (req, res) => {
+  if (!isAdmin(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  try {
+    const allLibraryStories = await storiesStore.getLibraryStories();
+    const seededIds = new Set(
+      allLibraryStories
+        .map(s => (s.castingData as Record<string, string> | undefined)?.situationId)
+        .filter(Boolean)
+    );
+    const entries = LIBRARY_SEED_MANIFEST.map(entry => ({
+      situationId: entry.situationId,
+      label: entry.label,
+      pairing: entry.pairing,
+      mood: entry.mood,
+      atmosphere: entry.atmosphere,
+      city: entry.city,
+      country: entry.country,
+      seeded: seededIds.has(entry.situationId),
+    }));
+    res.json({ entries, seededCount: seededIds.size, total: LIBRARY_SEED_MANIFEST.length });
+  } catch {
+    res.status(500).json({ error: "Failed to fetch manifest" });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // PATCH /admin/stories/:id/status — approve or skip a draft story
 // ---------------------------------------------------------------------------
 
@@ -706,7 +738,22 @@ router.delete("/clear-library", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// POST /admin/seed-library — sequential SSE seed of 30 library stories
+// POST /admin/seed-library — sequential SSE seed of library stories
+//
+// Body (all optional):
+//   replace: boolean        — clear existing library stories before seeding
+//   skipImages: boolean     — skip cover-image generation (faster, cheaper)
+//   skipQc: boolean         — skip quality-control scoring pass
+//   situationIds: string[]  — only seed these situationIds (subset of manifest)
+//
+// SSE events emitted:
+//   start         — seed beginning, with total count
+//   story_start   — individual story starting
+//   phase         — planning / writing / qc / images / saving phases
+//   story_done    — story successfully created with QC score
+//   story_error   — story failed (continues to next)
+//   batch_qc      — summary emitted after every 5 stories
+//   complete      — all done, with totals and overall average QC
 // ---------------------------------------------------------------------------
 
 router.post("/seed-library", async (req, res) => {
@@ -720,19 +767,59 @@ router.post("/seed-library", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
+  // Guard against client disconnect — seed continues to DB-write even if the
+  // SSE consumer drops.  We simply stop emitting events once disconnected.
+  let clientConnected = true;
+  req.on("close", () => { clientConnected = false; });
+
   const send = (event: string, data: Record<string, unknown>) => {
-    res.write(`data: ${JSON.stringify({ event, ...data })}\n\n`);
+    if (!clientConnected) return;
+    try {
+      res.write(`data: ${JSON.stringify({ event, ...data })}\n\n`);
+    } catch {
+      clientConnected = false;
+    }
   };
 
-  const total = LIBRARY_SEED_MANIFEST.length;
-  send("start", { total, message: `Starting library seed — ${total} stories` });
+  // ── Parse options ─────────────────────────────────────────────────────────
+  const replace     = req.body?.replace     === true;
+  const skipImages  = req.body?.skipImages  === true;
+  const skipQc      = req.body?.skipQc      === true;
+  const situationIds: string[] | undefined = Array.isArray(req.body?.situationIds) && req.body.situationIds.length > 0
+    ? req.body.situationIds as string[]
+    : undefined;
+
+  // ── Replace mode: clear existing library stories first ───────────────────
+  if (replace) {
+    const result = await db
+      .delete(generatedStories)
+      .where(eq(generatedStories.isLibraryStory, true));
+    const deleted = result.rowCount ?? 0;
+    send("cleared", { deleted, message: `Cleared ${deleted} existing library stories` });
+    notifyAdmin("Library cleared for reseed", { deleted });
+  }
+
+  // ── Filter manifest to requested situationIds (if specified) ─────────────
+  const manifest = situationIds
+    ? LIBRARY_SEED_MANIFEST.filter(e => situationIds.includes(e.situationId))
+    : LIBRARY_SEED_MANIFEST;
+
+  const total = manifest.length;
+  send("start", { total, replace, skipImages, skipQc, message: `Starting library seed — ${total} stories` });
 
   let created = 0;
   let skipped = 0;
   let failed = 0;
 
-  for (const entry of LIBRARY_SEED_MANIFEST) {
-    const idx = LIBRARY_SEED_MANIFEST.indexOf(entry) + 1;
+  // QC tracking — per story and per batch-of-5
+  interface QcRecord { situationId: string; title: string; score: number; belowThreshold: boolean }
+  const allQcRecords: QcRecord[] = [];
+  let batchQcBuffer: QcRecord[] = [];
+  const QC_BATCH_SIZE = 5;
+  const QC_PASS_THRESHOLD = 7.0;
+
+  for (const entry of manifest) {
+    const idx = manifest.indexOf(entry) + 1;
     send("story_start", {
       index: idx,
       total,
@@ -741,25 +828,33 @@ router.post("/seed-library", async (req, res) => {
       mood: entry.mood,
     });
 
-    // Skip if a library story already exists for this situationId
-    const [existing] = await db
-      .select({ id: generatedStories.id })
-      .from(generatedStories)
-      .where(like(generatedStories.id, `lib-${entry.situationId}-%`))
-      .limit(1);
-    if (existing) {
-      send("story_skipped", {
-        index: idx,
-        total,
-        situationId: entry.situationId,
-        existingId: existing.id,
-        message: `Already seeded — skipping`,
-      });
-      skipped++;
-      continue;
+    // Skip if a library story already exists for this situationId (and we are not replacing)
+    if (!replace) {
+      const [existing] = await db
+        .select({ id: generatedStories.id })
+        .from(generatedStories)
+        .where(like(generatedStories.id, `lib-${entry.situationId}-%`))
+        .limit(1);
+      if (existing) {
+        send("story_skipped", {
+          index: idx,
+          total,
+          situationId: entry.situationId,
+          existingId: existing.id,
+          message: `Already seeded — skipping`,
+        });
+        skipped++;
+        // Emit batch QC after every 5 even for skipped (with null QC)
+        if (idx % QC_BATCH_SIZE === 0) {
+          const batchNum = Math.ceil(idx / QC_BATCH_SIZE);
+          send("batch_qc", { batchNum, stories: batchQcBuffer, message: `Batch ${batchNum} complete — ${batchQcBuffer.length} scored` });
+          batchQcBuffer = [];
+        }
+        continue;
+      }
     }
 
-    try {
+    const generateOne = async () => {
       const intake: GenerateStoryRequest = {
         mood: entry.mood,
         intensity: entry.intensity,
@@ -781,12 +876,52 @@ router.post("/seed-library", async (req, res) => {
       const brief = await planStory(intake);
 
       send("phase", { index: idx, phase: "writing", label: "Writing story…" });
-      const story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
+      let story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
 
-      send("phase", { index: idx, phase: "images", label: "Generating cover image…" });
-      const cacheKey = `lib-${entry.situationId}-${Date.now()}`;
-      const prompts = await buildImagePrompts(brief, story);
-      const images = await generateAllImages(prompts, cacheKey);
+      // ── QC pass (skipped when skipQc=true) ────────────────────────────────
+      let qcResult: Awaited<ReturnType<typeof qcStory>>;
+      if (skipQc) {
+        send("phase", { index: idx, phase: "qc_skip", label: "QC skipped" });
+        qcResult = { score_total: 0, feedback: "QC skipped", subscores: {} as never };
+      } else {
+        send("phase", { index: idx, phase: "qc", label: "Quality review…" });
+        qcResult = await qcStory(brief, story);
+
+        if (qcResult.score_total < QC_PASS_THRESHOLD) {
+          send("phase", {
+            index: idx,
+            phase: "qc_retry",
+            label: `QC score ${qcResult.score_total.toFixed(1)} — retrying…`,
+            score: qcResult.score_total,
+          });
+          const retryBrief = await planStory(intake);
+          story = await writeStoryFromBrief(retryBrief, "the listener", entry.intensity, intake);
+          qcResult = await qcStory(retryBrief, story);
+          if (qcResult.score_total >= QC_PASS_THRESHOLD) {
+            send("phase", { index: idx, phase: "qc_pass", label: `Retry QC passed: ${qcResult.score_total.toFixed(1)}`, score: qcResult.score_total });
+          } else {
+            send("phase", { index: idx, phase: "qc_low", label: `QC still ${qcResult.score_total.toFixed(1)} after retry — saving anyway`, score: qcResult.score_total });
+          }
+        }
+      }
+
+      return { brief, story, qcResult, intake };
+    };
+
+    try {
+      const { brief, story, qcResult, intake } = await generateOne();
+
+      const storyToken = `${entry.situationId}-${Date.now()}`;
+
+      // ── Cover image (skipped when skipImages=true) ────────────────────────
+      let images: { cover: string; scenes?: string[] } = { cover: "", scenes: [] };
+      if (skipImages) {
+        send("phase", { index: idx, phase: "images_skip", label: "Image generation skipped" });
+      } else {
+        send("phase", { index: idx, phase: "images", label: "Generating cover image…" });
+        const prompts = await buildImagePrompts(brief, story);
+        images = await generateAllImages(prompts, `lib-${storyToken}`);
+      }
 
       const castingData: Record<string, string> = {
         pairing: entry.pairing,
@@ -803,7 +938,7 @@ router.post("/seed-library", async (req, res) => {
       if (brief.situationId) castingData.situationId = brief.situationId;
 
       send("phase", { index: idx, phase: "saving", label: "Saving to library…" });
-      const storyId = `lib-${entry.situationId}-${cacheKey}`;
+      const storyId = `lib-${storyToken}`;
       await storiesStore.set(storyId, {
         id: storyId,
         title: story.title,
@@ -819,7 +954,18 @@ router.post("/seed-library", async (req, res) => {
         status: "published",
         ownerUserId: null,
         castingData,
+        qc: qcResult,
+        qcScore: qcResult.score_total,
       });
+
+      const qcRecord: QcRecord = {
+        situationId: entry.situationId,
+        title: story.title,
+        score: qcResult.score_total,
+        belowThreshold: qcResult.score_total < QC_PASS_THRESHOLD,
+      };
+      allQcRecords.push(qcRecord);
+      batchQcBuffer.push(qcRecord);
 
       created++;
       send("story_done", {
@@ -829,6 +975,7 @@ router.post("/seed-library", async (req, res) => {
         title: story.title,
         storyId,
         coverUrl: images.cover,
+        qcScore: qcResult.score_total,
         created,
         skipped,
         failed,
@@ -847,9 +994,46 @@ router.post("/seed-library", async (req, res) => {
         failed,
       });
     }
+
+    // ── Batch QC checkpoint after every 5 stories ────────────────────────────
+    if (idx % QC_BATCH_SIZE === 0) {
+      const batchNum = Math.ceil(idx / QC_BATCH_SIZE);
+      const batchScored = batchQcBuffer.filter(r => r.score !== undefined);
+      const batchAvg = batchScored.length > 0
+        ? batchScored.reduce((sum, r) => sum + r.score, 0) / batchScored.length
+        : null;
+      const flagged = batchQcBuffer.filter(r => r.belowThreshold);
+      send("batch_qc", {
+        batchNum,
+        batchSize: QC_BATCH_SIZE,
+        storiesInBatch: idx,
+        avgQcScore: batchAvg !== null ? Math.round(batchAvg * 10) / 10 : null,
+        stories: batchQcBuffer,
+        flagged: flagged.map(r => ({ situationId: r.situationId, title: r.title, score: r.score })),
+        message: `Batch ${batchNum} of ${Math.ceil(total / QC_BATCH_SIZE)}: avg QC ${batchAvg !== null ? batchAvg.toFixed(1) : "n/a"}, ${flagged.length} flagged`,
+      });
+      batchQcBuffer = [];
+    }
   }
 
-  send("complete", { total, created, skipped, failed, message: `Seed complete — ${created} created, ${skipped} skipped, ${failed} failed` });
+  // Final summary
+  const overallAvg = allQcRecords.length > 0
+    ? allQcRecords.reduce((sum, r) => sum + r.score, 0) / allQcRecords.length
+    : null;
+  const lowest = allQcRecords.length > 0
+    ? allQcRecords.reduce((min, r) => r.score < min.score ? r : min, allQcRecords[0])
+    : null;
+
+  send("complete", {
+    total,
+    created,
+    skipped,
+    failed,
+    avgQcScore: overallAvg !== null ? Math.round(overallAvg * 10) / 10 : null,
+    lowestQc: lowest ? { situationId: lowest.situationId, title: lowest.title, score: lowest.score } : null,
+    belowThresholdCount: allQcRecords.filter(r => r.belowThreshold).length,
+    message: `Seed complete — ${created} created, ${skipped} skipped, ${failed} failed. Avg QC: ${overallAvg !== null ? overallAvg.toFixed(1) : "n/a"}`,
+  });
   res.end();
 });
 

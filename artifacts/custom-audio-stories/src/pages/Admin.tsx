@@ -125,17 +125,49 @@ export default function Admin() {
     situationId: string;
     label: string;
     mood: string;
-    status: "pending" | "planning" | "writing" | "images" | "saving" | "done" | "error";
+    status: "pending" | "planning" | "writing" | "qc" | "images" | "saving" | "done" | "error";
     title?: string;
     storyId?: string;
     coverUrl?: string;
     error?: string;
+  }
+  interface ManifestEntry {
+    situationId: string;
+    label: string;
+    pairing: string;
+    mood: string;
+    atmosphere: string;
+    city: string;
+    country: string;
+    seeded: boolean;
   }
   const [seedItems, setSeedItems] = useState<SeedItem[]>([]);
   const [seedRunning, setSeedRunning] = useState(false);
   const seedAbortRef = useRef<AbortController | null>(null);
   const [clearStatus, setClearStatus] = useState<"idle" | "clearing" | "done" | "error">("idle");
   const [seedSummary, setSeedSummary] = useState<{ done: number; failed: number } | null>(null);
+
+  // Seed options
+  const [seedSkipImages, setSeedSkipImages] = useState(false);
+  const [seedSkipQc, setSeedSkipQc] = useState(false);
+  const [seedReplace, setSeedReplace] = useState(false);
+
+  // Manifest browser
+  const [manifestEntries, setManifestEntries] = useState<ManifestEntry[]>([]);
+  const [manifestLoading, setManifestLoading] = useState(false);
+  const [generatingSingle, setGeneratingSingle] = useState<string | null>(null);
+
+  const loadManifest = useCallback(async () => {
+    setManifestLoading(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/library/manifest`, { credentials: "include" });
+      if (r.ok) {
+        const data = await r.json();
+        setManifestEntries(data.entries ?? []);
+      }
+    } catch {}
+    setManifestLoading(false);
+  }, []);
 
   const clearLibrary = async () => {
     if (!confirm("Delete all library stories? This cannot be undone.")) return;
@@ -157,7 +189,51 @@ export default function Admin() {
     }
   };
 
-  const seedLibrary = async () => {
+  const consumeSeedStream = async (
+    resp: Response,
+    updateItem: (idx: number, patch: Partial<SeedItem>) => void,
+    ctrl: AbortController,
+  ) => {
+    if (!resp.ok || !resp.body) return;
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+    const phaseMap: Record<string, SeedItem["status"]> = {
+      planning: "planning", writing: "writing", qc: "qc", qc_skip: "qc",
+      qc_retry: "qc", qc_pass: "qc", qc_low: "qc", images: "images",
+      images_skip: "images", saving: "saving",
+    };
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const parts = buf.split("\n\n");
+      buf = parts.pop() ?? "";
+      for (const part of parts) {
+        const line = part.startsWith("data: ") ? part.slice(6) : part;
+        if (!line.trim()) continue;
+        try {
+          const ev = JSON.parse(line) as Record<string, unknown>;
+          const evt = ev.event as string;
+          const idx = ev.index as number;
+          if (evt === "story_start") {
+            updateItem(idx, { index: idx, situationId: ev.situationId as string, label: ev.label as string, mood: ev.mood as string, status: "planning" });
+          } else if (evt === "phase") {
+            updateItem(idx, { status: phaseMap[ev.phase as string] ?? "planning" });
+          } else if (evt === "story_done") {
+            updateItem(idx, { status: "done", title: ev.title as string, storyId: ev.storyId as string, coverUrl: ev.coverUrl as string });
+          } else if (evt === "story_error") {
+            updateItem(idx, { status: "error", error: ev.error as string });
+          } else if (evt === "complete") {
+            setSeedSummary({ done: ev.done as number, failed: ev.failed as number });
+          }
+        } catch {}
+      }
+    }
+    void ctrl;
+  };
+
+  const seedLibrary = async (situationIds?: string[]) => {
     if (seedRunning) {
       seedAbortRef.current?.abort();
       setSeedRunning(false);
@@ -187,62 +263,61 @@ export default function Admin() {
         method: "POST",
         credentials: "include",
         signal: ctrl.signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          replace: seedReplace,
+          skipImages: seedSkipImages,
+          skipQc: seedSkipQc,
+          ...(situationIds ? { situationIds } : {}),
+        }),
       });
-      if (!resp.ok || !resp.body) {
-        setSeedRunning(false);
-        return;
-      }
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const parts = buf.split("\n\n");
-        buf = parts.pop() ?? "";
-        for (const part of parts) {
-          const line = part.startsWith("data: ") ? part.slice(6) : part;
-          if (!line.trim()) continue;
-          try {
-            const ev = JSON.parse(line) as Record<string, unknown>;
-            const evt = ev.event as string;
-            const idx = ev.index as number;
-            if (evt === "story_start") {
-              updateItem(idx, {
-                index: idx,
-                situationId: ev.situationId as string,
-                label: ev.label as string,
-                mood: ev.mood as string,
-                status: "planning",
-              });
-            } else if (evt === "phase") {
-              const phaseMap: Record<string, SeedItem["status"]> = {
-                planning: "planning",
-                writing: "writing",
-                images: "images",
-                saving: "saving",
-              };
-              updateItem(idx, { status: phaseMap[ev.phase as string] ?? "planning" });
-            } else if (evt === "story_done") {
-              updateItem(idx, {
-                status: "done",
-                title: ev.title as string,
-                storyId: ev.storyId as string,
-                coverUrl: ev.coverUrl as string,
-              });
-            } else if (evt === "story_error") {
-              updateItem(idx, { status: "error", error: ev.error as string });
-            } else if (evt === "complete") {
-              setSeedSummary({ done: ev.done as number, failed: ev.failed as number });
-            }
-          } catch {}
-        }
-      }
+      await consumeSeedStream(resp, updateItem, ctrl);
     } catch (e) {
       if ((e as Error).name !== "AbortError") console.error(e);
     }
     setSeedRunning(false);
+    await loadManifest();
+  };
+
+  const generateOneSituation = async (situationId: string) => {
+    if (generatingSingle === situationId) return;
+    setGeneratingSingle(situationId);
+    setSeedItems([]);
+    setSeedSummary(null);
+    const ctrl = new AbortController();
+
+    const updateItem = (idx: number, patch: Partial<SeedItem>) => {
+      setSeedItems((prev) => {
+        const next = [...prev];
+        const existing = next.find((i) => i.situationId === situationId);
+        if (existing) {
+          Object.assign(existing, patch);
+        } else {
+          next.push({ index: idx, situationId, label: "", mood: "", status: "pending", ...patch });
+        }
+        return next;
+      });
+    };
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/seed-library`, {
+        method: "POST",
+        credentials: "include",
+        signal: ctrl.signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          replace: false,
+          skipImages: seedSkipImages,
+          skipQc: seedSkipQc,
+          situationIds: [situationId],
+        }),
+      });
+      await consumeSeedStream(resp, updateItem, ctrl);
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") console.error(e);
+    }
+    setGeneratingSingle(null);
+    await loadManifest();
   };
 
   const loadAuditLog = useCallback(async () => {
@@ -307,7 +382,8 @@ export default function Admin() {
   useEffect(() => {
     if (activeView === "moderation") loadModeration();
     if (activeView === "audit") loadAuditLog();
-  }, [activeView, loadModeration, loadAuditLog]);
+    if (activeView === "library") loadManifest();
+  }, [activeView, loadModeration, loadAuditLog, loadManifest]);
 
   const fileReport = useCallback(async (contentBlockId: string, reportedTo: "ncmec" | "iwf" | "other") => {
     setReportingId(contentBlockId);
@@ -1251,6 +1327,7 @@ export default function Admin() {
                       pending: "text-white/30",
                       planning: "text-amber-300",
                       writing: "text-amber-300",
+                      qc: "text-yellow-300",
                       images: "text-violet-300",
                       saving: "text-blue-300",
                       done: "text-emerald-400",
@@ -1260,6 +1337,7 @@ export default function Admin() {
                       pending: "Pending",
                       planning: "Planning…",
                       writing: "Writing…",
+                      qc: "QC review…",
                       images: "Cover image…",
                       saving: "Saving…",
                       done: "Done",
@@ -1612,25 +1690,87 @@ export default function Admin() {
           </div>
         ) : activeView === "library" ? (
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="px-6 py-5 border-b border-white/10 flex-shrink-0">
-              <h2 className="font-semibold text-base mb-1">Seed Library</h2>
-              <p className="text-white/40 text-xs leading-relaxed mb-5">
-                Generate 30 premium library stories — 3 per situation category × 10 categories.
-                Each story runs the full pipeline: plan → write → cover image → save.
-                Audio is skipped (library stories stream text only).
-                This will take approximately 30–60 minutes.
-              </p>
 
-              <div className="flex gap-3 mb-4">
+            {/* ── Header + Options ────────────────────────────────────────── */}
+            <div className="px-6 py-5 border-b border-white/10 flex-shrink-0">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold text-base">Library Seeding</h2>
+                <button
+                  onClick={loadManifest}
+                  disabled={manifestLoading}
+                  className="text-xs text-white/40 hover:text-white/70 transition disabled:opacity-40"
+                >
+                  {manifestLoading ? "Loading…" : "↻ Refresh"}
+                </button>
+              </div>
+
+              {/* Seeded count summary */}
+              {manifestEntries.length > 0 && (
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex-1 bg-white/10 rounded-full h-1.5">
+                    <div
+                      className="bg-violet-500 h-1.5 rounded-full transition-all"
+                      style={{ width: `${(manifestEntries.filter(e => e.seeded).length / manifestEntries.length) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-white/50 whitespace-nowrap">
+                    {manifestEntries.filter(e => e.seeded).length} / {manifestEntries.length} seeded
+                  </span>
+                </div>
+              )}
+
+              {/* Options grid */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {[
+                  { label: "Skip Images", hint: "~£0.04 saved/story", state: seedSkipImages, set: setSeedSkipImages },
+                  { label: "Skip QC", hint: "~1 min saved/story", state: seedSkipQc, set: setSeedSkipQc },
+                  { label: "Replace Existing", hint: "Overwrites seeded stories", state: seedReplace, set: setSeedReplace },
+                ].map(opt => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => opt.set(!opt.state)}
+                    className={`flex items-start gap-2 px-3 py-2.5 rounded-lg border text-left transition ${
+                      opt.state
+                        ? "border-violet-500/50 bg-violet-500/10 text-violet-300"
+                        : "border-white/10 bg-white/5 text-white/50 hover:border-white/20"
+                    }`}
+                  >
+                    <div className={`w-3.5 h-3.5 rounded border flex-shrink-0 mt-0.5 flex items-center justify-center transition ${
+                      opt.state ? "border-violet-500 bg-violet-500" : "border-white/30"
+                    }`}>
+                      {opt.state && <svg viewBox="0 0 10 10" className="w-2 h-2 text-white fill-current"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium leading-tight">{opt.label}</div>
+                      <div className="text-xs opacity-50 leading-tight mt-0.5">{opt.hint}</div>
+                    </div>
+                  </button>
+                ))}
+
+                {/* Cost estimate */}
+                <div className="px-3 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white/40">
+                  <div className="text-xs font-medium text-white/60 mb-0.5">Est. cost (all 30)</div>
+                  <div className="text-xs">
+                    Text: ~£2.50 · {seedSkipImages ? "Images: skipped" : "Images: ~£1.50"} · {seedSkipQc ? "QC: skipped" : "QC: ~£0.90"}
+                  </div>
+                  <div className="text-xs font-semibold mt-0.5">
+                    Total: ~£{(2.5 + (seedSkipImages ? 0 : 1.5) + (seedSkipQc ? 0 : 0.9)).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action row */}
+              <div className="flex gap-2">
                 <button
                   onClick={clearLibrary}
                   disabled={clearStatus === "clearing" || seedRunning}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white/70 text-xs font-medium transition disabled:opacity-40"
+                  className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white/70 text-xs font-medium transition disabled:opacity-40"
                 >
-                  {clearStatus === "clearing" ? "Clearing…" : clearStatus === "done" ? "✓ Cleared" : "Clear Library"}
+                  {clearStatus === "clearing" ? "Clearing…" : clearStatus === "done" ? "✓ Cleared" : "Clear All"}
                 </button>
                 <button
-                  onClick={seedLibrary}
+                  onClick={() => seedLibrary()}
                   disabled={clearStatus === "clearing"}
                   className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${
                     seedRunning
@@ -1638,51 +1778,137 @@ export default function Admin() {
                       : "bg-violet-600 hover:bg-violet-500 text-white"
                   }`}
                 >
-                  {seedRunning ? "Stop Seeding" : "Seed Library (30 stories)"}
+                  {seedRunning
+                    ? `Stop (${seedItems.filter(i => i.status === "done").length}/${manifestEntries.length} done)`
+                    : `Seed All${manifestEntries.filter(e => !e.seeded).length > 0 ? ` (${manifestEntries.filter(e => !e.seeded).length} missing)` : ""}`
+                  }
                 </button>
               </div>
 
+              {/* Live progress bar when seeding */}
               {seedRunning && (
-                <div className="mb-4">
-                  <div className="flex items-center justify-between text-xs text-white/50 mb-1.5">
-                    <span>{seedItems.filter((i) => i.status === "done").length} / 30 complete</span>
-                    {seedItems.filter((i) => i.status === "error").length > 0 && (
-                      <span className="text-red-400">
-                        {seedItems.filter((i) => i.status === "error").length} failed
-                      </span>
-                    )}
-                  </div>
-                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                <div className="mt-3">
+                  <div className="w-full bg-white/10 rounded-full h-1">
                     <div
-                      className="bg-violet-500 h-1.5 rounded-full transition-all"
-                      style={{
-                        width: `${(seedItems.filter((i) => i.status === "done").length / 30) * 100}%`,
-                      }}
+                      className="bg-violet-500 h-1 rounded-full transition-all"
+                      style={{ width: `${(seedItems.filter(i => i.status === "done").length / Math.max(manifestEntries.length, 1)) * 100}%` }}
                     />
+                  </div>
+                  <div className="mt-1 text-xs text-white/40">
+                    {(() => {
+                      const current = seedItems.find(i => i.status !== "done" && i.status !== "error" && i.status !== "pending");
+                      if (current) return `Generating: ${current.label || current.situationId}`;
+                      return "Preparing…";
+                    })()}
                   </div>
                 </div>
               )}
 
               {seedSummary && !seedRunning && (
-                <div className={`rounded-xl px-4 py-3 text-sm border ${
+                <div className={`mt-3 rounded-lg px-3 py-2 text-xs border ${
                   seedSummary.failed === 0
                     ? "bg-emerald-900/20 border-emerald-500/20 text-emerald-300"
                     : "bg-amber-900/20 border-amber-500/20 text-amber-300"
                 }`}>
                   {seedSummary.failed === 0
-                    ? `✓ All ${seedSummary.done} stories seeded successfully.`
-                    : `⚠ ${seedSummary.done} stories seeded, ${seedSummary.failed} failed.`}
+                    ? `✓ ${seedSummary.done} stories seeded successfully.`
+                    : `⚠ ${seedSummary.done} seeded, ${seedSummary.failed} failed.`}
                 </div>
               )}
             </div>
 
-            <div className="flex-1 px-6 py-4 overflow-y-auto">
-              <div className="text-xs text-white/30 mb-3 font-medium uppercase tracking-widest">30 Situations</div>
-              <div className="space-y-1 text-xs text-white/40 leading-relaxed">
-                <div>3 per category · Forbidden / Reunion / First / Power / Psychological / Circumstance / Secrets / Dark / Slow Burn / Professional</div>
-                <div className="mt-2 text-white/20">Story written by Mistral Large · Cover image generated · No audio (library mode)</div>
-              </div>
+            {/* ── Manifest browser ────────────────────────────────────────── */}
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {manifestLoading && manifestEntries.length === 0 ? (
+                <div className="flex items-center justify-center py-12 text-white/30 text-sm">Loading manifest…</div>
+              ) : manifestEntries.length === 0 ? (
+                <div className="flex items-center justify-center py-12 text-white/30 text-sm">Could not load manifest. Is the API server running?</div>
+              ) : (
+                <div className="space-y-2">
+                  {manifestEntries.map(entry => {
+                    const seedItem = seedItems.find(i => i.situationId === entry.situationId);
+                    const isGenerating = generatingSingle === entry.situationId || (seedRunning && seedItem && seedItem.status !== "pending");
+                    const statusLabel = seedItem
+                      ? seedItem.status === "done" ? "✓ Done" : seedItem.status === "error" ? "✗ Error" : seedItem.status
+                      : null;
+                    return (
+                      <div
+                        key={entry.situationId}
+                        className={`flex items-start gap-3 p-3 rounded-lg border transition ${
+                          entry.seeded && !seedItem
+                            ? "border-emerald-500/20 bg-emerald-900/10"
+                            : seedItem?.status === "done"
+                              ? "border-emerald-500/30 bg-emerald-900/15"
+                              : seedItem?.status === "error"
+                                ? "border-red-500/30 bg-red-900/15"
+                                : isGenerating
+                                  ? "border-violet-500/40 bg-violet-900/15"
+                                  : "border-white/8 bg-white/3 hover:border-white/15"
+                        }`}
+                      >
+                        {/* Status dot */}
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${
+                          seedItem?.status === "done" || (entry.seeded && !seedItem)
+                            ? "bg-emerald-500"
+                            : seedItem?.status === "error"
+                              ? "bg-red-500"
+                              : isGenerating
+                                ? "bg-violet-400 animate-pulse"
+                                : "bg-white/15"
+                        }`} />
+
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-medium text-white/80 leading-snug line-clamp-2 mb-1">
+                            {entry.label}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-white/40">
+                            <span>{entry.situationId}</span>
+                            <span>·</span>
+                            <span>{entry.pairing}</span>
+                            <span>·</span>
+                            <span>{entry.mood}</span>
+                            <span>·</span>
+                            <span>{entry.city}</span>
+                          </div>
+                          {seedItem?.title && (
+                            <div className="text-xs text-violet-300/70 mt-1 truncate">"{seedItem.title}"</div>
+                          )}
+                          {seedItem?.error && (
+                            <div className="text-xs text-red-400 mt-1 truncate">{seedItem.error}</div>
+                          )}
+                          {statusLabel && (
+                            <div className={`text-[10px] mt-1 font-medium ${
+                              statusLabel === "✓ Done" ? "text-emerald-400" :
+                              statusLabel === "✗ Error" ? "text-red-400" : "text-violet-400"
+                            }`}>
+                              {statusLabel}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Generate button */}
+                        {!seedRunning && (
+                          <button
+                            onClick={() => generateOneSituation(entry.situationId)}
+                            disabled={generatingSingle !== null}
+                            className={`flex-shrink-0 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition ${
+                              isGenerating
+                                ? "bg-violet-600 text-white animate-pulse"
+                                : entry.seeded
+                                  ? "bg-white/8 hover:bg-white/15 text-white/50 hover:text-white/80"
+                                  : "bg-violet-600 hover:bg-violet-500 text-white"
+                            } disabled:opacity-40`}
+                          >
+                            {isGenerating ? "…" : entry.seeded ? "Re-gen" : "Generate"}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+
           </div>
         ) : activeView === "audit" ? (
           <div className="flex-1 flex items-center justify-center">

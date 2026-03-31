@@ -13,6 +13,7 @@ import { getCachedSampleUrl, cacheSampleFromUrl } from "@/lib/voice-sample-cache
 import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
+import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -290,21 +291,7 @@ const ENDING_OPTIONS = [
   "He says the thing he's been holding back",
 ];
 
-const VOICES = [
-  { id: "RILOU7YmBhvwJGDGjNmP", name: "Jane",                 label: "Classic",    accent: "British",  desc: "Warm, composed narration. Emotionally precise and unhurried.", gender: "female" as const, recommended: true },
-  { id: "tQ4MEZFJOzsahSEEZtHK", name: "Ivanna",               label: "Close",      accent: "American", desc: "Softer, closer delivery. Like being whispered to.", gender: "female" as const },
-  { id: "FA6HhUjVbervLw2rNl8M", name: "Ophelia Rose",         label: "Unhurried",  accent: "British",  desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
-  { id: "AeRdCCKzvd23BpJoofzx", name: "Nathaniel",            label: "Low",        accent: "British",  desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
-  { id: "n1PvBOwxb8X6m7tahp2h", name: "Michael C. Vincent",   label: "Deep",       accent: "American", desc: "Rich, commanding voice. Immersive and dramatic.", gender: "male" as const },
-  { id: "jfIS2w2yJi0grJZPyEsk", name: "Oliver Silk",          label: "Heavy",      accent: "British",  desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
-];
-
-const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
-const MALE_VOICES = VOICES.filter(v => v.gender === "male");
-
 const SAMPLE_TEXT = "I've been waiting for you. There's something I need to tell you that I've kept locked away for far too long.";
-
-const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
 
 const SCENARIO_GROUPS = [
@@ -1147,10 +1134,19 @@ export default function Create() {
     // Always start with empty tags — users choose these fresh each session
     form.setValue("experienceTags", []);
 
+    // Voice was chosen inside the Casting Room (step 11) — apply it and skip
+    // the standalone voice step.  Fall back to the voice step only when no
+    // voiceId came through (e.g. AfterDark handoff that bypassed step 11).
+    if (casting.voiceId) {
+      form.setValue("voiceFeel", casting.voiceId, { shouldDirty: true });
+    }
+
     const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "My Cast";
     setPresetNameDraft(suggestedName);
 
-    setStep("voice");
+    // Go straight to the pre-generate form — voice is already set from casting.
+    // If somehow voiceId is missing, fall back to the standalone voice step.
+    setStep(casting.voiceId ? "form" : "voice");
   }, [form]);
 
   const handleVoiceSelect = useCallback((voiceId: string) => {

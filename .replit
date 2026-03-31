@@ -38,3 +38,4 @@ VITE_ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 
 [userenv.development]
 DISABLE_AUDIO = "true"
+ADMIN_SCRIPT_KEY = "ed73d1111aeed509c67ba534836326d160a7b054e21d67be6fac4bd554d7178e"

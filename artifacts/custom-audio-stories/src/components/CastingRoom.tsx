@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon } from "lucide-react";
+import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon, Check } from "lucide-react";
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
+import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS, DEFAULT_FEMALE_VOICE_ID, DEFAULT_MALE_VOICE_ID } from "../lib/voices";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your" | "their";
@@ -34,6 +35,8 @@ export interface CastingRoomResult {
   situation?: string;
   /** Machine-readable ID — used for API validation (e.g. "fc_01"). */
   situationId?: string;
+  /** ElevenLabs voice ID chosen by the user in the casting flow. */
+  voiceId?: string;
 }
 
 export interface CastingRoomHandoff {
@@ -755,6 +758,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   // Situation step state
   const [situationLabel, setSituationLabel] = useState<string>(initialHandoff?.situation ?? "");
   const [situationId, setSituationId] = useState<string>(initialHandoff?.situationId ?? "");
+
+  // Voice selection — step 11
+  const [voiceId, setVoiceId] = useState<string>(() => {
+    try {
+      return localStorage.getItem("preferred_voice_id") ?? DEFAULT_FEMALE_VOICE_ID;
+    } catch {
+      return DEFAULT_FEMALE_VOICE_ID;
+    }
+  });
   const [situationCategory, setSituationCategory] = useState<string>("");
 
   // Save casting state to localStorage whenever any field changes
@@ -788,7 +800,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
-  const TOTAL_STEPS = 11;
+  const TOTAL_STEPS = 12;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => {
@@ -872,7 +884,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       // Situation — the selected situation label (one of 200 predefined)
       situation: situationLabel || undefined,
       situationId: situationId || undefined,
+      // Voice selected in step 11 — persist to localStorage for next session
+      voiceId: voiceId || undefined,
     };
+    try { localStorage.setItem("preferred_voice_id", voiceId); } catch { /* ignore */ }
     onComplete(result);
   };
 
@@ -1939,6 +1954,63 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 )}
               </div>
             )}
+          </motion.div>
+        )}
+
+        {step === 11 && (
+          <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Whose voice?</h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Choose the voice that narrates your story.
+            </p>
+
+            {(() => {
+              const isMalePairing = VALID_MALE_PAIRINGS.includes(data.pairing ?? "");
+              const voicesToShow = isMalePairing ? MALE_VOICES : FEMALE_VOICES;
+              const renderVoiceCard = (voice: typeof VOICES[0]) => {
+                const isSelected = voiceId === voice.id;
+                return (
+                  <button
+                    key={voice.id}
+                    type="button"
+                    onClick={() => setVoiceId(voice.id)}
+                    className={`w-full p-4 rounded-2xl border-2 transition-all text-left ${
+                      isSelected
+                        ? "border-primary bg-primary/10"
+                        : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="font-semibold text-foreground">{voice.name}</span>
+                          {voice.recommended && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                              Recommended
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">{voice.label}</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/40 text-muted-foreground/70 font-medium">{voice.accent}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{voice.desc}</p>
+                      </div>
+                      {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
+                    </div>
+                  </button>
+                );
+              };
+              return (
+                <div className="space-y-3">
+                  {voicesToShow.map(renderVoiceCard)}
+                </div>
+              );
+            })()}
+
+            <p className="mt-4 text-xs text-muted-foreground/50 italic">
+              You can preview voices after your story is written.
+            </p>
           </motion.div>
         )}
 

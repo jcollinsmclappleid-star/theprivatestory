@@ -1376,7 +1376,7 @@ export default function AfterDark() {
           data: {
             mood: "Late Night",
             intensity: casting.intensity,
-            voiceFeel: "UK Voice",
+            voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
             storyLength: "10 min",
             // scenarioCard omitted — AfterDark scenarios are not in the 50-card set;
             // context is carried via experienceTags, dynamic, storyMode, and chemistry.

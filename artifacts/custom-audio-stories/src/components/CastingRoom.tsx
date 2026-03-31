@@ -892,6 +892,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     };
     try { localStorage.setItem("preferred_voice_id", voiceId); } catch { /* ignore */ }
     onComplete(result);
+    setStep(0);
   };
 
   const accentColor = afterDark ? "#c0392b" : "#c9a227";

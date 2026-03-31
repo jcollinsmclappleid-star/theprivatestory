@@ -713,13 +713,20 @@ export default function Create() {
       if (savedVoice) restoredFromLocal = applyVoicePreference(savedVoice);
     } catch { /* localStorage unavailable */ }
 
-    // 2. For authenticated users: also fetch server preference as fallback
-    //    (applies only if localStorage had no valid preference)
+    // 2. For authenticated users: fetch taste profile and apply top voice as fallback
+    //    (only if localStorage had no valid preference; uses taste directly, not quick-create-params
+    //    which may omit voiceFeel when taste signals are below eligibility threshold)
     if (isAuthenticated && !restoredFromLocal) {
-      fetch(`${API_BASE}/api/me/quick-create-params`, { credentials: "include" })
+      fetch(`${API_BASE}/api/me/taste`, { credentials: "include" })
         .then(r => r.ok ? r.json() : null)
-        .then((data: { voiceFeel?: string } | null) => {
-          if (data?.voiceFeel) applyVoicePreference(data.voiceFeel);
+        .then((data: { preferredVoiceFeel?: Record<string, number> } | null) => {
+          if (data?.preferredVoiceFeel) {
+            const entries = Object.entries(data.preferredVoiceFeel);
+            if (entries.length > 0) {
+              const topVoice = entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+              applyVoicePreference(topVoice);
+            }
+          }
         })
         .catch(() => {});
     }

@@ -1983,7 +1983,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="font-semibold text-foreground">{voice.name}</span>
+                          <span className="font-semibold text-foreground">{voice.label}</span>
                           {voice.recommended && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
                               Recommended

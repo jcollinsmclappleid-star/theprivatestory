@@ -1634,7 +1634,7 @@ export default function Create() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="font-semibold text-foreground">{voice.name}</p>
+                          <p className="font-semibold text-foreground">{voice.label}</p>
                           {voice.recommended && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
                               Recommended

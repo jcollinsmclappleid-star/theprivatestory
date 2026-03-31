@@ -2974,10 +2974,10 @@ export async function generateAudioFile(
   // Generate TTS for each chunk sequentially (ElevenLabs is stateful per voice session)
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
   if (!elevenLabsKey) throw new Error("ELEVENLABS_API_KEY is not set");
-  const buffers: Buffer[] = [];
-  for (const chunk of chunks) {
+
+  const callTTS = async (vid: string, chunk: string): Promise<Buffer> => {
     const res = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+      `https://api.elevenlabs.io/v1/text-to-speech/${vid}`,
       {
         method: "POST",
         headers: {
@@ -3001,7 +3001,24 @@ export async function generateAudioFile(
       const errText = await res.text();
       throw new Error(`ElevenLabs TTS error ${res.status}: ${errText}`);
     }
-    buffers.push(Buffer.from(await res.arrayBuffer()));
+    return Buffer.from(await res.arrayBuffer());
+  };
+
+  const buffers: Buffer[] = [];
+  let activeVoiceId = voiceId;
+  for (const chunk of chunks) {
+    try {
+      buffers.push(await callTTS(activeVoiceId, chunk));
+    } catch (err) {
+      // If the selected voice fails (e.g. invalid/unavailable), fall back to Jane for this
+      // chunk and all remaining chunks to keep the audio consistent
+      if (activeVoiceId !== DEFAULT_VOICE_ID) {
+        activeVoiceId = DEFAULT_VOICE_ID;
+        buffers.push(await callTTS(activeVoiceId, chunk));
+      } else {
+        throw err;
+      }
+    }
   }
 
   const audioDir = getPublicAudioDir();

@@ -697,17 +697,32 @@ export default function Create() {
     if (step !== "voice") return;
 
     // Restore saved voice preference, validating against current pairing
+    const applyVoicePreference = (voiceId: string) => {
+      if (!VOICES.find(v => v.id === voiceId)) return false;
+      const isMale = MALE_VOICES.some(v => v.id === voiceId);
+      const pairingAllowsMale = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
+      if (isMale && !pairingAllowsMale) return false;
+      form.setValue("voiceFeel", voiceId, { shouldDirty: false });
+      return true;
+    };
+
+    // 1. Try localStorage first (instant, works for guests too)
+    let restoredFromLocal = false;
     try {
       const savedVoice = localStorage.getItem("preferred_voice_id");
-      if (savedVoice && VOICES.find(v => v.id === savedVoice)) {
-        const isMale = MALE_VOICES.some(v => v.id === savedVoice);
-        const pairingAllowsMale = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
-        const valid = !isMale || pairingAllowsMale;
-        if (valid) {
-          form.setValue("voiceFeel", savedVoice, { shouldDirty: false });
-        }
-      }
+      if (savedVoice) restoredFromLocal = applyVoicePreference(savedVoice);
     } catch { /* localStorage unavailable */ }
+
+    // 2. For authenticated users: also fetch server preference as fallback
+    //    (applies only if localStorage had no valid preference)
+    if (isAuthenticated && !restoredFromLocal) {
+      fetch(`${API_BASE}/api/me/quick-create-params`, { credentials: "include" })
+        .then(r => r.ok ? r.json() : null)
+        .then((data: { voiceFeel?: string } | null) => {
+          if (data?.voiceFeel) applyVoicePreference(data.voiceFeel);
+        })
+        .catch(() => {});
+    }
 
     // Pre-fetch cached blob URLs so samples load instantly
     const loadVoiceSamples = async () => {

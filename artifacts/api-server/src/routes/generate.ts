@@ -1069,8 +1069,8 @@ export function getCacheKey(data: object): string {
 // ElevenLabs voice IDs — region × gender lookup
 // Users choose UK or US accent; narrator gender is always female except for Him & Him pairing.
 const VOICE_REGION_MAP: Record<string, { female: string; male: string }> = {
-  "UK Voice": { female: "rzqhWihPTONCEYxFZNud", male: "fbKe4UoW63w7sCOkXHON" },
-  "US Voice": { female: "GnBFl759Iuvi5mfB5b2x", male: "2ctpz3S8MMMauJLcVIpN" },
+  "UK Voice": { female: "29vD33N1CtxCmqQRPOHJ", male: "piTKgcLEGmPE4e6mEKli" },
+  "US Voice": { female: "21m00Tcm4TlvDq8ikWAM", male: "iP95p4xoKVk53GoZ742B" },
 };
 
 // Legacy voiceFeel values stored in DB before the UK/US redesign

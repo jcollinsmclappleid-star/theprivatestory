@@ -2865,12 +2865,17 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
   try {
     parsed = await attemptWrite();
   } catch (err) {
-    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[writeStory] Parse failed on attempt 1 — retrying");
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[writeStory] Parse failed on attempt 1/4 — retrying");
     try {
       parsed = await attemptWrite();
     } catch (retryErr) {
-      logger.error({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Parse retry also failed — giving up");
-      throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
+      logger.warn({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Parse failed on attempt 2/4 — retrying again");
+      try {
+        parsed = await attemptWrite();
+      } catch (retry2Err) {
+        logger.error({ err: retry2Err instanceof Error ? retry2Err.message : String(retry2Err) }, "[writeStory] Parse exhausted after 3 attempts — giving up");
+        throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
+      }
     }
   }
 
@@ -2889,15 +2894,13 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
       notes.push(`CRITICAL — WORD COUNT: Your story has only ~${words1} words. The TARGET is 1,440–1,760 words total (no more, no less). Each phase has a mandatory word range — write to this length exactly:\n  ESTABLISH = 280–320 words (count them — do not stop early)\n  SIMMER = 310–350 words (count them — do not stop early)\n  CRACK = 340–380 words (count them — do not stop early)\n  IGNITE = 380–420 words (count them — do not stop early)\n  RESONATE = 220–260 words\nDo NOT compress. Do NOT summarise. Write each phase fully to its minimum before moving to the next. Do NOT exceed the upper bound.`);
     }
     const retryNote = notes.join("\n\n");
-    logger.warn({ sceneCount: sceneCount1, wordCount: words1, target: TARGET_SCENES, minWords: MIN_WORDS }, "[writeStory] Structural validation failed — retrying with correction prompt");
+    logger.warn({ sceneCount: sceneCount1, wordCount: words1, target: TARGET_SCENES, minWords: MIN_WORDS }, "[writeStory] Structural validation failed (attempt 1/2) — retrying with correction prompt");
 
     try {
       const retried = await attemptWrite(retryNote);
       parsed = retried;
     } catch (retryErr) {
-      // Soft fallback: structural retry failed (parse or network error).
-      // Use the first valid parse result rather than crashing — QC will flag any remaining issues.
-      logger.warn({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Structural retry failed — using best-effort first result");
+      logger.warn({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Structural retry parse failed (attempt 2/2) — using best-effort first result");
     }
   }
 

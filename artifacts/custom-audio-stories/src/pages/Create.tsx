@@ -297,6 +297,8 @@ const VOICES = [
   { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy", desc: "Heavy, textured, intense voice.", gender: "male" as const },
 ];
 
+const SAMPLE_TEXT = "I've been waiting for you. There's something I need to tell you that I've kept locked away for far too long.";
+
 const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
 
@@ -1556,9 +1558,9 @@ export default function Create() {
                         : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
                     }`}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
                           <p className="font-semibold text-foreground">{voice.label}</p>
                           {voice.recommended && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
@@ -1566,9 +1568,18 @@ export default function Create() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">{voice.desc}</p>
+                        <p className="text-sm text-muted-foreground mb-3">{voice.desc}</p>
+                        <audio 
+                          controls 
+                          className="w-full h-7 accent-primary" 
+                          onClick={(e) => e.stopPropagation()}
+                          controlsList="nodownload"
+                        >
+                          <source src={`${import.meta.env.BASE_URL}voice-samples/${voice.id}.mp3`} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
                       </div>
-                      {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />}
+                      {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
                     </div>
                   </button>
                 );

@@ -105,6 +105,34 @@ async function checkOwnership(
 }
 
 // ---------------------------------------------------------------------------
+// GET /voice-samples/:voiceId — serve fixed voice samples (no auth required)
+// ---------------------------------------------------------------------------
+router.get("/voice-samples/:voiceId", (req: Request, res: Response) => {
+  const { voiceId } = req.params;
+  // Whitelist of valid voice IDs to prevent path traversal
+  const validVoiceIds = [
+    "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
+    "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
+    "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+    "AeRdCCKzvd23BpJoofzx", // Nathaniel (Low)
+    "n1PvBOwxb8X6m7tahp2h", // Michael C. Vincent (Deep)
+    "jfIS2w2yJi0grJZPyEsk", // Oliver Silk (Heavy)
+  ];
+
+  if (!validVoiceIds.includes(voiceId)) {
+    return res.status(400).json({ error: "Invalid voice ID" });
+  }
+
+  const filePath = path.join(publicDir, "voice-samples", `${voiceId}.mp3`);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: "Voice sample not found. Sample must be pre-generated." });
+  }
+
+  res.setHeader("Cache-Control", "public, max-age=2592000"); // 30 days
+  return res.sendFile(filePath);
+});
+
+// ---------------------------------------------------------------------------
 // GET /audio/:filename
 // ---------------------------------------------------------------------------
 router.get("/audio/:filename", async (req: Request, res: Response, next: NextFunction) => {

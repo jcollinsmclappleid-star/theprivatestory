@@ -1020,6 +1020,8 @@ export default function Create() {
     if (typeof p.timeOfDay === "string") setTimeOfDay(p.timeOfDay);
     if (typeof p.season === "string") setSeason(p.season);
     if (p.perspective === "your" || p.perspective === "her" || p.perspective === "his" || p.perspective === "their") setPerspective(p.perspective);
+    // Always clear tags — users choose these fresh each session
+    form.setValue("experienceTags", []);
     setFormPresetFlash(true);
     setTimeout(() => setFormPresetFlash(false), 1500);
   }, [formPreset, form]);
@@ -1098,7 +1100,6 @@ export default function Create() {
   }, [result, isGeneratingVariation, selectedVariation, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
   const handleCastingComplete = useCallback((casting: CastingRoomResult) => {
-    const allTags = [...(casting.customTags ?? [])];
 
     const castingSnapshot = {
       archetype: casting.archetype,
@@ -1143,7 +1144,8 @@ export default function Create() {
     form.setValue("intensity", casting.intensity);
     form.setValue("mood", casting.mood);
     form.setValue("storyMode", casting.storyMode);
-    form.setValue("experienceTags", allTags);
+    // Always start with empty tags — users choose these fresh each session
+    form.setValue("experienceTags", []);
 
     const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "My Cast";
     setPresetNameDraft(suggestedName);
@@ -1818,7 +1820,7 @@ export default function Create() {
           >
             <div>
               <button
-                onClick={() => setStep("casting")}
+                onClick={resetToFreshCasting}
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
               >
                 <ChevronLeft className="w-4 h-4" />

@@ -79,6 +79,10 @@ function buildContradictionPairs(p: PronounCtx): [string, string][] {
     ["No plot, no premise — just this",    "The story earns its ending"],
     ["No plot, no premise — just this",    "The obstacle makes the ending better"],
 
+    // Praise ↔ degradation opposites
+    [`${sub} wanted to be praised`,                     `${sub} wanted to be degraded`],
+    [`${sub} wanted to be told ${p.refl} was perfect`,  `${sub} wanted to be degraded`],
+
     // Power dynamic opposites
     ...powerPairs,
   ];
@@ -100,7 +104,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "How do you want to feel?",
       sub: "The emotional register of this story",
-      maxSelect: 4,
+      maxSelect: 5,
       tags: [
         "Desired", "Seen", "Powerful", "Chosen",
         "Adored", "Electric", "Wanted", "Known",
@@ -112,7 +116,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "What's between them?",
       sub: "The energy and tension at the heart of it",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         "Slow Build", "Instant Chemistry", "Forbidden", "Push & Pull",
         "A pull neither can explain", "Unfinished Business", "One night only", "Rivals to lovers",
@@ -121,7 +125,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "How do you want it written?",
       sub: "The texture and pacing of the writing",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         "Slow simmer", "Dialogue-rich", "Mostly sensation",
         "Lyrical", "Cinematic", "Sharp & direct",
@@ -130,7 +134,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "What makes this yours?",
       sub: "The personal detail that makes it unmistakable",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         "They remind me of someone",
         "It happens just once",
@@ -143,7 +147,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: `What does ${protagonistHeading} really want?`,
       sub: "The desire at the core of it",
-      maxSelect: 3,
+      maxSelect: 5,
       tags: [
         pSub(p, "She leads",                             "He leads",                              "They lead"),
         pSub(p, "She initiates",                         "He initiates",                          "They initiate"),
@@ -166,7 +170,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "Pure Romance",
       sub: "When tenderness is the whole story",
-      maxSelect: 3,
+      maxSelect: 5,
       tags: [
         "The tenderness is the whole thing",
         `${partnerS} treats ${p.obj} like the only thing in the room`,
@@ -181,7 +185,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "Praise & Devotion",
       sub: "When being wanted is its own kind of story",
-      maxSelect: 3,
+      maxSelect: 5,
       tags: [
         `${partnerS} can't stop looking at ${p.obj}`,
         `${p.sub} is all ${pSub(p, "she's", "he's", "they're")} thinking about — and ${pSub(p, "she", "he", "they")} knows it`,
@@ -196,7 +200,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "Story Arc & Plot",
       sub: "For stories with something more to say",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         "There's a complication first",
         "The obstacle makes the ending better",
@@ -216,7 +220,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Sensation & Restraint",
       sub: "The things you rarely say out loud",
-      maxSelect: 4,
+      maxSelect: 5,
       tags: [
         `${p.sub} wanted to be tied up`,
         `${p.sub} wanted to be blindfolded`,
@@ -235,7 +239,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Words & Praise",
       sub: "What you want said while it happens",
-      maxSelect: 3,
+      maxSelect: 5,
       tags: [
         `${p.sub} wanted to be praised`,
         `${p.sub} wanted to hear what ${p.sub} is`,
@@ -251,7 +255,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Surrender & Power",
       sub: "How deep the surrender goes",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         `${p.sub} wanted to be degraded`,
         `${p.sub} wanted to be spanked`,
@@ -264,7 +268,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Dark Fantasy",
       sub: "When the fantasy doesn't follow natural rules",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         `${p.sub} wanted something that wasn't entirely human`,
         `${p.sub} wanted the rules of this world suspended`,
@@ -275,7 +279,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Just the Scene",
       sub: "No buildup. Start in the middle of it.",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         "No backstory — start in the moment",
         "Skip the tension — we're already there",
@@ -288,7 +292,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "How does it end?",
       sub: "The final note of your story",
-      maxSelect: 2,
+      maxSelect: 5,
       tags: [
         `${p.sub} falls asleep in their arms`,
         "They don't leave until morning",
@@ -334,7 +338,7 @@ function buildSheOnlyAfterDarkCategories(): TagCategory[] {
     {
       heading: "Her Command",
       sub: "When she directs everything",
-      maxSelect: 4,
+      maxSelect: 5,
       tags: [
         "She asked for it and he obliged completely",
         "He does exactly what she says",

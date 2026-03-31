@@ -891,6 +891,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       voiceId: voiceId || undefined,
     };
     try { localStorage.setItem("preferred_voice_id", voiceId); } catch { /* ignore */ }
+    // Clear saved session so the room always opens at step 0 next time
+    try { localStorage.removeItem(CASTING_STORAGE_KEY); } catch { /* ignore */ }
+    try { sessionStorage.removeItem("afterDarkHandoff"); } catch { /* ignore */ }
     onComplete(result);
     setStep(0);
   };

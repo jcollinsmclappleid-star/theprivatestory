@@ -2424,6 +2424,10 @@ export default function Create() {
             <p className="text-xs text-muted-foreground mt-8 max-w-xs">
               Our AI is running a full cinematic pipeline — story planning, writing, visual generation, and narration.
             </p>
+            
+            <p className="text-xs text-muted-foreground/70 mt-4 max-w-xs">
+              ⏱ Typical wait time: 2–3 minutes
+            </p>
           </motion.div>
         )}
 

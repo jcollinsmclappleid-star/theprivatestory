@@ -1963,8 +1963,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {step === 11 && (
           <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Voice</h2>
-            <p className="text-muted-foreground text-sm mb-6">
+            <p className="text-muted-foreground text-sm mb-1">
               Choose who tells your story.
+            </p>
+            <p className="text-xs text-muted-foreground/50 mb-6">
+              You can change this anytime.
             </p>
 
             {(() => {
@@ -1982,9 +1985,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     onClick={() => setVoiceId(voice.id)}
                     className={`w-full p-4 rounded-2xl border-2 transition-all text-left ${
                       isSelected
-                        ? "border-primary bg-primary/10 shadow-[0_0_0_1px_rgba(201,162,39,0.15)]"
+                        ? "border-primary bg-primary/10 shadow-[0_0_24px_rgba(201,162,39,0.2)]"
                         : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
                     }`}
+                    style={isSelected ? { transitionDuration: "150ms", transitionTimingFunction: "ease" } : {}}
                   >
                     <div className="flex items-start gap-3 mb-3">
                       <VoiceAvatar voiceId={voice.id} />
@@ -2000,17 +2004,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           </div>
                           {isSelected && <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />}
                         </div>
-                        <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accent}</span>
+                        <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accentLabel || voice.accent}</span>
+                        {voice.presence && (
+                          <p className="text-xs text-muted-foreground/50 mt-0.5">{voice.presence}</p>
+                        )}
                       </div>
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-2 leading-relaxed pl-[60px]">{voice.desc}</p>
+                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed pl-[60px]">{voice.desc}</p>
 
                     {voice.bestFor && (
-                      <p className="text-[11px] text-muted-foreground/50 mb-3 pl-[60px]">
-                        <span className="text-muted-foreground/40 font-medium uppercase tracking-wide text-[10px] mr-1.5">Best for</span>
-                        {voice.bestFor}
-                      </p>
+                      <div className="mb-3 pl-[60px]">
+                        <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/40 mb-1">Best for</p>
+                        <p className="text-[11px] text-primary/70 font-medium">{voice.bestFor}</p>
+                      </div>
                     )}
 
                     <VoiceSamplePlayer

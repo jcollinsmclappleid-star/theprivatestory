@@ -3,7 +3,9 @@ export interface Voice {
   displayName?: string;
   label: string;
   accent: string;
+  accentLabel?: string;
   desc: string;
+  presence?: string;
   bestFor?: string;
   gender: "female" | "male";
   recommended?: boolean;
@@ -15,8 +17,10 @@ export const VOICES: Voice[] = [
     displayName: "Eleanor",
     label: "Classic",
     accent: "British",
-    desc: "Warm, composed narration. She takes her time. Every word lands exactly where it should.",
-    bestFor: "Emotional tension, first listen, slow burn",
+    accentLabel: "British · Refined",
+    desc: "Warm, composed narration. Unhurried, precise, and emotionally controlled. Every word lands exactly where it should.",
+    presence: "Feels composed, grounded, and emotionally steady.",
+    bestFor: "Emotional tension · First listen · Slow burn",
     gender: "female",
     recommended: true,
   },
@@ -25,8 +29,10 @@ export const VOICES: Voice[] = [
     displayName: "Maya",
     label: "Close",
     accent: "American",
-    desc: "Softer, more intimate delivery. Feels like she is speaking just for you.",
-    bestFor: "Late night, intimacy, closer delivery",
+    accentLabel: "American · Intimate",
+    desc: "Softer, closer delivery. Feels like she's speaking just for you — quiet, intimate, and immediate.",
+    presence: "Feels personal, warm, and quietly intense.",
+    bestFor: "Late night · Intimacy · Closer delivery",
     gender: "female",
   },
   {
@@ -34,8 +40,9 @@ export const VOICES: Voice[] = [
     displayName: "Isla",
     label: "Unhurried",
     accent: "British",
+    accentLabel: "British · Refined",
     desc: "Measured and soothing. Nothing rushed. Everything allowed to breathe.",
-    bestFor: "Bedtime, calm stories, softer romance",
+    bestFor: "Bedtime · Calm stories · Softer romance",
     gender: "female",
   },
   {

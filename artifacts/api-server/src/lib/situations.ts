@@ -9,6 +9,7 @@ export interface Situation {
   label: string;
   category: string;
   internalInject: string;
+  allowedPairings?: string[];
 }
 
 export const SITUATIONS: Situation[] = [
@@ -1232,6 +1233,113 @@ export const SITUATIONS: Situation[] = [
     category: "Professional & Crossing Lines",
     internalInject: "She used her authority to advance him to a level beside her own. The hierarchical barrier that made certain feelings manageable has dissolved by her own decision. Both are adjusting to what the dissolution means. The story is the first encounter as equals after the change.",
   },
+
+  // ── HER DESIRE ─────────────────────────────────────────────────────────────
+  {
+    id: "hd_01",
+    label: "He's been watching her all evening. She knows. She hasn't moved closer. She doesn't have to.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He has been watching her with the particular attention of someone who has made up his mind but hasn't said so. She is aware of it — she has been aware of it since he looked over the first time. She has not moved toward him, and she hasn't needed to. The whole evening is the tension of her knowing exactly what it means, and being unhurried about it.",
+  },
+  {
+    id: "hd_02",
+    label: "He noticed things she didn't know she'd let show. She didn't ask how. She was glad he had.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He has observed things about her that she didn't realise she had made visible — small preferences, small tells, the specific way she holds herself when she is trying not to feel what she is feeling. She didn't ask how he knew, because asking would have required explaining she was touched by it. She is glad he noticed. The story lives in the warmth of being seen accurately by someone who didn't broadcast it.",
+  },
+  {
+    id: "hd_03",
+    label: "She came home to find everything already done. He didn't mention it. He didn't need to.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She came back to find that something difficult had already been taken care of — entirely, correctly, without being asked. He said nothing about it. He didn't wait for credit or acknowledgement. The story lives in what it means to be cared for without being made to feel grateful — it was done because she needed it, full stop.",
+  },
+  {
+    id: "hd_04",
+    label: "He asked her what she wanted. He listened the whole way through. Then he went and did it.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He asked what she wanted — not as a courtesy, not as a preamble to redirecting the conversation toward what he preferred. He listened completely, without interjecting. Then he did exactly what she said. The story lives in how unusual it is to be asked something and have the person actually mean it — and what it does to her.",
+  },
+  {
+    id: "hd_05",
+    label: "She had the worst week of her year. He showed up with the right thing. She didn't know she'd needed it.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She has had an exceptionally difficult week and has said almost nothing about it. He appeared — not intrusively, not with questions she didn't want — but with the specific thing that was correct for this particular moment. She didn't know she had needed it until it was in front of her. The story lives in the collision of exhaustion, relief, and the dawning realisation that someone had been paying close attention.",
+  },
+  {
+    id: "hd_06",
+    label: "He tells her exactly what she does to him. Not as flattery. As fact. She believes him.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He tells her what she does to him with the flatness of stating something true rather than the performance of flattery. There is no embellishment, no hyperbole — only the specific and accurate account of what happens to him when she is near. She believes him. The story lives in being the object of a wanting that is precise, sincere, and not trying to impress her.",
+  },
+  {
+    id: "hd_07",
+    label: "She walked into the room and he stopped mid-sentence. He's still looking.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She walked in and he lost the thread of what he was saying — not from shyness but from attention. He stopped, he noticed her, and he is still looking. He has not tried to pretend he wasn't. The story lives in the experience of being seen, fully and unambiguously, by someone who is not embarrassed about it.",
+  },
+  {
+    id: "hd_08",
+    label: "He waits. Not impatiently. Not performing patience. He simply waits, and she knows what that means.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He waits for her with a quality of attention that is not restlessness held in check. He is not demonstrating patience. He is simply there, present, unhurried, with no apparent need for her to speed up or acknowledge him. She understands what that kind of waiting signals. The story lives in the particular wanting that comes from someone who would genuinely keep waiting.",
+  },
+  {
+    id: "hd_09",
+    label: "She is the thing he can't stop talking about. She found out from someone else. He doesn't know she knows.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She has learned, through a third party, that he talks about her — frequently, specifically, with an intensity that surprised the person he told. He does not know she knows this. She has said nothing. The story lives in the power of knowing she is the subject of a private devotion she was never supposed to be aware of.",
+  },
+  {
+    id: "hd_10",
+    label: "He's been rearranging things to make her comfortable. He hopes she hasn't noticed. She has.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "Without saying anything, he has been adjusting small things to suit her — the temperature, the seating, the arrangement of the evening. He appears to hope she won't notice, as though the act of care matters more than the credit for it. She has noticed everything. The story lives in the tenderness of being tended to by someone who isn't asking for recognition.",
+  },
+  {
+    id: "hd_11",
+    label: "She didn't ask for any of it. He gave it anyway. She is trying to work out what to do with someone like this.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She made no requests. She asked for nothing, indicated nothing. What she needed appeared anyway, quietly, correctly. She is now trying to understand what to do with someone whose attention is this accurate, this unasked-for, this reliable. The story lives in the particular disorientation of being genuinely cared for — and the pull toward someone who operates that way.",
+  },
+  {
+    id: "hd_12",
+    label: "He remembers everything. The small things. The things she said once, briefly, half-meaning it. He remembered.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He remembers things she said once, in passing, half as observation, half as preference — things she had no expectation of being retained. He references them now, naturally, as though they were obviously worth keeping. The story lives in the intimacy of being remembered accurately by someone who was listening more carefully than she realised.",
+  },
+  {
+    id: "hd_13",
+    label: "She is the version of herself she likes most when she's with him. She's only just realised this.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "She has noticed — only recently — that when she is with him, she is more herself than she usually is: easier, more honest, less performed. She hadn't been paying attention to it, and then suddenly she was. The story lives in the particular vulnerability of recognising that someone has made it safe to be exactly who you are, and what it does to her.",
+  },
+  {
+    id: "hd_14",
+    label: "He cancelled everything else. She found out through someone who saw. He still hasn't mentioned it.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He cleared his schedule for her — not as a declaration, not to be acknowledged, apparently not to be discussed. Someone who witnessed it told her. He has said nothing. The story lives in what it means to be made someone's priority by a person who didn't need her to know about it.",
+  },
+  {
+    id: "hd_15",
+    label: "She is, according to him, exactly what he was looking for before he knew he was looking.",
+    category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    internalInject: "He has said — to her, or to someone who told her — that she is the precise thing he was looking for before he knew he was looking for anything. He is not casting himself as the hero of his own realisation. He is simply naming what is true. The story lives in what it is to be named as someone's specific wanting — not as flattery, but as recognition.",
+  },
 ];
 
 export const SITUATION_CATEGORIES: string[] = [
@@ -1245,6 +1353,7 @@ export const SITUATION_CATEGORIES: string[] = [
   "Dark & Dangerous",
   "Slow Burn & Patience",
   "Professional & Crossing Lines",
+  "Her Desire",
 ];
 
 export const VALID_SITUATION_IDS: Set<string> = new Set(

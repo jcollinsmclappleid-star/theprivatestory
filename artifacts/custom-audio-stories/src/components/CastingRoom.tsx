@@ -1668,11 +1668,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                       <div className="border-t border-border/20 divide-y divide-border/10">
                         {situations.map(sit => {
                           const isSelected = situationId === sit.id;
+                          const isLocked = !!(sit.allowedPairings && data.pairing && !sit.allowedPairings.includes(data.pairing));
                           return (
                             <button
                               key={sit.id}
                               type="button"
+                              disabled={isLocked}
                               onClick={() => {
+                                if (isLocked) return;
                                 if (isSelected) {
                                   setSituationLabel("");
                                   setSituationId("");
@@ -1686,12 +1689,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                                 }
                               }}
                               className={`w-full text-left px-4 py-3 text-sm leading-snug transition-all ${
-                                isSelected
-                                  ? "bg-primary/10 text-primary font-medium"
-                                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                                isLocked
+                                  ? "opacity-35 cursor-not-allowed"
+                                  : isSelected
+                                    ? "bg-primary/10 text-primary font-medium"
+                                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
                               }`}
                             >
-                              {interpSit(sit)}
+                              <span className={isLocked ? "text-muted-foreground/50" : ""}>{interpSit(sit)}</span>
+                              {isLocked && (
+                                <span className="ml-2 text-[10px] font-medium text-primary/40 align-middle">Her stories only</span>
+                              )}
                             </button>
                           );
                         })}

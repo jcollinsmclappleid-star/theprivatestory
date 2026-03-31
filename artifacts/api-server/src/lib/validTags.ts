@@ -357,6 +357,29 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "The night is private and unhurried",
   "Warmth interrupted slowly",
   "He knows without asking",
+
+  // Her Lead standard tags (she/her protagonist only — buildSheOnlyStandardCategories)
+  "He gives her what she asks for",
+  "Her pleasure is the whole story",
+  "He would wait as long as she needed",
+  "She feels beautiful and powerful at once",
+  "He notices everything about her",
+  "She is the centre of everything in this room",
+
+  // Her Power room scenario preset tags
+  "She asked for it and he obliged completely",
+  "He does exactly what she says",
+  "She directed them both — they were there for exactly that",
+  "He watches because she wanted him to",
+  "She swings on her terms — her choice, her lead, her exit",
+  "Two men, both completely focused on her",
+  "She tells him what good behaviour earns — he earns it",
+  "He is on his knees — that is where she wants him and he wants to be",
+  "She told them the rules — they followed them",
+  "She is worshipped before anything else",
+  "She chooses who touches her",
+  "She decides when it ends",
+  "She leads and he follows",
 ];
 
 // ---------------------------------------------------------------------------

@@ -21,6 +21,7 @@ interface Scenario {
   accent: string;
   storyMode: string;
   tags: string[];
+  allowedPairings?: string[];
 }
 
 interface Room {
@@ -125,6 +126,12 @@ const ROOMS: Room[] = [
     name: "Novel Arc",
     sub: "Obstacles, complications, the twist before it finally breaks. A story with weight.",
     accent: "#0891b2",
+  },
+  {
+    id: "her_power",
+    name: "Her Power",
+    sub: "She leads. She chooses. He is there because she wants him to be — and he knows it.",
+    accent: "#e879a0",
   },
 ];
 
@@ -971,6 +978,104 @@ const SCENARIOS: Scenario[] = [
     storyMode: "forbidden",
     tags: ["Something between you that should be forbidden", "A line that keeps moving", "Complicated wanting"],
   },
+
+  /* Her Power ─── */
+  {
+    id: "her_devoted",
+    label: "Devoted",
+    sub: "She asked. He gave her everything — and then more than she asked for.",
+    room: "her_power",
+    darkness: "After Dark",
+    gradient: "from-[#1a0810] via-[#280015] to-[#100508]",
+    accent: "#e879a0",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["She asked for it and he obliged completely", "She is worshipped before anything else"],
+  },
+  {
+    id: "her_on_command",
+    label: "On Command",
+    sub: "She gives the instructions. He follows each one without hesitation. Both of them know exactly what they're doing.",
+    room: "her_power",
+    darkness: "After Dark",
+    gradient: "from-[#180810] via-[#260015] to-[#100810]",
+    accent: "#ec4899",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["He does exactly what she says", "She decides when it ends"],
+  },
+  {
+    id: "her_all_eyes",
+    label: "All Eyes On Her",
+    sub: "Two of them. Both for her. She directed everything, and neither of them minded at all.",
+    room: "her_power",
+    darkness: "Deep Night",
+    gradient: "from-[#1a0612] via-[#28081a] to-[#12040e]",
+    accent: "#f472b6",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["She directed them both — they were there for exactly that", "Two men, both completely focused on her"],
+  },
+  {
+    id: "her_chose_this",
+    label: "She Chose This",
+    sub: "He watches. That is his role tonight, because she decided it. It's the most attentive he's ever been.",
+    room: "her_power",
+    darkness: "After Dark",
+    gradient: "from-[#1a0810] via-[#240010] to-[#100508]",
+    accent: "#e879a0",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["He watches because she wanted him to", "She leads and he follows"],
+  },
+  {
+    id: "her_terms",
+    label: "Her Terms",
+    sub: "Her choice of who. Her choice of when. Her exit whenever she decides. No part of this evening belongs to anyone but her.",
+    room: "her_power",
+    darkness: "Deep Night",
+    gradient: "from-[#180a08] via-[#260e0c] to-[#100606]",
+    accent: "#fb7185",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["She swings on her terms — her choice, her lead, her exit", "She chooses who touches her"],
+  },
+  {
+    id: "her_kneeling",
+    label: "Kneeling",
+    sub: "He is on his knees. Not in surrender. In devotion. She has not asked him to move and he has no intention of it.",
+    room: "her_power",
+    darkness: "After Dark",
+    gradient: "from-[#1c0810] via-[#2a0e18] to-[#12060c]",
+    accent: "#e11d48",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["He is on his knees — that is where she wants him and he wants to be", "She is worshipped before anything else"],
+  },
+  {
+    id: "her_rules",
+    label: "Her Rules",
+    sub: "She told them what was and wasn't permitted. She told them what good behaviour looked like. They followed every instruction.",
+    room: "her_power",
+    darkness: "No Limits",
+    gradient: "from-[#1a0810] via-[#300015] to-[#110508]",
+    accent: "#be185d",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["She told them the rules — they followed them", "She tells him what good behaviour earns — he earns it"],
+  },
+  {
+    id: "her_first",
+    label: "Her First",
+    sub: "The rule, which she stated plainly and he agreed to, is that her pleasure comes first. This is a story about following that rule to the letter.",
+    room: "her_power",
+    darkness: "After Dark",
+    gradient: "from-[#160810] via-[#220015] to-[#0e0508]",
+    accent: "#db2777",
+    storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
+    tags: ["Her pleasure is the whole story", "He gives her what she asks for"],
+  },
 ];
 
 /* ── Loading phases ─────────────────────────────────────────────────── */
@@ -1006,22 +1111,27 @@ function DarknessBadge({ level }: { level: DarknessLevel }) {
 function ScenarioCard({
   scenario,
   selected,
+  locked,
   onClick,
 }: {
   scenario: Scenario;
   selected?: boolean;
+  locked?: boolean;
   onClick?: () => void;
 }) {
   return (
     <motion.button
       type="button"
-      onClick={onClick}
-      whileHover={{ scale: selected ? 1 : 1.02 }}
-      whileTap={{ scale: 0.97 }}
+      onClick={locked ? undefined : onClick}
+      disabled={locked}
+      whileHover={{ scale: (selected || locked) ? 1 : 1.02 }}
+      whileTap={{ scale: locked ? 1 : 0.97 }}
       animate={{ width: selected ? 300 : 255 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`relative overflow-hidden rounded-2xl border text-left flex-shrink-0 transition-colors ${
-        selected
+        locked
+          ? "border-white/6 opacity-40 cursor-not-allowed"
+          : selected
           ? "border-white/30 shadow-[0_0_24px_rgba(192,57,43,0.22)]"
           : "border-white/6 hover:border-white/16"
       }`}
@@ -1041,7 +1151,7 @@ function ScenarioCard({
           <p className="font-bold text-white text-sm leading-snug flex-1">
             {scenario.label}
           </p>
-          {selected && (
+          {selected && !locked && (
             <div className="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse flex-shrink-0 mt-1" />
           )}
         </div>
@@ -1070,8 +1180,16 @@ function ScenarioCard({
             </motion.p>
           )}
         </AnimatePresence>
-        <div className="mt-auto">
+        <div className="mt-auto flex items-center gap-2 flex-wrap">
           <DarknessBadge level={scenario.darkness} />
+          {scenario.allowedPairings && (
+            <span
+              className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded border"
+              style={{ color: scenario.accent, borderColor: `${scenario.accent}44`, background: `${scenario.accent}11` }}
+            >
+              Her stories
+            </span>
+          )}
         </div>
       </div>
     </motion.button>
@@ -1409,18 +1527,26 @@ export default function AfterDark() {
                     {/* Horizontal scroll row */}
                     <div className="overflow-x-auto pb-2 -mx-4 px-4 scrollbar-brand">
                       <div className="flex gap-3 w-max">
-                        {roomScenarios.map((scenario) => (
-                          <ScenarioCard
-                            key={scenario.id}
-                            scenario={scenario}
-                            selected={selectedScenario?.id === scenario.id}
-                            onClick={() =>
-                              setSelectedScenario(
-                                selectedScenario?.id === scenario.id ? null : scenario
-                              )
-                            }
-                          />
-                        ))}
+                        {roomScenarios.map((scenario) => {
+                          const isLockedByPairing = !!(
+                            scenario.allowedPairings &&
+                            castingHandoff?.pairing &&
+                            !scenario.allowedPairings.includes(castingHandoff.pairing)
+                          );
+                          return (
+                            <ScenarioCard
+                              key={scenario.id}
+                              scenario={scenario}
+                              selected={selectedScenario?.id === scenario.id}
+                              locked={isLockedByPairing}
+                              onClick={() =>
+                                setSelectedScenario(
+                                  selectedScenario?.id === scenario.id ? null : scenario
+                                )
+                              }
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

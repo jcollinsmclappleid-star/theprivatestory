@@ -31,6 +31,7 @@ export interface SituationDisplay {
   label: string;
   template: string;
   category: string;
+  allowedPairings?: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -703,6 +704,68 @@ export const SITUATIONS: SituationDisplay[] = [
   { id: "pl_20", category: "Professional Tension",
     label: "She promoted him. He's now her peer. Everything that wasn't possible before now is.",
     template: "{P} promoted {ao}. {A's} now {pp} peer. Everything that wasn't possible before now is." },
+
+  // ── HER DESIRE ──────────────────────────────────────────────────────────────
+  { id: "hd_01", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He's been watching her all evening. She knows. She hasn't moved closer. She doesn't have to.",
+    template: "{A's} been watching {po} all evening. {P} {p:knows/know}. {P} {p:hasn't/haven't} moved closer. {P} {p:doesn't/don't} have to." },
+  { id: "hd_02", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He noticed things she didn't know she'd let show. She didn't ask how. She was glad he had.",
+    template: "{A} noticed things {P} didn't know {P'd} let show. {P} didn't ask how. {P} {p:was/were} glad {a} had." },
+  { id: "hd_03", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She came home to find everything already done. He didn't mention it. He didn't need to.",
+    template: "{P} came home to find everything already done. {A} didn't mention it. {A} didn't need to." },
+  { id: "hd_04", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He asked her what she wanted. He listened the whole way through. Then he went and did it.",
+    template: "{A} asked {po} what {P} wanted. {A} listened the whole way through. Then {a} went and did it." },
+  { id: "hd_05", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She had the worst week of her year. He showed up with the right thing. She didn't know she'd needed it.",
+    template: "{P} had the worst week of {pp} year. {A} showed up with the right thing. {P} didn't know {P'd} needed it." },
+  { id: "hd_06", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He tells her exactly what she does to him. Not as flattery. As fact. She believes him.",
+    template: "{A} tells {po} exactly what {P} does to {ao}. Not as flattery. As fact. {P} {p:believes/believe} {ao}." },
+  { id: "hd_07", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She walked into the room and he stopped mid-sentence. He's still looking.",
+    template: "{P} walked into the room and {a} stopped mid-sentence. {A's} still looking." },
+  { id: "hd_08", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He waits. Not impatiently. Not performing patience. He simply waits, and she knows what that means.",
+    template: "{A} waits. Not impatiently. Not performing patience. {A} simply waits, and {P} {p:knows/know} what that means." },
+  { id: "hd_09", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She is the thing he can't stop talking about. She found out from someone else. He doesn't know she knows.",
+    template: "{P} is the thing {a} can't stop talking about. {P} found out from someone else. {A} doesn't know {P} {p:knows/know}." },
+  { id: "hd_10", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He's been rearranging things to make her comfortable. He hopes she hasn't noticed. She has.",
+    template: "{A's} been rearranging things to make {po} comfortable. {A} hopes {P} {p:hasn't/haven't} noticed. {P} {p:has/have}." },
+  { id: "hd_11", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She didn't ask for any of it. He gave it anyway. She is trying to work out what to do with someone like this.",
+    template: "{P} didn't ask for any of it. {A} gave it anyway. {P} is trying to work out what to do with someone like {ao}." },
+  { id: "hd_12", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He remembers everything. The small things. The things she said once, briefly, half-meaning it. He remembered.",
+    template: "{A} remembers everything. The small things. The things {P} said once, briefly, half-meaning it. {A} remembered." },
+  { id: "hd_13", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She is the version of herself she likes most when she's with him. She's only just realised this.",
+    template: "{P} is the version of {pr} {P} {p:likes/like} most when {P's} with {ao}. {P's} only just realised this." },
+  { id: "hd_14", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "He cancelled everything else. She found out through someone who saw. He still hasn't mentioned it.",
+    template: "{A} cancelled everything else. {P} found out through someone who saw. {A} still hasn't mentioned it." },
+  { id: "hd_15", category: "Her Desire",
+    allowedPairings: ["Her & Him", "Her & Her"],
+    label: "She is, according to him, exactly what he was looking for before he knew he was looking.",
+    template: "{P} is, according to {ao}, exactly what {a} was looking for before {a} knew {a} was looking." },
 ];
 
 export const SITUATION_CATEGORIES: string[] = [
@@ -716,6 +779,7 @@ export const SITUATION_CATEGORIES: string[] = [
   "High Stakes",
   "Slow Burn & Patience",
   "Professional Tension",
+  "Her Desire",
 ];
 
 export function getSituationsByCategory(category: string): SituationDisplay[] {

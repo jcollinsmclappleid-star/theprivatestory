@@ -32,7 +32,7 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-sm flex items-center justify-center p-4"
     >
       <motion.div
         initial={{ scale: 0.93, opacity: 0 }}
@@ -42,23 +42,23 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-4">The Private Story</p>
 
-        <h1 className="font-display text-3xl font-bold text-foreground mb-3">
-          Adults only
+        <h1 className="font-display text-2xl font-bold text-foreground mb-3">
+          Age confirmation
         </h1>
 
         <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-          This platform contains explicit adult content. You must be 18 or older to enter.
+          You must be 18 or older to use this service.
         </p>
 
         <button
           onClick={handleConfirm}
           className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all mb-3"
         >
-          I am 18 or older — enter
+          I'm 18 or older
         </button>
 
         <p className="text-xs text-muted-foreground/40">
-          By entering you confirm you are of legal age in your jurisdiction.
+          By continuing you confirm you are of legal age in your jurisdiction.
         </p>
       </motion.div>
     </motion.div>

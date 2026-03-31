@@ -3,8 +3,6 @@ import { openai } from "@workspace/integrations-openai-ai-server";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
 import { openrouter, MISTRAL_MODEL } from "../lib/openrouter.js";
 import { openaiDirect } from "../lib/openai-direct.js";
-// ElevenLabs TTS via Replit Connectors — handles auth/token refresh automatically
-import { ReplitConnectors } from "@replit/connectors-sdk";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
@@ -2948,15 +2946,19 @@ export async function generateAudioFile(
   if (current.length > 0) chunks.push(current.trim());
 
   // Generate TTS for each chunk sequentially (ElevenLabs is stateful per voice session)
-  const connectors = new ReplitConnectors();
+  const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
+  if (!elevenLabsKey) throw new Error("ELEVENLABS_API_KEY is not set");
   const buffers: Buffer[] = [];
   for (const chunk of chunks) {
-    const res = await connectors.proxy(
-      "elevenlabs",
-      `/v1/text-to-speech/${voiceId}`,
+    const res = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "audio/mpeg" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "audio/mpeg",
+          "xi-api-key": elevenLabsKey,
+        },
         body: JSON.stringify({
           text: chunk,
           model_id: "eleven_turbo_v2_5",

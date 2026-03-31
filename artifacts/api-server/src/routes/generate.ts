@@ -3207,6 +3207,12 @@ export async function generateAudioFile(
   cacheKey: string,
   pairing?: string
 ): Promise<string> {
+  // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
+  if (process.env.DISABLE_AUDIO === "true") {
+    console.info("[audio] DISABLE_AUDIO=true — skipping ElevenLabs TTS");
+    return "";
+  }
+
   const voiceId = resolveVoiceId(voiceFeel, pairing);
   // ElevenLabs max chars per request is 5,000 — use 4,500 to stay safe
   const TTS_CHAR_LIMIT = 4500;

@@ -809,11 +809,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     setData(d => {
       const next = { ...d, [key]: value };
       // When pairing changes, clear perspective if it's no longer valid
+      // and reset the step-8 role note so it reappears for the new pairing context
       if (key === "pairing") {
         const valid = getValidPerspectiveIds(value);
         if (d.perspective && !valid.includes(d.perspective)) {
           delete next.perspective;
         }
+        setStep8NoteDismissed(false);
       }
       return next;
     });

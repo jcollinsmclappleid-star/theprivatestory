@@ -548,6 +548,16 @@ interface ScenePlan {
   primary_touch_action: string;
   /** Physical arrangement of characters — must vary across scenes */
   staging_position: string;
+  /** Sentence-level prose texture — ESTABLISH=flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing; no two adjacent scenes share the same rhythm */
+  prose_rhythm: string;
+  /** How the scene's first sentence arrives — must differ from adjacent scenes */
+  scene_open_beat: string;
+  /** Depth of internal narration — ESTABLISH=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep */
+  interiority_depth: string;
+  /** Proportion of speech in this scene — ESTABLISH=minimal, CRACK=exchange, IGNITE=minimal/none */
+  dialogue_mode: string;
+  /** Which specific aspect of the partner the protagonist's attention narrows to — must vary across scenes */
+  partner_attention_focus: string;
 }
 
 export interface StoryBrief {
@@ -701,6 +711,63 @@ const SCENE_SENSORY_DIVERSITY = {
     "side by side — together but not facing; parallel, aligned, aware of each other obliquely",
     "face to face — directly opposite; holding eye contact; the social geometry of confrontation or choice",
     "intertwined — bodies fully in contact; no gap remaining; the question of closeness answered",
+  ],
+  /**
+   * Sentence-level prose texture for each scene.
+   * Arc guidance: ESTABLISH=flowing, SIMMER=baroque or flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing.
+   * No two adjacent scenes may share the same prose_rhythm.
+   */
+  prose_rhythms: [
+    "staccato — sentences of 3–8 words. Each one stops. The gap matters. Nothing is joined. Urgency through brevity.",
+    "flowing — long subordinate clauses gather momentum; the sentence doesn't release until the end; sense arrives late and fully",
+    "fragmented — incomplete thoughts. Ellipsis. The sentence starts and something stops it. No landing. The rhythm of interruption.",
+    "baroque — dense accumulated layers of sensory detail; multiple registers stacked in a single paragraph; the prose doesn't breathe until the very end",
+  ],
+  /**
+   * How each scene's opening sentence arrives.
+   * Arc guidance: ESTABLISH=environment or temporal_marker, SIMMER=sensory_anchor or internal_thought,
+   * CRACK=action or internal_thought, IGNITE=action or sensory_anchor, RESONATE=internal_thought.
+   * No two adjacent scenes may share the same scene_open_beat.
+   */
+  scene_open_beats: [
+    "sensory_anchor — the first sentence is a specific physical sensation or sensory detail; no preamble; the body before the mind",
+    "dialogue — opens with something spoken; the listener arrives already inside a verbal exchange",
+    "action — opens mid-movement; something is already happening; no approach, no setup, the listener is dropped in",
+    "internal_thought — opens inside the protagonist's head; desire, observation, or doubt before any external action",
+    "temporal_marker — a time signal reorients the listener before the scene begins (e.g. 'an hour later', 'the third time', 'still')",
+    "environment — the space itself opens the scene: light, room, air — before the people arrive in it",
+  ],
+  /**
+   * Depth of internal narration per scene.
+   * Arc guidance: ESTABLISH=shallow, SIMMER=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep.
+   */
+  interiority_depths: [
+    "external — pure action and dialogue; no internal monologue appears; the scene is observed from outside the protagonist's head",
+    "surface — the body reacts before the mind: physical responses narrated as they happen, no thought, sensation only",
+    "shallow — brief internal flickers: one or two sentences of thought appear, then the scene pulls back to action",
+    "deep — sustained internal monologue runs alongside action; the protagonist's inner life is as present as the outer scene",
+  ],
+  /**
+   * Proportion and mode of spoken dialogue per scene.
+   * Arc guidance: ESTABLISH=minimal, SIMMER=exchange or minimal, CRACK=exchange, IGNITE=minimal or none, RESONATE=minimal.
+   */
+  dialogue_modes: [
+    "none — no spoken words; the scene is entirely action, touch, narration, and internal",
+    "minimal — one or two lines only; words are scarce and loaded; their value comes from their rarity",
+    "exchange — back-and-forth; the spoken dynamic carries the scene; something shifts in what is said",
+    "sustained — dialogue is the primary vehicle; what is said matters as much as what is done; the conversation drives the scene",
+  ],
+  /**
+   * Which specific aspect of the partner the protagonist's awareness narrows to in each scene.
+   * Must vary across scenes; no two consecutive scenes share the same partner_attention_focus.
+   */
+  partner_attention_focuses: [
+    "voice_quality — something specific about how they speak: cadence, register, the sound of a particular word",
+    "body_detail — attention fixes on one precise physical detail: a hand, the line of a jaw, the particular way weight is held",
+    "gesture_or_movement — how they move through space: a gesture, the way they cross a room, how they reach for something",
+    "stillness — what they don't do: where they hold themselves, the quality of how they wait, the absence of movement",
+    "eyes — not just that they look, but the direction of it: what they fix on, what looking at the protagonist does to them",
+    "spatial_presence — how they occupy the room: how much space they take, the way their presence changes the atmosphere",
   ],
 };
 
@@ -1104,6 +1171,8 @@ interface QcSubScores {
   ending_strength: number;
   /** Present only when casting selections were supplied — verifies they are all honoured */
   casting_compliance?: number;
+  /** Always present — verifies that scene-level diversity assignments were honoured in the prose */
+  scene_diversity_compliance: number;
 }
 
 interface QcResult {
@@ -2257,6 +2326,11 @@ You must infer and return:
   • touch_register: physical contact level for this scene. Must follow the phase arc naturally (ESTABLISH = absent, SIMMER = incidental, CRACK = deliberate, IGNITE = intense, RESONATE = aftermath). Choose from: ${SCENE_SENSORY_DIVERSITY.touch_registers.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
   • primary_touch_action: the specific primary verb for physical contact in this scene. Must NEVER repeat across scenes within the same story. If touch_register is "absent", use "(none)". Choose from the appropriate register pool: incidental: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.incidental.join(", ")} | deliberate: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.deliberate.join(", ")} | intense: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.intense.join(", ")} | aftermath: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.aftermath.join(", ")}
   • staging_position: physical arrangement of characters in this scene. Must be DIFFERENT from adjacent scenes. Choose from: ${SCENE_SENSORY_DIVERSITY.staging_positions.map(s => `"${s.split(" — ")[0]}"`).join(" / ")}
+  • prose_rhythm: sentence-level texture for this scene. Arc guidance: ESTABLISH=flowing, SIMMER=baroque or flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing. No two adjacent scenes may share the same rhythm. Choose from: ${SCENE_SENSORY_DIVERSITY.prose_rhythms.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
+  • scene_open_beat: how the first sentence of this scene arrives. Arc guidance: ESTABLISH=environment or temporal_marker, SIMMER=sensory_anchor or internal_thought, CRACK=action or internal_thought, IGNITE=action or sensory_anchor, RESONATE=internal_thought. No two adjacent scenes may share the same open beat. Choose from: ${SCENE_SENSORY_DIVERSITY.scene_open_beats.map(b => `"${b.split(" — ")[0]}"`).join(" / ")}
+  • interiority_depth: depth of internal narration in this scene. Arc guidance: ESTABLISH=shallow, SIMMER=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep. Choose from: ${SCENE_SENSORY_DIVERSITY.interiority_depths.map(d => `"${d.split(" — ")[0]}"`).join(" / ")}
+  • dialogue_mode: proportion and mode of spoken dialogue in this scene. Arc guidance: ESTABLISH=minimal, SIMMER=exchange or minimal, CRACK=exchange, IGNITE=minimal or none, RESONATE=minimal. Choose from: ${SCENE_SENSORY_DIVERSITY.dialogue_modes.map(m => `"${m.split(" — ")[0]}"`).join(" / ")}
+  • partner_attention_focus: the specific aspect of the partner that the protagonist's awareness narrows to in this scene. Must vary across scenes; no two consecutive scenes share the same focus. Choose from: ${SCENE_SENSORY_DIVERSITY.partner_attention_focuses.map(f => `"${f.split(" — ")[0]}"`).join(" / ")}
 
 SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
   1. No two consecutive scenes share the same dominant_sense
@@ -2264,6 +2338,11 @@ SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
   3. Every primary_touch_action is unique — no verb appears twice across the entire scene_plan
   4. No two consecutive scenes share the same staging_position
   5. The combination of dominant_sense + staging_position creates a genuinely different experiential world for each scene
+  6. No two consecutive scenes share the same prose_rhythm
+  7. No two consecutive scenes share the same scene_open_beat
+  8. interiority_depth follows the arc (shallow early, deep at CRACK and RESONATE)
+  9. dialogue_mode follows the arc (exchange at CRACK, minimal or none at IGNITE)
+  10. No two consecutive scenes share the same partner_attention_focus
 
 ${castingAnchorsInstruction}
 - recurring_motif
@@ -2303,7 +2382,12 @@ Return JSON in exactly this shape:
       "dominant_sense": "sound",
       "touch_register": "absent",
       "primary_touch_action": "(none)",
-      "staging_position": "distance"${castingAnchorsExample}
+      "staging_position": "distance",
+      "prose_rhythm": "flowing",
+      "scene_open_beat": "environment",
+      "interiority_depth": "shallow",
+      "dialogue_mode": "minimal",
+      "partner_attention_focus": "spatial_presence"${castingAnchorsExample}
     },
     {
       "scene_number": 2,
@@ -2314,7 +2398,12 @@ Return JSON in exactly this shape:
       "dominant_sense": "sight",
       "touch_register": "incidental",
       "primary_touch_action": "graze",
-      "staging_position": "proximity"
+      "staging_position": "proximity",
+      "prose_rhythm": "baroque",
+      "scene_open_beat": "sensory_anchor",
+      "interiority_depth": "shallow",
+      "dialogue_mode": "exchange",
+      "partner_attention_focus": "body_detail"
     }
   ],
   "recurring_motif": "the feeling of almost saying too much",
@@ -2633,11 +2722,47 @@ You must honour ALL FOUR for every scene:
   • primary_touch_action: Use this SPECIFIC verb for the primary physical contact in this scene. Do not substitute a synonym. Do not use this verb in any other scene. It is reserved exclusively for this scene's primary contact moment.
   • staging_position: The spatial arrangement of the characters in this scene. Open and close the scene in this configuration. If a transition occurs, arrive at this position before the scene ends.
 
-DIVERSITY SELF-CHECK — before finalising your output, verify:
+NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
+  • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule.
+    - staccato: sentences of 3–8 words. Each one stops. The gap matters. Nothing joined. Urgency through brevity. WRONG: "She moved across the room, her breath catching as he watched her." RIGHT: "She moved. He watched. Nothing else."
+    - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
+    - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
+    - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage.
+  • scene_open_beat: The first sentence of this scene MUST arrive in this exact mode. Not the second sentence. The first.
+    - sensory_anchor: a specific physical sensation or sensory detail, no preamble, no context.
+    - dialogue: something is already being said when the scene opens.
+    - action: something is already happening; the listener is dropped mid-movement.
+    - internal_thought: inside the protagonist's head before anything external occurs.
+    - temporal_marker: a time signal reorients before the scene begins ("An hour later." / "Still." / "The third time.").
+    - environment: the space itself — light, air, room — before the people arrive in it.
+  • interiority_depth: This governs how much of the scene lives inside the protagonist's head.
+    - external: no internal monologue appears at all. Pure action and dialogue, observed from outside the mind.
+    - surface: body reacts before the mind. Physical responses only — sensation, not thought.
+    - shallow: one or two sentences of internal thought appear, then the scene pulls back to action.
+    - deep: the protagonist's thoughts run alongside action throughout; the inner life is as present as the outer.
+  • dialogue_mode: This governs the proportion and mode of spoken words in the scene.
+    - none: no spoken words whatsoever. The scene is entirely action, touch, narration, internal.
+    - minimal: one or two lines total. Words are rare and loaded.
+    - exchange: back-and-forth spoken dynamic; something shifts in what is said.
+    - sustained: dialogue is the primary vehicle; the conversation drives the scene.
+  • partner_attention_focus: The protagonist's awareness narrows to THIS specific aspect of the partner in this scene — not everything, not a general impression, this one thing.
+    - voice_quality: something specific about how they speak.
+    - body_detail: one precise physical detail fixed upon.
+    - gesture_or_movement: how they move through space.
+    - stillness: what they don't do; the quality of how they wait.
+    - eyes: the direction of the gaze, what looking at the protagonist does to them.
+    - spatial_presence: how they occupy the room, how they change its atmosphere.
+
+DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensions:
   1. Each scene's writing is genuinely grounded in its assigned dominant_sense
   2. No touch verb appears in more than one scene
   3. No two consecutive scenes feel like they inhabit the same physical world
   4. The progression of touch_register follows the arc — never escalates then retreats
+  5. Each scene's sentences are constructed according to its assigned prose_rhythm (not just its mood)
+  6. Each scene opens with its assigned scene_open_beat as the literal first sentence
+  7. The depth of internal narration in each scene matches its assigned interiority_depth
+  8. The proportion of spoken dialogue in each scene matches its assigned dialogue_mode
+  9. In each scene, the protagonist's attention narrows specifically to the assigned partner_attention_focus
 
 - Match the emotional arc exactly: ${brief.emotional_arc}
 - Pacing: ${brief.pacing_style}
@@ -2777,7 +2902,7 @@ Return only JSON — no explanation, no markdown.`;
   const hasCastingRequirements = castingLines.length > 0;
 
   const castingDimensionInstruction = hasCastingRequirements
-    ? `\n8. casting_compliance — every user casting selection listed in the CASTING BRIEF below is visibly and consistently present in the story. Score 10 if all are honoured fully. Deduct 2 points for each selection that is absent, softened to subtext only, or present only in the opening scene and then abandoned. Score 1-3 if the story largely ignores the casting brief.`
+    ? `\n9. casting_compliance — every user casting selection listed in the CASTING BRIEF below is visibly and consistently present in the story. Score 10 if all are honoured fully. Deduct 2 points for each selection that is absent, softened to subtext only, or present only in the opening scene and then abandoned. Score 1-3 if the story largely ignores the casting brief.`
     : "";
 
   const castingBriefBlock = hasCastingRequirements
@@ -2785,6 +2910,11 @@ Return only JSON — no explanation, no markdown.`;
     : "";
 
   const castingJsonExample = hasCastingRequirements ? `\n    "casting_compliance": 9,` : "";
+
+  // Build per-scene diversity assignment summary for QC
+  const sceneDiversityBlock = brief.scene_plan && brief.scene_plan.length > 0
+    ? `\nSCENE DIVERSITY ASSIGNMENTS — check whether the prose honoured each assignment:\n${brief.scene_plan.map((sp, i) => `Scene ${i + 1} (${sp.phase}): dominant_sense=${sp.dominant_sense} | touch_register=${sp.touch_register} | staging_position=${sp.staging_position} | prose_rhythm=${sp.prose_rhythm ?? "unspecified"} | scene_open_beat=${sp.scene_open_beat ?? "unspecified"} | interiority_depth=${sp.interiority_depth ?? "unspecified"} | dialogue_mode=${sp.dialogue_mode ?? "unspecified"} | partner_attention_focus=${sp.partner_attention_focus ?? "unspecified"}`).join("\n")}\n`
+    : "";
 
   const userPrompt = `Score this story on the following dimensions (1-10 each):
 
@@ -2795,7 +2925,8 @@ Return only JSON — no explanation, no markdown.`;
 5. originality — fresh and distinctive, not clichéd or formulaic
 6. sensory_detail — strong grounding sensory images present in each scene
 7. ending_strength — the ending lands emotionally and feels earned${castingDimensionInstruction}
-${castingBriefBlock}
+8. scene_diversity_compliance — the story honoured its per-scene structural diversity assignments. Score 10 if every scene clearly reflects its assigned dominant_sense (as the primary narration lens), prose_rhythm (as actual sentence construction), scene_open_beat (as the literal first sentence mode), interiority_depth (as the sustained depth of internal narration), dialogue_mode (as the proportion of spoken words), and partner_attention_focus (as the specific aspect of the partner the protagonist notices). Deduct 2 points for each scene where an assignment was clearly ignored or substituted. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.
+${castingBriefBlock}${sceneDiversityBlock}
 Story Brief Context:
 ${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type }, null, 2)}
 
@@ -2813,13 +2944,14 @@ Return JSON only:
     "scene_progression": 8,
     "originality": 7,
     "sensory_detail": 9,
-    "ending_strength": 8${castingJsonExample}
+    "ending_strength": 8,
+    "scene_diversity_compliance": 8${castingJsonExample}
   },
   "issues": ["list any specific problems here, or empty array if none"],
   "rewrite_strategy": null
 }
 
-rewrite_strategy must be one of: "rewrite_ending", "increase_specificity", "tighten_scene_flow", "increase_vulnerability", "rotate_dynamic_or_setting", or null.
+rewrite_strategy must be one of: "rewrite_ending", "increase_specificity", "tighten_scene_flow", "increase_vulnerability", "rotate_dynamic_or_setting", "enforce_scene_diversity", or null.
 Set it to the single most impactful fix needed, or null if the story passes.`;
 
   const completion = await openrouter.chat.completions.create({
@@ -2838,6 +2970,7 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   const subScores: QcSubScores = parsed.sub_scores ?? {
     emotional_depth: 0, specificity: 0, pacing: 0,
     scene_progression: 0, originality: 0, sensory_detail: 0, ending_strength: 0,
+    scene_diversity_compliance: 0,
   };
 
   // casting_compliance is only present when casting requirements were supplied.
@@ -2845,9 +2978,15 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   const castingComplianceScore: number | undefined =
     hasCastingRequirements ? ((parsed.sub_scores as Record<string, unknown>)?.casting_compliance as number ?? 0) : undefined;
 
+  // scene_diversity_compliance is always present — verifies all nine scene-level diversity
+  // dimensions were honoured in the prose. A score < 7 triggers a pass failure.
+  const sceneDiversityScore: number =
+    ((parsed.sub_scores as Record<string, unknown>)?.scene_diversity_compliance as number ?? subScores.scene_diversity_compliance ?? 0);
+
   const passed =
     scoreTotal >= 7.5 &&
     subScores.ending_strength >= 7 &&
+    sceneDiversityScore >= 7 &&
     (castingComplianceScore === undefined || castingComplianceScore >= 7);
 
   // Hard rules for targeted rewrite strategies — applied independently of pass status.
@@ -2858,6 +2997,8 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   let rewriteStrategy: string | null = null;
   if (subScores.ending_strength < 7) {
     rewriteStrategy = "rewrite_ending";
+  } else if (sceneDiversityScore < 7) {
+    rewriteStrategy = "enforce_scene_diversity";
   } else if (subScores.specificity < 7) {
     rewriteStrategy = "increase_specificity";
   } else if (subScores.originality < 6.5) {
@@ -2865,6 +3006,8 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   } else if (!passed) {
     rewriteStrategy = parsed.rewrite_strategy ?? "rewrite_ending";
   }
+
+  subScores.scene_diversity_compliance = sceneDiversityScore;
 
   if (castingComplianceScore !== undefined) {
     subScores.casting_compliance = castingComplianceScore;

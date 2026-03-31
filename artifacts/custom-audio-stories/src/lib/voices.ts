@@ -74,35 +74,3 @@ export function getDefaultVoiceId(pairing?: string): string {
   return DEFAULT_FEMALE_VOICE_ID;
 }
 
-export const VOICE_IDENTITY: Record<string, { gradient: string; ring: string; svgFill: string }> = {
-  "RILOU7YmBhvwJGDGjNmP": {
-    gradient: "from-amber-950 via-yellow-900/60 to-stone-950",
-    ring: "ring-amber-700/40",
-    svgFill: "#c9a227",
-  },
-  "tQ4MEZFJOzsahSEEZtHK": {
-    gradient: "from-rose-950 via-pink-900/50 to-stone-950",
-    ring: "ring-rose-700/40",
-    svgFill: "#d4768a",
-  },
-  "FA6HhUjVbervLw2rNl8M": {
-    gradient: "from-slate-900 via-blue-950/60 to-stone-950",
-    ring: "ring-slate-600/40",
-    svgFill: "#8ba7c7",
-  },
-  "AeRdCCKzvd23BpJoofzx": {
-    gradient: "from-stone-900 via-neutral-800/60 to-stone-950",
-    ring: "ring-stone-600/30",
-    svgFill: "#7a7068",
-  },
-  "n1PvBOwxb8X6m7tahp2h": {
-    gradient: "from-zinc-900 via-neutral-800/60 to-zinc-950",
-    ring: "ring-zinc-600/30",
-    svgFill: "#6b7280",
-  },
-  "jfIS2w2yJi0grJZPyEsk": {
-    gradient: "from-neutral-900 via-stone-800/60 to-neutral-950",
-    ring: "ring-neutral-600/30",
-    svgFill: "#78716c",
-  },
-};

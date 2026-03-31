@@ -983,25 +983,25 @@ const SCENARIOS: Scenario[] = [
   {
     id: "her_devoted",
     label: "Devoted",
-    sub: "She asked. He gave her everything — and then more than she asked for.",
+    sub: "She asked. They gave her everything — and then more than she asked for.",
     room: "her_power",
     darkness: "After Dark",
     gradient: "from-[#1a0810] via-[#280015] to-[#100508]",
     accent: "#e879a0",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["She asked for it and he obliged completely", "She is worshipped before anything else"],
   },
   {
     id: "her_on_command",
     label: "On Command",
-    sub: "She gives the instructions. He follows each one without hesitation. Both of them know exactly what they're doing.",
+    sub: "She gives the instructions. They follow each one without hesitation. Both of them know exactly what they're doing.",
     room: "her_power",
     darkness: "After Dark",
     gradient: "from-[#180810] via-[#260015] to-[#100810]",
     accent: "#ec4899",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["He does exactly what she says", "She decides when it ends"],
   },
   {
@@ -1013,19 +1013,19 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#1a0612] via-[#28081a] to-[#12040e]",
     accent: "#f472b6",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["She directed them both — they were there for exactly that", "Two men, both completely focused on her"],
   },
   {
     id: "her_chose_this",
     label: "She Chose This",
-    sub: "He watches. That is his role tonight, because she decided it. It's the most attentive he's ever been.",
+    sub: "They watch. That is their role tonight, because she decided it. It's the most attentive they've ever been.",
     room: "her_power",
     darkness: "After Dark",
     gradient: "from-[#1a0810] via-[#240010] to-[#100508]",
     accent: "#e879a0",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["He watches because she wanted him to", "She leads and he follows"],
   },
   {
@@ -1037,19 +1037,19 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#180a08] via-[#260e0c] to-[#100606]",
     accent: "#fb7185",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["She swings on her terms — her choice, her lead, her exit", "She chooses who touches her"],
   },
   {
     id: "her_kneeling",
     label: "Kneeling",
-    sub: "He is on his knees. Not in surrender. In devotion. She has not asked him to move and he has no intention of it.",
+    sub: "They are on their knees. Not in surrender. In devotion. She has not asked them to move and they have no intention of it.",
     room: "her_power",
     darkness: "After Dark",
     gradient: "from-[#1c0810] via-[#2a0e18] to-[#12060c]",
     accent: "#e11d48",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["He is on his knees — that is where she wants him and he wants to be", "She is worshipped before anything else"],
   },
   {
@@ -1061,19 +1061,19 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#1a0810] via-[#300015] to-[#110508]",
     accent: "#be185d",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["She told them the rules — they followed them", "She tells him what good behaviour earns — he earns it"],
   },
   {
     id: "her_first",
     label: "Her First",
-    sub: "The rule, which she stated plainly and he agreed to, is that her pleasure comes first. This is a story about following that rule to the letter.",
+    sub: "The rule, which she stated plainly and they agreed to, is that her pleasure comes first. This is a story about following that rule to the letter.",
     room: "her_power",
     darkness: "After Dark",
     gradient: "from-[#160810] via-[#220015] to-[#0e0508]",
     accent: "#db2777",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him"],
+    allowedPairings: ["Her & Him", "Her & Her"],
     tags: ["Her pleasure is the whole story", "He gives her what she asks for"],
   },
 ];
@@ -1187,7 +1187,7 @@ function ScenarioCard({
               className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded border"
               style={{ color: scenario.accent, borderColor: `${scenario.accent}44`, background: `${scenario.accent}11` }}
             >
-              Her stories
+              Her stories only
             </span>
           )}
         </div>

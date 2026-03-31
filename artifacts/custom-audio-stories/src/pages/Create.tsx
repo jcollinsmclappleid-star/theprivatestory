@@ -1681,6 +1681,13 @@ export default function Create() {
               <button
                 type="button"
                 onClick={() => {
+                  // Silently re-validate: if saved voice is male but pairing no longer allows it, reset to Jane
+                  const currentVoice = form.getValues("voiceFeel");
+                  const isMaleVoice = MALE_VOICES.some(v => v.id === currentVoice);
+                  if (isMaleVoice && !VALID_MALE_PAIRINGS.includes(castingPairing ?? "")) {
+                    form.setValue("voiceFeel", "RILOU7YmBhvwJGDGjNmP", { shouldDirty: false });
+                  }
+
                   if (isAuthenticated) {
                     setStep("preset-prompt");
                   } else {

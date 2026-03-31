@@ -1487,7 +1487,7 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Warm";
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel)
     ? raw.voiceFeel
-    : (LEGACY_VOICE_REGION[raw.voiceFeel] ?? "UK Voice");
+    : (LEGACY_VOICE_MAP[raw.voiceFeel] ?? DEFAULT_VOICE_ID);
   const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "10 min";
 
   // --- Scenario construction (no free text) ---

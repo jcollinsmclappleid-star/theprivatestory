@@ -153,6 +153,7 @@ export const storiesStore = {
 };
 
 function rowToStoredStory(row: typeof generatedStories.$inferSelect): StoredStory {
+  const qc = row.qc as Record<string, unknown> | null;
   return {
     id: row.id,
     ownerUserId: row.ownerUserId,
@@ -168,7 +169,10 @@ function rowToStoredStory(row: typeof generatedStories.$inferSelect): StoredStor
     variant_type: row.variantType,
     parent_story_id: row.parentStoryId,
     recommendation_tags: row.recommendationTags,
-    qc: row.qc,
+    qc,
+    // Convenience fields derived from the qc blob — no extra DB column needed.
+    qcScore: typeof qc?.score_total === "number" ? qc.score_total : null,
+    qcBreakdown: qc?.sub_scores ?? qc?.subscores ?? null,
     categoryId: row.categoryId,
     subthemeId: row.subthemeId,
     isLibraryStory: row.isLibraryStory,

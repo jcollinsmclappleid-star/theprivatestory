@@ -1027,6 +1027,7 @@ router.post("/seed-library", async (req, res) => {
   send("complete", {
     total,
     created,
+    done: created,   // alias used by admin UI
     skipped,
     failed,
     avgQcScore: overallAvg !== null ? Math.round(overallAvg * 10) / 10 : null,

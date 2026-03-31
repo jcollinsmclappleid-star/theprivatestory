@@ -347,7 +347,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       mood: mood || (casting.mood as string) || (s.mood as string) || "Emotional",
       intensity: (casting.intensity as string) || "Heated",
       voiceFeel: (casting.voiceFeel as string) || "UK Voice",
-      storyLength: (casting.storyLength as string) || "5 min",
+      storyLength: (casting.storyLength as string) || "10 min",
       scenarioPrompt: timeOfDay
         ? `Setting: ${timeOfDay}. The story continues from where we left off.`
         : "The story continues from where we left off.",

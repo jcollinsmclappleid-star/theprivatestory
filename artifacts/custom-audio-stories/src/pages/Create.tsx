@@ -293,11 +293,6 @@ const VOICE_OPTIONS = [
   { id: "US Voice", label: "US", desc: "Clear, assured, distinctly American. Confident and direct." },
 ];
 
-const LENGTH_OPTIONS = [
-  { id: "3 min",  label: "Short",    detail: "~8 minutes",  desc: "Quick and complete. One scene, fully realised." },
-  { id: "5 min",  label: "Standard", detail: "~15 minutes", desc: "A full story arc. Build, tension, resolution." },
-  { id: "10 min", label: "Extended", detail: "~25 minutes", desc: "Unhurried. Room to breathe, linger, and land." },
-];
 
 const SCENARIO_GROUPS = [
   {
@@ -737,7 +732,7 @@ export default function Create() {
       mood: "Emotional",
       intensity: "Tender",
       voiceFeel: "UK Voice",
-      storyLength: "5 min",
+      storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,
       emotionalFocus: false,
@@ -1229,7 +1224,7 @@ export default function Create() {
       mood: "Emotional",
       intensity: "Tender",
       voiceFeel: "UK Voice",
-      storyLength: "5 min",
+      storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,
       emotionalFocus: false,
@@ -2072,7 +2067,7 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* Voice, Length, Enhancements */}
+              {/* Voice & Enhancements */}
               <div className="glass-panel rounded-2xl p-6 space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Narrator Voice</label>
@@ -2093,31 +2088,6 @@ export default function Create() {
                         >
                           <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.label}</p>
                           <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.desc}</p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Length</label>
-                  <p className="text-xs text-muted-foreground mb-3">How long you'd like your story to be.</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {LENGTH_OPTIONS.map((l) => {
-                      const isSelected = form.watch("storyLength") === l.id;
-                      return (
-                        <button
-                          key={l.id}
-                          type="button"
-                          onClick={() => form.setValue("storyLength", l.id, { shouldDirty: true })}
-                          className={`text-left px-4 py-3 rounded-xl border transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/10"
-                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                          }`}
-                        >
-                          <p className={`text-sm font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>{l.label}</p>
-                          <p className={`text-xs font-medium mt-0.5 ${isSelected ? "text-primary/70" : "text-muted-foreground"}`}>{l.detail}</p>
-                          <p className="text-xs text-muted-foreground mt-1 leading-snug">{l.desc}</p>
                         </button>
                       );
                     })}

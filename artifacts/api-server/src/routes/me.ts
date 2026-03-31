@@ -620,7 +620,7 @@ router.get("/quick-create-params", async (req, res) => {
       mood,
       intensity,
       voiceFeel,
-      storyLength: "5 min",
+      storyLength: "10 min",
       scenarioPrompt: topDynamic
         ? `A story with the energy of: ${topDynamic}. Make it feel intimate and surprising.`
         : "An unexpected late-evening encounter that becomes emotionally charged.",

@@ -1098,7 +1098,7 @@ function resolveVoiceId(voiceFeel: string, pairing?: string): string {
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
 const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
 const VALID_VOICES = ["UK Voice", "US Voice"];
-const VALID_LENGTHS = ["3 min", "5 min", "10 min"];
+const VALID_LENGTHS = ["10 min"];
 
 // Archetype IDs from CastingRoom buildArchetypes() — sent as whoIsHe
 const VALID_WHO_IS_HE = [
@@ -1465,7 +1465,7 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel)
     ? raw.voiceFeel
     : (LEGACY_VOICE_REGION[raw.voiceFeel] ?? "UK Voice");
-  const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "5 min";
+  const storyLength = VALID_LENGTHS.includes(raw.storyLength) ? raw.storyLength : "10 min";
 
   // --- Scenario construction (no free text) ---
   // scenarioCard: one of the 50 predefined strings, or undefined if not in the set.
@@ -3979,7 +3979,7 @@ router.post("/generate-variation", async (req, res) => {
     scenes: originalScenes,
   };
   const mood = (original.mood as string) ?? "Emotional";
-  const duration = (original.duration as string) ?? "5 min";
+  const duration = (original.duration as string) ?? "10 min";
   const voiceFeel = "UK Voice";
 
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
@@ -4049,7 +4049,7 @@ router.post("/continue-story", async (req, res) => {
     scenes: originalScenes,
   };
   const mood = (original.mood as string) ?? "Emotional";
-  const duration = (original.duration as string) ?? "5 min";
+  const duration = (original.duration as string) ?? "10 min";
   const voiceFeel = "UK Voice";
 
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;

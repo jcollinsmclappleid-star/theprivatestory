@@ -291,12 +291,12 @@ const ENDING_OPTIONS = [
 ];
 
 const VOICES = [
-  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic",    accent: "British",  desc: "Warm, composed narration. Emotionally precise and unhurried.", gender: "female" as const, recommended: true },
-  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close",      accent: "American", desc: "Softer, closer delivery. Like being whispered to.", gender: "female" as const },
-  { id: "FA6HhUjVbervLw2rNl8M", label: "Unhurried",  accent: "British",  desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
-  { id: "AeRdCCKzvd23BpJoofzx", label: "Low",        accent: "British",  desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
-  { id: "n1PvBOwxb8X6m7tahp2h", label: "Deep",       accent: "American", desc: "Rich, commanding voice. Immersive and dramatic.", gender: "male" as const },
-  { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy",      accent: "British",  desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
+  { id: "RILOU7YmBhvwJGDGjNmP", name: "Jane",                 label: "Classic",    accent: "British",  desc: "Warm, composed narration. Emotionally precise and unhurried.", gender: "female" as const, recommended: true },
+  { id: "tQ4MEZFJOzsahSEEZtHK", name: "Ivanna",               label: "Close",      accent: "American", desc: "Softer, closer delivery. Like being whispered to.", gender: "female" as const },
+  { id: "FA6HhUjVbervLw2rNl8M", name: "Ophelia Rose",         label: "Unhurried",  accent: "British",  desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
+  { id: "AeRdCCKzvd23BpJoofzx", name: "Nathaniel",            label: "Low",        accent: "British",  desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
+  { id: "n1PvBOwxb8X6m7tahp2h", name: "Michael C. Vincent",   label: "Deep",       accent: "American", desc: "Rich, commanding voice. Immersive and dramatic.", gender: "male" as const },
+  { id: "jfIS2w2yJi0grJZPyEsk", name: "Oliver Silk",          label: "Heavy",      accent: "British",  desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
 ];
 
 const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
@@ -1483,7 +1483,7 @@ export default function Create() {
     if (watchedWhoIsHe) characterParts.push(watchedWhoIsHe.charAt(0).toLowerCase() + watchedWhoIsHe.slice(1));
     if (watchedDynamic) characterParts.push(watchedDynamic.charAt(0).toLowerCase() + watchedDynamic.slice(1));
     const characterLine = characterParts.length ? ` — ${characterParts.join(", ")}` : "";
-    const voiceLine = voiceOption ? ` · ${voiceOption.label} voice` : "";
+    const voiceLine = voiceOption ? ` · ${voiceOption.name} (${voiceOption.label})` : "";
     return `${intro}${contextLine}${characterLine}${voiceLine}.`;
   };
 
@@ -1635,16 +1635,21 @@ export default function Create() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <p className="font-semibold text-foreground">{voice.label}</p>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">
-                            {voice.accent}
-                          </span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-foreground">{voice.name}</p>
                           {voice.recommended && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
                               Recommended
                             </span>
                           )}
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">
+                            {voice.label}
+                          </span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/40 text-muted-foreground/70 font-medium">
+                            {voice.accent}
+                          </span>
                         </div>
                         <p className="text-sm text-muted-foreground mb-3">{voice.desc}</p>
                         <VoiceSamplePlayer
@@ -2290,8 +2295,8 @@ export default function Create() {
                               : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
                           }`}
                         >
-                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.label}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.desc}</p>
+                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.label} · {v.accent}</p>
                         </button>
                       );
                     })}

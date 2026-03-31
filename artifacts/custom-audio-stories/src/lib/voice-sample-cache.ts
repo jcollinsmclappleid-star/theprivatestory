@@ -35,7 +35,11 @@ function getDatabase(): Promise<IDBDatabase> {
   return dbPromise;
 }
 
-export async function getCachedSampleUrl(voiceId: string, basePath: string): Promise<string> {
+/**
+ * Returns a blob URL for the cached sample if available, or the provided
+ * fallback API URL if not yet cached.
+ */
+export async function getCachedSampleUrl(voiceId: string, fallbackUrl: string): Promise<string> {
   try {
     const db = await getDatabase();
     const transaction = db.transaction(STORE_NAME, "readonly");
@@ -47,20 +51,18 @@ export async function getCachedSampleUrl(voiceId: string, basePath: string): Pro
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
         if (request.result) {
-          // Return cached blob URL
+          // Return cached blob URL — no network request
           const blob = new Blob([request.result.data], { type: "audio/mpeg" });
-          const blobUrl = URL.createObjectURL(blob);
-          resolve(blobUrl);
+          resolve(URL.createObjectURL(blob));
         } else {
-          // Not cached, return API URL (will be fetched and cached on play)
-          resolve(`${basePath}voice-samples/${voiceId}.mp3`);
+          // Not yet cached — return API URL so player can stream it
+          resolve(fallbackUrl);
         }
       };
     });
   } catch (err) {
-    console.warn("Failed to check cache:", err);
-    // Fallback to API URL
-    return `${basePath}voice-samples/${voiceId}.mp3`;
+    console.warn("Voice sample cache unavailable:", err);
+    return fallbackUrl;
   }
 }
 

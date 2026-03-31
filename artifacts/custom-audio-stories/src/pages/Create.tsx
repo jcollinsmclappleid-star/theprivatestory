@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Loader } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,6 +10,7 @@ import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { getCachedSampleUrl, cacheSampleFromUrl } from "@/lib/voice-sample-cache";
+import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 
@@ -688,14 +689,15 @@ export default function Create() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
-  // Load voice samples when voice step is shown
+  // Load voice samples when voice step is shown — use cached blob URL if available
   useEffect(() => {
     if (step !== "voice") return;
 
     const loadVoiceSamples = async () => {
       const urls: Record<string, string> = {};
       for (const voice of VOICES) {
-        const cachedUrl = await getCachedSampleUrl(voice.id, API_BASE);
+        const apiUrl = `${API_BASE}/api/voice-samples/${voice.id}`;
+        const cachedUrl = await getCachedSampleUrl(voice.id, apiUrl);
         urls[voice.id] = cachedUrl;
       }
       setVoiceSampleUrls(urls);
@@ -1588,41 +1590,28 @@ export default function Create() {
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground mb-3">{voice.desc}</p>
-                        <div className="relative">
-                          <audio 
-                            controls 
-                            className="w-full h-7 accent-primary" 
-                            onClick={(e) => e.stopPropagation()}
-                            controlsList="nodownload"
-                            onPlay={async () => {
-                              if (!loadingVoiceSamples.has(voice.id)) {
-                                setLoadingVoiceSamples(prev => new Set([...prev, voice.id]));
-                                try {
-                                  await cacheSampleFromUrl(
-                                    voice.id,
-                                    `${API_BASE}/voice-samples/${voice.id}.mp3`
-                                  );
-                                } catch (err) {
-                                  console.error(`Failed to cache sample for ${voice.id}:`, err);
-                                } finally {
-                                  setLoadingVoiceSamples(prev => {
-                                    const next = new Set(prev);
-                                    next.delete(voice.id);
-                                    return next;
-                                  });
-                                }
+                        <VoiceSamplePlayer
+                          src={voiceSampleUrls[voice.id] || `${API_BASE}/api/voice-samples/${voice.id}`}
+                          onPlayStart={async () => {
+                            if (!loadingVoiceSamples.has(voice.id)) {
+                              setLoadingVoiceSamples(prev => new Set([...prev, voice.id]));
+                              const apiUrl = `${API_BASE}/api/voice-samples/${voice.id}`;
+                              try {
+                                await cacheSampleFromUrl(voice.id, apiUrl);
+                                const cachedUrl = await getCachedSampleUrl(voice.id, apiUrl);
+                                setVoiceSampleUrls(prev => ({ ...prev, [voice.id]: cachedUrl }));
+                              } catch (err) {
+                                console.warn(`Failed to cache sample ${voice.id}:`, err);
+                              } finally {
+                                setLoadingVoiceSamples(prev => {
+                                  const next = new Set(prev);
+                                  next.delete(voice.id);
+                                  return next;
+                                });
                               }
-                            }}
-                          >
-                            <source src={voiceSampleUrls[voice.id] || `${API_BASE}/voice-samples/${voice.id}.mp3`} type="audio/mpeg" />
-                            Your browser does not support the audio element.
-                          </audio>
-                          {loadingVoiceSamples.has(voice.id) && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-background/40 rounded pointer-events-none">
-                              <Loader className="w-4 h-4 text-primary animate-spin" />
-                            </div>
-                          )}
-                        </div>
+                            }
+                          }}
+                        />
                       </div>
                       {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-1" />}
                     </div>

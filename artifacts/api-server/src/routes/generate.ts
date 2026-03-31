@@ -2911,9 +2911,9 @@ Return only JSON — no explanation, no markdown.`;
 
   const castingJsonExample = hasCastingRequirements ? `\n    "casting_compliance": 9,` : "";
 
-  // Build per-scene diversity assignment summary for QC
+  // Build per-scene diversity assignment summary for QC — all nine dimensions
   const sceneDiversityBlock = brief.scene_plan && brief.scene_plan.length > 0
-    ? `\nSCENE DIVERSITY ASSIGNMENTS — check whether the prose honoured each assignment:\n${brief.scene_plan.map((sp, i) => `Scene ${i + 1} (${sp.phase}): dominant_sense=${sp.dominant_sense} | touch_register=${sp.touch_register} | staging_position=${sp.staging_position} | prose_rhythm=${sp.prose_rhythm ?? "unspecified"} | scene_open_beat=${sp.scene_open_beat ?? "unspecified"} | interiority_depth=${sp.interiority_depth ?? "unspecified"} | dialogue_mode=${sp.dialogue_mode ?? "unspecified"} | partner_attention_focus=${sp.partner_attention_focus ?? "unspecified"}`).join("\n")}\n`
+    ? `\nSCENE DIVERSITY ASSIGNMENTS — check whether the prose honoured each of the nine assignments per scene:\n${brief.scene_plan.map((sp, i) => `Scene ${i + 1} (${sp.phase}): dominant_sense=${sp.dominant_sense} | touch_register=${sp.touch_register} | primary_touch_action=${sp.primary_touch_action} | staging_position=${sp.staging_position} | prose_rhythm=${sp.prose_rhythm ?? "unspecified"} | scene_open_beat=${sp.scene_open_beat ?? "unspecified"} | interiority_depth=${sp.interiority_depth ?? "unspecified"} | dialogue_mode=${sp.dialogue_mode ?? "unspecified"} | partner_attention_focus=${sp.partner_attention_focus ?? "unspecified"}`).join("\n")}\n`
     : "";
 
   const userPrompt = `Score this story on the following dimensions (1-10 each):
@@ -2925,7 +2925,7 @@ Return only JSON — no explanation, no markdown.`;
 5. originality — fresh and distinctive, not clichéd or formulaic
 6. sensory_detail — strong grounding sensory images present in each scene
 7. ending_strength — the ending lands emotionally and feels earned${castingDimensionInstruction}
-8. scene_diversity_compliance — the story honoured its per-scene structural diversity assignments. Score 10 if every scene clearly reflects its assigned dominant_sense (as the primary narration lens), prose_rhythm (as actual sentence construction), scene_open_beat (as the literal first sentence mode), interiority_depth (as the sustained depth of internal narration), dialogue_mode (as the proportion of spoken words), and partner_attention_focus (as the specific aspect of the partner the protagonist notices). Deduct 2 points for each scene where an assignment was clearly ignored or substituted. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.
+8. scene_diversity_compliance — the story honoured all nine per-scene structural diversity assignments shown in SCENE DIVERSITY ASSIGNMENTS below. Score 10 if every scene clearly reflects: (1) dominant_sense as the primary narration lens; (2) touch_register — contact level not exceeded and not held back; (3) primary_touch_action — the assigned verb used exclusively in that scene; (4) staging_position — the characters in the assigned spatial arrangement; (5) prose_rhythm — sentences actually constructed in the assigned texture (staccato = short clipped sentences; flowing = long clauses; fragmented = ellipsis and interruption; baroque = dense stacked description); (6) scene_open_beat — the literal first sentence of the scene arriving in the assigned mode; (7) interiority_depth — the depth of internal narration matching the assignment; (8) dialogue_mode — the proportion of spoken words matching the assignment; (9) partner_attention_focus — the protagonist's awareness specifically narrowing to that aspect of the partner. Deduct 2 points for each scene where an assignment was clearly ignored or substituted. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.
 ${castingBriefBlock}${sceneDiversityBlock}
 Story Brief Context:
 ${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type }, null, 2)}
@@ -3034,6 +3034,8 @@ export async function rewriteStory(brief: StoryBrief, story: WrittenStory, strat
       "Add at least one moment of emotional vulnerability to the weakest scene. Do not change the plot or setting. Make one character reveal more emotional truth.",
     rotate_dynamic_or_setting:
       "Introduce a fresh angle on the relationship dynamic or shift one element of the setting slightly to add originality. Preserve the core emotional arc entirely.",
+    enforce_scene_diversity:
+      "Rewrite each scene to honour its per-scene diversity assignments from the brief. For each scene: (1) reconstruct sentences in the assigned prose_rhythm (staccato = 3–8 word sentences; flowing = long clauses; fragmented = incomplete thoughts with ellipsis; baroque = dense accumulated layers); (2) rewrite the first sentence to match the assigned scene_open_beat exactly; (3) adjust the depth of internal narration to match interiority_depth (external = no internal monologue; surface = body-only; shallow = one or two thought-flickers; deep = sustained inner monologue); (4) adjust spoken dialogue to match dialogue_mode (none = remove all speech; minimal = at most two lines; exchange = back-and-forth; sustained = dialogue-driven); (5) narrow the protagonist's attention to the partner's assigned partner_attention_focus in that scene. Do not change the plot, setting, or emotional arc — only the prose texture and interiority level.",
   };
 
   const instruction = strategyInstructions[strategy] ?? strategyInstructions.rewrite_ending;

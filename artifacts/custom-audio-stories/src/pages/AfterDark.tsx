@@ -1310,6 +1310,18 @@ export default function AfterDark() {
 
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
+      // Guard: if the selected scenario requires specific pairings and the
+      // chosen pairing doesn't qualify, send the user back to scenario selection.
+      if (
+        selectedScenario?.allowedPairings &&
+        casting.pairing &&
+        !selectedScenario.allowedPairings.includes(casting.pairing)
+      ) {
+        setSelectedScenario(null);
+        setPhase("scenario");
+        return;
+      }
+
       const storyMode = selectedScenario?.storyMode ?? "unrestrained";
 
       const castingSnapshot = {

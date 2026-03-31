@@ -1561,7 +1561,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <button
                       type="button"
                       onClick={() => {
-                        const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
+                        const eligible = SITUATIONS.filter(s => !s.allowedPairings || s.allowedPairings.includes(data.pairing ?? ""));
+                        const pool = eligible.length > 0 ? eligible : SITUATIONS.filter(s => !s.allowedPairings);
+                        const pick = pool[Math.floor(Math.random() * pool.length)];
                         setSituationLabel(pick.label);
                         setSituationId(pick.id);
                         setSituationCategory(pick.category);
@@ -1605,7 +1607,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   <button
                     type="button"
                     onClick={() => {
-                      const pick = SITUATIONS[Math.floor(Math.random() * SITUATIONS.length)];
+                      const eligible = SITUATIONS.filter(s => !s.allowedPairings || s.allowedPairings.includes(data.pairing ?? ""));
+                      const pool = eligible.length > 0 ? eligible : SITUATIONS.filter(s => !s.allowedPairings);
+                      const pick = pool[Math.floor(Math.random() * pool.length)];
                       setSituationLabel(pick.label);
                       setSituationId(pick.id);
                       setSituationCategory(pick.category);

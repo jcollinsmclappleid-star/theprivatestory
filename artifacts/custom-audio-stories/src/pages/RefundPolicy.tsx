@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { DollarSign, AlertTriangle, CheckCircle, HelpCircle, Download, Mail } from "lucide-react";
+import { DollarSign, AlertTriangle, CheckCircle, HelpCircle, Mail } from "lucide-react";
 
 export default function RefundPolicy() {
   return (
@@ -18,7 +18,7 @@ export default function RefundPolicy() {
           Refund Policy
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2025
+          <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2026
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
           The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
@@ -26,25 +26,6 @@ export default function RefundPolicy() {
         </p>
       </div>
 
-      <div className="glass-panel rounded-2xl p-6 border-primary/20 bg-primary/5 mb-12">
-        <div className="flex items-start gap-3">
-          <Download className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-foreground mb-2">Full Refund Policy Document</p>
-            <p className="text-xs text-muted-foreground mb-3">
-              For a complete and detailed version of this policy, please download our full Refund Policy document (PDF).
-            </p>
-            <a 
-              href="/documents/refund-policy.pdf" 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
-              download
-            >
-              <Download className="w-4 h-4" />
-              Download Full Document
-            </a>
-          </div>
-        </div>
-      </div>
 
       <div className="space-y-10">
 

@@ -115,9 +115,10 @@ export function FloatingPlayer() {
 
             <Link href={`/story/${currentStory.id}`} className="flex items-center flex-1 min-w-0 cursor-pointer">
               <img
-                src={currentStory.coverImage}
+                src={currentStory.coverImage || "/images/logo.png"}
                 alt={currentStory.title}
                 className="w-12 h-12 rounded-full object-cover shadow-md shrink-0"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/logo.png"; }}
               />
               <div className="ml-3 truncate">
                 <p className="text-sm font-semibold text-foreground truncate">{currentStory.title}</p>

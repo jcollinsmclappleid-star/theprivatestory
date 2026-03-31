@@ -1,25 +1,17 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = parseInt(process.env.SMTP_PORT ?? "587", 10);
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASS = process.env.SMTP_PASS;
-const SMTP_FROM = process.env.SMTP_FROM ?? "noreply@theprivatestory.com";
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const FROM_ADDRESS = process.env.SMTP_FROM ?? "noreply@theprivatestory.com";
 
 export const SAFETY_EMAIL = process.env.SAFETY_EMAIL ?? "safety@theprivatestory.com";
 
-let transporter: nodemailer.Transporter | null = null;
+let client: Resend | null = null;
 
-function getTransporter(): nodemailer.Transporter | null {
-  if (transporter) return transporter;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
-  transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
-  return transporter;
+function getClient(): Resend | null {
+  if (client) return client;
+  if (!RESEND_API_KEY) return null;
+  client = new Resend(RESEND_API_KEY);
+  return client;
 }
 
 export interface EmailPayload {
@@ -30,25 +22,29 @@ export interface EmailPayload {
 }
 
 /**
- * Sends an email if SMTP is configured; otherwise logs to console.
+ * Sends an email via Resend if RESEND_API_KEY is configured; otherwise logs to console.
  * Never throws — failures are caught and logged.
  */
 export async function sendEmail(payload: EmailPayload): Promise<boolean> {
-  const t = getTransporter();
-  if (!t) {
+  const resend = getClient();
+  if (!resend) {
     console.log(
-      `[email] SMTP not configured — would have sent to ${payload.to}: ${payload.subject}\n${payload.text}`,
+      `[email] RESEND_API_KEY not configured — would have sent to ${payload.to}: ${payload.subject}\n${payload.text}`,
     );
     return false;
   }
   try {
-    await t.sendMail({
-      from: SMTP_FROM,
-      to: payload.to,
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: [payload.to],
       subject: payload.subject,
       text: payload.text,
       html: payload.html,
     });
+    if (error) {
+      console.error(`[email] Resend error sending to ${payload.to}:`, error);
+      return false;
+    }
     return true;
   } catch (err) {
     console.error(`[email] Failed to send to ${payload.to}:`, err);

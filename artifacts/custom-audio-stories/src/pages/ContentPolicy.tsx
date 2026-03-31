@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { CheckCircle, XCircle, AlertTriangle, MessageSquare, Download } from "lucide-react";
+import { CheckCircle, XCircle, AlertTriangle, MessageSquare } from "lucide-react";
 
 export default function ContentPolicy() {
   return (
@@ -18,32 +18,13 @@ export default function ContentPolicy() {
           Content Policy
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2025
+          <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2026
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
           The Private Story is a private, personalised audio storytelling service for adults. This policy defines what content is allowed and how we enforce these boundaries.
         </p>
       </div>
 
-      <div className="glass-panel rounded-2xl p-6 border-primary/20 bg-primary/5 mb-12">
-        <div className="flex items-start gap-3">
-          <Download className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-foreground mb-2">Full Content Policy Document</p>
-            <p className="text-xs text-muted-foreground mb-3">
-              For a complete and detailed version of this policy, please download our full Content Policy document (PDF).
-            </p>
-            <a 
-              href="/documents/content-policy.pdf" 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
-              download
-            >
-              <Download className="w-4 h-4" />
-              Download Full Document
-            </a>
-          </div>
-        </div>
-      </div>
 
       <div className="space-y-10">
 

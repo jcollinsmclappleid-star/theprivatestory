@@ -3533,6 +3533,12 @@ export async function generateAudioFile(
     );
     if (!res.ok) {
       const errText = await res.text();
+      if (res.status === 429) {
+        throw new Error("Audio narration is temporarily unavailable due to high demand. Please try again in a few minutes.");
+      }
+      if (res.status === 401 || res.status === 403) {
+        throw new Error("Audio narration service authentication failed. Please contact support@theprivatestory.com.");
+      }
       throw new Error(`ElevenLabs TTS error ${res.status}: ${errText}`);
     }
     return Buffer.from(await res.arrayBuffer());

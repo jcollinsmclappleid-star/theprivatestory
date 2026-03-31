@@ -678,7 +678,7 @@ export default function Admin() {
   // ── Access guard ───────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
         <div className="text-white/60 text-sm">Loading…</div>
       </div>
     );
@@ -686,7 +686,7 @@ export default function Admin() {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
         <div className="text-white/60 text-sm">Sign in to access admin.</div>
       </div>
     );
@@ -694,7 +694,7 @@ export default function Admin() {
 
   if (accessDenied) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] gap-3">
         <div className="text-white/80 text-sm font-medium">Access denied.</div>
         <div className="text-white/40 text-xs">This page is for admin accounts only.</div>
         <div className="text-white/30 text-xs font-mono">{user.email}</div>

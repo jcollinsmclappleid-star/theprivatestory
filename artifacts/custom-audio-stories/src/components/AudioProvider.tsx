@@ -160,7 +160,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     <>
       <audio
         ref={audioRef}
-        src={currentStory?.audioUrl}
+        src={currentStory?.audioUrl || undefined}
         onTimeUpdate={(e) => {
           const t = e.currentTarget.currentTime;
           const d = e.currentTarget.duration || duration;

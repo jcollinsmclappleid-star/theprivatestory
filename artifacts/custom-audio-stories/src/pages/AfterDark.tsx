@@ -1204,6 +1204,9 @@ export default function AfterDark() {
   const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [castingHandoff, setCastingHandoff] = useState<CastingRoomHandoff | null>(null);
+  // confirmedPairing: the most recently known pairing — set from handoff on load,
+  // then updated after each casting completion so locking is always current.
+  const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
 
   // Read any handoff state saved by the standard casting room gateway
   useEffect(() => {
@@ -1212,6 +1215,7 @@ export default function AfterDark() {
       if (raw) {
         const parsed = JSON.parse(raw) as CastingRoomHandoff;
         setCastingHandoff(parsed);
+        if (parsed.pairing) setConfirmedPairing(parsed.pairing);
         sessionStorage.removeItem("afterDarkHandoff");
         // Keep on scenario phase — user must choose a fantasy before casting begins
       }
@@ -1310,6 +1314,9 @@ export default function AfterDark() {
 
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
+      // Update confirmed pairing so scenario lock state reflects this cast.
+      if (casting.pairing) setConfirmedPairing(casting.pairing);
+
       // Guard: if the selected scenario requires specific pairings and the
       // chosen pairing doesn't qualify, send the user back to scenario selection.
       if (
@@ -1542,8 +1549,8 @@ export default function AfterDark() {
                         {roomScenarios.map((scenario) => {
                           const isLockedByPairing = !!(
                             scenario.allowedPairings &&
-                            castingHandoff?.pairing &&
-                            !scenario.allowedPairings.includes(castingHandoff.pairing)
+                            confirmedPairing &&
+                            !scenario.allowedPairings.includes(confirmedPairing)
                           );
                           return (
                             <ScenarioCard

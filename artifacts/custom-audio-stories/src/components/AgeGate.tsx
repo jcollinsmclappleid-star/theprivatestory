@@ -40,6 +40,7 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
         transition={{ delay: 0.05, type: "spring", stiffness: 260, damping: 22 }}
         className="max-w-sm w-full rounded-3xl bg-background border border-border/40 p-8 shadow-2xl text-center"
       >
+        <img src="/images/logo.png" alt="The Private Story" className="h-12 mx-auto mb-6" />
         <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-4">The Private Story</p>
 
         <h1 className="font-display text-2xl font-bold text-foreground mb-3">

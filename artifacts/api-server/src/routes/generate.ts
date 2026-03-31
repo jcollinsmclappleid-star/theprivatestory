@@ -2941,7 +2941,7 @@ export async function generateAudioFile(
         headers: { "Content-Type": "application/json", "Accept": "audio/mpeg" },
         body: JSON.stringify({
           text: chunk,
-          model_id: "eleven_multilingual_v2",
+          model_id: "eleven_turbo_v2_5",
           voice_settings: {
             stability: 0.45,
             similarity_boost: 0.80,

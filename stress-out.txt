@@ -1,0 +1,40 @@
+========================================================================
+STORY GENERATION STRESS TEST
+DISABLE_AUDIO: true
+Running 5 tests sequentially...
+========================================================================
+
+▶  T1 — Default (minimal input)
+   ✓  All 9 diversity dimensions present in brief
+[14:45:25.112] [33mWARN[39m (2024): [36m[writeStory] Stripped dialogue from dialogue_mode=none scene[39m
+    [35msceneIdx[39m: 4
+[14:45:25.113] [33mWARN[39m (2024): [36m[writeStory] Enforced staccato rhythm — long sentences split[39m
+    [35msceneIdx[39m: 4
+   Title:      "The Way the Rain Stops"
+   ✅ PASS  score=8.7  words=2293  total=133.6s
+   plan=19.3s  write=85.3s  qc=29.0s
+   Sub-scores  diversity=7  ending=9  originality=8
+   Issues:
+     - Scene 4 violates 'primary_touch_action=press into' (uses multiple actions like 'dig into', 'slide', etc.)
+     - Scene 4 prose_rhythm is staccato but some sentences exceed clipped length (e.g., 'His fingers dig into your skin. You wrap your legs around his waist.')
+     - Scene 3 'primary_touch_action=take hold of' is correct but staging_position 'face to face' could be clearer in prose
+
+▶  T2 — High intensity, explicit pairing
+   ✓  All 9 diversity dimensions present in brief
+[14:47:29.168] [33mWARN[39m (2024): [36m[writeStory] Structural validation failed (attempt 1/2) — retrying with correction prompt[39m
+    [35msceneCount[39m: 5
+    [35mwordCount[39m: 1429
+    [35mtarget[39m: 5
+    [35mminWords[39m: 1440
+[14:48:22.308] [33mWARN[39m (2024): [36m[writeStory] Enforced staccato rhythm — long sentences split[39m
+    [35msceneIdx[39m: 4
+   Title:      "The Weight of Almost"
+   ✅ PASS  score=8.7  words=1163  total=153.1s
+   plan=29.9s  write=118.2s  qc=4.9s
+   Sub-scores  diversity=7  ending=9  originality=8
+   Issues:
+     - Scene 2: 'primary_touch_action=skim past' is used, but the description includes 'his fingers skim past the edge of the drafting table' and 'your fingers drift toward the edge... skim past'—both instances are correct, but the partner's attention focus wavers slightly from 'gesture_or_movement' to include spatial presence.
+     - Scene 4: 'prose_rhythm=staccato' is mostly adhered to, but some sentences exceed the clipped style (e.g., 'The way his muscles tense under your fingers.').
+     - Scene 5: 'partner_attention_focus=stillness' is slightly diluted by the protagonist's active tracing of the partner's wrist.
+
+▶  T3 — Female pairing, emotional arc

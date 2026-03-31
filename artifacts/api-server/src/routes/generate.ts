@@ -2516,6 +2516,98 @@ interface OriginalUserInput {
   varietyProfile?: VarietyProfile;
 }
 
+// ---------------------------------------------------------------------------
+// Diversity enforcement helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * All common physical-contact verbs the model might reach for.
+ * Used to generate a per-scene forbidden list that leaves only the
+ * assigned primary_touch_action permitted.
+ */
+const COMMON_TOUCH_VERBS = [
+  "trace", "stroke", "caress", "graze", "brush", "press", "grip", "hold",
+  "pull", "push", "gather", "draw", "drag", "wrap", "slide", "glide", "skim",
+  "drift", "catch", "cup", "anchor", "run", "guide", "rest", "smooth", "reach",
+  "tighten", "loop", "tangle", "trail", "settle", "seek", "lift", "take",
+  "splay", "brace", "close around", "close over", "move over", "trail over",
+];
+
+/** Returns all COMMON_TOUCH_VERBS except the one assigned to this scene. */
+function forbiddenTouchVerbs(assigned: string): string[] {
+  const norm = (s: string) => s.trim().toLowerCase();
+  return COMMON_TOUCH_VERBS.filter(v => norm(v) !== norm(assigned));
+}
+
+/**
+ * Returns a concrete example first sentence for each scene_open_beat type.
+ * Used to give the model a structural anchor in the per-scene contract.
+ */
+function openBeatExample(beat: string): string {
+  const examples: Record<string, string> = {
+    sensory_anchor:   "e.g. 'The cold of the glass is still on your palm when he steps into the room.'",
+    dialogue:         "e.g. 'You told me you weren't coming.' / 'Clearly you were wrong.'",
+    action:           "e.g. 'He doesn't wait for you to finish the sentence.'",
+    internal_thought: "e.g. 'You'd rehearsed exactly what you'd say, and now you remember none of it.'",
+    temporal_marker:  "e.g. 'An hour later.' / 'The third time he does it.' / 'Still.'",
+    environment:      "e.g. 'The room is smaller than you remembered, or he makes it feel that way.'",
+  };
+  return examples[beat] ?? "";
+}
+
+/**
+ * Deterministic staccato sentence enforcer.
+ * Splits any sentence > 8 words at the first natural conjunction/clause boundary.
+ * Applied post-write to every scene whose prose_rhythm === "staccato".
+ */
+function enforceStaccato(text: string): string {
+  if (!text) return text;
+
+  // Split text into individual sentences, preserving trailing punctuation+space.
+  // Strategy: split on ". " / "! " / "? " only when followed by a capital letter.
+  const raw = text.replace(/([.!?])\s+(?=[A-Z"'])/g, "$1\x00").split("\x00");
+
+  const processed = raw.flatMap(sentence => splitIfLong(sentence.trim()));
+  return processed.join(" ").replace(/\s{2,}/g, " ").trim();
+}
+
+function splitIfLong(sentence: string): string[] {
+  const wordCount = sentence.split(/\s+/).filter(Boolean).length;
+  if (wordCount <= 8) return [sentence];
+
+  // Ordered split attempts — prefer natural clause breaks
+  const splitPoints: Array<{ re: RegExp; joiner: string }> = [
+    { re: /,\s+(and|but|or)\s+/i,                                          joiner: ". " },
+    { re: /,\s+(as|when|while|though|although|since|because|before|after|until)\s+/i, joiner: ". " },
+    { re: /\s+—\s+/,                                                       joiner: ". " },
+    { re: /;\s*/,                                                          joiner: ". " },
+    { re: /\s+(and|but)\s+(?=[A-Z])/,                                     joiner: ". " },
+  ];
+
+  for (const { re, joiner } of splitPoints) {
+    const match = re.exec(sentence);
+    if (match) {
+      const left  = sentence.slice(0, match.index).trimEnd();
+      const right = sentence.slice(match.index + match[0].length).trimStart();
+      if (!left || !right) continue;
+
+      const leftFinal  = left.match(/[.!?]$/)  ? left  : left  + ".";
+      const rightFinal = right.charAt(0).toUpperCase() + right.slice(1);
+      // Recursively handle any still-long halves
+      return [...splitIfLong(leftFinal), ...splitIfLong(rightFinal)];
+    }
+  }
+
+  // Hard split at midpoint as last resort
+  const words = sentence.split(/\s+/);
+  const mid   = Math.ceil(words.length / 2);
+  const left  = words.slice(0, mid).join(" ").replace(/[,;—]$/, "") + ".";
+  const right = words.slice(mid).join(" ");
+  return [left, right.charAt(0).toUpperCase() + right.slice(1)];
+}
+
+// ---------------------------------------------------------------------------
+
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Warm", originalInput?: OriginalUserInput): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
   const isSeries = originalInput?.isSeries === true;
@@ -2768,11 +2860,30 @@ STACCATO ENFORCEMENT — apply before finalising:
   Flag any sentence longer than 8 words. Split it. No exceptions.
   A staccato scene with sentences averaging 15+ words is a technical failure, not a style choice.
 
+  STACCATO — WRONG (too long, flowing — this is what staccato must NOT look like):
+    "She watched him move across the room toward her, each step deliberate, and felt the familiar
+     tension in her chest that she'd been trying to ignore since the moment he'd walked in."
+
+  STACCATO — RIGHT (short, stopped, each thought its own full stop):
+    "He moved. She watched. The space between them shrank. Her chest ached. He didn't look away."
+    "She reached for the glass. Stopped. His hand was already there. Waiting."
+    "The door closed. Loud. She didn't move. Neither did he."
+
+  STACCATO RULE: Write the sentence. Count the words. If more than 8: split it.
+  Do this for every single sentence before moving to the next one.
+
 PROSE RHYTHM GATE — before you write each scene, note its assigned rhythm:
   If staccato → set a mental rule: maximum 8 words per sentence, full stop.
+    Every sentence must be a complete thought. Short. Stopped. Deliberate. Nothing joined.
   If fragmented → ellipsis permitted, incomplete thoughts expected, trailing silence is correct.
   If flowing → clauses may extend; withhold the main verb until late.
   If baroque → stack sensory registers; delay resolution until end of paragraph.
+
+TOUCH VERB MAP — absolute law for this story (check before writing each scene):
+${brief.scene_plan.map((sp, i) =>
+  `  Scene ${i + 1} (${sp.phase}): ONLY '${sp.primary_touch_action}' for physical contact — every other touch verb is a violation.`
+).join("\n")}
+  Any physical contact verb NOT listed above for its scene is a technical failure. Before finishing each scene, scan every touch verb you have written and verify it matches the scene's assigned verb.
 
 ${brief.scene_plan.map((sp, i) => {
   const contract = [
@@ -2786,10 +2897,30 @@ ${brief.scene_plan.map((sp, i) => {
     `staging_position=${sp.staging_position}`,
   ];
   const warnings: string[] = [];
-  if (sp.prose_rhythm === "staccato") warnings.push("⚠ STACCATO: every sentence ≤8 words, no exceptions");
+
+  // — prose_rhythm enforcement
+  if (sp.prose_rhythm === "staccato") {
+    warnings.push("⚠ STACCATO: count the words in EVERY sentence before moving on. If any sentence exceeds 8 words, split it immediately. This is a hard technical constraint — not a style suggestion.");
+  }
+
+  // — dialogue enforcement
   if (sp.dialogue_mode === "none") warnings.push("⚠ DIALOGUE=NONE: zero spoken words, no quotes, no speech tags");
-  if (sp.scene_open_beat === "internal_thought") warnings.push("⚠ OPEN with the protagonist's inner voice BEFORE any external action or description");
-  if (sp.scene_open_beat === "temporal_marker") warnings.push("⚠ OPEN with a standalone time-signal sentence (e.g. 'An hour later.' / 'Still.')");
+
+  // — scene_open_beat: example first sentence for every type
+  const beatEx = openBeatExample(sp.scene_open_beat ?? "environment");
+  warnings.push(`⚠ OPEN BEAT (${sp.scene_open_beat ?? "environment"}): your FIRST sentence must arrive in this exact mode — no preamble, no warm-up. ${beatEx}`);
+
+  // — partner_attention_focus: bookend mandate
+  const paf = sp.partner_attention_focus ?? "body_detail";
+  warnings.push(`⚠ PARTNER FOCUS BOOKEND: your opening paragraph AND closing paragraph must each explicitly reference '${paf}'. It must be named or described specifically — not implied.`);
+
+  // — primary_touch_action: exclusive-verb mandate
+  const assignedVerb = sp.primary_touch_action;
+  if (assignedVerb && assignedVerb !== "(none)") {
+    const forbidden = forbiddenTouchVerbs(assignedVerb).slice(0, 20).join(", ");
+    warnings.push(`⚠ TOUCH EXCLUSIVITY: the ONLY permitted physical contact verb in this scene is '${assignedVerb}'. The following verbs are FORBIDDEN for physical contact in this scene: ${forbidden}.`);
+  }
+
   return `SCENE ${i + 1} (${sp.phase}) CONTRACT:\n  ${contract.join(" | ")}\n${warnings.map(w => `  ${w}`).join("\n")}`;
 }).join("\n\n")}
 
@@ -2936,6 +3067,18 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
         text = text.replace(/\s{2,}/g, " ").replace(/\.\s*\./g, ".").trim();
         if (text !== before) {
           logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Stripped dialogue from dialogue_mode=none scene");
+        }
+      }
+
+      // Post-write staccato enforcement: deterministically split any sentence
+      // that exceeds 8 words in staccato scenes.  This is a hard backstop —
+      // the model is instructed to keep sentences short, but this guarantees
+      // compliance even when the instruction is partially ignored.
+      if (scenePlan?.prose_rhythm === "staccato" && text) {
+        const before = text;
+        text = enforceStaccato(text);
+        if (text !== before) {
+          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Enforced staccato rhythm — long sentences split");
         }
       }
 

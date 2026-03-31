@@ -35,7 +35,8 @@ const v = (fn) => PRONOUNS.map(fn);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SOURCE A: StoryTagStudio.tsx — current UI output
-// Sync with buildStandardCategories() and buildAfterDarkCategories()
+// Sync with buildStandardCategories(), buildSheOnlyStandardCategories(),
+// buildAfterDarkCategories(), and buildSheOnlyAfterDarkCategories()
 // ─────────────────────────────────────────────────────────────────────────────
 
 // buildStandardCategories()
@@ -132,6 +133,33 @@ const UI_STANDARD = [
   "Something to fall into",
   "Rest that comes from connection",
   "A voice that takes its time",
+];
+
+// buildSheOnlyStandardCategories() — "Her Lead" group, shown when p.sub === "She"
+const UI_SHE_ONLY_STANDARD = [
+  "She leads and he follows",
+  "She chooses who touches her",
+  "She decides when it ends",
+  "He gives her what she asks for",
+  "Her pleasure is the whole story",
+  "She is worshipped before anything else",
+  "He would wait as long as she needed",
+  "She feels beautiful and powerful at once",
+  "He notices everything about her",
+  "She is the centre of everything in this room",
+];
+
+// buildSheOnlyAfterDarkCategories() — "Her Command" group, shown when p.sub === "She" in AfterDark
+const UI_SHE_ONLY_AFTER_DARK = [
+  "She asked for it and he obliged completely",
+  "He does exactly what she says",
+  "She directed them both — they were there for exactly that",
+  "He watches because she wanted him to",
+  "She swings on her terms — her choice, her lead, her exit",
+  "Two men, both completely focused on her",
+  "She tells him what good behaviour earns — he earns it",
+  "He is on his knees — that is where she wants him and he wants to be",
+  "She told them the rules — they followed them",
 ];
 
 // buildAfterDarkCategories() — only what it currently returns
@@ -435,6 +463,27 @@ const BACKEND_SCENARIO_PRESETS = new Set([
   "The night is private and unhurried",
   "Warmth interrupted slowly",
   "He knows without asking",
+  // Her Lead standard tags (she/her protagonist only — buildSheOnlyStandardCategories)
+  "He gives her what she asks for",
+  "Her pleasure is the whole story",
+  "He would wait as long as she needed",
+  "She feels beautiful and powerful at once",
+  "He notices everything about her",
+  "She is the centre of everything in this room",
+  "She leads and he follows",
+  "She chooses who touches her",
+  "She decides when it ends",
+  "She is worshipped before anything else",
+  // Her Power room scenario preset tags (buildSheOnlyAfterDarkCategories + scenario presets)
+  "She asked for it and he obliged completely",
+  "He does exactly what she says",
+  "She directed them both — they were there for exactly that",
+  "He watches because she wanted him to",
+  "She swings on her terms — her choice, her lead, her exit",
+  "Two men, both completely focused on her",
+  "She tells him what good behaviour earns — he earns it",
+  "He is on his knees — that is where she wants him and he wants to be",
+  "She told them the rules — they followed them",
 ]);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -477,7 +526,7 @@ const KNOWN_HISTORICAL_TAGS = new Set([
 
 // ── Diff ──────────────────────────────────────────────────────────────────────
 
-const EXPECTED_UI = new Set([...UI_STANDARD, ...UI_AFTER_DARK]);
+const EXPECTED_UI = new Set([...UI_STANDARD, ...UI_SHE_ONLY_STANDARD, ...UI_AFTER_DARK, ...UI_SHE_ONLY_AFTER_DARK]);
 const BACKEND_ALLOWLIST = new Set([...BACKEND_STANDARD, ...BACKEND_AFTER_DARK, ...BACKEND_SCENARIO_PRESETS]);
 
 // UI tags the backend doesn't accept → will be silently dropped (CRITICAL)

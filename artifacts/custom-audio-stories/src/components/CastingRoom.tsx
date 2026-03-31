@@ -1077,7 +1077,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             </h2>
             <p className="text-muted-foreground text-sm mb-6">
               {isSameGender
-                ? `The ${partnerRoleLabel} in your story — ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`
+                ? `${capFirst(partnerRoleLabel)} in your story — ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`
                 : `Choose ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
             </p>
 

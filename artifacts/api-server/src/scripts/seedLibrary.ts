@@ -13,7 +13,7 @@
 
 import { db } from "@workspace/db";
 import { generatedStories } from "@workspace/db/schema";
-import { eq, like } from "drizzle-orm";
+import { eq, like, sql } from "drizzle-orm";
 import { storiesStore } from "../lib/storage.js";
 import { LIBRARY_SEED_MANIFEST } from "../lib/librarySeedManifest.js";
 import {
@@ -38,10 +38,13 @@ async function main() {
   const fromIdx = parseInt(args.find(a => a.startsWith("--from="))?.split("=")[1] ?? "1", 10);
 
   if (replace) {
-    const result = await db
+    const [{ count: deleted }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(generatedStories)
+      .where(eq(generatedStories.isLibraryStory, true));
+    await db
       .delete(generatedStories)
       .where(eq(generatedStories.isLibraryStory, true));
-    const deleted = (result as any).rowCount ?? 0;
     log(`CLEARED: deleted ${deleted} existing library stories`);
   }
 

@@ -291,12 +291,12 @@ const ENDING_OPTIONS = [
 ];
 
 const VOICES = [
-  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic", desc: "Warm British narration. Emotionally precise, unhurried, and composed.", gender: "female" as const, recommended: true },
-  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Soft Intimate", desc: "Closer, softer American delivery. Like being whispered to.", gender: "female" as const },
-  { id: "FA6HhUjVbervLw2rNl8M", label: "Calm Bedtime", desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
-  { id: "AeRdCCKzvd23BpJoofzx", label: "British Suspense", desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
-  { id: "n1PvBOwxb8X6m7tahp2h", label: "Cinematic Male", desc: "Rich, deep American voice. Commanding and dramatic.", gender: "male" as const },
-  { id: "jfIS2w2yJi0grJZPyEsk", label: "Deep Gravel", desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
+  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic",    accent: "British",  desc: "Warm, composed narration. Emotionally precise and unhurried.", gender: "female" as const, recommended: true },
+  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close",      accent: "American", desc: "Softer, closer delivery. Like being whispered to.", gender: "female" as const },
+  { id: "FA6HhUjVbervLw2rNl8M", label: "Unhurried",  accent: "British",  desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
+  { id: "AeRdCCKzvd23BpJoofzx", label: "Low",        accent: "British",  desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
+  { id: "n1PvBOwxb8X6m7tahp2h", label: "Deep",       accent: "American", desc: "Rich, commanding voice. Immersive and dramatic.", gender: "male" as const },
+  { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy",      accent: "British",  desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
 ];
 
 const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
@@ -1615,6 +1615,9 @@ export default function Create() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           <p className="font-semibold text-foreground">{voice.label}</p>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground font-medium">
+                            {voice.accent}
+                          </span>
                           {voice.recommended && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
                               Recommended

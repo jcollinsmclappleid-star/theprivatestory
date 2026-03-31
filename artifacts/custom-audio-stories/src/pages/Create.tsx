@@ -291,13 +291,16 @@ const ENDING_OPTIONS = [
 ];
 
 const VOICES = [
-  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic", desc: "Clean, refined, emotionally intelligent narration.", gender: "female" as const, recommended: true },
-  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close", desc: "Softer, closer, more intimate delivery.", gender: "female" as const },
-  { id: "FA6HhUjVbervLw2rNl8M", label: "Unhurried", desc: "Gentle, soothing, slower-paced narration.", gender: "female" as const },
-  { id: "AeRdCCKzvd23BpJoofzx", label: "Low", desc: "Engaging, tension-driven storytelling.", gender: "male" as const },
-  { id: "n1PvBOwxb8X6m7tahp2h", label: "Deep", desc: "Deep, immersive, dramatic narration.", gender: "male" as const },
-  { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy", desc: "Heavy, textured, intense voice.", gender: "male" as const },
+  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic", desc: "Warm British narration. Emotionally precise, unhurried, and composed.", gender: "female" as const, recommended: true },
+  { id: "tQ4MEZFJOzsahSEEZtHK", label: "Soft Intimate", desc: "Closer, softer American delivery. Like being whispered to.", gender: "female" as const },
+  { id: "FA6HhUjVbervLw2rNl8M", label: "Calm Bedtime", desc: "Measured and soothing. Steady pacing for a deeply immersive listen.", gender: "female" as const },
+  { id: "AeRdCCKzvd23BpJoofzx", label: "British Suspense", desc: "Low and controlled. Tension held under the surface throughout.", gender: "male" as const },
+  { id: "n1PvBOwxb8X6m7tahp2h", label: "Cinematic Male", desc: "Rich, deep American voice. Commanding and dramatic.", gender: "male" as const },
+  { id: "jfIS2w2yJi0grJZPyEsk", label: "Deep Gravel", desc: "Heavy, textured, and intense. Weight in every word.", gender: "male" as const },
 ];
+
+const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
+const MALE_VOICES = VOICES.filter(v => v.gender === "male");
 
 const SAMPLE_TEXT = "I've been waiting for you. There's something I need to tell you that I've kept locked away for far too long.";
 
@@ -689,10 +692,24 @@ export default function Create() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
-  // Load voice samples when voice step is shown — use cached blob URL if available
+  // Load voice samples + restore saved preference when voice step is shown
   useEffect(() => {
     if (step !== "voice") return;
 
+    // Restore saved voice preference, validating against current pairing
+    try {
+      const savedVoice = localStorage.getItem("preferred_voice_id");
+      if (savedVoice && VOICES.find(v => v.id === savedVoice)) {
+        const isMale = MALE_VOICES.some(v => v.id === savedVoice);
+        const pairingAllowsMale = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
+        const valid = !isMale || pairingAllowsMale;
+        if (valid) {
+          form.setValue("voiceFeel", savedVoice, { shouldDirty: false });
+        }
+      }
+    } catch { /* localStorage unavailable */ }
+
+    // Pre-fetch cached blob URLs so samples load instantly
     const loadVoiceSamples = async () => {
       const urls: Record<string, string> = {};
       for (const voice of VOICES) {
@@ -1111,6 +1128,23 @@ export default function Create() {
 
     setStep("voice");
   }, [form]);
+
+  const handleVoiceSelect = useCallback((voiceId: string) => {
+    form.setValue("voiceFeel", voiceId, { shouldDirty: true });
+    // Persist for next session
+    try {
+      localStorage.setItem("preferred_voice_id", voiceId);
+    } catch { /* ignore */ }
+    // For authenticated users, increment this voice's taste weight
+    if (isAuthenticated) {
+      fetch(`${API_BASE}/api/update-taste`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ preferredVoiceFeel: { [voiceId]: 1 } }),
+      }).catch(() => {});
+    }
+  }, [form, isAuthenticated]);
 
   const handleStartGenerating = useCallback(async (savePreset: boolean, presetName: string) => {
     if (savePreset && pendingCastingData && presetName.trim()) {
@@ -1560,19 +1594,17 @@ export default function Create() {
               <p className="text-muted-foreground">Choose the voice you want to hear your story in.</p>
             </div>
 
-            <div className="space-y-4">
-              {VOICES.map((voice) => {
-                const isSelected = form.watch("voiceFeel") === voice.id;
-                const isMaleVoice = voice.gender === "male";
-                const shouldHideMale = isMaleVoice && !VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
+            {(() => {
+              const selectedVoiceId = form.watch("voiceFeel");
+              const showMaleVoices = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
 
-                if (shouldHideMale) return null;
-
+              const renderVoiceCard = (voice: typeof VOICES[0]) => {
+                const isSelected = selectedVoiceId === voice.id;
                 return (
                   <button
                     key={voice.id}
                     type="button"
-                    onClick={() => form.setValue("voiceFeel", voice.id, { shouldDirty: true })}
+                    onClick={() => handleVoiceSelect(voice.id)}
                     className={`w-full p-4 rounded-2xl border-2 transition-all text-left group ${
                       isSelected
                         ? "border-primary bg-primary/10"
@@ -1617,8 +1649,23 @@ export default function Create() {
                     </div>
                   </button>
                 );
-              })}
-            </div>
+              };
+
+              return (
+                <div className="space-y-4">
+                  {FEMALE_VOICES.map(renderVoiceCard)}
+
+                  {showMaleVoices && (
+                    <>
+                      <p className="pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                        Male Voices
+                      </p>
+                      {MALE_VOICES.map(renderVoiceCard)}
+                    </>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="mt-10 flex gap-3">
               <button

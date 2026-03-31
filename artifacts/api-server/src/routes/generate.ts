@@ -2723,8 +2723,13 @@ You must honour ALL FOUR for every scene:
   • staging_position: The spatial arrangement of the characters in this scene. Open and close the scene in this configuration. If a transition occurs, arrive at this position before the scene ends.
 
 NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
-  • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule.
-    - staccato: sentences of 3–8 words. Each one stops. The gap matters. Nothing joined. Urgency through brevity. WRONG: "She moved across the room, her breath catching as he watched her." RIGHT: "She moved. He watched. Nothing else."
+  • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule. You will audit your sentences after drafting each scene.
+    - staccato: EVERY sentence is 3–8 words. Hard stop after each one. No conjunctions joining clauses. No subordinate clauses. No "as", "while", "when", "and then" linking two things. Each sentence is a complete unit. Urgency through brevity.
+      SENTENCE AUDIT (required for staccato): After drafting, re-read every sentence. Any sentence over 8 words MUST be split at its first clause boundary.
+      WRONG: "She crossed the room, her breath catching as he turned to look at her."
+      WRONG: "He moved closer and she felt the warmth of him before he spoke."
+      RIGHT:  "She crossed the room. He turned. Her breath caught."
+      RIGHT:  "He moved closer. She felt his warmth. He hadn't spoken yet."
     - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
     - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
     - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage.
@@ -2740,29 +2745,64 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
     - surface: body reacts before the mind. Physical responses only — sensation, not thought.
     - shallow: one or two sentences of internal thought appear, then the scene pulls back to action.
     - deep: the protagonist's thoughts run alongside action throughout; the inner life is as present as the outer.
-  • dialogue_mode: This governs the proportion and mode of spoken words in the scene.
-    - none: no spoken words whatsoever. The scene is entirely action, touch, narration, internal.
-    - minimal: one or two lines total. Words are rare and loaded.
+  • dialogue_mode: This governs the proportion and mode of spoken words in the scene. THIS IS STRUCTURAL, NOT STYLISTIC.
+    - none: ZERO spoken words. No quotation marks. No "he said". No utterances of any kind. If your draft contains any speech in a none-dialogue scene, replace it with internal thought, held breath, or physical action. This is not optional.
+    - minimal: one or two lines of speech maximum. After two lines, silence. Words are rare and loaded.
     - exchange: back-and-forth spoken dynamic; something shifts in what is said.
     - sustained: dialogue is the primary vehicle; the conversation drives the scene.
-  • partner_attention_focus: The protagonist's awareness narrows to THIS specific aspect of the partner in this scene — not everything, not a general impression, this one thing.
-    - voice_quality: something specific about how they speak.
-    - body_detail: one precise physical detail fixed upon.
-    - gesture_or_movement: how they move through space.
-    - stillness: what they don't do; the quality of how they wait.
+  • partner_attention_focus: The protagonist's awareness narrows to THIS specific aspect of the partner in this scene — not everything, not a general impression, this one thing. Return to it at least twice across the scene.
+    - voice_quality: something specific about how they speak — pitch, pace, the catch in their throat.
+    - body_detail: one precise physical detail fixed upon — exclude everything else.
+    - gesture_or_movement: how they move through space — the specific action, repeated or recalled.
+    - stillness: what they don't do; the quality of how they wait — their inaction as presence.
     - eyes: the direction of the gaze, what looking at the protagonist does to them.
-    - spatial_presence: how they occupy the room, how they change its atmosphere.
+    - spatial_presence: how they occupy the room, how they change its atmosphere — weight, heat, gravity.
+
+DIALOGUE ENFORCEMENT — apply before finalising:
+  Any scene assigned dialogue_mode=none must contain ZERO spoken words.
+  Scan your draft for quotation marks (" "), em-dash dialogue (— word), or speech tags (said/asked/told/whispered/replied).
+  Every instance found in a none-dialogue scene is a failure — remove it and replace with physical action or internal thought.
+
+STACCATO ENFORCEMENT — apply before finalising:
+  Any scene assigned prose_rhythm=staccato: re-read every sentence in that scene.
+  Flag any sentence longer than 8 words. Split it. No exceptions.
+  A staccato scene with sentences averaging 15+ words is a technical failure, not a style choice.
+
+PROSE RHYTHM GATE — before you write each scene, note its assigned rhythm:
+  If staccato → set a mental rule: maximum 8 words per sentence, full stop.
+  If fragmented → ellipsis permitted, incomplete thoughts expected, trailing silence is correct.
+  If flowing → clauses may extend; withhold the main verb until late.
+  If baroque → stack sensory registers; delay resolution until end of paragraph.
+
+${brief.scene_plan.map((sp, i) => {
+  const contract = [
+    `prose_rhythm=${sp.prose_rhythm ?? "flowing"}`,
+    `scene_open_beat=${sp.scene_open_beat ?? "environment"}`,
+    `interiority_depth=${sp.interiority_depth ?? "shallow"}`,
+    `dialogue_mode=${sp.dialogue_mode ?? "minimal"}`,
+    `partner_attention_focus=${sp.partner_attention_focus ?? "body_detail"}`,
+    `dominant_sense=${sp.dominant_sense}`,
+    `primary_touch_action=${sp.primary_touch_action}`,
+    `staging_position=${sp.staging_position}`,
+  ];
+  const warnings: string[] = [];
+  if (sp.prose_rhythm === "staccato") warnings.push("⚠ STACCATO: every sentence ≤8 words, no exceptions");
+  if (sp.dialogue_mode === "none") warnings.push("⚠ DIALOGUE=NONE: zero spoken words, no quotes, no speech tags");
+  if (sp.scene_open_beat === "internal_thought") warnings.push("⚠ OPEN with the protagonist's inner voice BEFORE any external action or description");
+  if (sp.scene_open_beat === "temporal_marker") warnings.push("⚠ OPEN with a standalone time-signal sentence (e.g. 'An hour later.' / 'Still.')");
+  return `SCENE ${i + 1} (${sp.phase}) CONTRACT:\n  ${contract.join(" | ")}\n${warnings.map(w => `  ${w}`).join("\n")}`;
+}).join("\n\n")}
 
 DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensions:
   1. Each scene's writing is genuinely grounded in its assigned dominant_sense
   2. No touch verb appears in more than one scene
   3. No two consecutive scenes feel like they inhabit the same physical world
   4. The progression of touch_register follows the arc — never escalates then retreats
-  5. Each scene's sentences are constructed according to its assigned prose_rhythm (not just its mood)
+  5. Each scene's sentences are constructed according to its assigned prose_rhythm (staccato scenes: every sentence ≤8 words)
   6. Each scene opens with its assigned scene_open_beat as the literal first sentence
   7. The depth of internal narration in each scene matches its assigned interiority_depth
-  8. The proportion of spoken dialogue in each scene matches its assigned dialogue_mode
-  9. In each scene, the protagonist's attention narrows specifically to the assigned partner_attention_focus
+  8. The proportion of spoken dialogue in each scene matches its assigned dialogue_mode (none = zero spoken words)
+  9. In each scene, the protagonist's attention returns at least twice to the assigned partner_attention_focus
 
 - Match the emotional arc exactly: ${brief.emotional_arc}
 - Pacing: ${brief.pacing_style}
@@ -2775,7 +2815,13 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 - The intensity level in the system prompt is MANDATORY — it determines how explicit IGNITE scenes must be. Do not drift from it.
 - Ideal for intimate voice narration — use pauses, ellipsis, short sentences at peak moments
 ${castingReminder}
-Return JSON only in this exact format — no markdown, no explanation:
+FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
+  Step 1 — Dialogue audit: For each scene with dialogue_mode=none, scan the text for quotation marks, em-dash speech, or words like "said/asked/whispered/told/replied". Remove every instance. Replace with physical action or internal thought.
+  Step 2 — Staccato audit: For each scene with prose_rhythm=staccato, scan every sentence. Split any sentence over 8 words at its first clause boundary. Do this sentence by sentence.
+  Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
+  Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
+
+Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. Start your response with the opening brace { and end with the closing brace }.
 {
   "title": "...",
   "description": "one compelling sentence hook",
@@ -2790,43 +2836,115 @@ Return JSON only in this exact format — no markdown, no explanation:
   ]
 }`;
 
-  async function attemptWrite(): Promise<Record<string, unknown>> {
+  function totalWordCount(p: Record<string, unknown>): number {
+    const scenes = (p.scenes ?? []) as Array<{ text?: string }>;
+    return scenes.reduce((sum, s) => sum + (s.text ?? "").trim().split(/\s+/).filter(Boolean).length, 0);
+  }
+
+  async function attemptWrite(extraUserNote?: string): Promise<Record<string, unknown>> {
+    const finalUserPrompt = extraUserNote ? `${userPrompt}\n\n${extraUserNote}` : userPrompt;
     const completion = await openrouter.chat.completions.create({
       model: MISTRAL_MODEL,
-      max_tokens: 8192,
+      max_tokens: 10000,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
+        { role: "user", content: finalUserPrompt },
       ],
     });
     const raw = completion.choices[0]?.message?.content ?? "{}";
     return parseLlmJson<Record<string, unknown>>(raw, "generate");
   }
 
+  const TARGET_SCENES = brief.scene_count ?? 5;
+  const MIN_WORDS = 1440;
+
   let parsed: Record<string, unknown>;
+
+  // Attempt 1 — clean run
   try {
     parsed = await attemptWrite();
   } catch (err) {
-    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[writeStory] Parse failed — retrying once");
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[writeStory] Parse failed on attempt 1 — retrying");
     try {
       parsed = await attemptWrite();
     } catch (retryErr) {
-      logger.error({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Retry also failed — giving up");
+      logger.error({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Parse retry also failed — giving up");
       throw Object.assign(new Error("Story generation is temporarily unavailable. Please try again."), { statusCode: 503 });
     }
   }
 
+  // Structural validation — scene count and minimum word count
+  const sceneCount1 = ((parsed.scenes ?? []) as unknown[]).length;
+  const words1 = totalWordCount(parsed);
+  const sceneCountOk = sceneCount1 === TARGET_SCENES;
+  const wordCountOk = words1 >= MIN_WORDS;
+
+  if (!sceneCountOk || !wordCountOk) {
+    const notes: string[] = [];
+    if (!sceneCountOk) {
+      notes.push(`CRITICAL — SCENE COUNT: You returned ${sceneCount1} scene(s) but the story requires EXACTLY ${TARGET_SCENES} scenes (ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE). Return exactly ${TARGET_SCENES} scene objects in the "scenes" array.`);
+    }
+    if (!wordCountOk) {
+      notes.push(`CRITICAL — WORD COUNT: Your story has only ~${words1} words. The TARGET is 1,440–1,760 words total (no more, no less). Each phase has a mandatory word range — write to this length exactly:\n  ESTABLISH = 280–320 words (count them — do not stop early)\n  SIMMER = 310–350 words (count them — do not stop early)\n  CRACK = 340–380 words (count them — do not stop early)\n  IGNITE = 380–420 words (count them — do not stop early)\n  RESONATE = 220–260 words\nDo NOT compress. Do NOT summarise. Write each phase fully to its minimum before moving to the next. Do NOT exceed the upper bound.`);
+    }
+    const retryNote = notes.join("\n\n");
+    logger.warn({ sceneCount: sceneCount1, wordCount: words1, target: TARGET_SCENES, minWords: MIN_WORDS }, "[writeStory] Structural validation failed — retrying with correction prompt");
+
+    try {
+      const retried = await attemptWrite(retryNote);
+      parsed = retried;
+    } catch (retryErr) {
+      // Soft fallback: structural retry failed (parse or network error).
+      // Use the first valid parse result rather than crashing — QC will flag any remaining issues.
+      logger.warn({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Structural retry failed — using best-effort first result");
+    }
+  }
+
+  // Smart scene selection: if the model generated more scenes than requested,
+  // keep the first (TARGET_SCENES - 1) and always preserve the LAST scene (RESONATE).
+  // This prevents the slice() from dropping the closing emotional beat.
+  const allScenes = (parsed.scenes ?? []) as Array<{ id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }>;
+  const scenesArr = allScenes.length > TARGET_SCENES
+    ? [...allScenes.slice(0, TARGET_SCENES - 1), allScenes[allScenes.length - 1]!]
+    : allScenes;
+
   return {
     title: parsed.title,
     description: parsed.description,
-    scenes: (parsed.scenes ?? []).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
-      id: s.id,
-      heading: s.heading ?? `Scene ${s.id}`,
-      text: s.text,
-      visualPrompt: "",
-      durationEstimate: s.duration_estimate ?? 60,
-      emotionalShift: s.emotional_shift ?? "",
-    })),
+    scenes: scenesArr.map((s, idx) => {
+      const scenePlan = brief.scene_plan[idx];
+      let text: string = s.text ?? "";
+
+      // Post-write dialogue enforcement: strip spoken words from dialogue_mode=none scenes.
+      // This is a safety net for cases where the model ignores the instruction.
+      // We remove: quoted speech ("..."), em-dash speech (— Word ...), and speech-tagged utterances.
+      if (scenePlan?.dialogue_mode === "none" && text) {
+        const before = text;
+        // 1. Remove double-quoted strings that look like speech (up to ~200 chars)
+        text = text.replace(/"[^"]{1,250}"/g, "");
+        // 2. Remove single-quoted speech
+        text = text.replace(/\u2018[^\u2019]{1,250}\u2019/g, "");
+        // 3. Remove em-dash dialogue starters (—Word ...)
+        text = text.replace(/\u2014[A-Z][^\n.!?]{0,200}[.!?]/g, "");
+        // 4. Clean up orphaned speech attribution ("he said," / "she whispered,")
+        text = text.replace(/\b(said|asked|whispered|replied|told|breathed|groaned|moaned)[,.]?\s*/gi, "");
+        // 5. Clean up doubled whitespace and empty sentences left behind
+        text = text.replace(/\s{2,}/g, " ").replace(/\.\s*\./g, ".").trim();
+        if (text !== before) {
+          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Stripped dialogue from dialogue_mode=none scene");
+        }
+      }
+
+      return {
+        id: s.id,
+        heading: s.heading ?? `Scene ${s.id}`,
+        text,
+        visualPrompt: "",
+        durationEstimate: s.duration_estimate ?? 60,
+        emotionalShift: s.emotional_shift ?? "",
+      };
+    }),
   };
 }
 

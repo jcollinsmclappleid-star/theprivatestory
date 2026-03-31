@@ -2790,7 +2790,15 @@ Apply the targeted improvement instruction precisely. Do not change what is not 
 Return only valid JSON in the same schema as the input story — no markdown, no explanation.
 
 CRAFT STANDARDS — maintain throughout the rewrite:
-- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile"
+- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile" / sandalwood / whisky / whiskey / tracing / "the way" / "pulse quicken" / "fingers tangled" / "arch into" / "the taste of" / "breath catch" / "the weight of" / "the heat of" / "steady rhythm" / "the shell of" / "drowning in"
+
+SENSORY & PHYSICAL ACTION VARIETY — never repeat the same physical descriptions or action verbs:
+  • For hands/fingers: don't repeat the same verb multiple scenes. Vary: stroking, trailing, running, pressing, gripping, curling, digging, brushing, skimming, sliding, caressing. Each scene should use a different primary action.
+  • For breath: avoid "breath catches/catches" more than once. Vary: hitches, shudders, quickens, comes in gasps, becomes ragged, catches in the throat, stops entirely, stutters, trembles.
+  • For contact description: don't use "the heat of him/her" or "his/her heat" more than once. Vary sensory approach: the weight of him, the pressure of his body, his skin against yours, the solid line of him, his touch burning, the friction between you.
+  • For opening scenes: vary sensory anchors (don't use "rain against glass" or "candle flickers" as the dominant motif more than once across different stories).
+  • For physical response: avoid identical phrasing like "arch into him" — vary: press into him, lift into his touch, meet him halfway, pull him closer, sink into him.
+
 - Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
 - The IGNITE phase must remain fully rendered — never summarise or fade to black
 - Keep the writing premium, cinematic, and emotionally specific — never polish it flat or make it generic`;
@@ -3063,7 +3071,15 @@ Return a full new story JSON in the same schema as the original.
 No markdown, no explanation — JSON only.
 
 CRAFT STANDARDS — maintain throughout the variation:
-- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile"
+- Never use these banned words: murmur / inevitable / electric / electrifying / undeniable / intoxicating / smoldering / smouldering / molten / pooling / heady / unbidden / tethered / "something shifted" / "something snapped" / "the air between them" / "low rumble" / "a genuine laugh" / "a genuine smile" / sandalwood / whisky / whiskey / tracing / "the way" / "pulse quicken" / "fingers tangled" / "arch into" / "the taste of" / "breath catch" / "the weight of" / "the heat of" / "steady rhythm" / "the shell of" / "drowning in"
+
+SENSORY & PHYSICAL ACTION VARIETY — never repeat the same physical descriptions or action verbs:
+  • For hands/fingers: don't repeat the same verb multiple scenes. Vary: stroking, trailing, running, pressing, gripping, curling, digging, brushing, skimming, sliding, caressing. Each scene should use a different primary action.
+  • For breath: avoid "breath catches/catches" more than once. Vary: hitches, shudders, quickens, comes in gasps, becomes ragged, catches in the throat, stops entirely, stutters, trembles.
+  • For contact description: don't use "the heat of him/her" or "his/her heat" more than once. Vary sensory approach: the weight of him, the pressure of his body, his skin against yours, the solid line of him, his touch burning, the friction between you.
+  • For opening scenes: vary sensory anchors (don't use "rain against glass" or "candle flickers" as the dominant motif more than once across different stories).
+  • For physical response: avoid identical phrasing like "arch into him" — vary: press into him, lift into his touch, meet him halfway, pull him closer, sink into him.
+
 - Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
 - The IGNITE phase must remain fully rendered — never summarise or fade to black
 - Emotionally specific and physically present — never vague or generic`;

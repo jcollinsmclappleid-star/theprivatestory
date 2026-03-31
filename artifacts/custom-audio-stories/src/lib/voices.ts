@@ -20,7 +20,7 @@ export const VOICES: Voice[] = [
     accentLabel: "British · Refined",
     desc: "Warm, composed narration. Unhurried, precise, and emotionally controlled. Every word lands exactly where it should.",
     presence: "Feels composed, grounded, and emotionally steady.",
-    bestFor: "Emotional tension · First listen · Slow burn",
+    bestFor: "Emotional tension · First listen · Slow burn" as const,
     gender: "female",
     recommended: true,
   },

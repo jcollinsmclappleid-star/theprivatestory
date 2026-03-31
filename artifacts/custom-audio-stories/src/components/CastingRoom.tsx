@@ -1967,7 +1967,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               Choose who tells your story.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
-              You can change this anytime.
+              Most people start with Eleanor for their first story.
             </p>
 
             {(() => {
@@ -1983,10 +1983,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     key={voice.id}
                     type="button"
                     onClick={() => setVoiceId(voice.id)}
-                    className={`w-full p-4 rounded-2xl border-2 transition-all text-left ${
+                    className={`w-full p-4 rounded-2xl transition-all text-left ${
                       isSelected
-                        ? "border-primary bg-primary/10 shadow-[0_0_24px_rgba(201,162,39,0.2)]"
-                        : "border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
+                        ? "border-2 border-primary bg-gradient-to-b from-primary/20 to-primary/5 shadow-[0_0_32px_rgba(201,162,39,0.25),inset_0_1px_0_rgba(201,162,39,0.15)]"
+                        : "border-2 border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
                     }`}
                     style={isSelected ? { transitionDuration: "150ms", transitionTimingFunction: "ease" } : {}}
                   >
@@ -2005,7 +2005,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                         </div>
                         <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accentLabel || voice.accent}</span>
                         {voice.presence && (
-                          <p className="text-xs text-muted-foreground/50 mt-0.5">{voice.presence}</p>
+                          <p className="text-xs text-muted-foreground/65 mt-1 leading-snug">{voice.presence}</p>
                         )}
                       </div>
                       <div className="flex-shrink-0">
@@ -2016,9 +2016,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{voice.desc}</p>
 
                     {voice.bestFor && (
-                      <div className="mb-4">
-                        <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/40 mb-1">Best for</p>
-                        <p className="text-[11px] text-primary/70 font-medium">{voice.bestFor}</p>
+                      <div className="mb-4 pt-2">
+                        <p className="text-[10px] font-medium uppercase tracking-wide text-primary/60 mb-1.5">Best for this mood</p>
+                        <p className="text-[11px] text-primary/75 font-medium leading-relaxed">{voice.bestFor}</p>
                       </div>
                     )}
 

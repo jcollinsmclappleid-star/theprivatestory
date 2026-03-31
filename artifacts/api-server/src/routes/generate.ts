@@ -3268,6 +3268,7 @@ async function runDerivedPipeline(
     mood,
     audioUrl,
     duration,
+    coverImage: images.cover || "",
     brief,
     scenes: scenesWithImages,
     images: { cover: images.cover, scenes: images.scenes },
@@ -3917,6 +3918,7 @@ router.post("/generate-full-story", async (req, res) => {
       mood: intake.mood,
       audioUrl,
       duration: intake.storyLength,
+      coverImage: images.cover || "",
       brief,
       scenes: scenesWithImages,
       images: {

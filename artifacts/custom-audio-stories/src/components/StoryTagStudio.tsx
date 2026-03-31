@@ -438,9 +438,9 @@ export function StoryTagStudio({
   const partner = getPronounCtx(partnerPronouns);
 
   // Role-key legend text shown for same-gender pairings under ambiguous categories
-  // e.g. "she = you · she = your love interest" → clarified as "you · your love interest"
+  // e.g. "she = your character · she = your love interest"
   const roleKeyText = isSameGender
-    ? `${p.sub.toLowerCase()} = you · ${p.obj} = your love interest`
+    ? `${p.sub.toLowerCase()} = your character · ${p.obj} = your love interest`
     : null;
 
   const isSheProtagonist = p.sub === "She";

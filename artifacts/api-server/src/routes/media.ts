@@ -41,12 +41,6 @@ async function checkOwnership(
   mediaType: "audio" | "image",
   filename: string,
 ): Promise<boolean> {
-  if (!req.isAuthenticated() || !req.user?.id) {
-    res.status(401).json({ error: "Authentication required." });
-    return false;
-  }
-
-  const userId = req.user.id;
   const urlPath = `/api/${mediaType === "audio" ? "audio" : "images"}/${filename}`;
 
   try {
@@ -79,7 +73,19 @@ async function checkOwnership(
       return false;
     }
 
-    // Library stories are shared content — all authenticated users may access.
+    // Library stories (images only) are public content — serve without auth.
+    // Audio for library stories still requires authentication to prevent scraping.
+    if (story.isLibraryStory && mediaType === "image") return true;
+
+    // All other access requires a valid session.
+    if (!req.isAuthenticated() || !req.user?.id) {
+      res.status(401).json({ error: "Authentication required." });
+      return false;
+    }
+
+    const userId = req.user.id;
+
+    // Library audio — any authenticated user may access.
     if (story.isLibraryStory) return true;
 
     // Personal stories — owner only.

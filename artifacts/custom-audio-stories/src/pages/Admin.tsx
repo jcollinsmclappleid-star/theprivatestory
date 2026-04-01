@@ -158,6 +158,20 @@ export default function Admin() {
   const [manifestLoading, setManifestLoading] = useState(false);
   const [generatingSingle, setGeneratingSingle] = useState<string | null>(null);
 
+  // ── Generate Library Audio state ────────────────────────────────────────────
+  interface AudioItem {
+    storyId: string;
+    title: string;
+    voiceId?: string;
+    status: "generating" | "done" | "error";
+    duration?: string;
+    error?: string;
+  }
+  const [audioRunning, setAudioRunning] = useState(false);
+  const [audioItems, setAudioItems] = useState<AudioItem[]>([]);
+  const [audioSummary, setAudioSummary] = useState<{ done: number; failed: number; total: number } | null>(null);
+  const audioAbortRef = useRef<AbortController | null>(null);
+
   const loadManifest = useCallback(async () => {
     setManifestLoading(true);
     try {
@@ -188,6 +202,63 @@ export default function Admin() {
     } catch {
       setClearStatus("error");
     }
+  };
+
+  const generateLibraryAudio = async () => {
+    if (audioRunning) {
+      audioAbortRef.current?.abort();
+      setAudioRunning(false);
+      return;
+    }
+    setAudioRunning(true);
+    setAudioItems([]);
+    setAudioSummary(null);
+    const ctrl = new AbortController();
+    audioAbortRef.current = ctrl;
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/generate-library-audio`, {
+        method: "POST",
+        credentials: "include",
+        signal: ctrl.signal,
+      });
+      if (!resp.ok || !resp.body) { setAudioRunning(false); return; }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split("\n");
+        buf = lines.pop() ?? "";
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const evt = JSON.parse(line.slice(6));
+            if (evt.event === "progress") {
+              setAudioItems(prev => {
+                const existing = prev.findIndex(i => i.storyId === evt.storyId);
+                const item: AudioItem = {
+                  storyId: evt.storyId,
+                  title: evt.title,
+                  voiceId: evt.voiceId,
+                  status: evt.status,
+                  duration: evt.duration,
+                  error: evt.error,
+                };
+                if (existing >= 0) { const n = [...prev]; n[existing] = item; return n; }
+                return [...prev, item];
+              });
+            } else if (evt.event === "complete") {
+              setAudioSummary({ done: evt.done, failed: evt.failed, total: evt.total });
+            }
+          } catch {}
+        }
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") console.error(e);
+    }
+    setAudioRunning(false);
   };
 
   const consumeSeedStream = async (
@@ -1897,6 +1968,50 @@ export default function Admin() {
                     : `Seed All${manifestEntries.filter(e => !e.seeded).length > 0 ? ` (${manifestEntries.filter(e => !e.seeded).length} missing)` : ""}`
                   }
                 </button>
+              </div>
+
+              {/* Generate Audio row */}
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <div className="text-xs font-medium text-white/70">Library Audio</div>
+                    <div className="text-xs text-white/40">Narrate all stories without audio via ElevenLabs</div>
+                  </div>
+                  <button
+                    onClick={generateLibraryAudio}
+                    disabled={seedRunning}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition disabled:opacity-40 ${
+                      audioRunning
+                        ? "bg-red-600 hover:bg-red-500 text-white"
+                        : "bg-amber-600 hover:bg-amber-500 text-white"
+                    }`}
+                  >
+                    {audioRunning
+                      ? `Stop (${audioItems.filter(i => i.status === "done").length} done)`
+                      : audioSummary
+                        ? `✓ ${audioSummary.done} voiced`
+                        : "Generate Audio"}
+                  </button>
+                </div>
+
+                {/* Audio progress */}
+                {(audioRunning || audioItems.length > 0) && (
+                  <div className="space-y-1 max-h-40 overflow-y-auto mt-2">
+                    {audioItems.map(item => (
+                      <div key={item.storyId} className="flex items-center gap-2 text-xs">
+                        <span className={
+                          item.status === "done" ? "text-green-400" :
+                          item.status === "error" ? "text-red-400" : "text-amber-400 animate-pulse"
+                        }>
+                          {item.status === "done" ? "✓" : item.status === "error" ? "✕" : "⏳"}
+                        </span>
+                        <span className="text-white/70 flex-1 truncate">{item.title}</span>
+                        {item.duration && <span className="text-white/40 shrink-0">{item.duration}</span>}
+                        {item.error && <span className="text-red-400 truncate text-[10px]">{item.error}</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Live progress bar when seeding */}

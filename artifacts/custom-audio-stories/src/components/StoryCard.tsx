@@ -11,6 +11,16 @@ interface StoryCardProps {
   progress?: Record<string, unknown>;
 }
 
+/** Parse a duration string like "12 min", "10-15 min", "Short Story" into seconds */
+function parseDurationToSeconds(duration: string | null | undefined): number {
+  if (!duration) return 600; // fallback 10 min
+  const single = duration.match(/^(\d+)\s*min/i);
+  if (single) return parseInt(single[1], 10) * 60;
+  const range = duration.match(/^(\d+)\s*[-–]\s*(\d+)\s*min/i);
+  if (range) return Math.round((parseInt(range[1], 10) + parseInt(range[2], 10)) / 2) * 60;
+  return 600;
+}
+
 export function StoryCard({ story, className = "", showProgress, progress }: StoryCardProps) {
   const [premiumOpen, setPremiumOpen] = useState(false);
 
@@ -86,7 +96,8 @@ export function StoryCard({ story, className = "", showProgress, progress }: Sto
                     className="h-full bg-primary rounded-full"
                     style={{
                       width: `${Math.min(
-                        ((progress.audioProgressSeconds as number) ?? 0) / 300,
+                        ((progress.audioProgressSeconds as number) ?? 0) /
+                          parseDurationToSeconds(story.duration),
                         1
                       ) * 100}%`,
                     }}

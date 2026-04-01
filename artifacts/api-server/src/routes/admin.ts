@@ -27,7 +27,9 @@ import {
   buildImagePrompts,
   generateAllImages,
   getCacheKey,
+  generateAudioFile,
   type GenerateStoryRequest,
+  type Scene,
 } from "./generate.js";
 import { LIBRARY_SEED_MANIFEST } from "../lib/librarySeedManifest.js";
 
@@ -1088,6 +1090,130 @@ router.post("/seed-library", async (req, res) => {
     belowThresholdCount: allQcRecords.filter(r => r.belowThreshold).length,
     message: `Seed complete — ${created} created, ${skipped} skipped, ${failed} failed. Avg QC: ${overallAvg !== null ? overallAvg.toFixed(1) : "n/a"}`,
   });
+  res.end();
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/generate-library-audio — generate ElevenLabs narration for all library stories
+// that currently have no audio, assigning voices by category.
+// ---------------------------------------------------------------------------
+
+const LIBRARY_AUDIO_VOICE: Record<string, string> = {
+  forbidden_complicated:       "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
+  professional_crossing_lines: "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
+  power_tension:               "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
+  secrets_unspoken:            "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
+  reunion_return:              "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
+  psychological_obsessive:     "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
+  slow_burn_patience:          "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+  circumstance_proximity:      "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+  first_unknown:               "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+  dark_dangerous:              "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+};
+
+// When a situationId already has one story voiced, use the alternate female voice
+const VOICE_ALTERNATE: Record<string, string> = {
+  "RILOU7YmBhvwJGDGjNmP": "tQ4MEZFJOzsahSEEZtHK", // Jane → Ivanna
+  "tQ4MEZFJOzsahSEEZtHK": "RILOU7YmBhvwJGDGjNmP", // Ivanna → Jane
+  "FA6HhUjVbervLw2rNl8M": "tQ4MEZFJOzsahSEEZtHK", // Ophelia → Ivanna
+};
+
+router.post("/generate-library-audio", async (req: Request, res: Response) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: "Forbidden" });
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  const send = (event: string, data: Record<string, unknown>) =>
+    res.write(`data: ${JSON.stringify({ event, ...data })}\n\n`);
+
+  try {
+    const result = await db.execute(sql`
+      SELECT id, title, category_id, scenes, casting_data
+      FROM generated_stories
+      WHERE is_library_story = true
+        AND (audio_url IS NULL OR audio_url = '')
+      ORDER BY category_id, id
+    `);
+
+    const rows = result.rows as Array<{
+      id: string;
+      title: string;
+      category_id: string;
+      scenes: Array<{ heading?: string; text?: string }>;
+      casting_data: Record<string, string> | null;
+    }>;
+
+    const total = rows.length;
+    send("start", { total });
+
+    const sitVoiceUsed: Record<string, string> = {};
+    let done = 0;
+    let failed = 0;
+
+    for (const row of rows) {
+      const storyId = String(row.id);
+      const title = String(row.title);
+      const categoryId = String(row.category_id || "");
+      const situationId = row.casting_data?.situationId || storyId;
+      const scenes = (row.scenes || []) as Array<{ heading?: string; text?: string }>;
+
+      // Pick voice — alternate if duplicate situationId already processed
+      const primaryVoice = LIBRARY_AUDIO_VOICE[categoryId] ?? "RILOU7YmBhvwJGDGjNmP";
+      const voiceId = sitVoiceUsed[situationId]
+        ? (VOICE_ALTERNATE[sitVoiceUsed[situationId]] ?? primaryVoice)
+        : primaryVoice;
+      sitVoiceUsed[situationId] = voiceId;
+
+      send("progress", { index: done + failed + 1, total, storyId, title, voiceId, status: "generating" });
+
+      try {
+        const sceneObjs: Scene[] = scenes.map((s, i) => ({
+          id: i + 1,
+          heading: s.heading ?? `Scene ${i + 1}`,
+          text: s.text ?? "",
+          visualPrompt: "",
+          durationEstimate: 60,
+        }));
+
+        const audioUrl = await generateAudioFile(sceneObjs, voiceId, storyId);
+
+        // Estimate duration from word count (~140 words/min narration pace)
+        const wordCount = sceneObjs.reduce((sum, s) => sum + s.text.split(/\s+/).filter(Boolean).length, 0);
+        const durationMins = Math.max(1, Math.round(wordCount / 140));
+        const durationStr = `${durationMins} min`;
+
+        // Persist audio URL, duration, and voiceId in casting_data
+        await db.execute(sql`
+          UPDATE generated_stories
+          SET audio_url = ${audioUrl},
+              duration  = ${durationStr},
+              casting_data = jsonb_set(
+                COALESCE(casting_data, '{}')::jsonb,
+                '{voiceId}',
+                ${JSON.stringify(voiceId)}::jsonb
+              )
+          WHERE id = ${storyId}
+        `);
+
+        done++;
+        send("progress", { index: done + failed, total, storyId, title, voiceId, status: "done", audioUrl, duration: durationStr });
+      } catch (err) {
+        failed++;
+        send("progress", {
+          index: done + failed, total, storyId, title, voiceId, status: "error",
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
+
+    send("complete", { done, failed, total, message: `Audio generation complete — ${done} done, ${failed} failed` });
+  } catch (err) {
+    send("error", { error: err instanceof Error ? err.message : String(err) });
+  }
+
   res.end();
 });
 

@@ -804,6 +804,7 @@ router.post("/seed-library", async (req, res) => {
   const replace     = req.body?.replace     === true;
   const skipImages  = req.body?.skipImages  === true;
   const skipQc      = req.body?.skipQc      === true;
+  const parallel    = Math.min(5, Math.max(1, Number(req.body?.parallel) || 1));
   const situationIds: string[] | undefined = Array.isArray(req.body?.situationIds) && req.body.situationIds.length > 0
     ? req.body.situationIds as string[]
     : undefined;
@@ -837,8 +838,8 @@ router.post("/seed-library", async (req, res) => {
   const QC_BATCH_SIZE = 5;
   const QC_PASS_THRESHOLD = 7.0;
 
-  for (const entry of manifest) {
-    const idx = manifest.indexOf(entry) + 1;
+  // ── Process one manifest entry (used by both sequential and parallel modes) ─
+  const processEntry = async (entry: typeof manifest[0], idx: number) => {
     send("story_start", {
       index: idx,
       total,
@@ -863,13 +864,7 @@ router.post("/seed-library", async (req, res) => {
           message: `Already seeded — skipping`,
         });
         skipped++;
-        // Emit batch QC after every 5 even for skipped (with null QC)
-        if (idx % QC_BATCH_SIZE === 0) {
-          const batchNum = Math.ceil(idx / QC_BATCH_SIZE);
-          send("batch_qc", { batchNum, stories: batchQcBuffer, message: `Batch ${batchNum} complete — ${batchQcBuffer.length} scored` });
-          batchQcBuffer = [];
-        }
-        continue;
+        return;
       }
     }
 
@@ -1016,25 +1011,61 @@ router.post("/seed-library", async (req, res) => {
         failed,
       });
     }
+  };
 
-    // ── Batch QC checkpoint after every 5 stories ────────────────────────────
-    if (idx % QC_BATCH_SIZE === 0) {
-      const batchNum = Math.ceil(idx / QC_BATCH_SIZE);
-      const batchScored = batchQcBuffer.filter(r => r.score !== undefined);
-      const batchAvg = batchScored.length > 0
-        ? batchScored.reduce((sum, r) => sum + r.score, 0) / batchScored.length
-        : null;
-      const flagged = batchQcBuffer.filter(r => r.belowThreshold);
-      send("batch_qc", {
-        batchNum,
-        batchSize: QC_BATCH_SIZE,
-        storiesInBatch: idx,
-        avgQcScore: batchAvg !== null ? Math.round(batchAvg * 10) / 10 : null,
-        stories: batchQcBuffer,
-        flagged: flagged.map(r => ({ situationId: r.situationId, title: r.title, score: r.score })),
-        message: `Batch ${batchNum} of ${Math.ceil(total / QC_BATCH_SIZE)}: avg QC ${batchAvg !== null ? batchAvg.toFixed(1) : "n/a"}, ${flagged.length} flagged`,
-      });
-      batchQcBuffer = [];
+  // ── Run sequentially or in parallel batches ───────────────────────────────
+  if (parallel <= 1) {
+    // Sequential — original behaviour
+    for (const entry of manifest) {
+      const idx = manifest.indexOf(entry) + 1;
+      await processEntry(entry, idx);
+
+      // Batch QC checkpoint after every 5 stories
+      if (idx % QC_BATCH_SIZE === 0 && batchQcBuffer.length > 0) {
+        const batchNum = Math.ceil(idx / QC_BATCH_SIZE);
+        const batchScored = batchQcBuffer.filter(r => r.score !== undefined);
+        const batchAvg = batchScored.length > 0
+          ? batchScored.reduce((sum, r) => sum + r.score, 0) / batchScored.length
+          : null;
+        const flagged = batchQcBuffer.filter(r => r.belowThreshold);
+        send("batch_qc", {
+          batchNum,
+          batchSize: QC_BATCH_SIZE,
+          storiesInBatch: idx,
+          avgQcScore: batchAvg !== null ? Math.round(batchAvg * 10) / 10 : null,
+          stories: batchQcBuffer,
+          flagged: flagged.map(r => ({ situationId: r.situationId, title: r.title, score: r.score })),
+          message: `Batch ${batchNum} of ${Math.ceil(total / QC_BATCH_SIZE)}: avg QC ${batchAvg !== null ? batchAvg.toFixed(1) : "n/a"}, ${flagged.length} flagged`,
+        });
+        batchQcBuffer = [];
+      }
+    }
+  } else {
+    // Parallel — process `parallel` stories at a time
+    for (let batchStart = 0; batchStart < manifest.length; batchStart += parallel) {
+      const chunk = manifest.slice(batchStart, batchStart + parallel);
+      await Promise.all(
+        chunk.map((entry, offset) => processEntry(entry, batchStart + offset + 1))
+      );
+      // Emit batch QC checkpoint after each parallel chunk
+      if (batchQcBuffer.length > 0) {
+        const batchNum = Math.ceil((batchStart + parallel) / parallel);
+        const batchScored = batchQcBuffer.filter(r => r.score !== undefined);
+        const batchAvg = batchScored.length > 0
+          ? batchScored.reduce((sum, r) => sum + r.score, 0) / batchScored.length
+          : null;
+        const flagged = batchQcBuffer.filter(r => r.belowThreshold);
+        send("batch_qc", {
+          batchNum,
+          batchSize: chunk.length,
+          storiesInBatch: batchStart + chunk.length,
+          avgQcScore: batchAvg !== null ? Math.round(batchAvg * 10) / 10 : null,
+          stories: batchQcBuffer,
+          flagged: flagged.map(r => ({ situationId: r.situationId, title: r.title, score: r.score })),
+          message: `Chunk ${batchNum}: avg QC ${batchAvg !== null ? batchAvg.toFixed(1) : "n/a"}, ${flagged.length} flagged`,
+        });
+        batchQcBuffer = [];
+      }
     }
   }
 

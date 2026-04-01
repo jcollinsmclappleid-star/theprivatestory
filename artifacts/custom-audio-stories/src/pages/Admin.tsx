@@ -151,6 +151,7 @@ export default function Admin() {
   const [seedSkipImages, setSeedSkipImages] = useState(false);
   const [seedSkipQc, setSeedSkipQc] = useState(false);
   const [seedReplace, setSeedReplace] = useState(false);
+  const [seedParallel, setSeedParallel] = useState(3);
 
   // Manifest browser
   const [manifestEntries, setManifestEntries] = useState<ManifestEntry[]>([]);
@@ -268,6 +269,7 @@ export default function Admin() {
           replace: seedReplace,
           skipImages: seedSkipImages,
           skipQc: seedSkipQc,
+          parallel: seedParallel,
           ...(situationIds ? { situationIds } : {}),
         }),
       });
@@ -1757,6 +1759,33 @@ export default function Admin() {
                   <div className="text-xs font-semibold mt-0.5">
                     Total: ~£{(2.5 + (seedSkipImages ? 0 : 1.5) + (seedSkipQc ? 0 : 0.9)).toFixed(2)}
                   </div>
+                </div>
+              </div>
+
+              {/* Parallel control */}
+              <div className="flex items-center gap-3 mb-4 px-3 py-2.5 rounded-lg border border-white/10 bg-white/5">
+                <div className="flex-1">
+                  <div className="text-xs font-medium text-white/70 leading-tight">Parallel stories</div>
+                  <div className="text-xs text-white/40 leading-tight mt-0.5">
+                    {seedParallel === 1 ? "Sequential — ~3–4 min each" : `${seedParallel} at once — ~${Math.ceil(19 / seedParallel) * 4} min for 19 stories`}
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map(n => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setSeedParallel(n)}
+                      disabled={seedRunning}
+                      className={`w-7 h-7 rounded text-xs font-semibold transition disabled:opacity-40 ${
+                        seedParallel === n
+                          ? "bg-violet-600 text-white"
+                          : "bg-white/10 text-white/50 hover:bg-white/20"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
                 </div>
               </div>
 

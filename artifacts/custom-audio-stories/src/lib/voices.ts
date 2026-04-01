@@ -47,7 +47,7 @@ export const VOICES: Voice[] = [
   },
   {
     id: "AeRdCCKzvd23BpJoofzx",
-    displayName: "Nathaniel",
+    displayName: "Joshua",
     label: "Assured",
     accent: "British",
     accentLabel: "British · Engaging",
@@ -59,7 +59,7 @@ export const VOICES: Voice[] = [
   },
   {
     id: "n1PvBOwxb8X6m7tahp2h",
-    displayName: "Caleb",
+    displayName: "Ethan",
     label: "Deep",
     accent: "American",
     accentLabel: "American · Commanding",
@@ -70,7 +70,7 @@ export const VOICES: Voice[] = [
   },
   {
     id: "jfIS2w2yJi0grJZPyEsk",
-    displayName: "Oliver",
+    displayName: "Theo",
     label: "Gravel",
     accent: "British",
     accentLabel: "British · Textured",
@@ -84,8 +84,8 @@ export const VOICES: Voice[] = [
 export const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
 export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 
-export const NATHANIEL_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
-export const OLIVER_VOICE_ID    = "jfIS2w2yJi0grJZPyEsk";
+export const JOSHUA_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
+export const THEO_VOICE_ID   = "jfIS2w2yJi0grJZPyEsk";
 
 export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
@@ -95,15 +95,15 @@ export const DEFAULT_MALE_VOICE_ID   = "AeRdCCKzvd23BpJoofzx";
 const HER_HER = "Her & Her";
 const ALL_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
-const NATHANIEL = VOICES.find(v => v.id === NATHANIEL_VOICE_ID)!;
-const OLIVER    = VOICES.find(v => v.id === OLIVER_VOICE_ID)!;
+const JOSHUA = VOICES.find(v => v.id === JOSHUA_VOICE_ID)!;
+const THEO   = VOICES.find(v => v.id === THEO_VOICE_ID)!;
 
 export function getVoicesForPairing(pairing: string | undefined): Voice[] {
   if (!pairing) return FEMALE_VOICES;
   if (pairing === HER_HER) return FEMALE_VOICES;
   if (ALL_MALE_PAIRINGS.includes(pairing)) return MALE_VOICES;
-  // Her & Him, Her & Them — female voices then Nathaniel and Oliver last
-  return [...FEMALE_VOICES, NATHANIEL, OLIVER];
+  // Her & Him, Her & Them — female voices then Joshua and Theo last
+  return [...FEMALE_VOICES, JOSHUA, THEO];
 }
 
 export function getDefaultVoiceId(pairing?: string): string {

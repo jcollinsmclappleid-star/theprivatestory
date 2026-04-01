@@ -9,26 +9,26 @@ import { CategoryTile } from "@/components/CategoryTile";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const CATEGORIES = [
-  { id: "forbidden_desire",    label: "Forbidden Desire" },
-  { id: "dominant_surrendered", label: "Power & Surrender" },
-  { id: "late_night",          label: "Late Night" },
-  { id: "explicit_collection", label: "After Dark" },
-  { id: "slow_burn",           label: "Slow Burn" },
-  { id: "emotional_desire",    label: "Emotional Desire" },
-  { id: "second_chance",       label: "Second Chances" },
-  { id: "dark_romance",        label: "Dark Romance" },
-  { id: "historical_romance",  label: "Historical Romance" },
-  { id: "first_time",          label: "First Time" },
+  { id: "forbidden_complicated",   label: "Forbidden & Complicated" },
+  { id: "power_tension",           label: "Power & Tension" },
+  { id: "dark_dangerous",          label: "Dark & Dangerous" },
+  { id: "psychological_obsessive", label: "Psychological & Obsessive" },
+  { id: "reunion_return",          label: "Reunion & Return" },
+  { id: "first_unknown",           label: "First & Unknown" },
+  { id: "circumstance_proximity",  label: "Circumstance & Proximity" },
+  { id: "secrets_unspoken",        label: "Secrets & Unspoken" },
+  { id: "slow_burn_patience",      label: "Slow Burn & Patience" },
+  { id: "professional_crossing_lines", label: "Professional & Crossing Lines" },
 ];
 
 const BROWSE_SECTIONS = [
   {
-    label: "Tonight's Heat",
-    categoryIds: ["forbidden_desire", "dominant_surrendered", "late_night", "explicit_collection"],
+    label: "Heat & Tension",
+    categoryIds: ["forbidden_complicated", "power_tension", "dark_dangerous", "psychological_obsessive"],
   },
   {
-    label: "Deep Romance",
-    categoryIds: ["slow_burn", "emotional_desire", "second_chance", "dark_romance"],
+    label: "Heart & Longing",
+    categoryIds: ["reunion_return", "first_unknown", "circumstance_proximity", "secrets_unspoken", "slow_burn_patience", "professional_crossing_lines"],
   },
 ];
 

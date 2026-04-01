@@ -31,6 +31,25 @@ import {
 } from "./generate.js";
 import { LIBRARY_SEED_MANIFEST } from "../lib/librarySeedManifest.js";
 
+/** Map situationId prefix → categoryId used in the DB and Browse page */
+const SEED_CATEGORY_MAP: Record<string, string> = {
+  fc2: "forbidden_complicated",
+  rr2: "reunion_return",
+  fu2: "first_unknown",
+  pt2: "power_tension",
+  po2: "psychological_obsessive",
+  cp2: "circumstance_proximity",
+  su2: "secrets_unspoken",
+  dd2: "dark_dangerous",
+  sb2: "slow_burn_patience",
+  pl2: "professional_crossing_lines",
+};
+
+function deriveSeedCategory(situationId: string): { categoryId: string; subthemeId: string } {
+  const prefix = situationId.split("_")[0];
+  return { categoryId: SEED_CATEGORY_MAP[prefix] ?? prefix, subthemeId: situationId };
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router: IRouter = Router();
 
@@ -939,6 +958,7 @@ router.post("/seed-library", async (req, res) => {
 
       send("phase", { index: idx, phase: "saving", label: "Saving to library…" });
       const storyId = `lib-${storyToken}`;
+      const { categoryId: seedCategoryId, subthemeId: seedSubthemeId } = deriveSeedCategory(entry.situationId);
       await storiesStore.set(storyId, {
         id: storyId,
         title: story.title,
@@ -956,6 +976,8 @@ router.post("/seed-library", async (req, res) => {
         castingData,
         qc: qcResult,
         qcScore: qcResult.score_total,
+        categoryId: seedCategoryId,
+        subthemeId: seedSubthemeId,
       });
 
       const qcRecord: QcRecord = {

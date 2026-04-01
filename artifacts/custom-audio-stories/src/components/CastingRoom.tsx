@@ -725,18 +725,8 @@ const CASTING_STORAGE_KEY = "casting-room-session";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark }: Props) {
-  // Load from localStorage if no handoff provided
-  const getInitialState = () => {
-    if (handoff) return handoff;
-    try {
-      const stored = localStorage.getItem(CASTING_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const initialHandoff = getInitialState();
+  // Always start fresh — never restore from localStorage
+  const initialHandoff = handoff ?? null;
 
   const [step, setStep] = useState(initialHandoff?.handoffStep ?? handoffStep ?? 0);
   const [data, setData] = useState<Partial<CastingRoomResult>>({
@@ -1508,33 +1498,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                       <button
                         type="button"
                         onClick={() => {
-                          const handoffPayload: CastingRoomHandoff = {
-                            pairing: data.pairing,
-                            chemistry: data.chemistry,
-                            perspective: data.perspective,
-                            archetype: data.archetype,
-                            heritage: data.heritage,
-                            dynamic: data.dynamic,
-                            whoIsHe: data.whoIsHe,
-                            mood: data.mood,
-                            setting: data.setting,
-                            atmosphere: data.atmosphere,
-                            country: data.country,
-                            city: data.city,
-                            listenerName,
-                            partnerName,
-                            appearBuild,
-                            appearHeight,
-                            appearColouring,
-                            appearEyes,
-                            appearFeatures,
-                            situation: situationLabel,
-                            situationId,
-                            customTags,
-                          };
-                          try {
-                            sessionStorage.setItem("afterDarkHandoff", JSON.stringify(handoffPayload));
-                          } catch { /* ignore quota errors */ }
                           window.location.href = `${import.meta.env.BASE_URL}after-dark`;
                         }}
                         className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:opacity-80"
@@ -1820,23 +1783,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               partnerPronouns={rawPartnerPronouns}
               isSameGender={isSameGender}
               onAfterDark={!afterDark && onAfterDark ? () => {
-                const handoffData: CastingRoomHandoff = {
-                  ...data,
-                  listenerName: listenerName || undefined,
-                  partnerName: partnerName || undefined,
-                  appearBuild: appearBuild || undefined,
-                  appearHeight: appearHeight || undefined,
-                  appearColouring: appearColouring || undefined,
-                  appearEyes: appearEyes || undefined,
-                  appearFeatures: appearFeatures.length ? appearFeatures : undefined,
-                  situation: situationLabel || undefined,
-                  situationId: situationId || undefined,
-                  customTags: customTags.length ? customTags : undefined,
-                  handoffStep: 8,
-                };
-                try {
-                  sessionStorage.setItem("afterDarkHandoff", JSON.stringify(handoffData));
-                } catch { /* ignore */ }
                 onAfterDark();
               } : undefined}
             />

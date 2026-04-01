@@ -1203,24 +1203,12 @@ export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [castingHandoff, setCastingHandoff] = useState<CastingRoomHandoff | null>(null);
+  const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
   // confirmedPairing: the most recently known pairing — set from handoff on load,
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
 
-  // Read any handoff state saved by the standard casting room gateway
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem("afterDarkHandoff");
-      if (raw) {
-        const parsed = JSON.parse(raw) as CastingRoomHandoff;
-        setCastingHandoff(parsed);
-        if (parsed.pairing) setConfirmedPairing(parsed.pairing);
-        sessionStorage.removeItem("afterDarkHandoff");
-        // Keep on scenario phase — user must choose a fantasy before casting begins
-      }
-    } catch { /* ignore parse errors */ }
-  }, []);
+  // Always start fresh — no handoff from regular casting room
 
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);

@@ -13,14 +13,14 @@ export interface Voice {
 
 export const VOICES: Voice[] = [
   {
-    id: "IaDFOlnnCT0PtDisEmcR",
+    id: "FA6HhUjVbervLw2rNl8M",
     displayName: "Clara",
-    label: "Warm",
+    label: "Soothing",
     accent: "British",
     accentLabel: "British · Warm",
-    desc: "Warm, expressive narration. Present and immediate, with a natural quality that draws you straight into the scene.",
+    desc: "Warm, measured narration. Nothing rushed. Everything allowed to breathe, drawing you in completely.",
     presence: "Feels genuine, warm, and completely unhurried.",
-    bestFor: "All moods · First listen · Natural delivery",
+    bestFor: "All moods · First listen · Calm presence",
     gender: "female",
     recommended: true,
   },
@@ -36,27 +36,17 @@ export const VOICES: Voice[] = [
     gender: "female",
   },
   {
-    id: "FA6HhUjVbervLw2rNl8M",
-    displayName: "Isla",
-    label: "Unhurried",
-    accent: "British",
-    accentLabel: "British · Refined",
-    desc: "Measured and soothing. Nothing rushed. Everything allowed to breathe.",
-    bestFor: "Bedtime · Calm stories · Softer romance",
-    gender: "female",
-  },
-  {
-    id: "GnBFl759Iuvi5mfB5b2x",
+    id: "aTxZrSrp47xsP6Ot4Kgd",
     displayName: "Kayla",
     label: "Expressive",
     accent: "American",
     accentLabel: "American · Warm",
-    desc: "Expressive and warm. Rich emotion on every line, delivered with natural American warmth.",
-    bestFor: "Emotional scenes · Romance · Warmth",
+    desc: "Expressive and calm. Rich narrative delivery with natural warmth and engaging presence.",
+    bestFor: "Emotional scenes · Romance · Engaging tone",
     gender: "female",
   },
   {
-    id: "pvVzZzZWR8S5FsiMztVE",
+    id: "AeRdCCKzvd23BpJoofzx",
     displayName: "Nathaniel",
     label: "Assured",
     accent: "British",
@@ -66,13 +56,6 @@ export const VOICES: Voice[] = [
     bestFor: "Tension · Drama · His perspective",
     gender: "male",
     recommended: true,
-  },
-  {
-    id: "AeRdCCKzvd23BpJoofzx",
-    label: "Low",
-    accent: "British",
-    desc: "Low and controlled. Tension held under the surface throughout.",
-    gender: "male",
   },
   {
     id: "n1PvBOwxb8X6m7tahp2h",
@@ -95,8 +78,8 @@ export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 
 export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
-export const DEFAULT_FEMALE_VOICE_ID = "IaDFOlnnCT0PtDisEmcR";
-export const DEFAULT_MALE_VOICE_ID   = "pvVzZzZWR8S5FsiMztVE";
+export const DEFAULT_FEMALE_VOICE_ID = "FA6HhUjVbervLw2rNl8M";
+export const DEFAULT_MALE_VOICE_ID   = "AeRdCCKzvd23BpJoofzx";
 
 export function getDefaultVoiceId(pairing?: string): string {
   if (pairing && VALID_MALE_PAIRINGS.includes(pairing)) return DEFAULT_MALE_VOICE_ID;

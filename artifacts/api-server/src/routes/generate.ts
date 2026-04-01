@@ -1201,22 +1201,19 @@ export function getCacheKey(data: object): string {
 // Voice catalogue
 // ---------------------------------------------------------------------------
 
-const DEFAULT_VOICE_ID = "IaDFOlnnCT0PtDisEmcR"; // Clara (Warm)
+const DEFAULT_VOICE_ID = "FA6HhUjVbervLw2rNl8M"; // Clara (Soothing)
 
 // All available voice IDs
 const VOICE_CATALOGUE: Record<string, { label: string; gender: "female" | "male" }> = {
-  "IaDFOlnnCT0PtDisEmcR": { label: "Warm", gender: "female" },      // Clara
-  "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },     // Maya
-  "FA6HhUjVbervLw2rNl8M": { label: "Unhurried", gender: "female" }, // Isla
-  "GnBFl759Iuvi5mfB5b2x": { label: "Expressive", gender: "female" }, // Kayla
-  "pvVzZzZWR8S5FsiMztVE": { label: "Assured", gender: "male" },     // Nathaniel
-  "AeRdCCKzvd23BpJoofzx": { label: "Low", gender: "male" },
+  "FA6HhUjVbervLw2rNl8M": { label: "Soothing", gender: "female" },   // Clara
+  "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },      // Maya
+  "aTxZrSrp47xsP6Ot4Kgd": { label: "Expressive", gender: "female" }, // Kayla
+  "AeRdCCKzvd23BpJoofzx": { label: "Assured", gender: "male" },      // Nathaniel
   "n1PvBOwxb8X6m7tahp2h": { label: "Deep", gender: "male" },
   "jfIS2w2yJi0grJZPyEsk": { label: "Heavy", gender: "male" },
 };
 
 const MALE_VOICE_IDS = [
-  "pvVzZzZWR8S5FsiMztVE",
   "AeRdCCKzvd23BpJoofzx",
   "n1PvBOwxb8X6m7tahp2h",
   "jfIS2w2yJi0grJZPyEsk",

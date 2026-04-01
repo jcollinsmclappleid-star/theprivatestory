@@ -1099,23 +1099,23 @@ router.post("/seed-library", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 const LIBRARY_AUDIO_VOICE: Record<string, string> = {
-  forbidden_complicated:       "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
-  professional_crossing_lines: "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
-  power_tension:               "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
+  forbidden_complicated:       "FA6HhUjVbervLw2rNl8M", // Clara (Soothing)
+  professional_crossing_lines: "FA6HhUjVbervLw2rNl8M", // Clara (Soothing)
+  power_tension:               "FA6HhUjVbervLw2rNl8M", // Clara (Soothing)
   secrets_unspoken:            "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
   reunion_return:              "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
   psychological_obsessive:     "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
-  slow_burn_patience:          "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
-  circumstance_proximity:      "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
-  first_unknown:               "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
-  dark_dangerous:              "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
+  slow_burn_patience:          "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
+  circumstance_proximity:      "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
+  first_unknown:               "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
+  dark_dangerous:              "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
 };
 
 // When a situationId already has one story voiced, use the alternate female voice
 const VOICE_ALTERNATE: Record<string, string> = {
-  "IaDFOlnnCT0PtDisEmcR": "tQ4MEZFJOzsahSEEZtHK", // Clara → Maya
-  "tQ4MEZFJOzsahSEEZtHK": "IaDFOlnnCT0PtDisEmcR", // Maya → Clara
-  "FA6HhUjVbervLw2rNl8M": "tQ4MEZFJOzsahSEEZtHK", // Isla → Maya
+  "FA6HhUjVbervLw2rNl8M": "tQ4MEZFJOzsahSEEZtHK", // Clara → Maya
+  "tQ4MEZFJOzsahSEEZtHK": "FA6HhUjVbervLw2rNl8M", // Maya → Clara
+  "aTxZrSrp47xsP6Ot4Kgd": "tQ4MEZFJOzsahSEEZtHK", // Kayla → Maya
 };
 
 router.post("/generate-library-audio", async (req: Request, res: Response) => {
@@ -1161,7 +1161,7 @@ router.post("/generate-library-audio", async (req: Request, res: Response) => {
       const scenes = (row.scenes || []) as Array<{ heading?: string; text?: string }>;
 
       // Pick voice — alternate if duplicate situationId already processed
-      const primaryVoice = LIBRARY_AUDIO_VOICE[categoryId] ?? "IaDFOlnnCT0PtDisEmcR";
+      const primaryVoice = LIBRARY_AUDIO_VOICE[categoryId] ?? "FA6HhUjVbervLw2rNl8M";
       const voiceId = sitVoiceUsed[situationId]
         ? (VOICE_ALTERNATE[sitVoiceUsed[situationId]] ?? primaryVoice)
         : primaryVoice;

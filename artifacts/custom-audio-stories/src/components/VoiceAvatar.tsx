@@ -4,14 +4,12 @@ interface VoiceAvatarProps {
 }
 
 const AVATAR_IMAGES: Record<string, string> = {
-  IaDFOlnnCT0PtDisEmcR: "images/avatar-eleanor.png",  // Clara
+  FA6HhUjVbervLw2rNl8M: "images/avatar-eleanor.png",  // Clara
   tQ4MEZFJOzsahSEEZtHK: "images/avatar-maya.png",     // Maya
-  FA6HhUjVbervLw2rNl8M: "images/avatar-isla.png",     // Isla
-  GnBFl759Iuvi5mfB5b2x: "images/avatar-maya.png",     // Kayla (reuses Maya slot)
-  pvVzZzZWR8S5FsiMztVE: "images/avatar-nathaniel.png", // Nathaniel
-  AeRdCCKzvd23BpJoofzx: "images/avatar-eleanor.png",
+  aTxZrSrp47xsP6Ot4Kgd: "images/avatar-maya.png",     // Kayla (reuses Maya slot)
+  AeRdCCKzvd23BpJoofzx: "images/avatar-nathaniel.png", // Nathaniel
   n1PvBOwxb8X6m7tahp2h: "images/avatar-maya.png",
-  jfIS2w2yJi0grJZPyEsk: "images/avatar-isla.png",
+  jfIS2w2yJi0grJZPyEsk: "images/avatar-eleanor.png",
 };
 
 export function VoiceAvatar({ voiceId, size = "md" }: VoiceAvatarProps) {

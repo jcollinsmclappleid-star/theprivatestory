@@ -111,12 +111,10 @@ router.get("/voice-samples/:voiceId", (req: Request, res: Response) => {
   const { voiceId } = req.params;
   // Whitelist of valid voice IDs to prevent path traversal
   const validVoiceIds = [
-    "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
+    "FA6HhUjVbervLw2rNl8M", // Clara (Soothing)
     "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
-    "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
-    "GnBFl759Iuvi5mfB5b2x", // Kayla (Expressive)
-    "pvVzZzZWR8S5FsiMztVE", // Nathaniel (Assured)
-    "AeRdCCKzvd23BpJoofzx", // Low
+    "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
+    "AeRdCCKzvd23BpJoofzx", // Nathaniel (Assured)
     "n1PvBOwxb8X6m7tahp2h", // Deep
     "jfIS2w2yJi0grJZPyEsk", // Heavy
   ];

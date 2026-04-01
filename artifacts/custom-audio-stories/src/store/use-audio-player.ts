@@ -61,14 +61,14 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       isPlaying: false,
       progress: 0,
       currentTime: 0,
-      duration: 300,
+      duration: 0,
       ambientMode: null,
       ambientVolume: 0.2,
 
       play: (story) => {
         if (story) {
           if (get().currentStory?.id !== story.id) {
-            set({ currentStory: story, progress: 0, currentTime: 0, isPlaying: true });
+            set({ currentStory: story, progress: 0, currentTime: 0, duration: 0, isPlaying: true });
 
             fetch(`${API_BASE}/api/progress?storyId=${encodeURIComponent(story.id)}`, {
               credentials: "include",

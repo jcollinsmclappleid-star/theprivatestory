@@ -75,15 +75,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         handlePlay(currentStory.id, currentStory.mood ?? "");
         simulationIntervalRef.current = window.setInterval(() => {
           useAudioPlayer.setState((state) => {
+            const dur = state.duration > 0 ? state.duration : 300;
             const nextTime = state.currentTime + 1;
-            if (nextTime >= state.duration) {
+            if (nextTime >= dur) {
               clearInterval(simulationIntervalRef.current!);
               if (state.currentStory) {
                 trackCompletion(state.currentStory.id, state.currentStory.mood ?? "");
               }
-              return { currentTime: state.duration, progress: 1, isPlaying: false };
+              return { currentTime: dur, progress: 1, isPlaying: false };
             }
-            return { currentTime: nextTime, progress: nextTime / state.duration };
+            return { currentTime: nextTime, progress: nextTime / dur };
           });
         }, 1000);
       } else if (simulationIntervalRef.current) {
@@ -163,13 +164,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         src={currentStory?.audioUrl || undefined}
         onTimeUpdate={(e) => {
           const t = e.currentTarget.currentTime;
-          const d = e.currentTarget.duration || duration;
+          const d = e.currentTarget.duration;
           setCurrentTime(t);
-          setProgress(t / d);
+          if (d && isFinite(d) && d > 0) {
+            setProgress(t / d);
+          }
         }}
         onLoadedMetadata={(e) => {
-          if (e.currentTarget.duration !== Infinity) {
-            setDuration(e.currentTarget.duration);
+          const d = e.currentTarget.duration;
+          if (d && isFinite(d) && d > 0) {
+            setDuration(d);
           }
         }}
         onEnded={handleEnded}

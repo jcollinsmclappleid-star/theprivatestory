@@ -151,7 +151,7 @@ export default function StoryDetail() {
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-2 font-mono">
               <span>{isCurrent ? formatTime(currentTime) : "0:00"}</span>
-              <span>{isCurrent ? formatTime(duration) : story.duration}</span>
+              <span>{isCurrent && duration > 0 ? formatTime(duration) : (story.duration || '–:––')}</span>
             </div>
           </div>
 

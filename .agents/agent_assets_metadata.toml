@@ -42,6 +42,42 @@ uri = "file://artifacts/custom-audio-stories/public/images/avatar-nathaniel.png"
 type = "image"
 title = "nathaniel avatar portrait"
 
+[[generated]]
+id = "HEu6pzsXnFBr2oXOSdsnx"
+uri = "file://artifacts/custom-audio-stories/public/cover-romance.png"
+type = "image"
+title = "Romance story cover"
+
+[[generated]]
+id = "Cej9eK2N3VMjSqlZ6wmc7"
+uri = "file://artifacts/custom-audio-stories/public/cover-slow-burn.png"
+type = "image"
+title = "Slow burn story cover"
+
+[[generated]]
+id = "rDCOobAtiU4FY6ark9ppN"
+uri = "file://artifacts/custom-audio-stories/public/cover-passionate.png"
+type = "image"
+title = "Passionate story cover"
+
+[[generated]]
+id = "pn3KNoiGUvq7nfhF1q4la"
+uri = "file://artifacts/custom-audio-stories/public/cover-playful.png"
+type = "image"
+title = "Playful story cover"
+
+[[generated]]
+id = "Y0ampthfD7CzHANyRG2uV"
+uri = "file://artifacts/custom-audio-stories/public/cover-nostalgic.png"
+type = "image"
+title = "Nostalgic story cover"
+
+[[generated]]
+id = "wM1tAXXekFVHDMmbq8VyN"
+uri = "file://artifacts/custom-audio-stories/public/cover-forbidden.png"
+type = "image"
+title = "Forbidden story cover"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

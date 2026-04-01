@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Lock, Moon } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Lock, Moon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -752,6 +752,7 @@ export default function Create() {
   const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; renewDate: string | null } | null>(null);
   const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string } | null>(null);
   const [continueAfterDark, setContinueAfterDark] = useState(false);
+  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | null>(null);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -2732,11 +2733,26 @@ export default function Create() {
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
 
-          const handleUnlock = () => {
+          const startCheckoutFromPaywall = async (plan: "monthly" | "annual") => {
+            try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
             if (continueAfterDark) {
               try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }
             }
-            window.location.href = `${import.meta.env.BASE_URL}pricing`;
+            setPaywallLoadingPlan(plan);
+            try {
+              const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan }),
+              });
+              const data = await res.json();
+              if (res.ok && data.url) {
+                window.location.href = data.url;
+                return;
+              }
+            } catch { /* silent */ }
+            setPaywallLoadingPlan(null);
           };
 
           return (
@@ -2759,7 +2775,7 @@ export default function Create() {
               }} />
 
               {/* Content */}
-              <div className="relative z-10 w-full max-w-md mx-auto px-4 py-12 flex flex-col items-center gap-6">
+              <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 overflow-y-auto max-h-screen">
                 {/* Badge */}
                 <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest">
                   <Lock className="w-3 h-3" />
@@ -2825,20 +2841,62 @@ export default function Create() {
                   </div>
                 </button>
 
-                {/* CTA */}
+                {/* Outcome headline + privacy line */}
+                <div className="w-full text-center space-y-1.5 pt-1">
+                  <h3 className="font-display text-xl font-bold text-foreground leading-snug">
+                    50 private stories a year.<br />Yours, completely.
+                  </h3>
+                  <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+                    <Lock className="w-3 h-3 text-primary/50 flex-shrink-0" />
+                    Private by design. Nothing stored beyond you.
+                  </p>
+                </div>
+
+                {/* Recommended annual plan card */}
+                <div className="w-full rounded-2xl border border-primary/40 bg-primary/5 p-5 flex flex-col gap-4 relative">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
+                    Recommended
+                  </div>
+                  <div className="flex items-end justify-between gap-3 pt-1">
+                    <div>
+                      <p className="text-xs text-primary/70 font-medium uppercase tracking-widest mb-1">Annual</p>
+                      <p className="font-display text-3xl font-bold text-foreground">£179</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">£14.92/month · 50 stories</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed text-right max-w-[140px]">
+                      A full year of stories, written for you.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!!paywallLoadingPlan}
+                    onClick={() => startCheckoutFromPaywall("annual")}
+                    className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-glow disabled:opacity-60 flex items-center justify-center gap-2"
+                  >
+                    {paywallLoadingPlan === "annual"
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : null}
+                    Start my year of stories
+                  </button>
+                </div>
+
+                {/* Quiet monthly secondary */}
                 <button
                   type="button"
-                  onClick={handleUnlock}
-                  className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all shadow-glow flex items-center justify-center gap-2"
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => startCheckoutFromPaywall("monthly")}
+                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
                 >
-                  <Lock className="w-4 h-4" />
-                  Unlock your private story
+                  {paywallLoadingPlan === "monthly"
+                    ? <Loader2 className="w-3 h-3 animate-spin" />
+                    : null}
+                  Or try monthly — £29/month · 5 stories
                 </button>
 
                 <button
                   type="button"
                   onClick={() => { setStep("form"); setGenerationError(null); }}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
                   Back to story settings
                 </button>

@@ -35,9 +35,9 @@ channel = "stable-25_05"
 BETTER_AUTH_SECRET = "6755e0eb33dc17459611d077cae39120dafad6d899ca327913919399b3dbf76f"
 ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 VITE_ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
-STRIPE_MONTHLY_PRICE_ID = "price_1THSuyDv8IzJrrwIWL1kcMN1"
 STRIPE_ANNUAL_PRICE_ID = "price_1THStNDv8IzJrrwIYRL4aGqq"
-STRIPE_ADDON_PRICE_ID = "price_1THSrLDv8IzJrrwIlYgcIJ1C"
+STRIPE_MONTHLY_PRICE_ID = "price_1THSrLDv8IzJrrwIlYgcIJ1C"
+STRIPE_ADDON_PRICE_ID = "price_1THSuyDv8IzJrrwIWL1kcMN1"
 
 [userenv.development]
 SITE_URL = "https://5e7606d7-ad46-420d-b8cd-9fb7055150fc-00-38xw9k6c4nxsw.riker.replit.dev/custom-audio-stories"

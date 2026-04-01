@@ -1169,17 +1169,33 @@ router.post("/generate-library-audio", async (req: Request, res: Response) => {
 
       send("progress", { index: done + failed + 1, total, storyId, title, voiceId, status: "generating" });
 
-      try {
-        const sceneObjs: Scene[] = scenes.map((s, i) => ({
-          id: i + 1,
-          heading: s.heading ?? `Scene ${i + 1}`,
-          text: s.text ?? "",
-          visualPrompt: "",
-          durationEstimate: 60,
-        }));
+      const sceneObjs: Scene[] = scenes.map((s, i) => ({
+        id: i + 1,
+        heading: s.heading ?? `Scene ${i + 1}`,
+        text: s.text ?? "",
+        visualPrompt: "",
+        durationEstimate: 60,
+      }));
 
-        const audioUrl = await generateAudioFile(sceneObjs, voiceId, storyId);
+      let audioUrl: string | null = null;
+      let lastErr: unknown = null;
 
+      // Try up to 2 attempts, waiting 12 s before the retry (ElevenLabs rate-limit back-off)
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          audioUrl = await generateAudioFile(sceneObjs, voiceId, storyId);
+          lastErr = null;
+          break;
+        } catch (err) {
+          lastErr = err;
+          if (attempt === 0) {
+            send("progress", { index: done + failed + 1, total, storyId, title, voiceId, status: "generating", retrying: true });
+            await new Promise(r => setTimeout(r, 12000));
+          }
+        }
+      }
+
+      if (audioUrl !== null && lastErr === null) {
         // Estimate duration from word count (~140 words/min narration pace)
         const wordCount = sceneObjs.reduce((sum, s) => sum + s.text.split(/\s+/).filter(Boolean).length, 0);
         const durationMins = Math.max(1, Math.round(wordCount / 140));
@@ -1200,13 +1216,16 @@ router.post("/generate-library-audio", async (req: Request, res: Response) => {
 
         done++;
         send("progress", { index: done + failed, total, storyId, title, voiceId, status: "done", audioUrl, duration: durationStr });
-      } catch (err) {
+      } else {
         failed++;
         send("progress", {
           index: done + failed, total, storyId, title, voiceId, status: "error",
-          error: err instanceof Error ? err.message : String(err),
+          error: lastErr instanceof Error ? lastErr.message : String(lastErr),
         });
       }
+
+      // Pace requests — give ElevenLabs 3 s between stories
+      await new Promise(r => setTimeout(r, 3000));
     }
 
     send("complete", { done, failed, total, message: `Audio generation complete — ${done} done, ${failed} failed` });

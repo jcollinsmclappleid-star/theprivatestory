@@ -76,12 +76,26 @@ export const VOICES: Voice[] = [
 export const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
 export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 
+export const NATHANIEL_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
+
 export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
 export const DEFAULT_FEMALE_VOICE_ID = "FA6HhUjVbervLw2rNl8M";
 export const DEFAULT_MALE_VOICE_ID   = "AeRdCCKzvd23BpJoofzx";
 
+const HER_HER = "Her & Her";
+const ALL_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
+
+const NATHANIEL = VOICES.find(v => v.id === NATHANIEL_VOICE_ID)!;
+
+export function getVoicesForPairing(pairing: string | undefined): Voice[] {
+  if (!pairing) return FEMALE_VOICES;
+  if (pairing === HER_HER) return FEMALE_VOICES;
+  if (ALL_MALE_PAIRINGS.includes(pairing)) return MALE_VOICES;
+  return [...FEMALE_VOICES, NATHANIEL];
+}
+
 export function getDefaultVoiceId(pairing?: string): string {
-  if (pairing && VALID_MALE_PAIRINGS.includes(pairing)) return DEFAULT_MALE_VOICE_ID;
+  if (pairing && ALL_MALE_PAIRINGS.includes(pairing)) return DEFAULT_MALE_VOICE_ID;
   return DEFAULT_FEMALE_VOICE_ID;
 }

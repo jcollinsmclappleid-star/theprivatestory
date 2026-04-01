@@ -4,7 +4,7 @@ import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuf
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
-import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS, DEFAULT_FEMALE_VOICE_ID, DEFAULT_MALE_VOICE_ID } from "../lib/voices";
+import { VOICES, DEFAULT_FEMALE_VOICE_ID, getVoicesForPairing, getDefaultVoiceId } from "../lib/voices";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
 
@@ -806,6 +806,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           delete next.perspective;
         }
         setStep8NoteDismissed(false);
+        setVoiceId(prev => {
+          const allowedVoices = getVoicesForPairing(value);
+          const stillValid = allowedVoices.some(v => v.id === prev);
+          return stillValid ? prev : getDefaultVoiceId(value);
+        });
       }
       return next;
     });
@@ -1976,8 +1981,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             </p>
 
             {(() => {
-              const isMalePairing = VALID_MALE_PAIRINGS.includes(data.pairing ?? "");
-              const voicesToShow = isMalePairing ? MALE_VOICES : FEMALE_VOICES;
+              const voicesToShow = getVoicesForPairing(data.pairing);
               const renderVoiceCard = (voice: typeof VOICES[0]) => {
                 const isSelected = voiceId === voice.id;
                 const displayTitle = voice.displayName

@@ -785,7 +785,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     }
   }, [step, data, customTags, listenerName, partnerName, appearBuild, appearHeight, appearColouring, appearEyes, appearFeatures, situationLabel, situationId]);
   const [cfmMode, setCfmMode] = useState<"none" | "cfm">("none");
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([SITUATION_CATEGORIES[0]]));
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   // Scroll to top whenever the step changes
   const topRef = useRef<HTMLDivElement>(null);

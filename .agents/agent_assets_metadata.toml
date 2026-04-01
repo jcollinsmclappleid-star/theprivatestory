@@ -78,6 +78,24 @@ uri = "file://artifacts/custom-audio-stories/public/cover-forbidden.png"
 type = "image"
 title = "Forbidden story cover"
 
+[[generated]]
+id = "wIYv0umKQAk5znNwczZv6"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-nathaniel-new.png"
+type = "image"
+title = "Nathaniel - British male portrait"
+
+[[generated]]
+id = "dPLuIhUcwv2LbWeME_7XQ"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-oliver.png"
+type = "image"
+title = "Oliver - British male portrait"
+
+[[generated]]
+id = "I4cAuGfWP6BvN3naC_US6"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-caleb.png"
+type = "image"
+title = "Caleb - American male portrait"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

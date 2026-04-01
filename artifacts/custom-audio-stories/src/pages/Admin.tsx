@@ -1365,18 +1365,30 @@ export default function Admin() {
                     ))}
                   </div>
                 </div>
-                <button
-                  onClick={() => seedLibrary()}
-                  disabled={clearStatus === "clearing"}
-                  className={`w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition ${
-                    seedRunning ? "bg-red-600 hover:bg-red-500 text-white" : "bg-violet-600 hover:bg-violet-500 text-white"
-                  }`}
-                >
-                  {seedRunning
-                    ? `Stop (${seedItems.filter(i => i.status === "done").length} done)`
-                    : `Seed All${manifestEntries.filter(e => !e.seeded).length > 0 ? ` (${manifestEntries.filter(e => !e.seeded).length} missing)` : " (all done)"}`
-                  }
-                </button>
+                {manifestEntries.length === 0 && !seedRunning ? (
+                  <button
+                    onClick={loadManifest}
+                    disabled={manifestLoading}
+                    className="w-full px-4 py-2.5 rounded-lg text-sm font-semibold bg-white/10 text-white/70 transition disabled:opacity-40"
+                  >
+                    {manifestLoading ? "Loading…" : "↻ Check Status"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => seedLibrary()}
+                    disabled={clearStatus === "clearing"}
+                    className={`w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition ${
+                      seedRunning ? "bg-red-600 hover:bg-red-500 text-white" : "bg-violet-600 hover:bg-violet-500 text-white"
+                    }`}
+                  >
+                    {seedRunning
+                      ? `Stop (${seedItems.filter(i => i.status === "done").length} done)`
+                      : manifestEntries.filter(e => !e.seeded).length > 0
+                        ? `Seed Missing (${manifestEntries.filter(e => !e.seeded).length})`
+                        : "All seeded ✓"
+                    }
+                  </button>
+                )}
                 {seedRunning && (
                   <div className="w-full bg-white/10 rounded-full h-1">
                     <div className="bg-violet-500 h-1 rounded-full transition-all" style={{ width: `${(seedItems.filter(i => i.status === "done").length / Math.max(manifestEntries.length, 1)) * 100}%` }} />

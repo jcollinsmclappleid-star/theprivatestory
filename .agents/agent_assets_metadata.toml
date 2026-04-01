@@ -36,6 +36,12 @@ uri = "file://artifacts/custom-audio-stories/public/images/avatar-isla.png"
 type = "image"
 title = "Abstract Isla feminine silhouette blue"
 
+[[generated]]
+id = "j4rv1uR7BK1Uh8aNODI4B"
+uri = "file://artifacts/custom-audio-stories/public/images/avatar-nathaniel.png"
+type = "image"
+title = "nathaniel avatar portrait"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

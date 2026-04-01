@@ -13,14 +13,14 @@ export interface Voice {
 
 export const VOICES: Voice[] = [
   {
-    id: "RILOU7YmBhvwJGDGjNmP",
-    displayName: "Eleanor",
-    label: "Classic",
+    id: "IaDFOlnnCT0PtDisEmcR",
+    displayName: "Clara",
+    label: "Warm",
     accent: "British",
-    accentLabel: "British · Refined",
-    desc: "Warm, composed narration. Unhurried, precise, and emotionally controlled. Every word lands exactly where it should.",
-    presence: "Feels composed, grounded, and emotionally steady.",
-    bestFor: "Emotional tension · First listen · Slow burn" as const,
+    accentLabel: "British · Warm",
+    desc: "Warm, expressive narration. Present and immediate, with a natural quality that draws you straight into the scene.",
+    presence: "Feels genuine, warm, and completely unhurried.",
+    bestFor: "All moods · First listen · Natural delivery",
     gender: "female",
     recommended: true,
   },
@@ -44,6 +44,28 @@ export const VOICES: Voice[] = [
     desc: "Measured and soothing. Nothing rushed. Everything allowed to breathe.",
     bestFor: "Bedtime · Calm stories · Softer romance",
     gender: "female",
+  },
+  {
+    id: "GnBFl759Iuvi5mfB5b2x",
+    displayName: "Kayla",
+    label: "Expressive",
+    accent: "American",
+    accentLabel: "American · Warm",
+    desc: "Expressive and warm. Rich emotion on every line, delivered with natural American warmth.",
+    bestFor: "Emotional scenes · Romance · Warmth",
+    gender: "female",
+  },
+  {
+    id: "pvVzZzZWR8S5FsiMztVE",
+    displayName: "Nathaniel",
+    label: "Assured",
+    accent: "British",
+    accentLabel: "British · Engaging",
+    desc: "Warm and assured. An engaging British delivery that pulls you in and keeps you there.",
+    presence: "Feels present, grounded, and quietly compelling.",
+    bestFor: "Tension · Drama · His perspective",
+    gender: "male",
+    recommended: true,
   },
   {
     id: "AeRdCCKzvd23BpJoofzx",
@@ -71,13 +93,12 @@ export const VOICES: Voice[] = [
 export const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
 export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 
-export const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
+export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
-export const DEFAULT_FEMALE_VOICE_ID = "RILOU7YmBhvwJGDGjNmP";
-export const DEFAULT_MALE_VOICE_ID   = "AeRdCCKzvd23BpJoofzx";
+export const DEFAULT_FEMALE_VOICE_ID = "IaDFOlnnCT0PtDisEmcR";
+export const DEFAULT_MALE_VOICE_ID   = "pvVzZzZWR8S5FsiMztVE";
 
 export function getDefaultVoiceId(pairing?: string): string {
   if (pairing && VALID_MALE_PAIRINGS.includes(pairing)) return DEFAULT_MALE_VOICE_ID;
   return DEFAULT_FEMALE_VOICE_ID;
 }
-

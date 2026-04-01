@@ -1201,25 +1201,28 @@ export function getCacheKey(data: object): string {
 // Voice catalogue
 // ---------------------------------------------------------------------------
 
-const DEFAULT_VOICE_ID = "RILOU7YmBhvwJGDGjNmP"; // Jane (Classic)
+const DEFAULT_VOICE_ID = "IaDFOlnnCT0PtDisEmcR"; // Clara (Warm)
 
 // All available voice IDs
 const VOICE_CATALOGUE: Record<string, { label: string; gender: "female" | "male" }> = {
-  "RILOU7YmBhvwJGDGjNmP": { label: "Classic", gender: "female" }, // Jane
-  "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },   // Ivanna
-  "FA6HhUjVbervLw2rNl8M": { label: "Unhurried", gender: "female" }, // Ophelia Rose
-  "AeRdCCKzvd23BpJoofzx": { label: "Low", gender: "male" },       // Nathaniel
-  "n1PvBOwxb8X6m7tahp2h": { label: "Deep", gender: "male" },      // Michael C. Vincent
-  "jfIS2w2yJi0grJZPyEsk": { label: "Heavy", gender: "male" },     // Oliver Silk
+  "IaDFOlnnCT0PtDisEmcR": { label: "Warm", gender: "female" },      // Clara
+  "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },     // Maya
+  "FA6HhUjVbervLw2rNl8M": { label: "Unhurried", gender: "female" }, // Isla
+  "GnBFl759Iuvi5mfB5b2x": { label: "Expressive", gender: "female" }, // Kayla
+  "pvVzZzZWR8S5FsiMztVE": { label: "Assured", gender: "male" },     // Nathaniel
+  "AeRdCCKzvd23BpJoofzx": { label: "Low", gender: "male" },
+  "n1PvBOwxb8X6m7tahp2h": { label: "Deep", gender: "male" },
+  "jfIS2w2yJi0grJZPyEsk": { label: "Heavy", gender: "male" },
 };
 
 const MALE_VOICE_IDS = [
+  "pvVzZzZWR8S5FsiMztVE",
   "AeRdCCKzvd23BpJoofzx",
   "n1PvBOwxb8X6m7tahp2h",
   "jfIS2w2yJi0grJZPyEsk",
 ];
 
-const VALID_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
+const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
 // Legacy voice values → modern voice_id
 const LEGACY_VOICE_MAP: Record<string, string> = {

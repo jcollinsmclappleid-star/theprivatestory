@@ -1099,23 +1099,23 @@ router.post("/seed-library", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 const LIBRARY_AUDIO_VOICE: Record<string, string> = {
-  forbidden_complicated:       "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
-  professional_crossing_lines: "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
-  power_tension:               "RILOU7YmBhvwJGDGjNmP", // Jane (Classic)
-  secrets_unspoken:            "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
-  reunion_return:              "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
-  psychological_obsessive:     "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Close)
-  slow_burn_patience:          "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
-  circumstance_proximity:      "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
-  first_unknown:               "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
-  dark_dangerous:              "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Unhurried)
+  forbidden_complicated:       "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
+  professional_crossing_lines: "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
+  power_tension:               "IaDFOlnnCT0PtDisEmcR", // Clara (Warm)
+  secrets_unspoken:            "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
+  reunion_return:              "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
+  psychological_obsessive:     "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
+  slow_burn_patience:          "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
+  circumstance_proximity:      "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
+  first_unknown:               "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
+  dark_dangerous:              "FA6HhUjVbervLw2rNl8M", // Isla (Unhurried)
 };
 
 // When a situationId already has one story voiced, use the alternate female voice
 const VOICE_ALTERNATE: Record<string, string> = {
-  "RILOU7YmBhvwJGDGjNmP": "tQ4MEZFJOzsahSEEZtHK", // Jane → Ivanna
-  "tQ4MEZFJOzsahSEEZtHK": "RILOU7YmBhvwJGDGjNmP", // Ivanna → Jane
-  "FA6HhUjVbervLw2rNl8M": "tQ4MEZFJOzsahSEEZtHK", // Ophelia → Ivanna
+  "IaDFOlnnCT0PtDisEmcR": "tQ4MEZFJOzsahSEEZtHK", // Clara → Maya
+  "tQ4MEZFJOzsahSEEZtHK": "IaDFOlnnCT0PtDisEmcR", // Maya → Clara
+  "FA6HhUjVbervLw2rNl8M": "tQ4MEZFJOzsahSEEZtHK", // Isla → Maya
 };
 
 router.post("/generate-library-audio", async (req: Request, res: Response) => {
@@ -1161,7 +1161,7 @@ router.post("/generate-library-audio", async (req: Request, res: Response) => {
       const scenes = (row.scenes || []) as Array<{ heading?: string; text?: string }>;
 
       // Pick voice — alternate if duplicate situationId already processed
-      const primaryVoice = LIBRARY_AUDIO_VOICE[categoryId] ?? "RILOU7YmBhvwJGDGjNmP";
+      const primaryVoice = LIBRARY_AUDIO_VOICE[categoryId] ?? "IaDFOlnnCT0PtDisEmcR";
       const voiceId = sitVoiceUsed[situationId]
         ? (VOICE_ALTERNATE[sitVoiceUsed[situationId]] ?? primaryVoice)
         : primaryVoice;

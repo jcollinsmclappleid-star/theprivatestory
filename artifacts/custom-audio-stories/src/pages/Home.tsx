@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Zap, Moon,
   EyeOff, WifiOff, Trash2, Lock, BookOpen, Star,
-  ChevronLeft, Globe, Library, Shuffle, Check, PenLine,
+  ChevronLeft, Globe, Library, Shuffle, Check, PenLine, Loader2,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
@@ -821,6 +821,36 @@ export default function Home() {
     }
   }, [navigate]);
 
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const startCheckout = useCallback(async (plan: "monthly" | "annual") => {
+    if (!isAuthenticated) {
+      navigate("/pricing");
+      return;
+    }
+    setCheckoutLoading(plan);
+    setCheckoutError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setCheckoutError(data.error ?? "Could not start checkout. Please try again.");
+      }
+    } catch {
+      setCheckoutError("Something went wrong. Please try again.");
+    } finally {
+      setCheckoutLoading(null);
+    }
+  }, [isAuthenticated, navigate]);
+
   const tonightPicks = (isAuthenticated && recs.for_you.length > 0)
     ? (recs.for_you as Story[])
     : (stories?.slice(1, 9) || []);
@@ -1219,12 +1249,13 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <Link
-                  href="/pricing"
-                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all"
+                <button
+                  onClick={() => startCheckout("monthly")}
+                  disabled={checkoutLoading === "monthly"}
+                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
                 >
-                  Choose Monthly
-                </Link>
+                  {checkoutLoading === "monthly" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Monthly"}
+                </button>
               </div>
 
               {/* Annual */}
@@ -1247,12 +1278,13 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <Link
-                  href="/pricing"
-                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
+                <button
+                  onClick={() => startCheckout("annual")}
+                  disabled={checkoutLoading === "annual"}
+                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)] disabled:opacity-50"
                 >
-                  Choose Annual
-                </Link>
+                  {checkoutLoading === "annual" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Annual"}
+                </button>
               </div>
 
               {/* Add-on */}
@@ -1270,6 +1302,11 @@ export default function Home() {
               </div>
             </div>
 
+            {checkoutError && (
+              <div className="mb-4 px-4 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs text-center">
+                {checkoutError}
+              </div>
+            )}
             <div className="text-center space-y-2">
               <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/40">
                 {["Private library included", "Cancel monthly anytime", "Add more stories whenever you want"].map((item) => (
@@ -1330,11 +1367,11 @@ export default function Home() {
                     A deeper, darker side<br className="hidden md:block" />
                     <span className="text-[#7b8fff]"> of the experience.</span>
                   </h2>
-                  <p className="text-white/50 text-base leading-relaxed mb-3 max-w-md">
-                    For moments that call for something more intense. The same private storytelling — with a more charged atmosphere.
+                  <p className="text-white/60 text-base leading-relaxed mb-2 max-w-md">
+                    Premium adult audio stories — written for you, narrated for you, private to you. Darker scenarios, more charged atmosphere, the same complete creative control.
                   </p>
                   <p className="text-white/30 text-sm leading-relaxed mb-8 max-w-md">
-                    The same Casting Room depth — the same 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
+                    The same Casting Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-8">
@@ -1353,10 +1390,13 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2 text-[#7b8fff] group-hover:text-[#9baeff] transition-colors">
-                    <Star className="w-4 h-4 fill-current opacity-60" />
-                    <span className="text-sm font-semibold tracking-wide">Enter After Dark</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#7b8fff]/15 border border-[#7b8fff]/30 text-[#9baeff] text-sm font-semibold group-hover:bg-[#7b8fff]/25 group-hover:border-[#7b8fff]/50 transition-all">
+                      <Moon className="w-4 h-4" />
+                      Enter After Dark
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    <span className="text-[#7b8fff]/40 text-xs">Included with your subscription</span>
                   </div>
                 </div>
 

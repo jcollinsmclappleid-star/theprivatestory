@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag, Trash2, Search, X, SortAsc, SortDesc } from "lucide-react";
-import { Link } from "wouter";
+import { BookOpen, Sparkles, Clock, Shuffle, Play, Heart, HeartOff, RotateCcw, LogIn, Flag, Trash2, Search, X, SortAsc, SortDesc, Lock } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story, FullGeneratedStory } from "@workspace/api-client-react";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { ReportStoryModal } from "@/components/ReportStoryModal";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -253,6 +254,8 @@ const TAB_CONFIG = [
 
 export default function Library() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const { isPaid } = useSubscription();
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<LibraryTab>("saved");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
@@ -472,12 +475,24 @@ export default function Library() {
                 )
               ) : (
                 filteredSaved.map((story) => (
-                  <StoryCard
-                    key={story.id}
-                    story={story}
-                    isSaved
-                    onUnsave={() => handleUnsave(story.id)}
-                  />
+                  <div key={story.id} className="relative">
+                    <StoryCard
+                      story={story}
+                      isSaved
+                      onUnsave={() => handleUnsave(story.id)}
+                    />
+                    {!isPaid && (
+                      <button
+                        className="absolute inset-0 z-10 rounded-2xl group"
+                        onClick={() => navigate("/pricing")}
+                        aria-label="Subscribe to read"
+                      >
+                        <span className="absolute bottom-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Lock className="w-2.5 h-2.5" /> Subscribe
+                        </span>
+                      </button>
+                    )}
+                  </div>
                 ))
               )
             )}
@@ -507,6 +522,17 @@ export default function Library() {
                         isGenerated
                         onDeleted={() => setGenerated(prev => prev.filter(st => st.id !== s.id))}
                       />
+                      {!isPaid && (
+                        <button
+                          className="absolute inset-0 z-20 rounded-2xl group"
+                          onClick={() => navigate("/pricing")}
+                          aria-label="Subscribe to read"
+                        >
+                          <span className="absolute bottom-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Lock className="w-2.5 h-2.5" /> Subscribe
+                          </span>
+                        </button>
+                      )}
                     </div>
                   );
                 })
@@ -518,12 +544,24 @@ export default function Library() {
                 <EmptyState tab="continue" />
               ) : (
                 inProgress.map((item) => (
-                  <StoryCard
-                    key={item.id}
-                    story={item as Story}
-                    showProgress
-                    progress={item.progress}
-                  />
+                  <div key={item.id} className="relative">
+                    <StoryCard
+                      story={item as Story}
+                      showProgress
+                      progress={item.progress}
+                    />
+                    {!isPaid && (
+                      <button
+                        className="absolute inset-0 z-10 rounded-2xl group"
+                        onClick={() => navigate("/pricing")}
+                        aria-label="Subscribe to read"
+                      >
+                        <span className="absolute bottom-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Lock className="w-2.5 h-2.5" /> Subscribe
+                        </span>
+                      </button>
+                    )}
+                  </div>
                 ))
               )
             )}
@@ -559,6 +597,17 @@ export default function Library() {
                         isGenerated
                         onDeleted={() => setVariations(prev => prev.filter(st => st.id !== story.id))}
                       />
+                      {!isPaid && (
+                        <button
+                          className="absolute inset-0 z-20 rounded-2xl group"
+                          onClick={() => navigate("/pricing")}
+                          aria-label="Subscribe to read"
+                        >
+                          <span className="absolute bottom-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Lock className="w-2.5 h-2.5" /> Subscribe
+                          </span>
+                        </button>
+                      )}
                     </div>
                   );
                 })

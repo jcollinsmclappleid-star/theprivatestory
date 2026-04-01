@@ -2644,4 +2644,78 @@ router.post("/setup-stripe-webhook", requireAdmin, async (req: Request, res: Res
   }
 });
 
+// ---------------------------------------------------------------------------
+// GET /api/admin/users/search?q=... — search users by email or name
+// ---------------------------------------------------------------------------
+router.get("/users/search", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const q = ((req.query.q as string) ?? "").trim();
+  if (!q || q.length < 2) { res.json({ users: [] }); return; }
+  try {
+    const rows = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        name: usersTable.name,
+        subscriptionPlan: usersTable.subscriptionPlan,
+        subscriptionStatus: usersTable.subscriptionStatus,
+        addonStoriesRemaining: usersTable.addonStoriesRemaining,
+        isBanned: usersTable.isBanned,
+        createdAt: usersTable.createdAt,
+      })
+      .from(usersTable)
+      .where(
+        and(
+          isNull(usersTable.deletedAt),
+          or(
+            ilike(usersTable.email, `%${q}%`),
+            ilike(usersTable.name, `%${q}%`),
+          ),
+        ),
+      )
+      .limit(20);
+    res.json({ users: rows });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to search users");
+    res.status(500).json({ error: "Search failed" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/admin/users/:userId/add-credits — grant story credits to a user
+// ---------------------------------------------------------------------------
+router.post("/users/:userId/add-credits", async (req, res) => {
+  if (!isAdmin(req)) { res.status(403).json({ error: "Forbidden" }); return; }
+  const { userId } = req.params;
+  const amount = Number(req.body?.amount);
+  if (!Number.isInteger(amount) || amount < 1 || amount > 500) {
+    res.status(400).json({ error: "amount must be an integer between 1 and 500" });
+    return;
+  }
+  const adminUser = req.user as { id?: string; email?: string } | undefined;
+  try {
+    const [updated] = await db
+      .update(usersTable)
+      .set({ addonStoriesRemaining: sql`${usersTable.addonStoriesRemaining} + ${amount}` })
+      .where(and(eq(usersTable.id, userId), isNull(usersTable.deletedAt)))
+      .returning({
+        id: usersTable.id,
+        email: usersTable.email,
+        addonStoriesRemaining: usersTable.addonStoriesRemaining,
+      });
+    if (!updated) { res.status(404).json({ error: "User not found" }); return; }
+    writeAuditLog(adminUser?.id, adminUser?.email, "risk_score_change", "user", userId, {
+      action: "add_credits",
+      amount,
+      newTotal: updated.addonStoriesRemaining,
+    });
+    logger.info({ userId, adminId: adminUser?.id, amount }, "[admin] Story credits granted");
+    res.json({ ok: true, userId, email: updated.email, addonStoriesRemaining: updated.addonStoriesRemaining });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to add credits");
+    res.status(500).json({ error: "Failed to add credits" });
+  }
+});
+
 export default router;
+

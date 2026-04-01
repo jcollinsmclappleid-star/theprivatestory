@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, ChevronLeft, Search, X } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search, X, Lock } from "lucide-react";
+import { useLocation } from "wouter";
 import { StoryCard } from "@/components/StoryCard";
 import { SkeletonGrid } from "@/components/SkeletonCard";
 import { CategoryTile } from "@/components/CategoryTile";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -42,7 +44,7 @@ async function fetchStories(categoryId: string, search?: string) {
   return res.json();
 }
 
-function StoryRow({ categoryId, label }: { categoryId: string; label: string }) {
+function StoryRow({ categoryId, label, isPaid, onGated }: { categoryId: string; label: string; isPaid: boolean; onGated: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: stories = [], isLoading } = useQuery({
@@ -87,8 +89,19 @@ function StoryRow({ categoryId, label }: { categoryId: string; label: string }) 
               <div key={i} className="flex-shrink-0 w-36 sm:w-44 aspect-[3/4] rounded-2xl bg-card/40 animate-pulse" />
             ))
           : stories.slice(0, 10).map((story: any) => (
-              <div key={story.id} className="flex-shrink-0 w-36 sm:w-44" style={{ scrollSnapAlign: "start" }}>
+              <div key={story.id} className="relative flex-shrink-0 w-36 sm:w-44" style={{ scrollSnapAlign: "start" }}>
                 <StoryCard story={story} />
+                {!isPaid && (
+                  <button
+                    className="absolute inset-0 z-10 flex items-end justify-center pb-3 bg-black/10 rounded-2xl group"
+                    onClick={onGated}
+                    aria-label="Subscribe to read"
+                  >
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Lock className="w-2.5 h-2.5" /> Subscribe
+                    </span>
+                  </button>
+                )}
               </div>
             ))}
       </div>
@@ -100,6 +113,8 @@ export default function Browse() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const { isPaid } = useSubscription();
+  const [, navigate] = useLocation();
 
   const { data: filteredStories = [], isLoading: filteredLoading } = useQuery({
     queryKey: ["stories-filtered", activeCategory ?? "all", search],
@@ -219,7 +234,20 @@ export default function Browse() {
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                   {filteredStories.map((story: any) => (
-                    <StoryCard key={story.id} story={story} />
+                    <div key={story.id} className="relative">
+                      <StoryCard story={story} />
+                      {!isPaid && (
+                        <button
+                          className="absolute inset-0 z-10 flex items-end justify-center pb-3 bg-black/10 rounded-2xl group"
+                          onClick={() => navigate("/pricing")}
+                          aria-label="Subscribe to read"
+                        >
+                          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Lock className="w-2.5 h-2.5" /> Subscribe
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
                 {filteredStories.length === 0 && (
@@ -290,7 +318,7 @@ export default function Browse() {
                         const cat = CATEGORIES.find(c => c.id === catId);
                         if (!cat) return null;
                         return (
-                          <StoryRow key={catId} categoryId={catId} label={cat.label} />
+                          <StoryRow key={catId} categoryId={catId} label={cat.label} isPaid={isPaid} onGated={() => navigate("/pricing")} />
                         );
                       })}
                     </motion.div>

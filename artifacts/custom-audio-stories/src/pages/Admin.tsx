@@ -68,13 +68,153 @@ interface SeriesGenerationState {
   error?: string;
 }
 
+interface AdminUser {
+  id: string;
+  email: string | null;
+  name: string | null;
+  subscriptionPlan: "free" | "monthly" | "annual";
+  subscriptionStatus: string | null;
+  addonStoriesRemaining: number;
+  isBanned: boolean | null;
+  createdAt: string | null;
+}
+
+function UsersPanel() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<AdminUser[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [creditAmounts, setCreditAmounts] = useState<Record<string, string>>({});
+  const [grantLoading, setGrantLoading] = useState<string | null>(null);
+  const [grantFeedback, setGrantFeedback] = useState<Record<string, { ok: boolean; msg: string }>>({});
+
+  const search = async () => {
+    if (query.trim().length < 2) return;
+    setSearching(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/users/search?q=${encodeURIComponent(query.trim())}`, { credentials: "include" });
+      const data = await res.json() as { users?: AdminUser[] };
+      setResults(data.users ?? []);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const grantCredits = async (userId: string) => {
+    const amount = parseInt(creditAmounts[userId] ?? "0", 10);
+    if (!amount || amount < 1) return;
+    setGrantLoading(userId);
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/users/${userId}/add-credits`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ amount }),
+      });
+      const data = await res.json() as { ok?: boolean; addonStoriesRemaining?: number; error?: string };
+      if (data.ok) {
+        setGrantFeedback(prev => ({ ...prev, [userId]: { ok: true, msg: `Done — ${data.addonStoriesRemaining} credits total` } }));
+        setResults(prev => prev.map(u => u.id === userId ? { ...u, addonStoriesRemaining: data.addonStoriesRemaining ?? u.addonStoriesRemaining } : u));
+        setCreditAmounts(prev => ({ ...prev, [userId]: "" }));
+      } else {
+        setGrantFeedback(prev => ({ ...prev, [userId]: { ok: false, msg: data.error ?? "Failed" } }));
+      }
+    } finally {
+      setGrantLoading(null);
+    }
+  };
+
+  const planBadge = (plan: string) => {
+    if (plan === "monthly") return <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300">Monthly</span>;
+    if (plan === "annual") return <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">Annual</span>;
+    return <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/10 text-white/40">Free</span>;
+  };
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="px-6 py-5 border-b border-white/10 flex-shrink-0">
+        <h2 className="font-semibold text-base mb-4">User Management</h2>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && search()}
+            placeholder="Search by email or name…"
+            className="flex-1 bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400/50"
+          />
+          <button
+            onClick={search}
+            disabled={searching || query.trim().length < 2}
+            className="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 text-sm font-medium hover:bg-blue-500/30 transition disabled:opacity-40"
+          >
+            {searching ? "…" : "Search"}
+          </button>
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+        {results.length === 0 && (
+          <div className="text-center py-12 text-white/20 text-sm">
+            {query.length > 0 ? "No users found" : "Enter an email or name to search"}
+          </div>
+        )}
+        {results.map((user) => (
+          <div key={user.id} className="rounded-xl border border-white/10 bg-white/3 p-4">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="min-w-0">
+                <div className="font-medium text-sm text-white truncate">{user.email ?? "(no email)"}</div>
+                {user.name && <div className="text-xs text-white/40 mt-0.5">{user.name}</div>}
+                <div className="flex items-center gap-2 mt-1.5">
+                  {planBadge(user.subscriptionPlan)}
+                  {user.subscriptionStatus && (
+                    <span className="text-[10px] text-white/30">{user.subscriptionStatus}</span>
+                  )}
+                  {user.isBanned && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400">Banned</span>
+                  )}
+                </div>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <div className="text-xs text-white/30">Credits</div>
+                <div className="text-lg font-bold text-white/80">{user.addonStoriesRemaining}</div>
+              </div>
+            </div>
+            <div className="flex gap-2 items-center">
+              <input
+                type="number"
+                min="1"
+                max="500"
+                value={creditAmounts[user.id] ?? ""}
+                onChange={(e) => setCreditAmounts(prev => ({ ...prev, [user.id]: e.target.value }))}
+                placeholder="Credits to add"
+                className="w-32 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-blue-400/40"
+              />
+              <button
+                onClick={() => grantCredits(user.id)}
+                disabled={grantLoading === user.id || !parseInt(creditAmounts[user.id] ?? "0")}
+                className="px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-semibold hover:bg-blue-500/30 transition disabled:opacity-40"
+              >
+                {grantLoading === user.id ? "Adding…" : "Add Credits"}
+              </button>
+              {grantFeedback[user.id] && (
+                <span className={`text-xs ${grantFeedback[user.id].ok ? "text-emerald-400" : "text-red-400"}`}>
+                  {grantFeedback[user.id].msg}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Admin() {
   const { user, isLoading } = useAuth();
   const [subthemes, setSubthemes] = useState<SubthemeItem[]>([]);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drafts, setDrafts] = useState<GeneratedDraft[]>([]);
-  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "security" | "audit" | "library">("generate");
+  const [activeView, setActiveView] = useState<"generate" | "review" | "series" | "moderation" | "security" | "audit" | "library" | "users">("generate");
   const [flaggedItems, setFlaggedItems] = useState<Array<Record<string, unknown>>>([]);
   const [csamReports, setCsamReports] = useState<Array<Record<string, unknown>>>([]);
   const [userReports, setUserReports] = useState<Array<Record<string, unknown>>>([]);
@@ -912,6 +1052,12 @@ export default function Admin() {
                 className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "library" ? "bg-violet-500/30 text-violet-300" : "text-white/50 hover:text-white"}`}
               >
                 📚 Seed Library
+              </button>
+              <button
+                onClick={() => setActiveView("users")}
+                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${activeView === "users" ? "bg-blue-500/30 text-blue-300" : "text-white/50 hover:text-white"}`}
+              >
+                👤 Users
               </button>
           </div>
           {activeView === "generate" && (
@@ -2190,6 +2336,8 @@ export default function Admin() {
               </div>
             </div>
           </div>
+        ) : activeView === "users" ? (
+          <UsersPanel />
         ) : activeView === "generate" ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center text-white/30">

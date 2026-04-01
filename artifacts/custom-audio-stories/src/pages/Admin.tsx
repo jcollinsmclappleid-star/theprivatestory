@@ -1315,10 +1315,83 @@ export default function Admin() {
         ) : activeView === "library" ? (
           <ScrollArea className="flex-1">
             <div className="p-3 space-y-1">
+
+              {/* ── Mobile-only controls (right panel is hidden on mobile) ───── */}
+              <div className="md:hidden mb-3 space-y-2">
+                {manifestEntries.length > 0 && (
+                  <div className="flex items-center gap-3 mb-1">
+                    <div className="flex-1 bg-white/10 rounded-full h-1.5">
+                      <div className="bg-violet-500 h-1.5 rounded-full transition-all" style={{ width: `${(manifestEntries.filter(e => e.seeded).length / manifestEntries.length) * 100}%` }} />
+                    </div>
+                    <span className="text-xs text-white/50 whitespace-nowrap">
+                      {manifestEntries.filter(e => e.seeded).length} / {manifestEntries.length} seeded
+                    </span>
+                  </div>
+                )}
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: "Skip Images", state: seedSkipImages, set: setSeedSkipImages },
+                    { label: "Skip QC", state: seedSkipQc, set: setSeedSkipQc },
+                    { label: "Replace", state: seedReplace, set: setSeedReplace },
+                  ].map(opt => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() => opt.set(!opt.state)}
+                      className={`flex items-center gap-1.5 px-2 py-2 rounded-lg border text-left transition ${
+                        opt.state ? "border-violet-500/50 bg-violet-500/10 text-violet-300" : "border-white/10 bg-white/5 text-white/50"
+                      }`}
+                    >
+                      <div className={`w-3 h-3 rounded border flex-shrink-0 flex items-center justify-center transition ${opt.state ? "border-violet-500 bg-violet-500" : "border-white/30"}`}>
+                        {opt.state && <svg viewBox="0 0 10 10" className="w-2 h-2 text-white fill-current"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+                      </div>
+                      <span className="text-[11px] font-medium leading-tight">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg border border-white/10 bg-white/5">
+                  <span className="text-xs text-white/60 font-medium flex-1">Parallel</span>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setSeedParallel(n)}
+                        disabled={seedRunning}
+                        className={`w-7 h-7 rounded text-xs font-semibold transition disabled:opacity-40 ${seedParallel === n ? "bg-violet-600 text-white" : "bg-white/10 text-white/50"}`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => seedLibrary()}
+                  disabled={clearStatus === "clearing"}
+                  className={`w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition ${
+                    seedRunning ? "bg-red-600 hover:bg-red-500 text-white" : "bg-violet-600 hover:bg-violet-500 text-white"
+                  }`}
+                >
+                  {seedRunning
+                    ? `Stop (${seedItems.filter(i => i.status === "done").length} done)`
+                    : `Seed All${manifestEntries.filter(e => !e.seeded).length > 0 ? ` (${manifestEntries.filter(e => !e.seeded).length} missing)` : " (all done)"}`
+                  }
+                </button>
+                {seedRunning && (
+                  <div className="w-full bg-white/10 rounded-full h-1">
+                    <div className="bg-violet-500 h-1 rounded-full transition-all" style={{ width: `${(seedItems.filter(i => i.status === "done").length / Math.max(manifestEntries.length, 1)) * 100}%` }} />
+                  </div>
+                )}
+                {seedSummary && !seedRunning && (
+                  <div className={`rounded-lg px-3 py-2 text-xs border ${seedSummary.failed === 0 ? "bg-emerald-900/20 border-emerald-500/20 text-emerald-300" : "bg-amber-900/20 border-amber-500/20 text-amber-300"}`}>
+                    {seedSummary.failed === 0 ? `✓ ${seedSummary.done} stories seeded successfully.` : `⚠ ${seedSummary.done} seeded, ${seedSummary.failed} failed.`}
+                  </div>
+                )}
+              </div>
+
               {seedItems.length === 0 ? (
-                <div className="text-white/30 text-xs p-6 text-center leading-relaxed">
-                  30 stories will appear here as they are seeded.<br />
-                  Use the controls on the right to start.
+                <div className="text-white/30 text-xs p-4 text-center leading-relaxed md:p-6">
+                  Stories will appear here as they are seeded.
                 </div>
               ) : (
                 seedItems

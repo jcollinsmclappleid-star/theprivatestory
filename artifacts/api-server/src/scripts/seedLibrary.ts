@@ -7,15 +7,19 @@
  *   node_modules/.bin/tsx src/scripts/seedLibrary.ts [--replace]
  *
  * Flags:
- *   --replace   Delete all existing library stories before seeding.
- *   --from N    Start from story index N (1-based). Useful for resuming.
+ *   --replace       Delete all existing library stories before seeding.
+ *   --from=N        Start from story index N (1-based). Useful for resuming.
+ *   --parallel=N    Run N stories concurrently (default: 1). Use 3–5 for speed.
+ *
+ * Environment:
+ *   DISABLE_AUDIO=true   Skip ElevenLabs audio generation (much faster, add audio later).
  */
 
 import { db } from "@workspace/db";
 import { generatedStories } from "@workspace/db/schema";
 import { eq, like, sql } from "drizzle-orm";
 import { storiesStore } from "../lib/storage.js";
-import { LIBRARY_SEED_MANIFEST } from "../lib/librarySeedManifest.js";
+import { LIBRARY_SEED_MANIFEST, type SeedEntry } from "../lib/librarySeedManifest.js";
 import {
   planStory,
   writeStoryFromBrief,
@@ -27,15 +31,164 @@ import {
 
 const QC_PASS_THRESHOLD = 7.0;
 
+/** Map situationId prefix → { categoryId, subthemeId } */
+const CATEGORY_MAP: Record<string, string> = {
+  fc2: "forbidden_complicated",
+  rr2: "reunion_return",
+  fu2: "first_unknown",
+  pt2: "power_tension",
+  po2: "psychological_obsessive",
+  cp2: "circumstance_proximity",
+  su2: "secrets_unspoken",
+  dd2: "dark_dangerous",
+  sb2: "slow_burn_patience",
+  pl2: "professional_crossing_lines",
+};
+
 function log(msg: string) {
   const ts = new Date().toISOString().replace("T", " ").slice(0, 19);
   console.log(`[${ts}] ${msg}`);
+}
+
+/** Derive categoryId and subthemeId from the situationId (e.g. "fc2_01") */
+function deriveCategory(situationId: string): { categoryId: string; subthemeId: string } {
+  const prefix = situationId.split("_")[0];
+  return {
+    categoryId: CATEGORY_MAP[prefix] ?? prefix,
+    subthemeId: situationId,
+  };
+}
+
+/** Check if a story already exists in the DB */
+async function storyExists(situationId: string): Promise<string | null> {
+  const existing = await db
+    .select({ id: generatedStories.id })
+    .from(generatedStories)
+    .where(like(generatedStories.id, `lib-${situationId}-%`))
+    .limit(1);
+  return existing[0]?.id ?? null;
+}
+
+/** Generate and save a single story. Returns the QC score, or null on failure. */
+async function processSingleStory(
+  entry: SeedEntry,
+  idx: number,
+  total: number,
+  counters: { created: number; failed: number; skipped: number; qcScores: number[] },
+  replace: boolean,
+): Promise<void> {
+  log(`[${idx}/${total}] START: ${entry.situationId} — ${entry.label.slice(0, 80)}`);
+
+  if (!replace) {
+    const existingId = await storyExists(entry.situationId);
+    if (existingId) {
+      log(`[${idx}/${total}] SKIP: ${entry.situationId} already exists (${existingId})`);
+      counters.skipped++;
+      return;
+    }
+  }
+
+  try {
+    const intake: GenerateStoryRequest = {
+      mood: entry.mood,
+      intensity: entry.intensity,
+      voiceFeel: entry.voiceFeel,
+      storyLength: entry.storyLength,
+      pairing: entry.pairing,
+      chemistry: entry.chemistry,
+      atmosphere: entry.atmosphere,
+      setting: entry.setting,
+      country: entry.country,
+      city: entry.city,
+      whoIsHe: entry.whoIsHe,
+      situationId: entry.situationId,
+      cinematicVisuals: true,
+      emotionalFocus: true,
+    };
+
+    // 1. Plan
+    log(`[${idx}/${total}] PLAN: ${entry.situationId}`);
+    let brief = await planStory(intake);
+
+    // 2. Write
+    log(`[${idx}/${total}] WRITE: ${entry.situationId}`);
+    let story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
+
+    // 3. QC
+    log(`[${idx}/${total}] QC: ${entry.situationId}`);
+    let qcResult = await qcStory(brief, story);
+    log(`[${idx}/${total}] QC SCORE: ${qcResult.score_total.toFixed(1)} (threshold: ${QC_PASS_THRESHOLD})`);
+
+    if (qcResult.score_total < QC_PASS_THRESHOLD) {
+      log(`[${idx}/${total}] QC RETRY: score ${qcResult.score_total.toFixed(1)} below threshold — retrying`);
+      brief = await planStory(intake);
+      story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
+      qcResult = await qcStory(brief, story);
+      log(`[${idx}/${total}] QC RETRY SCORE: ${qcResult.score_total.toFixed(1)}`);
+    }
+
+    counters.qcScores.push(qcResult.score_total);
+
+    // 4. Images
+    log(`[${idx}/${total}] IMAGES: ${entry.situationId}`);
+    const storyToken = `${entry.situationId}-${Date.now()}`;
+    const prompts = await buildImagePrompts(brief, story);
+    const images = await generateAllImages(prompts, `lib-${storyToken}`);
+
+    // 5. Category derivation
+    const { categoryId, subthemeId } = deriveCategory(entry.situationId);
+
+    // 6. Save
+    const castingData: Record<string, string> = {
+      pairing: entry.pairing,
+      chemistry: entry.chemistry,
+      mood: entry.mood,
+      intensity: entry.intensity,
+      atmosphere: entry.atmosphere,
+      setting: entry.setting,
+      country: entry.country,
+      city: entry.city,
+      archetype: entry.whoIsHe,
+    };
+    if (brief.situation) castingData.situation = brief.situation;
+    if (brief.situationId) castingData.situationId = brief.situationId;
+
+    const storyId = `lib-${storyToken}`;
+    await storiesStore.set(storyId, {
+      id: storyId,
+      title: story.title,
+      description: story.description,
+      mood: entry.mood,
+      audioUrl: "",
+      duration: entry.storyLength,
+      brief,
+      scenes: story.scenes,
+      images: { cover: images.cover, scenes: images.scenes ?? [] },
+      recommendation_tags: brief.recommendation_tags ?? [entry.mood],
+      isLibraryStory: true,
+      status: "published",
+      ownerUserId: null,
+      castingData,
+      qc: qcResult,
+      qcScore: qcResult.score_total,
+      categoryId,
+      subthemeId,
+    });
+
+    counters.created++;
+    log(`[${idx}/${total}] SAVED: "${story.title}" (id=${storyId}, QC=${qcResult.score_total.toFixed(1)}, category=${categoryId})`);
+  } catch (err) {
+    counters.failed++;
+    const message = err instanceof Error ? err.message : String(err);
+    log(`[${idx}/${total}] ERROR: ${entry.situationId} — ${message}`);
+  }
 }
 
 async function main() {
   const args = process.argv.slice(2);
   const replace = args.includes("--replace");
   const fromIdx = parseInt(args.find(a => a.startsWith("--from="))?.split("=")[1] ?? "1", 10);
+  const parallel = Math.max(1, parseInt(args.find(a => a.startsWith("--parallel="))?.split("=")[1] ?? "1", 10));
 
   if (replace) {
     const [{ count: deleted }] = await db
@@ -48,141 +201,42 @@ async function main() {
     log(`CLEARED: deleted ${deleted} existing library stories`);
   }
 
+  const entries = LIBRARY_SEED_MANIFEST.slice(fromIdx - 1);
   const total = LIBRARY_SEED_MANIFEST.length;
-  log(`STARTING: ${total} stories to seed (starting from #${fromIdx})`);
+  log(`STARTING: ${entries.length} stories to process (indices ${fromIdx}–${total}), parallel=${parallel}`);
 
-  let created = 0;
-  let failed = 0;
-  let skipped = 0;
-  const qcScores: number[] = [];
+  const counters = { created: 0, failed: 0, skipped: 0, qcScores: [] as number[] };
 
-  for (let i = 0; i < LIBRARY_SEED_MANIFEST.length; i++) {
-    const idx = i + 1;
-    if (idx < fromIdx) continue;
+  // Process in parallel batches
+  for (let b = 0; b < entries.length; b += parallel) {
+    const batch = entries.slice(b, b + parallel);
+    const batchIndexes = batch.map((_, j) => fromIdx + b + j);
 
-    const entry = LIBRARY_SEED_MANIFEST[i];
-    log(`[${idx}/${total}] START: ${entry.situationId} — ${entry.label.slice(0, 80)}`);
+    await Promise.all(
+      batch.map((entry, j) =>
+        processSingleStory(entry, batchIndexes[j], total, counters, replace)
+      )
+    );
 
-    // Skip if already exists (and we're not replacing)
-    if (!replace) {
-      const existing = await db
-        .select({ id: generatedStories.id })
-        .from(generatedStories)
-        .where(like(generatedStories.id, `lib-${entry.situationId}-%`))
-        .limit(1);
-      if (existing.length > 0) {
-        log(`[${idx}/${total}] SKIP: ${entry.situationId} already exists (${existing[0].id})`);
-        skipped++;
-        continue;
+    // Batch QC checkpoint every 5 processed
+    const processed = b + parallel;
+    if (processed % 5 === 0 || b + parallel >= entries.length) {
+      const recent = counters.qcScores.slice(-5);
+      if (recent.length > 0) {
+        const avg = recent.reduce((s, v) => s + v, 0) / recent.length;
+        log(`=== BATCH QC checkpoint: avg ${avg.toFixed(1)} ===`);
       }
-    }
-
-    try {
-      const intake: GenerateStoryRequest = {
-        mood: entry.mood,
-        intensity: entry.intensity,
-        voiceFeel: entry.voiceFeel,
-        storyLength: entry.storyLength,
-        pairing: entry.pairing,
-        chemistry: entry.chemistry,
-        atmosphere: entry.atmosphere,
-        setting: entry.setting,
-        country: entry.country,
-        city: entry.city,
-        whoIsHe: entry.whoIsHe,
-        situationId: entry.situationId,
-        cinematicVisuals: true,
-        emotionalFocus: true,
-      };
-
-      // 1. Plan
-      log(`[${idx}/${total}] PLAN: ${entry.situationId}`);
-      let brief = await planStory(intake);
-
-      // 2. Write
-      log(`[${idx}/${total}] WRITE: ${entry.situationId}`);
-      let story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
-
-      // 3. QC
-      log(`[${idx}/${total}] QC: ${entry.situationId}`);
-      let qcResult = await qcStory(brief, story);
-      log(`[${idx}/${total}] QC SCORE: ${qcResult.score_total.toFixed(1)} (threshold: ${QC_PASS_THRESHOLD})`);
-
-      if (qcResult.score_total < QC_PASS_THRESHOLD) {
-        log(`[${idx}/${total}] QC RETRY: score ${qcResult.score_total.toFixed(1)} below threshold — retrying`);
-        brief = await planStory(intake);
-        story = await writeStoryFromBrief(brief, "the listener", entry.intensity, intake);
-        qcResult = await qcStory(brief, story);
-        log(`[${idx}/${total}] QC RETRY SCORE: ${qcResult.score_total.toFixed(1)}`);
-      }
-
-      qcScores.push(qcResult.score_total);
-
-      // 4. Images
-      log(`[${idx}/${total}] IMAGES: ${entry.situationId}`);
-      const storyToken = `${entry.situationId}-${Date.now()}`;
-      const prompts = await buildImagePrompts(brief, story);
-      const images = await generateAllImages(prompts, `lib-${storyToken}`);
-
-      // 5. Save
-      const castingData: Record<string, string> = {
-        pairing: entry.pairing,
-        chemistry: entry.chemistry,
-        mood: entry.mood,
-        intensity: entry.intensity,
-        atmosphere: entry.atmosphere,
-        setting: entry.setting,
-        country: entry.country,
-        city: entry.city,
-        archetype: entry.whoIsHe,
-      };
-      if (brief.situation) castingData.situation = brief.situation;
-      if (brief.situationId) castingData.situationId = brief.situationId;
-
-      const storyId = `lib-${storyToken}`;
-      await storiesStore.set(storyId, {
-        id: storyId,
-        title: story.title,
-        description: story.description,
-        mood: entry.mood,
-        audioUrl: "",
-        duration: entry.storyLength,
-        brief,
-        scenes: story.scenes,
-        images: { cover: images.cover, scenes: images.scenes ?? [] },
-        recommendation_tags: brief.recommendation_tags ?? [entry.mood],
-        isLibraryStory: true,
-        status: "published",
-        ownerUserId: null,
-        castingData,
-        qc: qcResult,
-        qcScore: qcResult.score_total,
-      });
-
-      created++;
-      log(`[${idx}/${total}] SAVED: "${story.title}" (id=${storyId}, QC=${qcResult.score_total.toFixed(1)})`);
-
-      // Batch QC checkpoint every 5
-      if (idx % 5 === 0) {
-        const recentScores = qcScores.slice(-5);
-        const avg = recentScores.reduce((s, v) => s + v, 0) / recentScores.length;
-        log(`=== BATCH QC (stories ${idx - 4}–${idx}): avg ${avg.toFixed(1)} ===`);
-      }
-    } catch (err) {
-      failed++;
-      const message = err instanceof Error ? err.message : String(err);
-      log(`[${idx}/${total}] ERROR: ${entry.situationId} — ${message}`);
     }
   }
 
   // Final summary
-  const avgQc = qcScores.length > 0
-    ? qcScores.reduce((s, v) => s + v, 0) / qcScores.length
+  const avgQc = counters.qcScores.length > 0
+    ? counters.qcScores.reduce((s, v) => s + v, 0) / counters.qcScores.length
     : null;
 
   log("=".repeat(60));
-  log(`COMPLETE: ${created} created, ${skipped} skipped, ${failed} failed`);
-  log(`QC: avg ${avgQc !== null ? avgQc.toFixed(1) : "n/a"}, min ${qcScores.length ? Math.min(...qcScores).toFixed(1) : "n/a"}, max ${qcScores.length ? Math.max(...qcScores).toFixed(1) : "n/a"}`);
+  log(`COMPLETE: ${counters.created} created, ${counters.skipped} skipped, ${counters.failed} failed`);
+  log(`QC: avg ${avgQc !== null ? avgQc.toFixed(1) : "n/a"}, min ${counters.qcScores.length ? Math.min(...counters.qcScores).toFixed(1) : "n/a"}, max ${counters.qcScores.length ? Math.max(...counters.qcScores).toFixed(1) : "n/a"}`);
   log("=".repeat(60));
 }
 

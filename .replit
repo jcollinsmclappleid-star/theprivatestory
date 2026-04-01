@@ -37,5 +37,6 @@ ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 VITE_ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 STRIPE_MONTHLY_PRICE_ID = "price_1THSuyDv8IzJrrwIWL1kcMN1"
 STRIPE_ANNUAL_PRICE_ID = "price_1THStNDv8IzJrrwIYRL4aGqq"
+STRIPE_ADDON_PRICE_ID = "price_1THSrLDv8IzJrrwIlYgcIJ1C"
 
 [userenv.development]

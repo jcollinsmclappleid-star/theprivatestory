@@ -63,14 +63,20 @@ export const VOICES: Voice[] = [
     label: "Deep",
     accent: "American",
     accentLabel: "American · Commanding",
-    desc: "Rich, commanding voice. Immersive and dramatic.",
+    desc: "Rich, commanding voice. Immersive and dramatic. Each word carries weight.",
+    presence: "Feels powerful, deliberate, and totally present.",
+    bestFor: "Intensity · Drama · Deep fantasy",
     gender: "male",
   },
   {
     id: "jfIS2w2yJi0grJZPyEsk",
-    label: "Heavy",
+    displayName: "Oliver",
+    label: "Gravel",
     accent: "British",
-    desc: "Heavy, textured, and intense. Weight in every word.",
+    accentLabel: "British · Textured",
+    desc: "Textured, unhurried, and deeply felt. A voice that lingers long after the story ends.",
+    presence: "Feels raw, grounded, and quietly intense.",
+    bestFor: "Slow burn · Dark romance · His perspective",
     gender: "male",
   },
 ];
@@ -79,6 +85,7 @@ export const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
 export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 
 export const NATHANIEL_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
+export const OLIVER_VOICE_ID    = "jfIS2w2yJi0grJZPyEsk";
 
 export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
 
@@ -89,12 +96,14 @@ const HER_HER = "Her & Her";
 const ALL_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
 const NATHANIEL = VOICES.find(v => v.id === NATHANIEL_VOICE_ID)!;
+const OLIVER    = VOICES.find(v => v.id === OLIVER_VOICE_ID)!;
 
 export function getVoicesForPairing(pairing: string | undefined): Voice[] {
   if (!pairing) return FEMALE_VOICES;
   if (pairing === HER_HER) return FEMALE_VOICES;
   if (ALL_MALE_PAIRINGS.includes(pairing)) return MALE_VOICES;
-  return [...FEMALE_VOICES, NATHANIEL];
+  // Her & Him, Her & Them — female voices then Nathaniel and Oliver last
+  return [...FEMALE_VOICES, NATHANIEL, OLIVER];
 }
 
 export function getDefaultVoiceId(pairing?: string): string {

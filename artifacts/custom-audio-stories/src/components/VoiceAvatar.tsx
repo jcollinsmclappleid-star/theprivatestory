@@ -12,7 +12,7 @@ const PORTRAIT_AVATARS: Record<string, string> = {
 
 const MALE_SILHOUETTE_IDS = new Set([
   "n1PvBOwxb8X6m7tahp2h", // Deep
-  "jfIS2w2yJi0grJZPyEsk", // Heavy
+  "jfIS2w2yJi0grJZPyEsk", // Oliver
 ]);
 
 function MaleSilhouette({ px }: { px: number }) {

@@ -37,4 +37,3 @@ ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 VITE_ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 
 [userenv.development]
-DISABLE_AUDIO = "true"

@@ -10,6 +10,7 @@ import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import type { Story } from "@workspace/api-client-react";
 
@@ -797,6 +798,7 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
 export default function Home() {
   const { data: stories, isLoading } = useStoriesFallback();
   const { isAuthenticated } = useAuth();
+  const { isPaid } = useSubscription();
   const recs = useRecommendations(isAuthenticated);
   const quickCreateReady = useQuickCreate(isAuthenticated);
   const [, navigate] = useLocation();
@@ -904,7 +906,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl">
-              Choose the mood, the setting, the energy, and the voice. We write it, narrate it, and save it privately to your account.
+              Choose the mood, the setting, the energy, and the depth of the experience. We write it, narrate it, and save it privately to your account.
             </p>
 
             <p className="text-xs text-muted-foreground/50 tracking-wide mb-8">
@@ -929,7 +931,7 @@ export default function Home() {
               </a>
             </div>
 
-            {quickCreateReady && (
+            {quickCreateReady && isPaid && (
               <div className="mb-4">
                 <button
                   onClick={handleQuickCreate}

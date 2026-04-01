@@ -125,6 +125,103 @@ router.get("/portal", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/stripe/cancel-subscription
+// Cancels the user's active subscription at period end (access remains until renewDate).
+// ---------------------------------------------------------------------------
+router.post("/cancel-subscription", async (req: Request, res: Response) => {
+  const userId = requireAuth(req, res);
+  if (!userId) return;
+
+  const stripe = getStripe();
+  if (!stripe) {
+    res.status(503).json({ error: "Payment processing is not yet configured." });
+    return;
+  }
+
+  try {
+    const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
+    if (!user) {
+      res.status(404).json({ error: "User not found." });
+      return;
+    }
+    if (!user.stripeSubscriptionId) {
+      res.status(400).json({ error: "No active subscription found." });
+      return;
+    }
+    if (user.subscriptionStatus === "canceled") {
+      res.status(400).json({ error: "Subscription is already canceled." });
+      return;
+    }
+    if (user.subscriptionStatus === "canceling") {
+      res.status(400).json({ error: "Cancellation is already scheduled." });
+      return;
+    }
+
+    const sub = await stripe.subscriptions.update(user.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    const cancelAt = sub.cancel_at ? new Date(sub.cancel_at * 1000) : null;
+
+    await db.update(usersTable).set({
+      subscriptionStatus: "canceling",
+      subscriptionCancelAt: cancelAt,
+    }).where(eq(usersTable.id, userId));
+
+    logger.info({ userId, cancelAt }, "[stripe] Subscription cancellation scheduled");
+    res.json({
+      success: true,
+      cancelAt: cancelAt ? cancelAt.toISOString() : null,
+    });
+  } catch (err) {
+    logger.error({ err, userId }, "[stripe] Failed to cancel subscription");
+    res.status(500).json({ error: "Failed to cancel subscription. Please contact support@theprivatestory.com." });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/stripe/reactivate-subscription
+// Reactivates a subscription scheduled for cancellation (cancel_at_period_end = false).
+// ---------------------------------------------------------------------------
+router.post("/reactivate-subscription", async (req: Request, res: Response) => {
+  const userId = requireAuth(req, res);
+  if (!userId) return;
+
+  const stripe = getStripe();
+  if (!stripe) {
+    res.status(503).json({ error: "Payment processing is not yet configured." });
+    return;
+  }
+
+  try {
+    const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
+    if (!user?.stripeSubscriptionId) {
+      res.status(400).json({ error: "No active subscription found." });
+      return;
+    }
+    if (user.subscriptionStatus !== "canceling") {
+      res.status(400).json({ error: "Subscription is not scheduled for cancellation." });
+      return;
+    }
+
+    await stripe.subscriptions.update(user.stripeSubscriptionId, {
+      cancel_at_period_end: false,
+    });
+
+    await db.update(usersTable).set({
+      subscriptionStatus: "active",
+      subscriptionCancelAt: null,
+    }).where(eq(usersTable.id, userId));
+
+    logger.info({ userId }, "[stripe] Subscription reactivated");
+    res.json({ success: true });
+  } catch (err) {
+    logger.error({ err, userId }, "[stripe] Failed to reactivate subscription");
+    res.status(500).json({ error: "Failed to reactivate subscription. Please contact support@theprivatestory.com." });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // POST /api/stripe/webhook
 // Handles Stripe webhook events — raw body required (mounted in app.ts).
 // ---------------------------------------------------------------------------
@@ -197,12 +294,23 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           .then(r => r[0]);
         if (!user) break;
 
-        const status = sub.status as string;
+        const rawStatus = sub.status as string;
+        const isCancelingAtPeriodEnd = sub.cancel_at_period_end === true;
+
+        let resolvedStatus: "active" | "past_due" | "canceled" | "incomplete" | "trialing" | "canceling" | undefined;
+        if (isCancelingAtPeriodEnd && rawStatus === "active") {
+          resolvedStatus = "canceling";
+        } else if (["active", "past_due", "canceled", "incomplete", "trialing"].includes(rawStatus)) {
+          resolvedStatus = rawStatus as "active" | "past_due" | "canceled" | "incomplete" | "trialing";
+        }
+
+        const cancelAt = sub.cancel_at ? new Date(sub.cancel_at * 1000) : null;
+
         await db.update(usersTable).set({
-          subscriptionStatus: ["active", "past_due", "canceled", "incomplete", "trialing"].includes(status)
-            ? (status as "active" | "past_due" | "canceled" | "incomplete" | "trialing")
-            : undefined,
+          subscriptionStatus: resolvedStatus,
+          subscriptionCancelAt: isCancelingAtPeriodEnd ? cancelAt : null,
         }).where(eq(usersTable.id, user.id));
+        logger.info({ userId: user.id, status: resolvedStatus, cancelAt }, "[stripe-webhook] Subscription updated");
         break;
       }
 

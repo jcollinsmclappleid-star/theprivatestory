@@ -2585,4 +2585,63 @@ router.post("/users/:userId/unban", async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// POST /api/admin/setup-stripe-webhook
+// Registers the Stripe webhook endpoint for this deployment. Safe to call
+// multiple times — Stripe deduplicates by URL. Requires admin auth.
+// ---------------------------------------------------------------------------
+router.post("/setup-stripe-webhook", requireAdmin, async (req: Request, res: Response) => {
+  const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+  const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
+
+  if (!STRIPE_SECRET_KEY) {
+    res.status(503).json({ error: "STRIPE_SECRET_KEY not configured." });
+    return;
+  }
+
+  try {
+    const { default: Stripe } = await import("stripe");
+    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
+
+    const webhookUrl = `${SITE_URL}/api/stripe/webhook`;
+
+    const existing = await stripe.webhookEndpoints.list({ limit: 100 });
+    const alreadyExists = existing.data.find(w => w.url === webhookUrl);
+
+    if (alreadyExists) {
+      res.json({
+        ok: true,
+        message: "Webhook already registered.",
+        id: alreadyExists.id,
+        url: alreadyExists.url,
+        status: alreadyExists.status,
+      });
+      return;
+    }
+
+    const webhook = await stripe.webhookEndpoints.create({
+      url: webhookUrl,
+      enabled_events: [
+        "checkout.session.completed",
+        "customer.subscription.updated",
+        "customer.subscription.deleted",
+        "invoice.payment_failed",
+      ],
+      description: "My Private Story — production webhook",
+    });
+
+    logger.info({ webhookId: webhook.id, url: webhookUrl }, "[admin] Stripe webhook registered");
+    res.json({
+      ok: true,
+      message: "Webhook registered successfully.",
+      id: webhook.id,
+      url: webhook.url,
+      secret: webhook.secret,
+    });
+  } catch (err) {
+    logger.error({ err }, "[admin] Failed to register Stripe webhook");
+    res.status(500).json({ error: "Failed to register webhook." });
+  }
+});
+
 export default router;

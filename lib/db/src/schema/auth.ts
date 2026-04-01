@@ -55,7 +55,8 @@ export const usersTable = pgTable("users", {
   // Stripe billing identifiers
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
-  subscriptionStatus: text("subscription_status", { enum: ["active", "past_due", "canceled", "incomplete", "trialing"] }),
+  subscriptionStatus: text("subscription_status", { enum: ["active", "past_due", "canceled", "incomplete", "trialing", "canceling"] }),
+  subscriptionCancelAt: timestamp("subscription_cancel_at", { withTimezone: true }),
   // GDPR / legal compliance
   termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
   // Moderation display identifier — short human-readable code tied to this account (TPS + 6 chars)

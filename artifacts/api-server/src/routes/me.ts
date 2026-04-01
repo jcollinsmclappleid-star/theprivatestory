@@ -116,6 +116,8 @@ export async function getOrResetUsage(userId: string): Promise<{
   renewDate: string | null;
   canGenerate: boolean;
   storiesRemaining: number;
+  subscriptionStatus: string | null;
+  cancelAt: string | null;
 }> {
   const [user] = await db
     .select({
@@ -123,12 +125,14 @@ export async function getOrResetUsage(userId: string): Promise<{
       storiesGeneratedThisMonth: usersTable.storiesGeneratedThisMonth,
       storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
       subscriptionRenewDate: usersTable.subscriptionRenewDate,
+      subscriptionStatus: usersTable.subscriptionStatus,
+      subscriptionCancelAt: usersTable.subscriptionCancelAt,
     })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
   if (!user) {
-    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0 };
+    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0, subscriptionStatus: null, cancelAt: null };
   }
 
   const plan = user.subscriptionPlan ?? "free";
@@ -166,6 +170,8 @@ export async function getOrResetUsage(userId: string): Promise<{
     renewDate: renewDate ? renewDate.toISOString() : null,
     canGenerate,
     storiesRemaining,
+    subscriptionStatus: user.subscriptionStatus ?? null,
+    cancelAt: user.subscriptionCancelAt ? user.subscriptionCancelAt.toISOString() : null,
   };
 }
 

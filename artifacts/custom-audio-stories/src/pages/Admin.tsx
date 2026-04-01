@@ -1470,6 +1470,47 @@ export default function Admin() {
                     {seedSummary.failed === 0 ? `✓ ${seedSummary.done} stories seeded successfully.` : `⚠ ${seedSummary.done} seeded, ${seedSummary.failed} failed.`}
                   </div>
                 )}
+
+                {/* Generate Audio — mobile */}
+                <div className="pt-3 border-t border-white/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <div className="text-xs font-medium text-white/70">Library Audio</div>
+                      <div className="text-xs text-white/40">Narrate stories without audio</div>
+                    </div>
+                    <button
+                      onClick={generateLibraryAudio}
+                      disabled={seedRunning}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition disabled:opacity-40 ${
+                        audioRunning
+                          ? "bg-red-600 hover:bg-red-500 text-white"
+                          : "bg-amber-600 hover:bg-amber-500 text-white"
+                      }`}
+                    >
+                      {audioRunning
+                        ? `Stop (${audioItems.filter(i => i.status === "done").length} done)`
+                        : audioSummary
+                          ? `✓ ${audioSummary.done} voiced`
+                          : "Generate Audio"}
+                    </button>
+                  </div>
+                  {(audioRunning || audioItems.length > 0) && (
+                    <div className="space-y-1 max-h-36 overflow-y-auto">
+                      {audioItems.map(item => (
+                        <div key={item.storyId} className="flex items-center gap-2 text-xs">
+                          <span className={
+                            item.status === "done" ? "text-green-400" :
+                            item.status === "error" ? "text-red-400" : "text-amber-400 animate-pulse"
+                          }>
+                            {item.status === "done" ? "✓" : item.status === "error" ? "✕" : "⏳"}
+                          </span>
+                          <span className="text-white/70 flex-1 truncate">{item.title}</span>
+                          {item.duration && <span className="text-white/40 shrink-0">{item.duration}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {seedItems.length === 0 ? (

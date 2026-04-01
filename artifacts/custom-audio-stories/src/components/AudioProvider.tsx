@@ -35,6 +35,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setCurrentTime,
     setDuration,
     duration,
+    pendingSeek,
+    clearPendingSeek,
     pause,
     ambientMode,
     ambientVolume,
@@ -96,6 +98,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (simulationIntervalRef.current) clearInterval(simulationIntervalRef.current);
     };
   }, [isPlaying, currentStory]);
+
+  // Apply pending seek requests to the real audio element
+  useEffect(() => {
+    if (pendingSeek === null) return;
+    if (audioRef.current) {
+      audioRef.current.currentTime = pendingSeek;
+    }
+    clearPendingSeek();
+  }, [pendingSeek, clearPendingSeek]);
 
   // Attempt to start ambient audio (called both on mode change and on user gesture)
   const tryStartAmbient = () => {

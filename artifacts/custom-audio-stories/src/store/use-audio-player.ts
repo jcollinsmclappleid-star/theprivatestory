@@ -41,6 +41,7 @@ interface AudioPlayerState {
   progress: number;
   currentTime: number;
   duration: number;
+  pendingSeek: number | null;
   ambientMode: AmbientId | null;
   ambientVolume: number;
   play: (story?: Story) => void;
@@ -49,6 +50,8 @@ interface AudioPlayerState {
   setProgress: (p: number) => void;
   setCurrentTime: (t: number, sceneIndex?: number) => void;
   setDuration: (d: number) => void;
+  seekTo: (t: number) => void;
+  clearPendingSeek: () => void;
   close: () => void;
   setAmbientMode: (id: AmbientId | null) => void;
   setAmbientVolume: (v: number) => void;
@@ -62,6 +65,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       progress: 0,
       currentTime: 0,
       duration: 0,
+      pendingSeek: null,
       ambientMode: null,
       ambientVolume: 0.2,
 
@@ -128,6 +132,18 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       },
 
       setDuration: (duration) => set({ duration }),
+
+      seekTo: (t) => {
+        const { duration } = get();
+        const clamped = Math.max(0, duration > 0 ? Math.min(t, duration) : t);
+        set({
+          currentTime: clamped,
+          progress: duration > 0 ? clamped / duration : 0,
+          pendingSeek: clamped,
+        });
+      },
+
+      clearPendingSeek: () => set({ pendingSeek: null }),
 
       close: () => {
         if (progressTimer) {

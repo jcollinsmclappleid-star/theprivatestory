@@ -40,3 +40,4 @@ STRIPE_ANNUAL_PRICE_ID = "price_1THStNDv8IzJrrwIYRL4aGqq"
 STRIPE_ADDON_PRICE_ID = "price_1THSrLDv8IzJrrwIlYgcIJ1C"
 
 [userenv.development]
+SITE_URL = "https://5e7606d7-ad46-420d-b8cd-9fb7055150fc-00-38xw9k6c4nxsw.riker.replit.dev/custom-audio-stories"

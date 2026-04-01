@@ -429,9 +429,22 @@ export default function Pricing() {
             </p>
           </div>
           <div className="flex-shrink-0 text-center">
-            <div className="rounded-2xl border border-primary/20 bg-primary/8 px-8 py-6">
-              <p className="font-display text-4xl font-bold text-primary mb-0.5">£3.99</p>
-              <p className="text-xs text-muted-foreground/40">per additional story</p>
+            <div className="rounded-2xl border border-primary/20 bg-primary/8 px-8 py-6 flex flex-col items-center gap-4">
+              <div>
+                <p className="font-display text-4xl font-bold text-primary mb-0.5">£3.99</p>
+                <p className="text-xs text-muted-foreground/40">per additional story</p>
+              </div>
+              <button
+                onClick={() => startCheckout("addon")}
+                disabled={loadingPlan !== null}
+                className="w-full py-2.5 px-5 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/20 hover:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "addon" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting…</span>
+                ) : (
+                  isAuthenticated ? "Buy a story" : "Sign up to buy"
+                )}
+              </button>
             </div>
           </div>
         </div>

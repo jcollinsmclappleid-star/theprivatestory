@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Heart, BookOpen, Flame, User, ChevronRight,
   Trash2, Wand2, Play, Library, ArrowRight, Star, Zap, LogIn,
-  CreditCard, Download, AlertCircle, X,
+  CreditCard, Download, AlertCircle, X, Loader2,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -389,6 +389,7 @@ export default function Profile() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
+  const [addonLoading, setAddonLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -663,12 +664,27 @@ export default function Profile() {
               >
                 Manage billing
               </button>
-              <Link
-                href="/pricing"
-                className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all text-center"
+              <button
+                disabled={addonLoading}
+                onClick={async () => {
+                  setAddonLoading(true);
+                  try {
+                    const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+                      method: "POST",
+                      credentials: "include",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ plan: "addon" }),
+                    });
+                    const data = await res.json();
+                    if (data.url) window.location.href = data.url;
+                  } finally {
+                    setAddonLoading(false);
+                  }
+                }}
+                className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                Add more stories — £3.99
-              </Link>
+                {addonLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : "Add more stories — £3.99"}
+              </button>
               {usageData.subscriptionStatus !== "canceling" && (
                 <button
                   onClick={() => setCancelConfirmOpen(true)}

@@ -892,7 +892,7 @@ export default function Home() {
                 <span className="text-[11px] font-semibold text-primary/70 uppercase tracking-widest">Personalised audio story</span>
               </div>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground/35 tracking-wide">
-                <span>AI-written</span>
+                <span>Built around you</span>
                 <span>·</span>
                 <span>Narrated</span>
                 <span>·</span>

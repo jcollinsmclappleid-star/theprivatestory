@@ -59,8 +59,10 @@ export const VOICES: Voice[] = [
   },
   {
     id: "n1PvBOwxb8X6m7tahp2h",
+    displayName: "Caleb",
     label: "Deep",
     accent: "American",
+    accentLabel: "American · Commanding",
     desc: "Rich, commanding voice. Immersive and dramatic.",
     gender: "male",
   },

@@ -2896,7 +2896,7 @@ export default function Create() {
                 <button
                   type="button"
                   onClick={() => { setStep("form"); setGenerationError(null); }}
-                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
                 >
                   Back to story settings
                 </button>

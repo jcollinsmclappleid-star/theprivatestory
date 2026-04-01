@@ -75,7 +75,6 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
-      payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       mode: plan === "addon" ? "payment" : "subscription",
       success_url: `${SITE_URL}/me?checkout=success`,

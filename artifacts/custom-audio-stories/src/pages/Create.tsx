@@ -750,9 +750,10 @@ export default function Create() {
 
   const [generationError, setGenerationError] = useState<{ message: string; isSubscriptionLimit: boolean } | null>(null);
   const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; renewDate: string | null } | null>(null);
-  const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string } | null>(null);
+  const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string; pairing?: string; heritage?: string } | null>(null);
   const [continueAfterDark, setContinueAfterDark] = useState(false);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | null>(null);
+  const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -894,6 +895,27 @@ export default function Create() {
       .catch(() => {});
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    if (step !== "paywall" || !paywallCapture) {
+      setPaywallCoverUrl(null);
+      return;
+    }
+    fetch(`${API_BASE}/api/generate/preview-cover`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mood: paywallCapture.mood,
+        intensity: paywallCapture.intensity,
+        pairing: paywallCapture.pairing,
+        heritage: paywallCapture.heritage,
+      }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.url) setPaywallCoverUrl(d.url); })
+      .catch(() => {});
+  }, [step, paywallCapture]);
+
   const generateMutation = useGenerateFullStory({
     mutation: {
       onSuccess: (data) => {
@@ -926,6 +948,8 @@ export default function Create() {
             intensity: vals.intensity ?? "Heated",
             voiceId: vals.voiceFeel ?? "",
             setting: vals.setting ?? "",
+            pairing: castingPairing,
+            heritage: castingHeritage,
           });
           setContinueAfterDark(false);
           setStep("paywall");
@@ -2787,7 +2811,9 @@ export default function Create() {
                   {/* Cover visual */}
                   <div className="relative h-44 flex items-end justify-start p-5 overflow-hidden"
                     style={{
-                      background: "linear-gradient(135deg, #2a1a08 0%, #1a0f05 40%, #0d0803 100%)",
+                      background: paywallCoverUrl
+                        ? `url(${paywallCoverUrl}) center/cover no-repeat`
+                        : "linear-gradient(135deg, #2a1a08 0%, #1a0f05 40%, #0d0803 100%)",
                     }}
                   >
                     <div className="absolute inset-0 opacity-30" style={{

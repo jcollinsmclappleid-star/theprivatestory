@@ -4690,4 +4690,30 @@ router.get("/story-categories", (_req, res) => {
   res.json(payload);
 });
 
+// POST /api/generate/preview-cover
+// Generate a cover image for the paywall preview (quick, cheap, no audio)
+router.post("/preview-cover", async (req: Request, res: Response) => {
+  try {
+    const { mood, intensity, pairing, heritage } = req.body as {
+      mood?: string;
+      intensity?: string;
+      pairing?: string;
+      heritage?: string;
+    };
+
+    const prompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Heated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
+
+    const imageUrl = await generateImageBuffer(prompt);
+    if (!imageUrl) {
+      res.status(500).json({ error: "Cover generation failed" });
+      return;
+    }
+
+    res.json({ url: imageUrl });
+  } catch (err) {
+    logger.error({ err }, "[preview-cover] Generation failed");
+    res.status(500).json({ error: "Cover generation failed" });
+  }
+});
+
 export default router;

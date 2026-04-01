@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search } from "lucide-react";
+import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Lock, Moon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -670,7 +670,7 @@ export default function Create() {
   const [ageConfirmed, setAgeConfirmed] = useState(() => {
     try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
   });
-  const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result">("casting");
+  const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result" | "paywall">("casting");
   const [castingResetKey, setCastingResetKey] = useState(0);
   const [voiceSampleUrls, setVoiceSampleUrls] = useState<Record<string, string>>({});
   const [loadingVoiceSamples, setLoadingVoiceSamples] = useState<Set<string>>(new Set());
@@ -750,6 +750,8 @@ export default function Create() {
 
   const [generationError, setGenerationError] = useState<{ message: string; isSubscriptionLimit: boolean } | null>(null);
   const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; renewDate: string | null } | null>(null);
+  const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string } | null>(null);
+  const [continueAfterDark, setContinueAfterDark] = useState(false);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -915,7 +917,20 @@ export default function Create() {
         const message = rawMessage.replace(/^HTTP \d{3} [^:]+:\s*/, "").trim();
         const isSubscriptionLimit = status === 402;
         setGenerationError({ message, isSubscriptionLimit });
-        setStep("form");
+        if (isSubscriptionLimit) {
+          const vals = form.getValues();
+          setPaywallCapture({
+            storyMode: vals.storyMode ?? "romance",
+            mood: vals.mood ?? "Emotional",
+            intensity: vals.intensity ?? "Heated",
+            voiceId: vals.voiceFeel ?? "",
+            setting: vals.setting ?? "",
+          });
+          setContinueAfterDark(false);
+          setStep("paywall");
+        } else {
+          setStep("form");
+        }
       },
     },
   });
@@ -2689,6 +2704,148 @@ export default function Create() {
             </div>
           </motion.div>
         )}
+
+        {step === "paywall" && paywallCapture && (() => {
+          const MOOD_TEASERS: Record<string, string> = {
+            romance: "The distance between your hands felt deliberate — like he was choosing, slowly, not to touch you yet. His gaze moved across your face with the calm of someone with time. Something in the room had shifted before a single word was spoken. This is the beginning.",
+            slow_burn: "He'd been watching. Not obviously — just in the way that meant he already knew you were aware of him. The silence between you had weight. This story is about what happens when that weight finally gives.",
+            passionate: "The moment felt suspended, like the air had decided to hold its breath. He hadn't moved closer — but somehow he was closer. Everything was still your choice. And you were choosing.",
+            playful: "There was a point where the game stopped being a game. Where the smile meant something more precise and both of you knew it. The banter had run out of anything to hide behind. Now it was just the two of you.",
+            nostalgic: "You hadn't expected to see him again. Or for it to matter this much when you did. Some feelings don't disappear — they just wait, quietly, for the right moment to surface. This one had been waiting.",
+            forbidden: "You knew it was the wrong thing. You'd known it for weeks — in every careful distance, every professionally maintained eye contact. This story begins where that certainty starts to unravel. It was always going to get here.",
+            unrestrained: "There were no more negotiations. No careful pacing, no restraint. Only the specific satisfaction of finally having exactly what you'd been thinking about. This story holds nothing back.",
+          };
+
+          const MOOD_TITLES: Record<string, string> = {
+            romance: "A story built on feeling",
+            slow_burn: "Everything that was held back",
+            passionate: "Where feeling and desire meet",
+            playful: "A smile that meant more",
+            nostalgic: "Something that was waiting",
+            forbidden: "The moment certainty gives way",
+            unrestrained: "Nothing held back",
+          };
+
+          const excerpt = MOOD_TEASERS[paywallCapture.storyMode] ?? MOOD_TEASERS.romance;
+          const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
+          const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
+          const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
+          const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
+
+          const handleUnlock = () => {
+            if (continueAfterDark) {
+              try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }
+            }
+            window.location.href = `${import.meta.env.BASE_URL}pricing`;
+          };
+
+          return (
+            <motion.div
+              key="paywall"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 flex flex-col items-center justify-center overflow-hidden"
+            >
+              {/* Cinematic background */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "radial-gradient(ellipse at 60% 20%, #2a1a0a 0%, #0d0a08 55%, #000 100%)",
+                }}
+              />
+              <div className="absolute inset-0 opacity-20" style={{
+                backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(201,162,39,0.04) 80px, rgba(201,162,39,0.04) 81px)",
+              }} />
+
+              {/* Content */}
+              <div className="relative z-10 w-full max-w-md mx-auto px-4 py-12 flex flex-col items-center gap-6">
+                {/* Badge */}
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest">
+                  <Lock className="w-3 h-3" />
+                  Story preview
+                </div>
+
+                {/* Cover / Title area */}
+                <div className="w-full rounded-2xl overflow-hidden border border-white/8 bg-gradient-to-br from-[#1e1208] to-[#0d0905] shadow-2xl">
+                  {/* Cover visual */}
+                  <div className="relative h-44 flex items-end justify-start p-5 overflow-hidden"
+                    style={{
+                      background: "linear-gradient(135deg, #2a1a08 0%, #1a0f05 40%, #0d0803 100%)",
+                    }}
+                  >
+                    <div className="absolute inset-0 opacity-30" style={{
+                      background: "radial-gradient(ellipse at 70% 30%, rgba(201,162,39,0.35) 0%, transparent 65%)",
+                    }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d0905] to-transparent" />
+                    <div className="relative z-10">
+                      <p className="text-primary/70 text-xs font-medium uppercase tracking-widest mb-1">{paywallCapture.mood} · {paywallCapture.intensity}</p>
+                      <h2 className="font-display text-2xl font-bold text-foreground leading-tight">{titleLine}</h2>
+                    </div>
+                  </div>
+
+                  {/* Excerpt */}
+                  <div className="px-5 py-4 border-t border-white/5">
+                    <p className="text-sm text-muted-foreground leading-relaxed italic line-clamp-4">
+                      "{excerpt}"
+                    </p>
+                    <div className="mt-3 h-6 bg-gradient-to-b from-transparent to-[#0d0905]/80 -mx-5 -mb-4" />
+                  </div>
+                </div>
+
+                {/* Voice & Tone metadata */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/8 text-xs text-muted-foreground">
+                    <Volume2 className="w-3 h-3 text-primary/60" />
+                    Narrated by {voiceName} · {voiceAccent}
+                  </div>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/8 text-xs text-muted-foreground">
+                    <Headphones className="w-3 h-3 text-primary/60" />
+                    Audio ready to play
+                  </div>
+                </div>
+
+                {/* Continue after dark toggle */}
+                <button
+                  type="button"
+                  onClick={() => setContinueAfterDark(v => !v)}
+                  className="flex items-start gap-3 w-full px-4 py-3.5 rounded-xl border border-white/8 bg-white/3 hover:bg-white/5 transition-all text-left group"
+                >
+                  <div className={`mt-0.5 w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border transition-all ${continueAfterDark ? "bg-primary border-primary" : "border-white/20 group-hover:border-primary/40"}`}>
+                    {continueAfterDark && <Check className="w-3 h-3 text-primary-foreground" />}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      <Moon className="w-3.5 h-3.5 text-primary/70" />
+                      Continue after dark
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      This story can go further. Take it there.
+                    </p>
+                  </div>
+                </button>
+
+                {/* CTA */}
+                <button
+                  type="button"
+                  onClick={handleUnlock}
+                  className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all shadow-glow flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" />
+                  Unlock your private story
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setStep("form"); setGenerationError(null); }}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+                >
+                  Back to story settings
+                </button>
+              </div>
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Variation Modal */}

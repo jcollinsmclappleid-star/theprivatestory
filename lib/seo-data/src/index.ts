@@ -529,3 +529,6 @@ export const seoPageMap = new Map<string, SeoPageSsrData>(
 export function getPageSsrData(slug: string): SeoPageSsrData | undefined {
   return seoPageMap.get(slug);
 }
+
+export * from "./types.js";
+export * from "./configs.js";

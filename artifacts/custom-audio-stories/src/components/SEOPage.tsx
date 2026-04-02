@@ -1,44 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
+import type { SEOPageConfig } from "@workspace/seo-data";
 
-export interface SEOPageConfig {
-  meta: { title: string; description: string };
-  hero: {
-    badge?: string;
-    h1: string;
-    tagline: string;
-  };
-  sections: Array<{
-    h2: string;
-    paragraphs: string[];
-    bullets?: string[];
-  }>;
-  howItWorks: Array<{ heading: string; body: string }>;
-  scenarios: {
-    h2?: string;
-    intro?: string;
-    items: Array<{ heading: string; body: string }>;
-    interstitial?: string;
-  };
-  benefits: {
-    h2?: string;
-    items: Array<{ heading: string; body: string }>;
-  };
-  fullPicture: {
-    h2: string;
-    paragraphs: string[];
-  };
-  finalCTA: {
-    h2: string;
-    paragraphs: string[];
-    primary: { label: string; href: string };
-    links: Array<{ label: string; href: string }>;
-  };
-  faqs: Array<{ q: string; a: string }>;
-}
+export type { SEOPageConfig };
 
 const TRUST_ITEMS = [
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social, no history shared" },
@@ -50,67 +17,6 @@ const TRUST_ITEMS = [
 export default function SEOPage({ config }: { config: SEOPageConfig }) {
   useSEO({ title: config.meta.title, description: config.meta.description });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  useEffect(() => {
-    const faqSchema = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": config.faqs.map((faq) => ({
-        "@type": "Question",
-        "name": faq.q,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.a,
-        },
-      })),
-    };
-    const faqScript = document.createElement("script");
-    faqScript.type = "application/ld+json";
-    faqScript.id = "faq-schema";
-    faqScript.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(faqScript);
-
-    const breadcrumbSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "The Private Story", "item": "https://theprivatestory.com" },
-        { "@type": "ListItem", "position": 2, "name": "Discover All Story Types", "item": "https://theprivatestory.com/discover" },
-        { "@type": "ListItem", "position": 3, "name": config.hero.h1, "item": window.location.href },
-      ],
-    };
-    const breadcrumbScript = document.createElement("script");
-    breadcrumbScript.type = "application/ld+json";
-    breadcrumbScript.id = "breadcrumb-schema";
-    breadcrumbScript.textContent = JSON.stringify(breadcrumbSchema);
-    document.head.appendChild(breadcrumbScript);
-
-    const webPageSchema = {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": config.meta.title,
-      "description": config.meta.description,
-      "url": window.location.href,
-      "dateModified": new Date().toISOString().split("T")[0],
-      "publisher": {
-        "@type": "Organization",
-        "name": "The Private Story",
-        "url": "https://theprivatestory.com",
-      },
-      "breadcrumb": { "@id": breadcrumbScript.id },
-    };
-    const webPageScript = document.createElement("script");
-    webPageScript.type = "application/ld+json";
-    webPageScript.id = "webpage-schema";
-    webPageScript.textContent = JSON.stringify(webPageSchema);
-    document.head.appendChild(webPageScript);
-
-    return () => {
-      document.getElementById("faq-schema")?.remove();
-      document.getElementById("breadcrumb-schema")?.remove();
-      document.getElementById("webpage-schema")?.remove();
-    };
-  }, [config.faqs, config.hero.h1, config.meta.title, config.meta.description]);
 
   return (
     <motion.div

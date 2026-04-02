@@ -11,6 +11,8 @@ export interface SEOPageConfig {
     h1: string;
     tagline: string;
   };
+  heroImage?: string;
+  showCastingPreview?: boolean;
   sections: Array<{
     h2: string;
     paragraphs: string[];

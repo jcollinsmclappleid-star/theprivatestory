@@ -142,6 +142,8 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
 export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
   meta: { title: `AI Audio Story Generator | The Private Story`, description: `An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.` },
   hero: { badge: `AI-Generated · Emotionally Intelligent · Private`, h1: `AI Audio Story Generator — Stories Written Around Your Mood, Not the Algorithm's`, tagline: `Not a library. Not a playlist. An intelligence that writes your story from scratch.` },
+  heroImage: "images/seo-hero-ai.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What an AI Audio Story Generator Actually Does",
@@ -493,6 +495,8 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
 export const audioStoriesForWomenConfig: SEOPageConfig = {
   meta: { title: `Personalised Audio Stories for Women | The Private Story`, description: `Audio stories for women, created around how you want to feel tonight. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
   hero: { badge: `For Women · Private · Personalised`, h1: `Audio Stories for Women — Your Desires at the Centre`, tagline: `Built around what women actually want from audio fiction. Not what the market assumes. Not a best guess. What you said you wanted.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What the Existing Market Gets Wrong",
@@ -1456,6 +1460,8 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
 export const createYourOwnAudioStoryConfig: SEOPageConfig = {
   meta: { title: `Create Your Own Audio Story | The Private Story`, description: `Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.` },
   hero: { badge: `Create · Personalise · Listen Privately`, h1: `Create Your Own Audio Story in Minutes — Shaped Around You`, tagline: `You already know what you need to feel tonight. The Private Story makes it.` },
+  heroImage: "images/seo-hero-create.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What It Means to Create Your Own Audio Story",
@@ -1597,6 +1603,8 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
 export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Dark Romance Audio Stories | The Private Story`, description: `Dark romance audio stories created for adults. Private, personalised, and written around morally complex desire — the shadow side of wanting. Create yours.` },
   hero: { badge: `Dark Romance · Private · Adults Only`, h1: `Dark Romance Audio Stories — Where Danger and Desire Are the Same Thing`, tagline: `The stories that don't look away. The characters who make you feel things you're not supposed to admit to.` },
+  heroImage: "images/seo-hero-dark-romance.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Dark Romance Actually Is",
@@ -1871,6 +1879,8 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
 export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Enemies to Lovers Audio Stories | The Private Story`, description: `Enemies to lovers audio stories created for adults. Private, personalised, and built around the specific tension of opposition turning into something else entirely. Create yours.` },
   hero: { badge: `Enemies to Lovers · Rivals · Private`, h1: `Enemies to Lovers Audio Stories — The Best Tension Has History`, tagline: `The chemistry that started as opposition. The story that began somewhere before the wanting.` },
+  heroImage: "images/seo-hero-enemies.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "Why Enemies to Lovers Is the Most Structurally Satisfying Trope",
@@ -2141,6 +2151,8 @@ export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
 export const intimateAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Intimate Audio Stories | The Private Story`, description: `Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.` },
   hero: { badge: `Intimate · Private · Adults Only`, h1: `Intimate Audio Stories — Private, Personal, Created Around Your Desire`, tagline: `The story that knows what you need tonight — because you told it.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Intimate Audio Stories Are",
@@ -2557,6 +2569,8 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
 export const personalisedAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Personalised Audio Stories | The Private Story`, description: `Personalised audio stories created around how you want to feel tonight. Not selected from a library — generated around your choices and private to you alone.` },
   hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Some nights you don't want to browse. You want something that already knows what you need.` },
+  heroImage: "images/seo-hero-personalised.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Are Personalised Audio Stories?",
@@ -3180,6 +3194,8 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
 export const romanticAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Romantic Audio Stories | The Private Story`, description: `Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.` },
   hero: { badge: `Romantic · Private · Made for You`, h1: `Romantic Audio Stories — Intimate, Private, Made Around Your Mood`, tagline: `Choose how you want to feel tonight. The story is made around that.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Romantic Audio Stories Are — and What They Aren't",

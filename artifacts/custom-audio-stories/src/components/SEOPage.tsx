@@ -4,8 +4,11 @@ import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight } from "luc
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
+import CastingPreview from "@/components/CastingPreview";
 
 export type { SEOPageConfig };
+
+const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const TRUST_ITEMS = [
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social, no history shared" },
@@ -24,31 +27,75 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Hero — with optional background image */}
+      {config.heroImage ? (
+        <div className="relative w-full min-h-[340px] md:min-h-[440px] flex items-end overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img
+              src={`${BASE_URL}/${config.heroImage}`}
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+          </div>
+          <div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-14 md:py-20">
+            {config.hero.badge && (
+              <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
+                {config.hero.badge}
+              </span>
+            )}
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
+              {config.hero.h1}
+            </h1>
+            <p className="text-white/75 text-xl leading-relaxed mb-8 max-w-xl">
+              {config.hero.tagline}
+            </p>
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
+            >
+              <Sparkles className="w-4 h-4" />
+              {config.finalCTA.primary.label}
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-2xl mx-auto px-4 pt-16 pb-0">
+          <div className="mb-14">
+            {config.hero.badge && (
+              <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
+                {config.hero.badge}
+              </span>
+            )}
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+              {config.hero.h1}
+            </h1>
+            <p className="text-muted-foreground text-xl leading-relaxed mb-8">
+              {config.hero.tagline}
+            </p>
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
+            >
+              <Sparkles className="w-4 h-4" />
+              {config.finalCTA.primary.label}
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Casting Preview — soft version */}
+      {config.showCastingPreview && (
+        <div className="w-full border-t border-b border-border/20 bg-background/50 px-4 md:px-8 overflow-hidden">
+          <CastingPreview soft />
+        </div>
+      )}
+
       <div className="max-w-2xl mx-auto px-4 py-16">
 
-        {/* Hero */}
-        <div className="mb-14">
-          {config.hero.badge && (
-            <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
-              {config.hero.badge}
-            </span>
-          )}
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-            {config.hero.h1}
-          </h1>
-          <p className="text-muted-foreground text-xl leading-relaxed mb-8">
-            {config.hero.tagline}
-          </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Sparkles className="w-4 h-4" />
-            {config.finalCTA.primary.label}
-          </Link>
-        </div>
-
-        {/* Structured intro — explicitly states what this page is, who it's for, how it works */}
+        {/* Structured intro */}
         <div className="mb-12 space-y-4 text-muted-foreground text-base leading-relaxed border-l-2 border-primary/30 pl-5">
           <p>
             <strong className="text-foreground font-semibold">What this is:</strong>{" "}
@@ -214,7 +261,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </div>
         </section>
 
-        {/* USP bridge — links every SEO page back to the core USP content pages */}
+        {/* USP bridge */}
         <section className="mb-8">
           <p className="text-[11px] text-muted-foreground/40 uppercase tracking-widest font-medium mb-3">How The Private Story works</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

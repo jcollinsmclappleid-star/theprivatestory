@@ -114,6 +114,54 @@ uri = "file://artifacts/custom-audio-stories/public/avatar-oliver.png"
 type = "image"
 title = "theo-artistic-avatar"
 
+[[generated]]
+id = "Ow09n0-UlXkA4tG914cNW"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-create.png"
+type = "image"
+title = "seo hero create"
+
+[[generated]]
+id = "cUHRtkpXS-GuQf4Tt1mSy"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-personalised.png"
+type = "image"
+title = "seo hero personalised"
+
+[[generated]]
+id = "i_TEOX77vWP0xpqZLXP-9"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-ai.png"
+type = "image"
+title = "seo hero ai"
+
+[[generated]]
+id = "ejiFXVBWzrMmAgBakNc0y"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-romantic.png"
+type = "image"
+title = "seo hero romantic"
+
+[[generated]]
+id = "_gUDAVbeXig1uOgSvVLB-"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-intimate.png"
+type = "image"
+title = "seo hero intimate"
+
+[[generated]]
+id = "fxLgkZHCJgSBQOldKyKTk"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-dark-romance.png"
+type = "image"
+title = "seo hero dark romance"
+
+[[generated]]
+id = "6yZfRy3Z3JGkDEZA-zvBS"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-women.png"
+type = "image"
+title = "seo hero women"
+
+[[generated]]
+id = "R6ZbkbwhxMxty-z6jQG6O"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-hero-enemies.png"
+type = "image"
+title = "seo hero enemies"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

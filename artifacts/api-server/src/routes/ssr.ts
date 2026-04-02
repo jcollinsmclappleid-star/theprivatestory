@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { seoPageMap } from "../seoPageData.js";
+import { allPageConfigs } from "../seoPageData.js";
 import { ssrHtmlShell } from "../ssrShared.js";
 
 const SITE_URL = "https://theprivatestory.com";
@@ -19,10 +19,11 @@ function esc(str: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function makeBreadcrumb(items: Array<{ name: string; item: string }>) {
+function makeBreadcrumb(url: string, items: Array<{ name: string; item: string }>) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "@id": `${url}#breadcrumb`,
     itemListElement: items.map((it, idx) => ({
       "@type": "ListItem",
       position: idx + 1,
@@ -36,7 +37,7 @@ function makeWebPage(opts: {
   name: string;
   description: string;
   url: string;
-  breadcrumbId?: string;
+  includesBreadcrumb?: boolean;
 }) {
   return {
     "@context": "https://schema.org",
@@ -53,7 +54,9 @@ function makeWebPage(opts: {
       name: SITE_NAME,
       url: SITE_URL,
     },
-    ...(opts.breadcrumbId ? { breadcrumb: { "@id": opts.breadcrumbId } } : {}),
+    ...(opts.includesBreadcrumb
+      ? { breadcrumb: { "@id": `${opts.url}#breadcrumb` } }
+      : {}),
   };
 }
 
@@ -412,8 +415,6 @@ router.get("/", (_req: Request, res: Response) => {
   };
 
   const bodyHtml = `
-    <h1>AI-Powered Private Audio Stories — Made for You</h1>
-    <p class="tagline">Your story, your voice, your moment. Private, intimate, and completely yours.</p>
     <a class="cta-primary" href="/create">Create your story</a>
     ${TRUST_BAR_HTML}
     <section>
@@ -448,7 +449,7 @@ router.get("/", (_req: Request, res: Response) => {
 
 for (const page of STATIC_PAGES) {
   const canonical = `${SITE_URL}${page.path}`;
-  const breadcrumb = makeBreadcrumb([
+  const breadcrumb = makeBreadcrumb(canonical, [
     { name: SITE_NAME, item: SITE_URL },
     { name: page.h1, item: canonical },
   ]);
@@ -456,7 +457,7 @@ for (const page of STATIC_PAGES) {
     name: page.title,
     description: page.description,
     url: canonical,
-    breadcrumbId: `${canonical}#breadcrumb`,
+    includesBreadcrumb: true,
   });
   const schemas: object[] = [breadcrumb, webPage, ...(page.extraSchemas ?? [])];
   const cacheHeader = page.cacheHeader ?? CACHE_1D;
@@ -484,7 +485,7 @@ for (const page of STATIC_PAGES) {
 
 router.get("/:slug", (req: Request, res: Response, next) => {
   const { slug } = req.params as { slug: string };
-  const page = seoPageMap.get(slug);
+  const page = allPageConfigs.get(slug);
 
   if (!page) return next();
 
@@ -492,25 +493,42 @@ router.get("/:slug", (req: Request, res: Response, next) => {
 
   const faqSchema = makeFaqSchema(page.faqs);
 
-  const breadcrumb = makeBreadcrumb([
+  const breadcrumb = makeBreadcrumb(canonical, [
     { name: SITE_NAME, item: SITE_URL },
     { name: "Discover All Story Types", item: `${SITE_URL}/discover` },
-    { name: page.h1, item: canonical },
+    { name: page.hero.h1, item: canonical },
   ]);
 
   const webPage = makeWebPage({
-    name: page.title,
-    description: page.description,
+    name: page.meta.title,
+    description: page.meta.description,
     url: canonical,
-    breadcrumbId: `${canonical}#breadcrumb`,
+    includesBreadcrumb: true,
   });
 
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to create a personalised ${page.hero.h1.split("—")[0].trim().toLowerCase()} story`,
+    description:
+      "Create a private, AI-generated audio story in under two minutes.",
+    totalTime: "PT2M",
+    tool: [{ "@type": "HowToTool", name: "The Private Story app" }],
+    step: page.howItWorks.map((step, idx) => ({
+      "@type": "HowToStep",
+      position: idx + 1,
+      name: step.heading,
+      text: step.body,
+    })),
+  };
+
   const sectionsHtml = page.sections
+    .slice(0, 3)
     .map(
       (s) => `
     <section>
       <h2>${esc(s.h2)}</h2>
-      <p>${esc(s.p)}</p>
+      <p>${esc(s.paragraphs[0])}</p>
     </section>`,
     )
     .join("\n");
@@ -531,30 +549,38 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     </section>`
     : "";
 
+  const howItWorksHtml = `
+    <section>
+      <h2>How It Works</h2>
+      ${page.howItWorks
+        .map(
+          (step, idx) => `
+      <div class="hiw-step">
+        <strong>${idx + 1}. ${esc(step.heading)}</strong>
+        <p>${esc(step.body)}</p>
+      </div>`,
+        )
+        .join("")}
+      <p><a href="/create">Create yours in under two minutes →</a></p>
+    </section>`;
+
   const bodyHtml = `
-    ${page.badge ? `<span class="badge">${esc(page.badge)}</span>` : ""}
-    <h1>${esc(page.h1)}</h1>
-    <p class="tagline">${esc(page.tagline)}</p>
     <a class="cta-primary" href="/create">Create your story</a>
     ${TRUST_BAR_HTML}
     ${sectionsHtml}
-    <section>
-      <h2>How It Works</h2>
-      <p>Choose your mood and emotional register. The story is generated around your selections — not retrieved from a library, but written from scratch for you. Your personalised audio story is narrated and saved privately to your account.</p>
-      <p><a href="/create">Create yours in under two minutes →</a></p>
-    </section>
+    ${howItWorksHtml}
     ${faqsHtml}
     ${EXPLORE_HTML}`;
 
   const html = ssrHtmlShell({
-    title: page.title,
-    description: page.description,
+    title: page.meta.title,
+    description: page.meta.description,
     canonical,
-    h1: page.h1,
-    badge: page.badge,
-    tagline: page.tagline,
+    h1: page.hero.h1,
+    badge: page.hero.badge,
+    tagline: page.hero.tagline,
     bodyHtml,
-    schemas: [faqSchema, breadcrumb, webPage, HOW_TO_SCHEMA],
+    schemas: [faqSchema, breadcrumb, webPage, howToSchema],
   });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");

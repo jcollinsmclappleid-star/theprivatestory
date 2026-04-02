@@ -188,6 +188,13 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   </nav>
 
   <main>
+    ${
+      opts.h1
+        ? `${opts.badge ? `<span class="badge">${escHtml(opts.badge)}</span>` : ""}
+    <h1>${escHtml(opts.h1)}</h1>
+    ${opts.tagline ? `<p class="tagline">${escHtml(opts.tagline)}</p>` : ""}`
+        : ""
+    }
     ${opts.bodyHtml}
   </main>
 

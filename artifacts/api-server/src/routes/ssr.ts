@@ -798,15 +798,15 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
     sections: [
       {
         h2: "How audio erotica differs from visual pornography",
-        body: `Audio erotica is a completely different medium to visual pornography. It is literary in origin — the content begins as written fiction, then is narrated. The stimulation is cognitive and imaginative rather than visual. Many women prefer audio erotica precisely because it does not require looking at anything, and because the narrative context — who the characters are, why they want each other, what the emotional stakes are — is as important as the physical description.<br><br>Research consistently shows that women respond more strongly to narrative context in sexual content than men, on average. Audio erotica is built around that insight.`,
+        body: `Audio erotica is a completely different medium to visual pornography. It is literary in origin — the content begins as written fiction, then is narrated. The stimulation is cognitive and imaginative rather than visual. Many women prefer audio erotica precisely because it does not require looking at anything, and because the narrative context — who the characters are, why they want each other, what the emotional stakes are — is as important as the physical description.<br><br>Research consistently shows that women respond more strongly to narrative context in sexual content than men, on average. Audio erotica is built around that insight. Explore <a href="/audio-erotica-for-women">audio erotica for women</a> to see how this translates into a platform built specifically for female listeners.`,
       },
       {
         h2: "The role of voice in audio erotica",
-        body: `Voice is everything in audio erotica. The cadence of a sentence, the pause before a key word, the warmth or edge in a narrator's tone — these are the instruments that audio erotica uses. A well-narrated piece of erotic fiction creates an intimacy that no other format matches. It feels like someone is speaking directly to you.<br><br>At The Private Story, narration is handled by professional-grade AI voice synthesis, with careful attention to pacing, breath, and emotional register. The voice feels human because the writing behind it is crafted to be read aloud.`,
+        body: `Voice is everything in audio erotica. The cadence of a sentence, the pause before a key word, the warmth or edge in a narrator's tone — these are the instruments that audio erotica uses. A well-narrated piece of erotic fiction creates an intimacy that no other format matches. It feels like someone is speaking directly to you.<br><br>At The Private Story, narration is handled by professional-grade AI voice synthesis, with careful attention to pacing, breath, and emotional register. The voice feels human because the writing behind it is crafted to be read aloud. Every story begins with your brief — <a href="/create">create yours</a> in under two minutes.`,
       },
       {
         h2: "Is audio erotica the same as an erotic audiobook?",
-        body: `Not exactly. An erotic audiobook is a commercial recording of a published erotic novel — written for a mass market, narrated professionally, sold widely. Audio erotica is a broader term that includes any spoken erotic content, from standalone short stories to longer serialised fiction.<br><br><a href="/audio-erotica-for-women">Audio erotica for women</a> on The Private Story is explicitly personalised — the content is shaped by your preferences, not a publisher's commercial calculations.`,
+        body: `Not exactly. An erotic audiobook is a commercial recording of a published erotic novel — written for a mass market, narrated professionally, sold widely. Audio erotica is a broader term that includes any spoken erotic content, from standalone short stories to longer serialised fiction.<br><br><a href="/erotic-audio-stories">Erotic audio stories</a> on The Private Story are explicitly personalised — the content is shaped by your preferences, not a publisher's commercial calculations. See also our guide to <a href="/personalised-audio-stories">personalised audio stories</a> for a full explanation of how the creation process works.`,
       },
       {
         h2: "Why AI has transformed audio erotica",
@@ -877,7 +877,7 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       },
       {
         h2: "Famous slow burn examples in romance fiction",
-        body: `Without naming specific titles, slow burn romance is the dominant structure of romantasy (romantic fantasy) and new adult romance — two of the fastest-growing segments of the fiction market. It is also the backbone of most fan fiction, where extended tension across a long narrative is standard. The slow burn structure translates particularly well to audio, because the listener experiences the delay in real time, making the tension more visceral than in text.`,
+        body: `Without naming specific titles, slow burn romance is the dominant structure of romantasy (romantic fantasy) and new adult romance — two of the fastest-growing segments of the fiction market. It is also the backbone of most fan fiction, where extended tension across a long narrative is standard. The slow burn structure translates particularly well to audio, because the listener experiences the delay in real time, making the tension more visceral than in text. You can explore our <a href="/slow-burn-audio-stories">slow burn audio stories</a> page to see how the format works in practice, or <a href="/create">create your own slow burn story</a> right now.`,
       },
     ],
     faqs: [
@@ -928,7 +928,7 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       },
       {
         h2: "Common tropes in dark romance",
-        body: `Dark romance has developed a recognisable lexicon of tropes: the 'morally grey' hero (or anti-hero) who operates outside conventional ethics; the 'dark captive' setup (two characters confined together under duress); stalker romance (an obsessive love interest whose surveillance of the protagonist is portrayed with ambivalence); and 'dark forced proximity' (situations where the power imbalance is explicit and central to the tension). These tropes are not endorsements; they are narrative scaffolding for exploring complex emotional territory.`,
+        body: `Dark romance has developed a recognisable lexicon of tropes: the 'morally grey' hero (or anti-hero) who operates outside conventional ethics; the 'dark captive' setup (two characters confined together under duress); stalker romance (an obsessive love interest whose surveillance of the protagonist is portrayed with ambivalence); and 'dark forced proximity' (situations where the power imbalance is explicit and central to the tension). These tropes are not endorsements; they are narrative scaffolding for exploring complex emotional territory. Many of these dynamics naturally pair with <a href="/what-is-enemies-to-lovers">enemies-to-lovers</a> structures, where the original antagonism gives the dark dynamic its credibility.`,
       },
       {
         h2: "Who reads dark romance and why?",
@@ -940,7 +940,7 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       },
       {
         h2: "Requesting dark romance in a personalised audio story",
-        body: `At The Private Story, dark romance is a fully supported genre. When you create your brief, you can specify morally grey characters, power imbalances, specific dark tropes, and content intensity. The story will be constructed around your preferences — including explicit content if requested. All content, including dark themes, depicts fictional adults and is handled with narrative craft rather than gratuitousness.<br><br>Explore <a href="/personalised-erotica">personalised erotica</a> to understand how explicit dark romance stories are created.`,
+        body: `At The Private Story, dark romance is a fully supported genre. When you create your brief, you can specify morally grey characters, power imbalances, specific dark tropes, and content intensity. The story will be constructed around your preferences — including explicit content if requested. All content, including dark themes, depicts fictional adults and is handled with narrative craft rather than gratuitousness.<br><br>Explore <a href="/personalised-erotica">personalised erotica</a> to understand how explicit dark romance stories are created, or <a href="/create">create your own dark romance story</a> in under two minutes.`,
       },
     ],
     faqs: [

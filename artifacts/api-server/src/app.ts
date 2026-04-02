@@ -234,7 +234,9 @@ function isBot(req: Request): boolean {
 }
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  if (isBot(req)) {
+  // Always serve utility files regardless of user-agent
+  const alwaysSSR = req.path === "/sitemap.xml" || req.path === "/robots.txt" || req.path.endsWith(".xml");
+  if (alwaysSSR || isBot(req)) {
     return ssrRouter(req, res, next);
   }
   next();

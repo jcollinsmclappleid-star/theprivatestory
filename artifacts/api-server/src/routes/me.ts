@@ -116,6 +116,8 @@ export async function getOrResetUsage(userId: string): Promise<{
   renewDate: string | null;
   canGenerate: boolean;
   storiesRemaining: number;
+  rolloverCredits: number;
+  addonStoriesRemaining: number;
   subscriptionStatus: string | null;
   cancelAt: string | null;
 }> {
@@ -127,17 +129,20 @@ export async function getOrResetUsage(userId: string): Promise<{
       subscriptionRenewDate: usersTable.subscriptionRenewDate,
       subscriptionStatus: usersTable.subscriptionStatus,
       subscriptionCancelAt: usersTable.subscriptionCancelAt,
+      rolloverCredits: usersTable.rolloverCredits,
+      addonStoriesRemaining: usersTable.addonStoriesRemaining,
     })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
   if (!user) {
-    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0, subscriptionStatus: null, cancelAt: null };
+    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0, rolloverCredits: 0, addonStoriesRemaining: 0, subscriptionStatus: null, cancelAt: null };
   }
 
   const plan = user.subscriptionPlan ?? "free";
   const planConfig = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
   const renewDate = user.subscriptionRenewDate;
+  let rolloverCredits = user.rolloverCredits ?? 0;
 
   let used = planConfig.period === "year"
     ? (user.storiesGeneratedThisYear ?? 0)
@@ -147,9 +152,12 @@ export async function getOrResetUsage(userId: string): Promise<{
   if (renewDate && plan !== "free" && new Date() > renewDate) {
     const newRenewDate = new Date(renewDate);
     if (planConfig.period === "month") {
+      // Compute rollover before resetting counter
+      const unused = Math.max(0, planConfig.limit - used);
+      rolloverCredits = Math.min(10, rolloverCredits + unused);
       newRenewDate.setMonth(newRenewDate.getMonth() + 1);
       await db.update(usersTable)
-        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
+        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate, rolloverCredits })
         .where(eq(usersTable.id, userId));
     } else {
       newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
@@ -160,8 +168,10 @@ export async function getOrResetUsage(userId: string): Promise<{
     used = 0;
   }
 
-  const storiesRemaining = Math.max(0, planConfig.limit - used);
-  const canGenerate = plan !== "free" && used < planConfig.limit;
+  const addonStoriesRemaining = user.addonStoriesRemaining ?? 0;
+  const planRemaining = Math.max(0, planConfig.limit - used);
+  const storiesRemaining = planRemaining + rolloverCredits;
+  const canGenerate = (plan !== "free" && (used < planConfig.limit || rolloverCredits > 0)) || addonStoriesRemaining > 0;
 
   return {
     plan,
@@ -170,6 +180,8 @@ export async function getOrResetUsage(userId: string): Promise<{
     renewDate: renewDate ? renewDate.toISOString() : null,
     canGenerate,
     storiesRemaining,
+    rolloverCredits,
+    addonStoriesRemaining,
     subscriptionStatus: user.subscriptionStatus ?? null,
     cancelAt: user.subscriptionCancelAt ? user.subscriptionCancelAt.toISOString() : null,
   };

@@ -3860,8 +3860,8 @@ const PLAN_LIMITS_GEN: Record<string, { period: "month" | "year"; limit: number 
  * or null if they may proceed with generation.
  * Resets counters lazily when the billing period has rolled over.
  */
-/** Result of checkSubscriptionLimit. error=null means proceed; useAddon=true means an addon credit should be consumed post-generation. storiesCount is used for variety profile seeding. */
-type SubLimitResult = { error: string | null; useAddon: boolean; storiesCount?: number };
+/** Result of checkSubscriptionLimit. error=null means proceed; useAddon=true means an addon credit should be consumed post-generation; useRollover=true means a rollover credit should be consumed. storiesCount is used for variety profile seeding. */
+type SubLimitResult = { error: string | null; useAddon: boolean; useRollover: boolean; storiesCount?: number };
 
 async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
   const [user] = await db
@@ -3872,23 +3872,25 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
       storiesGeneratedThisYear: usersTable.storiesGeneratedThisYear,
       subscriptionRenewDate: usersTable.subscriptionRenewDate,
       addonStoriesRemaining: usersTable.addonStoriesRemaining,
+      rolloverCredits: usersTable.rolloverCredits,
     })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
-  if (!user) return { error: "Account not found.", useAddon: false };
+  if (!user) return { error: "Account not found.", useAddon: false, useRollover: false };
 
-  if (user.isAdmin) return { error: null, useAddon: false }; // Admins have unlimited stories
+  if (user.isAdmin) return { error: null, useAddon: false, useRollover: false }; // Admins have unlimited stories
 
   const plan = user.subscriptionPlan ?? "free";
   const addonCredits = user.addonStoriesRemaining ?? 0;
+  const rolloverCredits = user.rolloverCredits ?? 0;
 
   const storiesCount = user.storiesGeneratedThisYear ?? 0;
 
   if (plan === "free") {
     // Free users can only generate if they have addon credits
-    if (addonCredits > 0) return { error: null, useAddon: true, storiesCount };
-    return { error: "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.com.", useAddon: false };
+    if (addonCredits > 0) return { error: null, useAddon: true, useRollover: false, storiesCount };
+    return { error: "You need an active subscription to create stories. Visit your profile to upgrade or email support@theprivatestory.com.", useAddon: false, useRollover: false };
   }
 
   const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
@@ -3898,9 +3900,12 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
   if (renewDate && new Date() > renewDate) {
     const newRenewDate = new Date(renewDate);
     if (planConfig.period === "month") {
+      // Compute rollover before resetting counter
+      const unused = Math.max(0, planConfig.limit - (user.storiesGeneratedThisMonth ?? 0));
+      const newRollover = Math.min(10, rolloverCredits + unused);
       newRenewDate.setMonth(newRenewDate.getMonth() + 1);
       await db.update(usersTable)
-        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
+        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate, rolloverCredits: newRollover })
         .where(eq(usersTable.id, userId));
     } else {
       newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
@@ -3908,7 +3913,7 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
         .set({ storiesGeneratedThisYear: 0, subscriptionRenewDate: newRenewDate })
         .where(eq(usersTable.id, userId));
     }
-    return { error: null, useAddon: false, storiesCount: 0 }; // Counter reset — they can generate
+    return { error: null, useAddon: false, useRollover: false, storiesCount: 0 }; // Counter reset — they can generate
   }
 
   const used = planConfig.period === "year"
@@ -3916,18 +3921,19 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
     : (user.storiesGeneratedThisMonth ?? 0);
 
   if (used >= planConfig.limit) {
-    // Over plan limit — fall back to addon credits if available
-    if (addonCredits > 0) return { error: null, useAddon: true, storiesCount };
+    // Over plan limit — fall back to rollover credits first (monthly only), then addon credits
+    if (plan === "monthly" && rolloverCredits > 0) return { error: null, useAddon: false, useRollover: true, storiesCount };
+    if (addonCredits > 0) return { error: null, useAddon: true, useRollover: false, storiesCount };
     const renewStr = renewDate
       ? new Date(renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
       : "your renewal date";
     if (plan === "monthly") {
-      return { error: `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false };
+      return { error: `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false, useRollover: false };
     }
-    return { error: `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false };
+    return { error: `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false, useRollover: false };
   }
 
-  return { error: null, useAddon: false, storiesCount }; // Within limits
+  return { error: null, useAddon: false, useRollover: false, storiesCount }; // Within limits
 }
 
 /** Decrement addon story credit by 1 after generation. Non-blocking — failure is logged but doesn't affect response. */
@@ -3938,6 +3944,17 @@ async function consumeAddonCredit(userId: string): Promise<void> {
       .where(eq(usersTable.id, userId));
   } catch (err) {
     logger.error({ err, userId }, "[addon] Failed to decrement addon story credit");
+  }
+}
+
+/** Decrement rollover credit by 1 after generation. Non-blocking — failure is logged but doesn't affect response. */
+async function consumeRolloverCredit(userId: string): Promise<void> {
+  try {
+    await db.update(usersTable)
+      .set({ rolloverCredits: drizzleSql`GREATEST(0, ${usersTable.rolloverCredits} - 1)` })
+      .where(eq(usersTable.id, userId));
+  } catch (err) {
+    logger.error({ err, userId }, "[rollover] Failed to decrement rollover credit");
   }
 }
 
@@ -3957,7 +3974,7 @@ router.post("/plan-story", async (req, res) => {
     return;
   }
 
-  const subResult = isAdminUser(req) ? { error: null, useAddon: false } : await checkSubscriptionLimit(userId);
+  const subResult = isAdminUser(req) ? { error: null, useAddon: false, useRollover: false } : await checkSubscriptionLimit(userId);
   if (subResult.error) {
     res.status(402).json({ error: subResult.error, code: "SUBSCRIPTION_LIMIT" });
     return;
@@ -4188,12 +4205,13 @@ router.post("/generate-full-story", async (req, res) => {
     return;
   }
 
-  const subLimitResult = isAdminUser(req) ? { error: null, useAddon: false } : await checkSubscriptionLimit(String(req.user!.id));
+  const subLimitResult = isAdminUser(req) ? { error: null, useAddon: false, useRollover: false } : await checkSubscriptionLimit(String(req.user!.id));
   if (subLimitResult.error) {
     res.status(402).json({ error: subLimitResult.error, code: "SUBSCRIPTION_LIMIT" });
     return;
   }
   const _useAddonForThisGeneration = subLimitResult.useAddon;
+  const _useRolloverForThisGeneration = subLimitResult.useRollover;
 
   // Compute variety profile — deterministic for subscribers, random for admins
   const fullStoryVarietySeed = subLimitResult.storiesCount ?? Math.floor(Math.random() * 420);
@@ -4515,9 +4533,10 @@ router.post("/generate-full-story", async (req, res) => {
 
   try {
     const result = await Promise.race([pipeline(), timeoutPromise]);
-    // Consume addon credit if this generation was permitted by an addon credit
-    if (_useAddonForThisGeneration && req.isAuthenticated()) {
-      consumeAddonCredit(String(req.user!.id)).catch(() => {});
+    // Consume addon or rollover credit if this generation was permitted by one
+    if (req.isAuthenticated()) {
+      if (_useAddonForThisGeneration) consumeAddonCredit(String(req.user!.id)).catch(() => {});
+      if (_useRolloverForThisGeneration) consumeRolloverCredit(String(req.user!.id)).catch(() => {});
     }
     res.json(result);
   } catch (err) {

@@ -11,6 +11,7 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const STRIPE_MONTHLY_PRICE_ID = process.env.STRIPE_MONTHLY_PRICE_ID;
 const STRIPE_ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID;
 const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
+const STRIPE_IMMERSIVE_PRICE_ID = process.env.STRIPE_IMMERSIVE_PRICE_ID;
 const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
 
 function getStripe(): Stripe | null {
@@ -40,14 +41,15 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     return;
   }
 
-  const { plan } = req.body as { plan: "monthly" | "annual" | "addon" };
-  if (!plan || !["monthly", "annual", "addon"].includes(plan)) {
-    res.status(400).json({ error: "Invalid plan. Choose monthly, annual, or addon." });
+  const { plan } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive" };
+  if (!plan || !["monthly", "annual", "addon", "immersive"].includes(plan)) {
+    res.status(400).json({ error: "Invalid plan. Choose monthly, annual, addon, or immersive." });
     return;
   }
 
   const priceId = plan === "monthly" ? STRIPE_MONTHLY_PRICE_ID
     : plan === "annual" ? STRIPE_ANNUAL_PRICE_ID
+    : plan === "immersive" ? STRIPE_IMMERSIVE_PRICE_ID
     : STRIPE_ADDON_PRICE_ID;
 
   if (!priceId) {
@@ -76,7 +78,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
-      mode: plan === "addon" ? "payment" : "subscription",
+      mode: (plan === "addon" || plan === "immersive") ? "payment" : "subscription",
       success_url: `${SITE_URL}/me?checkout=success`,
       cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
       allow_promotion_codes: true,
@@ -251,10 +253,10 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
-        const plan = session.metadata?.plan as "monthly" | "annual" | "addon" | undefined;
+        const plan = session.metadata?.plan as "monthly" | "annual" | "addon" | "immersive" | undefined;
         if (!userId || !plan) break;
 
-        if (plan === "addon") {
+        if (plan === "addon" || plan === "immersive") {
           // Credit 1 addon story — increments the remaining addon counter
           await db
             .update(usersTable)
@@ -262,7 +264,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
               addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
             })
             .where(eq(usersTable.id, userId));
-          logger.info({ userId }, "[stripe-webhook] Addon story credited (+1)");
+          logger.info({ userId, plan }, "[stripe-webhook] Story credited (+1)");
         } else {
           const isMonthly = plan === "monthly";
           const renewDate = new Date();
@@ -326,6 +328,32 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           subscriptionStatus: "canceled",
         }).where(eq(usersTable.id, user.id));
         logger.info({ userId: user.id }, "[stripe-webhook] Subscription canceled — reverted to free");
+        break;
+      }
+
+      case "invoice.paid": {
+        // On successful monthly subscription renewal, compute rollover credits before resetting counter
+        const invoice = event.data.object as Stripe.Invoice;
+        const sub = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
+        if (!sub) break;
+        // Only process renewal invoices (billing_reason = "subscription_cycle"), not the first invoice
+        if ((event.data.object as Stripe.Invoice).billing_reason !== "subscription_cycle") break;
+        const user = await db.select()
+          .from(usersTable)
+          .where(eq(usersTable.stripeSubscriptionId, sub))
+          .then(r => r[0]);
+        if (!user || user.subscriptionPlan !== "monthly") break;
+        // Compute rollover: unused stories from this period (max 10 cap on rollover bank)
+        const unused = Math.max(0, 5 - (user.storiesGeneratedThisMonth ?? 0));
+        const newRollover = Math.min(10, (user.rolloverCredits ?? 0) + unused);
+        const newRenewDate = new Date();
+        newRenewDate.setMonth(newRenewDate.getMonth() + 1);
+        await db.update(usersTable).set({
+          storiesGeneratedThisMonth: 0,
+          rolloverCredits: newRollover,
+          subscriptionRenewDate: newRenewDate,
+        }).where(eq(usersTable.id, user.id));
+        logger.info({ userId: user.id, unused, newRollover }, "[stripe-webhook] Monthly renewal — rollover computed");
         break;
       }
 

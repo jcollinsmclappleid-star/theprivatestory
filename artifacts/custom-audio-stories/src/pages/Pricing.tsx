@@ -20,6 +20,7 @@ const REASSURANCE = [
 
 const MONTHLY_FEATURES = [
   "5 Immersive Stories each month",
+  "Unused stories roll over (up to 10)",
   "Full access to the curated collection",
   "Monthly curated releases",
   "Private library storage",
@@ -85,8 +86,16 @@ const FAQS: { q: string; a: string }[] = [
     a: "Yes. A curated release is added monthly. It isn't a constant stream — it's an editorial event, thoughtfully chosen.",
   },
   {
+    q: "Can I try it without subscribing?",
+    a: "Yes. A single Immersive Story is available for £7.99 — one story, yours immediately, with nothing to cancel. You can pick up a subscription later if you want more.",
+  },
+  {
     q: "Can I buy more personalised stories?",
     a: "Yes. Additional personalised stories are available for £3.99 each, whenever the moment calls for it — without changing your plan.",
+  },
+  {
+    q: "Do unused monthly stories roll over?",
+    a: "Yes. On the monthly plan, any unused story credits carry forward to the following month, up to a maximum of 10 rollover credits.",
   },
   {
     q: "Can I cancel my monthly plan at any time?",
@@ -118,10 +127,10 @@ export default function Pricing() {
   const { isAuthenticated, openSignUp } = useAuth();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
-  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const startCheckout = async (plan: "monthly" | "annual" | "addon") => {
+  const startCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
     if (!isAuthenticated) {
       openSignUp();
       return;
@@ -231,6 +240,36 @@ export default function Pricing() {
       {/* Pricing cards                                                        */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
+
+        {/* Single story / try first card */}
+        <div className="mb-5 relative overflow-hidden rounded-3xl border border-white/10 bg-card/20 backdrop-blur-sm p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-card/60 to-background/30 pointer-events-none" />
+          <div className="relative z-10 flex-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/40 mb-2">Single story · No subscription</p>
+            <div className="flex items-end gap-2 mb-1">
+              <span className="font-display text-4xl font-bold text-foreground">£7.99</span>
+              <span className="text-muted-foreground/50 mb-1">one-time</span>
+            </div>
+            <p className="text-sm text-muted-foreground/60 leading-relaxed max-w-sm">
+              One fully personalised Immersive Story — narrated, illustrated, yours immediately. Nothing to cancel.
+            </p>
+          </div>
+          <div className="relative z-10 flex-shrink-0 w-full md:w-auto">
+            <button
+              onClick={() => startCheckout("immersive")}
+              disabled={loadingPlan !== null}
+              className="block w-full md:w-auto text-center px-8 py-3.5 rounded-full border border-white/20 text-foreground font-semibold text-sm hover:bg-white/5 hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {loadingPlan === "immersive" ? (
+                <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+              ) : (
+                isAuthenticated ? "Get a single story" : "Sign up & get a story"
+              )}
+            </button>
+            <p className="text-center text-[10px] text-muted-foreground/30 mt-2">Perfect for trying before subscribing</p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
 
           {/* Monthly */}

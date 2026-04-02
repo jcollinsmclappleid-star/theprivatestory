@@ -195,12 +195,15 @@ export default function Privacy() {
               <Shield className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <h2 className="font-display text-xl font-bold text-foreground mb-1">Your stories don't train AI</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Your stories and AI training</h2>
             </div>
           </div>
           <div className="pl-14">
+            <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+              We do not use your stories, inputs, or creative choices to train any AI models ourselves.
+            </p>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              The stories we generate for you are not used to train AI models — not ours, not anyone else's. What you ask for stays between you and the story. Full stop.
+              We use AI services through API agreements that include data use restrictions. What you create here is used to generate your story — nothing more. For full details of how data flows through our technical infrastructure, see the <Link href="/privacy-policy" className="text-primary hover:underline">full Privacy Policy</Link>.
             </p>
           </div>
         </section>
@@ -232,27 +235,16 @@ export default function Privacy() {
               <LinkIcon className="w-5 h-5 text-violet-500" />
             </div>
             <div>
-              <h2 className="font-display text-xl font-bold text-foreground mb-1">Technical processors — not partners</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-1">Technical infrastructure</h2>
             </div>
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              We do not share your data with third parties for their own purposes. However, the product requires a small number of technical processors to function — companies that handle data on our behalf, under strict instructions, only to deliver the service.
+              We do not share your data with third parties for their own purposes. Delivering the service requires a small number of technical processors — companies that handle data strictly on our behalf, under instructions, only in order to generate and deliver your story. We do not sell or broker access to your data.
             </p>
-            <div className="space-y-2">
-              {[
-                { name: "OpenAI", role: "Generates your story text from your inputs. Under our API agreement, inputs are not used to train OpenAI models. Servers in the United States (covered by standard contractual clauses)." },
-                { name: "Mistral AI", role: "An alternative story generation model used for certain formats. Servers in the EU." },
-                { name: "ElevenLabs", role: "Converts story text to narrated audio in your chosen voice. Audio is generated for delivery only, not retained. Servers in the United States (covered by standard contractual clauses)." },
-                { name: "Stripe", role: "Processes payment. Your card details go directly to Stripe — we never see them, store them, or have access to them. Stripe is PCI DSS Level 1 certified." },
-                { name: "Replit / hosting infrastructure", role: "The platform on which the service runs. Personal data is stored on servers operated within this infrastructure." },
-              ].map((s) => (
-                <div key={s.name} className="glass-panel rounded-xl p-4">
-                  <p className="font-semibold text-foreground text-sm mb-1">{s.name}</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{s.role}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              A full list of processors, their data roles, locations, and the legal safeguards in place for international transfers is available in the <Link href="/privacy-policy" className="text-primary hover:underline">full Privacy Policy</Link>.
+            </p>
           </div>
         </section>
 

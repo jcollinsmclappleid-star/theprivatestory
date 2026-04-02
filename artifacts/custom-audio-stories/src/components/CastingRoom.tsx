@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon, Check } from "lucide-react";
 import { NAMES } from "../data/names";
@@ -1909,12 +1910,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 {listenerSearch.trim().length >= 1 && filteredListenerNames.length === 0 && (
                   <div className="mt-3">
                     <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
-                    <a
-                      href={`mailto:support@theprivatestory.com?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(listenerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                    <Link
+                      href="/contact"
                       className="text-xs text-primary/80 hover:text-primary underline transition-colors"
                     >
-                      Request this name via email →
-                    </a>
+                      Request this name — added within 48 hours →
+                    </Link>
                   </div>
                 )}
               </div>
@@ -1999,12 +2000,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 {partnerSearch.trim().length >= 1 && filteredPartnerNames.length === 0 && (
                   <div className="mt-3">
                     <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
-                    <a
-                      href={`mailto:support@theprivatestory.com?subject=Request%20name%20for%20story%20builder&body=Hi%20The%20Private%20Story%20team%2C%0A%0AI%27d%20like%20to%20request%20the%20name%20%22${encodeURIComponent(partnerSearch)}%22%20to%20be%20added%20to%20the%20name%20library.%0A%0AThank%20you!`}
+                    <Link
+                      href="/contact"
                       className="text-xs text-primary/80 hover:text-primary underline transition-colors"
                     >
-                      Request this name via email →
-                    </a>
+                      Request this name — added within 48 hours →
+                    </Link>
                   </div>
                 )}
               </div>

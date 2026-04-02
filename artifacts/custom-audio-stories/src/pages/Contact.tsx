@@ -81,8 +81,8 @@ export default function Contact() {
           <h2 className="font-display text-xl font-bold text-foreground">Request a name</h2>
         </div>
         <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-          Don't see your name — or your love interest's — in the CastingRoom?
-          Submit a request below and we'll add it to the next update.
+          Don't see your name — or your love interest's — in the Casting Room?
+          Submit a request below and we'll add it within 48 hours.
         </p>
 
         {submitted ? (
@@ -94,8 +94,7 @@ export default function Contact() {
             <CheckCircle2 className="w-10 h-10 text-primary" />
             <h2 className="font-display text-xl font-bold text-foreground">Request received</h2>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Thank you — we'll review your suggestion and add it to the name list if it fits.
-              You'll see it appear in the CastingRoom after the next update.
+              Thank you — we'll add your name to the Casting Room within 48 hours.
             </p>
           </motion.div>
         ) : (
@@ -173,8 +172,7 @@ export default function Contact() {
             </button>
 
             <p className="text-[11px] text-muted-foreground/60 text-center leading-relaxed">
-              Requests are reviewed by our team. We can't guarantee every name will be added,
-              but we read every submission.
+              Accepted names are added within 48 hours. We read every request.
             </p>
           </form>
         )}

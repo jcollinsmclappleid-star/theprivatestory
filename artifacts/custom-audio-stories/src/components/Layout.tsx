@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
-const ReportModal = lazy(() => import("./ReportModal").then((m) => ({ default: m.ReportModal })));
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
@@ -359,8 +358,6 @@ function FooterColumn({ heading, links }: { heading: string; links: { label: str
 }
 
 function Footer() {
-  const [reportOpen, setReportOpen] = useState(false);
-
   const legalLinks = [
     { label: "Privacy", href: "/privacy" },
     { label: "Terms", href: "/terms" },
@@ -440,21 +437,10 @@ function Footer() {
                 {link.label}
               </Link>
             ))}
-            <button
-              onClick={() => setReportOpen(true)}
-              className="hover:text-amber-400 transition-colors"
-            >
-              Report a concern
-            </button>
           </div>
-          <p className="text-[11px] text-muted-foreground/30">What you listen to here stays here. Always. · Adults 18+ only. · Ianson System Ltd t/a The Private Story.</p>
+          <p className="text-[11px] text-muted-foreground/30">What you listen to here stays here. Always. · Adults 18+ only. · The Private Story.</p>
         </div>
       </div>
-      {reportOpen && (
-        <Suspense fallback={null}>
-          <ReportModal onClose={() => setReportOpen(false)} />
-        </Suspense>
-      )}
     </footer>
   );
 }

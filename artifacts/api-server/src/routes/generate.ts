@@ -820,7 +820,7 @@ interface SceneVisual {
 }
 
 const BASE_STYLE =
-  "photorealistic cinematic film still, emotionally driven romance, tasteful sensuality, soft cinematic lighting, warm amber and deep shadow contrast, shallow depth of field, professional portrait photography, high-detail rendering, subtle skin texture, expressive eyes, elegant body language, non-explicit, soft film grain, romantic realism, intimate atmosphere, tension-filled stillness, warm vs cool cinematic contrast, dramatic romantic lighting, consistent lens style (50mm cinematic), soft background bokeh, foreground subject focus";
+  "stylised digital illustration, painterly romantic art, cinematic composition, warm amber and deep shadow contrast, expressive character faces, elegant body language, tasteful sensuality implied through atmosphere and pose, non-explicit, rich colour palette, atmospheric environment detail, emotional depth, adult romance illustration style, dramatic lighting, soft painterly texture, sophisticated character art, intimate mood, fantasy romance aesthetic, NOT photographic, NOT photorealistic, NOT photography";
 
 function buildFinalPrompt(visual: SceneVisual): string {
   return [
@@ -2408,7 +2408,7 @@ Return JSON in exactly this shape:
   ],
   "recurring_motif": "the feeling of almost saying too much",
   "title_direction": "poetic, emotionally charged, premium",
-  "image_style_direction": "photorealistic cinematic film still, warm moody tones, dramatic lighting, tasteful sensuality, elegant composition",
+  "image_style_direction": "stylised digital illustration, warm moody tones, dramatic painterly lighting, tasteful sensuality implied through pose and atmosphere, elegant romantic art",
   "recommendation_tags": ["Late Night", "Reunion", "Longing"],
   "quality_target": "A story that lingers like the feeling after a conversation you didn't want to end."
 }`;

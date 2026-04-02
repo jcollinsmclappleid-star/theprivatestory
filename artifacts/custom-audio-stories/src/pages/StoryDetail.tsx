@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "wouter";
-import { Play, Pause, FastForward, Rewind, Heart, Flag } from "lucide-react";
+import { useParams, Link } from "wouter";
+import { Play, Pause, FastForward, Rewind, Heart, Flag, Lock } from "lucide-react";
 import { useStoryFallback } from "@/hooks/use-api-fallbacks";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Slider } from "@/components/ui/slider";
 import { ReportModal } from "@/components/ReportModal";
 import { CastSituation } from "@/components/CastSituation";
@@ -14,6 +15,7 @@ export default function StoryDetail() {
   const { id } = useParams();
   const { data: story } = useStoryFallback(id || "");
   const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress, seekTo } = useAudioPlayer();
+  const { isPaid, isLoading: subLoading } = useSubscription();
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -53,6 +55,39 @@ export default function StoryDetail() {
   }, [story, saved, savePending]);
 
   if (!story) return null;
+
+  // Gate access — only paid subscribers can listen
+  if (!subLoading && !isPaid) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center p-8"
+      >
+        <button
+          onClick={() => window.history.back()}
+          className="absolute top-8 right-8 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Close
+        </button>
+        <div className="text-center max-w-sm mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="font-display text-3xl font-bold text-foreground mb-3">Members only</h2>
+          <p className="text-muted-foreground leading-relaxed mb-8">
+            Stories in the collection are available exclusively to members. Join to listen to the full library.
+          </p>
+          <Link
+            href="/pricing"
+            className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
+          >
+            See membership options
+          </Link>
+        </div>
+      </motion.div>
+    );
+  }
 
   const isCurrent = currentStory?.id === story.id;
   const activePlaying = isCurrent && isPlaying;

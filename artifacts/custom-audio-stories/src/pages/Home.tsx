@@ -725,7 +725,7 @@ function CastingPreview() {
 // Library Promo — replaces Continue Listening
 // ---------------------------------------------------------------------------
 
-function LibraryPromo({ stories }: { stories: Story[] }) {
+function LibraryPromo({ stories, isPaid }: { stories: Story[]; isPaid: boolean }) {
   if (stories.length === 0) return null;
   const preview = stories.slice(0, 6);
 
@@ -765,13 +765,26 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
 
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {preview.map((story) => (
-              <Link key={story.id} href={`/story/${story.id}`} className="flex-shrink-0 group">
-                <div className="w-36 rounded-xl overflow-hidden border border-border/20 bg-card/40 hover:border-primary/30 transition-all">
-                  <img
-                    src={story.coverImage}
-                    alt={story.title}
-                    className="w-full h-20 object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+              <Link
+                key={story.id}
+                href={isPaid ? `/story/${story.id}` : "/pricing"}
+                className="flex-shrink-0 group"
+              >
+                <div className="w-36 rounded-xl overflow-hidden border border-border/20 bg-card/40 hover:border-primary/30 transition-all relative">
+                  <div className="relative">
+                    <img
+                      src={story.coverImage}
+                      alt={story.title}
+                      className={`w-full h-20 object-cover transition-transform duration-500 ${isPaid ? "group-hover:scale-105" : "opacity-60"}`}
+                    />
+                    {!isPaid && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+                        <div className="w-7 h-7 rounded-full bg-background/80 border border-border/40 flex items-center justify-center">
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <div className="p-2">
                     <p className="text-[10px] text-primary/70 font-medium tracking-widest uppercase mb-0.5">{story.mood}</p>
                     <p className="text-xs font-semibold text-foreground/80 line-clamp-2 leading-snug">{story.title}</p>
@@ -1346,7 +1359,7 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         {/* Library Promo — curated collection                               */}
         {/* ---------------------------------------------------------------- */}
-        <LibraryPromo stories={libraryStories} />
+        <LibraryPromo stories={libraryStories} isPaid={isPaid} />
 
         {/* ---------------------------------------------------------------- */}
         {/* After Dark — premium marketing block (anchor target)              */}

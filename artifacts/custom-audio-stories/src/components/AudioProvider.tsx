@@ -61,7 +61,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   // Narration audio control
   useEffect(() => {
-    if (!currentStory) return;
+    if (!currentStory) {
+      // Player was closed — stop narration immediately
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      if (simulationIntervalRef.current) {
+        clearInterval(simulationIntervalRef.current);
+        simulationIntervalRef.current = null;
+      }
+      return;
+    }
 
     if (currentStory.audioUrl) {
       if (audioRef.current) {
@@ -108,10 +119,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     clearPendingSeek();
   }, [pendingSeek, clearPendingSeek]);
 
-  // Attempt to start ambient audio (called both on mode change and on user gesture)
+  // Attempt to start ambient audio — only when narration is actively playing
   const tryStartAmbient = () => {
     const el = ambientRef.current;
     if (!el || ambientStartedRef.current) return;
+    // Never auto-start ambient without active narration (prevents music on page load)
+    if (!useAudioPlayer.getState().isPlaying) return;
     const src = el.getAttribute("data-src");
     if (!src) return;
     if (!el.src || !el.src.endsWith(src)) {
@@ -159,7 +172,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (isPlaying && !ambientStartedRef.current) {
       tryStartAmbient();
     }
-  }, [isPlaying]);
+    // When narration stops or player is closed, stop ambient too
+    if (!isPlaying || !currentStory) {
+      const el = ambientRef.current;
+      if (el) {
+        el.pause();
+        ambientStartedRef.current = false;
+      }
+    }
+  }, [isPlaying, currentStory]);
 
   // Ambient volume sync (independent effect so it doesn't restart the track)
   useEffect(() => {

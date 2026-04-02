@@ -527,7 +527,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
       (s) => `
     <section>
       <h2>${esc(s.h2)}</h2>
-      ${s.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("\n      ")}
+      ${s.paragraphs.map((p) => `<p>${p}</p>`).join("\n      ")}
       ${
         s.bullets?.length
           ? `<ul>${s.bullets.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`

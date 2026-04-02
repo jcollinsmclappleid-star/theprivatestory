@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("romantic-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Romantic Audio Stories | The Private Story",
-    description: "Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.",
-  },
-  hero: {
-    badge: "Romantic · Private · Made for You",
-    h1: "Romantic Audio Stories — Intimate, Private, Made Around Your Mood",
-    tagline: "Choose how you want to feel tonight. The story is made around that.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Romantic Audio Stories Are — and What They Aren't",
@@ -134,36 +130,7 @@ const config: SEOPageConfig = {
       { label: "Emotional audio stories", href: "/emotional-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are romantic audio stories?",
-      a: "Romantic audio stories are narrated audio pieces created around a romantic emotional experience — slow burn tension, tender connection, emotional closeness, cinematic charged scenarios. At The Private Story, they are generated around your specific choices before each session, which means the tone, pacing, dynamic, and world of the story are shaped around what you described wanting, rather than pre-authored and retrieved from a library.",
-    },
-    {
-      q: "What intensity level do the romantic stories reach?",
-      a: "The Private Story creates content that is adult in register — emotionally sophisticated, romantically and sensually calibrated, written for grown-up listeners. The intensity of your story is shaped by the choices you make in the creation flow. The platform is designed for adult women who want content that takes their inner life seriously — not content that either sanitises or reduces.",
-    },
-    {
-      q: "Can I choose how romantic or intense my story is?",
-      a: "Yes. Before your story is generated, you choose the emotional register and intensity. Slow burn tension. Tender and connecting. Quietly atmospheric. Something more charged. Your choices are the brief the AI writes toward — the story reflects what you described, not a default setting.",
-    },
-    {
-      q: "Are these the same as romance audiobooks?",
-      a: "No — the distinction is meaningful. Romance audiobooks are authored works, fixed before you arrive, which you adapt to. Romantic audio stories at The Private Story are generated around your choices for this session — written, by AI, in service of the specific experience you described. You are not matching yourself to existing content. The content is built around you.",
-    },
-    {
-      q: "How is a romantic audio story personalised?",
-      a: "Before your story is created, you make a series of structured choices: emotional register, dynamic between the characters, atmosphere, pacing, and tone. These choices are translated into precise creative direction for the AI, which writes original narrative around them. The personalisation is not a recommendation algorithm — it is generative. Your story didn't exist before you described what you wanted.",
-    },
-    {
-      q: "Can I create a specific romantic scenario?",
-      a: "The creation flow gives you structured choices across mood, dynamic, setting, and atmosphere — which together shape the scenario your story inhabits. The more specifically you describe what you want to feel, the more specifically the story delivers it. The AI writes toward your emotional brief rather than approximating it from a category.",
-    },
-    {
-      q: "Are romantic stories available for all preferences?",
-      a: "The Private Story creates across the full range of romantic experience — from slow burn tension to emotional closeness to warmly tender to quietly charged. The platform is built for adult women and designed around the understanding that what romantic means varies considerably. You describe your version, and the story is shaped around that.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function RomanticAudioStories() {

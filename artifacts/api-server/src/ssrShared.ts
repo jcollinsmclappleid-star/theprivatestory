@@ -1,6 +1,8 @@
 const SITE_URL = "https://theprivatestory.com";
 const OG_IMAGE = "https://theprivatestory.com/opengraph.jpg";
 const SITE_NAME = "The Private Story";
+const LOGO_SVG_INLINE =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMzYiIGZpbGw9IiNGRjNDMDAiLz4KPC9zdmc+Cg==";
 
 export interface SsrShellOptions {
   title: string;
@@ -171,12 +173,12 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <!-- Structured data -->
   ${schemasHtml}
 
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="${LOGO_SVG_INLINE}" />
   <style>${CSS}</style>
 </head>
 <body>
   <nav aria-label="Site navigation">
-    <a class="logo" href="/">The Private Story</a>
+    <a class="logo" href="/"><img src="${LOGO_SVG_INLINE}" width="28" height="28" alt="The Private Story" style="vertical-align:middle;border-radius:6px;margin-right:8px" />The Private Story</a>
     <ul>
       <li><a href="/create">Create your story</a></li>
       <li><a href="/pricing">Pricing</a></li>

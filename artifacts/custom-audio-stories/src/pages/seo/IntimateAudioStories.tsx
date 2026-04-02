@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("intimate-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Intimate Audio Stories | The Private Story",
-    description: "Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.",
-  },
-  hero: {
-    badge: "Intimate · Private · Adults Only",
-    h1: "Intimate Audio Stories — Private, Personal, Created Around Your Desire",
-    tagline: "The story that knows what you need tonight — because you told it.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Intimate Audio Stories Are",
@@ -141,36 +137,7 @@ const config: SEOPageConfig = {
       { label: "Late night audio stories", href: "/late-night-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are intimate audio stories?",
-      a: "Intimate audio stories are narrated audio pieces created around an experience of closeness — slow burn tension, charged encounter, tender presence, genuine desire. At The Private Story, they are generated around your specific choices before each session: tone, dynamic, pacing, emotional register. The result is original narrative that delivers the intimate experience you described rather than content retrieved from a library of adult material.",
-    },
-    {
-      q: "How intimate do the stories get?",
-      a: "This is shaped by the choices you make in the creation flow. The Private Story creates across the full range of intimate experience — from quietly close and emotionally present to charged and electric to slow burn tension that builds deliberately. You choose the intensity. The story is built to deliver it.",
-    },
-    {
-      q: "What level of intimacy can the stories reach?",
-      a: "The Private Story creates content that is adult and intimate in register — honest about desire, emotionally sophisticated, written for grown-up listeners who know what they want. The intensity is shaped by your choices in the creation flow, from quietly sensual through to deeply adult in tone. Across all intensity levels, the approach is literary — the writing works through precision, atmosphere, and the specific texture of desire rather than bluntness for its own sake.",
-    },
-    {
-      q: "Who are intimate audio stories for?",
-      a: "Adult women who want a private, personalised, emotionally intelligent intimate listening experience — and who have found that existing content is either too generic to feel genuinely intimate or too impersonal to meet the sophistication of their actual desire. The Private Story is built for listeners who know what they want and want it made for them specifically.",
-    },
-    {
-      q: "Can I control the intimacy level?",
-      a: "Yes. Before your story is created, you choose the emotional register and intensity: slow burn tension, charged and immediate, tender and close, quietly electric. These choices direct the generation precisely. The intimacy level is not a slider applied to fixed content — it is built into the story from the first sentence.",
-    },
-    {
-      q: "Are these stories completely private?",
-      a: "Completely. Your stories are created for your account and heard only by you. No social feed, no visible listening history, no algorithm that surfaces your choices to anyone. The Private Story's entire architecture is built around the understanding that intimate experience requires genuine privacy — not as a feature, but as a foundation.",
-    },
-    {
-      q: "How is this different from adult content platforms?",
-      a: "Adult content platforms produce content for the widest possible audience — which means the content is, by design, impersonal. The Private Story creates original stories around your specific choices, which means the intimacy is genuine rather than approximated. Additionally: The Private Story is literary in approach, private by architecture, and built specifically for the audio listening experience. The result is something meaningfully different from browsing a catalogue of adult content.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function IntimateAudioStories() {

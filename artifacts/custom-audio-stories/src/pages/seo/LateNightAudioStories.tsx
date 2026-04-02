@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("late-night-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Late Night Audio Stories | The Private Story",
-    description: "Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Your story, created for tonight.",
-  },
-  hero: {
-    badge: "After Dark · Private · Adults Only",
-    h1: "Late Night Audio Stories — After Midnight, the Rules Change",
-    tagline: "The particular quality of late night — its honesty, its atmosphere, its specific permission — captured in a story made for it.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Late Night Actually Is",
@@ -131,36 +127,7 @@ const config: SEOPageConfig = {
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are late night audio stories?",
-      a: "Late night audio stories are narrated audio pieces created around the specific atmospheric and emotional quality of after midnight — the honesty, the permission, the particular charge that the hour creates. At The Private Story, they are generated around your choices: the setting (a phone call, a city at night, a hotel room), the encounter, the tone. The result is original audio shaped for late night listening, not general content repurposed for the hour.",
-    },
-    {
-      q: "What makes late night stories different?",
-      a: "Late night is a specific emotional register — distinct from daytime experience in its honesty, its openness, and the particular quality of permission it creates. Late night audio stories are built for this register: the atmosphere, the voice, the pacing, and the emotional territory of the story are all calibrated for after midnight rather than lifted from a general romantic category. The hour is not incidental — it is the premise.",
-    },
-    {
-      q: "Can I choose a late night atmosphere for my story?",
-      a: "Yes. The creation flow allows you to choose the world your story inhabits — a late night phone call, a city at night, a hotel room, or another atmospheric setting. The story is built into that world from the beginning, which means the setting shapes the narrative rather than being added as description afterward.",
-    },
-    {
-      q: "How intimate are the late night stories?",
-      a: "The Private Story creates adult content in a literary register — honest about desire and charged with the specific atmosphere of late night. The intensity is shaped by your choices in the creation flow, from atmospheric and suggestive through to deeply adult in tone. The writing works through atmosphere, precision, and the quality of the encounter across all intensity levels.",
-    },
-    {
-      q: "How long are late night audio stories?",
-      a: "Stories typically run between fifteen and thirty minutes — the right length to inhabit the late night atmosphere fully without requiring more of the night than you have to give. Your stories are saved to your private account, so you can return to them or create new ones whenever the hour arrives again.",
-    },
-    {
-      q: "Can I listen without headphones?",
-      a: "Headphones are recommended for the full late night experience — they create the private, close quality that late night audio requires. Listening through headphones at midnight is a specific kind of intimacy with the story that open speakers in a room cannot quite replicate. That said, the story is yours to listen to however works for tonight.",
-    },
-    {
-      q: "Are late night stories private?",
-      a: "Completely. Your stories are created for your account and heard only by you. No visible history, no social dimension, nothing shared. The privacy of The Private Story's architecture aligns with the privacy that late night itself creates — what happens here stays here.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function LateNightAudioStories() {

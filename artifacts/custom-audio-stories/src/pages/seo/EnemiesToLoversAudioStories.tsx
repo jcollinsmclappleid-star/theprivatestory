@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("enemies-to-lovers-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Enemies to Lovers Audio Stories | The Private Story",
-    description: "Enemies to lovers audio stories created for adults. Private, personalised, and built around the specific tension of opposition turning into something else entirely. Create yours.",
-  },
-  hero: {
-    badge: "Enemies to Lovers · Rivals · Private",
-    h1: "Enemies to Lovers Audio Stories — The Best Tension Has History",
-    tagline: "The chemistry that started as opposition. The story that began somewhere before the wanting.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "Why Enemies to Lovers Is the Most Structurally Satisfying Trope",
@@ -132,32 +128,7 @@ const config: SEOPageConfig = {
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What is enemies to lovers?",
-      a: "Enemies to lovers is a romance trope defined by a specific narrative arc: two characters who begin in opposition — as rivals, antagonists, or people with genuine reasons for friction — and whose dynamic shifts over the course of the story into something else entirely. The defining features are the pre-existing knowledge (they already understand each other in detail, adversarially), the charged middle section (where the shift is happening but has not been acknowledged), and the specific quality of the connection when it arrives (founded on genuine mutual understanding, not the idealisation of strangers meeting). It is one of the most structurally satisfying tropes in romance precisely because it earns its ending through the work of everything that preceded it.",
-    },
-    {
-      q: "What makes enemies to lovers different from slow burn?",
-      a: "Slow burn is about the pace of the emotional arc — the deliberate delay of resolution, the accumulation of charged moments that build toward acknowledgement. Enemies to lovers is about the starting point and trajectory — specifically, beginning in opposition and arriving at connection. The two are not the same, though they pair extraordinarily well: enemies to lovers benefits from slow burn pacing because the accumulation of the charged middle section is precisely where the trope earns its emotional payoff. The Private Story can create stories that combine both — a slow burn enemies to lovers arc that invests fully in the turn before and after it.",
-    },
-    {
-      q: "Does enemies to lovers require that the characters actually dislike each other?",
-      a: "The most satisfying version of the trope usually involves genuine reasons for the opposition — real friction, actual disagreement, history that has substance. Pure misunderstanding that resolves quickly does not generate the same depth because the opposition was never invested in. That said, the spectrum is wide: pure rivals with no animosity, characters with real antagonism, people whose opposition is circumstantial rather than personal. What matters is that the opposition is emotionally credible and that the shift from it carries real weight. You define the specific nature of the opposition in the creation flow.",
-    },
-    {
-      q: "Can enemies to lovers audio stories be about professional rivals?",
-      a: "Yes, and the professional rivals variant is one of the most requested versions of the trope. Professional rivalry has a specific quality — it is built on mutual recognition of capability, which means the awareness beneath the opposition contains a form of respect that makes the eventual shift particularly interesting. The accumulated knowledge from being someone's professional opponent transfers differently into proximity than pure personal animosity does. You can specify a professional rivalry dynamic in the creation flow.",
-    },
-    {
-      q: "How long is a typical enemies to lovers story?",
-      a: "Stories at The Private Story run to approximately 1,500–3,000 words, narrated at a comfortable listening pace. Enemies to lovers stories are built to invest in the accumulation — the charged middle section — before the turn. The length is sufficient to establish the dynamic, build through the middle, and arrive at the shift in a way that feels earned rather than hurried. Subscribers can create new stories for each session.",
-    },
-    {
-      q: "Are enemies to lovers stories private?",
-      a: "Completely. Your stories are saved to your private account and are not visible to anyone else. No social features, no shared recommendations, no history accessible by others. The Private Story is designed architecturally for private listening — your enemies to lovers audio stories are heard only by you.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function EnemiesToLoversAudioStories() {

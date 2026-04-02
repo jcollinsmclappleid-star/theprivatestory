@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("create-your-own-audio-story")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Create Your Own Audio Story | The Private Story",
-    description: "Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.",
-  },
-  hero: {
-    badge: "Create · Personalise · Listen Privately",
-    h1: "Create Your Own Audio Story in Minutes — Shaped Around You",
-    tagline: "You already know what you need to feel tonight. The Private Story makes it.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What It Means to Create Your Own Audio Story",
@@ -137,36 +133,7 @@ const config: SEOPageConfig = {
       { label: "Discover the AI story generator", href: "/ai-audio-story-generator" },
     ],
   },
-  faqs: [
-    {
-      q: "How do I create my own audio story?",
-      a: "The creation process takes under two minutes. You choose your mood and emotional register, the dynamic between the characters, the setting and atmosphere, and the pacing you want. Your selections are used to generate a story created specifically around them. Press play when it's ready.",
-    },
-    {
-      q: "What choices do I make when creating a story?",
-      a: "You choose the mood and tone (the emotional register you want to inhabit), the dynamic (the relationship and energy between voices), the setting and atmosphere (where your story takes place), and the intensity and pacing. Each choice directly shapes the story that's generated.",
-    },
-    {
-      q: "Can I create multiple stories?",
-      a: "Yes. You can create a new story whenever you want one. Your mood varies — your story can vary with it. Previous stories are saved privately to your account and remain there until you choose to remove them.",
-    },
-    {
-      q: "How long is a created story?",
-      a: "Stories are typically between fifteen and thirty minutes, depending on the choices you make. Pacing affects length — a slower, more deliberate story will often be longer than a more immediate one.",
-    },
-    {
-      q: "Can I edit my story after it's created?",
-      a: "Stories are not editable after creation — they are generated pieces of audio, not documents. If the result isn't quite what you wanted, you can create a new one with adjusted choices. Creation takes less than two minutes.",
-    },
-    {
-      q: "Is creation free or paid?",
-      a: "Creating personalised audio stories requires a subscription. Plans start at £29 per month for five creations, with an annual option at £179 per year for fifty creations. Individual stories can also be purchased for £3.99 each.",
-    },
-    {
-      q: "How is this different from writing my own story?",
-      a: "Writing requires craft. Creating here requires only choices. You describe how you want to feel — the mood, the dynamic, the atmosphere. The story is written around those choices. You don't produce text, edit it, or solve the problems of storytelling. You direct. The story follows.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function CreateYourOwnAudioStory() {

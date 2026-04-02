@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("forbidden-romance-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Forbidden Romance Audio Stories | The Private Story",
-    description: "Forbidden romance audio stories created for adults. Private, personalised, and built around the specific charge of wanting what you shouldn't. Create yours.",
-  },
-  hero: {
-    badge: "Forbidden · Private · Adults Only",
-    h1: "Forbidden Romance Audio Stories — The Pull You're Not Supposed to Feel",
-    tagline: "The most charged stories are always the ones where something is at stake. Where wanting costs something.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "Why Forbidden Romance Works",
@@ -132,32 +128,7 @@ const config: SEOPageConfig = {
       { label: "Confident energy stories", href: "/confident-energy-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What counts as forbidden romance?",
-      a: "Forbidden romance is any romantic dynamic in which an external constraint — professional rules, an existing commitment, a social barrier, a power differential, circumstantial timing — makes acting on the connection costly or prohibited. The specific nature of the constraint is less important than its emotional reality: the prohibition must have genuine stakes to generate genuine tension. Forbidden romance at The Private Story can be built around any of these dynamics — you choose the specific nature of the prohibition and the story is built around the emotional weight that creates.",
-    },
-    {
-      q: "Is forbidden romance morally problematic?",
-      a: "Forbidden romance explores moral complexity — it does not endorse it. Fiction has always been the space where humans process the parts of experience that don't resolve cleanly. The wanting that is inconveniently timed, the pull towards someone who is supposed to be off-limits, the specific experience of feeling something real in a complicated situation — these are human experiences, and fiction that takes them seriously performs a different function than fiction that pretends they don't exist. Engaging with forbidden romance as a genre is not a moral statement. It is using fiction for one of its oldest purposes.",
-    },
-    {
-      q: "How does forbidden romance differ from dark romance?",
-      a: "Forbidden romance is defined by its structure — the external constraint that prohibits or complicates acting on the connection. Dark romance is defined by its tonal register — moral complexity in the character or the desire itself. Forbidden romance can be entirely light in tone while dark romance is always heavier. The two overlap significantly — many dark romance stories involve forbidden dynamics — but they are not synonymous. You can create a story at The Private Story that is purely one or a combination of both.",
-    },
-    {
-      q: "Can forbidden romance stories be slow burn?",
-      a: "Forbidden romance and slow burn are one of the most natural combinations in the genre. Slow burn's mechanism — the accumulation of charged exchanges, the deliberate delay of resolution — is amplified when the delay has a real reason. In forbidden romance slow burn, the tension is not arbitrary: the restraint exists because acting on the feeling has genuine costs. This makes every moment of almost-acknowledgement carry more weight than it would in a slow burn without the forbidden dimension. The Private Story can create stories that combine both dynamics.",
-    },
-    {
-      q: "Are there audio stories about professional forbidden romance specifically?",
-      a: "Yes. Professional forbidden romance — the dynamic between colleagues, between a superior and a subordinate, between a professional and a client — is one of the most requested dynamics on the platform. The structure of professional life, with its clear rules about appropriate behaviour, creates particularly effective forbidden romance because the contrast between the formal surface and the real interior is so well-defined. You can specify a professional dynamic in the creation flow and the story will be built around it.",
-    },
-    {
-      q: "Are forbidden romance stories private?",
-      a: "Completely. Your stories are saved to your private account and are not visible to anyone else. There are no social features, no recommendation feeds, no public library. The Private Story is built architecturally for private listening — your forbidden romance stories are heard only by you and stored only in your account.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function ForbiddenRomanceAudioStories() {

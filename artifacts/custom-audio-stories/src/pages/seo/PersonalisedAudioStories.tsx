@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("personalised-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Personalised Audio Stories | The Private Story",
-    description: "Personalised audio stories created around how you want to feel tonight. Not selected from a library — generated around your choices and private to you alone.",
-  },
-  hero: {
-    badge: "Personalised · Private · For Adults",
-    h1: "Personalised Audio Stories Created Around How You Want to Feel",
-    tagline: "Some nights you don't want to browse. You want something that already knows what you need.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Are Personalised Audio Stories?",
@@ -164,36 +160,7 @@ const config: SEOPageConfig = {
       { label: "Learn about private audio stories", href: "/private-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are personalised audio stories?",
-      a: "Personalised audio stories are narrative audio experiences created around your specific mood, tone, and preferences — rather than selected from a pre-written library. At The Private Story, you choose how you want to feel, and a story is generated around that choice. The result is an experience shaped specifically for you rather than for a general audience.",
-    },
-    {
-      q: "How is a personalised audio story different from a podcast?",
-      a: "Podcasts are produced content — recorded once, distributed to everyone, experienced the same way regardless of who is listening or what they need. A personalised audio story is created for you at the moment you request it. The tone, pacing, atmosphere, and emotional direction are all determined by your choices. No two listeners receive the same experience.",
-    },
-    {
-      q: "Can I choose the mood and tone of my story?",
-      a: "Yes — this is the foundation of the experience. Before your story is created, you select the mood and tone you want. Slow burn tension. Calm and connecting. Confident and charged. Emotionally immersive. Your selection shapes every element of the story that follows.",
-    },
-    {
-      q: "Are my stories saved privately?",
-      a: "Completely. Your stories are saved to your account and are visible to no one else. There is no social feed, no sharing feature, and no public component to the platform. Everything you create and everything you listen to is entirely private.",
-    },
-    {
-      q: "How long does it take to create a personalised audio story?",
-      a: "The creation process — choosing your mood and preferences — takes less than two minutes. Your story is then generated and ready to listen to shortly after. The stories themselves are typically between fifteen and thirty minutes, depending on your selections.",
-    },
-    {
-      q: "Is this for adults only?",
-      a: "Yes. The Private Story is an adult platform. All content is created for listeners aged eighteen and over. Age verification is required to access the platform.",
-    },
-    {
-      q: "Can I create more than one story?",
-      a: "Yes. You can create a new personalised story whenever you want one. Your mood tonight is different from your mood tomorrow night — your story should be too. Each creation begins fresh, shaped around wherever you are when you start.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function PersonalisedAudioStories() {

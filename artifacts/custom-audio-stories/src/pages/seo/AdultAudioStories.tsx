@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("adult-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Personalised Adult Audio Stories | The Private Story",
-    description: "Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, tonight.",
-  },
-  hero: {
-    badge: "Personalised · Narrated · Private",
-    h1: "Adult Audio Stories — Personalised, Private, Made for You",
-    tagline: "Not a library of stories that might be for someone like you. A story created for you, tonight, around exactly what you want to feel.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Problem with Existing Adult Audio Fiction",
@@ -132,36 +128,7 @@ const config: SEOPageConfig = {
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What kind of adult audio stories are available?",
-      a: "The full range: slow burn and emotionally charged, romantic and tender, confidently direct, dark romance, forbidden romance, enemies to lovers, and everything between. The intensity level is a genuine choice in the creation flow — from tender and emotionally rich to fully unrestricted. The character types, dynamics, settings, and emotional registers available are designed to cover the genuine breadth of what listeners actually want, rather than a narrowly defined niche.",
-    },
-    {
-      q: "How is this different from other platforms?",
-      a: "The key distinction is generation versus retrieval. Other platforms offer a catalogue of pre-produced content — you browse, filter, and select from what already exists. The Private Story generates your story around your specific choices. Your story does not exist before you ask for it. This produces a significantly higher level of match between the story and your specific preferences than even the most carefully curated catalogue can achieve. The second distinction is privacy: the platform is architecturally private — no social features, no visible listening history, no recommendation feeds.",
-    },
-    {
-      q: "Can I choose the intensity level of my story?",
-      a: "Yes. The intensity level is a genuine choice in the creation flow, not a fixed platform setting. Stories run from tender and emotionally charged to fully unrestricted, and different moods and sessions call for different registers. You set the intensity for each story you create. The story is then generated to that register — built specifically to the level you chose, not to a platform default.",
-    },
-    {
-      q: "How long are the stories?",
-      a: "Stories run to approximately 1,500–3,000 words in written form, which typically produces a narrated listening experience of around 10–20 minutes at a comfortable pace. This is designed to be a complete experience in a session — long enough to build properly, develop character and dynamic, and arrive at a satisfying resolution, without requiring a significant time investment. Subscribers can create new stories at any time within their monthly allowance.",
-    },
-    {
-      q: "What does a subscription include?",
-      a: "The standard monthly plan includes five stories per month at £29/month, with an annual plan available at £179/year (equivalent to fifty stories). Additional stories can be created at £3.99 each beyond the plan allowance. All stories are narrated, include a generated cover image, and are stored in your private library indefinitely.",
-    },
-    {
-      q: "Are adult audio stories completely private?",
-      a: "Completely. Your account, your stories, and your listening history are private and visible only to you. The Private Story has no social features — no public profiles, no shared listening history, no recommendation feeds that expose what you listen to. Privacy is architectural to the platform: it was designed from the beginning with the requirement that adult listening should be genuinely private.",
-    },
-    {
-      q: "Who is The Private Story designed for?",
-      a: "Adults who want adult audio fiction that is actually personalised — created around their specific preferences rather than retrieved from a catalogue — and who want the listening experience to be genuinely private. The platform is particularly focused on women, built around the recognition that the adult audio fiction market has historically been designed with assumptions that do not match what women actually want from the genre. The creation flow, the character types available, and the emotional registers the stories work in are all built with female listeners at the centre.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AdultAudioStories() {

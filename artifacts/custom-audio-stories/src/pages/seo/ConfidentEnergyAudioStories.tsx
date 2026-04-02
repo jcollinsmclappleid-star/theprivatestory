@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("confident-energy-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Confident Energy Audio Stories | The Private Story",
-    description: "Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel tonight.",
-  },
-  hero: {
-    badge: "Confident · Charged · Private",
-    h1: "Confident Energy Audio Stories — At the Centre of Something Cinematic",
-    tagline: "You as the protagonist — not waiting to be noticed. Already the reason the room changed.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Confident Energy Actually Feels Like in a Story",
@@ -132,36 +128,7 @@ const config: SEOPageConfig = {
       { label: "Romantic audio stories", href: "/romantic-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are confident energy audio stories?",
-      a: "Confident energy audio stories are narrated audio pieces in which you are the protagonist — at the centre of the story's dynamic, desired specifically, in command of the encounter. Rather than the protagonist longing for something, the story is built around the experience of already being someone whose presence has weight and whose desirability is the premise. At The Private Story, they are generated around your choices: the scenario, the dynamic, the quality of the energy you want to inhabit.",
-    },
-    {
-      q: "Will I feel desired in these stories?",
-      a: "Yes — this is the specific experience the story is built to create. The desire in a confident energy story flows toward you specifically, deliberately, and unmistakeably. You inhabit it from a position of full agency — being wanted in a way that meets you where you are rather than requiring you to pursue it. The story places you inside that experience from the first sentence.",
-    },
-    {
-      q: "Is this different from self-help audio?",
-      a: "Significantly. Self-help audio tells you that you are capable and worthy — it works at the level of belief and addresses you cognitively. Confident energy audio stories place you inside an experience of confident energy — you inhabit the feeling rather than being instructed toward it. The difference between being told you are confident and genuinely feeling what that is like is the difference between these two formats.",
-    },
-    {
-      q: "Can I choose a dynamic where I have the power?",
-      a: "Yes. The creation flow allows you to choose the dynamic: an encounter on your terms, a professional situation in which you are in command, a scenario in which desire flows toward you and you meet it from a position of full agency. The story is built around the dynamic you described — not positioned at some imagined balance point between power and vulnerability.",
-    },
-    {
-      q: "Are confident energy stories romantic or empowering or both?",
-      a: "Both — and the combination is the point. The most compelling confident energy stories sit at the intersection: the protagonist fully herself, fully capable, and desired for exactly that. The desire is romantic. The dynamic is empowering. The two are not in tension — confident energy stories are built on the understanding that they belong together.",
-    },
-    {
-      q: "How personalised is the experience?",
-      a: "The story is created around your specific choices for this session: the scenario, the dynamic, the tone, the specific quality of the energy you want to inhabit. This is not a general empowerment story matched to your preferences. It is original narrative written in service of the exact experience you described — which is what makes it feel personal rather than generic.",
-    },
-    {
-      q: "Are these stories private?",
-      a: "Completely. Your stories are created for your account and heard only by you. No visible history, no social dimension, nothing shared. The experience of inhabiting confident energy — whatever it produces in you — is held entirely in a space that belongs to you.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function ConfidentEnergyAudioStories() {

@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("love-stories-audio")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Love Stories Audio | The Private Story",
-    description: "Audio love stories created for adults. Emotionally intelligent, private, and personalised around your mood and preferences. Not a library — your story.",
-  },
-  hero: {
-    badge: "Love · Emotional Depth · Private",
-    h1: "Love Stories Audio — Emotionally Intelligent Stories Created Around You",
-    tagline: "Love stories written for the emotional complexity of adult feeling — not simplified, not sanitised, not the same story retold.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Audio Love Stories Are For",
@@ -132,36 +128,7 @@ const config: SEOPageConfig = {
       { label: "Emotional audio stories", href: "/emotional-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are audio love stories?",
-      a: "Audio love stories are narrated narrative pieces built around romantic love as an emotional experience — its weight, its texture, its specific interior quality. At The Private Story, they are generated around your choices for each session: the emotional situation, the tone, the dynamic, the pacing. The result is original narrated audio that delivers the specific love story experience you described, rather than a pre-authored piece matched from a library.",
-    },
-    {
-      q: "How are these different from romance novels?",
-      a: "Romance novels are authored works — finished before you arrive, written by a specific writer for a general readership. They are fixed. You adapt to them. An audio love story at The Private Story is generated around your choices for tonight — the emotional register, the situation, the dynamic between characters — which means the story responds to you rather than requiring you to match yourself to it. The difference in experience is significant.",
-    },
-    {
-      q: "Can I choose the emotional tone of my love story?",
-      a: "Yes — this is the core of how The Private Story works. Before generation, you choose the emotional register: second chance, slow realisation, tender and close, late night honesty, emotionally complex. These choices direct the AI precisely. The tone is not a genre category applied afterward — it is the brief the story is written toward from the beginning.",
-    },
-    {
-      q: "Are love stories private?",
-      a: "Completely. Your stories are created for your account and accessible only to you. No public feed, no social sharing, no visible history. The emotional experience your love stories create is held in a space that belongs entirely to you.",
-    },
-    {
-      q: "Can I create a love story for a specific scenario?",
-      a: "The creation flow allows you to describe the emotional situation you want to inhabit — second chance, slow realisation, late night closeness, and many others. The AI writes into the specific scenario you chose, which means the story feels shaped to a real emotional situation rather than placed in a generic romantic context.",
-    },
-    {
-      q: "How long are audio love stories?",
-      a: "Stories typically run between fifteen and thirty minutes — long enough to develop the emotional arc and deliver the feeling properly, short enough to fit into an evening, a commute, or the space before sleep. Stories are saved to your account, so you can return to them or create new ones whenever you need.",
-    },
-    {
-      q: "Can I share a story with someone?",
-      a: "Stories are created for your private account and designed for private listening. They are yours alone — which is part of what makes the experience work. The Private Story is built around the understanding that some feelings are best held in a space that belongs entirely to you.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function LoveStoriesAudio() {

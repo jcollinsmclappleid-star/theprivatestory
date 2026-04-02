@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("private-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Private Audio Stories | The Private Story",
-    description: "Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.",
-  },
-  hero: {
-    badge: "Private by Design · No Social · Yours Alone",
-    h1: "Private Audio Stories — Created for You, Heard Only by You",
-    tagline: "What you listen to in private should stay private. Here, it always does.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Private Story — What This Is",
@@ -170,36 +166,7 @@ const config: SEOPageConfig = {
       { label: "How it works", href: "/create" },
     ],
   },
-  faqs: [
-    {
-      q: "What makes these audio stories private?",
-      a: "Privacy at The Private Story is architectural, not a setting. There is no social layer, no sharing function, and no public-facing account profile. Stories are generated for your account and stored there alone. No other user can access them. No platform feature makes them visible. The default is private because the platform was built that way from the ground up.",
-    },
-    {
-      q: "Will anyone else be able to see my stories?",
-      a: "No. Your stories are stored in your account and are not visible to any other user. They do not appear in shared libraries, recommendation feeds, or any public-facing part of the platform. There is no scenario in which another user can access or view your stories.",
-    },
-    {
-      q: "Are my story preferences stored securely?",
-      a: "Yes. The preferences you choose when creating a story — mood, tone, scenario type — are stored securely in your account and used only to generate your story. They are not shared with other users, not used to build a publicly visible profile, and not accessible to anyone other than you.",
-    },
-    {
-      q: "Can I delete my stories?",
-      a: "Yes, at any time. You can delete individual stories from your account or delete your account entirely. Deletion is immediate and complete. Your data is handled in compliance with GDPR and UK data protection law.",
-    },
-    {
-      q: "Is there a social or sharing feature?",
-      a: "No. The Private Story has no social features of any kind. There is no sharing function, no public profile, no follow system, no community feed, and no mechanism by which your stories or preferences become visible to other users. This is intentional and permanent — social features were never built because private listening was always the point.",
-    },
-    {
-      q: "Who can access my account?",
-      a: "Only you. Account access requires your credentials. Platform staff do not have routine access to individual accounts or story content. Your account, your stories, and your preferences are yours.",
-    },
-    {
-      q: "Is this GDPR compliant?",
-      a: "Yes. The Private Story operates under UK GDPR and the Data Protection Act 2018. Your data is stored securely, used only for the purposes you'd expect, and deletable at any time on request. Full details are in our privacy policy.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function PrivateAudioStories() {

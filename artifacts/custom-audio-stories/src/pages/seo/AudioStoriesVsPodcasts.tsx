@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("audio-stories-vs-podcasts")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You. | The Private Story",
-    description: "Podcasts are brilliant — but not at 11pm. Discover why personalised audio stories outperform podcasts for winding down, relaxation, and sleep, and when to reach for each format.",
-  },
-  hero: {
-    badge: "Comparison · Personalised Audio · For Adults",
-    h1: "Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You.",
-    tagline: "You reach for your phone at night. You open the podcast app. You scroll. Nothing feels right. This is not a coincidence.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Problem With Podcasts at Night",
@@ -167,36 +163,7 @@ const config: SEOPageConfig = {
       { label: "Create your own audio story", href: "/create-your-own-audio-story" },
     ],
   },
-  faqs: [
-    {
-      q: "What is the difference between a podcast and an audio story?",
-      a: "A podcast is a public broadcast — produced for a general audience, released on a schedule, the same for every listener regardless of when or why they tune in. A personalised audio story is created around a single listener's mood and preferences at the moment they request it. Podcasts are designed for engagement and information. Personalised audio stories are designed for emotional experience and rest. The direction of travel is opposite: podcasts move from creator to mass audience, personalised audio stories move from your preferences inward toward a single listener.",
-    },
-    {
-      q: "Can audio stories replace my evening podcast habit?",
-      a: "For evening and pre-sleep listening, personalised audio stories are significantly more effective than podcasts at producing the experience most people are actually looking for at that hour — something calming, personal, and requiring nothing of an already tired mind. This does not mean giving up podcasts entirely. Most listeners find podcasts serve them well during active hours and personalised audio stories serve them better during wind-down and sleep hours.",
-    },
-    {
-      q: "Why don't podcasts help me wind down?",
-      a: "Podcasts are optimised for engagement — which is the opposite of what winding down requires. The qualities that make a podcast good (compelling host, interesting content, narrative momentum) are the same qualities that keep your mind active and alert. Personalised audio stories are toned and paced for the specific purpose of helping an active mind slow down, which is why they work in the wind-down window where podcasts consistently fail.",
-    },
-    {
-      q: "Are personalised audio stories like a private podcast?",
-      a: "The comparison is useful but incomplete. Like a podcast, a personalised audio story is audio content delivered to your ears. Unlike a podcast, it was created around your specific mood and preferences rather than produced for a general audience. It is private by design — not available to other listeners, not part of a public feed, not optimised for anyone except you. The experience of listening is fundamentally more personal than any podcast can be, because the content itself was made for you.",
-    },
-    {
-      q: "What makes audio stories more relaxing than podcasts?",
-      a: "Three things. First, no cognitive demands — audio stories ask only that you listen, where podcasts ask you to follow an argument or narrative requiring active engagement. Second, personalisation — a story toned around your current mood works with your natural wind-down process rather than against it. Third, privacy — content that was made for you and exists only for you creates a qualitatively different listening experience than a broadcast designed for millions.",
-    },
-    {
-      q: "How are audio stories different from narrative podcasts?",
-      a: "Narrative podcasts — scripted fiction podcasts, audio dramas — are closer in format to audio stories than interview or discussion podcasts. But they share the same fundamental characteristic: they were made before you arrived, for a general audience, with a fixed narrative that goes where the creator decided it goes. A personalised audio story is created in response to you — your mood, your preferences, your direction. The narrative serves your emotional needs rather than the creator's vision.",
-    },
-    {
-      q: "Is there an audio story platform for adults?",
-      a: "The Private Story is a personalised audio story platform designed specifically for adults. It creates stories around your mood and preferences — private, emotionally intelligent, and calibrated for adult experience. Unlike podcast platforms, there is no public feed, no shared content library, and no social component. Everything is created for and heard by you alone.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AudioStoriesVsPodcasts() {

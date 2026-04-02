@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("audio-stories-vs-audiobooks")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Audio Stories vs Audiobooks — Why One Feels Personal | The Private Story",
-    description: "Audiobooks are made for everyone. A personalised audio story is made for tonight. Discover the real difference between audio stories and audiobooks — and why it matters more than the audio industry has acknowledged.",
-  },
-  hero: {
-    badge: "Comparison · Personalised Audio · For Adults",
-    h1: "Audio Stories vs Audiobooks — Why One Feels Personal and One Doesn't",
-    tagline: "You have been consuming stories. There is another option: inhabiting one.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "Two Formats. Two Entirely Different Relationships With the Listener.",
@@ -175,36 +171,7 @@ const config: SEOPageConfig = {
       { label: "Learn about private audio stories", href: "/private-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What is the difference between an audio story and an audiobook?",
-      a: "An audiobook is a recording of a published book — written for a general audience, fixed in content, the same for every listener. A personalised audio story is created around your specific mood and preferences at the moment you request it. The content adapts to you rather than you adapting to it. The experience is closer, more personal, and specifically suited to emotional and relaxation listening rather than information or long-form narrative consumption.",
-    },
-    {
-      q: "Can audio stories replace audiobooks?",
-      a: "They serve different purposes rather than replacing each other. Audiobooks are ideal for long-form narrative, non-fiction, and sustained attention listening. Personalised audio stories are ideal for emotional experience, winding down, relaxation, and the moments when you need something that meets you specifically rather than a general audience. Most listeners find value in both formats for different occasions.",
-    },
-    {
-      q: "Are personalised audio stories shorter than audiobooks?",
-      a: "Yes. Personalised audio stories typically run between fifteen and thirty minutes — designed for the specific listening windows where they work best. Audiobooks run anywhere from six to twenty-plus hours. The difference in length reflects a difference in purpose: audiobooks are for sustained engagement, personalised audio stories are for specific emotional experiences in the time you have available.",
-    },
-    {
-      q: "Why do audio stories feel more immersive than audiobooks?",
-      a: "The immersion in personalised audio stories comes from relevance rather than production quality. When a story was shaped around your current mood and preferences, your mind recognises the fit immediately — there is no translation work required between a general story and your specific experience. This creates a quality of presence and intimacy that is difficult to achieve with fixed content written for a general audience, regardless of how well that content is produced.",
-    },
-    {
-      q: "What are audio stories best used for?",
-      a: "Personalised audio stories are best used for: winding down after a difficult day, transitioning from work mode to rest, the pre-sleep window when your mind needs somewhere to go, emotional processing, quiet time alone, and any moment when you want to feel something specific rather than consume something general. They are particularly effective as a better alternative to audiobooks for winding down and sleep listening.",
-    },
-    {
-      q: "Are audiobooks or audio stories better for sleep?",
-      a: "Personalised audio stories are significantly more effective for sleep than audiobooks. Audiobooks require sustained narrative engagement — following plot, remembering characters, tracking where you are in the story — which keeps the mind active. Personalised audio stories created with a sleep or relaxation intent are toned and paced to carry you toward rest rather than maintain your attention. The personalisation means the tone matches your current state rather than requiring you to adapt.",
-    },
-    {
-      q: "How long does a personalised audio story take to create?",
-      a: "The creation process — choosing your mood, tone, and preferences — takes less than two minutes. Your story is then generated and ready to listen to shortly after. The story itself runs between fifteen and thirty minutes depending on your selections.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AudioStoriesVsAudiobooks() {

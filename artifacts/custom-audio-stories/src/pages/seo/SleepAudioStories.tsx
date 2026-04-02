@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("sleep-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Sleep Audio Stories for Adults | The Private Story",
-    description: "Sleep audio stories for adults, created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.",
-  },
-  hero: {
-    badge: "Bedtime · Relaxation · Adults Only",
-    h1: "Sleep Audio Stories for Adults — Fall Asleep to a Story Made for Tonight",
-    tagline: "Your mind needs somewhere to go before it can let go. Give it somewhere worth going.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Space Before Sleep",
@@ -152,32 +148,7 @@ const config: SEOPageConfig = {
       { label: "Explore relaxing audio stories", href: "/relaxing-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "Are sleep audio stories different from sleep meditations?",
-      a: "Yes, significantly. Sleep meditations typically ask you to actively participate — following breathing instructions, visualising, focusing on sensations. Sleep audio stories ask nothing of you except to listen. Your mind follows the narrative passively, which allows the body's natural sleep process to proceed without the cognitive overhead of trying to meditate correctly. For many adults, especially those whose minds resist direct instruction, stories work considerably better.",
-    },
-    {
-      q: "How long should a sleep story be?",
-      a: "Long enough to carry you to sleep — which varies by person and by night. The Private Story generates stories typically between fifteen and thirty minutes. For most adults, this is the window within which sleep arrives when the conditions are right. If you want to continue listening, your story is saved in your account.",
-    },
-    {
-      q: "What tone works best for sleep?",
-      a: "This varies by person and by night. Some listeners find warm and connecting tones most effective — the sense of presence and quiet company. Others prefer purely atmospheric stories — beautiful descriptions of calm places with no emotional complexity. When you create your sleep story, you choose the tone that feels right for tonight. You can choose differently tomorrow.",
-    },
-    {
-      q: "Are these stories calming or is there tension?",
-      a: "Sleep stories are toned for rest. While some stories created on The Private Story carry tension — slow burn, charged atmosphere — stories created with a sleep or calming intent are specifically toned to settle rather than stimulate. When you indicate you want a sleep story, the generation reflects that intention entirely.",
-    },
-    {
-      q: "Can I create a new sleep story every night?",
-      a: "Yes. There is no fixed library to exhaust. Each story is created fresh around your current choices. Your mood varies night to night — your sleep story can vary with it. Creating a new story takes less than two minutes.",
-    },
-    {
-      q: "Do I need to sign up to try one?",
-      a: "Yes, an account is required to create and save your story. Creating an account takes under a minute. Stories are saved privately to your account and available whenever you return.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function SleepAudioStories() {

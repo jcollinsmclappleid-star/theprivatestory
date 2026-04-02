@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("dark-romance-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Dark Romance Audio Stories | The Private Story",
-    description: "Dark romance audio stories created for adults. Private, personalised, and written around morally complex desire — the shadow side of wanting. Create yours.",
-  },
-  hero: {
-    badge: "Dark Romance · Private · Adults Only",
-    h1: "Dark Romance Audio Stories — Where Danger and Desire Are the Same Thing",
-    tagline: "The stories that don't look away. The characters who make you feel things you're not supposed to admit to.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Dark Romance Actually Is",
@@ -132,36 +128,7 @@ const config: SEOPageConfig = {
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What is dark romance?",
-      a: "Dark romance is a genre defined by moral complexity — stories in which the romantic lead may be morally ambiguous, possess genuine flaws that aren't resolved by the ending, or inhabit a world that operates by different rules. The key distinction from standard romance is that the darkness is not a surface-level obstacle but a genuine part of the character or situation. The romantic core remains — the pull is real, the connection is genuine — but the terrain is more complicated. Dark romance treats this complexity as the point rather than a problem to be solved.",
-    },
-    {
-      q: "Is dark romance the same as erotica?",
-      a: "No. Dark romance is a tonal and thematic register, not a content intensity level. A dark romance story can work entirely through implication and still be unmistakably dark romance — the darkness is in the character, the dynamic, and the moral texture of the story. At The Private Story, you set the intensity of your story separately from the dark romance dynamic you choose. A dark romance story can be slow burn and emotionally charged, or more direct in its physical register — both are available. The moral complexity and the intensity are independent choices.",
-    },
-    {
-      q: "Are dark romance stories morally troubling?",
-      a: "Dark romance is fiction that inhabits moral complexity — it does not endorse it. The same way that crime fiction is not an endorsement of crime, dark romance is not an endorsement of the behaviour or dynamics it explores. The genre exists because fiction is the space where humans have always explored the parts of themselves that do not fit cleanly into their conscious values — the complicated wants, the attractions that resist easy justification, the parts of desire that feel real even when they're inconvenient. Reading or listening to dark romance is not a moral statement. It is engaging with one of fiction's oldest purposes.",
-    },
-    {
-      q: "What makes dark romance audio different from written dark romance?",
-      a: "Audio dark romance is more immersive because the first-person narration collapses the distance between listener and story. In written dark romance, you read about a character who is feeling the complicated pull. In audio dark romance, the voice is yours — the ambivalence, the awareness of the complexity, the pull itself is experienced in the second person. This makes the emotional texture of dark romance feel more direct and more inhabitable. The Private Story's dark romance audio is written in first person and narrated by a voice that carries the full emotional register of the story.",
-    },
-    {
-      q: "Can I choose how dark the story is?",
-      a: "Yes. The creation flow lets you define the specific character and dynamic — the moral weight he carries, the nature of the world he inhabits, the intensity of the pull. You also set the story's intensity level separately. Dark romance is a tonal register, not a fixed content level — the story can be brooding and charged and restrained, or it can be deeply adult in its register. You shape both dimensions separately.",
-    },
-    {
-      q: "Is there overlap between dark romance and other genres on the platform?",
-      a: "Significant overlap, deliberately. Dark romance and slow burn make a particularly powerful combination — the accumulation of tension in a slow burn story has different stakes when the character is morally complex. Dark romance and forbidden romance share terrain — many dark romance stories involve forbidden dynamics. Dark romance and confident energy overlap in the character register — the assured, magnetic character who knows what he wants is a feature of both. The Casting Room allows you to combine these dynamics into a story that is specific to exactly what you want.",
-    },
-    {
-      q: "Are the dark romance stories private?",
-      a: "Completely. Your stories are saved to your private account and visible only to you. There are no social features, no shared library, no recommendation feed that reveals what you listen to. The Private Story is built architecturally for private listening — your dark romance stories are yours alone, heard only by you, and deletable at any time.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function DarkRomanceAudioStories() {

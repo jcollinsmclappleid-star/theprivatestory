@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("ai-audio-story-generator")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "AI Audio Story Generator | The Private Story",
-    description: "An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.",
-  },
-  hero: {
-    badge: "AI-Generated · Emotionally Intelligent · Private",
-    h1: "AI Audio Story Generator — Stories Written Around Your Mood, Not the Algorithm's",
-    tagline: "Not a library. Not a playlist. An intelligence that writes your story from scratch.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What an AI Audio Story Generator Actually Does",
@@ -150,36 +146,7 @@ const config: SEOPageConfig = {
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What is an AI audio story generator?",
-      a: "An AI audio story generator creates original narrative audio based on your inputs — mood, tone, dynamic, atmosphere — rather than selecting from a pre-existing library. At The Private Story, the AI writes a story from scratch around your choices, which is then narrated and delivered to your account as audio you can listen to privately.",
-    },
-    {
-      q: "How does the AI know what kind of story to create?",
-      a: "Before your story is generated, you make a series of structured choices: the emotional register you want (slow burn tension, calm and connecting, confident energy), the dynamic between characters, the setting, and the pacing. The system translates these into precise creative direction for the AI. Your choices are the brief. The AI writes toward them.",
-    },
-    {
-      q: "Is AI-generated content as good as human-written?",
-      a: "For this specific purpose — a story written around your mood, for you, right now — AI-generated content offers something human-written content structurally cannot: genuine personalisation. Human-written stories are made before you arrive. They are fixed. AI-generated stories are made around your inputs. The Private Story's generation is calibrated for literary quality and emotional intelligence — the output feels like a real story, not machine-generated text.",
-    },
-    {
-      q: "Can I guide the AI with specific details?",
-      a: "The creation flow gives you structured choices that the system uses to direct the AI precisely. You select mood, tone, dynamic, setting, and pacing. These are not tags — they are creative constraints the AI writes within. The more specifically you describe what you want to feel, the more specifically the story delivers it.",
-    },
-    {
-      q: "How is this different from ChatGPT?",
-      a: "ChatGPT is a general-purpose tool — it will write stories if asked, but it is not calibrated for private audio listening, emotional specificity, or the particular register that makes a story work for this experience. The Private Story uses similar underlying technology but applies it within a system specifically designed for private adult audio storytelling: the prompting architecture, the emotional calibration, the quality controls, and the audio delivery are all built for this purpose.",
-    },
-    {
-      q: "Is the AI content safe and moderated?",
-      a: "Yes. The Private Story operates under a content policy that defines what the AI produces. The system is designed for adult listeners — calibrated for emotional intelligence and adult intimacy, with intensity shaped by your choices in the creation flow, from quietly sensual and atmospheric through to deeply adult in tone. The content policy prevents harmful content; it does not prevent adult fiction. The AI writes toward your chosen brief, not toward a platform default.",
-    },
-    {
-      q: "Can I regenerate if I want something different?",
-      a: "Yes. If your first story isn't quite what you wanted, you can create a new one with adjusted choices. The creation process takes less than two minutes. Each generation starts fresh — there is no fixed inventory to exhaust.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AIAudioStoryGenerator() {

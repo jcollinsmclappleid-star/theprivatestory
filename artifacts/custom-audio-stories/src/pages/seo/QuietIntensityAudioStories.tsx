@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("quiet-intensity-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Quiet Intensity Audio Stories | The Private Story",
-    description: "Quiet intensity audio stories for adults. Restrained, psychological, and deeply charged. Private and personalised around the specific pleasure of what isn't said.",
-  },
-  hero: {
-    badge: "Quiet · Psychological · Private",
-    h1: "Quiet Intensity Audio Stories — The Loudest Desire Is the Kind That Doesn't Speak",
-    tagline: "Everything implied. Nothing stated. The specific charge of two people in a room where both of them know.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Quiet Intensity Is",
@@ -132,36 +128,7 @@ const config: SEOPageConfig = {
       { label: "Emotional audio stories", href: "/emotional-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are quiet intensity audio stories?",
-      a: "Quiet intensity audio stories are narrated pieces built around restrained, psychological desire — the specific charge of what is communicated without being stated. The story operates through subtext: what is said on the surface and what is really meant are different, and the listener inhabits the gap between them. At The Private Story, they are generated around your chosen dynamic — the specific scenario, the quality of silence, the kind of awareness between the people in the story.",
-    },
-    {
-      q: "How is quiet intensity different from slow burn?",
-      a: "Slow burn is temporal — it accumulates tension across the arc of a story, building toward a resolution the listener knows is coming. Quiet intensity is spatial — it lives inside a moment rather than across a sequence of moments. The charge is present and concentrated rather than built over time. A quiet intensity story may not resolve in the conventional sense; the sustained state of charged awareness can be the point rather than the approach to something beyond it.",
-    },
-    {
-      q: "Are these stories restrained or adult in their register?",
-      a: "Restrained — deliberately and by design. Quiet intensity works through implication rather than statement. The story communicates through what is not said, which engages the imagination rather than resolving it. This is not a limitation — for the right listener, implication is significantly more powerful than direct description. The intensity is real; only the mode of its communication is quiet.",
-    },
-    {
-      q: "What kind of listener are quiet intensity stories for?",
-      a: "Listeners who find subtext more arresting than declaration. Who read the gap between words as readily as the words themselves. Who prefer fiction that trusts them to feel what is happening rather than having it explained. Who find that the most charged moments in any story are often the ones in which nothing is said — and everything is understood. If that is you, this is your register.",
-    },
-    {
-      q: "Can I choose a psychological or emotional dynamic?",
-      a: "Yes. The creation flow allows you to describe the quality of intensity you want: subtext-driven conversation, charged silence, a moment of accumulated awareness, the specific dynamic of two people who understand more than they are saying. The story is built around the psychological dynamic you describe rather than placed in a general intimate category.",
-    },
-    {
-      q: "How long are quiet intensity stories?",
-      a: "Stories typically run between fifteen and thirty minutes. For quiet intensity, this is sufficient to establish the dynamic, build the charge, and inhabit the register fully. Stories are saved to your private account so you can return to them or create new ones — a different scenario, a different quality of silence, a different version of the same restrained awareness.",
-    },
-    {
-      q: "Are these stories private?",
-      a: "Completely. Your stories are created for your account and heard only by you. No visible history, no social dimension. The register of quiet intensity — private, psychological, interior — is experienced in a space that entirely reflects those qualities.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function QuietIntensityAudioStories() {

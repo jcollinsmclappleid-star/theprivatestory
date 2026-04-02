@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("slow-burn-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Slow Burn Audio Stories | The Private Story",
-    description: "Slow burn audio stories created for adults. Private, personalised, and built around tension, restraint, and the specific pleasure of delay. Create yours.",
-  },
-  hero: {
-    badge: "Slow Burn · Tension · Private",
-    h1: "Slow Burn Audio Stories — Every Almost-Touch. Every Loaded Glance. Worth the Wait.",
-    tagline: "The pleasure of delay. The specific satisfaction of something that takes its time because it knows exactly where it's going.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Slow Burn Actually Is",
@@ -133,36 +129,7 @@ const config: SEOPageConfig = {
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What is a slow burn audio story?",
-      a: "A slow burn audio story is one in which the tension, anticipation, and accumulation of almost are the point — not a delay before the point. Every moment of restraint serves the next. Every charged exchange adds to what came before. The story is built around the specific pleasure of sustained wanting, and arrives somewhere that is worth it because of how much has been built to get there. At The Private Story, slow burn stories are created from the first sentence with the mechanism in mind — every element of the narrative in service of the accumulation.",
-    },
-    {
-      q: "How long does the tension last before the payoff?",
-      a: "This depends on the scenario and the specific story created for your session. Stories typically run between fifteen and thirty minutes, and the arc of tension within that time is shaped by the premise you chose. The story understands that the tension needs to be genuinely sustained — not resolved prematurely — and is generated to deliver that experience rather than rush toward its conclusion.",
-    },
-    {
-      q: "Can I choose how slow the slow burn is?",
-      a: "Yes. The creation flow allows you to shape the pace and nature of the tension — a slow build over weeks of professional proximity, the accumulated electricity of five near-misses, the specific texture of friends-to-more with its high emotional stakes. The scenario you choose shapes the character of the slow burn. The generation is built to reflect that precisely.",
-    },
-    {
-      q: "Are slow burn stories romantic or adult in tone?",
-      a: "Slow burn stories at The Private Story are adult and intimate in register — charged, close, and honest about desire. The approach is through tension and implication rather than direct statement, which is consistent with how slow burn actually works: it engages the imagination rather than bypassing it. The resolution, when it arrives, reflects the intensity of what was built. The intensity of your story is shaped by your creation choices.",
-    },
-    {
-      q: "What scenarios work well for slow burn?",
-      a: "The best slow burn scenarios are those with genuine emotional stakes — a reason the restraint feels credible rather than arbitrary. Friends-to-more (the risk of what already exists), professional tension (external structure enforcing the delay), and the almost story (accumulated near-misses building to inevitability) are among the most effective. The Private Story's creation flow helps you find the premise that will make your slow burn feel true.",
-    },
-    {
-      q: "Is slow burn available in a series format?",
-      a: "The Private Story creates individual slow burn stories, each complete in itself. The arc of tension is contained within the story — built, sustained, and resolved within a single listening experience. Series formats are part of the platform's development direction for listeners who want their favourite scenarios extended across multiple episodes.",
-    },
-    {
-      q: "Can I continue a slow burn story across multiple episodes?",
-      a: "Currently, each story is a complete, standalone experience. The slow burn arc — from initial tension through accumulation to resolution — is fully contained within each story. If a particular scenario resonates, you can create a new story in the same world with the same dynamic, exploring a different angle or moment within it. Extended series are part of the platform's future development.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function SlowBurnAudioStories() {

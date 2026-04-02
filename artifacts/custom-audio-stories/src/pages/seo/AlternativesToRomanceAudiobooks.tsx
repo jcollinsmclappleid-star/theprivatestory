@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("alternatives-to-romance-audiobooks")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight | The Private Story",
-    description: "Romance audiobooks are someone else's love story. Discover personalised audio stories — romantic experiences created around your mood, dynamic, and pacing tonight.",
-  },
-  hero: {
-    badge: "Romance Audio · Personalised Stories · For Adults",
-    h1: "Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight, Not Everyone",
-    tagline: "Romance audiobooks are someone else's love story. Somewhere, there is one made entirely around yours.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "You Already Know What You Want. The Problem Is Finding It.",
@@ -181,36 +177,7 @@ const config: SEOPageConfig = {
       { label: "Create your own audio story", href: "/create-your-own-audio-story" },
     ],
   },
-  faqs: [
-    {
-      q: "How are personalised audio stories different from romance audiobooks?",
-      a: "Romance audiobooks are fixed content created by an author for a general readership — the same for every listener, regardless of their mood or preferences when they listen. Personalised romance audio stories are created around your specific choices at the moment you request them. The dynamic, pacing, emotional register, and length all reflect what you specified. The story exists because of your preferences tonight rather than waiting in a catalogue for you to find it.",
-    },
-    {
-      q: "Can I get romance audio stories personalised to my taste?",
-      a: "Yes. When you create a romance audio story on The Private Story, you choose the dynamic, tone, and emotional register of your story — slow burn tension, forbidden attraction, emotional connection, dominant energy, tender intimacy, or combinations of these. The story generated reflects your choices specifically rather than a generic romance template.",
-    },
-    {
-      q: "Are there romance audio platforms more personal than Audible?",
-      a: "Yes. Audible operates on a library model — a large catalogue of fixed content you select from. The Private Story operates on a creation model — generating stories around your mood and preferences rather than presenting pre-existing content. The experience of a story created around you is categorically more personal than the experience of selecting from a catalogue, regardless of how large that catalogue is.",
-    },
-    {
-      q: "What if I want a romantic story but not a full audiobook?",
-      a: "This is precisely the gap personalised romance audio stories fill. Stories on The Private Story run between fifteen and thirty minutes — complete romantic experiences in the time available for an evening listening session. They are not excerpts or chapters from longer works. They are complete stories, sized for the specific window when most adults want a romantic audio experience.",
-    },
-    {
-      q: "Can I create my own romance audio story?",
-      a: "Yes. The creation process takes less than two minutes. You choose your mood and the dynamic you want — the kind of romantic tension, the emotional register, the pacing — and a story is generated around those choices. The story is private, saved to your account, and heard only by you.",
-    },
-    {
-      q: "What intensity level can personalised romance audio stories reach?",
-      a: "The intensity depends on the choices you make in the creation flow. The Private Story creates adult content from quietly sensual and atmospheric through to deeply adult in tone — shaped by your preferences, not by a platform default. Across all intensity levels, the focus is on desire, tension, connection, and emotional experience that feels genuinely yours rather than assembled for a general audience.",
-    },
-    {
-      q: "How long are romantic personalised audio stories?",
-      a: "Stories typically run between fifteen and thirty minutes depending on the preferences you choose. This is designed for the specific listening window when romantic audio is most wanted — the wind-down hour, the pre-sleep session, quiet time alone — where a complete experience in thirty minutes is more valuable than the opening chapters of a multi-hour audiobook.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AlternativesToRomanceAudiobooks() {

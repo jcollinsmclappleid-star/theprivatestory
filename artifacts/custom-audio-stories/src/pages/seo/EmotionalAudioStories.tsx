@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("emotional-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Emotional Audio Stories | The Private Story",
-    description: "Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.",
-  },
-  hero: {
-    badge: "Emotional · Private · Made for Tonight",
-    h1: "Emotional Audio Stories — Stories That Know How You Feel Before You Do",
-    tagline: "For the nights when you need to feel something — but haven't quite found the words for what.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Particular Need for an Emotional Story",
@@ -134,36 +130,7 @@ const config: SEOPageConfig = {
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What makes an audio story emotional?",
-      a: "An emotional audio story renders the interior experience of feeling with enough precision that the listener finds herself recognised rather than simply entertained. It is not about sad events — it is about the accurate description of what difficult, complex, or tender feeling actually feels like from the inside. At The Private Story, the generation is directed toward the specific emotional texture you describe, which means the story goes into the territory you're in rather than remaining at a safe surface distance.",
-    },
-    {
-      q: "Can I choose the emotional tone of my story?",
-      a: "Yes — this is central to how The Private Story works. Before generation, you choose the emotional register: quietly heavy, warm and honest, bittersweet, something that ends with light, something that holds difficulty without resolving it. These choices direct the AI precisely. The story is written toward the specific emotional territory you described, not positioned in a general emotional category.",
-    },
-    {
-      q: "Are these stories sad or hopeful or both?",
-      a: "Both — and everything between. The Private Story creates across the full emotional range. Some nights you need something that goes toward the difficult end and stays there honestly. Some nights you need something that acknowledges weight and finds a way through it. Some nights you need something that ends with warmth without pretending that the difficulty wasn't real. You describe the tone, and the story is built to deliver it.",
-    },
-    {
-      q: "How do emotional audio stories differ from therapy podcasts?",
-      a: "Therapy podcasts explain, advise, and help you understand what you are feeling by giving it frameworks. They are valuable and serve a different purpose. Emotional audio stories don't explain anything — they accompany. The story goes into the emotional territory you're in and moves through it with you, without requiring articulation, analysis, or any particular response from you. For feelings that are pre-verbal or that don't need to be understood but simply felt, stories work differently from any kind of informational or therapeutic content.",
-    },
-    {
-      q: "Can I create a story for a specific emotional need?",
-      a: "Yes. The creation flow allows you to describe the emotional situation and register you need: a story for processing something without talking about it, a quietly devastating story, something that ends with warmth, something for a specific kind of longing or grief or uncertainty. The more specifically you describe the need, the more specifically the story is built to meet it.",
-    },
-    {
-      q: "Is there a story for when I just want to feel understood?",
-      a: "Yes — and this is one of the specific experiences that emotional audio stories do particularly well. The feeling of being understood without having to explain yourself is one of the most restorative experiences available. When a story is created around your emotional register, the result is a narrative that has been shaped to where you are — which is as close as audio can come to that feeling of being genuinely met.",
-    },
-    {
-      q: "Are these stories private?",
-      a: "Completely. Your stories are created for your account and heard only by you. No public feed, no visible history, no social dimension to what is an entirely personal experience. Whatever the story moves in you stays in a space that belongs entirely to you.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function EmotionalAudioStories() {

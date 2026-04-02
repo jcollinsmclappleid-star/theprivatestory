@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("audio-stories-for-women")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Personalised Audio Stories for Women | The Private Story",
-    description: "Audio stories for women, created around how you want to feel tonight. Private, personalised, and built with your desires at the centre. Not a library — yours.",
-  },
-  hero: {
-    badge: "For Women · Private · Personalised",
-    h1: "Audio Stories for Women — Your Desires at the Centre",
-    tagline: "Built around what women actually want from audio fiction. Not what the market assumes. Not a best guess. What you said you wanted.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What the Existing Market Gets Wrong",
@@ -133,36 +129,7 @@ const config: SEOPageConfig = {
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "Why is The Private Story specifically for women?",
-      a: "Women are the dominant audience for romance and adult fiction — in written, audio, and digital formats — yet the majority of adult audio platforms have been built around assumptions that don't match what female listeners actually want. The Private Story is built around the recognition that centering female preferences in the design — the emotional dimensions, the character qualities, the intensity spectrum, the privacy requirements — produces a significantly better product for the audience that actually makes up the majority of the market. The platform is not exclusively for women, but it is designed with women as the primary audience.",
-    },
-    {
-      q: "What makes the stories feel right for female listeners?",
-      a: "The creation flow is built around the dimensions that matter most for female fiction listeners: emotional authenticity, the quality of the character (specific, present, genuinely attentive rather than generically powerful), agency for the protagonist, and the full spectrum of intensity rather than a default towards a single register. The stories are generated to the choices you make rather than approximated from a generic template, which means the match between the story and what you actually wanted is significantly higher than a catalogue can achieve.",
-    },
-    {
-      q: "Can I choose the kind of story — slow burn versus more direct?",
-      a: "Yes. The intensity and pacing of your story are genuine choices in the creation flow. The platform covers the full spectrum: slow burn and emotionally textured, confident and direct, deeply adult in tone, and the darker territory of morally complex romance. These are not fixed platform registers — they are choices you make for each story, because different moods require different kinds of fiction.",
-    },
-    {
-      q: "Are the stories narrated by a real voice?",
-      a: "Stories are narrated using ElevenLabs voices — studio-quality voice synthesis selected to complement the specific tone and register of each story. The voice quality is indistinguishable from professional human narration in the ways that matter for the listening experience: warmth, pacing, texture. The narration is part of what is created — not an afterthought — and the voice selected is matched to the story's character and emotional register.",
-    },
-    {
-      q: "How private is the platform, genuinely?",
-      a: "Genuinely private. There are no social features. There is no public profile. Your listening history is not visible to others, not shared with third parties for social purposes, and not used to build any public-facing recommendation or activity feed. Your stories are stored in your private account and are audible only to you. The platform was designed from the beginning with the requirement that adult fiction listening should be genuinely private — not a setting, but the fundamental premise.",
-    },
-    {
-      q: "What does a subscription cost?",
-      a: "The monthly plan is £29/month for five stories. The annual plan is £179/year, which covers fifty stories — equivalent to £3.58 per story. Additional stories beyond your plan allowance are £3.99 each. All plans include full narration, generated cover images, and permanent storage in your private library.",
-    },
-    {
-      q: "Is the platform UK-based?",
-      a: "The Private Story is a UK-based platform. Pricing is in GBP. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function AudioStoriesForWomen() {

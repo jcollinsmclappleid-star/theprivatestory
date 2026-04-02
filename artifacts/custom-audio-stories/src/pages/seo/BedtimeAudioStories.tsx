@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("bedtime-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Bedtime Audio Stories for Adults | The Private Story",
-    description: "Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.",
-  },
-  hero: {
-    badge: "Bedtime · Calm · Adults Only",
-    h1: "Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night",
-    tagline: "Not a children's story with the language updated. A story made for how you actually arrive at the end of your day.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "The Problem With Trying to Sleep",
@@ -133,36 +129,7 @@ const config: SEOPageConfig = {
       { label: "Sleep audio stories", href: "/sleep-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What are adult bedtime audio stories?",
-      a: "Adult bedtime audio stories are narrated audio created specifically to help grown-up listeners wind down and transition into sleep. Unlike children's bedtime content, they are paced and toned for adult sensibilities — written for the emotional complexity of adult nights, calibrated to the way grown-up minds decompress, and created around the specific mood and preferences of the individual listener.",
-    },
-    {
-      q: "How long are the bedtime stories?",
-      a: "Stories typically run between fifteen and thirty minutes — long enough for the mind to genuinely settle into the world of the story before you arrive at sleep. Your story is saved to your account, so if you fall asleep before it ends, you can return to it or create a new one the following night.",
-    },
-    {
-      q: "Can I choose a calming tone for my story?",
-      a: "Yes — this is central to how The Private Story works. Before your story is generated, you choose the emotional register you want. A slow, calming pace. A quietly connecting voice. A gentle story that resolves warmly. Your choices shape every element of what the AI creates — the tone, the pacing, the world of the story, the way it moves.",
-    },
-    {
-      q: "Will these help me sleep?",
-      a: "For many adults, yes — particularly those whose sleep difficulty comes from a mind that won't stop rather than from a physical cause. The story provides the mind with somewhere to go rather than continuing to process the day, which reduces the mental activity that delays sleep. Results vary between individuals and nights, and The Private Story is not a medical device, but the mechanism — redirecting a restless mind — is well-established.",
-    },
-    {
-      q: "Are these different from sleep meditation apps?",
-      a: "Significantly. Sleep meditation apps typically ask you to actively participate — follow breathing, direct your attention, perform relaxation techniques. When you're tired and your mind is resistant, this active effort can be counterproductive. A bedtime audio story requires nothing of you except to listen. The narrative redirects your attention passively. For adults who find meditation difficult or ineffective when tired, stories often work considerably better.",
-    },
-    {
-      q: "Can I listen offline?",
-      a: "Stories are saved to your private account and accessible whenever you're logged in. Offline listening is on the roadmap — if this is important to you, it's worth knowing that the experience is designed to be as low-friction as possible at the moment you need it.",
-    },
-    {
-      q: "Is there a timer or sleep mode?",
-      a: "The platform is designed to minimise friction at bedtime. Stories are created at a length suitable for sleep listening, and the audio experience is built around private, quiet, low-stimulation use. Sleep timer features are part of the ongoing development — the platform continues to be built around how adults actually use it.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function BedtimeAudioStories() {

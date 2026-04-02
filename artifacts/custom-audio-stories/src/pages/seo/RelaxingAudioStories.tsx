@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("relaxing-audio-stories")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "Relaxing Audio Stories | The Private Story",
-    description: "Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.",
-  },
-  hero: {
-    badge: "Relaxation · Decompression · Adults Only",
-    h1: "Relaxing Audio Stories for Adults — Wind Down With a Story Written for You",
-    tagline: "Not a meditation. Not a podcast. A story that understands what tonight requires.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "What Relaxing Audio Stories Actually Do",
@@ -141,36 +137,7 @@ const config: SEOPageConfig = {
       { label: "Emotional audio stories", href: "/emotional-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What makes an audio story relaxing?",
-      a: "A relaxing audio story is paced and toned to carry the listener rather than engage them in the way a gripping plot or compelling argument would. The narrative moves without urgency. The setting is somewhere worth inhabiting. The voice moves at a pace your mind can follow into quiet rather than being kept awake to follow it. When you create a story with a relaxing intent at The Private Story, the generation reflects that — the entire output is shaped toward decompression.",
-    },
-    {
-      q: "How are these different from meditation apps?",
-      a: "Meditation apps typically ask you to actively participate — following breathing instructions, visualising, focusing on sensations. A relaxing audio story asks nothing of you except to listen. Your mind follows the narrative passively, which allows the body's natural decompression process to happen without the cognitive overhead of trying to meditate correctly. For many adults, especially those whose minds resist direct instruction, stories work considerably better.",
-    },
-    {
-      q: "Can I choose a relaxing tone when I create my story?",
-      a: "Yes — this is central to how The Private Story works. Before your story is generated, you choose the emotional register you want. If you want something warm and calming, you select for that. If you want something atmospheric and unhurried, you select for that. The tone you choose shapes every element of what follows — the pacing, the voice, the setting, the direction the story moves.",
-    },
-    {
-      q: "How long are relaxing audio stories?",
-      a: "Stories are typically between fifteen and thirty minutes. For most adults, this is long enough to fully decompress and, for bedtime listening, to arrive at the edge of sleep. Your story is saved to your account so you can return to it, resume it, or begin a new one whenever you need.",
-    },
-    {
-      q: "Can I create a story for specific situations — bath, commute, bed?",
-      a: "Yes. The Private Story creates around the situation you describe as much as the mood. If you're winding down before sleep, that shapes the pacing and tone. If you're decompressing on a commute and need something that transitions you out of the workday without requiring full presence, that shapes it differently. The creation choices accommodate these distinctions.",
-    },
-    {
-      q: "Do I need headphones?",
-      a: "Headphones are recommended for the full experience — they create the private, immersive quality that makes audio stories work as well as they do. Many listeners find that the combination of headphones and a story made for them produces a depth of relaxation that open speakers and general content simply don't reach.",
-    },
-    {
-      q: "Can I save favourites?",
-      a: "Every story you create is saved privately to your account and remains there until you choose to remove it. You can return to any story, replay it, and build up a private library of the stories that have worked for you. Nothing is automatically removed.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function RelaxingAudioStories() {

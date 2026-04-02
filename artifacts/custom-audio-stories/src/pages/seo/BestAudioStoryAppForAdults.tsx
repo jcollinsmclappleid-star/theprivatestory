@@ -1,15 +1,11 @@
 import SEOPage, { SEOPageConfig } from "@/components/SEOPage";
+import { getPageSsrData } from "@workspace/seo-data";
+
+const _d = getPageSsrData("best-audio-story-app-for-adults")!;
 
 const config: SEOPageConfig = {
-  meta: {
-    title: "The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins | The Private Story",
-    description: "Most audio apps were built for everyone. The best one for you was built around you. Discover the five criteria that separate excellent adult audio platforms from disappointing ones.",
-  },
-  hero: {
-    badge: "Best Audio Apps · Personalised Content · For Adults",
-    h1: "The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins",
-    tagline: "Most audio apps were built for everyone. The best one for you was built around you.",
-  },
+  meta: { title: _d.title, description: _d.description },
+  hero: { badge: _d.badge, h1: _d.h1, tagline: _d.tagline },
   sections: [
     {
       h2: "Why Most Adults End Up Disappointed by Audio Apps",
@@ -176,32 +172,7 @@ const config: SEOPageConfig = {
       { label: "Learn about private audio stories", href: "/private-audio-stories" },
     ],
   },
-  faqs: [
-    {
-      q: "What should I look for in an audio story app for adults?",
-      a: "Five criteria matter most: personalisation (does the app create content around you or present pre-existing content), privacy architecture (is privacy a foundation or a setting), adult emotional intelligence (was the content designed for grown women or a general adult audience), tone calibration (can you control the emotional register of your experience), and content quality (does the writing feel premium or adequate). Most audio apps perform well on one or two of these criteria. The best ones succeed across all five.",
-    },
-    {
-      q: "Are there audio story apps with personalised content?",
-      a: "Yes. The Private Story generates personalised audio stories around your mood and preferences rather than presenting a pre-existing library. The story created for your session did not exist before you chose your preferences — it was generated in response to what you needed. This is distinct from apps that personalise their recommendations from a fixed catalogue, which is a different and considerably less personal experience.",
-    },
-    {
-      q: "Which audio story apps are private?",
-      a: "Most audio apps offer privacy as a configurable setting within a platform that was built for social sharing. The Private Story is private by architectural design — there is no social layer, no sharing function, and no public-facing account profile. Your stories exist only in your account and are heard only by you. This is not something you configure — it is how the platform was built.",
-    },
-    {
-      q: "Is there an app that creates audio stories for me?",
-      a: "Yes. The Private Story creates personalised audio stories around your mood and preferences. You make selections about how you want to feel, and a story is generated around those choices. The story is not retrieved from a library or adapted from a template — it is created for your current session. This typically takes less than two minutes from preference selection to story delivery.",
-    },
-    {
-      q: "Are there audio story apps designed specifically for women?",
-      a: "The Private Story was built with women at the centre. The emotional register, the dynamics within stories, the tonal range, and the specific moods and experiences available all reflect a genuine understanding of female adult experience. This is distinct from platforms that include women as a demographic within a general adult audience — the difference in how the content feels is immediately apparent.",
-    },
-    {
-      q: "How is The Private Story different from other audio apps?",
-      a: "Three differences define the platform. First, it creates rather than presents — stories are generated around your preferences rather than selected from a pre-existing library. Second, it is private by design rather than by setting — there is no social layer, no sharing, no public component of any kind. Third, it was built specifically for adult women rather than a general audience — the emotional intelligence, tonal range, and content calibration reflect this from the first interaction.",
-    },
-  ],
+  faqs: _d.faqs,
 };
 
 export default function BestAudioStoryAppForAdults() {

@@ -1261,53 +1261,50 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
     competitorName: "Dipsea",
     metaTitle: "Looking for a Dipsea Alternative? | The Private Story",
     metaDescription:
-      "Comparing Dipsea and The Private Story for audio erotica? See how personalised, AI-crafted stories differ from Dipsea's curated library approach.",
+      "Exploring audio erotica beyond Dipsea? The Private Story writes your story from scratch — personalised to your mood, cast, and imagination. Completely private.",
     badge: "Compare",
     h1: "Looking for a Dipsea Alternative?",
-    tagline: "Dipsea offers a curated library. The Private Story writes your story — shaped around your imagination, not a catalogue.",
-    intro: `Dipsea is one of the best-known audio erotica platforms, and for good reason — its production quality is high and its catalogue is substantial. If you are looking for a Dipsea alternative, you are probably looking for something different: more personalisation, a different content direction, or a different relationship between the listener and the story. This page explains honestly what The Private Story does differently, so you can decide which experience is right for you.`,
-    comparisonRows: [
-      { feature: "Content model", thePrivateStory: "AI-generated, personalised to your brief", competitor: "Human-authored, curated library" },
-      { feature: "Personalisation", thePrivateStory: "Every story shaped by your preferences", competitor: "Fixed content; you choose from existing stories" },
-      { feature: "Privacy", thePrivateStory: "Stories never shared or displayed publicly", competitor: "Library content visible to all subscribers" },
-      { feature: "Content range", thePrivateStory: "Full spectrum including explicit adult content and dark romance", competitor: "Sensual to explicit; curated range" },
-      { feature: "Pricing model", thePrivateStory: "Monthly or annual subscription", competitor: "Monthly subscription" },
-      { feature: "Story length", thePrivateStory: "5–15 minutes per story, generated on demand", competitor: "Short stories and series in curated library" },
-    ],
+    tagline: "Dipsea has built something genuinely good. If you want something different — a story written from scratch, around your imagination — that is what The Private Story is here for.",
+    intro: `This page is written by The Private Story. We have a commercial interest in your choosing our platform — please weigh what we say here accordingly. What we can offer honestly is a clear account of what Dipsea does well, and what The Private Story was built to do.`,
+    comparisonRows: [],
     sections: [
       {
         h2: "What Dipsea does well",
-        body: `Dipsea has built a significant library of high-quality audio erotica, produced with professional writers and voice actors. The platform has done important work in normalising audio erotica for women — it launched in 2018 when the category was barely visible. Its guided meditation and mindfulness content is also genuinely useful for some listeners. If you are looking for a curated, professionally produced library and are happy to choose from existing stories, Dipsea is a strong option.`,
+        body: `Dipsea has done genuinely important work for audio erotica. It launched in 2018 when the category was barely on the map, and it has built a substantial library of high-quality stories narrated by professional voice actors. The production values are high. The catalogue covers a real range — from slow burn romance to more explicit content — and the platform has been thoughtfully designed for women. If you want a curated library of professionally produced audio stories to browse and discover, Dipsea is a strong platform.`,
       },
       {
-        h2: "What The Private Story does differently",
-        body: `The Private Story is built around a different principle: your story should be created for you, not chosen from a catalogue. When you write your brief — the characters, the dynamic, the tone, the explicit detail level — you receive a story that has never existed before and will never be shared with another user. This is not a variation on an existing template; it is a story written around the specific texture of what you want to hear.<br><br>This matters if you have a very specific imaginative world you want to inhabit, or if you have found that existing erotic content — however good — never quite fits. It also matters if privacy is paramount to you: at The Private Story, your stories are yours alone, stored securely and never displayed in any public-facing area of the platform. See <a href="/private-audio-stories">private audio stories</a> for a full explanation of the privacy architecture.`,
+        h2: "What The Private Story is built for",
+        body: `The Private Story starts from a different premise: rather than giving you a library to browse, it writes a story around you. Before anything is generated, you make seven creative choices — the pairing, the chemistry between the characters, the archetype, the setting, the intensity, the emotional mood, and the situation. Those choices become the brief. The story is then written, by AI, in service of exactly what you described.<br><br>The result is a story that has never existed before. It will not be recommended to other users, displayed on any public part of the platform, or used as training data. It belongs to you alone. See <a href="/personalised-audio-stories">personalised audio stories</a> for a full account of how this works, or <a href="/private-audio-stories">private audio stories</a> to understand the privacy architecture.`,
       },
       {
-        h2: "Which platform is right for you?",
-        body: `Choose Dipsea if you want a curated library of professionally produced short stories and are happy browsing what exists. Choose The Private Story if you want a story written specifically for you, based on your brief, with no compromise on personalisation or privacy. Both platforms are designed for women; both take the format seriously. The difference is between choosing from a menu and having the dish made to your specifications.<br><br>See also <a href="/alternatives-to-romance-audiobooks">alternatives to romance audiobooks</a> for a broader look at the landscape, or <a href="/personalised-audio-stories">personalised audio stories</a> to understand our approach in depth.`,
+        h2: "Personalisation at The Private Story — what it actually means",
+        body: `Personalisation at The Private Story is generative, not algorithmic. It does not mean a recommendation engine suggesting stories you might like based on listening history. It means the story is written from scratch, this session, around the choices you just made.<br><br>The Casting Room — the creation flow — offers over 220 situations across 11 dramatic categories, 28 emotional moods, 50+ country settings, 12 historical eras, 14 character archetypes, and nine distinct chemistry types. The combinations are effectively infinite. No two listeners receive the same story. No story is written in advance and retrieved. This is what <a href="/ai-audio-story-generator">AI audio story generation</a> makes possible that a curated library cannot.<br><br>If you have ever found yourself wanting something very specific — a particular dynamic, a precise emotional register, a scenario that exists in your imagination but not in any library — The Private Story was built for exactly that.`,
+      },
+      {
+        h2: "Privacy as a core feature",
+        body: `The Private Story was built privacy-first. There are no social features — no followers, no shared listening history, no public profiles. Your stories are stored privately in your account and are not visible to anyone else, including the platform operators. We do not sell data, run ads, or make listening history available to third parties.<br><br>For some listeners, the private nature of the content they want to explore makes this architecture meaningful rather than incidental. The platform was designed with that in mind from the start.`,
       },
     ],
     faqs: [
       {
-        q: "Is The Private Story cheaper than Dipsea?",
-        a: "Pricing changes over time; please check each platform's current pricing page for accurate comparison. The Private Story offers both monthly and annual subscription options.",
+        q: "What makes The Private Story different from a curated audio platform?",
+        a: "The core difference is generative versus curatorial. A curated platform selects from stories written in advance. The Private Story writes your story from scratch, around the choices you make before each session. Nothing is retrieved from a library — the story is created for this listening experience, based on what you just told us you want.",
       },
       {
-        q: "Does The Private Story have as much content as Dipsea?",
-        a: "Dipsea has a larger pre-existing library. The Private Story generates new content on demand — so your library grows with every story you create. If breadth of pre-existing content matters most, Dipsea may have the advantage. If you want content created for you specifically, The Private Story is purpose-built for that.",
+        q: "How long does it take to get a personalised story?",
+        a: "Most stories are generated and available to listen within a few minutes of completing the creation flow. The Casting Room — the step-by-step brief — typically takes under two minutes to complete.",
       },
       {
-        q: "Is the audio quality on The Private Story comparable to Dipsea?",
-        a: "The Private Story uses professional-grade AI voice synthesis. Dipsea uses human voice actors. Both produce high-quality audio; the character of the voice differs. Human narration has organic imperfections that many listeners find warmer; AI narration is consistent and configurable.",
+        q: "Is the content on The Private Story explicit?",
+        a: "Yes. The Private Story supports the full spectrum from emotionally charged slow burn to fully explicit adult content, including dark romance and erotic fiction. Intensity is one of the choices you make in the creation flow — the story is calibrated to match what you selected. All explicit content is available only to age-verified users aged 18 and over.",
       },
       {
-        q: "Can I use both Dipsea and The Private Story?",
-        a: "Yes. Many listeners use curated platforms for browsing and discovery, and use The Private Story when they want something created specifically for them. The two approaches complement each other.",
+        q: "Can I listen to The Private Story alongside other platforms?",
+        a: "Yes. Many listeners use more than one audio platform for different purposes. The Private Story is particularly suited to the moments when you want something created for you specifically, rather than chosen from what already exists.",
       },
       {
         q: "Does The Private Story have a free trial?",
-        a: "Please check the current pricing page for trial or introductory offers. Availability may change over time.",
+        a: "Please check the current pricing page for any introductory offers. Availability may change over time.",
       },
     ],
   },
@@ -1316,53 +1313,50 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
     competitorName: "Quinn",
     metaTitle: "Looking for a Quinn Alternative? | The Private Story",
     metaDescription:
-      "Comparing Quinn and The Private Story for audio erotica? See how AI-personalised stories differ from Quinn's community-driven audio content platform.",
+      "Exploring audio erotica beyond Quinn? The Private Story writes your story from scratch — private, personalised, built around your imagination. Nothing shared, nothing public.",
     badge: "Compare",
     h1: "Looking for a Quinn Alternative?",
-    tagline: "Quinn is a community platform for erotic audio. The Private Story is a private studio — writing stories shaped around your imagination alone.",
-    intro: `Quinn is a well-established audio erotica platform with a community-driven model: creators post audio content, listeners discover and follow creators, and the content ranges from amateur recordings to professionally produced pieces. If you are looking for a Quinn alternative, you may want something more private, more personalised, or with a different content model. This page explains honestly what The Private Story does differently.`,
-    comparisonRows: [
-      { feature: "Content model", thePrivateStory: "AI-generated stories personalised to your brief", competitor: "Community-uploaded creator content" },
-      { feature: "Personalisation", thePrivateStory: "Every story written for your specific preferences", competitor: "Browse and follow creators; no personalisation" },
-      { feature: "Privacy", thePrivateStory: "All content private; stories never shared publicly", competitor: "Public-facing platform; creator profiles visible" },
-      { feature: "Content quality", thePrivateStory: "Consistent, professionally crafted narrative fiction", competitor: "Variable — amateur to professional creator range" },
-      { feature: "Creator economy", thePrivateStory: "Not applicable (platform-generated content)", competitor: "Supports independent audio creators" },
-      { feature: "Story ownership", thePrivateStory: "Your story belongs to you; never resold or repurposed", competitor: "Creator retains ownership; content may be paywalled" },
-    ],
+    tagline: "Quinn has built a vibrant creative community. The Private Story takes a different path entirely — writing your story, privately, from scratch.",
+    intro: `This page is written by The Private Story. We have a commercial interest in your choosing our platform — please weigh what we say here accordingly. What we can offer honestly is a clear account of what Quinn does well, and what The Private Story was built to do.`,
+    comparisonRows: [],
     sections: [
       {
         h2: "What Quinn does well",
-        body: `Quinn has built a meaningful community of audio erotica creators and listeners. The platform supports independent creators — writers, voice actors, and storytellers — who produce a huge variety of content. The discovery model (following creators, exploring categories) works well for listeners who enjoy browsing and finding new voices. Quinn also has a strong community feel, with comments, feedback, and creator–listener relationships that some users value highly.`,
+        body: `Quinn has created something meaningful for the audio erotica space: a community of creators and listeners, with real range and real personality. Independent writers, voice actors, and storytellers post content, and listeners can discover new voices, follow creators, and engage with a genuinely diverse range of audio. The community dimension — comments, creator relationships, the feel of a living platform — is something many listeners find valuable. Quinn has also been an important space for audio creators to find an audience and build a practice.`,
       },
       {
-        h2: "What The Private Story does differently",
-        body: `The Private Story operates on a completely different model. There are no creators to follow, no community, and no public-facing content. Every story is written for you — by an AI author working from your brief — and delivered to your private account. Nobody else will hear your story. Nobody else knows it exists.<br><br>This matters if privacy is important to you: the community model that makes Quinn vibrant also means that the platform has a social, visible dimension. At The Private Story, the entire experience is between you and the story. There is no discovery feed, no creator profiles, no public space at all. Just your imagination, and a story written to inhabit it.<br><br>See <a href="/private-audio-stories">private audio stories</a> for more on how privacy shapes our approach.`,
+        h2: "What The Private Story is built for",
+        body: `The Private Story does not have creators, a community, or a discovery feed. It has one thing: your story, written from scratch, around what you told it you wanted. Before anything is generated, you make seven structured choices — pairing, chemistry, archetype, setting, intensity, emotional mood, and situation. Those choices become the creative brief. The story is then written by AI, in service of exactly that brief, and delivered to your private account.<br><br>Nobody else will hear your story. Nobody knows it exists. There is no social layer, no public space, no sharing of any kind. The entire experience is between you and what you described wanting. See <a href="/private-audio-stories">private audio stories</a> for a full account of the privacy architecture, and <a href="/personalised-audio-stories">personalised audio stories</a> to understand the creation model.`,
       },
       {
-        h2: "Which platform is right for you?",
-        body: `Choose Quinn if you enjoy discovering different creator voices, want to support independent audio creators, and value a community feel. Choose The Private Story if you want a story created specifically for you — based on your brief, private, and never shared. Both platforms serve the audio erotica audience, but the experience is fundamentally different in character.<br><br>For a broader comparison of the landscape, see <a href="/alternatives-to-romance-audiobooks">alternatives to romance audiobooks</a>, or explore <a href="/audio-erotica-for-women">audio erotica for women</a> to understand our content range.`,
+        h2: "Personalisation at The Private Story — how it works",
+        body: `Personalisation at The Private Story is not a recommendation algorithm. It is generative: the story is written around your choices for this session, not retrieved from a catalogue based on your listening history.<br><br>The Casting Room gives you choices across 220+ situations, 28 emotional moods, 14 character archetypes, nine chemistry types, 50+ country settings, and 12 historical periods. The combination you choose becomes the brief the AI writes toward. The story is original — it did not exist before you described what you wanted.<br><br>For listeners who have a very specific imaginative world they want to inhabit, or who have found that existing content never quite fits, this generative model is what the platform was built to serve. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or try <a href="/create-your-own-audio-story">creating your own story</a> to see the full creation flow.`,
+      },
+      {
+        h2: "Privacy as a design principle",
+        body: `The Private Story was designed privacy-first. There are no public profiles, no social features, no shared listening history, and no feeds. Your stories are stored privately in your account and are not visible to anyone — including the platform team. The platform does not run ads, sell data, or make any listening behaviour available to third parties.<br><br>For listeners who want to explore the full range of their imagination privately, the architecture is the point. It is not a feature added on — it is the founding design principle of the platform.`,
       },
     ],
     faqs: [
       {
-        q: "Is The Private Story more expensive than Quinn?",
-        a: "Please check each platform's current pricing page. Quinn offers both free and premium content; The Private Story operates on a subscription model. Pricing may change over time.",
+        q: "What makes The Private Story different from a creator platform?",
+        a: "The core difference is between discovering creators versus receiving a story created for you. On a creator platform, you find voices and content that exist and choose what to listen to. At The Private Story, you describe what you want and a story is written around that — by AI, from scratch, for this session. Nothing is retrieved from a library; everything is generated from your brief.",
       },
       {
-        q: "Can I request specific types of content on The Private Story like I can on Quinn?",
-        a: "Yes — in fact, personalisation is the core premise of The Private Story. Rather than finding a creator who produces the content you want, you write a brief and receive a story built around your specific preferences.",
-      },
-      {
-        q: "Does The Private Story have human voice actors like Quinn creators?",
-        a: "The Private Story uses professional-grade AI voice synthesis rather than human creators. The audio quality is high, but the character of the voice differs from a human recording. Many listeners find AI narration intimate and consistent; others prefer human warmth. Both have genuine merits.",
+        q: "Is everything on The Private Story private?",
+        a: "Yes. Stories are stored in your private account and are not visible to anyone else. There are no public profiles, no shared listening history, no social features of any kind. The platform was built privacy-first — not as an add-on, but as the founding design principle.",
       },
       {
         q: "Is the content on The Private Story explicit?",
-        a: "Yes. The Private Story supports the full spectrum from sensual and suggestive to fully explicit adult content, including dark romance and erotic fiction. All explicit content is available only to age-verified users aged 18 and over.",
+        a: "Yes. The Private Story supports the full spectrum from emotionally charged slow burn to fully explicit adult content, including dark romance and erotic fiction. Intensity is one of the seven choices you make before your story is written. All explicit content is available only to age-verified users aged 18 and over.",
       },
       {
-        q: "Can I use both Quinn and The Private Story?",
-        a: "Yes. The platforms serve different needs: Quinn for discovering and following creators; The Private Story for receiving a story written specifically for you. Many listeners use both for different purposes.",
+        q: "How long does a personalised story take to receive?",
+        a: "Most stories are generated and available to listen within a few minutes of completing the Casting Room. The brief itself typically takes under two minutes to complete.",
+      },
+      {
+        q: "Can I use The Private Story alongside other audio platforms?",
+        a: "Yes. Many listeners use more than one platform for different moods and purposes. The Private Story is particularly suited to when you want something written specifically for you, rather than discovered from what already exists.",
       },
     ],
   },
@@ -1467,9 +1461,9 @@ COMPETITOR_PAGES.forEach((comp) => {
       </section>`;
 
     const bodyHtml = `
-      <p style="color:#a09080;margin-bottom:32px">${esc(comp.intro)}</p>
+      <p style="color:#a09080;font-style:italic;font-size:14px;margin-bottom:24px">${esc(comp.intro)}</p>
       ${TRUST_BAR_HTML}
-      ${tableHtml}
+      ${comp.comparisonRows.length > 0 ? tableHtml : ""}
       ${sectionsHtml}
       ${faqsHtml}
       <section style="text-align:center;padding:40px 0">

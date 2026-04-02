@@ -58,6 +58,8 @@ import AudioStoriesVsAudiobooks from "@/pages/seo/AudioStoriesVsAudiobooks";
 import AudioStoriesVsPodcasts from "@/pages/seo/AudioStoriesVsPodcasts";
 import BestAudioStoryAppForAdults from "@/pages/seo/BestAudioStoryAppForAdults";
 import AlternativesToRomanceAudiobooks from "@/pages/seo/AlternativesToRomanceAudiobooks";
+import DipseaAlternative from "@/pages/seo/DipseaAlternative";
+import QuinnAlternative from "@/pages/seo/QuinnAlternative";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 
@@ -115,6 +117,8 @@ function Router() {
             <Route path="/audio-stories-vs-podcasts" component={AudioStoriesVsPodcasts} />
             <Route path="/best-audio-story-app-for-adults" component={BestAudioStoryAppForAdults} />
             <Route path="/alternatives-to-romance-audiobooks" component={AlternativesToRomanceAudiobooks} />
+            <Route path="/dipsea-alternative" component={DipseaAlternative} />
+            <Route path="/quinn-alternative" component={QuinnAlternative} />
             <Route path="/discover" component={Discover} />
             <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />
@@ -136,7 +140,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AudioProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <WouterRouter base={(() => {
+              const builtBase = import.meta.env.BASE_URL.replace(/\/$/, "");
+              return (builtBase && window.location.pathname.startsWith(builtBase)) ? builtBase : "";
+            })()}>
               <ScrollToTop />
               <AuthModal />
               <Router />

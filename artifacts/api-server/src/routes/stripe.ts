@@ -278,15 +278,19 @@ router.post("/claim", async (req: Request, res: Response) => {
     }
 
     if (plan === "immersive") {
+      // Only set subscriptionPlan to "immersive" if user doesn't already have an active
+      // monthly/annual subscription — immersive must never downgrade a paid plan.
+      const hasActiveSub = user.subscriptionStatus === "active" &&
+        (user.subscriptionPlan === "monthly" || user.subscriptionPlan === "annual");
       await db
         .update(usersTable)
         .set({
-          subscriptionPlan: "immersive",
+          ...(hasActiveSub ? {} : { subscriptionPlan: "immersive" }),
           addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
           stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
         })
         .where(eq(usersTable.id, userId));
-      logger.info({ userId }, "[stripe-claim] Immersive entry credited");
+      logger.info({ userId, hasActiveSub }, "[stripe-claim] Immersive entry credited");
     } else {
       const isMonthly = plan === "monthly";
       const renewDate = new Date();
@@ -496,16 +500,24 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
               .where(eq(usersTable.id, userId));
             logger.info({ userId, plan }, "[stripe-webhook] Addon story credited (+1)");
           } else if (plan === "immersive") {
-            // One-time immersive entry — set plan to "immersive" so we can identify these users,
-            // and credit 1 story via addonStoriesRemaining (re-used for the single generation credit)
+            // One-time immersive entry: credit 1 story. Only set subscriptionPlan to "immersive"
+            // if the user doesn't already have an active monthly/annual subscription —
+            // immersive must never downgrade a paid plan.
+            const immersiveUser = await db
+              .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus })
+              .from(usersTable)
+              .where(eq(usersTable.id, userId))
+              .then(r => r[0]);
+            const hasActiveSub = immersiveUser?.subscriptionStatus === "active" &&
+              (immersiveUser?.subscriptionPlan === "monthly" || immersiveUser?.subscriptionPlan === "annual");
             await db
               .update(usersTable)
               .set({
-                subscriptionPlan: "immersive",
+                ...(hasActiveSub ? {} : { subscriptionPlan: "immersive" }),
                 addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
               })
               .where(eq(usersTable.id, userId));
-            logger.info({ userId }, "[stripe-webhook] Immersive entry activated");
+            logger.info({ userId, hasActiveSub }, "[stripe-webhook] Immersive entry activated");
           } else {
             const isMonthly = plan === "monthly";
             const renewDate = new Date();

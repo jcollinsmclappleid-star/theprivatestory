@@ -5,6 +5,7 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { TermsGate } from "@/components/TermsGate";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 
@@ -414,6 +415,7 @@ export default function Drift() {
       className="w-full min-h-screen"
       style={{ background: "linear-gradient(180deg, #020206 0%, #03030a 60%, #04040c 100%)" }}
     >
+      <TermsGate />
       <AnimatePresence mode="wait">
 
         {/* ── Scenario Selection ───────────────────────────────────────── */}

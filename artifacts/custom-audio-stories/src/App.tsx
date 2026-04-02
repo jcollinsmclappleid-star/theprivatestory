@@ -8,7 +8,7 @@ import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
 import { AuthModal } from "@/components/AuthModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { TermsGate } from "@/components/TermsGate";
+
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 import { useParams } from "wouter";
@@ -139,7 +139,6 @@ function App() {
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
               <ScrollToTop />
               <AuthModal />
-              <TermsGate />
               <Router />
             </WouterRouter>
           </AudioProvider>

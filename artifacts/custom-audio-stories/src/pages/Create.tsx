@@ -16,6 +16,7 @@ import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
+import { TermsGate } from "@/components/TermsGate";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -1573,6 +1574,7 @@ export default function Create() {
 
   return (
     <div className="w-full">
+      <TermsGate />
       <AnimatePresence mode="wait">
 
         {step === "casting" && (

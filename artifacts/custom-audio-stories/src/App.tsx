@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -125,6 +126,11 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    const el = document.getElementById("tps-static-about");
+    if (el) el.hidden = true;
+  }, []);
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

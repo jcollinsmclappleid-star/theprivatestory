@@ -43,6 +43,7 @@ interface AudioPlayerState {
   duration: number;
   pendingSeek: number | null;
   ambientMode: AmbientId | null;
+  narrationVolume: number;
   ambientVolume: number;
   play: (story?: Story) => void;
   pause: () => void;
@@ -54,6 +55,7 @@ interface AudioPlayerState {
   clearPendingSeek: () => void;
   close: () => void;
   setAmbientMode: (id: AmbientId | null) => void;
+  setNarrationVolume: (v: number) => void;
   setAmbientVolume: (v: number) => void;
 }
 
@@ -67,7 +69,8 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       duration: 0,
       pendingSeek: null,
       ambientMode: null,
-      ambientVolume: 0.2,
+      narrationVolume: 1,
+      ambientVolume: 0.08,
 
       play: (story) => {
         if (story) {
@@ -154,6 +157,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       },
 
       setAmbientMode: (id) => set({ ambientMode: id }),
+      setNarrationVolume: (v) => set({ narrationVolume: v }),
       setAmbientVolume: (v) => set({ ambientVolume: v }),
     }),
     {
@@ -163,6 +167,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         progress: state.progress,
         currentTime: state.currentTime,
         ambientMode: state.ambientMode,
+        narrationVolume: state.narrationVolume,
         ambientVolume: state.ambientVolume,
       }),
     }

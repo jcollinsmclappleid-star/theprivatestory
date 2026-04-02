@@ -39,6 +39,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     clearPendingSeek,
     pause,
     ambientMode,
+    narrationVolume,
     ambientVolume,
   } = useAudioPlayer();
 
@@ -64,6 +65,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (!currentStory) {
       // Player was closed — stop narration immediately
       if (audioRef.current) {
+        audioRef.current.volume = narrationVolume;
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
@@ -76,6 +78,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (currentStory.audioUrl) {
       if (audioRef.current) {
+        audioRef.current.volume = narrationVolume;
         if (isPlaying) {
           handlePlay(currentStory.id, currentStory.mood ?? "");
           audioRef.current.play().catch(console.error);
@@ -108,7 +111,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     return () => {
       if (simulationIntervalRef.current) clearInterval(simulationIntervalRef.current);
     };
-  }, [isPlaying, currentStory]);
+  }, [isPlaying, currentStory, narrationVolume]);
 
   // Apply pending seek requests to the real audio element
   useEffect(() => {
@@ -194,6 +197,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       <audio
         ref={audioRef}
         src={currentStory?.audioUrl || undefined}
+        volume={narrationVolume as never}
         onTimeUpdate={(e) => {
           const t = e.currentTarget.currentTime;
           const d = e.currentTarget.duration;

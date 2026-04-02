@@ -8,14 +8,18 @@ import { Link } from "wouter";
 
 function AmbientDrawer({
   ambientMode,
+  narrationVolume,
   ambientVolume,
   setAmbientMode,
+  setNarrationVolume,
   setAmbientVolume,
   onClose,
 }: {
   ambientMode: AmbientId | null;
+  narrationVolume: number;
   ambientVolume: number;
   setAmbientMode: (id: AmbientId | null) => void;
+  setNarrationVolume: (v: number) => void;
   setAmbientVolume: (v: number) => void;
   onClose: () => void;
 }) {
@@ -52,18 +56,33 @@ function AmbientDrawer({
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <Wind className="w-4 h-4 text-muted-foreground shrink-0" />
-        <input
-          type="range"
-          min={0}
-          max={1}
-          step={0.01}
-          value={ambientVolume}
-          onChange={(e) => setAmbientVolume(Number(e.target.value))}
-          className="flex-1 h-1.5 accent-primary rounded-full cursor-pointer"
-        />
-        <span className="text-xs text-muted-foreground w-8 text-right">{Math.round(ambientVolume * 100)}%</span>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground w-20 shrink-0">Narration</span>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={narrationVolume}
+            onChange={(e) => setNarrationVolume(Number(e.target.value))}
+            className="flex-1 h-1.5 accent-primary rounded-full cursor-pointer"
+          />
+          <span className="text-xs text-muted-foreground w-8 text-right">{Math.round(narrationVolume * 100)}%</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Wind className="w-4 h-4 text-muted-foreground shrink-0" />
+          <input
+            type="range"
+            min={0}
+            max={0.2}
+            step={0.005}
+            value={ambientVolume}
+            onChange={(e) => setAmbientVolume(Number(e.target.value))}
+            className="flex-1 h-1.5 accent-primary rounded-full cursor-pointer"
+          />
+          <span className="text-xs text-muted-foreground w-8 text-right">{Math.round(ambientVolume * 100)}%</span>
+        </div>
       </div>
     </motion.div>
   );
@@ -79,8 +98,10 @@ export function FloatingPlayer() {
     progress,
     close,
     ambientMode,
+    narrationVolume,
     ambientVolume,
     setAmbientMode,
+    setNarrationVolume,
     setAmbientVolume,
   } = useAudioPlayer();
 
@@ -99,8 +120,10 @@ export function FloatingPlayer() {
             {ambientOpen && (
               <AmbientDrawer
                 ambientMode={ambientMode}
+                narrationVolume={narrationVolume}
                 ambientVolume={ambientVolume}
                 setAmbientMode={setAmbientMode}
+                setNarrationVolume={setNarrationVolume}
                 setAmbientVolume={setAmbientVolume}
                 onClose={() => setAmbientOpen(false)}
               />

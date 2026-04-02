@@ -101,3 +101,9 @@ id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
 type = "image"
 title = "Refined hero image"
+
+[[outputs]]
+id = "wfsv40ktxer9o5tDKNaGZ"
+uri = "file://artifacts/api-server/public-static/logo.png"
+type = "image"
+title = "Logo used (logo.png)"

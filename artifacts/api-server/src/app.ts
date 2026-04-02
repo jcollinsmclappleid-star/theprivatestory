@@ -100,6 +100,7 @@ const ALLOWED_ORIGIN_PATTERNS = [
   /\.replit\.dev$/,
   /\.replit\.app$/,
   /\.repl\.co$/,
+  /^https:\/\/(www\.)?theprivatestory\.com$/,
 ];
 
 app.use(

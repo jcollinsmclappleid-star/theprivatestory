@@ -420,10 +420,9 @@ router.get("/", (_req: Request, res: Response) => {
     <section>
       <h2>What Is The Private Story?</h2>
       <p>The Private Story is a premium literary audio platform that generates personalised stories from your choices — not from a content library. Each story is written by AI around the emotional register, characters, and atmosphere you describe, then narrated and saved privately to your account.</p>
-      <p>The story creation process works through seven structured selections: mood, tone, dynamic, setting, intensity, character type, and scenario direction. From those seven inputs, a unique story is written from scratch — never retrieved from a library, never shared with other users, never visible outside your account.</p>
-      <p><strong>What this is:</strong> A private platform for <a href="/personalised-audio-stories">AI-generated personalised audio stories</a>, created around your choices each time — not a catalogue of content made for a general audience.</p>
+      <p><strong>What this is:</strong> A private platform for AI-generated audio stories, created around your choices each time — not a catalogue of content made for a general audience.</p>
       <p><strong>Who it's for:</strong> Adult women who want private, emotionally intelligent audio storytelling personalised around their mood, dynamic, and tone — not retrieved from a fixed library.</p>
-      <p><strong>How it works:</strong> <a href="/private-audio-stories">Private audio stories</a> are saved only to your account. <a href="/create-your-own-audio-story">Creating your own audio story</a> takes under two minutes.</p>
+      <p><strong>How it works:</strong> <a href="/personalised-audio-stories">Personalised audio stories</a> begin with seven structured selections — mood, tone, dynamic, setting, intensity, character type, and scenario direction. <a href="/private-audio-stories">Private audio stories</a> are saved only to your account. And <a href="/create-your-own-audio-story">creating your own audio story</a> takes under two minutes.</p>
       <p><a href="/how-it-works">Full explanation of how it works →</a></p>
     </section>
     <section>

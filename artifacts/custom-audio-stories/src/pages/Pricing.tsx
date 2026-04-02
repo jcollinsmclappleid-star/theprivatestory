@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearch } from "wouter";
 import {
@@ -130,6 +130,32 @@ export default function Pricing() {
   const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [usageData, setUsageData] = useState<{ plan: string; subscriptionStatus: string | null } | null>(null);
+  const pendingCheckoutRef = useRef<string | null>(null);
+
+  const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
+
+  const doCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
+    setLoadingPlan(plan);
+    setCheckoutError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        setCheckoutError(data.error ?? "Could not start checkout. Please try again.");
+      } else {
+        window.location.href = data.url;
+      }
+    } catch {
+      setCheckoutError("Network error — please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -137,12 +163,21 @@ export default function Pricing() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setUsageData(d); })
       .catch(() => {});
-  }, [isAuthenticated]);
 
-  const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
+    // Auto-trigger checkout if a plan was saved before sign-up
+    const pending = pendingCheckoutRef.current ?? (() => {
+      try { return sessionStorage.getItem("pendingPricingCheckout"); } catch { return null; }
+    })();
+    if (pending && ["monthly", "annual", "immersive"].includes(pending)) {
+      pendingCheckoutRef.current = null;
+      try { sessionStorage.removeItem("pendingPricingCheckout"); } catch { /* ignore */ }
+      doCheckout(pending as "monthly" | "annual" | "immersive");
+    }
+  }, [isAuthenticated]);
 
   const startCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
     if (!isAuthenticated) {
+      try { sessionStorage.setItem("pendingPricingCheckout", plan); } catch { /* ignore */ }
       openSignUp();
       return;
     }
@@ -261,9 +296,27 @@ export default function Pricing() {
               <span className="font-display text-4xl font-bold text-foreground">£7.99</span>
               <span className="text-muted-foreground/50 mb-1">one-time</span>
             </div>
-            <p className="text-sm text-muted-foreground/60 leading-relaxed max-w-sm">
-              One fully personalised Immersive Story — narrated, illustrated, yours immediately. Nothing to cancel.
+            <p className="text-sm text-muted-foreground/60 leading-relaxed max-w-sm mb-4">
+              One fully personalised Immersive Story — narrated, illustrated, saved to your account. Nothing to cancel.
             </p>
+            <div className="flex flex-col gap-1.5">
+              {["1 personalised story, created around your choices", "ElevenLabs narration, ready to play", "Original cover art generated for your story", "Story saved to your account"].map((f) => (
+                <div key={f} className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded-full border border-primary/30 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-2 h-2 text-primary/60" />
+                  </div>
+                  <span className="text-xs text-muted-foreground/50">{f}</span>
+                </div>
+              ))}
+              {["Curated collection access", "Monthly rollover credits"].map((f) => (
+                <div key={f} className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[8px] text-muted-foreground/20 font-bold">–</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground/30 line-through">{f}</span>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="relative z-10 flex-shrink-0 w-full md:w-auto">
             <button

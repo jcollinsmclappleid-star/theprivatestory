@@ -2784,6 +2784,11 @@ export default function Create() {
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
 
           const startCheckoutFromPaywall = async (plan: "monthly" | "annual" | "immersive") => {
+            if (!isAuthenticated) {
+              try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
+              openSignIn();
+              return;
+            }
             try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
             if (continueAfterDark) {
               try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }

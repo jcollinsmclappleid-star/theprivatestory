@@ -364,7 +364,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // Core site pages
   { loc: "/",               lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "1.0" },
   { loc: "/how-it-works",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
-  { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.95" },
+  { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.7"  },
   { loc: "/pricing",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
   { loc: "/browse",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.85" },
   { loc: "/search",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.8" },
@@ -376,7 +376,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // SEO landing pages — Core cluster
   { loc: "/personalised-audio-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/private-audio-stories",            lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  { loc: "/create-your-own-audio-story",      lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/create-your-own-audio-story",      lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.95" },
   { loc: "/ai-audio-story-generator",         lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   // SEO landing pages — Bedtime cluster
   { loc: "/sleep-audio-stories",    lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },

@@ -5,6 +5,7 @@ import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
 import { rm, cp, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -131,6 +132,34 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     await mkdir(staticDest, { recursive: true });
     await cp(staticSrc, staticDest, { recursive: true });
     console.log("Copied public-static → public");
+  }
+
+  // Build the React SPA (custom-audio-stories) unless we are in a dev-restart
+  // loop (SKIP_VITE_BUILD=1 is exported by the dev script to keep restarts
+  // fast).  In production deployments the env var is absent, so the Vite build
+  // always runs, ensuring the bundled client is always up-to-date.
+  if (!process.env.SKIP_VITE_BUILD) {
+    const workspaceRoot = path.resolve(artifactDir, "..", "..");
+    console.log("Building React SPA (Vite)…");
+    execSync(
+      "PORT=3000 BASE_PATH=/ pnpm --filter @workspace/custom-audio-stories run build",
+      {
+        cwd: workspaceRoot,
+        stdio: "inherit",
+        env: { ...process.env, PORT: "3000", BASE_PATH: "/" },
+      },
+    );
+    // Clean up any leftover dist/public/ in custom-audio-stories so Replit's
+    // deployment infrastructure does not register a conflicting static handler
+    // for that directory (which would intercept SSR routes before Express sees them).
+    const staleDist = path.resolve(artifactDir, "..", "custom-audio-stories", "dist");
+    if (existsSync(staleDist)) {
+      await rm(staleDist, { recursive: true, force: true });
+      console.log("Removed stale custom-audio-stories/dist/");
+    }
+    console.log("React SPA build complete → public/client/");
+  } else {
+    console.log("SKIP_VITE_BUILD=1 — skipping React SPA build (dev mode)");
   }
 }
 

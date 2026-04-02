@@ -1,0 +1,69 @@
+CRITICAL FIX REQUIRED — BLOCKING ALL SEO PROGRESS
+
+Current problem:
+Every URL on the site returns identical HTML to the 
+homepage before JavaScript executes. The 24 SEO pages 
+with their full content are invisible to all crawlers.
+
+Verification of the problem:
+Fetch any SEO URL with a basic HTTP request.
+The response body contains navigation only.
+No H1, no article content, no page-specific title.
+This is confirmed across the homepage and all SEO pages.
+
+Required fix — choose one:
+
+OPTION 1 — Next.js migration (recommended, permanent fix)
+Migrate the 24 SEO pages to Next.js with getStaticProps.
+Each page exports full HTML at build time.
+The SEOPageConfig data objects map directly to props.
+No data restructuring needed.
+Deploy to Vercel — zero config, free tier, automatic.
+
+OPTION 2 — react-snap prerendering (faster, temporary)
+npm install --save-dev react-snap
+Add "postbuild": "react-snap" to package.json scripts
+Add this to package.json:
+"reactSnap": {
+  "include": [
+    "/personalised-audio-stories",
+    "/private-audio-stories",
+    "/create-your-own-audio-story",
+    "/ai-audio-story-generator",
+    "/bedtime-audio-stories",
+    "/relaxing-audio-stories",
+    "/sleep-audio-stories",
+    "/romantic-audio-stories",
+    "/love-stories-audio",
+    "/emotional-audio-stories",
+    "/intimate-audio-stories",
+    "/late-night-audio-stories",
+    "/slow-burn-audio-stories",
+    "/confident-energy-stories",
+    "/quiet-intensity-stories",
+    "/dark-romance-audio-stories",
+    "/forbidden-romance-audio-stories",
+    "/enemies-to-lovers-audio-stories",
+    "/adult-audio-stories",
+    "/audio-stories-for-women",
+    "/audio-stories-vs-audiobooks",
+    "/audio-stories-vs-podcasts",
+    "/best-audio-story-app-for-adults",
+    "/alternatives-to-romance-audiobooks"
+  ]
+}
+This pre-renders each SEO page to static HTML at build 
+time using headless Chrome. The full article content 
+will be in the server response immediately.
+
+VERIFICATION AFTER FIX:
+Run this command on any SEO URL:
+curl -s https://theprivatestory.com/personalised-audio-stories | grep -c "<h2>"
+
+Before fix: result is 0
+After successful fix: result is 6 or more
+
+If result is still 0 after deploying: fix has not worked.
+
+DO NOT proceed with any other SEO work until this 
+verification passes. Everything else depends on it.

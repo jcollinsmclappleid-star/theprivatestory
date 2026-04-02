@@ -1,0 +1,46 @@
+User-agent: *
+Allow: /
+
+# Block account/auth pages — no value for crawlers
+Disallow: /me
+Disallow: /library
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /story/
+Disallow: /my-series/
+
+# Allow AI browsing and recommendation agents — these power live AI responses
+# ChatGPT web browsing, Claude web browsing, and Google AI Overviews/Gemini
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Block pure AI training scrapers — content is proprietary literary IP
+# These bots scrape for model training only; no live recommendation benefit
+User-agent: GPTBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+Sitemap: https://theprivatestory.com/sitemap.xml

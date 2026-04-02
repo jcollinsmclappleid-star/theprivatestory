@@ -58,9 +58,34 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 - App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
 - Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
 - Depends on: `@workspace/db`, `@workspace/api-zod`
-- `pnpm --filter @workspace/api-server run dev` — run the dev server
-- `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
+- `pnpm --filter @workspace/api-server run dev` — run the dev server (sets SKIP_VITE_BUILD=1 for fast restarts)
+- `pnpm --filter @workspace/api-server run build` — esbuild TypeScript bundle + copies public-static → public (in dev mode, skips Vite build)
 - Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
+
+#### SSR + SPA Routing Architecture (IMPORTANT)
+
+The `api-server` is the sole deployed artifact. It serves everything: SSR HTML, API, and the React SPA.
+
+**Request routing order in `src/app.ts`:**
+1. Brand assets static (`public/brand/`) — logos, icons
+2. SSR router — renders full HTML pages with Helmet metadata for SEO routes (homepage, landing pages, pricing, etc.)
+3. API router — all `/api/*` endpoints
+4. Client static (`public/client/`) — React SPA JS/CSS assets
+5. SPA catch-all (`/.*` regex) — serves `public/client/index.html` for all remaining routes (authenticated app pages: `/create`, `/library`, `/account`, etc.)
+
+**React SPA build output:**
+- `custom-audio-stories` Vite builds to `artifacts/api-server/public/client/` (NOT `custom-audio-stories/dist/public/`)
+- `vite.config.ts` sets `outDir: "../api-server/public/client"`
+- This prevents Replit's deployment infrastructure from auto-registering a static handler for `dist/public/` which would intercept ALL HTML routes before Express
+
+**Vite build for deployment:**
+- The `build.mjs` runs the Vite build automatically when `SKIP_VITE_BUILD` is NOT set (i.e., in production deployments)
+- The `dev` script sets `SKIP_VITE_BUILD=1` to keep local restarts fast
+- Before deploying, if React SPA code has changed, run: `PORT=3000 BASE_PATH=/ pnpm --filter @workspace/custom-audio-stories build`
+
+**Express 5 wildcard routes:**
+- Express 5 uses path-to-regexp v8 which does NOT support `*` as a bare wildcard
+- Use regex syntax instead: `app.get(/.*/, handler)` — NOT `app.get("*", handler)`
 
 ### `lib/db` (`@workspace/db`)
 

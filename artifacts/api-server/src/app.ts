@@ -5,6 +5,7 @@ import helmet from "helmet";
 import pinoHttp from "pino-http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { existsSync } from "node:fs";
 import { toNodeHandler } from "better-auth/node";
 import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 import { auth } from "./lib/auth.js";
@@ -224,6 +225,39 @@ app.use(
 app.use(ssrRouter);
 
 app.use("/api", router);
+
+// ---------------------------------------------------------------------------
+// SPA client assets — JS/CSS/images built by Vite and copied to public/client/.
+// index:false prevents the Vite index.html from being served as a directory
+// index (the explicit SPA catch-all below handles that, ensuring SSR routes
+// always take priority over the client-side fallback).
+// ---------------------------------------------------------------------------
+const CLIENT_DIR = path.resolve(__dirname, "..", "public", "client");
+if (existsSync(CLIENT_DIR)) {
+  app.use(
+    express.static(CLIENT_DIR, {
+      maxAge: "7d",
+      immutable: false,
+      index: false,
+    }),
+  );
+}
+
+// ---------------------------------------------------------------------------
+// SPA catch-all — any route that reaches here (not handled by SSR or /api)
+// is an in-app client-side route (/create, /library, /settings, etc.).
+// Serve the React app shell; Wouter handles routing inside the browser.
+// Only runs when the Vite build exists (production); in development the Vite
+// dev server handles the frontend on its own port.
+// ---------------------------------------------------------------------------
+app.get(/.*/, (_req: Request, res: Response, next: NextFunction) => {
+  const indexFile = path.resolve(CLIENT_DIR, "index.html");
+  if (existsSync(indexFile)) {
+    res.sendFile(indexFile);
+  } else {
+    next();
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Scheduled jobs

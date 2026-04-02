@@ -1,0 +1,99 @@
+# The Private Story
+
+> AI-written literary audio stories, personalised to you and private to you alone. You choose the cast, the chemistry, the world, and the emotional register. We write it, narrate it, and keep it entirely private — heard only by you.
+
+The Private Story is a subscription platform for adults in the UK and globally. It creates original romantic and intimate audio fiction on demand, narrated by ElevenLabs voices. Stories are generated using Mistral Large, cover art by gpt-image-1. Every story is saved privately to the user's account — no social features, no shared history, no recommendations visible to others.
+
+Pricing: £29/month (5 stories), £179/year (50 stories), £3.99 per additional story.
+
+## Core pages
+
+- [Home](https://theprivatestory.com/): Platform overview, Casting Room feature showcase, curated story collection
+- [Create your story](https://theprivatestory.com/create): The Casting Room — step-by-step story creation (pairing, chemistry, archetype, setting, intensity, mood, situation)
+- [Browse](https://theprivatestory.com/browse): Curated collection of pre-written stories, available to all members
+- [Pricing](https://theprivatestory.com/pricing): Subscription plans, what's included, FAQs
+- [Series](https://theprivatestory.com/series): Multi-episode story series
+- [After Dark](https://theprivatestory.com/after-dark): Unrestricted intensity tier — same Casting Room depth, no content limits
+- [Drift — Bedtime Stories](https://theprivatestory.com/drift): Atmospheric, unhurried bedtime audio stories for adults — a gentler mode designed for winding down
+- [Gift a story](https://theprivatestory.com/gift): Gift subscriptions and individual stories
+- [Contact](https://theprivatestory.com/contact): Contact the team
+- [About](https://theprivatestory.com/about): The Private Story's founding principles — privacy-led, agency-first, female-first audio storytelling
+- [How it works](https://theprivatestory.com/how-it-works): Step-by-step walkthrough of the full platform experience — from signup to Casting Room to finished narrated story
+- [Discover all story types](https://theprivatestory.com/discover): A navigable index of every story category on the platform — by mood, genre, intensity, and format
+- [Search](https://theprivatestory.com/search): Browse and filter the curated story collection by mood, genre, and intensity
+- [Privacy policy](https://theprivatestory.com/privacy): UK GDPR-compliant privacy policy; architectural privacy by design
+- [Privacy policy (alternate URL)](https://theprivatestory.com/privacy-policy): Canonical UK GDPR privacy policy — what data is collected, how it is used, and the architectural commitment to listener privacy
+- [Terms of service](https://theprivatestory.com/terms): Terms
+- [Content policy](https://theprivatestory.com/content-policy): Content rules and safety
+- [Refund policy](https://theprivatestory.com/refund-policy): The platform's refund policy, including terms for subscription cancellations and story credit refunds
+
+## Personalised audio stories
+
+- [Personalised audio stories](https://theprivatestory.com/personalised-audio-stories): How every story is created from the listener's choices — mood, world, cast, chemistry. Nothing generic; nothing pulled from a shelf.
+- [Private audio stories](https://theprivatestory.com/private-audio-stories): The privacy architecture of the platform — no social features, no shared history, no record visible to anyone else.
+- [Create your own audio story](https://theprivatestory.com/create-your-own-audio-story): Step-by-step walkthrough of the Casting Room creation flow — from mood selection to finished narrated story.
+- [AI audio story generator](https://theprivatestory.com/ai-audio-story-generator): How the platform uses AI to write stories around individual inputs rather than producing generic content.
+
+## Relaxation and bedtime
+
+- [Bedtime audio stories](https://theprivatestory.com/bedtime-audio-stories): Unhurried, atmospheric stories designed for adults winding down — written to slow the mind rather than stimulate it.
+- [Relaxing audio stories](https://theprivatestory.com/relaxing-audio-stories): Narrative escapism as a relaxation practice; a different kind of unwind.
+- [Sleep audio stories](https://theprivatestory.com/sleep-audio-stories): Calm, emotionally soft stories chosen for their ability to ease the listener toward sleep.
+- [Adult bedtime stories](https://theprivatestory.com/adult-bedtime-stories): Slow, atmospheric, adult stories for late-night private listening — intimate in register, designed for the space between wakefulness and sleep.
+
+## Romantic and emotional
+
+- [Romantic audio stories](https://theprivatestory.com/romantic-audio-stories): Cinematic romance — tender, specific, emotionally real. Personalised to the listener's chosen cast and world.
+- [Love stories audio](https://theprivatestory.com/love-stories-audio): Longing, connection, reunion — the full emotional register of love in audio form.
+- [Emotional audio stories](https://theprivatestory.com/emotional-audio-stories): Stories that move the listener, not just entertain them; emotional depth as the product's core feature.
+- [AI romance stories for women](https://theprivatestory.com/ai-romance-stories-for-women): AI-generated romantic fiction for women — emotionally intelligent, personalised to mood and tone, and completely private.
+
+## Intimate
+
+- [Intimate audio stories](https://theprivatestory.com/intimate-audio-stories): Private, personal stories for the space the listener is in — intimacy in the sense of closeness and vulnerability.
+- [Late night audio stories](https://theprivatestory.com/late-night-audio-stories): For the specific experience of late-night listening — alone, reflective, wanting something that meets the moment.
+- [Slow burn audio stories](https://theprivatestory.com/slow-burn-audio-stories): Stories built around accumulation and tension — every almost-touch, every loaded exchange, earning the resolution.
+- [Confident energy stories](https://theprivatestory.com/confident-energy-stories): A specific emotional register — assured, magnetic, the feeling of mattering to someone who knows what they want.
+- [Quiet intensity stories](https://theprivatestory.com/quiet-intensity-stories): Understated emotional power — stories where a great deal is happening beneath the surface.
+
+## Genre and audience
+
+- [Dark romance audio stories](https://theprivatestory.com/dark-romance-audio-stories): Morally complex dark romance — stories that inhabit the shadow side of desire with craft and honesty. Not shock content; the authentic emotional terrain of complicated wanting.
+- [Forbidden romance audio stories](https://theprivatestory.com/forbidden-romance-audio-stories): Stories built around external constraint — professional prohibition, existing commitments, social barriers — where the pull is real and acting on it is costly. Constraint creates charge.
+- [Enemies to lovers audio stories](https://theprivatestory.com/enemies-to-lovers-audio-stories): The trope built on pre-existing knowledge and accumulated opposition turning into something else. Investment in the charged middle section before the dynamic breaks.
+- [Adult audio stories](https://theprivatestory.com/adult-audio-stories): Personalised adult audio fiction generated around your specific choices — not retrieved from a catalogue. The full intensity spectrum, from emotionally charged slow burn to fully explicit.
+- [Audio stories for women](https://theprivatestory.com/audio-stories-for-women): Audio fiction built with women as the primary audience — emotional texture, character quality, agency for the protagonist, genuine privacy. Not the male-default version; the real thing.
+
+## Adult content
+
+- [Audio erotica for women](https://theprivatestory.com/audio-erotica-for-women): Audio erotica built specifically for women — personalised, private, and created around your imagination. The full intensity spectrum without compromise.
+- [Personalised erotica](https://theprivatestory.com/personalised-erotica): Explicit audio fiction generated from your brief — characters, dynamic, tone, and intensity chosen by you. Not retrieved from a library; written for this session.
+- [Erotic audio stories](https://theprivatestory.com/erotic-audio-stories): A full account of erotic audio storytelling at The Private Story — how it works, who it's for, and what makes it distinct from other adult audio formats.
+
+## What Is — definitions
+
+- [What is a personalised audio story?](https://theprivatestory.com/what-is-a-personalised-audio-story): Defines the term, explains how personalisation works in practice, who listens, and why bespoke beats generic.
+- [What is audio erotica?](https://theprivatestory.com/what-is-audio-erotica): Defines audio erotica as a format — how it differs from visual pornography, the role of voice, AI's impact on the format, and legal context in the UK.
+- [What is dark romance?](https://theprivatestory.com/what-is-dark-romance): Defines dark romance as a genre — common tropes, why women read it, how it differs from paranormal romance, and how to request it in a personalised audio story.
+- [What is enemies-to-lovers?](https://theprivatestory.com/what-is-enemies-to-lovers): Defines the enemies-to-lovers romance trope — why it works psychologically, how it differs from rivals-to-lovers, and how it translates to audio.
+- [What is slow burn romance?](https://theprivatestory.com/what-is-slow-burn-romance): Defines slow burn romance — the psychological appeal of delayed gratification, key narrative features, and how to request it in a personalised story.
+
+## Compare — alternatives
+
+- [Dipsea alternative](https://theprivatestory.com/dipsea-alternative): Written by The Private Story (commercial interest declared). Explains what Dipsea does well, and what The Private Story is built to do differently with personalised, generative audio.
+- [Quinn alternative](https://theprivatestory.com/quinn-alternative): Written by The Private Story (commercial interest declared). Explains what Quinn does well, and what The Private Story is built to do differently with private, personalised audio.
+
+## Context and comparison
+
+- [Alternatives to romance audiobooks](https://theprivatestory.com/alternatives-to-romance-audiobooks): What exists beyond the traditional romance audiobook — AI-generated stories, audio erotica platforms, personalised fiction, and how to choose between them.
+- [Audio stories vs audiobooks](https://theprivatestory.com/audio-stories-vs-audiobooks): How audio stories differ from audiobooks — format, personalisation, length, ownership model, and what each is best for.
+- [Audio stories vs podcasts](https://theprivatestory.com/audio-stories-vs-podcasts): How audio stories differ from podcasts — narrative fiction versus information, and what makes each format valuable for different listening moods.
+- [Best audio story app for adults](https://theprivatestory.com/best-audio-story-app-for-adults): What to look for in an adult audio story app — personalisation, privacy, content range, and quality of narration.
+
+## About the product
+
+The Private Story uses a Casting Room model: the listener makes seven choices before the story is written. These are: the pairing (six options), the chemistry (nine options including slow burn, power play, forbidden pull), the character archetype (14 options), the setting (50+ countries, 12 historical eras, or After Dark worlds), the intensity level (tender to scorching), the emotional mood (28 options), and the situation (220 situations across 11 dramatic categories, or chosen automatically).
+
+Stories are written by Mistral Large, narrated by ElevenLabs, and given original cover art by gpt-image-1. Each story is approximately 2,000–4,000 words and 15–30 minutes of audio. Stories are saved to the listener's private account and are not visible to anyone else — including the platform operators.
+
+Privacy is architectural: there are no social features, no public profiles, no listening history shared with other users or with advertisers. The platform does not run ads and does not sell data. UK GDPR compliant; data controller is Ianson System Ltd (trading as The Private Story).

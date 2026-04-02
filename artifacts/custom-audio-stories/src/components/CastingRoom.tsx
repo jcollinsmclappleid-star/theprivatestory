@@ -95,6 +95,14 @@ function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "h
 }
 
 /* ── Abstract art tiles ───────────────────────────────────────────── */
+function gradientCSS(tailwindGrad: string): string {
+  const colors = tailwindGrad.match(/#[a-fA-F0-9]{6}/g) ?? [];
+  if (!colors.length) return "transparent";
+  if (colors.length === 1) return colors[0];
+  if (colors.length === 2) return `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`;
+  return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)`;
+}
+
 function ArtTile({ gradient, accent, children, selected, onClick, image }: {
   gradient: string; accent: string; children: React.ReactNode;
   selected?: boolean; onClick?: () => void; image?: string;
@@ -105,11 +113,11 @@ function ArtTile({ gradient, accent, children, selected, onClick, image }: {
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
-      className={`relative overflow-hidden rounded-2xl border transition-all w-full text-left ${
-        selected
-          ? "border-primary shadow-glow ring-1 ring-primary/40"
-          : "border-white/10 hover:border-primary/40"
-      }`}
+      className="relative overflow-hidden rounded-2xl border transition-all w-full text-left"
+      style={selected
+        ? { borderColor: `${accent}80`, boxShadow: `0 0 16px ${accent}25, inset 0 0 20px ${accent}08` }
+        : { borderColor: "rgba(255,255,255,0.08)" }
+      }
     >
       {image && (
         <img
@@ -124,11 +132,17 @@ function ArtTile({ gradient, accent, children, selected, onClick, image }: {
         style={image ? { opacity: 0.65 } : undefined}
       />
       <motion.div
-        animate={{ opacity: selected ? [0.4, 0.7, 0.4] : [0.2, 0.35, 0.2] }}
+        animate={{ opacity: selected ? [0.5, 0.85, 0.5] : [0.15, 0.3, 0.15] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         className="absolute inset-0 rounded-2xl"
-        style={{ background: `radial-gradient(ellipse at 60% 40%, ${accent}30 0%, transparent 60%)` }}
+        style={{ background: `radial-gradient(ellipse at 60% 30%, ${accent}40 0%, transparent 65%)` }}
       />
+      {selected && (
+        <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full flex items-center justify-center z-20"
+          style={{ background: accent }}>
+          <svg viewBox="0 0 12 12" className="w-2.5 h-2.5 fill-black/80"><path d="M2 6l2.5 2.5L10 3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </div>
+      )}
       <div className="relative z-10 p-4">
         {children}
       </div>
@@ -907,9 +921,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const [countrySearch, setCountrySearch] = useState("");
   const [heritageDropdownOpen, setHeritageDropdownOpen] = useState(false);
   const [energyDropdownOpen, setEnergyDropdownOpen] = useState(false);
+  const [appearanceDropdownOpen, setAppearanceDropdownOpen] = useState(false);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
   const heritageDropdownRef = useRef<HTMLDivElement>(null);
   const energyDropdownRef = useRef<HTMLDivElement>(null);
+  const appearanceDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!countryDropdownOpen) return;
@@ -944,6 +960,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, [energyDropdownOpen]);
+
+  useEffect(() => {
+    if (!appearanceDropdownOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (appearanceDropdownRef.current && !appearanceDropdownRef.current.contains(e.target as Node)) {
+        setAppearanceDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [appearanceDropdownOpen]);
 
   const filteredListenerNames = listenerSearch.trim().length >= 1
     ? NAMES.filter(n => n.toLowerCase().startsWith(listenerSearch.toLowerCase())).slice(0, 8)
@@ -1111,31 +1138,42 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Heritage</p>
                   <button
                     type="button"
-                    onClick={() => { setHeritageDropdownOpen(o => !o); setEnergyDropdownOpen(false); }}
-                    className="w-full rounded-2xl border px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none transition-all cursor-pointer"
+                    onClick={() => { setHeritageDropdownOpen(o => !o); setEnergyDropdownOpen(false); setAppearanceDropdownOpen(false); }}
+                    className="w-full rounded-2xl border text-left flex items-center gap-3 focus:outline-none transition-all cursor-pointer relative overflow-hidden"
                     style={selectedHeritage
-                      ? { borderColor: `${selectedHeritage.accent}55`, background: `${selectedHeritage.accent}0d` }
-                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }
+                      ? { borderColor: `${selectedHeritage.accent}60`, background: `linear-gradient(135deg, ${selectedHeritage.accent}18 0%, transparent 55%)` }
+                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }
                     }
                   >
-                    <span className="flex items-center gap-2.5 min-w-0">
-                      {selectedHeritage && (
-                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: selectedHeritage.accent }} />
+                    {selectedHeritage && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: gradientCSS(selectedHeritage.gradient) }} />
+                    )}
+                    <div className="flex items-center gap-3 flex-1 min-w-0 px-5 py-4">
+                      {selectedHeritage ? (
+                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-white/15 shadow-sm"
+                          style={{ background: gradientCSS(selectedHeritage.gradient) }} />
+                      ) : (
+                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-dashed border-white/20 bg-white/3 flex items-center justify-center">
+                          <span className="text-white/30 text-lg">+</span>
+                        </div>
                       )}
-                      <span className={`text-sm font-medium truncate ${selectedHeritage ? "text-foreground" : "text-muted-foreground"}`}>
-                        {selectedHeritage ? selectedHeritage.label : "Choose heritage…"}
+                      <span className="flex-1 min-w-0">
+                        <span className={`block text-sm font-semibold ${selectedHeritage ? "text-foreground" : "text-muted-foreground/60"}`}>
+                          {selectedHeritage ? selectedHeritage.label : "Choose heritage…"}
+                        </span>
+                        {selectedHeritage && (
+                          <span className="block text-xs truncate mt-0.5" style={{ color: `${selectedHeritage.accent}99` }}>{selectedHeritage.sub}</span>
+                        )}
                       </span>
-                      {selectedHeritage && (
-                        <span className="text-xs text-muted-foreground/60 truncate hidden sm:block">{selectedHeritage.sub}</span>
-                      )}
-                    </span>
+                    </div>
                     <ChevronDown
-                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${heritageDropdownOpen ? "rotate-180" : ""}`}
-                      style={{ color: selectedHeritage ? selectedHeritage.accent : undefined }}
+                      className={`w-4 h-4 flex-shrink-0 mr-4 transition-transform duration-200 ${heritageDropdownOpen ? "rotate-180" : ""}`}
+                      style={{ color: selectedHeritage ? selectedHeritage.accent : "rgba(255,255,255,0.3)" }}
                     />
                   </button>
                   {heritageDropdownOpen && (
-                    <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-[#0c0c0e] border border-border/40 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
+                      style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
                       <div className="max-h-[360px] overflow-y-auto p-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {HERITAGES.map(h => (
@@ -1167,31 +1205,42 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </p>
                   <button
                     type="button"
-                    onClick={() => { setEnergyDropdownOpen(o => !o); setHeritageDropdownOpen(false); }}
-                    className="w-full rounded-2xl border px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none transition-all cursor-pointer"
+                    onClick={() => { setEnergyDropdownOpen(o => !o); setHeritageDropdownOpen(false); setAppearanceDropdownOpen(false); }}
+                    className="w-full rounded-2xl border text-left flex items-center gap-3 focus:outline-none transition-all cursor-pointer relative overflow-hidden"
                     style={selectedEnergy
-                      ? { borderColor: `${selectedEnergy.accent}55`, background: `${selectedEnergy.accent}0d` }
-                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }
+                      ? { borderColor: `${selectedEnergy.accent}60`, background: `linear-gradient(135deg, ${selectedEnergy.accent}18 0%, transparent 55%)` }
+                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }
                     }
                   >
-                    <span className="flex items-center gap-2.5 min-w-0">
-                      {selectedEnergy && (
-                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: selectedEnergy.accent }} />
+                    {selectedEnergy && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: gradientCSS(selectedEnergy.gradient) }} />
+                    )}
+                    <div className="flex items-center gap-3 flex-1 min-w-0 px-5 py-4">
+                      {selectedEnergy ? (
+                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-white/15 shadow-sm"
+                          style={{ background: gradientCSS(selectedEnergy.gradient) }} />
+                      ) : (
+                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-dashed border-white/20 bg-white/3 flex items-center justify-center">
+                          <span className="text-white/30 text-lg">+</span>
+                        </div>
                       )}
-                      <span className={`text-sm font-medium truncate ${selectedEnergy ? "text-foreground" : "text-muted-foreground"}`}>
-                        {selectedEnergy ? selectedEnergy.label : "Choose energy…"}
+                      <span className="flex-1 min-w-0">
+                        <span className={`block text-sm font-semibold ${selectedEnergy ? "text-foreground" : "text-muted-foreground/60"}`}>
+                          {selectedEnergy ? selectedEnergy.label : "Choose energy…"}
+                        </span>
+                        {selectedEnergy && (
+                          <span className="block text-xs truncate mt-0.5" style={{ color: `${selectedEnergy.accent}99` }}>{selectedEnergy.sub}</span>
+                        )}
                       </span>
-                      {selectedEnergy && (
-                        <span className="text-xs text-muted-foreground/60 truncate hidden sm:block">{selectedEnergy.sub}</span>
-                      )}
-                    </span>
+                    </div>
                     <ChevronDown
-                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${energyDropdownOpen ? "rotate-180" : ""}`}
-                      style={{ color: selectedEnergy ? selectedEnergy.accent : undefined }}
+                      className={`w-4 h-4 flex-shrink-0 mr-4 transition-transform duration-200 ${energyDropdownOpen ? "rotate-180" : ""}`}
+                      style={{ color: selectedEnergy ? selectedEnergy.accent : "rgba(255,255,255,0.3)" }}
                     />
                   </button>
                   {energyDropdownOpen && (
-                    <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-[#0c0c0e] border border-border/40 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
+                      style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
                       <div className="max-h-[400px] overflow-y-auto p-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {energyOptions.map(a => (
@@ -1210,94 +1259,146 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               );
             })()}
 
-            {/* ── Appearance (all optional) ─────────────────────── */}
-            <div className="glass-panel rounded-2xl p-5 border border-white/8 mt-2">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
+            {/* ── Appearance dropdown (optional) ───────────────────── */}
+            {(() => {
+              const accentGold = "#c9a227";
+              const appearParts = [appearBuild, appearHeight, appearColouring, appearEyes, ...appearFeatures].filter(Boolean);
+              const hasAppear = appearParts.length > 0;
+              const appearSummary = hasAppear ? appearParts.join(" · ") : null;
+              return (
+                <div className="mb-2 relative" ref={appearanceDropdownRef}>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
                     {isSameGender
-                      ? (partnerName ? `${partnerName}'s Appearance` : "Your Love Interest's Appearance")
+                      ? (partnerName ? `${partnerName}'s Appearance` : "Appearance")
                       : `${capFirst(loveInterestP.possessive)} Appearance`}
-                    <span className="font-normal text-muted-foreground normal-case tracking-normal ml-2">(optional)</span>
+                    <span className="font-normal text-primary/40 normal-case tracking-normal ml-2">(optional)</span>
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {isSameGender
-                      ? `Describe how ${partnerRoleLabel} looks — as much or as little as you want.`
-                      : "Describe how they look — as much or as little as you want."}
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Build</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(appearancePronouns === "she/her" ? FEMALE_BUILD_OPTIONS : BUILD_OPTIONS).map(opt => (
-                      <button key={opt} type="button"
-                        onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                          appearBuild === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                        }`}
-                      >{opt}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Height</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {HEIGHT_OPTIONS.map(opt => (
-                      <button key={opt} type="button"
-                        onClick={() => setAppearHeight(prev => prev === opt ? "" : opt)}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                          appearHeight === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                        }`}
-                      >{opt}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Colouring</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {COLOURING_OPTIONS.map(opt => (
-                      <button key={opt} type="button"
-                        onClick={() => setAppearColouring(prev => prev === opt ? "" : opt)}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                          appearColouring === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                        }`}
-                      >{opt}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Eye Colour</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {EYE_OPTIONS.map(opt => (
-                      <button key={opt} type="button"
-                        onClick={() => setAppearEyes(prev => prev === opt ? "" : opt)}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                          appearEyes === opt ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                        }`}
-                      >{opt}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Distinguishing Features</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {buildFeatureOptions(appearancePronouns).map(opt => (
-                      <button key={opt} type="button"
-                        onClick={() => setAppearFeatures(prev =>
-                          prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
+                  <button
+                    type="button"
+                    onClick={() => { setAppearanceDropdownOpen(o => !o); setHeritageDropdownOpen(false); setEnergyDropdownOpen(false); }}
+                    className="w-full rounded-2xl border text-left flex items-center gap-3 focus:outline-none transition-all cursor-pointer relative overflow-hidden"
+                    style={hasAppear
+                      ? { borderColor: `${accentGold}60`, background: `linear-gradient(135deg, ${accentGold}15 0%, transparent 55%)` }
+                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }
+                    }
+                  >
+                    {hasAppear && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+                        style={{ background: `linear-gradient(to bottom, ${accentGold}, ${accentGold}44)` }} />
+                    )}
+                    <div className="flex items-center gap-3 flex-1 min-w-0 px-5 py-4">
+                      <div className="w-9 h-9 rounded-xl flex-shrink-0 border flex items-center justify-center"
+                        style={hasAppear
+                          ? { borderColor: `${accentGold}40`, background: `${accentGold}20` }
+                          : { borderColor: "rgba(255,255,255,0.15)", borderStyle: "dashed", background: "rgba(255,255,255,0.02)" }
+                        }
+                      >
+                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke={hasAppear ? accentGold : "rgba(255,255,255,0.25)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="8" r="3.5"/>
+                          <path d="M5 20c0-3.314 3.134-6 7-6s7 2.686 7 6"/>
+                        </svg>
+                      </div>
+                      <span className="flex-1 min-w-0">
+                        <span className={`block text-sm font-semibold ${hasAppear ? "text-foreground" : "text-muted-foreground/60"}`}>
+                          {hasAppear ? "Appearance set" : "Add appearance details…"}
+                        </span>
+                        {appearSummary && (
+                          <span className="block text-xs truncate mt-0.5" style={{ color: `${accentGold}90` }}>{appearSummary}</span>
                         )}
-                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                          appearFeatures.includes(opt) ? "border-primary/60 bg-primary/15 text-primary" : "border-border/30 bg-card/20 text-muted-foreground hover:border-primary/30"
-                        }`}
-                      >{opt}</button>
-                    ))}
-                  </div>
+                      </span>
+                    </div>
+                    <ChevronDown
+                      className={`w-4 h-4 flex-shrink-0 mr-4 transition-transform duration-200 ${appearanceDropdownOpen ? "rotate-180" : ""}`}
+                      style={{ color: hasAppear ? accentGold : "rgba(255,255,255,0.3)" }}
+                    />
+                  </button>
+                  {appearanceDropdownOpen && (
+                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
+                      style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
+                      <div className="p-5 space-y-5">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Build</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {(appearancePronouns === "she/her" ? FEMALE_BUILD_OPTIONS : BUILD_OPTIONS).map(opt => (
+                              <button key={opt} type="button"
+                                onClick={() => setAppearBuild(prev => prev === opt ? "" : opt)}
+                                className="px-3 py-1.5 rounded-full text-xs border transition-all"
+                                style={appearBuild === opt
+                                  ? { borderColor: `${accentGold}70`, background: `${accentGold}20`, color: accentGold }
+                                  : { borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)" }
+                                }
+                              >{opt}</button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Height</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {HEIGHT_OPTIONS.map(opt => (
+                              <button key={opt} type="button"
+                                onClick={() => setAppearHeight(prev => prev === opt ? "" : opt)}
+                                className="px-3 py-1.5 rounded-full text-xs border transition-all"
+                                style={appearHeight === opt
+                                  ? { borderColor: `${accentGold}70`, background: `${accentGold}20`, color: accentGold }
+                                  : { borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)" }
+                                }
+                              >{opt}</button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Colouring</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {COLOURING_OPTIONS.map(opt => (
+                              <button key={opt} type="button"
+                                onClick={() => setAppearColouring(prev => prev === opt ? "" : opt)}
+                                className="px-3 py-1.5 rounded-full text-xs border transition-all"
+                                style={appearColouring === opt
+                                  ? { borderColor: `${accentGold}70`, background: `${accentGold}20`, color: accentGold }
+                                  : { borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)" }
+                                }
+                              >{opt}</button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Eye Colour</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {EYE_OPTIONS.map(opt => (
+                              <button key={opt} type="button"
+                                onClick={() => setAppearEyes(prev => prev === opt ? "" : opt)}
+                                className="px-3 py-1.5 rounded-full text-xs border transition-all"
+                                style={appearEyes === opt
+                                  ? { borderColor: `${accentGold}70`, background: `${accentGold}20`, color: accentGold }
+                                  : { borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)" }
+                                }
+                              >{opt}</button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Distinguishing Features</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {buildFeatureOptions(appearancePronouns).map(opt => (
+                              <button key={opt} type="button"
+                                onClick={() => setAppearFeatures(prev =>
+                                  prev.includes(opt) ? prev.filter(f => f !== opt) : [...prev, opt]
+                                )}
+                                className="px-3 py-1.5 rounded-full text-xs border transition-all"
+                                style={appearFeatures.includes(opt)
+                                  ? { borderColor: `${accentGold}70`, background: `${accentGold}20`, color: accentGold }
+                                  : { borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)" }
+                                }
+                              >{opt}</button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
           </motion.div>
         )}

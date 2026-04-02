@@ -414,7 +414,6 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/ai-romance-stories-for-women", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
   // SEO landing pages — Definition pages
   { loc: "/what-is-a-personalised-audio-story", lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
-  { loc: "/what-is-audio-erotica",              lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
   { loc: "/what-is-slow-burn-romance",          lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
   { loc: "/what-is-dark-romance",               lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
   { loc: "/what-is-enemies-to-lovers",          lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
@@ -934,85 +933,6 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
       { label: "Private audio stories", href: "/private-audio-stories" },
       { label: "Create your own audio story", href: "/create-your-own-audio-story" },
-    ],
-  },
-  {
-    slug: "what-is-audio-erotica",
-    metaTitle: "What Is Audio Erotica? Definition & Guide | The Private Story",
-    metaDescription:
-      "Audio erotica defined: sensual and explicit fiction delivered as spoken audio. Discover how it works, why women prefer it, and how AI has transformed the format.",
-    badge: "Definition",
-    h1: "What Is Audio Erotica?",
-    tagline: "Explicit literary fiction for your ears — intimate, private, and crafted to stimulate the imagination rather than the eyes.",
-    term: "Audio Erotica",
-    definition:
-      "Audio erotica is a genre of spoken-word content in which explicit or sensual sexual fiction is narrated aloud, typically for the purpose of arousal or entertainment. Unlike visual pornography, audio erotica is text-based in origin and relies on voice, pacing, language, and imagination to create an immersive experience.",
-    inDefinedTermSet: "Audio Storytelling Glossary",
-    breadcrumbLabel: "What Is Audio Erotica?",
-    sections: [
-      {
-        h2: "How audio erotica differs from visual pornography",
-        body: `Audio erotica is a completely different medium to visual pornography. It is literary in origin — the content begins as written fiction, then is narrated. The stimulation is cognitive and imaginative rather than visual. Many women prefer audio erotica precisely because it does not require looking at anything, and because the narrative context — who the characters are, why they want each other, what the emotional stakes are — is as important as the physical description.<br><br>Research consistently shows that women respond more strongly to narrative context in sexual content than men, on average. Audio erotica is built around that insight. Explore <a href="/audio-erotica-for-women">audio erotica for women</a> to see how this translates into a platform built specifically for female listeners.`,
-      },
-      {
-        h2: "The role of voice in audio erotica",
-        body: `Voice is everything in audio erotica. The cadence of a sentence, the pause before a key word, the warmth or edge in a narrator's tone — these are the instruments that audio erotica uses. A well-narrated piece of erotic fiction creates an intimacy that no other format matches. It feels like someone is speaking directly to you.<br><br>At The Private Story, narration is handled by professional-grade AI voice synthesis, with careful attention to pacing, breath, and emotional register. The voice feels human because the writing behind it is crafted to be read aloud. Every story begins with your brief — <a href="/create">create yours</a> in under two minutes.`,
-      },
-      {
-        h2: "Is audio erotica the same as an erotic audiobook?",
-        body: `Not exactly. An erotic audiobook is a commercial recording of a published erotic novel — written for a mass market, narrated professionally, sold widely. Audio erotica is a broader term that includes any spoken erotic content, from standalone short stories to longer serialised fiction.<br><br><a href="/erotic-audio-stories">Erotic audio stories</a> on The Private Story are explicitly personalised — the content is shaped by your preferences, not a publisher's commercial calculations. See also our guide to <a href="/personalised-audio-stories">personalised audio stories</a> for a full explanation of how the creation process works.`,
-      },
-      {
-        h2: "Why AI has transformed audio erotica",
-        body: `Before AI, high-quality audio erotica required a writer, a voice actor, and a recording setup. This made truly bespoke erotic audio prohibitively expensive for most people. AI-powered platforms like The Private Story have changed that fundamentally. You can now receive a personalised, narrated erotic story based on your specific brief within minutes — at a subscription price comparable to a streaming service.<br><br>This is particularly significant for women, who historically have had limited options in erotic content that genuinely reflected their tastes and imagination. AI makes personalisation at scale possible for the first time.`,
-      },
-      {
-        h2: "Legal and consent considerations",
-        body: `Audio erotica depicting adults is legal in the United Kingdom and most Western jurisdictions. The Private Story operates under UK law and requires all users to verify their age before accessing explicit content. All content generated on the platform depicts fictional adults in consensual scenarios. Content involving minors, non-consensual scenarios presented approvingly, or other illegal content is strictly prohibited and technically prevented.`,
-      },
-      {
-        h2: "How audio erotica compares to written erotica",
-        body: `Written erotica and audio erotica begin from the same literary tradition — fiction that engages the erotic imagination through language. The difference is delivery. Written erotica requires active reading; the reader constructs the scene, the voice, the rhythm. Audio erotica delivers all of that — the voice is already there, the pacing is set, the emotional register is performed. For many listeners, this creates a more immersive experience, particularly at night or when the mind is too tired to read actively but still wants something that meets it.<br><br>The narration in audio erotica also adds a layer that text cannot: the intimacy of a voice speaking directly to you. Well-crafted audio erotica feels private in a way that text does not — it is happening in your ear rather than on a page. This is why the format has grown so dramatically since professional-quality AI narration became available. Explore <a href="/erotic-audio-stories">erotic audio stories</a> for more on how the format works in practice.`,
-      },
-      {
-        h2: "The future of personalised audio erotica",
-        body: `The current generation of AI-powered audio erotica platforms represents the beginning of what personalised erotic fiction can become. AI story generation allows a level of specificity that no human-authored library can match — because a library is finite and your imagination is not. As language models improve and voice synthesis becomes indistinguishable from human narration, the gap between what a listener imagines and what they can receive will continue to narrow.<br><br>The Private Story is building toward a version of the platform where the brief gets more precise, the emotional calibration gets more accurate, and the story that arrives feels so specifically suited to what you wanted that it is difficult to explain why it works without acknowledging how well it understood you. That is the direction the format is moving.`,
-      },
-    ],
-    faqs: [
-      {
-        q: "Is audio erotica legal in the UK?",
-        a: "Yes. Audio erotica depicting fictional adults in consensual scenarios is legal in the UK. The Private Story complies with UK legislation and requires age verification for explicit content.",
-      },
-      {
-        q: "Is audio erotica the same as ASMR?",
-        a: "No. ASMR (Autonomous Sensory Meridian Response) content is designed to produce a tingling, relaxing sensation through quiet sounds. Audio erotica is explicitly sexual fiction narrated aloud. The formats sometimes overlap — some audio erotica uses whispered narration — but they are distinct genres.",
-      },
-      {
-        q: "Can audio erotica be personalised?",
-        a: "Yes, and this is increasingly the expectation. Platforms like The Private Story allow you to specify genre, tone, character dynamics, and explicit detail level, producing a story crafted for your preferences rather than a generic audience.",
-      },
-      {
-        q: "How explicit is audio erotica on The Private Story?",
-        a: "You control the level of explicitness when you create your brief. Options range from sensual and suggestive to fully explicit. Adult content is only available to verified users aged 18 and over.",
-      },
-      {
-        q: "Is my listening history private?",
-        a: "Completely. Your stories, preferences, and listening history are never shared, sold, or displayed publicly. Privacy is a foundational design principle of The Private Story — not a feature added later.",
-      },
-      {
-        q: "What is the difference between audio erotica and erotic podcasts?",
-        a: "Erotic podcasts are typically conversational or educational audio content about sex and intimacy — discussions, interviews, or advice formats. Audio erotica is fiction: narrated erotic stories with characters, plot, and emotional arc. The Private Story produces audio erotica — fiction written and narrated to create an immersive experience, not educational content.",
-      },
-      {
-        q: "Can audio erotica help with intimacy or relaxation?",
-        a: "Many listeners use audio erotica as a form of private self-care — a way to reconnect with their own desires, to wind down at the end of the day, or to inhabit an imagined experience. The evidence on audio erotica specifically as a therapeutic tool is limited, but narrative audio more broadly is well-established as a relaxation and stress-reduction medium. The Private Story's Drift mode is specifically designed for the slow, atmospheric end of the emotional spectrum.",
-      },
-    ],
-    relatedLinks: [
-      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
-      { label: "Erotic audio stories", href: "/erotic-audio-stories" },
-      { label: "Personalised audio stories", href: "/personalised-audio-stories" },
     ],
   },
   {

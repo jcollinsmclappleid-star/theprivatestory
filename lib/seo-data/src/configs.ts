@@ -3626,6 +3626,8 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
 export const audioEroticaForWomenConfig: SEOPageConfig = {
   meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy tonight. Private, AI-generated, and narrated. Not a library — a story built for you.` },
   hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, tonight, and heard only by you.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Audio Erotica for Women Actually Means",
@@ -3710,6 +3712,8 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
 export const personalisedEroticaConfig: SEOPageConfig = {
   meta: { title: `Personalised Erotica — AI-Generated Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices tonight. AI-written, narrated, and completely private. Not a catalogue — an original story made for you.` },
   hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices tonight. Not retrieved from a library. Written for you, from the first sentence.` },
+  heroImage: "images/seo-hero-create.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Personalised Erotica Actually Is",
@@ -3792,6 +3796,8 @@ export const personalisedEroticaConfig: SEOPageConfig = {
 export const eroticAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Erotic Audio Stories — Private, AI-Generated, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Adult AI fiction, personalised around your mood tonight. Not a library — your story.` },
   hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted tonight.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Case for Generated Erotic Audio Stories",

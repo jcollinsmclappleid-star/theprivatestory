@@ -60,6 +60,9 @@ import BestAudioStoryAppForAdults from "@/pages/seo/BestAudioStoryAppForAdults";
 import AlternativesToRomanceAudiobooks from "@/pages/seo/AlternativesToRomanceAudiobooks";
 import DipseaAlternative from "@/pages/seo/DipseaAlternative";
 import QuinnAlternative from "@/pages/seo/QuinnAlternative";
+import AudioEroticaForWomen from "@/pages/seo/AudioEroticaForWomen";
+import PersonalisedErotica from "@/pages/seo/PersonalisedErotica";
+import EroticAudioStories from "@/pages/seo/EroticAudioStories";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 
@@ -119,6 +122,9 @@ function Router() {
             <Route path="/alternatives-to-romance-audiobooks" component={AlternativesToRomanceAudiobooks} />
             <Route path="/dipsea-alternative" component={DipseaAlternative} />
             <Route path="/quinn-alternative" component={QuinnAlternative} />
+            <Route path="/audio-erotica-for-women" component={AudioEroticaForWomen} />
+            <Route path="/personalised-erotica" component={PersonalisedErotica} />
+            <Route path="/erotic-audio-stories" component={EroticAudioStories} />
             <Route path="/discover" component={Discover} />
             <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />

@@ -17,15 +17,6 @@ localPort = 20236
 [services.development]
 run = "pnpm --filter @workspace/custom-audio-stories run dev"
 
-[services.production]
-build = [ "pnpm", "--filter", "@workspace/custom-audio-stories", "run", "build" ]
-publicDir = "artifacts/custom-audio-stories/dist/public"
-serve = "static"
-
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
-
 [services.env]
 PORT = "20236"
 BASE_PATH = "/"

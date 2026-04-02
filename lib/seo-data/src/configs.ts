@@ -6,6 +6,8 @@ import type { SEOPageConfig } from "./types.js";
 export const adultAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Personalised Adult Audio Stories | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, tonight.` },
   hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, tonight, around exactly what you want to feel.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Problem with Existing Adult Audio Fiction",
@@ -298,6 +300,8 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
 export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
   meta: { title: `Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight | The Private Story`, description: `Romance audiobooks are someone else's love story. Discover personalised audio stories — romantic experiences created around your mood, dynamic, and pacing tonight.` },
   hero: { badge: `Romance Audio · Personalised Stories · For Adults`, h1: `Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight, Not Everyone`, tagline: `Romance audiobooks are someone else's love story. Somewhere, there is one made entirely around yours.` },
+  heroImage: "images/seo-hero-personalised.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "You Already Know What You Want. The Problem Is Finding It.",
@@ -634,6 +638,8 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
 export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
   meta: { title: `Audio Stories vs Audiobooks — Why One Feels Personal | The Private Story`, description: `Audiobooks are made for everyone. A personalised audio story is made for tonight. Discover the real difference between audio stories and audiobooks — and why it matters more than the audio industry has acknowledged.` },
   hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Audiobooks — Why One Feels Personal and One Doesn't`, tagline: `You have been consuming stories. There is another option: inhabiting one.` },
+  heroImage: "images/seo-hero-personalised.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "Two Formats. Two Entirely Different Relationships With the Listener.",
@@ -825,6 +831,8 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
 export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
   meta: { title: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You. | The Private Story`, description: `Podcasts are brilliant — but not at 11pm. Discover why personalised audio stories outperform podcasts for winding down, relaxation, and sleep, and when to reach for each format.` },
   hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You.`, tagline: `You reach for your phone at night. You open the podcast app. You scroll. Nothing feels right. This is not a coincidence.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Problem With Podcasts at Night",
@@ -1008,6 +1016,8 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
 export const bedtimeAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Bedtime Audio Stories for Adults | The Private Story`, description: `Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.` },
   hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night`, tagline: `Not a children's story with the language updated. A story made for how you actually arrive at the end of your day.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Problem With Trying to Sleep",
@@ -1145,6 +1155,8 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
 export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
   meta: { title: `The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins | The Private Story`, description: `Most audio apps were built for everyone. The best one for you was built around you. Discover the five criteria that separate excellent adult audio platforms from disappointing ones.` },
   hero: { badge: `Best Audio Apps · Personalised Content · For Adults`, h1: `The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins`, tagline: `Most audio apps were built for everyone. The best one for you was built around you.` },
+  heroImage: "images/seo-hero-create.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "Why Most Adults End Up Disappointed by Audio Apps",
@@ -1324,6 +1336,8 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
 export const confidentEnergyStoriesConfig: SEOPageConfig = {
   meta: { title: `Confident Energy Audio Stories | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel tonight.` },
   hero: { badge: `Confident · Charged · Private`, h1: `Confident Energy Audio Stories — At the Centre of Something Cinematic`, tagline: `You as the protagonist — not waiting to be noticed. Already the reason the room changed.` },
+  heroImage: "images/seo-hero-enemies.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Confident Energy Actually Feels Like in a Story",
@@ -1741,6 +1755,8 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
 export const emotionalAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Emotional Audio Stories | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
   hero: { badge: `Emotional · Private · Made for Tonight`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For the nights when you need to feel something — but haven't quite found the words for what.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Particular Need for an Emotional Story",
@@ -2016,6 +2032,8 @@ export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
 export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Forbidden Romance Audio Stories | The Private Story`, description: `Forbidden romance audio stories created for adults. Private, personalised, and built around the specific charge of wanting what you shouldn't. Create yours.` },
   hero: { badge: `Forbidden · Private · Adults Only`, h1: `Forbidden Romance Audio Stories — The Pull You're Not Supposed to Feel`, tagline: `The most charged stories are always the ones where something is at stake. Where wanting costs something.` },
+  heroImage: "images/seo-hero-dark-romance.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "Why Forbidden Romance Works",
@@ -2298,6 +2316,8 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
 export const lateNightAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Late Night Audio Stories | The Private Story`, description: `Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Your story, created for tonight.` },
   hero: { badge: `After Dark · Private · Adults Only`, h1: `Late Night Audio Stories — After Midnight, the Rules Change`, tagline: `The particular quality of late night — its honesty, its atmosphere, its specific permission — captured in a story made for it.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Late Night Actually Is",
@@ -2433,6 +2453,8 @@ export const lateNightAudioStoriesConfig: SEOPageConfig = {
 export const loveStoriesAudioConfig: SEOPageConfig = {
   meta: { title: `Love Stories Audio | The Private Story`, description: `Audio love stories created for adults. Emotionally intelligent, private, and personalised around your mood and preferences. Not a library — your story.` },
   hero: { badge: `Love · Emotional Depth · Private`, h1: `Love Stories Audio — Emotionally Intelligent Stories Created Around You`, tagline: `Love stories written for the emotional complexity of adult feeling — not simplified, not sanitised, not the same story retold.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Audio Love Stories Are For",
@@ -2739,6 +2761,8 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
 export const privateAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Private Audio Stories | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
   hero: { badge: `Private by Design · No Social · Yours Alone`, h1: `Private Audio Stories — Created for You, Heard Only by You`, tagline: `What you listen to in private should stay private. Here, it always does.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Private Story — What This Is",
@@ -2913,6 +2937,8 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
 export const quietIntensityStoriesConfig: SEOPageConfig = {
   meta: { title: `Quiet Intensity Audio Stories | The Private Story`, description: `Quiet intensity audio stories for adults. Restrained, psychological, and deeply charged. Private and personalised around the specific pleasure of what isn't said.` },
   hero: { badge: `Quiet · Psychological · Private`, h1: `Quiet Intensity Audio Stories — The Loudest Desire Is the Kind That Doesn't Speak`, tagline: `Everything implied. Nothing stated. The specific charge of two people in a room where both of them know.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Quiet Intensity Is",
@@ -3049,6 +3075,8 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
 export const relaxingAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Relaxing Audio Stories | The Private Story`, description: `Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.` },
   hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Relaxing Audio Stories for Adults — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what tonight requires.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Relaxing Audio Stories Actually Do",
@@ -3334,6 +3362,8 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
 export const sleepAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Sleep Audio Stories for Adults | The Private Story`, description: `Sleep audio stories for adults, created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.` },
   hero: { badge: `Bedtime · Relaxation · Adults Only`, h1: `Sleep Audio Stories for Adults — Fall Asleep to a Story Made for Tonight`, tagline: `Your mind needs somewhere to go before it can let go. Give it somewhere worth going.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "The Space Before Sleep",
@@ -3489,6 +3519,8 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
 export const slowBurnAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Slow Burn Audio Stories | The Private Story`, description: `Slow burn audio stories created for adults. Private, personalised, and built around tension, restraint, and the specific pleasure of delay. Create yours.` },
   hero: { badge: `Slow Burn · Tension · Private`, h1: `Slow Burn Audio Stories — Every Almost-Touch. Every Loaded Glance. Worth the Wait.`, tagline: `The pleasure of delay. The specific satisfaction of something that takes its time because it knows exactly where it's going.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Slow Burn Actually Is",
@@ -3877,6 +3909,8 @@ export const eroticAudioStoriesConfig: SEOPageConfig = {
 export const adultBedtimeStoriesConfig: SEOPageConfig = {
   meta: { title: `Adult Bedtime Stories — Private, Calming, Made for Your Night | The Private Story`, description: `Adult bedtime stories created for grown-up minds. Calming, intimate, and personalised around how you want to feel tonight. Fall asleep to a story made for you.` },
   hero: { badge: `Adults Only · Bedtime · Calming`, h1: `Adult Bedtime Stories — Calming, Private, Made for Tonight`, tagline: `The end of a grown-up day deserves a story that understands how you actually arrive at it.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "What Adult Bedtime Stories Are, and Aren't",
@@ -3955,6 +3989,8 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
 export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
   meta: { title: `AI Romance Stories for Women — Personalised, Private, Made for You | The Private Story`, description: `AI-generated romance stories for women, personalised around your mood and choices. Private, narrated audio fiction created for you tonight. Not a library — yours.` },
   hero: { badge: `Romance · AI-Generated · For Women`, h1: `AI Romance Stories for Women — Created Around How You Want to Feel`, tagline: `Romance fiction generated for you from your choices tonight. Private, narrated, and made for the specific quality of connection you want to feel.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
   sections: [
     {
       h2: "AI Romance Stories and What Makes Them Different",

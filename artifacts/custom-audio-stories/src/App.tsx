@@ -63,6 +63,8 @@ import QuinnAlternative from "@/pages/seo/QuinnAlternative";
 import AudioEroticaForWomen from "@/pages/seo/AudioEroticaForWomen";
 import PersonalisedErotica from "@/pages/seo/PersonalisedErotica";
 import EroticAudioStories from "@/pages/seo/EroticAudioStories";
+import AdultBedtimeStories from "@/pages/seo/AdultBedtimeStories";
+import AIRomanceStoriesForWomen from "@/pages/seo/AIRomanceStoriesForWomen";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 
@@ -125,6 +127,8 @@ function Router() {
             <Route path="/audio-erotica-for-women" component={AudioEroticaForWomen} />
             <Route path="/personalised-erotica" component={PersonalisedErotica} />
             <Route path="/erotic-audio-stories" component={EroticAudioStories} />
+            <Route path="/adult-bedtime-stories" component={AdultBedtimeStories} />
+            <Route path="/ai-romance-stories-for-women" component={AIRomanceStoriesForWomen} />
             <Route path="/discover" component={Discover} />
             <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />

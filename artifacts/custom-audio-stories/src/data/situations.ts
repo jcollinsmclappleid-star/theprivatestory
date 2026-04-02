@@ -64,6 +64,8 @@ export function interpolateSituation(
     .replace(/\{p's\}/g, prot.contrL)
     .replace(/\{A's\}/g, part.contr)
     .replace(/\{a's\}/g, part.contrL)
+    .replace(/\{P'd\}/g, prot.dep)
+    .replace(/\{A'd\}/g, part.dep)
     .replace(/\{p'd\}/g, prot.dep)
     .replace(/\{a'd\}/g, part.dep)
     .replace(/\{Pp\}/g,  prot.poss)

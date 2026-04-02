@@ -904,6 +904,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const partnerInputRef = useRef<HTMLInputElement>(null);
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
+  const [heritageExpanded, setHeritageExpanded] = useState(true);
+  const [energyExpanded, setEnergyExpanded] = useState(true);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1076,40 +1078,80 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 : `Choose ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
             </p>
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Heritage</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-              {HERITAGES.map(h => (
-                <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id} onClick={() => update("heritage", h.id)}>
-                  <p className="font-semibold text-white text-base">{h.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{h.sub}</p>
-                </ArtTile>
-              ))}
-            </div>
-
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
-              {capFirst(partnerP.possessive)} Energy
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-              {archetypes
-                .filter(a =>
-                  !bedtime
-                    ? true
-                    : ["The Old Friend", "The Refined One", "The Protector", "The Good One", "The Softie", "The Charmer", "The Introvert"].includes(a.label)
-                )
-                .map(a => (
-                  <ArtTile
-                    key={a.id}
-                    gradient={a.gradient}
-                    accent={a.accent}
-                    image={a.image}
-                    selected={data.archetype === a.id}
-                    onClick={() => update("archetype", a.id)}
-                  >
-                    <p className="font-semibold text-white text-base">{a.label}</p>
-                    <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
+            {/* Heritage accordion */}
+            <button
+              type="button"
+              onClick={() => setHeritageExpanded(prev => !prev)}
+              className="w-full flex items-center justify-between mb-3 group"
+            >
+              <div className="flex items-center gap-2.5">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60">Heritage</p>
+                {data.heritage && !heritageExpanded && (
+                  <span className="text-xs text-primary/80 font-medium normal-case tracking-normal">
+                    {data.heritage}
+                  </span>
+                )}
+              </div>
+              <ChevronDown
+                className={`w-4 h-4 text-primary/40 transition-transform duration-200 ${heritageExpanded ? "rotate-180" : ""}`}
+              />
+            </button>
+            {heritageExpanded && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+                {HERITAGES.map(h => (
+                  <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id} onClick={() => { update("heritage", h.id); }}>
+                    <p className="font-semibold text-white text-base">{h.label}</p>
+                    <p className="text-white/60 text-sm mt-0.5 leading-snug">{h.sub}</p>
                   </ArtTile>
                 ))}
-            </div>
+              </div>
+            )}
+            {!heritageExpanded && <div className="mb-6" />}
+
+            {/* Energy accordion */}
+            <button
+              type="button"
+              onClick={() => setEnergyExpanded(prev => !prev)}
+              className="w-full flex items-center justify-between mb-3 group"
+            >
+              <div className="flex items-center gap-2.5">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60">
+                  {capFirst(partnerP.possessive)} Energy
+                </p>
+                {data.archetype && !energyExpanded && (
+                  <span className="text-xs text-primary/80 font-medium normal-case tracking-normal">
+                    {data.archetype}
+                  </span>
+                )}
+              </div>
+              <ChevronDown
+                className={`w-4 h-4 text-primary/40 transition-transform duration-200 ${energyExpanded ? "rotate-180" : ""}`}
+              />
+            </button>
+            {energyExpanded && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+                {archetypes
+                  .filter(a =>
+                    !bedtime
+                      ? true
+                      : ["The Old Friend", "The Refined One", "The Protector", "The Good One", "The Softie", "The Charmer", "The Introvert"].includes(a.label)
+                  )
+                  .map(a => (
+                    <ArtTile
+                      key={a.id}
+                      gradient={a.gradient}
+                      accent={a.accent}
+                      image={a.image}
+                      selected={data.archetype === a.id}
+                      onClick={() => update("archetype", a.id)}
+                    >
+                      <p className="font-semibold text-white text-base">{a.label}</p>
+                      <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
+                    </ArtTile>
+                  ))}
+              </div>
+            )}
+            {!energyExpanded && <div className="mb-6" />}
 
             {/* ── Appearance (all optional) ─────────────────────── */}
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mt-2">

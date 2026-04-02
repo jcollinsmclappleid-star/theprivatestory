@@ -96,6 +96,24 @@ uri = "file://artifacts/custom-audio-stories/public/images/avatar-caleb.png"
 type = "image"
 title = "Caleb - Illustrated American male"
 
+[[generated]]
+id = "K0V1Er3memjfA565qS6AO"
+uri = "file://artifacts/custom-audio-stories/public/avatar-nathaniel.png"
+type = "image"
+title = "joshua-artistic-avatar"
+
+[[generated]]
+id = "ZbYJboZwVsY4FbVVAm-vS"
+uri = "file://artifacts/custom-audio-stories/public/avatar-caleb.png"
+type = "image"
+title = "ethan-artistic-avatar"
+
+[[generated]]
+id = "cIFqiz5VAVGWBedVfb-4Q"
+uri = "file://artifacts/custom-audio-stories/public/avatar-oliver.png"
+type = "image"
+title = "theo-artistic-avatar"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

@@ -1,7 +1,6 @@
 import { Story, Series } from "@workspace/api-client-react";
 
 // Mock data fallback for when the API isn't seeded yet
-// We use placeholder images from Unsplash matching the cinematic/moody vibe
 
 export const MOCK_STORIES: Story[] = [
   {
@@ -11,7 +10,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Late Night",
     tags: ["Romance", "City", "Strangers"],
     duration: "12:45",
-    coverImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80",
+    coverImage: "/cover-romance.png",
     isPremium: false,
     isNew: true,
   },
@@ -22,7 +21,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Forbidden",
     tags: ["Tension", "Exclusive", "Mystery"],
     duration: "15:20",
-    coverImage: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&q=80",
+    coverImage: "/cover-forbidden.png",
     isPremium: true,
     isNew: false,
   },
@@ -33,7 +32,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Slow Burn",
     tags: ["Cozy", "Intimate", "Morning"],
     duration: "10:15",
-    coverImage: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80",
+    coverImage: "/cover-slow-burn.png",
     isPremium: false,
     isNew: false,
   },
@@ -44,7 +43,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Forbidden",
     tags: ["Power", "City", "Night"],
     duration: "08:30",
-    coverImage: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80",
+    coverImage: "/cover-nostalgic.png",
     isPremium: true,
     isNew: true,
   },
@@ -55,7 +54,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Tender",
     tags: ["Guided", "Relaxation", "Soft"],
     duration: "05:00",
-    coverImage: "https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=800&q=80",
+    coverImage: "/cover-passionate.png",
     isPremium: false,
     isNew: false,
   },
@@ -66,7 +65,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Late Night",
     tags: ["Aftercare", "Tension"],
     duration: "14:10",
-    coverImage: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+    coverImage: "/cover-playful.png",
     isPremium: true,
     isNew: false,
   },
@@ -77,7 +76,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "First Encounter",
     tags: ["Quiet", "Academic", "Tension"],
     duration: "11:55",
-    coverImage: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80",
+    coverImage: "/cover-romance.png",
     isPremium: false,
     isNew: true,
   },
@@ -88,7 +87,7 @@ export const MOCK_STORIES: Story[] = [
     mood: "Slow Burn",
     tags: ["Winter", "Cozy", "Isolation"],
     duration: "18:40",
-    coverImage: "https://images.unsplash.com/photo-1542661141-6548dbbb9266?w=800&q=80",
+    coverImage: "/cover-slow-burn.png",
     isPremium: true,
     isNew: false,
   },
@@ -100,7 +99,7 @@ export const MOCK_SERIES: Series[] = [
     title: "The Hotel Manager",
     description: "You checked into room 402 for a quiet weekend, but the enigmatic hotel manager has taken a special interest in your stay. A five-part slow burn romance.",
     mood: "Slow Burn",
-    coverImage: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80",
+    coverImage: "/cover-forbidden.png",
     episodeCount: 5,
     tags: ["Power Dynamic", "Luxury", "Mystery"],
     episodes: [
@@ -116,7 +115,7 @@ export const MOCK_SERIES: Series[] = [
     title: "Midnight Confessions",
     description: "Late night calls with a stranger who understands you perfectly. Intimate, raw, and deeply emotional.",
     mood: "Emotional",
-    coverImage: "https://images.unsplash.com/photo-1516528387618-afa90b13e000?w=800&q=80",
+    coverImage: "/cover-nostalgic.png",
     episodeCount: 3,
     tags: ["Long Distance", "Voice", "Intimate"],
     episodes: [

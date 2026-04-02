@@ -1,20 +1,20 @@
 import type { Story, Series, Scene } from "@workspace/api-client-react";
 
 const STOCK_COVERS = [
-  "https://images.unsplash.com/photo-1510215682820-2216503c5d6c?w=800&q=80", // Wine glass
-  "https://images.unsplash.com/photo-1478144592103-25e218a04891?w=800&q=80", // Dark moody room
-  "https://images.unsplash.com/photo-1516644406208-8e67f70b3b4f?w=800&q=80", // Rain on window
-  "https://images.unsplash.com/photo-1498622205843-3b0ac17be8aa?w=800&q=80", // City lights blur
-  "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80", // Sparkles dark
-  "https://images.unsplash.com/photo-1499914485622-a88fac536970?w=800&q=80", // Abstract warm light
-  "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&q=80", // Silk fabric
-  "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&q=80", // Dark rose
+  "/cover-slow-burn.png",
+  "/cover-romance.png",
+  "/cover-forbidden.png",
+  "/cover-nostalgic.png",
+  "/cover-passionate.png",
+  "/cover-playful.png",
+  "/cover-slow-burn.png",
+  "/cover-forbidden.png",
 ];
 
 const SCENE_IMAGES = [
-  "https://images.unsplash.com/photo-1502814407886-f633dfa06fb3?w=1200&q=80",
-  "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80",
-  "https://images.unsplash.com/photo-1513274291888-2df82eeb2957?w=1200&q=80",
+  "/cover-romance.png",
+  "/cover-nostalgic.png",
+  "/cover-passionate.png",
 ];
 
 const MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];

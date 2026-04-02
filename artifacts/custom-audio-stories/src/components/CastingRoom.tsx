@@ -905,9 +905,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const partnerInputRef = useRef<HTMLInputElement>(null);
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
-  const [heritageExpanded, setHeritageExpanded] = useState(true);
-  const [energyExpanded, setEnergyExpanded] = useState(true);
+  const [heritageDropdownOpen, setHeritageDropdownOpen] = useState(false);
+  const [energyDropdownOpen, setEnergyDropdownOpen] = useState(false);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
+  const heritageDropdownRef = useRef<HTMLDivElement>(null);
+  const energyDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!countryDropdownOpen) return;
@@ -920,6 +922,28 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [countryDropdownOpen]);
+
+  useEffect(() => {
+    if (!heritageDropdownOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (heritageDropdownRef.current && !heritageDropdownRef.current.contains(e.target as Node)) {
+        setHeritageDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [heritageDropdownOpen]);
+
+  useEffect(() => {
+    if (!energyDropdownOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (energyDropdownRef.current && !energyDropdownRef.current.contains(e.target as Node)) {
+        setEnergyDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [energyDropdownOpen]);
 
   const filteredListenerNames = listenerSearch.trim().length >= 1
     ? NAMES.filter(n => n.toLowerCase().startsWith(listenerSearch.toLowerCase())).slice(0, 8)
@@ -1079,80 +1103,112 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 : `Choose ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
             </p>
 
-            {/* Heritage accordion */}
-            <button
-              type="button"
-              onClick={() => setHeritageExpanded(prev => !prev)}
-              className="w-full flex items-center justify-between mb-3 group"
-            >
-              <div className="flex items-center gap-2.5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60">Heritage</p>
-                {data.heritage && !heritageExpanded && (
-                  <span className="text-xs text-primary/80 font-medium normal-case tracking-normal">
-                    {data.heritage}
-                  </span>
-                )}
-              </div>
-              <ChevronDown
-                className={`w-4 h-4 text-primary/40 transition-transform duration-200 ${heritageExpanded ? "rotate-180" : ""}`}
-              />
-            </button>
-            {heritageExpanded && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-                {HERITAGES.map(h => (
-                  <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id} onClick={() => { update("heritage", h.id); }}>
-                    <p className="font-semibold text-white text-base">{h.label}</p>
-                    <p className="text-white/60 text-sm mt-0.5 leading-snug">{h.sub}</p>
-                  </ArtTile>
-                ))}
-              </div>
-            )}
-            {!heritageExpanded && <div className="mb-6" />}
+            {/* Heritage dropdown */}
+            {(() => {
+              const selectedHeritage = HERITAGES.find(h => h.id === data.heritage);
+              return (
+                <div className="mb-5 relative" ref={heritageDropdownRef}>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Heritage</p>
+                  <button
+                    type="button"
+                    onClick={() => { setHeritageDropdownOpen(o => !o); setEnergyDropdownOpen(false); }}
+                    className="w-full rounded-2xl border px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none transition-all cursor-pointer"
+                    style={selectedHeritage
+                      ? { borderColor: `${selectedHeritage.accent}55`, background: `${selectedHeritage.accent}0d` }
+                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }
+                    }
+                  >
+                    <span className="flex items-center gap-2.5 min-w-0">
+                      {selectedHeritage && (
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: selectedHeritage.accent }} />
+                      )}
+                      <span className={`text-sm font-medium truncate ${selectedHeritage ? "text-foreground" : "text-muted-foreground"}`}>
+                        {selectedHeritage ? selectedHeritage.label : "Choose heritage…"}
+                      </span>
+                      {selectedHeritage && (
+                        <span className="text-xs text-muted-foreground/60 truncate hidden sm:block">{selectedHeritage.sub}</span>
+                      )}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${heritageDropdownOpen ? "rotate-180" : ""}`}
+                      style={{ color: selectedHeritage ? selectedHeritage.accent : undefined }}
+                    />
+                  </button>
+                  {heritageDropdownOpen && (
+                    <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-[#0c0c0e] border border-border/40 rounded-2xl shadow-2xl overflow-hidden">
+                      <div className="max-h-[360px] overflow-y-auto p-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {HERITAGES.map(h => (
+                            <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id}
+                              onClick={() => { update("heritage", h.id); setHeritageDropdownOpen(false); }}
+                            >
+                              <p className="font-semibold text-white text-sm">{h.label}</p>
+                              <p className="text-white/60 text-xs mt-0.5 leading-snug">{h.sub}</p>
+                            </ArtTile>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
-            {/* Energy accordion */}
-            <button
-              type="button"
-              onClick={() => setEnergyExpanded(prev => !prev)}
-              className="w-full flex items-center justify-between mb-3 group"
-            >
-              <div className="flex items-center gap-2.5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/60">
-                  {capFirst(partnerP.possessive)} Energy
-                </p>
-                {data.archetype && !energyExpanded && (
-                  <span className="text-xs text-primary/80 font-medium normal-case tracking-normal">
-                    {data.archetype}
-                  </span>
-                )}
-              </div>
-              <ChevronDown
-                className={`w-4 h-4 text-primary/40 transition-transform duration-200 ${energyExpanded ? "rotate-180" : ""}`}
-              />
-            </button>
-            {energyExpanded && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-                {archetypes
-                  .filter(a =>
-                    !bedtime
-                      ? true
-                      : ["The Old Friend", "The Refined One", "The Protector", "The Good One", "The Softie", "The Charmer", "The Introvert"].includes(a.label)
-                  )
-                  .map(a => (
-                    <ArtTile
-                      key={a.id}
-                      gradient={a.gradient}
-                      accent={a.accent}
-                      image={a.image}
-                      selected={data.archetype === a.id}
-                      onClick={() => update("archetype", a.id)}
-                    >
-                      <p className="font-semibold text-white text-base">{a.label}</p>
-                      <p className="text-white/60 text-sm mt-0.5 leading-snug">{a.sub}</p>
-                    </ArtTile>
-                  ))}
-              </div>
-            )}
-            {!energyExpanded && <div className="mb-6" />}
+            {/* Energy dropdown */}
+            {(() => {
+              const energyOptions = archetypes.filter(a =>
+                !bedtime ? true : ["The Old Friend", "The Refined One", "The Protector", "The Good One", "The Softie", "The Charmer", "The Introvert"].includes(a.label)
+              );
+              const selectedEnergy = energyOptions.find(a => a.id === data.archetype);
+              return (
+                <div className="mb-6 relative" ref={energyDropdownRef}>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
+                    {capFirst(partnerP.possessive)} Energy
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { setEnergyDropdownOpen(o => !o); setHeritageDropdownOpen(false); }}
+                    className="w-full rounded-2xl border px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none transition-all cursor-pointer"
+                    style={selectedEnergy
+                      ? { borderColor: `${selectedEnergy.accent}55`, background: `${selectedEnergy.accent}0d` }
+                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }
+                    }
+                  >
+                    <span className="flex items-center gap-2.5 min-w-0">
+                      {selectedEnergy && (
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: selectedEnergy.accent }} />
+                      )}
+                      <span className={`text-sm font-medium truncate ${selectedEnergy ? "text-foreground" : "text-muted-foreground"}`}>
+                        {selectedEnergy ? selectedEnergy.label : "Choose energy…"}
+                      </span>
+                      {selectedEnergy && (
+                        <span className="text-xs text-muted-foreground/60 truncate hidden sm:block">{selectedEnergy.sub}</span>
+                      )}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${energyDropdownOpen ? "rotate-180" : ""}`}
+                      style={{ color: selectedEnergy ? selectedEnergy.accent : undefined }}
+                    />
+                  </button>
+                  {energyDropdownOpen && (
+                    <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-[#0c0c0e] border border-border/40 rounded-2xl shadow-2xl overflow-hidden">
+                      <div className="max-h-[400px] overflow-y-auto p-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {energyOptions.map(a => (
+                            <ArtTile key={a.id} gradient={a.gradient} accent={a.accent} image={a.image} selected={data.archetype === a.id}
+                              onClick={() => { update("archetype", a.id); setEnergyDropdownOpen(false); }}
+                            >
+                              <p className="font-semibold text-white text-sm">{a.label}</p>
+                              <p className="text-white/60 text-xs mt-0.5 leading-snug">{a.sub}</p>
+                            </ArtTile>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* ── Appearance (all optional) ─────────────────────── */}
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mt-2">

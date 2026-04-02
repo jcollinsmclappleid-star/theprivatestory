@@ -1251,7 +1251,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className={`grid grid-cols-1 gap-4 mb-6 ${isPaid ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
               {/* Monthly */}
               <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Monthly</p>
@@ -1306,19 +1306,21 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Add-on */}
-              <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Additional stories</p>
-                  <div className="flex items-end gap-1.5 mb-1">
-                    <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
-                    <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
+              {/* Add-on — active subscribers only */}
+              {isPaid && (
+                <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Additional stories</p>
+                    <div className="flex items-end gap-1.5 mb-1">
+                      <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
+                      <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground/50 leading-relaxed mt-3">
+                      Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground/50 leading-relaxed mt-3">
-                    Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
-                  </p>
                 </div>
-              </div>
+              )}
             </div>
 
             {checkoutError && (

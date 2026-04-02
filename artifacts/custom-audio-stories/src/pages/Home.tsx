@@ -10,6 +10,7 @@ import { RowSlider } from "@/components/RowSlider";
 import { SkeletonRow } from "@/components/SkeletonCard";
 import { useStoriesFallback } from "@/hooks/use-api-fallbacks";
 import { useAuth } from "@/hooks/useAuth";
+import coverRainOnGlass from "@assets/IMG_0660_1775173592450.png";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import type { Story } from "@workspace/api-client-react";
@@ -773,7 +774,7 @@ function LibraryPromo({ stories, isPaid }: { stories: Story[]; isPaid: boolean }
                 <div className="w-36 rounded-xl overflow-hidden border border-border/20 bg-card/40 hover:border-primary/30 transition-all relative">
                   <div className="relative">
                     <img
-                      src={story.coverImage}
+                      src={story.title === "Rain on glass" || story.title === "fleeting dance" ? coverRainOnGlass : story.coverImage}
                       alt={story.title}
                       className={`w-full h-20 object-cover transition-transform duration-500 ${isPaid ? "group-hover:scale-105" : "opacity-60"}`}
                     />

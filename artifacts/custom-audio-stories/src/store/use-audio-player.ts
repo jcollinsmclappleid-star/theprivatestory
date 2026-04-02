@@ -98,7 +98,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
             set({ isPlaying: true });
           }
         } else {
-          set({ isPlaying: true });
+          set({ isPlaying: false });
         }
 
         if (!progressTimer) {

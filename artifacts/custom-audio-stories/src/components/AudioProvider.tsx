@@ -137,7 +137,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       .catch(() => { ambientStartedRef.current = false; });
   };
 
-  // Ambient audio control — loops INDEPENDENTLY of narration
+  // Ambient audio control — only follows narration state
   useEffect(() => {
     const el = ambientRef.current;
     if (!el) return;

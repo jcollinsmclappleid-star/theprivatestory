@@ -333,6 +333,7 @@ export default function Browse() {
                           setActiveSection(null);
                         } else {
                           setActiveSection(section.label);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
                         }
                       }}
                       className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
@@ -355,7 +356,10 @@ export default function Browse() {
                           id={catId}
                           label={cat.label}
                           isActive={activeCategory === catId}
-                          onClick={() => setActiveCategory(activeCategory === catId ? null : catId)}
+                          onClick={() => {
+                            setActiveCategory(activeCategory === catId ? null : catId);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
                           compact
                         />
                       );
@@ -398,7 +402,10 @@ export default function Browse() {
                     id={cat.id}
                     label={cat.label}
                     isActive={activeCategory === cat.id}
-                    onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+                    onClick={() => {
+                      setActiveCategory(activeCategory === cat.id ? null : cat.id);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
                     compact
                   />
                 ))}

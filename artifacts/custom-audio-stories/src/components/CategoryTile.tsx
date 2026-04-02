@@ -9,6 +9,7 @@ type TileTheme = {
 };
 
 const TILE_THEMES: Record<string, TileTheme> = {
+  // Legacy category IDs
   forbidden_desire:    { gradient: "from-[#2a0a0a] via-[#4a1010] to-[#1a0505]", accent: "#c0392b", pattern: "shards" },
   dark_romance:        { gradient: "from-[#0d0d1a] via-[#1a1028] to-[#0a0a15]", accent: "#8b5cf6", pattern: "geometric" },
   slow_burn:           { gradient: "from-[#1a0f00] via-[#3d2000] to-[#120c00]", accent: "#c8893c", pattern: "waves" },
@@ -19,6 +20,17 @@ const TILE_THEMES: Record<string, TileTheme> = {
   first_time:          { gradient: "from-[#0f0d00] via-[#1f1a00] to-[#0c0b00]", accent: "#e6c84a", pattern: "organic" },
   explicit_collection: { gradient: "from-[#12080a] via-[#261018] to-[#0e0608]", accent: "#f43f5e", pattern: "shards" },
   historical_romance:  { gradient: "from-[#100d00] via-[#221c00] to-[#0d0a00]", accent: "#c9a227", pattern: "deco" },
+  // Browse page category IDs
+  forbidden_complicated:       { gradient: "from-[#200a14] via-[#3a0f22] to-[#140508]", accent: "#d4547a", pattern: "shards" },
+  power_tension:               { gradient: "from-[#0a0014] via-[#16002a] to-[#060010]", accent: "#9d6edd", pattern: "geometric" },
+  dark_dangerous:              { gradient: "from-[#100808] via-[#1e0e0e] to-[#080505]", accent: "#c0392b", pattern: "shards" },
+  psychological_obsessive:     { gradient: "from-[#020818] via-[#040f28] to-[#010410]", accent: "#4f8bce", pattern: "dots" },
+  reunion_return:              { gradient: "from-[#180e00] via-[#2e1a00] to-[#100900]", accent: "#d4873a", pattern: "loops" },
+  first_unknown:               { gradient: "from-[#120f00] via-[#221c00] to-[#0c0a00]", accent: "#d4b84a", pattern: "waves" },
+  circumstance_proximity:      { gradient: "from-[#001410] via-[#002018] to-[#000d0a]", accent: "#4caf8a", pattern: "organic" },
+  secrets_unspoken:            { gradient: "from-[#001018] via-[#001a26] to-[#000a10]", accent: "#3aacb8", pattern: "geometric" },
+  slow_burn_patience:          { gradient: "from-[#1a0c00] via-[#301800] to-[#100800]", accent: "#c87c3c", pattern: "waves" },
+  professional_crossing_lines: { gradient: "from-[#080c14] via-[#0f1422] to-[#04080e]", accent: "#8a9cbd", pattern: "circuit" },
 };
 
 function PatternSVG({ pattern, accent }: { pattern: TileTheme["pattern"]; accent: string }) {

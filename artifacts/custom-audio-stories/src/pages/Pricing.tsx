@@ -176,7 +176,7 @@ export default function Pricing() {
   }, [isAuthenticated]);
 
   const startCheckout = (plan: "monthly" | "annual" | "addon" | "immersive") => {
-    if (!isAuthenticated && (plan === "monthly" || plan === "annual" || plan === "addon")) {
+    if (!isAuthenticated && plan === "addon") {
       openSignIn();
       return;
     }

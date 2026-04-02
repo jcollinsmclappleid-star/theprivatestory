@@ -112,31 +112,25 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
 
     // ---- GUEST FLOW ----
-    // Guest checkout only allowed for immersive (payment mode).
-    // Subscriptions require authentication.
-    if (plan !== "immersive") {
-      res.status(401).json({ error: "Please sign in to your account to purchase a subscription." });
-      return;
-    }
+    // Guests can purchase any plan. A claim token is generated and embedded in the
+    // success URL so they can create an account and claim their purchase afterwards.
+    // Stripe collects email during checkout; the webhook populates customerEmail.
 
-    // Immersive: no email needed upfront — Stripe collects it during checkout.
-    // The webhook will populate customerEmail from session.customer_details.email.
-
-    // Generate a secure claim token BEFORE creating the Stripe session so it can
-    // be embedded directly in the success URL.
     const claimToken = randomUUID();
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30); // 30-day claim window
 
+    const isSubscription = plan === "monthly" || plan === "annual";
+
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      customer_creation: "always",
       line_items: [{ price: priceId, quantity: 1 }],
-      mode: "payment",
+      mode: isSubscription ? "subscription" : "payment",
       success_url: `${SITE_URL}/checkout/success?token=${claimToken}`,
       cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
       allow_promotion_codes: true,
       metadata: { guestToken: claimToken, plan },
+      ...(!isSubscription ? { customer_creation: "always" } : {}),
     };
 
     const stripeSession = await stripe.checkout.sessions.create(sessionParams);
@@ -145,7 +139,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     await db.insert(pendingPurchasesTable).values({
       claimToken,
       stripeSessionId: stripeSession.id,
-      plan: "immersive",
+      plan,
       confirmed: false,
       expiresAt,
     });

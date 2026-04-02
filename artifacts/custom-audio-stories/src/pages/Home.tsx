@@ -827,11 +827,8 @@ export default function Home() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const startCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
-    // Guests can only purchase immersive (one-time). Subscriptions require sign-in.
-    if (!isAuthenticated && (plan === "monthly" || plan === "annual")) {
-      openSignIn();
-      return;
-    }
+    // Addon stories require sign-in (active subscriber check done server-side).
+    // Monthly, annual, and immersive all support guest checkout — Stripe collects email.
     setCheckoutLoading(plan);
     setCheckoutError(null);
     try {
@@ -852,7 +849,7 @@ export default function Home() {
     } finally {
       setCheckoutLoading(null);
     }
-  }, [isAuthenticated, navigate, openSignIn]);
+  }, [isAuthenticated, navigate]);
 
   const tonightPicks = (isAuthenticated && recs.for_you.length > 0)
     ? (recs.for_you as Story[])

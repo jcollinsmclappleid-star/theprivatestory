@@ -884,12 +884,12 @@ export default function Home() {
             className="max-w-2xl"
           >
             {/* Format signal */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
+            <div className="flex flex-col gap-3 mb-5 md:flex-row md:items-center md:gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8 w-fit">
                 <Headphones className="w-3.5 h-3.5 text-primary/70" />
-                <span className="text-[11px] font-semibold text-primary/70 uppercase tracking-widest">Personalised audio story</span>
+                <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
               </div>
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground/35 tracking-wide">
+              <div className="flex flex-wrap items-center gap-1 text-[11px] text-white/55 tracking-wide">
                 <span>Built around you</span>
                 <span>·</span>
                 <span>Narrated</span>
@@ -903,11 +903,11 @@ export default function Home() {
               <span className="text-primary">the feeling you're after.</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl">
+            <p className="text-lg md:text-xl text-white/78 mb-4 leading-relaxed max-w-xl">
               Choose the mood, the setting, the energy, and the depth of the experience. We write it, narrate it, and save it privately to your account.
             </p>
 
-            <p className="text-xs text-muted-foreground/50 tracking-wide mb-8">
+            <p className="text-xs text-white/55 tracking-wide mb-8">
               Designed for the female imagination.
             </p>
 

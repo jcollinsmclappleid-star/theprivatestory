@@ -207,7 +207,7 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
 </head>
 <body>
   <nav aria-label="Site navigation">
-    <a class="logo" href="/"><img src="/logo.png" width="28" height="28" alt="The Private Story" style="vertical-align:middle;border-radius:6px;margin-right:8px" />The Private Story</a>
+    <a class="logo" href="/"><img src="/logo.png" height="32" style="vertical-align:middle;width:auto;margin-right:8px" alt="The Private Story" />The Private Story</a>
     <ul>
       <li><a href="/create">Create your story</a></li>
       <li><a href="/pricing">Pricing</a></li>

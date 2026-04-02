@@ -176,6 +176,9 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <meta name="description" content="${escHtml(opts.description)}" />
   <meta name="robots" content="${escHtml(opts.robots ?? "index, follow")}" />
   <link rel="canonical" href="${escHtml(opts.canonical)}" />
+  <link rel="alternate" hreflang="en-gb" href="${escHtml(opts.canonical)}" />
+  <link rel="alternate" hreflang="en" href="${escHtml(opts.canonical)}" />
+  <link rel="alternate" hreflang="x-default" href="${escHtml(opts.canonical)}" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />

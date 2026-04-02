@@ -54,6 +54,10 @@ function makeWebPage(opts: {
       name: SITE_NAME,
       url: SITE_URL,
     },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".tagline"],
+    },
     ...(opts.includesBreadcrumb
       ? { breadcrumb: { "@id": `${opts.url}#breadcrumb` } }
       : {}),
@@ -459,6 +463,7 @@ router.get("/", (_req: Request, res: Response) => {
         },
         description:
           "The Private Story is an AI-powered premium literary audio platform. Privacy-led, agency-first, female-first.",
+        sameAs: ["https://x.com/theprivatestory"],
       },
       {
         "@type": "WebSite",
@@ -516,6 +521,53 @@ router.get("/", (_req: Request, res: Response) => {
       <p><a href="/romantic-audio-stories">Romantic</a> · <a href="/intimate-audio-stories">Intimate</a> · <a href="/dark-romance-audio-stories">Dark Romance</a> · <a href="/slow-burn-audio-stories">Slow Burn</a> · <a href="/bedtime-audio-stories">Bedtime</a> · <a href="/ai-audio-story-generator">AI audio story generator</a> · <a href="/discover">Discover all</a></p>
     </section>`;
 
+  const homepageFaqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is The Private Story?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The Private Story is a premium AI audio storytelling platform that writes personalised romantic and intimate audio stories around your choices — mood, cast, chemistry, setting, and intensity. Every story is created from scratch for you and saved privately to your account. Nothing is shared with other users or displayed publicly.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Are the stories really private?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Privacy is a founding design principle, not a feature added later. There are no social features, no public profiles, and no shared listening history. Your stories are stored securely in your private account and are not visible to anyone else — including the platform operators. The platform does not run ads or sell data.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How much does The Private Story cost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The Private Story offers a Monthly subscription at £29/month (includes 5 story generations) and an Annual subscription at £179/year (includes 50 story generations). Additional stories can be purchased at £3.99 each. Please check the pricing page for the most current offers.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How long does it take to create a personalised story?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The Casting Room — where you make your seven creative choices — typically takes under two minutes to complete. Most stories are generated and available to listen within a few minutes of submitting your brief.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is the content explicit?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The Private Story supports the full spectrum from emotionally charged slow burn to fully explicit adult content, including dark romance and erotic fiction. You choose the intensity level as part of your story brief. Explicit content is available only to age-verified users aged 18 and over.",
+        },
+      },
+    ],
+  };
+
   const html = ssrHtmlShell({
     title: "The Private Story — Private AI Audio Stories Made for You",
     description:
@@ -525,7 +577,7 @@ router.get("/", (_req: Request, res: Response) => {
     tagline:
       "Your story, your voice, your moment. Private, intimate, and completely yours.",
     bodyHtml,
-    schemas: [orgSchema],
+    schemas: [orgSchema, homepageFaqSchema],
   });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -839,6 +891,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
         h2: "Who listens to personalised audio stories?",
         body: `Our listeners are predominantly women aged 25–45 who already consume romance fiction or literary erotica in other formats. Many are audiobook subscribers who want something more tailored. Some are podcast listeners who enjoy narrative audio but find true crime and interview formats too passive. Others are simply people who have never found fiction that matches what they privately imagine.<br><br>If you want to try one, <a href="/create-your-own-audio-story">create your own audio story</a> in under two minutes.`,
       },
+      {
+        h2: "The emotional intelligence of personalisation",
+        body: `A truly personalised audio story is not just a story with your name inserted into the text. It is a piece of writing that understands what you wanted to feel before it began — and constructs every sentence in service of that feeling.<br><br>When you describe wanting slow burn tension between two rivals, the story does not simply include a chase scene and call it slow burn. It structures the emotional arc around accumulation: charged glances, deliberate restraint, dialogue that means more than it says. When you ask for something tender and melancholic, the prose shifts register entirely — shorter sentences, more interiority, a different pace. This is what emotional intelligence in personalisation means: the story is not just relevant to your preferences, it is written to deliver the specific feeling you described.<br><br>The result is a listening experience that feels uncomfortably accurate to your inner world — because it was built around exactly that.`,
+      },
+      {
+        h2: "From brief to story — what actually happens",
+        body: `When you complete the Casting Room at The Private Story, your seven choices are translated into a structured creative brief — a precise set of creative parameters that the AI writes toward. The brief specifies the emotional register, the character dynamic, the pacing, the setting, the tone, and the situation. It is not a prompt in the conventional AI sense; it is a detailed creative direction document.<br><br>The story generator (Mistral Large) writes original narrative from that brief. It does not retrieve an existing story and modify it. It does not find a template and fill in the blanks. It writes the story from the first sentence — shaped around every parameter in your brief. The result is then narrated using professional-grade ElevenLabs voice synthesis, with attention to pacing, breath, and emotional register. Cover art is generated by gpt-image-1. The complete story is typically ready to listen within a few minutes. See also <a href="/ai-audio-story-generator">how our AI audio story generator works</a> for a technical account of the process.`,
+      },
     ],
     faqs: [
       {
@@ -860,6 +920,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       {
         q: "What formats are personalised audio stories delivered in?",
         a: "Stories are delivered as streamable audio within your account. You can also download them as MP3 files for offline listening.",
+      },
+      {
+        q: "Can I request something very specific or unusual in my personalised audio story?",
+        a: "Yes. The Casting Room offers over 220 situations across 11 dramatic categories, 28 emotional moods, 14 character archetypes, nine chemistry types, and 50+ country settings. The combinations are effectively unlimited. If you want a slow burn story set in 1920s Paris between two rivals who are both hiding something, you can build exactly that brief.",
+      },
+      {
+        q: "Is a personalised audio story better than an audiobook?",
+        a: "It depends on what you want. An audiobook gives you a complete, fully authored work — often with multiple narrators, complex plotting, and the depth that comes from a professional novelist. A personalised audio story gives you something built around your specific preferences for this listening session — emotionally precise, private, and created for you. They serve different needs and many listeners use both.",
       },
     ],
     relatedLinks: [
@@ -902,6 +970,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
         h2: "Legal and consent considerations",
         body: `Audio erotica depicting adults is legal in the United Kingdom and most Western jurisdictions. The Private Story operates under UK law and requires all users to verify their age before accessing explicit content. All content generated on the platform depicts fictional adults in consensual scenarios. Content involving minors, non-consensual scenarios presented approvingly, or other illegal content is strictly prohibited and technically prevented.`,
       },
+      {
+        h2: "How audio erotica compares to written erotica",
+        body: `Written erotica and audio erotica begin from the same literary tradition — fiction that engages the erotic imagination through language. The difference is delivery. Written erotica requires active reading; the reader constructs the scene, the voice, the rhythm. Audio erotica delivers all of that — the voice is already there, the pacing is set, the emotional register is performed. For many listeners, this creates a more immersive experience, particularly at night or when the mind is too tired to read actively but still wants something that meets it.<br><br>The narration in audio erotica also adds a layer that text cannot: the intimacy of a voice speaking directly to you. Well-crafted audio erotica feels private in a way that text does not — it is happening in your ear rather than on a page. This is why the format has grown so dramatically since professional-quality AI narration became available. Explore <a href="/erotic-audio-stories">erotic audio stories</a> for more on how the format works in practice.`,
+      },
+      {
+        h2: "The future of personalised audio erotica",
+        body: `The current generation of AI-powered audio erotica platforms represents the beginning of what personalised erotic fiction can become. AI story generation allows a level of specificity that no human-authored library can match — because a library is finite and your imagination is not. As language models improve and voice synthesis becomes indistinguishable from human narration, the gap between what a listener imagines and what they can receive will continue to narrow.<br><br>The Private Story is building toward a version of the platform where the brief gets more precise, the emotional calibration gets more accurate, and the story that arrives feels so specifically suited to what you wanted that it is difficult to explain why it works without acknowledging how well it understood you. That is the direction the format is moving.`,
+      },
     ],
     faqs: [
       {
@@ -923,6 +999,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       {
         q: "Is my listening history private?",
         a: "Completely. Your stories, preferences, and listening history are never shared, sold, or displayed publicly. Privacy is a foundational design principle of The Private Story — not a feature added later.",
+      },
+      {
+        q: "What is the difference between audio erotica and erotic podcasts?",
+        a: "Erotic podcasts are typically conversational or educational audio content about sex and intimacy — discussions, interviews, or advice formats. Audio erotica is fiction: narrated erotic stories with characters, plot, and emotional arc. The Private Story produces audio erotica — fiction written and narrated to create an immersive experience, not educational content.",
+      },
+      {
+        q: "Can audio erotica help with intimacy or relaxation?",
+        a: "Many listeners use audio erotica as a form of private self-care — a way to reconnect with their own desires, to wind down at the end of the day, or to inhabit an imagined experience. The evidence on audio erotica specifically as a therapeutic tool is limited, but narrative audio more broadly is well-established as a relaxation and stress-reduction medium. The Private Story's Drift mode is specifically designed for the slow, atmospheric end of the emotional spectrum.",
       },
     ],
     relatedLinks: [
@@ -965,6 +1049,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
         h2: "Famous slow burn examples in romance fiction",
         body: `Without naming specific titles, slow burn romance is the dominant structure of romantasy (romantic fantasy) and new adult romance — two of the fastest-growing segments of the fiction market. It is also the backbone of most fan fiction, where extended tension across a long narrative is standard. The slow burn structure translates particularly well to audio, because the listener experiences the delay in real time, making the tension more visceral than in text. You can explore our <a href="/slow-burn-audio-stories">slow burn audio stories</a> page to see how the format works in practice, or <a href="/create">create your own slow burn story</a> right now.`,
       },
+      {
+        h2: "Why slow burn works differently in audio than in text",
+        body: `When you read a slow burn story, you control the pace. You can skim, re-read, skip ahead to the payoff, or linger on a charged paragraph. Audio removes that control entirely. The story unfolds at the narrator's pace, in real time. The pause before a loaded line of dialogue is exactly as long as the narrator makes it. The moment before a first touch arrives exactly when the story decides it arrives — not a second sooner.<br><br>This makes slow burn in audio uniquely effective. The delay is not abstract; it is happening to you, in the present tense, in your ear. The restraint has duration. The tension accumulates in real time, which is much closer to how desire actually works in the body than reading about it on a page. For many listeners, slow burn audio stories deliver an intensity that equivalent text cannot match.`,
+      },
+      {
+        h2: "The most important moment in a slow burn story",
+        body: `The architecture of a slow burn depends on the near-miss: the moment where resolution almost happens and then doesn't. The interrupted kiss. The hand that reaches and withdraws. The confession that almost makes it out. These moments are the structural heartbeat of slow burn, and their effectiveness depends entirely on whether the build-up has been sufficient. A near-miss in the first chapter is just a tease. A near-miss at the three-quarter point of a story that has earned every preceding moment of tension is devastating.<br><br>Writing a near-miss well is one of the hardest craft problems in romantic fiction. It has to feel inevitable that the resolution didn't happen — the obstacle has to be plausible — and it has to leave the listener desperate for resolution rather than frustrated. When it works, the listener cannot stop. When you request slow burn at <a href="/create">The Private Story</a>, the story is structured around this logic: building toward a payoff that feels proportionate to everything that preceded it.`,
+      },
     ],
     faqs: [
       {
@@ -986,6 +1078,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       {
         q: "Can I request slow burn in my personalised audio story?",
         a: "Yes. Simply mention slow burn pacing in your story brief when you create your story at The Private Story. The narrative will be structured to build tension gradually and delay the emotional and physical resolution.",
+      },
+      {
+        q: "Does slow burn have to be between strangers?",
+        a: "No. Some of the most effective slow burn stories involve characters who already know each other — colleagues, old friends, people thrown back together by circumstance. Pre-existing history adds complication and depth to the tension, because the characters already have reasons to resist acting on their feelings.",
+      },
+      {
+        q: "What is the best slow burn payoff scene?",
+        a: "The best slow burn payoff is proportionate — the resolution should feel as significant as the build-up that preceded it. Whether explicit or not, the payoff scene should carry the accumulated weight of everything the characters have been denied. In audio specifically, the payoff is often the moment where the narrator's restraint finally gives way, which creates an emotional release that is more satisfying than anything that comes easily.",
       },
     ],
     relatedLinks: [
@@ -1028,6 +1128,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
         h2: "Requesting dark romance in a personalised audio story",
         body: `At The Private Story, dark romance is a fully supported genre. When you create your brief, you can specify morally grey characters, power imbalances, specific dark tropes, and content intensity. The story will be constructed around your preferences — including explicit content if requested. All content, including dark themes, depicts fictional adults and is handled with narrative craft rather than gratuitousness.<br><br>Explore <a href="/personalised-erotica">personalised erotica</a> to understand how explicit dark romance stories are created, or <a href="/create">create your own dark romance story</a> in under two minutes.`,
       },
+      {
+        h2: "Content warnings in dark romance — what they mean",
+        body: `Dark romance communities have developed a detailed vocabulary of content warnings — sometimes called CWs or TWs (trigger warnings) — that alert readers and listeners to specific content before they engage. Common dark romance content warnings include: dubious consent (also written as dub-con), non-consent (non-con), obsessive or stalker behaviour, violence, captivity, morally grey or villain protagonists, and graphic explicit content.<br><br>These warnings are not critiques of the genre; they are tools that allow readers to make informed choices about what they engage with. A listener who finds obsession narratives cathartic and engaging will seek them out. A listener who finds non-consensual scenarios distressing can avoid them. At The Private Story, the intensity and trope choices you make in the Casting Room serve the same function: you shape the parameters of what the story will and will not include before it is written.`,
+      },
+      {
+        h2: "Dark romance in audio — the specific power of narrated darkness",
+        body: `Dark romance translates particularly well to audio for one specific reason: narration makes interiority visceral. The reader of a dark romance novel experiences the protagonist's internal experience through text — words on a page that describe fear, desire, confusion. The listener of a dark romance audio story hears those same interior states in a voice. The narrator's breath, the pace of delivery, the warmth or edge in their tone — all of this transforms the written interiority into something felt.<br><br>A morally grey love interest reads differently from the page than he sounds when narrated. A captivity scenario unfolds differently when the listener cannot skip ahead, when the tension has duration, when the narrator's voice inhabits both characters with the same intimacy. Audio removes the distance that text creates. For dark romance specifically — where the emotional intensity is the point — that absence of distance is particularly powerful.<br><br>See <a href="/adult-audio-stories">adult audio stories</a> for more on how the full intensity spectrum works in audio.`,
+      },
     ],
     faqs: [
       {
@@ -1049,6 +1157,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       {
         q: "How do I request dark romance at The Private Story?",
         a: "When you create your story brief, select 'dark romance' as your genre and specify any tropes you want to include — enemies-to-lovers, morally grey characters, power imbalance, and so on. You can also specify the level of explicitness. The story will be built around your preferences.",
+      },
+      {
+        q: "Is dark romance always explicit?",
+        a: "No. Dark romance is defined by tone and theme — moral complexity, power dynamics, transgressive scenarios — not by sexual content level. Many dark romance readers prefer non-explicit or lightly explicit stories where the darkness comes from tension, danger, and moral ambiguity rather than graphic sex. At The Private Story, you control explicitness independently of darkness level.",
+      },
+      {
+        q: "How is dark romance different from literary fiction with dark themes?",
+        a: "The distinction is in the genre contract. Literary fiction with dark themes may not resolve in the protagonist's favour, may not centre a romantic relationship, and does not promise emotional payoff in the form of connection or resolution. Dark romance, even at its most transgressive, operates within a genre framework: the central romantic relationship is the story's core concern, and there is typically a resolution — however unconventional — that honours that relationship. The darkness serves the romance, not the other way around.",
       },
     ],
     relatedLinks: [
@@ -1091,6 +1207,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
         h2: "Requesting enemies-to-lovers in your personalised story",
         body: `When creating your story brief at The Private Story, you can specify enemies-to-lovers as the core trope and combine it with other preferences: slow burn pacing, dark romance tone, specific character archetypes (a cold, brilliant antagonist; a rival in a professional setting), and your preferred level of explicitness. The story will be constructed to honour the trope's essential structure — genuine antagonism that transforms through charged interaction.<br><br>See also <a href="/personalised-audio-stories">personalised audio stories</a> and <a href="/ai-romance-stories-for-women">AI romance stories for women</a>.`,
       },
+      {
+        h2: "The emotional arc of enemies-to-lovers in audio format",
+        body: `Reading enemies-to-lovers and listening to it are meaningfully different experiences. On the page, you track the subtle shifts in how a character is described — the language around the antagonist softening over chapters, the interiority of the protagonist becoming more ambivalent, the reader noticing changes before the characters acknowledge them. Audio creates a different version of this: the narrator's voice carries the emotional temperature of the scene, and the listener tracks the shift in feeling through tone rather than language.<br><br>A voice that is sharp and cold in early scenes, then hesitant, then fractured — that trajectory is felt differently than reading equivalent descriptions. The moment when an antagonist becomes something else registers in the narrator's voice before any explicit statement is made. This is why enemies-to-lovers is particularly well-suited to the audio format: the emotional intelligence of narration can carry the shift with a subtlety that description alone cannot always manage. Explore <a href="/enemies-to-lovers-audio-stories">enemies-to-lovers audio stories</a> to see this in practice.`,
+      },
+      {
+        h2: "Combining enemies-to-lovers with other romance tropes",
+        body: `Enemies-to-lovers rarely appears alone. It is one of the most combinable tropes in romance fiction, working naturally alongside slow burn (the antagonism extends the delay before resolution), forced proximity (the characters cannot escape each other despite wanting to), dark romance (the opposition has genuine moral weight), and forbidden pull (the chemistry is real but the enmity makes acting on it costly).<br><br>Some of the most effective enemies-to-lovers stories layer in additional complexity: rivals with pre-existing history who must now work together, former lovers whose relationship ended badly and has since calcified into opposition, adversaries who are fighting over something they both genuinely care about. The richer the reason for the conflict, the more satisfying the eventual break. At The Private Story, you can combine chemistry types, tropes, and archetype choices to build exactly this kind of layered brief.`,
+      },
     ],
     faqs: [
       {
@@ -1112,6 +1236,14 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       {
         q: "How do I request enemies-to-lovers in my audio story?",
         a: "When creating your brief at The Private Story, specify enemies-to-lovers as the core trope. You can add detail: the professional or personal context for the antagonism, the character archetypes, the slow burn pacing, and the level of explicitness. The story will be built around the trope's structure.",
+      },
+      {
+        q: "Can enemies-to-lovers work in a short story format?",
+        a: "Yes, with compression. A short enemies-to-lovers piece typically begins after the antagonism is established — the listener already knows these two people cannot stand each other — and uses a single scene, confrontation, or forced moment to crack the dynamic open. The key is that the reason for the enmity is established clearly and quickly, so the break feels earned even within a compressed timeframe.",
+      },
+      {
+        q: "What professional settings work best for enemies-to-lovers?",
+        a: "Settings that create both sustained proximity and a structural source of conflict are most effective: legal opponents who must share a case, colleagues in competing departments, creative collaborators with incompatible visions, a new hire and the person whose position they threaten. The professional setting adds a layer of constraint — acting on the chemistry has real consequences — which raises the stakes considerably.",
       },
     ],
     relatedLinks: [
@@ -1167,7 +1299,33 @@ DEFINITION_PAGES.forEach((def) => {
       url: PAGE_URL,
       name: def.metaTitle,
       description: def.metaDescription,
+      datePublished: "2025-11-01",
+      dateModified: DATE_MODIFIED,
       breadcrumb: { "@id": `${PAGE_URL}#breadcrumb` },
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["h1", ".tagline", ".defined-term-box"],
+      },
+    };
+
+    const articleSchema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: def.h1,
+      description: def.metaDescription,
+      datePublished: "2025-11-01",
+      dateModified: DATE_MODIFIED,
+      author: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      mainEntityOfPage: { "@id": `${PAGE_URL}#webpage` },
     };
 
     const relatedLinksHtml = def.relatedLinks
@@ -1228,7 +1386,7 @@ DEFINITION_PAGES.forEach((def) => {
       badge: def.badge,
       tagline: def.tagline,
       bodyHtml,
-      schemas: [definedTermSchema, faqSchema, breadcrumb, webPage],
+      schemas: [definedTermSchema, faqSchema, breadcrumb, webPage, articleSchema],
     });
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -1284,6 +1442,14 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
         h2: "Privacy as a core feature",
         body: `The Private Story was built privacy-first. There are no social features — no followers, no shared listening history, no public profiles. Your stories are stored privately in your account and are not visible to anyone else, including the platform operators. We do not sell data, run ads, or make listening history available to third parties.<br><br>For some listeners, the private nature of the content they want to explore makes this architecture meaningful rather than incidental. The platform was designed with that in mind from the start.`,
       },
+      {
+        h2: "What kind of listener chooses The Private Story over Dipsea",
+        body: `Dipsea is the better choice if you value professional production, a curated library, and the pleasure of discovering stories that already exist. It is a strong platform for browsing, for regular listening across a diverse catalogue, and for listeners who want a polished out-of-the-box experience.<br><br>The Private Story is the better choice if what you want does not exist in any library — if your imagination is specific, if the scenario you have in mind is one no one has written for you, or if the privacy of the experience matters to you as much as the quality of the story. It is built for listeners who have found that even the best curated platforms do not quite reach what they are looking for. If that is you, the Casting Room was built for exactly that feeling.`,
+      },
+      {
+        h2: "Pricing and what you get",
+        body: `The Private Story offers two subscription tiers: Monthly at £29/month (5 story generations) and Annual at £179/year (50 story generations). Additional stories are available at £3.99 each. Every story includes the full creation flow — your brief, the written narrative, professional AI narration, and original cover art — saved privately to your account.<br><br>You are not paying for access to a library. You are paying for the generation of a story that has never been written before and will not be written for anyone else. Please see the <a href="/pricing">pricing page</a> for full details and any current offers.`,
+      },
     ],
     faqs: [
       {
@@ -1335,6 +1501,14 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
       {
         h2: "Privacy as a design principle",
         body: `The Private Story was designed privacy-first. There are no public profiles, no social features, no shared listening history, and no feeds. Your stories are stored privately in your account and are not visible to anyone — including the platform team. The platform does not run ads, sell data, or make any listening behaviour available to third parties.<br><br>For listeners who want to explore the full range of their imagination privately, the architecture is the point. It is not a feature added on — it is the founding design principle of the platform.`,
+      },
+      {
+        h2: "What kind of listener chooses The Private Story over Quinn",
+        body: `Quinn is the better choice if you value discovering independent creators, engaging with a community of audio storytellers, and the variety that comes from a platform with many voices and perspectives. If you enjoy following specific creators, leaving comments, or finding content you would not have thought to ask for, Quinn delivers that in a way The Private Story does not attempt to.<br><br>The Private Story is the better choice if you want something that no creator has made yet — something specific to you, this session, your imagination. It is built for listeners who have a clear idea of what they want and cannot find it anywhere, or who value the absolute privacy of the experience above the richness of a community feed. If those are your priorities, the creation flow at The Private Story is designed around them.`,
+      },
+      {
+        h2: "Pricing and how The Private Story works",
+        body: `The Private Story offers a Monthly subscription at £29/month (5 story generations) and an Annual subscription at £179/year (50 story generations). Additional stories can be generated for £3.99 each. Each story is a complete, private listening experience: your brief, a written narrative, professional AI narration, and original cover art, all stored securely in your private account.<br><br>There are no creators to follow, no community features to engage with, and no feed to browse. The value proposition is entirely the story itself — created for you, and for no one else. See the <a href="/pricing">pricing page</a> for full current details.`,
       },
     ],
     faqs: [

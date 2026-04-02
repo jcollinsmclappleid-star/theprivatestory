@@ -72,7 +72,7 @@ interface AdminUser {
   id: string;
   email: string | null;
   name: string | null;
-  subscriptionPlan: "free" | "monthly" | "annual";
+  subscriptionPlan: "free" | "monthly" | "annual" | "immersive";
   subscriptionStatus: string | null;
   addonStoriesRemaining: number;
   isBanned: boolean | null;

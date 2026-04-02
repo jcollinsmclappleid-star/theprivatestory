@@ -754,6 +754,8 @@ export default function Create() {
   const [continueAfterDark, setContinueAfterDark] = useState(false);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
+  const [paywallGuestPlan, setPaywallGuestPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
+  const [paywallGuestEmail, setPaywallGuestEmail] = useState("");
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -2784,14 +2786,14 @@ export default function Create() {
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
 
           const startCheckoutFromPaywall = async (plan: "monthly" | "annual" | "immersive") => {
-            if (!isAuthenticated) {
-              try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
-              openSignIn();
-              return;
-            }
             try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
             if (continueAfterDark) {
               try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }
+            }
+            if (!isAuthenticated) {
+              // Show inline email capture before redirecting to Stripe (guest checkout)
+              setPaywallGuestPlan(plan);
+              return;
             }
             setPaywallLoadingPlan(plan);
             try {
@@ -2800,6 +2802,24 @@ export default function Create() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ plan }),
+              });
+              const data = await res.json();
+              if (res.ok && data.url) {
+                window.location.href = data.url;
+                return;
+              }
+            } catch { /* silent */ }
+            setPaywallLoadingPlan(null);
+          };
+
+          const submitPaywallGuestEmail = async () => {
+            if (!paywallGuestPlan || !paywallGuestEmail.trim()) return;
+            setPaywallLoadingPlan(paywallGuestPlan);
+            try {
+              const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: paywallGuestPlan, email: paywallGuestEmail.trim() }),
               });
               const data = await res.json();
               if (res.ok && data.url) {
@@ -2952,6 +2972,38 @@ export default function Create() {
                     <span className="text-xs text-muted-foreground/40">5 stories</span>
                   </button>
                 </div>
+
+                {/* Guest email capture — shown when unauthenticated user clicks checkout */}
+                {paywallGuestPlan && (
+                  <div className="w-full flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <p className="text-xs text-muted-foreground text-center">Enter your email to continue</p>
+                    <input
+                      type="email"
+                      autoFocus
+                      value={paywallGuestEmail}
+                      onChange={e => setPaywallGuestEmail(e.target.value)}
+                      onKeyDown={e => { if (e.key === "Enter") submitPaywallGuestEmail(); }}
+                      placeholder="your@email.com"
+                      className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/15 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50"
+                    />
+                    <button
+                      type="button"
+                      disabled={!paywallGuestEmail.trim() || !!paywallLoadingPlan}
+                      onClick={submitPaywallGuestEmail}
+                      className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                    >
+                      {paywallLoadingPlan ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      Continue to payment
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaywallGuestPlan(null)}
+                      className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
 
                 <button
                   type="button"

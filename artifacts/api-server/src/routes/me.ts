@@ -148,22 +148,11 @@ export async function getOrResetUsage(userId: string): Promise<{
     ? (user.storiesGeneratedThisYear ?? 0)
     : (user.storiesGeneratedThisMonth ?? 0);
 
-  // Lazy counter reset: if renewal date has passed, reset counters and advance renewal date.
-  // NOTE: Rollover credits are computed exclusively in the invoice.paid webhook to avoid double-awarding.
-  // This path only resets the usage counter and advances the renewal date.
+  // When the renewal period has passed, treat usage as 0 for display purposes but do NOT write to DB.
+  // The invoice.paid webhook is the sole authority for resetting counters and computing rollover credits.
+  // Writing a reset here before the webhook fires would zero storiesGeneratedThisMonth, causing the
+  // webhook to compute maximum rollover from a zeroed counter (over-crediting).
   if (renewDate && plan !== "free" && new Date() > renewDate) {
-    const newRenewDate = new Date(renewDate);
-    if (planConfig.period === "month") {
-      newRenewDate.setMonth(newRenewDate.getMonth() + 1);
-      await db.update(usersTable)
-        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
-        .where(eq(usersTable.id, userId));
-    } else {
-      newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
-      await db.update(usersTable)
-        .set({ storiesGeneratedThisYear: 0, subscriptionRenewDate: newRenewDate })
-        .where(eq(usersTable.id, userId));
-    }
     used = 0;
   }
 

@@ -3,11 +3,12 @@ import { useAuth } from "./useAuth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type SubPlan = "free" | "monthly" | "annual";
+type SubPlan = "free" | "monthly" | "annual" | "immersive";
 
 export interface SubscriptionState {
   plan: SubPlan;
   isPaid: boolean;
+  isImmersive: boolean;
   addonCredits: number;
   isLoading: boolean;
 }
@@ -58,6 +59,7 @@ export function useSubscription(): SubscriptionState {
   return {
     plan,
     isPaid: plan === "monthly" || plan === "annual",
+    isImmersive: plan === "immersive",
     addonCredits,
     isLoading,
   };

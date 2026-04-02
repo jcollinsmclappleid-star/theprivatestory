@@ -121,7 +121,6 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     // Generate a secure claim token BEFORE creating the Stripe session so it can
     // be embedded directly in the success URL.
     const claimToken = randomUUID();
-    const sessionId = randomUUID(); // placeholder — replaced after session creation
 
     // Create Stripe customer with email so they can recover if needed
     const customer = await stripe.customers.create({
@@ -282,11 +281,12 @@ router.post("/claim", async (req: Request, res: Response) => {
       await db
         .update(usersTable)
         .set({
+          subscriptionPlan: "immersive",
           addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
           stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
         })
         .where(eq(usersTable.id, userId));
-      logger.info({ userId, plan }, "[stripe-claim] Immersive story credited");
+      logger.info({ userId }, "[stripe-claim] Immersive entry credited");
     } else {
       const isMonthly = plan === "monthly";
       const renewDate = new Date();
@@ -488,12 +488,24 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
 
         if (userId) {
           // Authenticated purchase — apply credits directly
-          if (plan === "addon" || plan === "immersive") {
+          if (plan === "addon") {
+            // Add-on story for active subscribers
             await db
               .update(usersTable)
               .set({ addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1` })
               .where(eq(usersTable.id, userId));
-            logger.info({ userId, plan }, "[stripe-webhook] Story credited (+1)");
+            logger.info({ userId, plan }, "[stripe-webhook] Addon story credited (+1)");
+          } else if (plan === "immersive") {
+            // One-time immersive entry — set plan to "immersive" so we can identify these users,
+            // and credit 1 story via addonStoriesRemaining (re-used for the single generation credit)
+            await db
+              .update(usersTable)
+              .set({
+                subscriptionPlan: "immersive",
+                addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
+              })
+              .where(eq(usersTable.id, userId));
+            logger.info({ userId }, "[stripe-webhook] Immersive entry activated");
           } else {
             const isMonthly = plan === "monthly";
             const renewDate = new Date();

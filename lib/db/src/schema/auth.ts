@@ -45,7 +45,7 @@ export const usersTable = pgTable("users", {
   bannedByAdminId: varchar("banned_by_admin_id"),
   blockedGenerationCount: integer("blocked_generation_count").notNull().default(0),
   // Subscription & billing
-  subscriptionPlan: text("subscription_plan", { enum: ["free", "monthly", "annual"] }).notNull().default("free"),
+  subscriptionPlan: text("subscription_plan", { enum: ["free", "monthly", "annual", "immersive"] }).notNull().default("free"),
   storiesGeneratedThisMonth: integer("stories_generated_this_month").notNull().default(0),
   storiesGeneratedThisYear: integer("stories_generated_this_year").notNull().default(0),
   subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),

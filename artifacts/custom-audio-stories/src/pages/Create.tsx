@@ -15,7 +15,7 @@ import { VoiceAvatar } from "@/components/VoiceAvatar";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
-import { AgeGate, hasConfirmedAge, confirmAge } from "@/components/AgeGate";
+import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -1535,7 +1535,7 @@ export default function Create() {
   ];
 
   if (!ageConfirmed) {
-    return <AgeGate onConfirmed={() => { confirmAge(); setAgeConfirmed(true); }} />;
+    return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
   }
 
   if (authLoading) {

@@ -7,7 +7,7 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
-import { AgeGate, hasConfirmedAge, confirmAge } from "@/components/AgeGate";
+import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -1403,7 +1403,7 @@ export default function AfterDark() {
   );
 
   if (!ageConfirmed) {
-    return <AgeGate onConfirmed={() => { confirmAge(); setAgeConfirmed(true); }} />;
+    return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
   }
 
   if (authLoading) {

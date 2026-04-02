@@ -257,7 +257,7 @@ export default function CheckoutSuccess() {
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-glow"
               >
                 <Sparkles className="w-4 h-4" />
-                Create account &amp; get started
+                Get started
               </button>
               <button
                 onClick={openSignIn}

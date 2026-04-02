@@ -797,7 +797,7 @@ function LibraryPromo({ stories }: { stories: Story[] }) {
 
 export default function Home() {
   const { data: stories, isLoading } = useStoriesFallback();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, openSignIn } = useAuth();
   const { isPaid } = useSubscription();
   const recs = useRecommendations(isAuthenticated);
   const quickCreateReady = useQuickCreate(isAuthenticated);
@@ -829,7 +829,7 @@ export default function Home() {
   const startCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
     // Guests can only purchase immersive (one-time). Subscriptions require sign-in.
     if (!isAuthenticated && (plan === "monthly" || plan === "annual")) {
-      navigate("/pricing");
+      openSignIn();
       return;
     }
     setCheckoutLoading(plan);
@@ -852,7 +852,7 @@ export default function Home() {
     } finally {
       setCheckoutLoading(null);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, openSignIn]);
 
   const tonightPicks = (isAuthenticated && recs.for_you.length > 0)
     ? (recs.for_you as Story[])

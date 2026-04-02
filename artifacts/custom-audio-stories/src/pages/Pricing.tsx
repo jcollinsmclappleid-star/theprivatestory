@@ -124,7 +124,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Pricing() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, openSignIn } = useAuth();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
   const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
@@ -177,7 +177,7 @@ export default function Pricing() {
 
   const startCheckout = (plan: "monthly" | "annual" | "addon" | "immersive") => {
     if (!isAuthenticated && (plan === "monthly" || plan === "annual" || plan === "addon")) {
-      setCheckoutError("Please sign in to your account to purchase a subscription.");
+      openSignIn();
       return;
     }
     doCheckout(plan);
@@ -307,7 +307,7 @@ export default function Pricing() {
               {loadingPlan === "immersive" ? (
                 <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
               ) : (
-                isAuthenticated ? "Get a single story" : "Sign up & get a story"
+                isAuthenticated ? "Get a single story" : "Get this story — £7.99"
               )}
             </button>
             <p className="text-center text-[10px] text-muted-foreground/30 mt-2">Perfect for trying before subscribing</p>
@@ -346,7 +346,7 @@ export default function Pricing() {
                 {loadingPlan === "monthly" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
                 ) : (
-                  isAuthenticated ? "Subscribe monthly" : "Sign up to begin"
+                  isAuthenticated ? "Subscribe monthly" : "Get started"
                 )}
               </button>
             </div>
@@ -390,7 +390,7 @@ export default function Pricing() {
                 {loadingPlan === "annual" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
                 ) : (
-                  isAuthenticated ? "Subscribe annually" : "Sign up to begin"
+                  isAuthenticated ? "Subscribe annually" : "Get started"
                 )}
               </button>
               <p className="text-center text-[10px] text-muted-foreground/30 mt-3">

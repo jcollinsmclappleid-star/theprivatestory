@@ -217,12 +217,28 @@ app.use(
 
 // ---------------------------------------------------------------------------
 // SSR HTML routes — serve pre-rendered HTML for SEO landing pages.
-// These sit OUTSIDE the /api prefix so crawlers can access them at their
-// real slugs (e.g. GET /romantic-audio-stories).  The router calls next()
-// for unknown slugs so it never interferes with /api/* routes.
-// Cache-Control is set inside the router handler (public, 24 h).
+// Uses dynamic rendering: bots receive the server-rendered HTML with full
+// meta tags and structured data; real users receive the React SPA so they
+// get the full interactive experience.
+// Add ?_ssr=1 to any URL to preview the SSR output in a browser.
 // ---------------------------------------------------------------------------
-app.use(ssrRouter);
+
+/** Known web-crawler and social-preview user-agent patterns. */
+const BOT_UA_RE =
+  /Googlebot|AdsBot-Google|Google-InspectionTool|Bingbot|MSNBot|Slurp|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|TelegramBot|Slackbot|Discordbot|ia_archiver|AhrefsBot|SemrushBot|DotBot|MJ12bot|GPTBot|ChatGPT-User|ClaudeBot|anthropic-ai|PerplexityBot|Applebot|PinterestBot|Screaming Frog|Rogerbot|archive\.org_bot|MetaInspector/i;
+
+function isBot(req: Request): boolean {
+  if (req.query._ssr === "1") return true; // developer preview
+  const ua = req.headers["user-agent"] ?? "";
+  return BOT_UA_RE.test(ua);
+}
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (isBot(req)) {
+    return ssrRouter(req, res, next);
+  }
+  next();
+});
 
 app.use("/api", router);
 

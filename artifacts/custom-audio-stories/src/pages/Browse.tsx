@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, ChevronLeft, Search, X, Lock } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search, X, Lock, BookOpen, Headphones, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { StoryCard } from "@/components/StoryCard";
 import { SkeletonGrid } from "@/components/SkeletonCard";
@@ -109,6 +109,56 @@ function StoryRow({ categoryId, label, isPaid, onGated }: { categoryId: string; 
   );
 }
 
+function CollectionGate() {
+  const [, navigate] = useLocation();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 pt-8">
+        <p className="text-xs font-medium text-primary uppercase tracking-widest mb-2">Library</p>
+        <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-2">Browse</h1>
+        <p className="text-muted-foreground text-sm">Curated stories, ready to play.</p>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
+        <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
+          <Lock className="w-7 h-7 text-primary" />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-foreground mb-3">Collection access</h2>
+        <p className="text-muted-foreground mb-8 leading-relaxed">
+          The curated collection — original audio stories with new releases every month — is included with every subscription.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+          <button
+            onClick={() => navigate("/pricing")}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-glow"
+          >
+            <Sparkles className="w-4 h-4" />
+            View plans — from £29/month
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+          {[
+            { icon: <BookOpen className="w-4 h-4 text-primary" />, label: "Curated collection", desc: "Original stories across every mood and category." },
+            { icon: <Headphones className="w-4 h-4 text-primary" />, label: "Premium narration", desc: "ElevenLabs voices, chosen for intimacy and clarity." },
+            { icon: <Sparkles className="w-4 h-4 text-primary" />, label: "Monthly releases", desc: "New stories added every month, automatically." },
+          ].map(({ icon, label, desc }) => (
+            <div key={label} className="bg-card/40 border border-border/40 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-1.5">{icon}<span className="text-sm font-semibold text-foreground">{label}</span></div>
+              <p className="text-xs text-muted-foreground">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Browse() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -120,10 +170,12 @@ export default function Browse() {
     queryKey: ["stories-filtered", activeCategory ?? "all", search],
     queryFn: () => fetchStories(activeCategory ?? "all", search || undefined),
     staleTime: 30_000,
-    enabled: !!(activeCategory || search),
+    enabled: isPaid && !!(activeCategory || search),
   });
 
   const isFiltering = !!(activeCategory || search);
+
+  if (!isPaid) return <CollectionGate />;
 
   const activeCategoryLabel = activeCategory
     ? CATEGORIES.find(c => c.id === activeCategory)?.label ?? activeCategory

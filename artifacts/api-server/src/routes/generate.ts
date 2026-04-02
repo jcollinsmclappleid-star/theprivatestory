@@ -3896,16 +3896,15 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
   const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
   const renewDate = user.subscriptionRenewDate;
 
-  // Lazy counter reset when billing period has rolled over
+  // Lazy counter reset when billing period has rolled over.
+  // NOTE: Rollover credits are computed exclusively in the invoice.paid webhook to avoid double-awarding.
+  // This path only resets the usage counter and advances the renewal date.
   if (renewDate && new Date() > renewDate) {
     const newRenewDate = new Date(renewDate);
     if (planConfig.period === "month") {
-      // Compute rollover before resetting counter
-      const unused = Math.max(0, planConfig.limit - (user.storiesGeneratedThisMonth ?? 0));
-      const newRollover = Math.min(10, rolloverCredits + unused);
       newRenewDate.setMonth(newRenewDate.getMonth() + 1);
       await db.update(usersTable)
-        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate, rolloverCredits: newRollover })
+        .set({ storiesGeneratedThisMonth: 0, subscriptionRenewDate: newRenewDate })
         .where(eq(usersTable.id, userId));
     } else {
       newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);

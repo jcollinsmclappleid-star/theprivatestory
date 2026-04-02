@@ -1,8 +1,40 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response } from "express";
+import { eq } from "drizzle-orm";
+import { db } from "@workspace/db";
+import { usersTable } from "@workspace/db/schema";
 import { mockStories, mockSeries } from "./mockData.js";
 import { storiesStore, seriesStore } from "../lib/storage.js";
 
 const router: IRouter = Router();
+
+/**
+ * Verify the requesting user has an active subscription (or is an admin).
+ * Returns true if access is granted; false if the response has already been sent with 401/403.
+ */
+async function requireActiveSubscription(req: Request, res: Response): Promise<boolean> {
+  if (!req.isAuthenticated?.()) {
+    res.status(401).json({ error: "Sign in to access the collection.", code: "UNAUTHENTICATED" });
+    return false;
+  }
+  const userId = (req.user as { id?: string })?.id;
+  if (!userId) {
+    res.status(401).json({ error: "Sign in to access the collection.", code: "UNAUTHENTICATED" });
+    return false;
+  }
+  const [user] = await db.select({
+    subscriptionStatus: usersTable.subscriptionStatus,
+    subscriptionPlan: usersTable.subscriptionPlan,
+    isAdmin: usersTable.isAdmin,
+  }).from(usersTable).where(eq(usersTable.id, userId));
+
+  if (user?.isAdmin) return true;
+  const isActive = user?.subscriptionStatus === "active" && user?.subscriptionPlan && user.subscriptionPlan !== "free";
+  if (!isActive) {
+    res.status(403).json({ error: "The curated collection is available to active subscribers. Visit our pricing page to subscribe.", code: "SUBSCRIPTION_REQUIRED" });
+    return false;
+  }
+  return true;
+}
 
 // ---------------------------------------------------------------------------
 // Normalise a stored DB story into the public Story shape
@@ -41,6 +73,8 @@ function dbStoryToPublic(s: Record<string, unknown>) {
 // ---------------------------------------------------------------------------
 
 router.get("/stories", async (req, res) => {
+  if (!await requireActiveSubscription(req, res)) return;
+
   const { mood, search, category } = req.query as {
     mood?: string;
     search?: string;
@@ -104,6 +138,8 @@ router.get("/stories", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 router.get("/stories/:id", async (req, res) => {
+  if (!await requireActiveSubscription(req, res)) return;
+
   try {
     const dbStory = await storiesStore.get(req.params.id);
     if (dbStory) {
@@ -126,7 +162,9 @@ router.get("/stories/:id", async (req, res) => {
 // Series routes — DB-backed with mock fallback
 // ---------------------------------------------------------------------------
 
-router.get("/series", async (_req, res) => {
+router.get("/series", async (req, res) => {
+  if (!await requireActiveSubscription(req, res)) return;
+
   try {
     const dbSeries = await seriesStore.getAll();
     const published = dbSeries.filter((s) => s.status === "published");
@@ -149,6 +187,8 @@ router.get("/series", async (_req, res) => {
 });
 
 router.get("/series/:id", async (req, res) => {
+  if (!await requireActiveSubscription(req, res)) return;
+
   try {
     const dbSeries = await seriesStore.get(req.params.id);
     if (dbSeries) {

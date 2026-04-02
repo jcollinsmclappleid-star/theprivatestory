@@ -123,5 +123,25 @@ export const baTwoFactorTable = pgTable("ba_two_factor", {
     .references(() => usersTable.id, { onDelete: "cascade" }),
 });
 
+// Pending purchases — guest (unauthenticated) Stripe checkouts awaiting account creation
+// Created before the Stripe session so the claim token can be embedded in the success URL.
+// On account creation the user calls /api/stripe/claim with the token to receive their credits.
+export const pendingPurchasesTable = pgTable("pending_purchases", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  claimToken: varchar("claim_token", { length: 64 }).notNull().unique(),
+  stripeSessionId: varchar("stripe_session_id").notNull().unique(),
+  stripeCustomerId: varchar("stripe_customer_id"),
+  customerEmail: varchar("customer_email").notNull(),
+  plan: text("plan", { enum: ["monthly", "annual", "immersive"] }).notNull(),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  confirmed: boolean("confirmed").notNull().default(false),
+  claimed: boolean("claimed").notNull().default(false),
+  claimedByUserId: varchar("claimed_by_user_id"),
+  claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
 export type UpsertUser = typeof usersTable.$inferInsert;
 export type User = typeof usersTable.$inferSelect;
+export type PendingPurchase = typeof pendingPurchasesTable.$inferSelect;

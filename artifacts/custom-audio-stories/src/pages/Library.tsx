@@ -256,7 +256,7 @@ export default function Library() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const { isPaid } = useSubscription();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<LibraryTab>("saved");
+  const [activeTab, setActiveTab] = useState<LibraryTab>(isPaid ? "saved" : "generated");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
   const [variations, setVariations] = useState<FullGeneratedStory[]>([]);

@@ -34,6 +34,7 @@ import NotFound from "@/pages/not-found";
 import ResetPassword from "@/pages/ResetPassword";
 import Contact from "@/pages/Contact";
 import Pricing from "@/pages/Pricing";
+import CheckoutSuccess from "@/pages/CheckoutSuccess";
 import PersonalisedAudioStories from "@/pages/seo/PersonalisedAudioStories";
 import PrivateAudioStories from "@/pages/seo/PrivateAudioStories";
 import CreateYourOwnAudioStory from "@/pages/seo/CreateYourOwnAudioStory";
@@ -90,6 +91,7 @@ function Router() {
             <Route path="/refund-policy" component={RefundPolicy} />
             <Route path="/contact" component={Contact} />
             <Route path="/pricing" component={Pricing} />
+            <Route path="/checkout/success" component={CheckoutSuccess} />
             <Route path="/personalised-audio-stories" component={PersonalisedAudioStories} />
             <Route path="/private-audio-stories" component={PrivateAudioStories} />
             <Route path="/create-your-own-audio-story" component={CreateYourOwnAudioStory} />

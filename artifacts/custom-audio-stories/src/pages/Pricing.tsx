@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearch } from "wouter";
 import {
@@ -91,7 +91,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Can I buy more personalised stories?",
-    a: "Yes. Additional personalised stories are available for £3.99 each, whenever the moment calls for it — without changing your plan.",
+    a: "Yes. Additional personalised stories are available for £3.99 each — for active subscribers only, without changing your plan. They appear alongside your monthly allowance the moment you purchase.",
   },
   {
     q: "Do unused monthly stories roll over?",
@@ -129,6 +129,17 @@ export default function Pricing() {
   const checkoutResult = new URLSearchParams(search).get("checkout");
   const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [usageData, setUsageData] = useState<{ plan: string; subscriptionStatus: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setUsageData(d); })
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
 
   const startCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
     if (!isAuthenticated) {
@@ -473,17 +484,23 @@ export default function Pricing() {
                 <p className="font-display text-4xl font-bold text-primary mb-0.5">£3.99</p>
                 <p className="text-xs text-muted-foreground/40">per additional story</p>
               </div>
-              <button
-                onClick={() => startCheckout("addon")}
-                disabled={loadingPlan !== null}
-                className="w-full py-2.5 px-5 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/20 hover:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "addon" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting…</span>
-                ) : (
-                  isAuthenticated ? "Buy a story" : "Sign up to buy"
-                )}
-              </button>
+              {isActiveSub ? (
+                <button
+                  onClick={() => startCheckout("addon")}
+                  disabled={loadingPlan !== null}
+                  className="w-full py-2.5 px-5 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/20 hover:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {loadingPlan === "addon" ? (
+                    <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting…</span>
+                  ) : (
+                    "Add a story"
+                  )}
+                </button>
+              ) : (
+                <p className="text-xs text-muted-foreground/50 text-center max-w-[140px] leading-relaxed">
+                  Available to active subscribers only
+                </p>
+              )}
             </div>
           </div>
         </div>

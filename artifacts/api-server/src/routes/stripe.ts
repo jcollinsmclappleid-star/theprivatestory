@@ -64,6 +64,15 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       return;
     }
 
+    // Addon stories are only available to active subscribers
+    if (plan === "addon") {
+      const hasActiveSub = user.subscriptionStatus === "active" && user.subscriptionPlan && user.subscriptionPlan !== "free";
+      if (!hasActiveSub) {
+        res.status(403).json({ error: "Additional stories are available to active subscribers only. Please subscribe to a monthly or annual plan first." });
+        return;
+      }
+    }
+
     let customerId = user.stripeCustomerId ?? undefined;
 
     if (!customerId) {

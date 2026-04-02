@@ -47,7 +47,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
   const isAuthenticated = !!(req.isAuthenticated && req.isAuthenticated());
   const userId = isAuthenticated ? (req.user?.id ?? null) : null;
 
-  const { plan, email } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive"; email?: string };
+  const { plan } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive" };
   if (!plan || !["monthly", "annual", "addon", "immersive"].includes(plan)) {
     res.status(400).json({ error: "Invalid plan. Choose monthly, annual, addon, or immersive." });
     return;

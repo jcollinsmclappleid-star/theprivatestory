@@ -218,15 +218,23 @@ psql "$DATABASE_URL" -t -A -c "SELECT story_dna->>'power_dynamic', story_dna->>'
 The 10 SEO categories must match exactly between frontend and backend:
 `forbidden_desire`, `dominant_surrendered`, `late_night`, `explicit_collection`, `slow_burn`, `emotional_desire`, `second_chance`, `dark_romance`, `historical_romance`, `first_time`
 
-**SEO landing pages** — 20 pages total in `src/pages/seo/`, all using `SEOPage.tsx` component:
+**SEO landing pages** — 24 pages total in `src/pages/seo/`, all using `SEOPage.tsx` component:
 - Core cluster (4): `/personalised-audio-stories`, `/private-audio-stories`, `/create-your-own-audio-story`, `/ai-audio-story-generator`
 - Bedtime cluster (3): `/sleep-audio-stories`, `/bedtime-audio-stories`, `/relaxing-audio-stories`
 - Romantic cluster (3): `/romantic-audio-stories`, `/love-stories-audio`, `/emotional-audio-stories`
 - Intimate cluster (5): `/intimate-audio-stories`, `/late-night-audio-stories`, `/slow-burn-audio-stories`, `/confident-energy-stories`, `/quiet-intensity-stories`
 - Genre & Audience cluster (5): `/dark-romance-audio-stories`, `/forbidden-romance-audio-stories`, `/enemies-to-lovers-audio-stories`, `/adult-audio-stories`, `/audio-stories-for-women`
+- Compare cluster (4): `/audio-stories-vs-audiobooks`, `/audio-stories-vs-podcasts`, `/best-audio-story-app-for-adults`, `/alternatives-to-romance-audiobooks`
 
-**FAQ JSON-LD**: `SEOPage.tsx` injects a `FAQPage` schema script tag into `<head>` on mount for all pages automatically.
-All 20 pages are in `public/sitemap.xml` and `public/llms.txt`.
+**SSR HTML routes** (Task #99): All 24 SEO pages have Express GET routes in the api-server that return full SSR HTML for crawlers.
+- `artifacts/api-server/src/seoPageData.ts` — extracted data for all 24 pages (slug, title, description, h1, tagline, badge, faqs, sections)
+- `artifacts/api-server/src/ssrShared.ts` — `ssrHtmlShell()` function that generates complete HTML documents with CSS, nav, footer
+- `artifacts/api-server/src/routes/ssr.ts` — Express GET routes for all 24 slugs; returns HTML with FAQPage + BreadcrumbList + WebPage JSON-LD; `Cache-Control: public, max-age=86400`
+- Routes are registered in `app.ts` before `/api/*`, call `next()` for unknown slugs (no interference with API routes)
+- `index.html` static canonical removed (useSEO hook sets per-page canonical dynamically for the SPA)
+
+**FAQ JSON-LD**: `SEOPage.tsx` injects a `FAQPage` schema script tag into `<head>` on mount for all SPA pages automatically. SSR routes also include the full FAQPage schema in the HTML response.
+All 24 pages are in `public/sitemap.xml` and `public/llms.txt`.
 
 ### `scripts` (`@workspace/scripts`)
 

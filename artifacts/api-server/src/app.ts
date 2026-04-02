@@ -9,6 +9,7 @@ import { toNodeHandler } from "better-auth/node";
 import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 import { auth } from "./lib/auth.js";
 import router from "./routes/index.js";
+import ssrRouter from "./routes/ssr.js";
 import { logger } from "./lib/logger.js";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { db, contentBlocks, csamReports } from "@workspace/db";
@@ -199,6 +200,15 @@ app.use("/api/generate-full-story", generationLimiter);
 app.use("/api/generate-variation", generationLimiter);
 app.use("/api/continue-story", generationLimiter);
 app.use("/api/rewrite-story", generationLimiter);
+
+// ---------------------------------------------------------------------------
+// SSR HTML routes — serve pre-rendered HTML for SEO landing pages.
+// These sit OUTSIDE the /api prefix so crawlers can access them at their
+// real slugs (e.g. GET /romantic-audio-stories).  The router calls next()
+// for unknown slugs so it never interferes with /api/* routes.
+// Cache-Control is set inside the router handler (public, 24 h).
+// ---------------------------------------------------------------------------
+app.use(ssrRouter);
 
 app.use("/api", router);
 

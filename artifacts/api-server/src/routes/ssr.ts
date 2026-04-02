@@ -396,7 +396,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/dark-romance-audio-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/forbidden-romance-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/enemies-to-lovers-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  { loc: "/adult-audio-stories",              lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // { loc: "/adult-audio-stories",           lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },  // Wave 2
   { loc: "/audio-stories-for-women",          lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   // SEO landing pages — Decision-stage comparison cluster
   { loc: "/audio-stories-vs-audiobooks",      lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
@@ -406,11 +406,11 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // SEO landing pages — Competitor alternative pages
   { loc: "/dipsea-alternative", lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.8" },
   { loc: "/quinn-alternative",  lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.8" },
-  // SEO landing pages — Adult content cluster
-  { loc: "/audio-erotica-for-women",     lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  { loc: "/personalised-erotica",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  { loc: "/erotic-audio-stories",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  { loc: "/adult-bedtime-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  // SEO landing pages — Adult content cluster (Wave 2 — add back after domain standing established)
+  // { loc: "/audio-erotica-for-women",     lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // { loc: "/personalised-erotica",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // { loc: "/erotic-audio-stories",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // { loc: "/adult-bedtime-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
   { loc: "/ai-romance-stories-for-women", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
   // SEO landing pages — Definition pages
   { loc: "/what-is-a-personalised-audio-story", lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },

@@ -2256,8 +2256,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
       </AnimatePresence>
 
-      {/* Navigation */}
-      <div className="mt-8 flex gap-3">
+      {/* Navigation — always above dropdown panels (z-[60] > z-50) */}
+      <div className="mt-8 flex gap-3 relative z-[60]">
         {step > 0 && (
           <button
             onClick={back}

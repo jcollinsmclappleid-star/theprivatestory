@@ -112,50 +112,38 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
 
     // ---- GUEST FLOW ----
-    const guestEmail = (email ?? "").trim().toLowerCase();
-    if (!guestEmail || !guestEmail.includes("@")) {
-      res.status(400).json({ error: "Please provide a valid email address to continue." });
-      return;
-    }
+    // No email needed upfront — Stripe collects it during checkout.
+    // The webhook will populate customerEmail from session.customer_details.email.
 
     // Generate a secure claim token BEFORE creating the Stripe session so it can
     // be embedded directly in the success URL.
     const claimToken = randomUUID();
 
-    // Create Stripe customer with email so they can recover if needed
-    const customer = await stripe.customers.create({
-      email: guestEmail,
-      metadata: { guestCheckout: "true" },
-    });
-
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30); // 30-day claim window
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      customer: customer.id,
-      customer_email: undefined, // customer already set
+      customer_creation: "always",
       line_items: [{ price: priceId, quantity: 1 }],
       mode: plan === "immersive" ? "payment" : "subscription",
       success_url: `${SITE_URL}/checkout/success?token=${claimToken}`,
       cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
       allow_promotion_codes: true,
-      metadata: { guestToken: claimToken, plan, guestEmail },
+      metadata: { guestToken: claimToken, plan },
     };
 
     const stripeSession = await stripe.checkout.sessions.create(sessionParams);
 
-    // Create the pending purchase record
+    // Create the pending purchase record (email filled in by webhook after payment)
     await db.insert(pendingPurchasesTable).values({
       claimToken,
       stripeSessionId: stripeSession.id,
-      stripeCustomerId: customer.id,
-      customerEmail: guestEmail,
       plan: plan as "monthly" | "annual" | "immersive",
       confirmed: false,
       expiresAt,
     });
 
-    logger.info({ guestEmail, plan, claimToken }, "[stripe] Guest checkout session created");
+    logger.info({ plan, claimToken }, "[stripe] Guest checkout session created");
     res.json({ url: stripeSession.url });
   } catch (err) {
     logger.error({ err, userId, plan }, "[stripe] Failed to create checkout session");
@@ -486,8 +474,6 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         const userId = session.metadata?.userId;
         const guestToken = session.metadata?.guestToken;
         const plan = session.metadata?.plan as "monthly" | "annual" | "addon" | "immersive" | undefined;
-        const guestEmail = session.metadata?.guestEmail;
-
         if (!plan) break;
 
         if (userId) {
@@ -540,10 +526,14 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         } else if (guestToken) {
           // Guest purchase — mark as confirmed so claim endpoint accepts it
           const stripeSubId = typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
+          const guestEmail = session.customer_details?.email ?? session.customer_email ?? null;
+          const stripeCustomerId = typeof session.customer === "string" ? session.customer : session.customer?.id ?? null;
           await db
             .update(pendingPurchasesTable)
             .set({
               confirmed: true,
+              ...(guestEmail ? { customerEmail: guestEmail } : {}),
+              ...(stripeCustomerId ? { stripeCustomerId } : {}),
               ...(stripeSubId ? { stripeSubscriptionId: stripeSubId } : {}),
             })
             .where(eq(pendingPurchasesTable.claimToken, guestToken));

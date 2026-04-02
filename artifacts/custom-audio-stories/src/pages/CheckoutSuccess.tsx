@@ -10,7 +10,7 @@ interface PurchaseInfo {
   plan: "monthly" | "annual" | "immersive";
   confirmed: boolean;
   claimed: boolean;
-  customerEmail: string;
+  customerEmail: string | null;
 }
 
 function planLabel(plan: string): string {
@@ -265,9 +265,11 @@ export default function CheckoutSuccess() {
               >
                 I already have an account — sign in
               </button>
-              <p className="text-xs text-muted-foreground/50 pt-2">
-                A confirmation was sent to {purchase.customerEmail}
-              </p>
+              {purchase.customerEmail && (
+                <p className="text-xs text-muted-foreground/50 pt-2">
+                  A confirmation was sent to {purchase.customerEmail}
+                </p>
+              )}
             </div>
           )}
         </div>

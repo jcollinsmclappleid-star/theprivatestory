@@ -826,8 +826,8 @@ export default function Home() {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const startCheckout = useCallback(async (plan: "monthly" | "annual") => {
-    if (!isAuthenticated) {
+  const startCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
+    if (plan !== "immersive" && !isAuthenticated) {
       navigate("/pricing");
       return;
     }
@@ -837,7 +837,7 @@ export default function Home() {
       const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        ...(isAuthenticated ? { credentials: "include" } : {}),
         body: JSON.stringify({ plan }),
       });
       const data = await res.json() as { url?: string; error?: string };
@@ -930,6 +930,23 @@ export default function Home() {
                 See how it works
               </a>
             </div>
+
+            {!isPaid && (
+              <div className="mb-4">
+                <button
+                  onClick={() => startCheckout("immersive")}
+                  disabled={checkoutLoading === "immersive"}
+                  className="flex items-center gap-2 text-xs text-primary/60 hover:text-primary transition-colors disabled:opacity-50"
+                >
+                  {checkoutLoading === "immersive" ? (
+                    <span className="w-3 h-3 rounded-full border border-primary/40 border-t-primary animate-spin" />
+                  ) : (
+                    <span className="w-3 h-3 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[8px] font-bold">£</span>
+                  )}
+                  Try one story for £7.99 — no subscription needed
+                </button>
+              </div>
+            )}
 
             {quickCreateReady && isPaid && (
               <div className="mb-4">

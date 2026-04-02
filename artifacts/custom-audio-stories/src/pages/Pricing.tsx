@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link, useSearch } from "wouter";
 import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, ChevronRight, Check, Star, Moon,
-  EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle, X, Mail,
+  EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -132,24 +132,17 @@ export default function Pricing() {
   const [usageData, setUsageData] = useState<{ plan: string; subscriptionStatus: string | null } | null>(null);
   const pendingCheckoutRef = useRef<string | null>(null);
 
-  // Guest email modal
-  const [guestModalPlan, setGuestModalPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
-  const [guestEmail, setGuestEmail] = useState("");
-  const [guestEmailError, setGuestEmailError] = useState<string | null>(null);
-
   const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
 
-  const doCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive", email?: string) => {
+  const doCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
     setLoadingPlan(plan);
     setCheckoutError(null);
     try {
-      const body: Record<string, string> = { plan };
-      if (email) body.email = email;
       const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ plan }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
@@ -187,29 +180,10 @@ export default function Pricing() {
       setCheckoutError("Please sign in to purchase additional stories.");
       return;
     }
-    if (isAuthenticated) {
-      doCheckout(plan);
-    } else {
-      // Guest checkout — show email modal
-      setGuestEmail("");
-      setGuestEmailError(null);
-      setGuestModalPlan(plan);
-    }
-  };
-
-  const submitGuestEmail = () => {
-    const email = guestEmail.trim().toLowerCase();
-    if (!email || !email.includes("@") || !email.includes(".")) {
-      setGuestEmailError("Please enter a valid email address.");
-      return;
-    }
-    setGuestEmailError(null);
-    setGuestModalPlan(null);
-    if (guestModalPlan) doCheckout(guestModalPlan, email);
+    doCheckout(plan);
   };
 
   return (
-    <>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -633,66 +607,5 @@ export default function Pricing() {
       </section>
 
     </motion.div>
-
-    {/* Guest email modal */}
-    <AnimatePresence>
-      {guestModalPlan && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={(e) => { if (e.target === e.currentTarget) setGuestModalPlan(null); }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 8 }}
-            className="w-full max-w-sm bg-card border border-border/50 rounded-3xl p-8 shadow-2xl"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                <span className="font-semibold text-foreground text-sm">Your email</span>
-              </div>
-              <button
-                onClick={() => setGuestModalPlan(null)}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-              Enter your email so we can send your purchase confirmation and account setup link.
-            </p>
-            <input
-              type="email"
-              value={guestEmail}
-              onChange={(e) => { setGuestEmail(e.target.value); setGuestEmailError(null); }}
-              onKeyDown={(e) => { if (e.key === "Enter") submitGuestEmail(); }}
-              placeholder="your@email.com"
-              autoFocus
-              className="w-full bg-background/60 border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 mb-1 transition-all"
-            />
-            {guestEmailError && (
-              <p className="text-xs text-destructive mb-3">{guestEmailError}</p>
-            )}
-            {!guestEmailError && <div className="mb-4" />}
-            <button
-              onClick={submitGuestEmail}
-              disabled={!!loadingPlan}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
-            >
-              {loadingPlan ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              Continue to checkout
-            </button>
-            <p className="text-center text-xs text-muted-foreground/50 mt-4">
-              No account needed to pay. You'll create one after.
-            </p>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-    </>
   );
 }

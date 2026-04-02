@@ -135,7 +135,7 @@ export const pendingPurchasesTable = pgTable("pending_purchases", {
   claimToken: varchar("claim_token", { length: 64 }).notNull().unique(),
   stripeSessionId: varchar("stripe_session_id").notNull().unique(),
   stripeCustomerId: varchar("stripe_customer_id"),
-  customerEmail: varchar("customer_email").notNull(),
+  customerEmail: varchar("customer_email"),
   plan: text("plan", { enum: ["monthly", "annual", "immersive"] }).notNull(),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   confirmed: boolean("confirmed").notNull().default(false),

@@ -202,12 +202,12 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <!-- Structured data -->
   ${schemasHtml}
 
-  <link rel="icon" type="image/svg+xml" href="${LOGO_SVG_INLINE}" />
+  <link rel="icon" type="image/png" href="/logo.png" />
   <style>${CSS}</style>
 </head>
 <body>
   <nav aria-label="Site navigation">
-    <a class="logo" href="/"><img src="${LOGO_SVG_INLINE}" width="28" height="28" alt="The Private Story" style="vertical-align:middle;border-radius:6px;margin-right:8px" />The Private Story</a>
+    <a class="logo" href="/"><img src="/logo.png" width="28" height="28" alt="The Private Story" style="vertical-align:middle;border-radius:6px;margin-right:8px" />The Private Story</a>
     <ul>
       <li><a href="/create">Create your story</a></li>
       <li><a href="/pricing">Pricing</a></li>

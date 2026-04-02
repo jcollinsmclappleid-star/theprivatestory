@@ -202,6 +202,18 @@ app.use("/api/continue-story", generationLimiter);
 app.use("/api/rewrite-story", generationLimiter);
 
 // ---------------------------------------------------------------------------
+// Static brand assets — logo, OG image, cover images, voice samples.
+// Served from public/ (built from public-static/ by build.mjs).
+// These are public-safe files with no user data — no auth required.
+// ---------------------------------------------------------------------------
+app.use(
+  express.static(path.resolve(__dirname, "..", "public"), {
+    maxAge: "7d",
+    immutable: false,
+  }),
+);
+
+// ---------------------------------------------------------------------------
 // SSR HTML routes — serve pre-rendered HTML for SEO landing pages.
 // These sit OUTSIDE the /api prefix so crawlers can access them at their
 // real slugs (e.g. GET /romantic-audio-stories).  The router calls next()

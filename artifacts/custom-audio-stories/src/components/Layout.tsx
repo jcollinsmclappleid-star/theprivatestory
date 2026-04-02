@@ -421,6 +421,8 @@ function Footer() {
             { label: "Audio stories vs podcasts", href: "/audio-stories-vs-podcasts" },
             { label: "Best audio story app", href: "/best-audio-story-app-for-adults" },
             { label: "Alternatives to romance audiobooks", href: "/alternatives-to-romance-audiobooks" },
+            { label: "Dipsea alternative", href: "/dipsea-alternative" },
+            { label: "Quinn alternative", href: "/quinn-alternative" },
           ]} />
 
         </div>

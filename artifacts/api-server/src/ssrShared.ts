@@ -42,6 +42,26 @@ p{color:#a09080;margin-bottom:16px;line-height:1.75}
 .faq-item:last-child{border-bottom:1px solid #1e1e1e}
 .faq-q{font-family:Georgia,serif;font-weight:bold;color:#e8e6e3;margin-bottom:10px;font-size:1rem}
 .faq-a{color:#a09080;font-size:.95rem;line-height:1.7}
+.comparison-table{width:100%;border-collapse:collapse;margin-bottom:40px;font-size:.95rem}
+.comparison-table caption{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#4a3f35;margin-bottom:10px;font-family:Georgia,serif;caption-side:top;padding-bottom:8px}
+.comparison-table th{text-align:left;padding:12px 14px;border-bottom:1px solid #222;color:#e8e6e3;font-size:13px;font-family:Georgia,serif;background:#0f0f10}
+.comparison-table td{padding:12px 14px;border-bottom:1px solid #1a1a1a;color:#a09080;vertical-align:top}
+.comparison-table td:first-child{color:#e8e6e3;font-weight:500;width:32%}
+.comparison-table td:nth-child(2){color:#c9a227}
+.comparison-table tr:hover td{background:rgba(201,162,39,.03)}
+.defined-term-box{border-left:3px solid #c9a227;background:rgba(201,162,39,.04);padding:20px 24px;margin-bottom:32px;border-radius:0 8px 8px 0}
+.defined-term-box h2{font-size:1.2rem;margin-bottom:8px;color:#e8e6e3}
+.defined-term-box p{margin:0;color:#a09080;font-size:.95rem}
+.competitor-table{width:100%;border-collapse:collapse;margin:24px 0 40px;font-size:.9rem}
+.competitor-table th{padding:12px 14px;border-bottom:2px solid #333;text-align:left;color:#e8e6e3;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#0f0f10}
+.competitor-table td{padding:12px 14px;border-bottom:1px solid #1a1a1a;color:#a09080;vertical-align:top}
+.competitor-table td:first-child{color:#e8e6e3;font-weight:500;width:30%}
+.competitor-table td:nth-child(2){color:#c9a227}
+.competitor-table tr:last-child td{border-bottom:none}
+.hiw-step{margin-bottom:20px}
+.hiw-step strong{display:block;color:#e8e6e3;margin-bottom:4px;font-family:Georgia,serif}
+.scenario-item,.benefit-item{border:1px solid #1e1e1e;padding:16px;border-radius:10px;margin-bottom:12px}
+.scenario-item strong,.benefit-item strong{display:block;color:#c9a227;margin-bottom:6px;font-size:1rem;font-family:Georgia,serif}
 footer{border-top:1px solid #1a1a1a;background:#050506;padding:48px 24px 32px}
 .footer-inner{max-width:1200px;margin:0 auto}
 .footer-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:32px;margin-bottom:40px}
@@ -118,6 +138,8 @@ const FOOTER_HTML = `
           <li><a href="/audio-stories-vs-podcasts">Audio stories vs podcasts</a></li>
           <li><a href="/best-audio-story-app-for-adults">Best audio story app</a></li>
           <li><a href="/alternatives-to-romance-audiobooks">Alternatives to romance audiobooks</a></li>
+          <li><a href="/dipsea-alternative">Dipsea alternative</a></li>
+          <li><a href="/quinn-alternative">Quinn alternative</a></li>
         </ul>
       </div>
     </div>

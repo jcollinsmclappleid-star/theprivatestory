@@ -1,3 +1,9 @@
+export interface ComparisonTableRow {
+  feature: string;
+  thePrivateStory: string;
+  other: string;
+}
+
 export interface SEOPageConfig {
   meta: { title: string; description: string };
   hero: {
@@ -32,4 +38,9 @@ export interface SEOPageConfig {
     links: Array<{ label: string; href: string }>;
   };
   faqs: Array<{ q: string; a: string }>;
+  comparisonTable?: {
+    caption: string;
+    otherLabel: string;
+    rows: ComparisonTableRow[];
+  };
 }

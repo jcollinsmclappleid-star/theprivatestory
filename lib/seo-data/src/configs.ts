@@ -476,6 +476,18 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       { q: `What intensity level can personalised romance audio stories reach?`, a: `The intensity depends on the choices you make in the creation flow. The Private Story creates adult content from quietly sensual and atmospheric through to deeply adult in tone — shaped by your preferences, not by a platform default. Across all intensity levels, the focus is on desire, tension, connection, and emotional experience that feels genuinely yours rather than assembled for a general audience.` },
       { q: `How long are romantic personalised audio stories?`, a: `Stories typically run between fifteen and thirty minutes depending on the preferences you choose. This is designed for the specific listening window when romantic audio is most wanted — the wind-down hour, the pre-sleep session, quiet time alone — where a complete experience in thirty minutes is more valuable than the opening chapters of a multi-hour audiobook.` },
     ],
+  comparisonTable: {
+    caption: "Personalised audio stories vs romance audiobooks",
+    otherLabel: "Romance audiobooks",
+    rows: [
+      { feature: "Content creation", thePrivateStory: "Generated for you at the moment of listening", other: "Written for a general audience before you arrived" },
+      { feature: "Personalisation", thePrivateStory: "Built around your mood, tone, and dynamic choices", other: "Same for every reader regardless of mood" },
+      { feature: "Length", thePrivateStory: "15–30 minutes — sized for the listening window", other: "6–20+ hours — requires sustained commitment" },
+      { feature: "Privacy", thePrivateStory: "Completely private — exists only in your account", other: "On a shared platform with public reviews and ratings" },
+      { feature: "Discovery", thePrivateStory: "Choose how you want to feel; story is created to match", other: "Browse catalogue and hope something fits your mood" },
+      { feature: "Price", thePrivateStory: "From £29/month for 5 personalised stories", other: "£7.99–£14.99/month; popular titles cost extra credits" },
+    ],
+  },
 };
 
 export const audioStoriesForWomenConfig: SEOPageConfig = {
@@ -792,6 +804,18 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       { q: `Are audiobooks or audio stories better for sleep?`, a: `Personalised audio stories are significantly more effective for sleep than audiobooks. Audiobooks require sustained narrative engagement — following plot, remembering characters, tracking where you are in the story — which keeps the mind active. Personalised audio stories created with a sleep or relaxation intent are toned and paced to carry you toward rest rather than maintain your attention. The personalisation means the tone matches your current state rather than requiring you to adapt.` },
       { q: `How long does a personalised audio story take to create?`, a: `The creation process — choosing your mood, tone, and preferences — takes less than two minutes. Your story is then generated and ready to listen to shortly after. The story itself runs between fifteen and thirty minutes depending on your selections.` },
     ],
+  comparisonTable: {
+    caption: "Personalised audio stories vs audiobooks",
+    otherLabel: "Audiobooks",
+    rows: [
+      { feature: "Personalisation", thePrivateStory: "Story created around your mood and choices", other: "Fixed content written for a general audience" },
+      { feature: "Length", thePrivateStory: "15–30 minutes per story", other: "6–20+ hours per title" },
+      { feature: "Privacy", thePrivateStory: "Private to your account; no public history", other: "Library with public ratings and shared listening data" },
+      { feature: "Engagement style", thePrivateStory: "Passive emotional experience — relax and listen", other: "Active narrative engagement — track plot and characters" },
+      { feature: "Best for", thePrivateStory: "Winding down, sleep, emotional experience", other: "Sustained narrative, learning, commuting" },
+      { feature: "Content register", thePrivateStory: "Adult, emotionally intelligent, tailored to you", other: "Varies widely; adult titles in separate sections" },
+    ],
+  },
 };
 
 export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
@@ -963,6 +987,18 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       { q: `How are audio stories different from narrative podcasts?`, a: `Narrative podcasts — scripted fiction podcasts, audio dramas — are closer in format to audio stories than interview or discussion podcasts. But they share the same fundamental characteristic: they were made before you arrived, for a general audience, with a fixed narrative that goes where the creator decided it goes. A personalised audio story is created in response to you — your mood, your preferences, your direction. The narrative serves your emotional needs rather than the creator's vision.` },
       { q: `Is there an audio story platform for adults?`, a: `The Private Story is a personalised audio story platform designed specifically for adults. It creates stories around your mood and preferences — private, emotionally intelligent, and calibrated for adult experience. Unlike podcast platforms, there is no public feed, no shared content library, and no social component. Everything is created for and heard by you alone.` },
     ],
+  comparisonTable: {
+    caption: "Personalised audio stories vs podcasts",
+    otherLabel: "Podcasts",
+    rows: [
+      { feature: "Content personalisation", thePrivateStory: "Created around your mood and choices tonight", other: "Made for a general audience; the same for everyone" },
+      { feature: "Cognitive demand", thePrivateStory: "Passive — no narrative tracking required", other: "Active — follow hosts, arguments, story arcs" },
+      { feature: "Wind-down effectiveness", thePrivateStory: "Paced and toned for relaxation", other: "Optimised for engagement — keeps the mind active" },
+      { feature: "Privacy", thePrivateStory: "Private account; no public listening history", other: "Listening data shared with platform and advertisers" },
+      { feature: "Length", thePrivateStory: "15–30 minutes — complete in one session", other: "20–90 minutes; often left partially listened" },
+      { feature: "Content register", thePrivateStory: "Adult, intimate, emotionally calibrated", other: "Ranges widely; adult content limited" },
+    ],
+  },
 };
 
 export const bedtimeAudioStoriesConfig: SEOPageConfig = {
@@ -3571,6 +3607,409 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
     ],
 };
 
+export const audioEroticaForWomenConfig: SEOPageConfig = {
+  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy tonight. Private, AI-generated, and narrated. Not a library — a story built for you.` },
+  hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, tonight, and heard only by you.` },
+  sections: [
+    {
+      h2: "What Audio Erotica for Women Actually Means",
+      paragraphs: [
+        "The phrase 'audio erotica for women' gets used to describe a wide range of content — some of it genuinely created with a female audience in mind, much of it not. What women consistently report wanting from erotic audio fiction is different from the default assumptions that shaped most early audio erotica: emotional context, character depth, tension before resolution, a specific quality of attention that feels like it understands female desire rather than approximates it.",
+        "Audio erotica for women at The Private Story starts from this distinction. The content is generated around your emotional register and the quality of desire you want the story to explore — not from a template calibrated for the broadest possible audience. The difference between content made for a general audience that includes women and content made specifically around what you, tonight, want to feel is the difference between a best guess and an answer.",
+        "Personalisation here means that the dynamic you choose — its texture, its power register, its emotional weight — shapes the story from the first sentence. If you want a story that builds slowly through attention and proximity rather than rushing to resolution, that is what is created. If you want something more direct but still grounded in emotional specificity, the creation flow lets you express that. The story responds to your choices rather than presenting you with options from a pre-existing catalogue.",
+      ],
+    },
+    {
+      h2: "The Privacy Architecture Women Actually Need",
+      paragraphs: [
+        "Privacy in erotic audio content matters differently for women than the industry has historically assumed. It is not simply a preference for a secure login. It is about the content itself — whether the story you listened to becomes data that describes your desires, whether it is visible in any way to other people in your life, whether you need to worry about what a platform knows about what you find exciting.",
+        "The Private Story is built around the position that what you listen to here is not information that should belong to a platform. The story created for you exists in your account and nowhere else. There is no social layer, no public activity, no recommendation engine that broadcasts what you have been exploring. The creation choices you make are used to create the story and are not shared or used to build a permanent behavioural profile.",
+        "This is what private actually means in practice — not just a login screen, but a structural absence of the public-facing features that would make your listening history feel exposed. For women who want to explore audio erotica, this architecture removes a significant friction that the library model, with its reviews, recommendations, and social features, consistently creates.",
+      ],
+    },
+    {
+      h2: "How Personalised Audio Erotica Differs from a Catalogue",
+      paragraphs: [
+        "The dominant model for audio erotica platforms is the catalogue: a library of pre-existing content, searchable by keyword, navigable by category. The experience is browsing-based — you filter, select, and hope the resulting content matches what you actually wanted tonight. The content was made before your arrival, for a general audience, at a specific emotional register that you may or may not share.",
+        "Personalised audio erotica works differently. The story does not exist until you create it. The creation process — choosing the dynamic, the emotional register, the character quality, the specific texture of the experience you want — happens first. Then the story is written, from the first sentence, around those choices. It is not retrieved from a library. It does not match a nearest-fit in a catalogue. It is genuinely original and genuinely yours.",
+        "The practical consequence is that the story fits the specific quality of desire you arrived with tonight, rather than requiring you to find something in a catalogue that fits well enough. Women who have used both describe the difference as analogous to the difference between choosing from a restaurant menu and having a meal prepared around what you actually wanted to eat.",
+      ],
+    },
+  ],
+  howItWorks: [
+    { heading: "Choose your mood and dynamic", body: "Select the emotional register, character dynamic, and tone of the story you want tonight. The creation flow is designed to capture the specific quality of the experience — not just categories, but the texture of what you want to feel." },
+    { heading: "Your story is written from scratch", body: "The story is generated specifically for you based on your choices — not retrieved from a library. It begins with your preferences and builds outward, every element shaped by what you selected." },
+    { heading: "Listen in complete privacy", body: "Your narrated story is saved to your account and accessible only to you. No social features, no public history, no visible activity. The story exists in your account and nowhere else." },
+  ],
+  scenarios: {
+    h2: "What This Can Feel Like",
+    intro: "Audio erotica for women can take many forms depending on your mood and the experience you want to feel. Here are some of the registers the platform can create.",
+    items: [
+      { heading: "The slow approach", body: "A story that builds through proximity, attention, and restrained wanting — where the charge between characters is the point, and the resolution arrives because everything before it was worth it." },
+      { heading: "Confident, direct, grounded", body: "A story where desire is expressed clearly and responded to with full presence — no games, no ambiguity, just two people who know what they want and move toward it with mutual attention." },
+      { heading: "Emotionally close", body: "A story where intimacy is the primary register — physical closeness that is also emotional closeness, a dynamic that understands both elements as inseparable from each other." },
+      { heading: "Forbidden attraction", body: "A scenario where the appeal lies in the tension between desire and restraint — professional distance, unlikely connection, the specific charge that comes from wanting someone who is not quite available to want." },
+    ],
+    interstitial: "These are starting points. The story created for you reflects the specific choices you make in the creation flow.",
+  },
+  benefits: {
+    h2: "Why Women Choose The Private Story",
+    items: [
+      { heading: "Made for how you actually feel", body: "The story is created around the quality of desire you arrived with tonight, not a general audience's assumed preferences." },
+      { heading: "Complete privacy, structurally", body: "No social layer, no public history, no recommendation engine. What you listen to is not information that belongs to a platform." },
+      { heading: "Emotional intelligence", body: "The stories understand that female desire has texture, context, and emotional dimension — and are created to reflect that, not bypass it." },
+      { heading: "No browsing required", body: "You describe what you want; the story is created. No filtering through a catalogue hoping something fits your specific mood tonight." },
+    ],
+  },
+  fullPicture: {
+    h2: "Audio Erotica That Belongs to You",
+    paragraphs: [
+      "The Private Story was built on a specific premise: that personalised audio erotica for women is not a niche within a general adult content platform, but a category that deserves to be built from the ground up around how women actually experience desire. The content, the privacy model, and the creation flow are all shaped by this premise.",
+      "What that means in practice: stories that begin with your emotional register rather than a production decision. A privacy architecture that removes the friction that public-facing library models create. Content that can be as quietly atmospheric or as explicitly adult as your creation choices specify — shaped by your preferences, not by a platform default calibrated for a general audience.",
+      "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Explore the creation flow and see what can be made for you tonight.",
+    ],
+  },
+  finalCTA: {
+    h2: "Your Story, Tonight",
+    paragraphs: [
+      "The story you want to hear tonight is created the moment you make your choices. No browsing required. Under two minutes to create. Completely private.",
+    ],
+    primary: { label: "Create your story", href: "/create" },
+    links: [
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Personalised erotica", href: "/personalised-erotica" },
+      { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+      { label: "Adult audio stories", href: "/adult-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: "What makes audio erotica specifically for women different?", a: "Audio erotica for women at The Private Story is built around how women report experiencing desire: with emotional context, character depth, and tension that builds toward resolution rather than bypassing it. The creation flow asks about the quality of the dynamic you want, not just the category. This produces stories that feel calibrated for female experience rather than approximating it from a general-audience template." },
+    { q: "Is this content genuinely adult?", a: "Yes. The Private Story creates adult content for adults 18+. The intensity is shaped by your creation choices — from quietly sensual and atmospheric through to explicitly adult. The platform is designed for adult women who want private, emotionally intelligent erotic audio that reflects their actual preferences rather than a platform default." },
+    { q: "How is this different from other audio erotica platforms?", a: "Most audio erotica platforms operate on a catalogue model — you browse and select from fixed content. The Private Story generates an original story for you based on your choices at the moment of creation. The story exists because of your preferences tonight, not because it was produced in advance for a general audience. The privacy model also differs: no social features, no public listening history, no shared data." },
+    { q: "How long are the stories?", a: "Stories typically run between fifteen and thirty minutes, depending on your creation choices. This is sized for the specific listening window when audio erotica is most wanted — a complete, satisfying experience without requiring an hour-long commitment." },
+    { q: "Is my listening history private?", a: "Yes. Your stories are saved to your account only. There is no social layer, no public listening history, and no recommendation engine that broadcasts what you have been exploring. The structural design of the platform makes your listening genuinely private rather than simply password-protected." },
+  ],
+};
+
+export const personalisedEroticaConfig: SEOPageConfig = {
+  meta: { title: `Personalised Erotica — AI-Generated Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices tonight. AI-written, narrated, and completely private. Not a catalogue — an original story made for you.` },
+  hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices tonight. Not retrieved from a library. Written for you, from the first sentence.` },
+  sections: [
+    {
+      h2: "What Personalised Erotica Actually Is",
+      paragraphs: [
+        "Personalised erotica is erotic fiction created around your specific choices rather than selected from a pre-existing library. The distinction matters more in this genre than in almost any other: the quality of erotic fiction depends on specificity — on the story reflecting the particular emotional register, dynamic, and character quality that you wanted tonight, not something close enough from a catalogue.",
+        "At The Private Story, personalised erotica begins with a creation process rather than a browsing interface. You choose the mood, the dynamic, the quality of the characters, the emotional register of the experience you want to feel. Those choices are the starting point for a story that is written from scratch — not retrieved from a library, not approximated from a nearest-fit in a catalogue, but generated specifically in response to what you said you wanted.",
+        "The result is erotic fiction that fits your mood tonight in a way that pre-existing content, by definition, cannot. It was not made for a general audience. It was made from your choices.",
+      ],
+    },
+    {
+      h2: "The Seven Choices That Shape Your Story",
+      paragraphs: [
+        "The creation process at The Private Story works through seven structured selections that together define the emotional and dynamic shape of your story. These are not generic categories — they are chosen to capture the specific qualities of erotic experience that matter: the character of the dominant energy (if any), the pacing and intensity, the emotional register, the scenario type, and the quality of the connection between the characters.",
+        "What makes this work as personalisation rather than filtering is that the story is generated from these choices rather than selected from a catalogue that happens to match them. There is no pre-existing story that the selections narrow down to. There is only the story that exists because you made those particular choices, tonight, in that particular combination.",
+        "This also means that the same set of choices will never produce exactly the same story twice. The generation uses your selections as a starting point and builds a genuinely original narrative — which is why the experience of personalised erotica differs from even the most precisely filtered catalogue in a fundamental way.",
+      ],
+    },
+    {
+      h2: "Privacy That Makes Exploration Feel Safe",
+      paragraphs: [
+        "Erotic content requires a different relationship with privacy than most media. What you find exciting is not information you want a platform to hold, broadcast, or use to build a profile of your preferences. The social and public-facing features that make catalogue platforms discoverable also make your exploration of them potentially visible.",
+        "The Private Story is built without the features that create this problem. There is no social layer — no public reviews, no shared listening history, no activity feed that others can see. Your stories are private to your account. The creation choices you make shape the story and are not permanently attached to a public profile.",
+        "This is not incidental. It is a structural choice about what a platform for personalised erotic fiction should look like. The experience of exploring what you want in a space that is genuinely private — not just password-protected, but architecturally private — is different from the same exploration on a platform with social features, even private ones.",
+      ],
+    },
+  ],
+  howItWorks: [
+    { heading: "Make your seven selections", body: "Choose the mood, dynamic, scenario type, character quality, and emotional register of your story. The creation flow takes under two minutes and captures the specific texture of what you want to feel tonight." },
+    { heading: "An original story is written for you", body: "The story is generated from your choices — not retrieved from a library. Every element, from the opening sentence to the pace and character of the resolution, reflects what you specified." },
+    { heading: "Narrated and private in your account", body: "Your story is narrated and saved to your account. Only you can access it. No public history, no social sharing, no platform visibility. Yours alone." },
+  ],
+  scenarios: {
+    h2: "Scenarios You Can Choose",
+    intro: "Personalised erotica can take many registers depending on your choices. These are examples — the story created for you reflects your specific selections.",
+    items: [
+      { heading: "Slow burn desire", body: "Tension that builds through proximity and near-misses before arriving somewhere that earns the build. The restraint is the point — every charged moment building the one that follows." },
+      { heading: "Confident and direct", body: "A dynamic where desire is clear, stated, and met with full presence. No games, no ambiguity — two people who know what they want and move toward it without ceremony." },
+      { heading: "Forbidden and close", body: "The charge that comes from wanting someone you probably shouldn't want. Professional distance, impossible timing, the specific tension of desire that has to be contained before it doesn't." },
+      { heading: "Quiet and deeply intimate", body: "Closeness that is emotional and physical simultaneously — a story where intimacy is about presence and attention as much as anything else, where the depth of connection is what makes everything else feel significant." },
+    ],
+    interstitial: "These are starting points. Your choices shape the exact character of the story that is created for you.",
+  },
+  benefits: {
+    h2: "What Sets This Apart",
+    items: [
+      { heading: "Genuinely original", body: "Every story is written from scratch in response to your choices — not retrieved from a library, never the same story twice." },
+      { heading: "Structurally private", body: "No social layer, no public history. Your listening and your creation choices belong to you, not to a platform." },
+      { heading: "Precisely calibrated", body: "Seven structured selections shape a story that fits your mood tonight — the character quality, the pacing, the emotional register." },
+      { heading: "Ready in under two minutes", body: "The creation process is fast. Your narrated story is ready to listen to shortly after you complete your selections." },
+    ],
+  },
+  fullPicture: {
+    h2: "Erotica That Was Made for You",
+    paragraphs: [
+      "Personalised erotica is not a niche within a general content platform. It is what erotic fiction becomes when the technology to generate it specifically for you exists and is used that way. The Private Story is built on that premise: that the quality of erotic fiction depends on its specificity, and that specificity requires generation rather than selection.",
+      "The privacy architecture follows from the same premise. If the content is genuinely yours — made from your choices, saved to your account — then it should be genuinely private. The structural design reflects this: no social features, no public history, no recommendation engine that uses your listening to build a public profile.",
+      "Explore the creation flow to see what can be made around your choices tonight.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Story Now",
+    paragraphs: ["Seven selections. Under two minutes. A story made for you, privately."],
+    primary: { label: "Start creating", href: "/create" },
+    links: [
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Erotic audio stories", href: "/erotic-audio-stories" },
+      { label: "Adult audio stories", href: "/adult-audio-stories" },
+      { label: "Private audio stories", href: "/private-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: "How personalised is personalised erotica on this platform?", a: "Very specifically personalised. The story is generated from seven structured selections you make about the mood, dynamic, character quality, scenario type, and emotional register of your story. These are not broad categories that narrow a catalogue — they are the starting point for an original story written specifically in response to your choices tonight." },
+    { q: "Is the content explicit?", a: "The intensity is shaped by your creation choices. The Private Story creates adult content from quietly sensual and atmospheric through to explicitly adult, depending on what you select. The platform is for adults 18+ only." },
+    { q: "How is this different from searching for erotica on another platform?", a: "On catalogue platforms, the content exists before you arrive and is selected based on your search terms. At The Private Story, the content is created in response to your choices at the moment of creation. Nothing was written in advance for a general audience — the story exists because of your specific preferences tonight." },
+    { q: "Is it genuinely private?", a: "Yes. There is no social layer on the platform, no public listening history, and no recommendation engine that uses your content choices to build a visible profile. Your stories are saved to your account and accessible only to you." },
+    { q: "Can I request any type of scenario?", a: "The creation flow covers a wide range of dynamics, scenarios, and emotional registers. All content is original fiction, all depicted parties are adults, and all content is legal. The specific parameters of what can be created are described in the platform's content policy." },
+  ],
+};
+
+export const eroticAudioStoriesConfig: SEOPageConfig = {
+  meta: { title: `Erotic Audio Stories — Private, AI-Generated, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Adult AI fiction, personalised around your mood tonight. Not a library — your story.` },
+  hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted tonight.` },
+  sections: [
+    {
+      h2: "The Case for Generated Erotic Audio Stories",
+      paragraphs: [
+        "Erotic audio fiction has existed in various forms for decades — narrated recordings, dramatic readings, audio drama. What has changed recently is not the format but the method: the ability to generate original erotic fiction in response to specific user choices rather than producing fixed content for a general audience. This shifts what erotic audio stories can be.",
+        "A generated erotic audio story is one that did not exist before you requested it. The dynamic you wanted, the character quality you specified, the emotional register you described — these shape a story that is written from scratch in response to them. The result is not a nearest-fit from a catalogue. It is something that began with your preferences and built outward from there.",
+        "The Private Story uses this approach to create erotic audio stories that are private, personalised, and narrated in a voice chosen to suit the story's register. The experience of listening to a story that was made for you is categorically different from listening to something made for a general audience, even if the production quality of both is high.",
+      ],
+    },
+    {
+      h2: "What Adult Audio Stories Can Explore",
+      paragraphs: [
+        "Erotic audio stories at The Private Story cover a wide range of dynamics and emotional registers — from quietly sensual and atmospheric to explicitly adult in tone. The intensity is not set by a platform default but by the choices you make in the creation flow. You choose the character of the desire you want the story to explore, and the story is generated to reflect that.",
+        "The dynamics available span confident and direct, slow-build and charged, emotionally close and deeply intimate, power-aware and respectful, and the specific tension of forbidden attraction where desire and restraint coexist. Within each dynamic, the story is shaped by the scenario type, the character quality, and the emotional register you specify.",
+        "This range means that erotic audio stories are not a single type of experience. They are a format within which many different types of desire can be explored privately and with the kind of specificity that fixed content cannot provide.",
+      ],
+    },
+    {
+      h2: "Privacy in Adult Audio Content",
+      paragraphs: [
+        "Adult content requires a more serious engagement with privacy than most media categories. The question is not just whether a platform is secure, but whether the content you engage with — the specific dynamics you explore, the scenarios you find compelling — becomes data that the platform holds, uses, or could expose.",
+        "The Private Story is designed around the position that what you listen to is not a platform's data to keep. Stories are saved to your private account and not used to build a public-facing profile. There is no social layer, no recommendation engine that broadcasts your preferences, no activity that other users can see. The architecture removes the features that create privacy risk, rather than simply adding security features to a public-facing system.",
+        "For adult audio content, this matters. The experience of exploring what you want in a space that is genuinely private — not just password-protected, but structurally without the features that would make your exploration visible — is different from the same exploration on a platform where social features exist.",
+      ],
+    },
+  ],
+  howItWorks: [
+    { heading: "Choose your experience", body: "Select the dynamic, scenario type, and emotional register of your story. The creation flow is built to capture the quality of the experience you want — not just broad categories but the specific character of the desire you want the story to explore." },
+    { heading: "An original story is written", body: "Your erotic audio story is generated from your choices — written from scratch, not retrieved from a library. Every element of the narrative reflects what you selected, from the character of the dynamic to the pacing of the resolution." },
+    { heading: "Narrated and private", body: "The story is narrated in a voice selected to suit its register and saved privately to your account. No social features, no public listening history. Yours alone." },
+  ],
+  scenarios: {
+    h2: "Registers Your Story Can Take",
+    items: [
+      { heading: "Atmospheric and slow", body: "A story that builds through attention and proximity, where the desire is present from the start but earned through restraint, tension, and accumulation before resolution." },
+      { heading: "Direct and grounded", body: "A story where desire is clear and mutual, expressed honestly and met with full presence. No ambiguity, no games — just two people who know what they want." },
+      { heading: "Charged and forbidden", body: "The specific tension of attraction that exists where it probably shouldn't — where the appeal is partly in the restraint and partly in what the restraint cannot ultimately hold back." },
+      { heading: "Close and tender", body: "Intimacy that is physical and emotional simultaneously — where the depth of connection is what makes the closeness feel significant, and presence is as erotic as anything else." },
+    ],
+  },
+  benefits: {
+    h2: "Why This Is Different",
+    items: [
+      { heading: "Original, not selected", body: "Every story is generated from your choices — not retrieved from a fixed catalogue. The story exists because of what you wanted tonight." },
+      { heading: "Genuinely private", body: "No public history, no social layer, no platform-visible activity. Your stories are in your account and nowhere else." },
+      { heading: "Calibrated to your mood", body: "The creation flow captures the specific quality of the experience you want — intensity, character dynamic, pacing, emotional register." },
+      { heading: "Adult, intelligent content", body: "The stories are written with literary attention to desire, tension, and character — not formulaic or mechanical in their approach to adult content." },
+    ],
+  },
+  fullPicture: {
+    h2: "Adult Audio Fiction That Starts with You",
+    paragraphs: [
+      "Erotic audio stories are at their best when they are specific — when the story reflects the particular quality of desire you arrived with rather than a general-audience approximation of what most people might want. The Private Story is built on this premise: that generated erotic fiction, created from your choices at the moment of listening, is a categorically different experience from even the best catalogue.",
+      "The privacy model follows from the same premise. Erotic audio content that belongs to you should be genuinely private — not just secure, but architecturally without the public features that would make your listening feel visible. The platform is built this way by design.",
+    ],
+  },
+  finalCTA: {
+    h2: "Start Creating",
+    paragraphs: ["An original erotic audio story created from your choices, narrated, and private. Under two minutes to create."],
+    primary: { label: "Create your story", href: "/create" },
+    links: [
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Personalised erotica", href: "/personalised-erotica" },
+      { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+      { label: "Adult audio stories", href: "/adult-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: "How adult is adult on this platform?", a: "The intensity of the story is shaped by your creation choices. The Private Story creates content from quietly sensual and romantic through to explicitly adult, depending on what you select. The platform is for adults 18+ only. All depicted parties in all content are adult." },
+    { q: "Is the content AI-generated?", a: "Yes. Stories are generated by AI from your creation choices and narrated using high-quality voice synthesis. The result is original fiction — not retrieved from a pre-existing library — with narration that suits the register of the story." },
+    { q: "How long are erotic audio stories?", a: "Typically between fifteen and thirty minutes, depending on your selections. This is sized for the specific listening window when adult audio fiction is most wanted — a complete experience without requiring a multi-hour commitment." },
+    { q: "Can I choose the character dynamic in the story?", a: "Yes. The creation flow lets you choose the character of the relationship dynamic — the quality of the power register, the emotional tone, the character type. These choices shape the story from the first sentence rather than being filters on a pre-existing catalogue." },
+    { q: "Is my listening genuinely private?", a: "Yes. There is no social layer on the platform, no public listening history, and no activity that other users can see. Your stories are saved to your account and accessible only to you." },
+  ],
+};
+
+export const adultBedtimeStoriesConfig: SEOPageConfig = {
+  meta: { title: `Adult Bedtime Stories — Private, Calming, Made for Your Night | The Private Story`, description: `Adult bedtime stories created for grown-up minds. Calming, intimate, and personalised around how you want to feel tonight. Fall asleep to a story made for you.` },
+  hero: { badge: `Adults Only · Bedtime · Calming`, h1: `Adult Bedtime Stories — Calming, Private, Made for Tonight`, tagline: `The end of a grown-up day deserves a story that understands how you actually arrive at it.` },
+  sections: [
+    {
+      h2: "What Adult Bedtime Stories Are, and Aren't",
+      paragraphs: [
+        "Adult bedtime stories are not children's bedtime stories with the language adjusted. They are stories written for the specific experience of being a grown adult at the end of a complex day — with a mind that has been active for sixteen hours, that carries the emotional residue of whatever happened today, and that needs somewhere to go that is not still solving problems or processing obligations.",
+        "The things that make a bedtime story work for an adult are different from what works for a child. A child needs narrative and completion. An adult at bedtime needs something that meets them where they are — a register that acknowledges the emotional texture of adult experience, that gives the mind somewhere to settle rather than something to follow, that doesn't require the active engagement of tracking a complex plot.",
+        "Adult bedtime stories at The Private Story are created around this understanding. The mood you specify shapes not just the content but the pacing, the emotional register, and the quality of the narrative attention. Whether you want something quietly intimate, gently escapist, or softly romantic as you settle into sleep, the story is created around what you need tonight rather than a generic night-time fiction template.",
+      ],
+    },
+    {
+      h2: "The Wind-Down Problem Adult Bedtime Stories Solve",
+      paragraphs: [
+        "The challenge with the pre-sleep window is cognitive. Your mind is tired but not quiet — it tends to replay the day, anticipate tomorrow, and resist the descent into sleep. The conventional advice (avoid screens, no stimulating content) addresses part of this, but leaves the question of what to do instead unanswered. The mind needs something to engage with, just not something that requires engagement.",
+        "Personalised adult bedtime stories work for this window because they are toned for it. A story shaped around a calming or intimate emotional register gives the mind somewhere to go that is interesting without being demanding. The narrative provides gentle forward motion — something to follow loosely — without the cognitive load of tracking an active plot or an argument that requires resolution.",
+        "The personalisation matters because the quality of the story's register is what makes this work. A bedtime story that is slightly too exciting — that has the kind of tension that keeps you present — is as counterproductive as anything else. The creation flow lets you specify not just the content type but the emotional quality: how calming, how intimate, how gently resolved you want your story to be tonight.",
+      ],
+    },
+    {
+      h2: "Privacy at Bedtime",
+      paragraphs: [
+        "The pre-sleep listening window is one of the most private parts of a person's day. The content you listen to to fall asleep is not something most people want on a social platform, logged against a public profile, or visible in any way outside their own device.",
+        "The Private Story's architecture reflects this. There is no social layer, no public listening history, no recommendation engine visible to others. Your adult bedtime stories are saved to your private account and exist nowhere else. The experience of settling into sleep with a story that was made for you — in a space that is genuinely private — is different from doing the same on a platform with any public-facing features.",
+      ],
+    },
+  ],
+  howItWorks: [
+    { heading: "Choose your bedtime mood", body: "Select the emotional register you want your story to have tonight — calming, intimate, gently romantic, or quietly escapist. The creation flow is built to capture not just content type but the specific quality of experience you need to wind down." },
+    { heading: "Your story is created for tonight", body: "The story is generated from your choices — written from scratch for this specific night, with pacing and register suited to the pre-sleep listening window. Not retrieved from a library. Made for you, now." },
+    { heading: "Listen and let go", body: "Your narrated story is saved to your private account. No social features, no public history. Just the story, your earphones, and the quiet." },
+  ],
+  scenarios: {
+    h2: "What Your Adult Bedtime Story Can Feel Like",
+    items: [
+      { heading: "Quietly intimate and close", body: "A story with the emotional warmth of closeness — the specific quality of feeling near someone in a way that settles the nervous system and carries you toward rest." },
+      { heading: "Gently escapist", body: "A story that takes you somewhere else entirely — a different world, a different dynamic, a scenario that gives your mind somewhere to go that isn't tonight's unfinished business." },
+      { heading: "Softly romantic", body: "The kind of low-intensity romantic tension that is interesting enough to hold your attention loosely and resolved enough to leave you feeling settled rather than unresolved." },
+      { heading: "Calming and grounded", body: "A story that meets you where you are at the end of the day — acknowledging the emotional texture of adult experience and carrying you gently toward rest rather than demanding your continued engagement." },
+    ],
+  },
+  benefits: {
+    h2: "Why Adult Bedtime Stories Work",
+    items: [
+      { heading: "Toned for the pre-sleep window", body: "Paced and registered for winding down rather than engagement — interesting without being demanding." },
+      { heading: "Personalised to tonight", body: "Created from your choices for this specific night — not a generic sleep story that may or may not suit your current state." },
+      { heading: "No screen required", body: "Audio-only experience — listen with eyes closed, earphones in, in the dark." },
+      { heading: "Genuinely private", body: "No social layer, no public history. Your bedtime stories are in your account and nowhere else." },
+    ],
+  },
+  fullPicture: {
+    h2: "Sleep Better with a Story Made for Tonight",
+    paragraphs: [
+      "Adult bedtime stories work when they are the right kind of story for the right kind of night — when the register, the pacing, and the emotional quality match what you actually need at the moment of listening. The Private Story is built to create this match: not a library of generic sleep stories, but a creation flow that captures the specific quality of the experience you need to wind down tonight.",
+      "Whether you want something intimate and close, gently escapist, or quietly romantic as you settle into sleep, the story is created around those preferences and heard only by you. Explore the creation flow and see what can be made for your night.",
+    ],
+  },
+  finalCTA: {
+    h2: "Your Story for Tonight",
+    paragraphs: ["A private adult bedtime story created around how you want to feel as you settle in. Under two minutes to create."],
+    primary: { label: "Create tonight's story", href: "/create" },
+    links: [
+      { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
+      { label: "Sleep audio stories", href: "/sleep-audio-stories" },
+      { label: "Relaxing audio stories", href: "/relaxing-audio-stories" },
+      { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: "What makes adult bedtime stories different from regular bedtime stories?", a: "Adult bedtime stories are created for grown adult minds — acknowledging the emotional complexity of adult experience, the specific challenge of the pre-sleep window after a full day, and the kind of content register that actually helps an adult settle. They are not children's stories with adjusted language. They are stories specifically created for the experience of being an adult at the end of a real day." },
+    { q: "Can adult bedtime stories have romantic or intimate content?", a: "Yes. The intensity and register of the story are shaped by your creation choices. Adult bedtime stories can be quietly intimate, softly romantic, gently sensual, or calming and escapist — depending on what you specify. The Private Story creates content for adults 18+ across a range of emotional registers." },
+    { q: "How is an adult bedtime story different from a sleep podcast?", a: "Sleep podcasts are optimised for a general audience and require enough engagement to hold attention — which is the opposite of what winding down requires. A personalised adult bedtime story is created around your specific mood tonight, paced for the pre-sleep window, and requires no active cognitive engagement. Your mind can follow loosely or drift — the story continues either way." },
+    { q: "Will the story help me sleep?", a: "Adult bedtime stories created with a calming or intimate register are designed for the wind-down window — paced and toned to carry you toward rest rather than maintain alertness. Many listeners report falling asleep during or shortly after their story. The personalisation means the story's register matches your current state, which is the most important factor in whether audio content helps or hinders sleep." },
+    { q: "How long are adult bedtime stories?", a: "Typically between fifteen and thirty minutes, depending on your creation choices. This is sized for the specific pre-sleep window — a complete, satisfying experience that doesn't require staying awake for an hour." },
+  ],
+};
+
+export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
+  meta: { title: `AI Romance Stories for Women — Personalised, Private, Made for You | The Private Story`, description: `AI-generated romance stories for women, personalised around your mood and choices. Private, narrated audio fiction created for you tonight. Not a library — yours.` },
+  hero: { badge: `Romance · AI-Generated · For Women`, h1: `AI Romance Stories for Women — Created Around How You Want to Feel`, tagline: `Romance fiction generated for you from your choices tonight. Private, narrated, and made for the specific quality of connection you want to feel.` },
+  sections: [
+    {
+      h2: "AI Romance Stories and What Makes Them Different",
+      paragraphs: [
+        "AI-generated romance stories differ from pre-written romance fiction in one fundamental way: they are created in response to your choices rather than written for a general audience before you arrived. This matters more in romance fiction than in almost any other genre because the emotional quality of a romance story — whether it feels real, whether the dynamic feels right, whether the tension builds in a way that satisfies — depends on specificity.",
+        "A romance story written for a general audience has to make assumptions about what most readers want from a romantic experience. Those assumptions may align with what you want tonight, or they may not. A story generated from your specific choices about mood, dynamic, pacing, and emotional register does not rely on this alignment — it starts from what you said you wanted and builds from there.",
+        "At The Private Story, AI romance stories for women are created through a structured selection process that captures the quality of the romantic experience you want — not just broad categories but the specific texture of the connection, tension, and dynamic you want the story to explore. The result is romance fiction that fits your mood tonight in a way that pre-existing content cannot replicate.",
+      ],
+    },
+    {
+      h2: "What Women Want from Romance Fiction",
+      paragraphs: [
+        "Research into women's romance reading and listening consistently finds that the emotional experience — the quality of the dynamic, the character depth, the emotional journey — matters as much or more than the plot events. Women who love romance are often responding to how a story makes them feel rather than to specific narrative outcomes. The tension, the quality of the attraction, the specific character of the connection: these are what sustain engagement.",
+        "AI-generated romance for women is effective when it understands this. The creation flow at The Private Story asks about these qualities — the character of the dynamic you want, the emotional register, the pacing of the tension. These selections shape a story that is calibrated for what you are actually looking for rather than a generic romance template.",
+        "Whether you want slow-burn tension, enemies who are discovering they are not enemies, deep emotional connection that becomes physical, or confident and direct attraction without games — the story generated reflects your specific preferences rather than what the market assumes most women want from romance.",
+      ],
+    },
+    {
+      h2: "The Privacy Advantage of AI Romance Stories",
+      paragraphs: [
+        "Romance fiction is personal — the dynamics and emotional registers you find compelling are not information most people want to share publicly. Library platforms, with their public ratings, recommendation histories, and social features, make the romance content you engage with at least partially visible. The Private Story's architecture removes this problem.",
+        "Your AI romance stories are private to your account. There is no social layer, no public listening history, no activity feed visible to other users. The creation choices you make — the dynamic, the intensity, the specific scenario type — are used to create your story and are not permanently attached to a public profile.",
+        "For women exploring the specific kinds of romance fiction that are not widely discussed publicly — power dynamics, forbidden attraction, emotional intensity without social endorsement — this privacy architecture makes the exploration feel genuinely safe rather than just password-protected.",
+      ],
+    },
+  ],
+  howItWorks: [
+    { heading: "Choose the romance you want to feel", body: "Select the mood, dynamic, and emotional register of your story. The creation flow asks about the quality of the connection and tension you want — not just categories but the specific character of what you are looking for tonight." },
+    { heading: "An original story is written for you", body: "Your AI romance story is generated from your choices — written from the first sentence with your preferences as the starting point. Not retrieved from a library. Original for tonight." },
+    { heading: "Listen privately", body: "Your narrated story is saved to your private account. No social layer, no public history. The romance is entirely yours." },
+  ],
+  scenarios: {
+    h2: "Romance Registers You Can Explore",
+    items: [
+      { heading: "Slow burn and worth the wait", body: "Tension that builds through proximity, restraint, and accumulated almost — where the romance develops through the charge between characters before it is ever expressed, and the expression is worth the build." },
+      { heading: "Enemies who are not enemies", body: "The specific dynamic where opposition creates an emotional charge that turns out to be attraction — friction giving way to recognition, resistance becoming closeness." },
+      { heading: "Deep connection becoming physical", body: "Emotional intimacy that develops into physical closeness — where the romance grows from genuine understanding and the physical dimension follows naturally from what was already there." },
+      { heading: "Confident and direct attraction", body: "The dynamic where both parties know what they feel and move toward it without games or ambiguity — attraction expressed honestly and met with the same directness." },
+    ],
+    interstitial: "These are examples. The story generated for you reflects the specific choices you make.",
+  },
+  benefits: {
+    h2: "Why AI Romance Stories Work",
+    items: [
+      { heading: "Calibrated to what you want tonight", body: "Generated from your specific choices — the mood, the dynamic, the emotional register — rather than selected from a catalogue." },
+      { heading: "Female experience at the centre", body: "The creation flow is built around the qualities of romance that women report mattering most — character depth, emotional texture, tension that earns its resolution." },
+      { heading: "Structurally private", body: "No social layer, no public history. Your romance stories are in your account and nowhere else." },
+      { heading: "Narrated audio fiction", body: "A story you listen to, not read — complete, narrated, and ready when you are." },
+    ],
+  },
+  fullPicture: {
+    h2: "Romance That Starts with Your Choices",
+    paragraphs: [
+      "AI romance stories for women are at their best when they understand that female romantic experience is specific — that the quality of the dynamic, the emotional register, and the character of the tension matter as much as the narrative events. The Private Story is built to create this understanding at the point of generation, not filter for it in a catalogue.",
+      "The result is romance fiction that was made for you, tonight, in a listening experience that is completely private. Explore the creation flow and see what kind of romance can be made around your choices.",
+    ],
+  },
+  finalCTA: {
+    h2: "Your Romance Story, Tonight",
+    paragraphs: ["An AI-generated romance story personalised around your mood and choices. Narrated, private, and under two minutes to create."],
+    primary: { label: "Create your story", href: "/create" },
+    links: [
+      { label: "Romantic audio stories", href: "/romantic-audio-stories" },
+      { label: "Audio stories for women", href: "/audio-stories-for-women" },
+      { label: "Love stories audio", href: "/love-stories-audio" },
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: "What makes AI romance stories different from regular romance novels?", a: "AI romance stories generated by The Private Story are created from your specific choices at the moment of listening — not written for a general audience before you arrived. The dynamic, emotional register, and character quality are shaped by what you selected tonight, not by what an author assumed a general audience would want. The story exists because of your preferences, which is categorically different from the closest match in a catalogue." },
+    { q: "Can I choose what kind of romance I want?", a: "Yes. The creation flow lets you choose the character of the romantic dynamic — slow burn or direct, emotional or physical focus, forbidden or freely available attraction. These selections, combined with mood and scenario choices, produce a story that reflects the specific quality of romance you are looking for tonight." },
+    { q: "Are these stories for women specifically?", a: "Yes. The creation flow and the character of the content are built around what women report wanting from romance fiction — emotional depth, character specificity, tension that earns its resolution, and a dynamic that feels calibrated for female experience rather than a general audience's assumed preferences." },
+    { q: "How private is the platform?", a: "Completely private, structurally. No social layer, no public listening history, no recommendation engine visible to others. Your stories are in your account and accessible only to you." },
+    { q: "How long are AI romance stories?", a: "Typically between fifteen and thirty minutes, depending on your selections. This is sized for the specific listening window when romance fiction is most wanted — the wind-down hour, time alone, the pre-sleep session." },
+  ],
+};
+
 export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["adult-audio-stories", adultAudioStoriesConfig],
   ["ai-audio-story-generator", aiAudioStoryGeneratorConfig],
@@ -3596,6 +4035,11 @@ export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["romantic-audio-stories", romanticAudioStoriesConfig],
   ["sleep-audio-stories", sleepAudioStoriesConfig],
   ["slow-burn-audio-stories", slowBurnAudioStoriesConfig],
+  ["audio-erotica-for-women", audioEroticaForWomenConfig],
+  ["personalised-erotica", personalisedEroticaConfig],
+  ["erotic-audio-stories", eroticAudioStoriesConfig],
+  ["adult-bedtime-stories", adultBedtimeStoriesConfig],
+  ["ai-romance-stories-for-women", aiRomanceStoriesForWomenConfig],
 ]);
 
 export function getPageConfig(slug: string): SEOPageConfig | undefined {

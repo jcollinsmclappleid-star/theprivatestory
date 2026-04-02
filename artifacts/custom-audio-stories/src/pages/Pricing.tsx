@@ -303,10 +303,10 @@ export default function Pricing() {
               <span className="text-muted-foreground/50 mb-1">one-time</span>
             </div>
             <p className="text-sm text-muted-foreground/60 leading-relaxed max-w-sm mb-4">
-              One fully personalised Immersive Story — narrated, illustrated, saved to your account. Nothing to cancel.
+              One fully personalised Immersive Story — narrated, illustrated, ready to play immediately. Subscribe later to save stories to your private library.
             </p>
             <div className="flex flex-col gap-1.5">
-              {["1 personalised story, created around your choices", "ElevenLabs narration, ready to play", "Original cover art generated for your story", "Story saved to your account"].map((f) => (
+              {["1 personalised story, created around your choices", "ElevenLabs narration, ready to play", "Original cover art generated for your story", "Listen immediately — no account required"].map((f) => (
                 <div key={f} className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full border border-primary/30 flex items-center justify-center flex-shrink-0">
                     <Check className="w-2 h-2 text-primary/60" />
@@ -314,7 +314,7 @@ export default function Pricing() {
                   <span className="text-xs text-muted-foreground/50">{f}</span>
                 </div>
               ))}
-              {["Curated collection access", "Monthly rollover credits"].map((f) => (
+              {["Private library storage", "Curated collection access", "Monthly rollover credits"].map((f) => (
                 <div key={f} className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0">
                     <span className="text-[8px] text-muted-foreground/20 font-bold">–</span>

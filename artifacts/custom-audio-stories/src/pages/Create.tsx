@@ -2719,8 +2719,8 @@ export default function Create() {
               </div>
             )}
 
-            {/* Post-generation upsell for free users who have exhausted all credits */}
-            {usageData && usageData.plan === "free" && usageData.storiesRemaining <= 0 && (usageData.addonStoriesRemaining ?? 0) <= 0 && (
+            {/* Post-generation upsell for free/immersive users who have exhausted all credits */}
+            {usageData && (usageData.plan === "free" || usageData.plan === "immersive") && usageData.storiesRemaining <= 0 && (usageData.addonStoriesRemaining ?? 0) <= 0 && (
               <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/8 to-primary/3 p-6 flex flex-col items-center gap-4 text-center">
                 <div className="space-y-1">
                   <p className="font-display text-lg font-bold text-foreground">Want another story like this?</p>

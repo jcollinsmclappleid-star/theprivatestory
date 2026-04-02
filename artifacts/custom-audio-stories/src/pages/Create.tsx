@@ -15,6 +15,7 @@ import { VoiceAvatar } from "@/components/VoiceAvatar";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
+import { AgeGate, hasConfirmedAge, confirmAge } from "@/components/AgeGate";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -667,9 +668,7 @@ function OptionCard({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn, user } = useAuth();
-  const [ageConfirmed, setAgeConfirmed] = useState(() => {
-    try { return localStorage.getItem("age_confirmed") === "true"; } catch { return false; }
-  });
+  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result" | "paywall">("casting");
   const [castingResetKey, setCastingResetKey] = useState(0);
   const [voiceSampleUrls, setVoiceSampleUrls] = useState<Record<string, string>>({});
@@ -1536,42 +1535,7 @@ export default function Create() {
   ];
 
   if (!ageConfirmed) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl px-4">
-        <div className="w-full max-w-md rounded-3xl border border-border/40 bg-card/80 shadow-2xl p-8 flex flex-col items-center text-center gap-6">
-          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-            <Sparkles className="w-7 h-7 text-primary" />
-          </div>
-          <div>
-            <h2 className="font-display text-2xl font-bold text-foreground mb-3">Adults only</h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              This platform contains explicit adult content. By continuing, you confirm you are{" "}
-              <span className="text-foreground font-semibold">18 years of age or older</span>.
-            </p>
-          </div>
-          <div className="w-full flex flex-col gap-3">
-            <button
-              onClick={() => {
-                try { localStorage.setItem("age_confirmed", "true"); } catch { /* ignore */ }
-                setAgeConfirmed(true);
-              }}
-              className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
-            >
-              I am 18 or older — continue
-            </button>
-            <button
-              onClick={() => window.history.back()}
-              className="w-full py-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              I'm under 18 — leave
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground/60 leading-relaxed">
-            Your confirmation is stored locally on this device. No personal data is collected.
-          </p>
-        </div>
-      </div>
-    );
+    return <AgeGate onConfirmed={() => { confirmAge(); setAgeConfirmed(true); }} />;
   }
 
   if (authLoading) {

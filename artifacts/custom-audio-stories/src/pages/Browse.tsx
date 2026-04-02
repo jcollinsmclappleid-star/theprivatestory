@@ -7,6 +7,7 @@ import { StoryCard } from "@/components/StoryCard";
 import { SkeletonGrid } from "@/components/SkeletonCard";
 import { CategoryTile } from "@/components/CategoryTile";
 import { useSubscription } from "@/hooks/useSubscription";
+import { AgeGate, hasConfirmedAge, confirmAge } from "@/components/AgeGate";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -160,6 +161,7 @@ function CollectionGate() {
 }
 
 export default function Browse() {
+  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -174,6 +176,10 @@ export default function Browse() {
   });
 
   const isFiltering = !!(activeCategory || search);
+
+  if (!ageConfirmed) {
+    return <AgeGate onConfirmed={() => { confirmAge(); setAgeConfirmed(true); }} />;
+  }
 
   if (!isPaid) return <CollectionGate />;
 

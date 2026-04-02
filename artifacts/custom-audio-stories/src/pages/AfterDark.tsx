@@ -7,6 +7,7 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
+import { AgeGate, hasConfirmedAge, confirmAge } from "@/components/AgeGate";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -1201,6 +1202,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
@@ -1399,6 +1401,10 @@ export default function AfterDark() {
     },
     [pendingAfterDarkCast, selectedScenario, lastCastingData, generateMutation, startLoadingPhase, stopLoadingPhase]
   );
+
+  if (!ageConfirmed) {
+    return <AgeGate onConfirmed={() => { confirmAge(); setAgeConfirmed(true); }} />;
+  }
 
   if (authLoading) {
     return (

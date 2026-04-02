@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,7 +9,6 @@ import { AuthModal } from "@/components/AuthModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { TermsGate } from "@/components/TermsGate";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 
 import { useParams } from "wouter";
 import Home from "@/pages/Home";
@@ -127,16 +125,6 @@ function Router() {
 }
 
 function App() {
-  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
-
-  if (!ageConfirmed) {
-    return (
-      <ErrorBoundary>
-        <AgeGate onConfirmed={() => setAgeConfirmed(true)} />
-      </ErrorBoundary>
-    );
-  }
-
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

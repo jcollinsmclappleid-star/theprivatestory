@@ -125,3 +125,9 @@ id = "wfsv40ktxer9o5tDKNaGZ"
 uri = "file://artifacts/api-server/public-static/logo.png"
 type = "image"
 title = "Logo used (logo.png)"
+
+[[outputs]]
+id = "3rYT8GFk01ACpjGTXObDG"
+uri = "file://artifacts/custom-audio-stories/public/images/logo.png"
+type = "image"
+title = "Logo (images/logo.png — used in nav & favicon)"

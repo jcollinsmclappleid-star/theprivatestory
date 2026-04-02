@@ -9,4 +9,35 @@ Disallow: /reset-password
 Disallow: /story/
 Disallow: /my-series/
 
+# Block AI training crawlers — content is proprietary literary IP
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
 Sitemap: https://theprivatestory.com/sitemap.xml

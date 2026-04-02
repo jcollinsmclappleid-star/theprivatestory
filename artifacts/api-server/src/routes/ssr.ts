@@ -349,6 +349,92 @@ const STATIC_PAGES: StaticPage[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Dynamic sitemap — generated at request time so <lastmod> reflects the
+// actual deploy/content date and the URL list stays in sync with the code.
+// Private / account routes (disallowed in robots.txt) are intentionally
+// excluded. User-generated story pages can be added via a DB query here
+// in the future.
+// ---------------------------------------------------------------------------
+const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; priority: string }> = [
+  // Core site pages
+  { loc: "/",               lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "1.0" },
+  { loc: "/how-it-works",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
+  { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.95" },
+  { loc: "/pricing",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
+  { loc: "/browse",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.85" },
+  { loc: "/search",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.8" },
+  { loc: "/discover",       lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.9" },
+  { loc: "/after-dark",     lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.85" },
+  { loc: "/drift",          lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
+  { loc: "/about",          lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.75" },
+  { loc: "/contact",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.7" },
+  // SEO landing pages — Core cluster
+  { loc: "/personalised-audio-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/private-audio-stories",            lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/create-your-own-audio-story",      lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/ai-audio-story-generator",         lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // SEO landing pages — Bedtime cluster
+  { loc: "/sleep-audio-stories",    lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  { loc: "/bedtime-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  { loc: "/relaxing-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  // SEO landing pages — Romantic cluster
+  { loc: "/romantic-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/love-stories-audio",      lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/emotional-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  // SEO landing pages — Intimate cluster
+  { loc: "/intimate-audio-stories",   lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/late-night-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/slow-burn-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/confident-energy-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  { loc: "/quiet-intensity-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  // SEO landing pages — Genre & Audience cluster
+  { loc: "/dark-romance-audio-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/forbidden-romance-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/enemies-to-lovers-audio-stories",  lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/adult-audio-stories",              lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/audio-stories-for-women",          lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  // SEO landing pages — Decision-stage comparison cluster
+  { loc: "/audio-stories-vs-audiobooks",      lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
+  { loc: "/audio-stories-vs-podcasts",        lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
+  { loc: "/best-audio-story-app-for-adults",  lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
+  { loc: "/alternatives-to-romance-audiobooks", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.8" },
+  // SEO landing pages — Competitor alternative pages
+  { loc: "/dipsea-alternative", lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.8" },
+  { loc: "/quinn-alternative",  lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.8" },
+  // SEO landing pages — Adult content cluster
+  { loc: "/audio-erotica-for-women",     lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/personalised-erotica",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/erotic-audio-stories",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
+  { loc: "/adult-bedtime-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/ai-romance-stories-for-women", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  // SEO landing pages — Definition pages
+  { loc: "/what-is-a-personalised-audio-story", lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
+  { loc: "/what-is-audio-erotica",              lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
+  { loc: "/what-is-slow-burn-romance",          lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
+  { loc: "/what-is-dark-romance",               lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
+  { loc: "/what-is-enemies-to-lovers",          lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
+  // Legal pages
+  { loc: "/privacy-policy",  lastmod: DATE_PUBLISHED, changefreq: "yearly", priority: "0.6" },
+  { loc: "/privacy",         lastmod: DATE_PUBLISHED, changefreq: "yearly", priority: "0.6" },
+  { loc: "/terms",           lastmod: DATE_PUBLISHED, changefreq: "yearly", priority: "0.6" },
+  { loc: "/content-policy",  lastmod: DATE_PUBLISHED, changefreq: "yearly", priority: "0.6" },
+  { loc: "/refund-policy",   lastmod: DATE_PUBLISHED, changefreq: "yearly", priority: "0.6" },
+];
+
+router.get("/sitemap.xml", (_req: Request, res: Response) => {
+  const urlEntries = SITEMAP_URLS.map(
+    ({ loc, lastmod, changefreq, priority }) =>
+      `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
+  ).join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n\n${urlEntries}\n\n</urlset>\n`;
+
+  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=600");
+  res.status(200).send(xml);
+});
+
 router.get("/", (_req: Request, res: Response) => {
   const url = SITE_URL;
 

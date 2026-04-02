@@ -13,6 +13,10 @@ export interface SsrShellOptions {
   tagline: string;
   bodyHtml: string;
   schemas: object[];
+  /** Override the default OG/Twitter image for this page */
+  ogImage?: string;
+  /** Override the default robots meta directive (default: "index, follow") */
+  robots?: string;
 }
 
 const CSS = `
@@ -170,7 +174,7 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escHtml(opts.title)}</title>
   <meta name="description" content="${escHtml(opts.description)}" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="${escHtml(opts.robots ?? "index, follow")}" />
   <link rel="canonical" href="${escHtml(opts.canonical)}" />
 
   <!-- Open Graph -->
@@ -178,7 +182,7 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <meta property="og:site_name" content="${SITE_NAME}" />
   <meta property="og:title" content="${escHtml(opts.title)}" />
   <meta property="og:description" content="${escHtml(opts.description)}" />
-  <meta property="og:image" content="${OG_IMAGE}" />
+  <meta property="og:image" content="${escHtml(opts.ogImage ?? OG_IMAGE)}" />
   <meta property="og:url" content="${escHtml(opts.canonical)}" />
   <meta property="og:locale" content="en_GB" />
 
@@ -187,7 +191,7 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <meta name="twitter:site" content="@theprivatestory" />
   <meta name="twitter:title" content="${escHtml(opts.title)}" />
   <meta name="twitter:description" content="${escHtml(opts.description)}" />
-  <meta name="twitter:image" content="${OG_IMAGE}" />
+  <meta name="twitter:image" content="${escHtml(opts.ogImage ?? OG_IMAGE)}" />
 
   <!-- Theme -->
   <meta name="theme-color" content="#c9a227" />

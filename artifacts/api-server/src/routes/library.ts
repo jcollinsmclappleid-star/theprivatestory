@@ -34,6 +34,24 @@ function getUserId(req: Request, res: Response): string | null {
   return req.user.id;
 }
 
+/** Returns true if the user has an active monthly/annual subscription. Sends 403 and returns false otherwise. */
+async function requireActiveSubscription(req: Request, res: Response): Promise<boolean> {
+  const userId = req.user?.id;
+  if (!userId) { res.status(401).json({ error: "Authentication required" }); return false; }
+  const user = await db
+    .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+    .then(r => r[0]);
+  const isActive = user?.subscriptionStatus === "active" &&
+    (user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual");
+  if (!isActive) {
+    res.status(403).json({ error: "An active subscription is required to access your story library." });
+    return false;
+  }
+  return true;
+}
+
 // ---------------------------------------------------------------------------
 // Editorial fallback stories for when taste profile is empty
 // ---------------------------------------------------------------------------
@@ -43,8 +61,9 @@ const EDITORIAL_PICKS = ["story-1", "story-2", "story-3", "story-4", "story-5"];
 // POST /save-story
 // ---------------------------------------------------------------------------
 router.post("/save-story", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
+  if (!(await requireActiveSubscription(req, res))) return;
+  const userId = req.user.id;
 
   const { storyId } = req.body as { storyId: string };
   if (!storyId) {
@@ -60,8 +79,9 @@ router.post("/save-story", async (req, res) => {
 // DELETE /save-story
 // ---------------------------------------------------------------------------
 router.delete("/save-story", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
+  if (!(await requireActiveSubscription(req, res))) return;
+  const userId = req.user.id;
 
   const { storyId } = req.body as { storyId: string };
   if (!storyId) {
@@ -105,9 +125,13 @@ router.post("/update-progress", async (req, res) => {
 // GET /library
 // ---------------------------------------------------------------------------
 router.get("/library", async (req, res) => {
-  const userId = getUserId(req, res);
-  if (!userId) return;
+  if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
 
+  // Non-subscribers (free/immersive) have no library storage
+  const hasActiveSub = await requireActiveSubscription(req, res).catch(() => false);
+  if (!hasActiveSub) return;
+
+  const userId = req.user.id;
   const [savedIds, generatedRows] = await Promise.all([
     libraryStore.getSavedStoryIds(userId),
     libraryStore.getGeneratedStoryIds(userId),

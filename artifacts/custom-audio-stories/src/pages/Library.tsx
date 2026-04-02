@@ -220,6 +220,33 @@ function EmptyState({ tab }: { tab: LibraryTab }) {
   );
 }
 
+function SubscriptionGate() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center justify-center py-24 text-center px-4"
+    >
+      <div className="mb-6 opacity-60">
+        <Lock className="w-12 h-12 text-primary/40 mx-auto" />
+      </div>
+      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Your library awaits</h2>
+      <p className="text-muted-foreground text-sm max-w-xs mb-2">
+        Subscribe to save stories, track your listening progress, and build your personal private collection.
+      </p>
+      <p className="text-muted-foreground text-xs max-w-xs mb-8 opacity-70">
+        One-time immersive stories are played immediately and not stored in a library.
+      </p>
+      <Link
+        href="/pricing"
+        className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all"
+      >
+        View Subscription Plans
+      </Link>
+    </motion.div>
+  );
+}
+
 function AuthGate({ openSignIn }: { openSignIn: () => void }) {
   return (
     <motion.div
@@ -365,6 +392,18 @@ export default function Library() {
     );
   }
   */
+
+  if (isAuthenticated && !isPaid) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8 w-full">
+        <div className="mb-8">
+          <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
+          <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
+        </div>
+        <SubscriptionGate />
+      </div>
+    );
+  }
 
   return (
     <motion.div

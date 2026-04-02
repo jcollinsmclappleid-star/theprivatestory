@@ -76,6 +76,17 @@ function getUserId(req: Request): string {
   return req.user.id;
 }
 
+/** Returns true if the authenticated user has an active monthly/annual subscription. */
+async function isActiveSubscriber(userId: string): Promise<boolean> {
+  const user = await db
+    .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+    .then(r => r[0]);
+  return user?.subscriptionStatus === "active" &&
+    (user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual");
+}
+
 // ---------------------------------------------------------------------------
 // GET /api/me/taste — full taste profile + streak
 // ---------------------------------------------------------------------------
@@ -486,6 +497,12 @@ router.get("/continue-listening", async (req, res) => {
   const userId = getUserId(req);
 
   try {
+    // Non-subscribers have no persisted library progress
+    if (!(await isActiveSubscriber(userId))) {
+      res.json([]);
+      return;
+    }
+
     const userProgressMap = await progressStore.getUserProgress(userId);
 
     const inProgress = Object.values(userProgressMap)
@@ -555,11 +572,17 @@ router.delete("/presets/:id", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// GET /api/me/library — user's saved + generated stories
+// GET /api/me/library — user's saved + generated stories (active subscribers only)
 // ---------------------------------------------------------------------------
 router.get("/library", async (req, res) => {
   const userId = getUserId(req);
   try {
+    // Non-subscribers (free/immersive) have no library storage
+    if (!(await isActiveSubscriber(userId))) {
+      res.json({ saved: [], generated: [] });
+      return;
+    }
+
     const [savedIds, generatedRows] = await Promise.all([
       libraryStore.getSavedStoryIds(userId),
       libraryStore.getGeneratedStoryIds(userId),

@@ -1,8 +1,30 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+function xmlContentTypePlugin(): Plugin {
+  return {
+    name: "xml-content-type",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url && (req.url === "/sitemap.xml" || req.url.endsWith(".xml"))) {
+          res.setHeader("Content-Type", "application/xml; charset=utf-8");
+        }
+        next();
+      });
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url && (req.url === "/sitemap.xml" || req.url.endsWith(".xml"))) {
+          res.setHeader("Content-Type", "application/xml; charset=utf-8");
+        }
+        next();
+      });
+    },
+  };
+}
 
 const rawPort = process.env.PORT;
 
@@ -29,6 +51,7 @@ if (!basePath) {
 export default defineConfig({
   base: basePath,
   plugins: [
+    xmlContentTypePlugin(),
     react(),
     tailwindcss(),
     runtimeErrorOverlay(),

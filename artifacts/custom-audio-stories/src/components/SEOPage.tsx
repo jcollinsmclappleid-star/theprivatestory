@@ -142,6 +142,22 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </Link>
         </div>
 
+        {/* Structured intro — explicitly states what this page is, who it's for, how it works */}
+        <div className="mb-12 space-y-4 text-muted-foreground text-base leading-relaxed border-l-2 border-primary/30 pl-5">
+          <p>
+            <strong className="text-foreground font-semibold">What this is:</strong>{" "}
+            {config.hero.tagline}
+          </p>
+          <p>
+            <strong className="text-foreground font-semibold">Who it's for:</strong>{" "}
+            Adult women who want private, emotionally intelligent audio storytelling — personalised around their mood, not retrieved from a fixed library.
+          </p>
+          <p>
+            <strong className="text-foreground font-semibold">How it works:</strong>{" "}
+            {config.howItWorks[0].heading}. {config.howItWorks[1]?.heading}. {config.howItWorks[2]?.heading}.
+          </p>
+        </div>
+
         {/* Trust bar */}
         <div className="grid grid-cols-2 gap-3 mb-16">
           {TRUST_ITEMS.map((t, i) => (

@@ -619,22 +619,54 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         const invoice = event.data.object as Stripe.Invoice;
         const sub = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
         if (!sub) break;
-        if ((event.data.object as Stripe.Invoice).billing_reason !== "subscription_cycle") break;
+        if (invoice.billing_reason !== "subscription_cycle") break;
         const user = await db.select()
           .from(usersTable)
           .where(eq(usersTable.stripeSubscriptionId, sub))
           .then(r => r[0]);
+        // Only compute rollover for monthly plan
         if (!user || user.subscriptionPlan !== "monthly") break;
-        const unused = Math.max(0, 5 - (user.storiesGeneratedThisMonth ?? 0));
+
+        // Idempotency guard: skip if we already processed this invoice
+        const invoiceId = invoice.id;
+        if (invoiceId && user.lastProcessedInvoiceId === invoiceId) {
+          logger.info({ userId: user.id, invoiceId }, "[stripe-webhook] invoice.paid already processed — skipping");
+          break;
+        }
+
+        const now = new Date();
+        const lazyResetFired = user.subscriptionRenewDate != null && user.subscriptionRenewDate > now;
+
+        // If the lazy reset fired before this webhook, use the snapshot it captured.
+        // Otherwise use the live counter (normal path: webhook fires before any user activity).
+        const sourceCount = lazyResetFired
+          ? (user.lastPeriodStoriesCount ?? 0)
+          : (user.storiesGeneratedThisMonth ?? 0);
+
+        const unused = Math.max(0, 5 - sourceCount);
         const newRollover = Math.min(10, (user.rolloverCredits ?? 0) + unused);
-        const newRenewDate = new Date();
-        newRenewDate.setMonth(newRenewDate.getMonth() + 1);
-        await db.update(usersTable).set({
-          storiesGeneratedThisMonth: 0,
-          rolloverCredits: newRollover,
-          subscriptionRenewDate: newRenewDate,
-        }).where(eq(usersTable.id, user.id));
-        logger.info({ userId: user.id, unused, newRollover }, "[stripe-webhook] Monthly renewal — rollover computed");
+
+        if (lazyResetFired) {
+          // Lazy reset already zeroed the counter and advanced renewDate — just credit rollover
+          await db.update(usersTable).set({
+            rolloverCredits: newRollover,
+            lastPeriodStoriesCount: 0,
+            lastProcessedInvoiceId: invoiceId ?? null,
+          }).where(eq(usersTable.id, user.id));
+        } else {
+          // Normal path — reset counter and advance renewDate here
+          const newRenewDate = new Date();
+          newRenewDate.setMonth(newRenewDate.getMonth() + 1);
+          await db.update(usersTable).set({
+            storiesGeneratedThisMonth: 0,
+            rolloverCredits: newRollover,
+            subscriptionRenewDate: newRenewDate,
+            lastPeriodStoriesCount: 0,
+            lastProcessedInvoiceId: invoiceId ?? null,
+          }).where(eq(usersTable.id, user.id));
+        }
+
+        logger.info({ userId: user.id, sourceCount, unused, newRollover, lazyResetFired }, "[stripe-webhook] Monthly renewal — rollover computed");
         break;
       }
 

@@ -54,6 +54,10 @@ export const usersTable = pgTable("users", {
   addonStoriesRemaining: integer("addon_stories_remaining").notNull().default(0),
   // Rollover credits — unused monthly plan stories that carry over (max 10)
   rolloverCredits: integer("rollover_credits").notNull().default(0),
+  // Snapshot of previous period usage taken at lazy reset time, consumed by invoice.paid webhook for rollover
+  lastPeriodStoriesCount: integer("last_period_stories_count").notNull().default(0),
+  // Idempotency guard: Stripe invoice ID last processed in invoice.paid webhook
+  lastProcessedInvoiceId: varchar("last_processed_invoice_id"),
   // Stripe billing identifiers
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),

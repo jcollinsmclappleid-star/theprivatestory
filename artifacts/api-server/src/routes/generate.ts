@@ -3896,11 +3896,31 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
   const planConfig = PLAN_LIMITS_GEN[plan] ?? PLAN_LIMITS_GEN.free;
   const renewDate = user.subscriptionRenewDate;
 
-  // When the renewal period has passed, allow generation but do NOT write a reset to DB.
-  // The invoice.paid webhook is the sole authority for resetting counters and computing rollover credits.
-  // Writing a reset here before the webhook fires would zero storiesGeneratedThisMonth, causing the
-  // webhook to compute maximum rollover from a zeroed counter (over-crediting).
+  // Lazy period reset: if the billing period has rolled over, snapshot the old usage count for
+  // the webhook's rollover computation, then reset the DB counter and advance the renew date.
+  // Writing to DB here (once) is correct — the webhook checks subscriptionRenewDate > now to detect
+  // this has already fired and uses lastPeriodStoriesCount instead of storiesGeneratedThisMonth.
   if (renewDate && new Date() > renewDate) {
+    const newRenewDate = new Date(renewDate);
+    if (planConfig.period === "month") {
+      newRenewDate.setMonth(newRenewDate.getMonth() + 1);
+      await db.update(usersTable)
+        .set({
+          lastPeriodStoriesCount: user.storiesGeneratedThisMonth ?? 0,
+          storiesGeneratedThisMonth: 0,
+          subscriptionRenewDate: newRenewDate,
+        })
+        .where(eq(usersTable.id, userId));
+    } else {
+      newRenewDate.setFullYear(newRenewDate.getFullYear() + 1);
+      await db.update(usersTable)
+        .set({
+          lastPeriodStoriesCount: user.storiesGeneratedThisYear ?? 0,
+          storiesGeneratedThisYear: 0,
+          subscriptionRenewDate: newRenewDate,
+        })
+        .where(eq(usersTable.id, userId));
+    }
     return { error: null, useAddon: false, useRollover: false, storiesCount: 0 };
   }
 

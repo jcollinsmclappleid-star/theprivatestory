@@ -176,8 +176,8 @@ export default function Pricing() {
   }, [isAuthenticated]);
 
   const startCheckout = (plan: "monthly" | "annual" | "addon" | "immersive") => {
-    if (plan === "addon" && !isAuthenticated) {
-      setCheckoutError("Please sign in to purchase additional stories.");
+    if (!isAuthenticated && (plan === "monthly" || plan === "annual" || plan === "addon")) {
+      setCheckoutError("Please sign in to your account to purchase a subscription.");
       return;
     }
     doCheckout(plan);

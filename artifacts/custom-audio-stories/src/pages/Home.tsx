@@ -827,7 +827,8 @@ export default function Home() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const startCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
-    if (plan !== "immersive" && !isAuthenticated) {
+    // Guests can only purchase immersive (one-time). Subscriptions require sign-in.
+    if (!isAuthenticated && (plan === "monthly" || plan === "annual")) {
       navigate("/pricing");
       return;
     }

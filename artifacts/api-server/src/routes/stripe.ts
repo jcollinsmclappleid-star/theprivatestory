@@ -112,7 +112,14 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
 
     // ---- GUEST FLOW ----
-    // No email needed upfront — Stripe collects it during checkout.
+    // Guest checkout only allowed for immersive (payment mode).
+    // Subscriptions require authentication.
+    if (plan !== "immersive") {
+      res.status(401).json({ error: "Please sign in to your account to purchase a subscription." });
+      return;
+    }
+
+    // Immersive: no email needed upfront — Stripe collects it during checkout.
     // The webhook will populate customerEmail from session.customer_details.email.
 
     // Generate a secure claim token BEFORE creating the Stripe session so it can
@@ -125,7 +132,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer_creation: "always",
       line_items: [{ price: priceId, quantity: 1 }],
-      mode: plan === "immersive" ? "payment" : "subscription",
+      mode: "payment",
       success_url: `${SITE_URL}/checkout/success?token=${claimToken}`,
       cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
       allow_promotion_codes: true,
@@ -138,7 +145,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     await db.insert(pendingPurchasesTable).values({
       claimToken,
       stripeSessionId: stripeSession.id,
-      plan: plan as "monthly" | "annual" | "immersive",
+      plan: "immersive",
       confirmed: false,
       expiresAt,
     });

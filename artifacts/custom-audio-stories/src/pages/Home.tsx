@@ -1249,9 +1249,10 @@ export default function Home() {
           <div className="rounded-3xl border border-border/25 bg-card/20 p-8 md:p-12">
             <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
               <div className="flex-1">
-                <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Access</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Private access</p>
                 <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                  One subscription.<br className="hidden md:block" /> Private stories whenever the moment calls for it.
+                  A story written entirely for you.<br className="hidden md:block" />
+                  <span className="text-muted-foreground font-normal"> Whenever the moment calls for it.</span>
                 </h2>
               </div>
               <Link
@@ -1271,22 +1272,36 @@ export default function Home() {
                   <span className="font-display text-3xl font-bold text-foreground">£29</span>
                   <span className="text-muted-foreground/50 text-sm mb-0.5">/ month</span>
                 </div>
-                <p className="text-xs text-muted-foreground/40 mb-4">Cancel any time.</p>
+                <p className="text-xs text-muted-foreground/40 mb-4">Billed monthly. Stories yours to keep.</p>
                 <div className="space-y-2 mb-5">
-                  {["5 personalised stories / month", "Full curated collection", "Monthly new releases", "Premium narration"].map((f) => (
-                    <div key={f} className="flex items-start gap-2">
-                      <Check className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-muted-foreground/70 leading-snug">{f}</span>
+                  {[
+                    { text: "5 personalised stories / month", special: false },
+                    { text: "Full curated collection", special: false },
+                    { text: "Monthly new releases", special: false },
+                    { text: "Premium voice narration", special: false },
+                    { text: "After Dark — stories that explore further", special: true },
+                  ].map((f) => (
+                    <div key={f.text} className="flex items-start gap-2">
+                      {f.special
+                        ? <Moon className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
+                        : <Check className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
+                      }
+                      <span className={`text-xs leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/70"}`}>{f.text}</span>
                     </div>
                   ))}
                 </div>
                 <button
                   onClick={() => startCheckout("monthly")}
                   disabled={checkoutLoading === "monthly"}
-                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
                 >
                   {checkoutLoading === "monthly" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Monthly"}
                 </button>
+                <div className="mt-3 flex items-center gap-2">
+                  <div className="flex-1 h-px bg-border/20" />
+                  <span className="text-[10px] text-primary/50 font-medium whitespace-nowrap px-1">Cancel any time — stories stay yours</span>
+                  <div className="flex-1 h-px bg-border/20" />
+                </div>
               </div>
 
               {/* Annual */}
@@ -1300,12 +1315,21 @@ export default function Home() {
                   <span className="font-display text-3xl font-bold text-foreground">£179</span>
                   <span className="text-muted-foreground/50 text-sm mb-0.5">/ year</span>
                 </div>
-                <p className="text-xs text-muted-foreground/40 mb-4">£14.91/month — less than half monthly price.</p>
+                <p className="text-xs text-muted-foreground/40 mb-4">£14.91/month — less than half the monthly price.</p>
                 <div className="space-y-2 mb-5">
-                  {["50 personalised stories / year", "Full curated collection", "Monthly new releases", "Premium narration"].map((f) => (
-                    <div key={f} className="flex items-start gap-2">
-                      <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-xs text-foreground/80 leading-snug">{f}</span>
+                  {[
+                    { text: "50 personalised stories / year", special: false },
+                    { text: "Full curated collection", special: false },
+                    { text: "Monthly new releases", special: false },
+                    { text: "Premium voice narration", special: false },
+                    { text: "After Dark — stories that explore further", special: true },
+                  ].map((f) => (
+                    <div key={f.text} className="flex items-start gap-2">
+                      {f.special
+                        ? <Moon className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
+                        : <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                      }
+                      <span className={`text-xs leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
                     </div>
                   ))}
                 </div>
@@ -1342,7 +1366,7 @@ export default function Home() {
             )}
             <div className="text-center space-y-2">
               <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/40">
-                {["Private library included", "Cancel monthly anytime", "Add more stories whenever you want"].map((item) => (
+                {["Private library included", "After Dark included", "Cast every character yourself", "Add more stories whenever you want"].map((item) => (
                   <span key={item} className="flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
                     {item}
@@ -1350,7 +1374,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-xs text-muted-foreground/30">
-                Every plan includes: private library · original cover art · premium narration · full curated collection ·{" "}
+                Every plan includes: private library · original cover art · premium voice narration · full curated collection ·{" "}
                 <Link href="/pricing" className="text-primary/50 hover:text-primary transition-colors">full plan details →</Link>
               </p>
             </div>

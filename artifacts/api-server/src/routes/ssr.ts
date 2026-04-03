@@ -130,6 +130,7 @@ interface StaticPage {
   body: string;
   extraSchemas?: object[];
   cacheHeader?: string;
+  robots?: string;
 }
 
 const STATIC_PAGES: StaticPage[] = [
@@ -560,10 +561,11 @@ const STATIC_PAGES: StaticPage[] = [
     slug: "after-dark",
     title: "After Dark — The Private Story",
     description:
-      "After Dark: explicit literary audio fiction at The Private Story. For subscribers who want stories without limits. Private, narrated, generated for you.",
+      "After Dark: premium literary audio fiction at The Private Story. For subscribers. Private, narrated, generated for you.",
     h1: "After Dark",
-    tagline: "Stories without limits. Private, explicit, literary.",
+    tagline: "Premium literary audio. Private, narrated, yours alone.",
     cacheHeader: CACHE_1H,
+    robots: "noindex, nofollow",
     body: `
     <section>
       <h2>What After Dark Is</h2>
@@ -879,6 +881,7 @@ for (const page of STATIC_PAGES) {
       tagline,
       bodyHtml,
       schemas,
+      ...(page.robots ? { robots: page.robots } : {}),
     });
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", cacheHeader);

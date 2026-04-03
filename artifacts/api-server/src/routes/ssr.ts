@@ -495,6 +495,128 @@ const STATIC_PAGES: StaticPage[] = [
       <p>To request a refund, email <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>. We aim to respond within one business day.</p>
     </section>`,
   },
+  {
+    path: "/create",
+    slug: "create",
+    title: "Create Your Story — The Private Story",
+    description:
+      "Build your brief. Choose your mood, tone, dynamic, setting, and characters. Your personalised audio story is generated in minutes.",
+    h1: "Create Your Story",
+    tagline: "Choose your mood. Set the scene. Your story is written for you.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>How It Works</h2>
+      <p>The Casting Room guides you through seven selections — mood, tone, dynamic, setting, intensity, character type, and scenario direction. Each choice shapes the story that follows. Nothing is retrieved from a library. Everything is written around your brief.</p>
+      <p>A complete narrated story takes under two minutes to generate. It is saved privately to your account. Only you can access it.</p>
+      <a class="cta-primary" href="/create">Start creating</a>
+    </section>
+    <section>
+      <h2>What You Can Create</h2>
+      <p>Slow burn romance. Dark tension. Tender and intimate. Late night. Historical. Forbidden. The combinations are effectively unlimited — over 220 situations across 11 dramatic categories and 50+ settings.</p>
+      <p>See also: <a href="/personalised-audio-stories">personalised audio stories</a> · <a href="/ai-audio-story-generator">AI audio story generator</a> · <a href="/how-it-works">how it works</a></p>
+    </section>`,
+  },
+  {
+    path: "/browse",
+    slug: "browse",
+    title: "Browse Stories — The Private Story",
+    description:
+      "Browse the story collection at The Private Story. Find stories by mood, tone, and genre. Every story is privately saved to your account.",
+    h1: "Browse Stories",
+    tagline: "Find your mood. Every story is yours alone.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>The Collection</h2>
+      <p>The Private Story generates each story from scratch — nothing in the collection was written in advance. Browse by mood, genre, and tone to find the type of story you want to create next.</p>
+      <p>Categories include slow burn, dark romance, forbidden desire, late night, emotional, intimate, historical, and more. Each story is saved privately to your account.</p>
+      <a class="cta-primary" href="/create">Create a story</a>
+    </section>
+    <section>
+      <h2>Explore by Type</h2>
+      <p><a href="/romantic-audio-stories">Romantic</a> · <a href="/intimate-audio-stories">Intimate</a> · <a href="/dark-romance-audio-stories">Dark Romance</a> · <a href="/slow-burn-audio-stories">Slow Burn</a> · <a href="/late-night-audio-stories">Late Night</a> · <a href="/emotional-audio-stories">Emotional</a> · <a href="/forbidden-romance-audio-stories">Forbidden</a> · <a href="/discover">Discover all</a></p>
+    </section>`,
+  },
+  {
+    path: "/discover",
+    slug: "discover",
+    title: "Discover Story Types — The Private Story",
+    description:
+      "Discover every story type at The Private Story. Browse by genre, mood, tone, and dynamic. Personalised audio stories created around your choices.",
+    h1: "Discover",
+    tagline: "Every mood. Every dynamic. Every story type — personalised.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>Story Types</h2>
+      <p>The Private Story covers the full range of adult romantic and intimate fiction — from slow burn and tender romance to dark, forbidden, and explicit. Every type can be personalised around your mood, dynamic, and setting.</p>
+      <p><a href="/romantic-audio-stories">Romantic</a> · <a href="/intimate-audio-stories">Intimate</a> · <a href="/dark-romance-audio-stories">Dark Romance</a> · <a href="/slow-burn-audio-stories">Slow Burn</a> · <a href="/emotional-audio-stories">Emotional</a> · <a href="/forbidden-romance-audio-stories">Forbidden</a> · <a href="/enemies-to-lovers-audio-stories">Enemies to Lovers</a> · <a href="/late-night-audio-stories">Late Night</a> · <a href="/bedtime-audio-stories">Bedtime</a></p>
+      <a class="cta-primary" href="/create">Start creating</a>
+    </section>`,
+  },
+  {
+    path: "/after-dark",
+    slug: "after-dark",
+    title: "After Dark — The Private Story",
+    description:
+      "After Dark: explicit literary audio fiction at The Private Story. For subscribers who want stories without limits. Private, narrated, generated for you.",
+    h1: "After Dark",
+    tagline: "Stories without limits. Private, explicit, literary.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>What After Dark Is</h2>
+      <p>After Dark is the explicit tier at The Private Story. Stories here are written without the tonal restraints of the standard collection — more direct, more intense, more explicit. The same literary quality. The same complete privacy. No limits on what your brief can include.</p>
+      <p>After Dark stories are available to subscribers on the Monthly and Annual plans. Every story is saved privately to your account.</p>
+      <a class="cta-primary" href="/pricing">See plans</a>
+    </section>
+    <section>
+      <h2>Related</h2>
+      <p><a href="/intimate-audio-stories">Intimate audio stories</a> · <a href="/dark-romance-audio-stories">Dark romance</a> · <a href="/forbidden-romance-audio-stories">Forbidden romance</a> · <a href="/late-night-audio-stories">Late night stories</a></p>
+    </section>`,
+  },
+  {
+    path: "/drift",
+    slug: "drift",
+    title: "Drift — Ambient Audio Experience — The Private Story",
+    description:
+      "Drift is The Private Story's ambient listening mode. Layered sound and narration designed to settle the mind. Available to all subscribers.",
+    h1: "Drift",
+    tagline: "Let the story carry you. Ambient audio for quiet nights.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>What Drift Is</h2>
+      <p>Drift is an ambient audio mode at The Private Story — layered sound environments paired with narration, designed to slow the mind and ease you into rest. It is a different experience from a story: less narrative drive, more atmosphere.</p>
+      <p>Available to Monthly and Annual subscribers alongside the full story collection.</p>
+      <a class="cta-primary" href="/pricing">See plans</a>
+    </section>
+    <section>
+      <h2>Related</h2>
+      <p><a href="/sleep-audio-stories">Sleep audio stories</a> · <a href="/relaxing-audio-stories">Relaxing audio stories</a> · <a href="/bedtime-audio-stories">Bedtime audio stories</a></p>
+    </section>`,
+  },
+  {
+    path: "/search",
+    slug: "search",
+    title: "Search — The Private Story",
+    description:
+      "Search The Private Story. Find stories by mood, genre, setting, and tone. Every story is privately generated and saved to your account.",
+    h1: "Search",
+    tagline: "Find what you're looking for.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>Find Your Story</h2>
+      <p>Search The Private Story by mood, genre, tone, or setting. Every story in the collection was generated for a specific listener — privately, around a specific brief. Browse and search to find your starting point, then create your own.</p>
+      <a class="cta-primary" href="/create">Create a story</a>
+    </section>
+    <section>
+      <h2>Popular Categories</h2>
+      <p><a href="/romantic-audio-stories">Romantic</a> · <a href="/dark-romance-audio-stories">Dark Romance</a> · <a href="/slow-burn-audio-stories">Slow Burn</a> · <a href="/intimate-audio-stories">Intimate</a> · <a href="/discover">Discover all types</a></p>
+    </section>`,
+  },
 ];
 
 // ---------------------------------------------------------------------------

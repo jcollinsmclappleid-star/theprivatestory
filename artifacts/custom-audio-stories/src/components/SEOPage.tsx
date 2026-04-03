@@ -103,7 +103,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </p>
           <p>
             <strong className="text-foreground font-semibold">Who it's for:</strong>{" "}
-            Adult women who want private, emotionally intelligent audio storytelling — personalised around their mood, not retrieved from a fixed library.
+            Adults who want private, emotionally intelligent audio storytelling — personalised around their mood and tone, not retrieved from a fixed library.
           </p>
           <p>
             <strong className="text-foreground font-semibold">How it works:</strong>{" "}

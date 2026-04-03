@@ -655,7 +655,7 @@ router.get("/", (_req: Request, res: Response) => {
       <h2>What Is The Private Story?</h2>
       <p>The Private Story is a premium literary audio platform that generates personalised stories from your choices — not from a content library. Each story is written by AI around the emotional register, characters, and atmosphere you describe, then narrated and saved privately to your account.</p>
       <p><strong>What this is:</strong> A private platform for AI-generated audio stories, created around your choices each time — not a catalogue of content made for a general audience.</p>
-      <p><strong>Who it's for:</strong> Adult women who want private, emotionally intelligent audio storytelling personalised around their mood, dynamic, and tone — not retrieved from a fixed library.</p>
+      <p><strong>Who it's for:</strong> Adults who want private, emotionally intelligent audio storytelling — personalised around their mood, dynamic, and tone, not retrieved from a fixed library.</p>
       <p><strong>How it works:</strong> <a href="/personalised-audio-stories">Personalised audio stories</a> begin with seven structured selections — mood, tone, dynamic, setting, intensity, character type, and scenario direction. <a href="/private-audio-stories">Private audio stories</a> are saved only to your account. And <a href="/create-your-own-audio-story">creating your own audio story</a> takes under two minutes.</p>
       <p><a href="/how-it-works">Full explanation of how it works →</a></p>
     </section>
@@ -1020,7 +1020,7 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       },
       {
         h2: "Why personalised audio stories exist",
-        body: `Generic romance audiobooks are written for the widest possible audience. They compromise — softening scenes that some readers might find too intense, or leaning into tropes that are commercially safe. A personalised audio story has no such constraint. It is written for one person: you.<br><br>This matters especially for women who want erotic fiction that genuinely reflects their inner world — not a publisher's idea of what women are supposed to want. <a href="/personalised-audio-stories">Personalised audio stories</a> are a direct response to that gap in the market.`,
+        body: `Generic romance audiobooks are written for the widest possible audience. They compromise — softening scenes that some readers might find too intense, or leaning into tropes that are commercially safe. A personalised audio story has no such constraint. It is written for one person: you.<br><br>This matters especially for anyone who wants erotic fiction that genuinely reflects their inner world — not a publisher's idea of what you're supposed to want. <a href="/personalised-audio-stories">Personalised audio stories</a> are a direct response to that gap in the market.`,
       },
       {
         h2: "Personalised vs custom vs bespoke — what is the difference?",

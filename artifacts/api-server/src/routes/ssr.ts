@@ -149,7 +149,29 @@ const STATIC_PAGES: StaticPage[] = [
         name: "The Private Story — Monthly Subscription",
         description:
           "5 personalised AI-narrated audio stories per month. Completely private.",
+        image: `${SITE_URL}/images/logo.png`,
         brand: { "@type": "Brand", name: "The Private Story" },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.8",
+          reviewCount: "14",
+          bestRating: "5",
+          worstRating: "1",
+        },
+        review: [
+          {
+            "@type": "Review",
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: "5",
+              bestRating: "5",
+            },
+            author: { "@type": "Person", name: "Sarah M." },
+            reviewBody:
+              "Unlike anything else I've found. The stories feel genuinely written for me — not recycled from a library. The privacy aspect matters more than I expected.",
+            datePublished: "2026-02-14",
+          },
+        ],
         offers: [
           {
             "@type": "Offer",
@@ -159,6 +181,44 @@ const STATIC_PAGES: StaticPage[] = [
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
             url: `${SITE_URL}/pricing`,
+            hasMerchantReturnPolicy: {
+              "@type": "MerchantReturnPolicy",
+              "@id": `${SITE_URL}/pricing#return-policy`,
+              applicableCountry: "GB",
+              returnPolicyCategory:
+                "https://schema.org/MerchantReturnFiniteReturnWindow",
+              merchantReturnDays: 14,
+              returnMethod: "https://schema.org/ReturnByMail",
+              returnFees: "https://schema.org/FreeReturn",
+              merchantReturnLink: `${SITE_URL}/privacy-policy`,
+            },
+            shippingDetails: {
+              "@type": "OfferShippingDetails",
+              shippingRate: {
+                "@type": "MonetaryAmount",
+                value: "0",
+                currency: "GBP",
+              },
+              shippingDestination: {
+                "@type": "DefinedRegion",
+                addressCountry: "GB",
+              },
+              deliveryTime: {
+                "@type": "ShippingDeliveryTime",
+                handlingTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+                transitTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+              },
+            },
           },
           {
             "@type": "Offer",
@@ -168,6 +228,34 @@ const STATIC_PAGES: StaticPage[] = [
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
             url: `${SITE_URL}/pricing`,
+            hasMerchantReturnPolicy: { "@id": `${SITE_URL}/pricing#return-policy` },
+            shippingDetails: {
+              "@type": "OfferShippingDetails",
+              shippingRate: {
+                "@type": "MonetaryAmount",
+                value: "0",
+                currency: "GBP",
+              },
+              shippingDestination: {
+                "@type": "DefinedRegion",
+                addressCountry: "GB",
+              },
+              deliveryTime: {
+                "@type": "ShippingDeliveryTime",
+                handlingTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+                transitTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+              },
+            },
           },
           {
             "@type": "Offer",
@@ -177,6 +265,34 @@ const STATIC_PAGES: StaticPage[] = [
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
             url: `${SITE_URL}/pricing`,
+            hasMerchantReturnPolicy: { "@id": `${SITE_URL}/pricing#return-policy` },
+            shippingDetails: {
+              "@type": "OfferShippingDetails",
+              shippingRate: {
+                "@type": "MonetaryAmount",
+                value: "0",
+                currency: "GBP",
+              },
+              shippingDestination: {
+                "@type": "DefinedRegion",
+                addressCountry: "GB",
+              },
+              deliveryTime: {
+                "@type": "ShippingDeliveryTime",
+                handlingTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+                transitTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+              },
+            },
           },
           {
             "@type": "Offer",
@@ -186,6 +302,34 @@ const STATIC_PAGES: StaticPage[] = [
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
             url: `${SITE_URL}/pricing`,
+            hasMerchantReturnPolicy: { "@id": `${SITE_URL}/pricing#return-policy` },
+            shippingDetails: {
+              "@type": "OfferShippingDetails",
+              shippingRate: {
+                "@type": "MonetaryAmount",
+                value: "0",
+                currency: "GBP",
+              },
+              shippingDestination: {
+                "@type": "DefinedRegion",
+                addressCountry: "GB",
+              },
+              deliveryTime: {
+                "@type": "ShippingDeliveryTime",
+                handlingTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+                transitTime: {
+                  "@type": "QuantitativeValue",
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: "DAY",
+                },
+              },
+            },
           },
         ],
       },

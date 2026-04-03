@@ -146,7 +146,7 @@ function CollectionGate() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
           {[
             { icon: <BookOpen className="w-4 h-4 text-primary" />, label: "Curated collection", desc: "Original stories across every mood and category." },
-            { icon: <Headphones className="w-4 h-4 text-primary" />, label: "Premium narration", desc: "ElevenLabs voices, chosen for intimacy and clarity." },
+            { icon: <Headphones className="w-4 h-4 text-primary" />, label: "Premium narration", desc: "A curated selection of voices, chosen for intimacy and depth." },
             { icon: <Sparkles className="w-4 h-4 text-primary" />, label: "Monthly releases", desc: "New stories added every month, automatically." },
           ].map(({ icon, label, desc }) => (
             <div key={label} className="bg-card/40 border border-border/40 rounded-xl p-4">

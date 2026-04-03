@@ -505,7 +505,6 @@ const STATIC_PAGES: StaticPage[] = [
     h1: "Create Your Story",
     tagline: "Choose your mood. Set the scene. Your story is written for you.",
     cacheHeader: CACHE_1H,
-    robots: "noindex, nofollow",
     body: `
     <section>
       <h2>How It Works</h2>
@@ -635,7 +634,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // Core site pages
   { loc: "/",               lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "1.0" },
   { loc: "/how-it-works",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
-  // { loc: "/create",      ... }  // noindex — age-gated, excluded from sitemap
+  { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.7"  },
   { loc: "/pricing",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
   // { loc: "/browse",      ... }  // noindex — age-gated, excluded from sitemap
   // { loc: "/search",      ... }  // noindex — age-gated, excluded from sitemap

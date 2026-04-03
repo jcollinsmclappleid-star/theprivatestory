@@ -505,6 +505,7 @@ const STATIC_PAGES: StaticPage[] = [
     h1: "Create Your Story",
     tagline: "Choose your mood. Set the scene. Your story is written for you.",
     cacheHeader: CACHE_1H,
+    robots: "noindex, nofollow",
     body: `
     <section>
       <h2>How It Works</h2>
@@ -527,6 +528,7 @@ const STATIC_PAGES: StaticPage[] = [
     h1: "Browse Stories",
     tagline: "Find your mood. Every story is yours alone.",
     cacheHeader: CACHE_1H,
+    robots: "noindex, nofollow",
     body: `
     <section>
       <h2>The Collection</h2>
@@ -608,6 +610,7 @@ const STATIC_PAGES: StaticPage[] = [
     h1: "Search",
     tagline: "Find what you're looking for.",
     cacheHeader: CACHE_1H,
+    robots: "noindex, nofollow",
     body: `
     <section>
       <h2>Find Your Story</h2>
@@ -632,12 +635,12 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // Core site pages
   { loc: "/",               lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "1.0" },
   { loc: "/how-it-works",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
-  { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.7"  },
+  // { loc: "/create",      ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/pricing",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
-  { loc: "/browse",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.85" },
-  { loc: "/search",         lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.8" },
+  // { loc: "/browse",      ... }  // noindex — age-gated, excluded from sitemap
+  // { loc: "/search",      ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/discover",       lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.9" },
-  { loc: "/after-dark",     lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.85" },
+  // { loc: "/after-dark",  ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/drift",          lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.8" },
   { loc: "/about",          lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.75" },
   { loc: "/contact",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.7" },

@@ -1109,7 +1109,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {PAIRINGS.map(p => (
                 <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5">{p.sub}</p>
+                  <p className="text-white/75 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -1133,7 +1133,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 .map(c => (
                   <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
                     <p className="font-semibold text-white text-base">{c.label}</p>
-                    <p className="text-white/60 text-sm mt-0.5">{c.sub}</p>
+                    <p className="text-white/75 text-sm mt-0.5">{c.sub}</p>
                   </ArtTile>
                 ))}
             </div>
@@ -1154,7 +1154,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {PERSPECTIVES.filter(p => getValidPerspectiveIds(data.pairing).includes(p.id)).map(p => (
                 <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.perspective === p.id} onClick={() => update("perspective", p.id)}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5">{p.sub}</p>
+                  <p className="text-white/75 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -1224,7 +1224,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                               onClick={() => { update("heritage", h.id); setHeritageDropdownOpen(false); }}
                             >
                               <p className="font-semibold text-white text-sm">{h.label}</p>
-                              <p className="text-white/60 text-xs mt-0.5 leading-snug">{h.sub}</p>
+                              <p className="text-white/75 text-xs mt-0.5 leading-snug">{h.sub}</p>
                             </ArtTile>
                           ))}
                         </div>
@@ -1291,7 +1291,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                               onClick={() => { update("archetype", a.id); setEnergyDropdownOpen(false); }}
                             >
                               <p className="font-semibold text-white text-sm">{a.label}</p>
-                              <p className="text-white/60 text-xs mt-0.5 leading-snug">{a.sub}</p>
+                              <p className="text-white/75 text-xs mt-0.5 leading-snug">{a.sub}</p>
                             </ArtTile>
                           ))}
                         </div>
@@ -1611,7 +1611,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   {AFTER_DARK_SETTINGS.map(s => (
                     <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                       <p className="font-semibold text-white text-base">{s.label}</p>
-                      <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
+                      <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                     </ArtTile>
                   ))}
                 </div>
@@ -1623,7 +1623,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {CONTEMPORARY_SETTINGS.map(s => (
                 <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
+                  <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>
@@ -1633,7 +1633,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {HISTORICAL_SETTINGS.map(s => (
                 <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
-                  <p className="text-white/60 text-sm mt-0.5 leading-snug">{s.sub}</p>
+                  <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
               ))}
             </div>

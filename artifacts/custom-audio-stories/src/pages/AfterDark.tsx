@@ -1189,7 +1189,7 @@ function ScenarioCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="text-white/45 text-xs leading-snug line-clamp-3"
+              className="text-white/65 text-xs leading-snug line-clamp-3"
             >
               {scenario.sub}
             </motion.p>

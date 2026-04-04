@@ -446,12 +446,22 @@ export function StoryTagStudio({
   const isSheProtagonist = p.sub === "She";
 
   const activeCategories: TagCategory[] = afterDark
-    ? [
-        ...buildStandardCategories(p, partner),
-        ...(isSheProtagonist ? buildSheOnlyStandardCategories() : []),
-        ...buildAfterDarkCategories(p),
-        ...(isSheProtagonist ? buildSheOnlyAfterDarkCategories() : []),
-      ]
+    ? (() => {
+        const std = buildStandardCategories(p, partner);
+        const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories() : [];
+        const ad = buildAfterDarkCategories(p);
+        const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories() : [];
+        const darkFantasy = ad.filter(c => c.heading === "Dark Fantasy");
+        const adWithout = ad.filter(c => c.heading !== "Dark Fantasy");
+        return [
+          ...std.slice(0, 6),  // How do you want to feel? → Pure Romance
+          ...sheAD,            // Her Command — raised above Praise & Devotion
+          ...darkFantasy,      // Dark Fantasy — raised above Praise & Devotion
+          std[6], std[7],      // Praise & Devotion, Story Arc & Plot
+          ...sheStd,           // Her Lead
+          ...adWithout,        // Sensation & Restraint, Words & Praise, Surrender & Power, Just the Scene, How does it end?
+        ];
+      })()
     : bedtime
     ? [buildNocturneCategory()]
     : [
@@ -537,7 +547,7 @@ export function StoryTagStudio({
             selected
               ? "border-transparent text-black"
               : isDisabled
-              ? "border-white/5 text-muted-foreground/20 cursor-not-allowed"
+              ? "border-white/8 text-muted-foreground/40 cursor-not-allowed"
               : isUsual
               ? "border-primary/40 text-foreground hover:border-primary/60"
               : "border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground"
@@ -561,7 +571,7 @@ export function StoryTagStudio({
           </span>
         )}
         {blockedByContradiction && (
-          <span className="text-[9px] text-muted-foreground/45 px-1.5 leading-tight italic">
+          <span className="text-[9px] text-foreground/50 px-1.5 leading-tight italic">
             Conflicts with "{contradictionPartners.find(cp => selectedTags.includes(cp))}"
           </span>
         )}
@@ -580,14 +590,14 @@ export function StoryTagStudio({
     return (
       <div
         key={cat.heading}
-        className={`transition-opacity ${locked || categoryExcluded ? "opacity-30" : ""}`}
+        className={`transition-opacity ${locked || categoryExcluded ? "opacity-50" : ""}`}
       >
         <div className="flex items-baseline justify-between mb-1">
           <p className="text-base font-semibold text-foreground">{cat.heading}</p>
           <div className="flex items-center gap-3">
             {categoryExcluded && (
-              <span className="text-[10px] text-muted-foreground/60 italic">
-                Opens when {excludedBy} is released
+              <span className="text-xs text-foreground/55 font-medium">
+                Unlocks when "{excludedBy}" is cleared
               </span>
             )}
             {!locked && !categoryExcluded && cat.maxSelect !== undefined && (

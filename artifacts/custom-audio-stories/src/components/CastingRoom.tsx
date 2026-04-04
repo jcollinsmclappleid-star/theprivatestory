@@ -1217,7 +1217,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   {heritageDropdownOpen && (
                     <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
                       style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <div className="max-h-[360px] overflow-y-auto p-3">
+                      <div className="max-h-[45vh] sm:max-h-[360px] overflow-y-auto p-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {HERITAGES.map(h => (
                             <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id}
@@ -1282,9 +1282,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     />
                   </button>
                   {energyDropdownOpen && (
-                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
+                    <div className="absolute z-50 bottom-full mb-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
                       style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <div className="max-h-[400px] overflow-y-auto p-3">
+                      <div className="max-h-[45vh] sm:max-h-[400px] overflow-y-auto p-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {energyOptions.map(a => (
                             <ArtTile key={a.id} gradient={a.gradient} accent={a.accent} image={a.image} selected={data.archetype === a.id}
@@ -1356,9 +1356,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     />
                   </button>
                   {appearanceDropdownOpen && (
-                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
+                    <div className="absolute z-50 bottom-full mb-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
                       style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <div className="p-5 space-y-5">
+                      <div className="max-h-[45vh] sm:max-h-[500px] overflow-y-auto p-5 space-y-5">
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: `${accentGold}80` }}>Build</p>
                           <div className="flex flex-wrap gap-1.5">

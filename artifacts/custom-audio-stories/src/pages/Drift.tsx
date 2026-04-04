@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronLeft, ArrowLeft, Moon } from "lucide-react";
+import { Sparkles, ChevronLeft, ArrowLeft, Moon, Loader2, Check } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -303,7 +303,7 @@ function ScenarioCard({
 }
 
 /* ── Main Page ──────────────────────────────────────────────────────── */
-type Phase = "scenario" | "casting" | "generating" | "result";
+type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
   const { isLoading: authLoading } = useAuth();
@@ -311,6 +311,11 @@ export default function Drift() {
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(0);
+  const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; archetype?: string; dynamic?: string } | null>(null);
+  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
+
+  const lastCastingRef = useRef<{ archetype?: string; dynamic?: string } | null>(null);
+  const lastScenarioRef = useRef<DriftScenario | null>(null);
 
   const play = useAudioPlayer((s) => s.play);
 
@@ -322,12 +327,41 @@ export default function Drift() {
         play(data);
         setPhase("result");
       },
-      onError: () => {
+      onError: (err: unknown) => {
         stopLoadingPhase();
-        setPhase("casting");
+        const status = (err as { status?: number }).status;
+        const isSubscriptionLimit = status === 402 || status === 401;
+        if (isSubscriptionLimit) {
+          setPaywallCapture({
+            scenarioLabel: lastScenarioRef.current?.label ?? "Drift",
+            archetype: lastCastingRef.current?.archetype,
+            dynamic: lastCastingRef.current?.dynamic,
+          });
+          setPhase("paywall");
+        } else {
+          setPhase("casting");
+        }
       },
     },
   });
+
+  const startDriftCheckout = async (plan: "monthly" | "annual" | "immersive") => {
+    setPaywallLoadingPlan(plan);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch { /* silent */ }
+    setPaywallLoadingPlan(null);
+  };
 
   const startLoadingPhase = useCallback(() => {
     setLoadingPhase(0);
@@ -350,6 +384,8 @@ export default function Drift() {
   const handleCastingComplete = useCallback(
     async (casting: CastingRoomResult) => {
       if (!selectedScenario) return;
+      lastCastingRef.current = { archetype: casting.archetype, dynamic: casting.dynamic };
+      lastScenarioRef.current = selectedScenario;
       setPhase("generating");
       const timer = startLoadingPhase();
 
@@ -643,6 +679,135 @@ export default function Drift() {
             <p className="text-xs text-muted-foreground mt-8 max-w-xs">
               Slow enough to carry you somewhere else. Nothing here leaves this room.
             </p>
+          </motion.div>
+        )}
+
+        {/* ── Paywall ─────────────────────────────────────────────────── */}
+        {phase === "paywall" && (
+          <motion.div
+            key="paywall"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
+          >
+            {/* Cinematic deep-indigo background */}
+            <div
+              className="absolute inset-0"
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #080514 0%, #030210 55%, #000 100%)" }}
+            />
+            <div className="absolute inset-0" style={{
+              background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.18) 0%, transparent 55%)",
+            }} />
+
+            {/* Content */}
+            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 overflow-y-auto max-h-screen text-center">
+
+              {/* Moon icon */}
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.35)" }}
+              >
+                <Moon className="w-7 h-7" style={{ color: ACCENT }} />
+              </div>
+
+              {/* Personalised headline */}
+              <div className="flex flex-col gap-2">
+                <h2 className="font-display text-2xl font-bold text-foreground leading-tight">
+                  {paywallCapture?.scenarioLabel ?? "Drift"} — your story is ready.
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Subscribe to hear it now.
+                </p>
+                {/* Casting detail pill */}
+                {paywallCapture && (paywallCapture.archetype || paywallCapture.dynamic) && (
+                  <div
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full self-center text-xs font-medium"
+                    style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.3)", color: "#a5b4fc" }}
+                  >
+                    {[paywallCapture.archetype, paywallCapture.dynamic].filter(Boolean).join(" · ")}
+                  </div>
+                )}
+              </div>
+
+              {/* Value bullets */}
+              <div className="w-full flex flex-col gap-2 text-left">
+                {[
+                  "Bedtime audio stories, written to slow you down",
+                  "Every voice, fully personalised to your cast",
+                  "Complete privacy — nothing stored, nothing shared",
+                ].map(benefit => (
+                  <div key={benefit} className="flex items-center gap-2.5 text-sm" style={{ color: "#a5b4fc" }}>
+                    <Check className="w-3.5 h-3.5 flex-shrink-0 opacity-70" style={{ color: ACCENT }} />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Personalised bridge copy */}
+              <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
+                Your casting is saved. Subscribe and your story writes immediately.
+              </p>
+
+              {/* Primary CTAs */}
+              <div className="w-full flex flex-col gap-2">
+                {/* Annual — primary hero */}
+                <button
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => void startDriftCheckout("annual")}
+                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-white text-base transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                  style={{ background: `linear-gradient(135deg, ${ACCENT}, #4338ca)`, boxShadow: `0 0 28px rgba(99,102,241,0.3)` }}
+                >
+                  <span className="flex items-center gap-2">
+                    {paywallLoadingPlan === "annual" ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4" />
+                    )}
+                    <span>Annual — £14.99/month</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/70 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                  </span>
+                  <span className="text-xs text-white/40">billed annually</span>
+                </button>
+
+                {/* Monthly — secondary */}
+                <button
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => void startDriftCheckout("monthly")}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-60"
+                  style={{ border: `1px solid rgba(99,102,241,0.35)`, color: "#a5b4fc" }}
+                >
+                  {paywallLoadingPlan === "monthly" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Monthly — £29/month
+                </button>
+              </div>
+
+              {/* Single story escape hatch */}
+              <button
+                disabled={!!paywallLoadingPlan}
+                onClick={() => void startDriftCheckout("immersive")}
+                className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
+              >
+                {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                Not ready to commit? Get just this story — £7.99
+              </button>
+
+              {/* Privacy signal + start over */}
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-[11px] text-muted-foreground/30">
+                  Nothing stored. No history. Heard only by you.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setPhase("scenario"); setSelectedScenario(null); setPaywallCapture(null); }}
+                  className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                >
+                  Start over
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
 

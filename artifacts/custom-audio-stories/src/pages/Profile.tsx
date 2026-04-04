@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { authClient } from "@/lib/authClient";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story } from "@workspace/api-client-react";
 
@@ -1030,52 +1031,86 @@ export default function Profile() {
         <p className="text-xs text-muted-foreground mb-4">
           Permanently delete your account and all personal data within 30 days. This cannot be undone.
         </p>
-        {!deleteConfirmOpen && !deleteDone && (
-          <button
-            onClick={() => setDeleteConfirmOpen(true)}
-            className="text-xs text-destructive/70 hover:text-destructive transition-colors underline underline-offset-2"
-          >
-            Request account deletion
-          </button>
-        )}
-        {deleteConfirmOpen && !deleteDone && (
+
+        {/* Gate: active recurring subscription blocks deletion */}
+        {usageData && (usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus === "active" ? (
           <div className="space-y-3">
-            <p className="text-xs text-destructive font-medium">
-              Are you sure? Your taste profile, history, and account data will be permanently erased.
+            <p className="text-xs text-destructive/80 font-medium">
+              Your account cannot be deleted while a paid plan is active.
             </p>
-            <div className="flex gap-3">
-              <button
-                onClick={async () => {
-                  setDeleteProcessing(true);
-                  try {
-                    await fetch(`${API_BASE}/api/me`, { method: "DELETE", credentials: "include" });
-                    setDeleteDone(true);
-                    setDeleteConfirmOpen(false);
-                  } catch {
-                    setDeleteConfirmOpen(false);
-                  } finally {
-                    setDeleteProcessing(false);
-                  }
-                }}
-                disabled={deleteProcessing}
-                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full text-xs font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
-              >
-                {deleteProcessing ? "Deleting…" : "Yes, delete my account"}
-              </button>
-              <button
-                onClick={() => setDeleteConfirmOpen(false)}
-                className="px-4 py-2 border border-border rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Cancel your subscription first, then return here to delete your account.
+            </p>
+            <button
+              onClick={() => setCancelConfirmOpen(true)}
+              className="text-xs text-primary hover:text-primary/80 transition-colors underline underline-offset-2"
+            >
+              Cancel subscription
+            </button>
           </div>
-        )}
-        {deleteDone && (
-          <p className="text-xs text-muted-foreground">
-            Your deletion request has been received. All personal data will be removed within 30 days.
-            You can contact <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a> with any questions.
-          </p>
+        ) : (
+          <>
+            {/* Note for users with a scheduled cancellation */}
+            {usageData && usageData.subscriptionStatus === "canceling" && !deleteDone && (
+              <p className="text-xs text-amber-400/80 mb-3">
+                Note: your subscription access will also end immediately on deletion (rather than at the scheduled date).
+              </p>
+            )}
+
+            {!deleteConfirmOpen && !deleteDone && (
+              <button
+                onClick={() => setDeleteConfirmOpen(true)}
+                className="text-xs text-destructive/70 hover:text-destructive transition-colors underline underline-offset-2"
+              >
+                Request account deletion
+              </button>
+            )}
+            {deleteConfirmOpen && !deleteDone && (
+              <div className="space-y-3">
+                <p className="text-xs text-destructive font-medium">
+                  Are you sure? Your taste profile, history, and account data will be permanently erased.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={async () => {
+                      setDeleteProcessing(true);
+                      try {
+                        const res = await fetch(`${API_BASE}/api/me`, { method: "DELETE", credentials: "include" });
+                        if (res.ok) {
+                          await authClient.signOut();
+                          window.location.href = import.meta.env.BASE_URL || "/";
+                        } else {
+                          const body = await res.json().catch(() => ({}));
+                          alert(body.error ?? "Failed to delete account. Please try again or contact support@theprivatestory.com.");
+                          setDeleteConfirmOpen(false);
+                        }
+                      } catch {
+                        setDeleteConfirmOpen(false);
+                      } finally {
+                        setDeleteProcessing(false);
+                      }
+                    }}
+                    disabled={deleteProcessing}
+                    className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full text-xs font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
+                  >
+                    {deleteProcessing ? "Deleting…" : "Yes, delete my account"}
+                  </button>
+                  <button
+                    onClick={() => setDeleteConfirmOpen(false)}
+                    className="px-4 py-2 border border-border rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+            {deleteDone && (
+              <p className="text-xs text-muted-foreground">
+                Your deletion request has been received. All personal data will be removed within 30 days.
+                You can contact <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a> with any questions.
+              </p>
+            )}
+          </>
         )}
       </div>
     </motion.div>

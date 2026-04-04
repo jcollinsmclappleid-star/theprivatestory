@@ -1,4 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
+import Stripe from "stripe";
 import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
 import { db, usersTable } from "@workspace/db";
 import { nameSubmissions } from "@workspace/db/schema";
@@ -6,6 +7,12 @@ import { eq, and, desc, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
+
+function getStripe(): Stripe | null {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+  return new Stripe(key, { apiVersion: "2025-04-30.basil" });
+}
 
 // ---------------------------------------------------------------------------
 // Canonical allowlists for taste profile dimensions.
@@ -822,11 +829,49 @@ router.patch("/accept-terms", async (req, res) => {
 // ---------------------------------------------------------------------------
 // DELETE /api/me — GDPR Article 17 right to erasure (self-service account deletion)
 // Soft-deletes the user record and clears all personal data from storage.
+// If an active recurring Stripe subscription exists it is cancelled immediately
+// before the soft-delete proceeds; the request is blocked if cancellation fails.
 // ---------------------------------------------------------------------------
 router.delete("/", async (req, res) => {
   const userId = getUserId(req);
 
   try {
+    // Fetch subscription state to enforce the "cancel first" rule.
+    const [userRow] = await db
+      .select({
+        stripeSubscriptionId: usersTable.stripeSubscriptionId,
+        subscriptionStatus: usersTable.subscriptionStatus,
+        subscriptionPlan: usersTable.subscriptionPlan,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+
+    const hasActiveRecurring =
+      userRow?.subscriptionStatus === "active" &&
+      !!userRow?.stripeSubscriptionId &&
+      (userRow?.subscriptionPlan === "monthly" || userRow?.subscriptionPlan === "annual");
+
+    if (hasActiveRecurring) {
+      const stripe = getStripe();
+      if (!stripe) {
+        res.status(503).json({ error: "Payment processing is unavailable. Please cancel your subscription manually before deleting your account, or contact support@theprivatestory.com." });
+        return;
+      }
+      try {
+        await stripe.subscriptions.cancel(userRow.stripeSubscriptionId!);
+        await db.update(usersTable).set({
+          subscriptionStatus: "canceled",
+          subscriptionCancelAt: new Date(),
+        }).where(eq(usersTable.id, userId));
+        logger.info({ userId, stripeSubscriptionId: userRow.stripeSubscriptionId }, "[account-deletion] Active subscription cancelled immediately before account deletion");
+      } catch (stripeErr) {
+        logger.error({ err: stripeErr, userId }, "[account-deletion] Stripe cancellation failed — blocking deletion");
+        res.status(500).json({ error: "We couldn't cancel your subscription automatically. Please cancel it from your profile first, then delete your account. Contact support@theprivatestory.com if you need help." });
+        return;
+      }
+    }
+
     // Soft-delete the user row by setting deletedAt
     await db
       .update(usersTable)
@@ -844,7 +889,7 @@ router.delete("/", async (req, res) => {
     res.json({ ok: true, message: "Your account has been scheduled for deletion. All personal data will be removed within 30 days." });
   } catch (err) {
     logger.error({ err, userId }, "[account-deletion] Failed to delete account");
-    res.status(500).json({ error: "Failed to delete account. Please contact safety@theprivatestory.com for assistance." });
+    res.status(500).json({ error: "Failed to delete account. Please contact support@theprivatestory.com for assistance." });
   }
 });
 

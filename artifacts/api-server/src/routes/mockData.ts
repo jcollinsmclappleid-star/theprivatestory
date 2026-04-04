@@ -36,21 +36,21 @@ export interface Series {
 }
 
 const coverImages = [
-  "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=800&q=80",
-  "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80",
-  "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f?w=800&q=80",
-  "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=80",
-  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
-  "https://images.unsplash.com/photo-1499678329028-101435549a4e?w=800&q=80",
-  "https://images.unsplash.com/photo-1516562309708-05f3b2b2c238?w=800&q=80",
-  "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&q=80",
-  "https://images.unsplash.com/photo-1521575107034-e0fa0b594529?w=800&q=80",
-  "https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=800&q=80",
-  "https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&q=80",
-  "https://images.unsplash.com/photo-1544033527-b192daee1f5b?w=800&q=80",
-  "https://images.unsplash.com/photo-1495908333425-29a1e0918c5f?w=800&q=80",
-  "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+  "/cover-slow-burn.png",
+  "/cover-forbidden.png",
+  "/cover-slow-burn.png",
+  "/cover-passionate.png",
+  "/cover-romance.png",
+  "/cover-nostalgic.png",
+  "/cover-forbidden.png",
+  "/cover-nostalgic.png",
+  "/cover-passionate.png",
+  "/cover-romance.png",
+  "/cover-slow-burn.png",
+  "/cover-playful.png",
+  "/cover-forbidden.png",
+  "/cover-nostalgic.png",
+  "/cover-romance.png",
 ];
 
 export const mockStories: Story[] = [

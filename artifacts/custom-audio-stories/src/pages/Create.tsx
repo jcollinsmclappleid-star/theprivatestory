@@ -954,7 +954,7 @@ export default function Create() {
           setContinueAfterDark(false);
           setStep("paywall");
         } else {
-          setStep("form");
+          setStep("casting");
         }
       },
     },
@@ -984,7 +984,7 @@ export default function Create() {
         form.setValue("mood", casting.mood ?? "Emotional");
         form.setValue("storyMode", casting.storyMode ?? "romance");
         if (casting.pairing) setCastingPairing(casting.pairing);
-        setStep("form");
+        setStep("casting");
       } catch { /* ignore */ }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1029,7 +1029,6 @@ export default function Create() {
     setPendingCastingData(myUsualPreset.castingData);
     setMyUsualApplied(true);
     setMyUsualLoading(false);
-    setStep("preset-prompt");
   }, [myUsualPreset, form]);
 
   const handleLoadFormPreset = useCallback(() => {
@@ -1127,6 +1126,55 @@ export default function Create() {
     }
   }, [result, isGeneratingVariation, selectedVariation, startLoadingPhase, stopLoadingPhase, applyResultToPlayer]);
 
+  // Triggers generation immediately using data straight from CastingRoomResult,
+  // bypassing stale React state for casting fields (they are set via setState above
+  // but aren't available in closures until next render).
+  const handleAutoGenerate = useCallback(async (casting: CastingRoomResult) => {
+    setStep("generating");
+    startLoadingPhase();
+    const apiPerspective =
+      casting.perspective === "your" ? "you"
+      : casting.perspective === "their" ? "they"
+      : casting.perspective ?? "you";
+    try {
+      await generateMutation.mutateAsync({
+        data: {
+          mood: casting.mood || form.getValues("mood"),
+          intensity: casting.intensity || form.getValues("intensity"),
+          voiceFeel: casting.voiceId || form.getValues("voiceFeel"),
+          storyLength: form.getValues("storyLength"),
+          scenarioCard: form.getValues("scenarioCard") || undefined,
+          timeOfDay: undefined,
+          season: undefined,
+          perspective: apiPerspective,
+          cinematicVisuals: true,
+          emotionalFocus: (casting.mood || form.getValues("mood")) === "Emotional",
+          whoIsHe: casting.archetype || undefined,
+          dynamic: casting.dynamic || undefined,
+          setting: casting.setting || undefined,
+          storyMode: casting.storyMode || undefined,
+          experienceTags: [],
+          pairing: casting.pairing,
+          heritage: casting.heritage || undefined,
+          atmosphere: casting.atmosphere || undefined,
+          chemistry: casting.chemistry || undefined,
+          appearBuild: casting.appearBuild || undefined,
+          appearHeight: casting.appearHeight || undefined,
+          appearColouring: casting.appearColouring || undefined,
+          appearEyes: casting.appearEyes || undefined,
+          appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+          listenerName: casting.listenerName || undefined,
+          partnerName: casting.partnerName || undefined,
+          country: casting.country || undefined,
+          city: casting.city || undefined,
+          situationId: casting.situationId || undefined,
+        },
+      });
+    } finally {
+      stopLoadingPhase();
+    }
+  }, [form, generateMutation, startLoadingPhase, stopLoadingPhase]);
+
   const handleCastingComplete = useCallback((casting: CastingRoomResult) => {
 
     const castingSnapshot = {
@@ -1185,10 +1233,14 @@ export default function Create() {
     const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "My Cast";
     setPresetNameDraft(suggestedName);
 
-    // Go straight to the pre-generate form — voice is already set from casting.
-    // If somehow voiceId is missing, fall back to the standalone voice step.
-    setStep(casting.voiceId ? "form" : "voice");
-  }, [form]);
+    // Skip the form step entirely — go straight to generating.
+    // If voiceId is missing, show the voice selection step first.
+    if (casting.voiceId) {
+      void handleAutoGenerate(casting);
+    } else {
+      setStep("voice");
+    }
+  }, [form, handleAutoGenerate]);
 
   const handleVoiceSelect = useCallback((voiceId: string) => {
     form.setValue("voiceFeel", voiceId, { shouldDirty: true });
@@ -1584,23 +1636,9 @@ export default function Create() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            {myUsualPreset && !myUsualApplied && (
-              <div className="max-w-2xl mx-auto px-4 pt-6 pb-0 flex justify-center">
-                <button
-                  type="button"
-                  onClick={handleLoadMyUsual}
-                  disabled={myUsualLoading}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-sm font-medium hover:bg-primary/10 transition-all"
-                >
-                  <Wand2 className="w-4 h-4" />
-                  {myUsualLoading ? "Loading…" : `My Usual: ${myUsualPreset.name}`}
-                </button>
-              </div>
-            )}
             <CastingRoom
               key={castingResetKey}
               onComplete={handleCastingComplete}
-              onSkip={() => setStep("form")}
               onAfterDark={() => {
                 window.location.href = `${import.meta.env.BASE_URL}after-dark`;
               }}
@@ -1742,46 +1780,7 @@ export default function Create() {
                     form.setValue("voiceFeel", "RILOU7YmBhvwJGDGjNmP", { shouldDirty: false });
                   }
 
-                  if (isAuthenticated) {
-                    setStep("preset-prompt");
-                  } else {
-                    setStep("generating");
-                    startLoadingPhase();
-                    generateMutation.mutateAsync({
-                      data: {
-                        mood: (lastCastingData?.mood as string) || "Emotional",
-                        intensity: (lastCastingData?.intensity as string) || "Tender",
-                        voiceFeel: form.getValues("voiceFeel"),
-                        storyLength: form.getValues("storyLength") || "10 min",
-                        scenarioCard: form.getValues("scenarioCard") || undefined,
-                        timeOfDay,
-                        season,
-                        perspective: ((lastCastingData?.pairing as string) === "Her & Him" || (lastCastingData?.pairing as string) === "Him & Him" || (lastCastingData?.pairing as string) === "Him & Them") 
-                          ? ((lastCastingData?.pairing as string).startsWith("Her") ? "her" : "his")
-                          : "your",
-                        cinematicVisuals: true,
-                        emotionalFocus: ((lastCastingData?.mood as string) || "").includes("Emotional"),
-                        whoIsHe: lastCastingData?.whoIsHe as string | undefined,
-                        dynamic: lastCastingData?.dynamic as string | undefined,
-                        setting: lastCastingData?.setting as string | undefined,
-                        storyMode: lastCastingData?.storyMode as string | undefined,
-                        experienceTags: form.getValues("experienceTags"),
-                        pairing: castingPairing,
-                        heritage: castingHeritage,
-                        atmosphere: castingAtmosphere,
-                        chemistry: castingChemistry,
-                        appearBuild: castingAppearBuild,
-                        appearHeight: castingAppearHeight,
-                        appearColouring: castingAppearColouring,
-                        appearEyes: castingAppearEyes,
-                        appearFeatures: castingAppearFeatures?.length ? castingAppearFeatures : undefined,
-                        listenerName: castingListenerName,
-                        partnerName: castingPartnerName,
-                        country: castingCountry,
-                        city: castingCity,
-                      },
-                    }).finally(() => stopLoadingPhase());
-                  }
+                  void handleStartGenerating(false, "");
                 }}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow text-sm"
               >
@@ -1792,935 +1791,6 @@ export default function Create() {
           </motion.div>
         )}
 
-        {step === "preset-prompt" && (
-          <motion.div
-            key="preset-prompt"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 max-w-md mx-auto"
-          >
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-              <Wand2 className="w-7 h-7 text-primary" />
-            </div>
-            <div className="text-center">
-              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Save this casting?</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Give your combination a name so you can reuse it in one tap from your profile.
-              </p>
-            </div>
-            <div className="w-full space-y-3">
-              <input
-                type="text"
-                value={presetNameDraft}
-                onChange={(e) => setPresetNameDraft(e.target.value)}
-                maxLength={80}
-                placeholder="e.g. CEO · Slow Burn"
-                className="w-full px-4 py-3 rounded-xl border border-border/40 bg-card/60 text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50"
-              />
-              <button
-                onClick={() => handleStartGenerating(true, presetNameDraft)}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow text-sm"
-              >
-                <Sparkles className="w-4 h-4" />
-                Save &amp; Write My Story
-              </button>
-              <button
-                onClick={() => handleStartGenerating(false, "")}
-                className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
-              >
-                Skip — just write it
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {step === "form" && (
-          <motion.div
-            key="form"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="max-w-3xl mx-auto px-4 py-8 space-y-8"
-          >
-            <div>
-              <button
-                onClick={resetToFreshCasting}
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Back to Casting Room
-              </button>
-              {generationError && (
-                <div className={`rounded-2xl p-4 mb-6 border ${generationError.isSubscriptionLimit ? "bg-amber-950/30 border-amber-500/30" : "bg-destructive/10 border-destructive/30"}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className={`text-sm font-semibold mb-1 ${generationError.isSubscriptionLimit ? "text-amber-300" : "text-destructive"}`}>
-                        {generationError.isSubscriptionLimit ? "Story allowance reached" : "Generation failed"}
-                      </p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{generationError.message}</p>
-                      {!generationError.isSubscriptionLimit && (
-                        <button
-                          type="button"
-                          onClick={() => { setGenerationError(null); form.handleSubmit(onSubmit)(); }}
-                          className="mt-2 text-xs text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
-                        >
-                          Try again
-                        </button>
-                      )}
-                    </div>
-                    <button type="button" onClick={() => setGenerationError(null)} className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-0.5">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-start justify-between gap-4 mb-2">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Story Studio</p>
-                  <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Your Private Story</h1>
-                  <p className="text-muted-foreground">Choose your experience, then shape the details.</p>
-                  {usageData && usageData.plan !== "free" && (
-                    <p className="text-xs text-muted-foreground/70 mt-1">
-                      {usageData.storiesRemaining > 0
-                        ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "Immersive Story" : "Immersive Stories"} remaining</span> this {usageData.plan === "annual" ? "year" : "month"}</>
-                        : <span className="text-amber-400">Story allowance used — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "soon"}</span>
-                      }
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col items-end gap-2 mt-1 flex-shrink-0">
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={formPreset ? handleLoadFormPreset : () => setShowFormPresetSavePrompt(v => !v)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all ${
-                        formPresetFlash
-                          ? "border-primary/60 bg-primary/15 text-primary"
-                          : formPreset
-                            ? "border-primary/30 bg-primary/5 text-primary hover:bg-primary/10"
-                            : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
-                      }`}
-                    >
-                      <Heart className={`w-3.5 h-3.5 ${formPreset ? "fill-current" : ""}`} />
-                      {formPresetFlash ? "Loaded ✓" : "My Usual"}
-                    </button>
-                    {formPreset && (
-                      <button
-                        type="button"
-                        onClick={handleSaveFormPreset}
-                        disabled={formPresetSaving}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors px-1 py-1 disabled:opacity-50"
-                      >
-                        {formPresetSaving ? "Saving…" : "Update my usual"}
-                      </button>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleSurpriseMe}
-                    disabled={isSurprising}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm transition-all ${
-                      isSurprising
-                        ? "border-primary/40 bg-primary/10 text-primary"
-                        : "border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5"
-                    }`}
-                  >
-                    <Shuffle className={`w-3.5 h-3.5 ${isSurprising ? "animate-spin" : ""}`} />
-                    {isSurprising ? "Surprising…" : "Surprise Me"}
-                  </button>
-                </div>
-              </div>
-              {showFormPresetSavePrompt && !formPreset && (
-                <div className="glass-panel rounded-xl px-4 py-3 flex items-center justify-between gap-3 mt-2">
-                  <p className="text-sm text-foreground">Save your current selections as your usual?</p>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={handleSaveFormPreset}
-                      disabled={formPresetSaving}
-                      className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all disabled:opacity-50"
-                    >
-                      {formPresetSaving ? "Saving…" : "Save"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowFormPresetSavePrompt(false)}
-                      className="px-3 py-1.5 rounded-full text-xs text-muted-foreground hover:text-foreground border border-border/50 transition-colors"
-                    >
-                      Not now
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Section Progress Dots */}
-            <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-hide">
-              {formSections.map((section, i) => (
-                <div key={section.label} className="flex items-center gap-1 flex-shrink-0">
-                  <div className="flex flex-col items-center gap-1">
-                    <div
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        section.filled ? "bg-primary" : "bg-border/50"
-                      }`}
-                    />
-                    <span className={`text-[10px] font-medium ${section.filled ? "text-primary/70" : "text-muted-foreground/50"}`}>
-                      {section.label}
-                    </span>
-                  </div>
-                  {i < formSections.length - 1 && (
-                    <div className={`w-6 h-px mb-3 mx-0.5 ${section.filled ? "bg-primary/30" : "bg-border/30"}`} />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
-              {/* Whose Story? — Perspective selector + name fields */}
-              <div className="glass-panel rounded-2xl p-6 space-y-5">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Whose story is this?</label>
-                  <p className="text-xs text-muted-foreground mb-4">Choose the perspective the story is written from.</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(["your", "her", "his"] as const).map((p) => {
-                      const labels = { your: "Your Story", her: "Her Story", his: "His Story" };
-                      const descs = { your: "Written as you", her: "Written as her", his: "Written as him" };
-                      const isSelected = perspective === p;
-                      return (
-                        <button
-                          key={p}
-                          type="button"
-                          onClick={() => setPerspective(p)}
-                          className={`flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl border text-center transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/10 shadow-glow"
-                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                          }`}
-                        >
-                          <span className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
-                            {labels[p]}
-                          </span>
-                          <span className="text-xs text-muted-foreground">{descs[p]}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Story Theme — Category Picker */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">Story Theme</label>
-                <p className="text-xs text-muted-foreground mb-5">Choose the world your story lives in.</p>
-
-                {apiCategories.length === 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i} className="h-20 rounded-2xl bg-card/30 animate-pulse" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                    {apiCategories.map((cat) => {
-                      const isSelected = selectedCategoryId === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => handleCategorySelect(cat.id)}
-                          className={`text-left p-3 rounded-2xl border transition-all flex flex-col gap-1 ${
-                            isSelected
-                              ? "border-primary bg-primary/10 shadow-glow"
-                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                          }`}
-                        >
-                          <span className="text-xl leading-none">{cat.icon}</span>
-                          <p className={`font-semibold text-xs leading-tight ${isSelected ? "text-primary" : "text-foreground"}`}>
-                            {cat.name}
-                          </p>
-                          <p className="text-[10px] text-muted-foreground/70 leading-tight line-clamp-2">
-                            {cat.description}
-                          </p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {/* Subtheme picker — appears when a category is selected */}
-                <AnimatePresence>
-                  {selectedCategoryId && (() => {
-                    const cat = apiCategories.find(c => c.id === selectedCategoryId);
-                    if (!cat) return null;
-                    const selectedSub = cat.subthemes.find(s => s.id === selectedSubthemeId);
-                    return (
-                      <motion.div
-                        key={selectedCategoryId}
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="mt-5 pt-5 border-t border-border/30">
-                          <p className="text-xs font-medium text-foreground mb-1">Subtheme</p>
-                          <p className="text-xs text-muted-foreground mb-3">Pick the specific flavour of your {cat.name} story.</p>
-                          <div className="flex flex-wrap gap-2">
-                            {cat.subthemes.map((sub) => {
-                              const isSel = selectedSubthemeId === sub.id;
-                              return (
-                                <button
-                                  key={sub.id}
-                                  type="button"
-                                  onClick={() => handleSubthemeSelect(sub.id)}
-                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                                    isSel
-                                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                                      : "border-border/40 text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                                  }`}
-                                >
-                                  {isSel && <Check className="w-3 h-3 flex-shrink-0" />}
-                                  {sub.name}
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                        </div>
-                      </motion.div>
-                    );
-                  })()}
-                </AnimatePresence>
-              </div>
-
-              {/* Experience Tags — path-specific multi-select */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selectedMode}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
-                  className="glass-panel rounded-2xl p-6"
-                >
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Shape this story
-                  </label>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Select the feelings and elements you want woven into the narrative — choose as many as resonate.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {currentTags.map((tag) => {
-                      const isSelected = selectedTags.includes(tag);
-                      return (
-                        <button
-                          key={tag}
-                          type="button"
-                          onClick={() => toggleExperienceTag(tag)}
-                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
-                            isSelected
-                              ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                              : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                          }`}
-                        >
-                          {tag}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {selectedTags.length > 0 && (
-                    <p className="text-xs text-primary/60 mt-3">
-                      {selectedTags.length} {selectedTags.length === 1 ? "element" : "elements"} selected
-                    </p>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Your Scenario — card picker */}
-              <div className="glass-panel rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-sm font-medium text-foreground">Your Scenario</label>
-                  {watchedScenario && (
-                    <button
-                      type="button"
-                      onClick={() => form.setValue("scenarioCard", "")}
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                    >
-                      <X className="w-3 h-3" />
-                      Clear
-                    </button>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground mb-1">
-                  Tap a card to set the scene — tap again to clear it. Optional.
-                </p>
-                <ScenarioPicker
-                  value={watchedScenario}
-                  onChange={(text) => form.setValue("scenarioCard", text)}
-                />
-
-                {/* World / Setting */}
-                <div className="mt-5 pt-5 border-t border-border/20">
-                  <label className="block text-xs font-medium text-muted-foreground mb-2">
-                    Where does it happen?{" "}
-                    <span className="text-muted-foreground/60 font-normal">(optional — sets the world and cultural texture of the story)</span>
-                  </label>
-                  <WorldPicker
-                    value={watchedSetting}
-                    onChange={(place) => form.setValue("setting", place)}
-                  />
-                </div>
-
-                {/* Time of Day */}
-                <div className="mt-4 pt-4 border-t border-border/20">
-                  <label className="block text-xs font-medium text-muted-foreground mb-2.5">
-                    Time of day{" "}
-                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {TIME_OF_DAY_OPTIONS.map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setTimeOfDay(timeOfDay === t ? "" : t)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
-                          timeOfDay === t
-                            ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Season */}
-                <div className="mt-4 pt-4 border-t border-border/20">
-                  <label className="block text-xs font-medium text-muted-foreground mb-2.5">
-                    Season{" "}
-                    <span className="text-muted-foreground/60 font-normal">(optional)</span>
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {SEASON_OPTIONS.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setSeason(season === s ? "" : s)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
-                          season === s
-                            ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Who is He? */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">Who is He?</label>
-                <p className="text-xs text-muted-foreground mb-4">Optional — tap to select, tap again to clear</p>
-                <div className="space-y-4">
-                  {WHO_IS_HE_GROUPS.map((group) => (
-                    <div key={group.heading}>
-                      <p className="text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">
-                        {group.heading}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {group.items.map((opt) => (
-                          <OptionalPill key={opt} label={opt} field="whoIsHe" value={opt} />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* The Dynamic */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">The Dynamic</label>
-                <p className="text-xs text-muted-foreground mb-4">Optional — how does the power sit between you?</p>
-                <div className="flex flex-wrap gap-2">
-                  {DYNAMIC_OPTIONS.map((opt) => (
-                    <OptionalPill key={opt} label={opt} field="dynamic" value={opt} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Intensity */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">Intensity</label>
-                <p className="text-xs text-muted-foreground mb-4">
-                  How far does the story go?
-                  {!selectedCategoryId && currentPath.highlightIntensities.length < 4 && (
-                    <span className="text-primary/60"> · Suggested for {currentPath.label}: {currentPath.highlightIntensities.join(", ")}</span>
-                  )}
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {INTENSITIES.map((item) => {
-                    const isSelected = form.watch("intensity") === item.id;
-                    const isHighlighted = selectedCategoryId ? true : currentPath.highlightIntensities.includes(item.id);
-                    const isMuted = !isHighlighted;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => form.setValue("intensity", item.id)}
-                        className={`p-4 rounded-2xl border transition-all text-left relative ${
-                          isSelected
-                            ? "border-primary bg-primary/10 shadow-glow"
-                            : isMuted
-                              ? "border-border/20 bg-card/20 hover:border-primary/20 hover:bg-primary/3 opacity-60 hover:opacity-80"
-                              : "border-border/40 bg-card/40 hover:border-primary/30 hover:bg-primary/5"
-                        }`}
-                      >
-                        <p className={`font-semibold text-sm mb-0.5 ${isSelected ? "text-primary" : isMuted ? "text-muted-foreground" : "text-foreground"}`}>
-                          {item.label}
-                        </p>
-                        <p className="text-xs text-muted-foreground leading-snug">{item.desc}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* How does it end? */}
-              <div className="glass-panel rounded-2xl p-6">
-                <label className="block text-sm font-medium text-foreground mb-1">How does it end?</label>
-                <p className="text-xs text-muted-foreground mb-4">Optional — tap to select, tap again to clear</p>
-                <div className="flex flex-wrap gap-2">
-                  {ENDING_OPTIONS.map((opt) => (
-                    <OptionalPill key={opt} label={opt} field="ending" value={opt} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Voice & Enhancements */}
-              <div className="glass-panel rounded-2xl p-6 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Narrator Voice</label>
-                  <p className="text-xs text-muted-foreground mb-3">How the story is read aloud to you.</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {VOICES.map((v) => {
-                      const isSelected = form.watch("voiceFeel") === v.id;
-                      return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          onClick={() => form.setValue("voiceFeel", v.id, { shouldDirty: true })}
-                          className={`text-left px-4 py-3 rounded-xl border transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/10"
-                              : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
-                          }`}
-                        >
-                          <p className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}>{v.name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{v.label} · {v.accent}</p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-4">Enhancements</label>
-                  <div className="space-y-3">
-                    {[
-                      { field: "cinematicVisuals" as const, label: "Cinematic Visuals", sub: "AI-generated artwork for each scene" },
-                      { field: "emotionalFocus" as const, label: "Emotional Focus", sub: "Prioritise emotional depth and vulnerability" },
-                    ].map(({ field, label, sub }) => (
-                      <label key={field} className="flex items-center gap-4 cursor-pointer group">
-                        <div className="relative">
-                          <input
-                            type="checkbox"
-                            {...form.register(field)}
-                            className="sr-only"
-                          />
-                          <div
-                            className={`w-10 h-6 rounded-full transition-all ${form.watch(field) ? "bg-primary" : "bg-border/50"}`}
-                            onClick={() => form.setValue(field, !form.watch(field))}
-                          >
-                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${form.watch(field) ? "left-5" : "left-1"}`} />
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{label}</p>
-                          <p className="text-xs text-muted-foreground">{sub}</p>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Live Combination Preview */}
-              {buildPreviewSentence() && (
-                <motion.div
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="glass-panel rounded-2xl p-5 border border-primary/20 bg-primary/5"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Your story so far</p>
-                  <p className="text-sm text-foreground/90 leading-relaxed italic">
-                    {buildPreviewSentence()}
-                  </p>
-                  {watchedScenario && (
-                    <p className="text-xs text-muted-foreground mt-2 line-clamp-1">
-                      Scene: <span className="italic">"{watchedScenario}"</span>
-                    </p>
-                  )}
-                </motion.div>
-              )}
-
-              <button
-                type="submit"
-                disabled={generateMutation.isPending}
-                className="w-full bg-primary text-primary-foreground py-5 rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-              >
-                <Wand2 className="w-5 h-5" />
-                Generate My Story
-              </button>
-            </form>
-          </motion.div>
-        )}
-
-        {step === "generating" && (
-          <motion.div
-            key="generating"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="max-w-3xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[60vh] text-center"
-          >
-            <div className="relative mb-10">
-              <div className="w-20 h-20 rounded-full border border-primary/20 flex items-center justify-center">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                >
-                  <Sparkles className="w-8 h-8 text-primary" />
-                </motion.div>
-              </div>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 rounded-full border border-primary/10"
-              />
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={loadingPhase}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="mb-6"
-              >
-                <h2 className="text-3xl font-display font-bold text-foreground mb-2">
-                  {LOADING_PHASES[loadingPhase].label}
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  {LOADING_PHASES[loadingPhase].sub}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="mt-6 flex gap-2 items-center">
-              {LOADING_PHASES.map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{
-                    width: i === loadingPhase ? 32 : i < loadingPhase ? 16 : 8,
-                    opacity: i <= loadingPhase ? 1 : 0.3,
-                  }}
-                  className={`h-1 rounded-full ${i <= loadingPhase ? "bg-primary" : "bg-border"}`}
-                  transition={{ duration: 0.4 }}
-                />
-              ))}
-            </div>
-
-            <p className="text-xs text-muted-foreground mt-8 max-w-xs">
-              Our AI is running a full cinematic pipeline — story planning, writing, visual generation, and narration.
-            </p>
-            
-            <p className="text-xs text-muted-foreground/70 mt-4 max-w-xs">
-              ⏱ Typical wait time: 2–3 minutes
-            </p>
-          </motion.div>
-        )}
-
-        {step === "result" && result && (
-          <motion.div
-            key="result"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto px-4 py-8 space-y-8"
-          >
-            <button
-              onClick={resetToFreshCasting}
-              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
-            >
-              <ChevronLeft className="w-4 h-4" /> Create another
-            </button>
-
-            {result.variant_type && (
-              <div className="flex items-center gap-2 text-xs font-medium text-primary">
-                <Shuffle className="w-3.5 h-3.5" />
-                Variation: {VARIATION_OPTIONS.find(v => v.id === result.variant_type)?.label ?? result.variant_type}
-              </div>
-            )}
-            {result.parent_story_id && !result.variant_type && (
-              <div className="flex items-center gap-2 text-xs font-medium text-primary">
-                <BookOpen className="w-3.5 h-3.5" />
-                Continued story
-              </div>
-            )}
-
-            <div className="glass-panel rounded-3xl overflow-hidden">
-              <div className="relative aspect-video">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeSceneIndex}
-                    src={activeSceneImage}
-                    alt={`Scene ${activeSceneIndex + 1}`}
-                    initial={{ opacity: 0, scale: 1.03 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1.2, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </AnimatePresence>
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-
-                <div className="absolute bottom-0 left-0 p-8 z-10">
-                  <p className="text-primary text-xs font-medium uppercase tracking-widest mb-2">
-                    {result.mood} · AI Generated
-                  </p>
-                  <h1 className="font-display text-4xl font-bold text-foreground mb-3">
-                    {result.title}
-                  </h1>
-                  <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
-                    {result.description}
-                  </p>
-                </div>
-
-                {isThisPlaying && (
-                  <div className="absolute top-4 right-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-primary text-xs font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    {result.scenes[activeSceneIndex]?.heading ?? `Scene ${activeSceneIndex + 1}`}
-                  </div>
-                )}
-              </div>
-
-              <div className="p-8">
-                <div className="flex items-center gap-4 mb-8 flex-wrap">
-                  {result.audioUrl ? (
-                    <button
-                      onClick={togglePlay}
-                      className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
-                    >
-                      {isThisPlaying ? (
-                        <Volume2 className="w-5 h-5" />
-                      ) : (
-                        <Play className="w-5 h-5" />
-                      )}
-                      {isThisPlaying ? "Playing…" : "Play Story"}
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-3 bg-muted/30 text-muted-foreground px-6 py-3 rounded-full border border-border/50 text-sm">
-                      <Headphones className="w-4 h-4" />
-                      Connect ElevenLabs for audio narration
-                    </div>
-                  )}
-                  <button
-                    onClick={handleResultSave}
-                    disabled={savePending}
-                    className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
-                      resultSaved
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                    }`}
-                    title={resultSaved ? "Saved to library" : "Save to library"}
-                  >
-                    <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
-                  </button>
-                  <span className="text-muted-foreground text-sm">
-                    {result.duration} · {result.scenes.length} scenes
-                  </span>
-                </div>
-
-                {/* Save casting combo as a preset */}
-                {isAuthenticated && lastCastingData && (
-                  <div className="flex items-center gap-2">
-                    {presetSaved ? (
-                      <p className="text-xs text-primary flex items-center gap-1.5">
-                        <Check className="w-3.5 h-3.5" />
-                        Casting saved — find it in your profile
-                      </p>
-                    ) : (
-                      <button
-                        onClick={handleSavePreset}
-                        className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 underline-offset-2 hover:underline"
-                      >
-                        Save this casting combination
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                {isThisPlaying && (
-                  <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
-                    <p className="text-xs font-medium text-primary uppercase tracking-widest mb-3">
-                      Reading Along
-                    </p>
-                    <div className="prose prose-invert max-w-none">
-                      <p className="text-base leading-relaxed text-foreground whitespace-pre-wrap font-light">
-                        {result.scenes[activeSceneIndex]?.text ?? ""}
-                      </p>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-4">
-                      Scene {activeSceneIndex + 1} of {result.scenes.length} · {result.scenes[activeSceneIndex]?.heading}
-                    </p>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
-                    Story Scenes
-                  </p>
-                  {result.scenes.map((scene, i) => {
-                    const isActiveScene = currentStory?.id === result.id && activeSceneIndex === i;
-                    return (
-                      <motion.div
-                        key={scene.id}
-                        animate={{
-                          borderColor: isActiveScene
-                            ? "hsl(var(--primary) / 0.5)"
-                            : "hsl(var(--border) / 0.3)",
-                          backgroundColor: isActiveScene
-                            ? "hsl(var(--primary) / 0.05)"
-                            : "transparent",
-                        }}
-                        className="flex gap-4 p-4 rounded-xl border transition-colors"
-                      >
-                        {result.images.scenes[i] && (
-                          <div className="relative flex-shrink-0">
-                            <img
-                              src={result.images.scenes[i]}
-                              alt={scene.heading ?? `Scene ${i + 1}`}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                            {isActiveScene && (
-                              <div className="absolute inset-0 rounded-lg border-2 border-primary/60 flex items-center justify-center bg-black/30">
-                                <Volume2 className="w-4 h-4 text-primary" />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs text-muted-foreground">
-                              {i + 1}.
-                            </span>
-                            <span className="text-sm font-medium text-foreground truncate">
-                              {scene.heading ?? `Scene ${i + 1}`}
-                            </span>
-                            {isActiveScene && (
-                              <span className="text-xs text-primary font-medium flex-shrink-0">
-                                · Now playing
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                            {scene.text}
-                          </p>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Full Story Read-Along Section */}
-            {result.images?.cover && (
-              <div className="rounded-2xl overflow-hidden border border-border/30">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border/20 bg-card/60">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
-                    Full Story
-                  </p>
-                  <p className="text-xs text-muted-foreground">{result.scenes.length} scenes</p>
-                </div>
-                <div
-                  className="relative max-h-[70vh] overflow-y-auto"
-                  style={{
-                    backgroundImage: `url(${result.images.cover})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundAttachment: "local",
-                  }}
-                >
-                  <div className="p-8 space-y-10 bg-black/75">
-                    {result.scenes.map((scene, i) => (
-                      <div key={scene.id ?? i}>
-                        <p className="text-xs font-medium text-primary/70 uppercase tracking-widest mb-3">
-                          {scene.heading ?? `Scene ${i + 1}`}
-                        </p>
-                        <p className="text-base leading-[1.9] text-white/90 font-light whitespace-pre-wrap">
-                          {scene.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Post-generation upsell for free/immersive users who have exhausted all credits */}
-            {usageData && (usageData.plan === "free" || usageData.plan === "immersive") && usageData.storiesRemaining <= 0 && (usageData.addonStoriesRemaining ?? 0) <= 0 && (
-              <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/8 to-primary/3 p-6 flex flex-col items-center gap-4 text-center">
-                <div className="space-y-1">
-                  <p className="font-display text-lg font-bold text-foreground">Want another story like this?</p>
-                  <p className="text-sm text-muted-foreground">Subscribe and get 5 stories a month — with unused ones rolling over.</p>
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { window.location.href = `${import.meta.env.BASE_URL}pricing`; }}
-                    className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-glow"
-                  >
-                    See subscription plans
-                  </button>
-                  <button
-                    type="button"
-                    onClick={resetToFreshCasting}
-                    className="w-full py-3 rounded-xl border border-white/10 text-muted-foreground text-sm hover:text-foreground hover:bg-white/5 transition-all"
-                  >
-                    Buy another single story — £7.99
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 gap-4">
-              <button
-                onClick={() => setVariationModalOpen(true)}
-                disabled={isGeneratingVariation}
-                className="flex items-center justify-center gap-2 border border-border/50 text-foreground py-4 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Shuffle className="w-4 h-4" />
-                Regenerate Variation
-              </button>
-            </div>
-          </motion.div>
-        )}
 
         {step === "paywall" && paywallCapture && (() => {
           const MOOD_TEASERS: Record<string, string> = {
@@ -2916,10 +1986,10 @@ export default function Create() {
 
                 <button
                   type="button"
-                  onClick={() => { setStep("form"); setGenerationError(null); }}
+                  onClick={() => { setCastingResetKey(k => k + 1); setStep("casting"); setGenerationError(null); }}
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
                 >
-                  Back to story settings
+                  Start over
                 </button>
               </div>
             </motion.div>

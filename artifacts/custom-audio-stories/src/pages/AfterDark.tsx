@@ -1203,7 +1203,8 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
-  const [phase, setPhase] = useState<"scenario" | "casting" | "preset-prompt" | "generating" | "result">("scenario");
+  const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
+  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
   // confirmedPairing: the most recently known pairing — set from handoff on load,
@@ -1216,7 +1217,6 @@ export default function AfterDark() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
   const [presetSaved, setPresetSaved] = useState(false);
-  const [presetNameDraft, setPresetNameDraft] = useState("");
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
     casting: CastingRoomResult;
     allTags: string[];
@@ -1277,10 +1277,15 @@ export default function AfterDark() {
         setPhase("result");
         applyResultToPlayer(data);
       },
-      onError: () => {
+      onError: (err: unknown) => {
         stopLoadingPhase();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setPhase("casting");
+        const status = (err as { status?: number }).status;
+        if (status === 401 || status === 402) {
+          setPhase("paywall");
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setPhase("casting");
+        }
       },
     },
   });
@@ -1301,6 +1306,72 @@ export default function AfterDark() {
     } catch { /* ignore */ }
   }, [lastCastingData, isAuthenticated]);
 
+  // Launches Stripe checkout from the paywall phase
+  const startAfterDarkCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
+    setPaywallLoadingPlan(plan);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json() as { url?: string };
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch { /* silent */ }
+    setPaywallLoadingPlan(null);
+  }, []);
+
+  // Generates immediately from casting data — avoids stale React state reads
+  const handleAutoGenerateAfterDark = useCallback(
+    async (casting: CastingRoomResult, allTags: string[]) => {
+      setPhase("generating");
+      startLoadingPhase();
+      const apiPerspective =
+        casting.perspective === "your" ? "you"
+        : casting.perspective === "their" ? "they"
+        : casting.perspective;
+      try {
+        await generateMutation.mutateAsync({
+          data: {
+            mood: "Late Night",
+            intensity: casting.intensity,
+            voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
+            storyLength: "10 min",
+            perspective: apiPerspective,
+            cinematicVisuals: true,
+            emotionalFocus: false,
+            whoIsHe: casting.archetype || undefined,
+            dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
+            storyMode: selectedScenario?.storyMode ?? "unrestrained",
+            experienceTags: allTags,
+            pairing: casting.pairing || undefined,
+            heritage: casting.heritage || undefined,
+            atmosphere: casting.atmosphere || undefined,
+            chemistry: casting.chemistry || undefined,
+            setting: casting.setting || undefined,
+            appearBuild: casting.appearBuild || undefined,
+            appearHeight: casting.appearHeight || undefined,
+            appearColouring: casting.appearColouring || undefined,
+            appearEyes: casting.appearEyes || undefined,
+            appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+            listenerName: casting.listenerName || undefined,
+            partnerName: casting.partnerName || undefined,
+            country: casting.country || undefined,
+            city: casting.city || undefined,
+            scenarioRoom: selectedScenario?.room,
+            situationId: casting.situationId || undefined,
+          },
+        });
+      } finally {
+        stopLoadingPhase();
+      }
+    },
+    [generateMutation, startLoadingPhase, stopLoadingPhase, selectedScenario]
+  );
 
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
@@ -1334,72 +1405,10 @@ export default function AfterDark() {
       const allTags = [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
       setPendingAfterDarkCast({ casting, allTags });
 
-      const suggestedName = [casting.archetype, casting.dynamic].filter(Boolean).join(" · ") || "After Dark Cast";
-      setPresetNameDraft(suggestedName);
-      setPhase("preset-prompt");
+      // Skip the preset-prompt step — go straight to generation.
+      void handleAutoGenerateAfterDark(casting, allTags);
     },
-    [selectedScenario]
-  );
-
-  const handleAfterDarkStartGenerating = useCallback(
-    async (savePreset: boolean, presetName: string) => {
-      if (!pendingAfterDarkCast) return;
-      const { casting, allTags } = pendingAfterDarkCast;
-
-      if (savePreset && presetName.trim() && lastCastingData) {
-        fetch(`${API_BASE}/api/me/presets`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ name: presetName.trim(), castingData: lastCastingData }),
-        }).then(() => setPresetSaved(true)).catch(() => {});
-      }
-
-      setPhase("generating");
-      startLoadingPhase();
-
-      // perspective: CastingRoom uses "your"/"her"/"his"/"their" but API uses "you"/"her"/"his"/"they"
-      const apiPerspective = casting.perspective === "your" ? "you" : casting.perspective === "their" ? "they" : casting.perspective;
-
-      try {
-        await generateMutation.mutateAsync({
-          data: {
-            mood: "Late Night",
-            intensity: casting.intensity,
-            voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
-            storyLength: "10 min",
-            // scenarioCard omitted — AfterDark scenarios are not in the 50-card set;
-            // context is carried via experienceTags, dynamic, storyMode, and chemistry.
-            perspective: apiPerspective,
-            cinematicVisuals: true,
-            emotionalFocus: false,
-            whoIsHe: casting.archetype || undefined,
-            dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
-            storyMode: selectedScenario?.storyMode ?? "unrestrained",
-            experienceTags: allTags,
-            pairing: casting.pairing || undefined,
-            heritage: casting.heritage || undefined,
-            atmosphere: casting.atmosphere || undefined,
-            chemistry: casting.chemistry || undefined,
-            setting: casting.setting || undefined,
-            appearBuild: casting.appearBuild || undefined,
-            appearHeight: casting.appearHeight || undefined,
-            appearColouring: casting.appearColouring || undefined,
-            appearEyes: casting.appearEyes || undefined,
-            appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
-            listenerName: casting.listenerName || undefined,
-            partnerName: casting.partnerName || undefined,
-            country: casting.country || undefined,
-            city: casting.city || undefined,
-            scenarioRoom: selectedScenario?.room,
-            situationId: casting.situationId || undefined,
-          },
-        });
-      } finally {
-        stopLoadingPhase();
-      }
-    },
-    [pendingAfterDarkCast, selectedScenario, lastCastingData, generateMutation, startLoadingPhase, stopLoadingPhase]
+    [selectedScenario, handleAutoGenerateAfterDark]
   );
 
   if (!ageConfirmed) {
@@ -1646,52 +1655,64 @@ export default function AfterDark() {
           </motion.div>
         )}
 
-        {/* ── Preset Name Prompt ──────────────────────────────────────── */}
-        {phase === "preset-prompt" && (
+        {/* ── Paywall ──────────────────────────────────────────────────── */}
+        {phase === "paywall" && (
           <motion.div
-            key="preset-prompt"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 max-w-md mx-auto"
+            key="paywall"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center justify-center min-h-[70vh] gap-6 px-4 max-w-md mx-auto text-center"
           >
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center"
+              className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.35)" }}
             >
-              <Moon className="w-7 h-7" style={{ color: "#c0392b" }} />
+              <Moon className="w-8 h-8" style={{ color: "#c0392b" }} />
             </div>
-            <div className="text-center">
-              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Save this casting?</h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Give your combination a name so you can return to this energy in one tap.
+            <div>
+              <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                Unlock After Dark
+              </h2>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                Your story is ready to write. A subscription unlocks After Dark and all private stories — cancel anytime.
               </p>
             </div>
+
             <div className="w-full space-y-3">
-              <input
-                type="text"
-                value={presetNameDraft}
-                onChange={(e) => setPresetNameDraft(e.target.value)}
-                maxLength={80}
-                placeholder="e.g. CEO · Takes Charge"
-                className="w-full px-4 py-3 rounded-xl border bg-black/40 text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2"
-                style={{ borderColor: "rgba(192,57,43,0.3)", "--tw-ring-color": "rgba(192,57,43,0.4)" } as React.CSSProperties}
-              />
               <button
-                onClick={() => handleAfterDarkStartGenerating(true, presetNameDraft)}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all hover:-translate-y-0.5"
-                style={{ background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 20px rgba(192,57,43,0.3)" }}
+                disabled={!!paywallLoadingPlan}
+                onClick={() => void startAfterDarkCheckout("annual")}
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 24px rgba(192,57,43,0.3)" }}
               >
-                <Moon className="w-4 h-4" />
-                Save &amp; Write My Story
+                {paywallLoadingPlan === "annual" ? (
+                  <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4" />
+                )}
+                Annual — best value
               </button>
               <button
-                onClick={() => handleAfterDarkStartGenerating(false, "")}
-                className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                disabled={!!paywallLoadingPlan}
+                onClick={() => void startAfterDarkCheckout("monthly")}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all disabled:opacity-60"
+                style={{ border: "1px solid rgba(192,57,43,0.4)", color: "#e8a09a" }}
               >
-                Skip — just write it
+                {paywallLoadingPlan === "monthly" ? (
+                  <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
+                ) : null}
+                Monthly
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+            >
+              Start over
+            </button>
           </motion.div>
         )}
 

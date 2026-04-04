@@ -171,12 +171,12 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ29D5W2ED"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z50ZVNWXKL"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-EZ29D5W2ED');
+    gtag('config', 'G-Z50ZVNWXKL');
   </script>
 
   <meta charset="UTF-8" />

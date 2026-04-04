@@ -740,32 +740,75 @@ const CASTING_STORAGE_KEY = "casting-room-session";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark }: Props) {
-  // Always start fresh — never restore from localStorage
   const initialHandoff = handoff ?? null;
 
-  const [step, setStep] = useState(initialHandoff?.handoffStep ?? handoffStep ?? 0);
-  const [data, setData] = useState<Partial<CastingRoomResult>>({
-    perspective: "her",
-    intensity: afterDark ? "Elevated" : bedtime ? "Subtle" : "Warm",
-    mood: "Emotional",
-    // Spread handoff/stored data — intensity excluded so After Dark users must confirm
-    ...(initialHandoff ? (({ listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData }) => castData)(initialHandoff) : {}),
+  // Restore previous session from localStorage when there is no handoff.
+  // This preserves progress if the user navigates away and returns.
+  const savedSession = (() => {
+    if (initialHandoff) return null;
+    try {
+      const raw = localStorage.getItem(CASTING_STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
+    } catch { return null; }
+  })();
+
+  const [step, setStep] = useState<number>(
+    (savedSession?.handoffStep as number) ?? initialHandoff?.handoffStep ?? handoffStep ?? 0
+  );
+  const [data, setData] = useState<Partial<CastingRoomResult>>(() => {
+    const base: Partial<CastingRoomResult> = {
+      perspective: "her",
+      intensity: afterDark ? "Elevated" : bedtime ? "Subtle" : "Warm",
+      mood: "Emotional",
+    };
+    if (savedSession) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { handoffStep: _hs, listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData } = savedSession;
+      return { ...base, ...(castData as Partial<CastingRoomResult>) };
+    }
+    if (initialHandoff) {
+      // Intensity excluded so After Dark users must re-confirm
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { listenerName: _ln, partnerName: _pn, appearBuild: _ab, appearHeight: _ah, appearColouring: _ac, appearEyes: _ae, appearFeatures: _af, situation: _sit, situationId: _sid, customTags: _ct, ...castData } = initialHandoff;
+      return { ...base, ...castData };
+    }
+    return base;
   });
-  const [customTags, setCustomTags] = useState<string[]>(initialHandoff?.customTags ?? []);
-  const [listenerName, setListenerName] = useState<string>(initialHandoff?.listenerName ?? "");
-  const [partnerName, setPartnerName] = useState<string>(initialHandoff?.partnerName ?? "");
+  const [customTags, setCustomTags] = useState<string[]>(
+    (savedSession?.customTags as string[]) ?? initialHandoff?.customTags ?? []
+  );
+  const [listenerName, setListenerName] = useState<string>(
+    (savedSession?.listenerName as string) ?? initialHandoff?.listenerName ?? ""
+  );
+  const [partnerName, setPartnerName] = useState<string>(
+    (savedSession?.partnerName as string) ?? initialHandoff?.partnerName ?? ""
+  );
   // Appearance
-  const [appearBuild, setAppearBuild] = useState<string>(initialHandoff?.appearBuild ?? "");
-  const [appearHeight, setAppearHeight] = useState<string>(initialHandoff?.appearHeight ?? "");
-  const [appearColouring, setAppearColouring] = useState<string>(initialHandoff?.appearColouring ?? "");
-  const [appearEyes, setAppearEyes] = useState<string>(initialHandoff?.appearEyes ?? "");
-  const [appearFeatures, setAppearFeatures] = useState<string[]>(initialHandoff?.appearFeatures ?? []);
+  const [appearBuild, setAppearBuild] = useState<string>(
+    (savedSession?.appearBuild as string) ?? initialHandoff?.appearBuild ?? ""
+  );
+  const [appearHeight, setAppearHeight] = useState<string>(
+    (savedSession?.appearHeight as string) ?? initialHandoff?.appearHeight ?? ""
+  );
+  const [appearColouring, setAppearColouring] = useState<string>(
+    (savedSession?.appearColouring as string) ?? initialHandoff?.appearColouring ?? ""
+  );
+  const [appearEyes, setAppearEyes] = useState<string>(
+    (savedSession?.appearEyes as string) ?? initialHandoff?.appearEyes ?? ""
+  );
+  const [appearFeatures, setAppearFeatures] = useState<string[]>(
+    (savedSession?.appearFeatures as string[]) ?? initialHandoff?.appearFeatures ?? []
+  );
 
   const [showAfterDarkTeaser, setShowAfterDarkTeaser] = useState(false);
 
   // Situation step state
-  const [situationLabel, setSituationLabel] = useState<string>(initialHandoff?.situation ?? "");
-  const [situationId, setSituationId] = useState<string>(initialHandoff?.situationId ?? "");
+  const [situationLabel, setSituationLabel] = useState<string>(
+    (savedSession?.situation as string) ?? initialHandoff?.situation ?? ""
+  );
+  const [situationId, setSituationId] = useState<string>(
+    (savedSession?.situationId as string) ?? initialHandoff?.situationId ?? ""
+  );
 
   // Voice selection — step 11
   const [voiceId, setVoiceId] = useState<string>(() => {
@@ -1021,7 +1064,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <div ref={topRef} className="max-w-2xl mx-auto px-4 py-8 w-full">
+    <div ref={topRef} className="max-w-2xl mx-auto px-4 py-8 pb-28 w-full">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">

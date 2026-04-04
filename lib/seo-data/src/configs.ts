@@ -4,8 +4,8 @@
 import type { SEOPageConfig } from "./types.js";
 
 export const adultAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Adult Audio Stories | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, tonight.` },
-  hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, tonight, around exactly what you want to feel.` },
+  meta: { title: `Personalised Adult Audio Stories | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
+  hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, right now, around exactly what you want to feel.` },
   heroImage: "images/seo-hero-intimate.png",
   showCastingPreview: true,
   sections: [
@@ -76,7 +76,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
         body: "Adult fiction that does not require its characters to be straightforwardly admirable or its situations to be entirely comfortable. The dynamic has edges. The wanting is complicated by the character, the circumstances, or both. Dark romance and forbidden romance territory — stories that take the shadow side of desire seriously, written with the craft to make moral complexity feel true rather than gratuitous. The Private Story creates adult fiction across this full range.",
       },
     ],
-    interstitial: "Create an adult audio story built around the specific register and intensity you want tonight.",
+    interstitial: "Create an adult audio story built around the specific register and intensity you want right now.",
   },
   benefits: {
     h2: "What Makes The Private Story Different",
@@ -114,13 +114,13 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
       "The Private Story is built around the generation model. Your adult audio story is created around your choices — the character, the dynamic, the emotional register, the intensity, the setting — from scratch, for this session. The story that exists at the end of the creation flow did not exist before you asked for it. It exists because your choices produced it.",
       "This distinction is most significant in adult fiction because the preferences in adult fiction are genuinely specific in ways that general fiction preferences are not. The exact quality of the dynamic, the specific emotional register, the precise intensity — these are not categories that a fixed catalogue can match with the fidelity that generation achieves. The difference is felt in the listening experience.",
       "Privacy at The Private Story is architectural. The platform was not built as a general platform with a private mode added. It was built from the beginning with the understanding that adult audio fiction requires genuine privacy — not a setting, not a feature, but a design premise. Your listening history is yours. Your stories are yours. The platform does not build a social layer on top of them.",
-      "Create your adult audio story tonight — around your mood, the specific quality of the dynamic you want, and the intensity that suits this session.",
+      "Create your adult audio story right now — around your mood, the specific quality of the dynamic you want, and the intensity that suits this session.",
     ],
   },
   finalCTA: {
     h2: "Create Your Adult Audio Story",
     paragraphs: [
-      "Not the library version. Not the nearest match in a catalogue. An original story, created for tonight, around exactly what you want to feel.",
+      "Not the library version. Not the nearest match in a catalogue. An original story, created for right now, around exactly what you want to feel.",
       "Literary, narrated, private. Ready to listen within minutes.",
     ],
     primary: { label: "Create your adult audio story", href: "/create" },
@@ -164,7 +164,7 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
         "You are not writing a prompt. You are not typing instructions into a text box and hoping the AI interprets them correctly. You are making a series of structured choices that The Private Story's system translates into precise creative direction.",
         "The mood and emotional register you select — slow burn tension, emotional closeness, confident energy, calm and absorbing — are not tags applied to a search. They are creative constraints. The AI is told to write toward them, which means every sentence of the story that follows is generated in service of the emotional experience you described.",
         "The dynamic you choose shapes the relationship between the voices. The setting and atmosphere you select determine the world the AI builds. The pacing determines how the story moves — whether it withholds or reveals, rushes or lingers.",
-        "What the AI produces from these inputs is original narrative — structured story, with character, atmosphere, and emotional arc — written around exactly what you specified. Not around what a general audience might want. Around you, for this session, for this version of tonight.",
+        "What the AI produces from these inputs is original narrative — structured story, with character, atmosphere, and emotional arc — written around exactly what you specified. Not around what a general audience might want. Around you, for this session, for this present moment.",
       ],
     },
     {
@@ -174,7 +174,7 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
         "The intuition is that human-written content is more personal. A story written by a human writer carries intention, voice, craft. An AI-generated story is produced by a machine.",
         "But this framing gets the comparison the wrong way around.",
         "A human-written story is written for no one in particular. It is written by a writer who made choices about mood, pacing, tone, setting, and direction — without knowing you exist. When you encounter it, you adapt to those choices. The story cannot change because it is finished. It was finished before you arrived.",
-        "An AI-generated story is written for you specifically — because the AI is given your choices as its starting point. The pacing you needed tonight. The tone that works for this particular version of exhaustion or anticipation or wanting. The world that makes the scenario feel true for you.",
+        "An AI-generated story is written for you specifically — because the AI is given your choices as its starting point. The pacing you needed right now. The tone that works for this particular version of exhaustion or anticipation or wanting. The world that makes the scenario feel true for you.",
         "The AI doesn't write a better story than a great human writer. But it writes your story in a way that no pre-existing human story can. That is the advantage — not quality versus quality, but personalisation versus universality.",
         "The Private Story's AI is not writing generic fiction. It is writing to your emotional brief, in a register calibrated for private adult listening, at a literary quality high enough for the result to feel like a real story rather than machine-generated text.",
       ],
@@ -224,7 +224,7 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       },
       {
         heading: "You ask for something calming",
-        body: "The AI shifts register entirely. The pacing slows. The setting becomes somewhere atmospheric and unhurried. The voice — as narrated — moves at the pace your mind needs to follow it into quiet. It was not extracted from a library of calming stories. It was written calm, for you, tonight.",
+        body: "The AI shifts register entirely. The pacing slows. The setting becomes somewhere atmospheric and unhurried. The voice — as narrated — moves at the pace your mind needs to follow it into quiet. It was not extracted from a library of calming stories. It was written calm, for you, right now.",
       },
       {
         heading: "You ask for late night atmosphere",
@@ -253,7 +253,7 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       },
       {
         heading: "Responds to you specifically",
-        body: "The AI's inputs are your choices, not population-level data. It doesn't know what most people want on a Tuesday night. It knows what you told it you wanted tonight.",
+        body: "The AI's inputs are your choices, not population-level data. It doesn't know what most people want on a Tuesday night. It knows what you told it you wanted right now.",
       },
       {
         heading: "No creative work required",
@@ -274,10 +274,10 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Generate Your Story",
     paragraphs: [
-      "You have been listening to content made before you arrived. Fixed narratives. Pre-set tones. Stories written for an imagined average listener who is not you, on a night that wasn't tonight.",
+      "You have been listening to content made before you arrived. Fixed narratives. Pre-set tones. Stories written for an imagined average listener who is not you, on a night that wasn't right now.",
       "The AI audio story generator at The Private Story was built to solve exactly that problem.",
       "Tell it how you want to feel. It will write something around that — original, narrated, private, and ready to play in the time it takes you to get comfortable.",
-      "It exists for tonight. For the exact version of you that showed up.",
+      "It exists for right now. For the exact version of you that showed up.",
     ],
     primary: { label: "Generate your story", href: "/create" },
     links: [
@@ -298,8 +298,8 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
 };
 
 export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
-  meta: { title: `Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight | The Private Story`, description: `Romance audiobooks are someone else's love story. Discover personalised audio stories — romantic experiences created around your mood, dynamic, and pacing tonight.` },
-  hero: { badge: `Romance Audio · Personalised Stories · For Adults`, h1: `Alternatives to Romance Audiobooks — When You Want a Story Made for Tonight, Not Everyone`, tagline: `Romance audiobooks are someone else's love story. Somewhere, there is one made entirely around yours.` },
+  meta: { title: `Alternatives to Romance Audiobooks — When You Want a Story Made for Right Now | The Private Story`, description: `Romance audiobooks are someone else's love story. Discover personalised audio stories — romantic experiences created around your mood, dynamic, and pacing right now.` },
+  hero: { badge: `Romance Audio · Personalised Stories · For Adults`, h1: `Alternatives to Romance Audiobooks — When You Want a Story Made for Right Now, Not Everyone`, tagline: `Romance audiobooks are someone else's love story. Somewhere, there is one made entirely around yours.` },
   heroImage: "images/seo-hero-personalised.png",
   showCastingPreview: true,
   sections: [
@@ -309,7 +309,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
         "If you are a romance audiobook listener, you already understand something that casual audio consumers don't: the right story, in the right voice, at the right emotional register, does something nothing else does.",
         "It meets you. It gives you exactly the kind of feeling — slow burn tension, overwhelming desire, emotional connection, the specific relief of a love story that goes where you need it to go — that is difficult to find anywhere else and completely reliable when you find it.",
         "The problem is the finding.",
-        "Romance audiobook listeners know the scroll. The browsing of a catalogue that is simultaneously enormous and somehow never quite right tonight. The downloading of something that looked promising in the description and turns out to be paced too slowly, or not slowly enough. The narrator whose voice is fine but not quite the voice. The story that is excellent in absolute terms and still misses the specific thing you needed from it.",
+        "Romance audiobook listeners know the scroll. The browsing of a catalogue that is simultaneously enormous and somehow never quite right right now. The downloading of something that looked promising in the description and turns out to be paced too slowly, or not slowly enough. The narrator whose voice is fine but not quite the voice. The story that is excellent in absolute terms and still misses the specific thing you needed from it.",
         "This is not a complaint about romance audiobooks. It is an accurate description of a structural limitation that no library, however large, can fully overcome: content made for a general audience cannot be made for you specifically.",
         "There is a format that can.",
       ],
@@ -329,11 +329,11 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       paragraphs: [
         "The gap is specific and worth naming precisely.",
         "A romance audiobook was written by an author who had a vision — a story they wanted to tell, characters they had conceived, a narrative arc they had decided on before you arrived. The book was edited, produced, and published for a readership of millions. It exists as a fixed object in the world, identical for every listener.",
-        "When that vision happens to align with what you need tonight — when the pacing, the dynamic, the emotional register, the kind of heat and the kind of tenderness in the story happen to match your current mood — the experience is close to perfect.",
-        "When it doesn't align — when the story you downloaded is slower than you needed, or more intense than you wanted, or centred on a dynamic that isn't quite right for tonight — the experience is a polite disappointment. You listen. You finish. You return to the catalogue and try again.",
+        "When that vision happens to align with what you need right now — when the pacing, the dynamic, the emotional register, the kind of heat and the kind of tenderness in the story happen to match your current mood — the experience is close to perfect.",
+        "When it doesn't align — when the story you downloaded is slower than you needed, or more intense than you wanted, or centred on a dynamic that isn't quite right for right now — the experience is a polite disappointment. You listen. You finish. You return to the catalogue and try again.",
         "The catalogue cannot solve this problem. It can only offer more options, which means more scrolling and more polite disappointments alongside the genuine finds.",
-        "Romance audio stories created for you solve the problem the catalogue cannot solve. Not by offering more pre-existing options — by creating the specific option you need tonight from scratch, around your current preferences, in the emotional register you specified.",
-        "The author's vision is replaced by your preferences. The fixed narrative is replaced by a created one. The story exists not for a general romance readership but for the specific version of you who sat down tonight and said: this is what I need.",
+        "Romance audio stories created for you solve the problem the catalogue cannot solve. Not by offering more pre-existing options — by creating the specific option you need right now from scratch, around your current preferences, in the emotional register you specified.",
+        "The author's vision is replaced by your preferences. The fixed narrative is replaced by a created one. The story exists not for a general romance readership but for the specific version of you who sat down right now and said: this is what I need.",
       ],
     },
     {
@@ -343,8 +343,8 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       ],
       bullets: [
         "The dynamic — slow burn, forbidden tension, dominant energy, emotional connection, or your exact combination",
-        "The pacing — how long the tension holds, when things shift, the speed that serves tonight",
-        "The emotional register — heat and charge, emotional depth and connection, tender warmth, or what tonight requires",
+        "The pacing — how long the tension holds, when things shift, the speed that serves right now",
+        "The emotional register — heat and charge, emotional depth and connection, tender warmth, or what right now requires",
         "The length — a complete romantic experience in thirty minutes, not hours, sized for your evening",
       ],
     },
@@ -361,12 +361,12 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
         "You want the specific pleasure of a narrator you love in a book you've been anticipating",
         "",
         "When to choose a personalised romance audio story:",
-        "You know the dynamic, pacing, and emotional register you need tonight and want it delivered specifically",
+        "You know the dynamic, pacing, and emotional register you need right now and want it delivered specifically",
         "You have thirty minutes rather than thirty hours",
         "You've scrolled the audiobook catalogue and nothing is quite right",
         "You want to be at the centre of the story rather than observing someone else's romance",
         "You need the specific kind of romantic feeling that this particular evening calls for",
-        "You want something private, personal, and made for tonight rather than for everyone",
+        "You want something private, personal, and made for right now rather than for everyone",
       ],
     },
     {
@@ -374,7 +374,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       paragraphs: [
         "The experience of a personalised romance audio story is different from a romance audiobook in a way that is difficult to describe until you feel it and immediately recognisable when you do.",
         "A romance audiobook is an extraordinary story happening to characters you've come to care about. You are moved by it, invested in it, sometimes devastated or delighted by where it goes. But it is happening to them.",
-        "A personalised romance audio story is written in second person — it is happening to you. The dynamic you chose is the one playing out. The pacing is the one you needed. The emotional register matches the mood you described. The story was not waiting on a server for anyone to find — it was created because you needed it tonight.",
+        "A personalised romance audio story is written in second person — it is happening to you. The dynamic you chose is the one playing out. The pacing is the one you needed. The emotional register matches the mood you described. The story was not waiting on a server for anyone to find — it was created because you needed it right now.",
         "The intimacy of that specific fit is what romance audiobook listeners feel most immediately when they first experience personalised audio. Not better production, not a larger catalogue, not a more skilled narrator — a story that is unmistakably, specifically yours.",
       ],
     },
@@ -384,18 +384,18 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
         "The category of romance audio stories for adults is genuinely new and rapidly developing. The personalised creation model — generating romantic audio content around individual preferences rather than presenting a fixed library — represents a different approach to romantic audio than anything legacy platforms offer.",
         "Alternatives to romance novels audio for listeners who want shorter, more personal experiences have historically been limited. Fanfiction fills some of this need but is inconsistent in quality and not available in audio. Short story anthologies exist but share the same fixed-content limitation as full novels. The personalised audio story sits in a gap that nothing else occupies: premium romantic audio, created around your preferences, in the length that suits your evening.",
         "For listeners asking whether there are romance audio platforms more personal than Audible — the answer is yes, and the difference is not catalogue size or production quality but the fundamental model. Audible presents a library you select from. The Private Story creates a story around you. These are categorically different relationships between a romantic audio platform and its listener.",
-        "Audio romance stories created for me — this is the precise description of what personalised audio storytelling delivers. Not audio romance stories created for a general audience that you happened to find. Stories created because of your preferences, shaped around your mood, existing in response to what you needed tonight.",
+        "Audio romance stories created for me — this is the precise description of what personalised audio storytelling delivers. Not audio romance stories created for a general audience that you happened to find. Stories created because of your preferences, shaped around your mood, existing in response to what you needed right now.",
       ],
     },
   ],
   howItWorks: [
     {
       heading: "Choose your dynamic and mood",
-      body: "Slow burn tension. Forbidden attraction. Emotional connection. Dominant energy. Tender intimacy. The specific romantic feeling you need tonight — it shapes everything.",
+      body: "Slow burn tension. Forbidden attraction. Emotional connection. Dominant energy. Tender intimacy. The specific romantic feeling you need right now — it shapes everything.",
     },
     {
       heading: "Your romance story is created",
-      body: "Not selected from a catalogue. Generated around your choices, with the dynamic you specified, at the pacing you need, in the emotional register you chose. The story was made for tonight, for you.",
+      body: "Not selected from a catalogue. Generated around your choices, with the dynamic you specified, at the pacing you need, in the emotional register you chose. The story was made for right now, for you.",
     },
     {
       heading: "Listen privately",
@@ -408,7 +408,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
     items: [
       {
         heading: "A romance audiobook evening",
-        body: "You scroll the catalogue. You find something promising. You download. You listen. It's good, actually, but the pacing is slower than tonight calls for, or the dynamic isn't quite the balance you wanted. It's excellent for someone. Tonight it's a polite disappointment.",
+        body: "You scroll the catalogue. You find something promising. You download. You listen. It's good, actually, but the pacing is slower than right now calls for, or the dynamic isn't quite the balance you wanted. It's excellent for someone. Right Now it's a polite disappointment.",
       },
       {
         heading: "A personalised romance story evening",
@@ -430,7 +430,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       },
       {
         heading: "Complete in thirty minutes",
-        body: "The full romantic experience — tension, connection, resolution — in the time available tonight. No chapters. No commitment to a twenty-hour arc. A whole story, sized for the evening.",
+        body: "The full romantic experience — tension, connection, resolution — in the time available right now. No chapters. No commitment to a twenty-hour arc. A whole story, sized for the evening.",
       },
       {
         heading: "Private always",
@@ -441,7 +441,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
         body: "The experience of downloading a promising romance audiobook and finding it misses what you needed — that experience does not exist here. You specify what you need. It gets made around those specifications.",
       },
       {
-        heading: "The emotional register of tonight",
+        heading: "The emotional register of right now",
         body: "Not the register the author decided for a book published two years ago. The register that matches your current mood, your current need, this specific evening.",
       },
       {
@@ -460,9 +460,9 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
     ],
   },
   finalCTA: {
-    h2: "The Romance Story Made for Tonight",
+    h2: "The Romance Story Made for Right Now",
     paragraphs: [
-      "You already know the dynamic that moves you. You know how slow or immediate you need the tension to be. You know whether tonight calls for emotional depth or charged intensity.",
+      "You already know the dynamic that moves you. You know how slow or immediate you need the tension to be. You know whether right now calls for emotional depth or charged intensity.",
       "The romance audiobook catalogue cannot deliver that precision. No library can.",
       "But a story created around your specifications can.",
     ],
@@ -474,7 +474,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
     ],
   },
   faqs: [
-      { q: `How are personalised audio stories different from romance audiobooks?`, a: `Romance audiobooks are fixed content created by an author for a general readership — the same for every listener, regardless of their mood or preferences when they listen. Personalised romance audio stories are created around your specific choices at the moment you request them. The dynamic, pacing, emotional register, and length all reflect what you specified. The story exists because of your preferences tonight rather than waiting in a catalogue for you to find it.` },
+      { q: `How are personalised audio stories different from romance audiobooks?`, a: `Romance audiobooks are fixed content created by an author for a general readership — the same for every listener, regardless of their mood or preferences when they listen. Personalised romance audio stories are created around your specific choices at the moment you request them. The dynamic, pacing, emotional register, and length all reflect what you specified. The story exists because of your preferences right now rather than waiting in a catalogue for you to find it.` },
       { q: `Can I get romance audio stories personalised to my taste?`, a: `Yes. When you create a romance audio story on The Private Story, you choose the dynamic, tone, and emotional register of your story — slow burn tension, forbidden attraction, emotional connection, dominant energy, tender intimacy, or combinations of these. The story generated reflects your choices specifically rather than a generic romance template.` },
       { q: `Are there romance audio platforms more personal than Audible?`, a: `Yes. Audible operates on a library model — a large catalogue of fixed content you select from. The Private Story operates on a creation model — generating stories around your mood and preferences rather than presenting pre-existing content. The experience of a story created around you is categorically more personal than the experience of selecting from a catalogue, regardless of how large that catalogue is.` },
       { q: `What if I want a romantic story but not a full audiobook?`, a: `This is precisely the gap personalised romance audio stories fill. Stories on The Private Story run between fifteen and thirty minutes — complete romantic experiences in the time available for an evening listening session. They are not excerpts or chapters from longer works. They are complete stories, sized for the specific window when most adults want a romantic audio experience.` },
@@ -497,7 +497,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
 };
 
 export const audioStoriesForWomenConfig: SEOPageConfig = {
-  meta: { title: `Personalised Audio Stories for Women | The Private Story`, description: `Audio stories for women, created around how you want to feel tonight. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
+  meta: { title: `Personalised Audio Stories for Women | The Private Story`, description: `Audio stories for women, created around how you want to feel right now. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
   hero: { badge: `For Women · Private · Personalised`, h1: `Audio Stories for Women — Your Desires at the Centre`, tagline: `Built around what women actually want from audio fiction. Not what the market assumes. Not a best guess. What you said you wanted.` },
   heroImage: "images/seo-hero-women.png",
   showCastingPreview: true,
@@ -542,7 +542,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
   howItWorks: [
     {
       heading: "Tell us what you want to feel",
-      body: "The mood tonight. The character quality — how he moves through the world, the specific register of his attention. The dynamic you want to be inside. The intensity. The creation flow is built around the dimensions that matter most for female listeners: emotional texture, character quality, the specific nature of the connection.",
+      body: "The mood right now. The character quality — how he moves through the world, the specific register of his attention. The dynamic you want to be inside. The intensity. The creation flow is built around the dimensions that matter most for female listeners: emotional texture, character quality, the specific nature of the connection.",
     },
     {
       heading: "An original story is created for you",
@@ -569,7 +569,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
         body: "The character who carries weight. Dark romance or forbidden territory — the dynamic that is not straightforwardly comfortable, the pull that is real and complicated simultaneously. Written for women who want fiction that meets them in the more shadowed parts of their imagination rather than redirecting them to something easier. The Private Story creates across this full register.",
       },
     ],
-    interstitial: "Create an audio story built around the specific mood, character, and dynamic you want tonight.",
+    interstitial: "Create an audio story built around the specific mood, character, and dynamic you want right now.",
   },
   benefits: {
     h2: "What the Platform Is Built For",
@@ -607,14 +607,14 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
       "Building for female listeners means building around the actual dimensions that determine whether an audio fiction experience is satisfying for them — not the simplified version, not the assumed version, and not the male-default version with the rougher edges removed. It means the full range: the slow burn and emotionally textured story, the confident and direct encounter, the morally complex territory of dark romance and forbidden dynamics.",
       "It also means taking privacy seriously as a design requirement rather than an optional feature. The ability to engage with adult audio fiction privately, without social friction, on your own terms — this is the baseline that any platform for female adult fiction listeners should be meeting, and most currently are not. The Private Story meets it architecturally.",
       "The generation model — original stories created around your choices, rather than retrieved from a catalogue — matters more for female listeners than for any other audience, because the specificity of match between story and listener is what produces a genuinely satisfying experience. The catalogue model consistently undershoots because the preferences involved are too specific for filtering to adequately address.",
-      "Create your audio story tonight — built around how you want to feel, by a platform designed with you at the centre.",
+      "Create your audio story right now — built around how you want to feel, by a platform designed with you at the centre.",
     ],
   },
   finalCTA: {
     h2: "Create Your Private Story",
     paragraphs: [
       "Audio fiction built for how you actually feel, around what you actually want. Not the market's version of you. Not the catalogue nearest to your preferences. Yours.",
-      "Private, personalised, literary. Created around your choices and your mood for tonight.",
+      "Private, personalised, literary. Created around your choices and your mood for right now.",
       "The platform was built for this. The story is waiting to be created.",
     ],
     primary: { label: "Create your story", href: "/create" },
@@ -636,7 +636,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
 };
 
 export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
-  meta: { title: `Audio Stories vs Audiobooks — Why One Feels Personal | The Private Story`, description: `Audiobooks are made for everyone. A personalised audio story is made for tonight. Discover the real difference between audio stories and audiobooks — and why it matters more than the audio industry has acknowledged.` },
+  meta: { title: `Audio Stories vs Audiobooks — Why One Feels Personal | The Private Story`, description: `Audiobooks are made for everyone. A personalised audio story is made for right now. Discover the real difference between audio stories and audiobooks — and why it matters more than the audio industry has acknowledged.` },
   hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Audiobooks — Why One Feels Personal and One Doesn't`, tagline: `You have been consuming stories. There is another option: inhabiting one.` },
   heroImage: "images/seo-hero-personalised.png",
   showCastingPreview: true,
@@ -649,7 +649,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
         "It is a case for understanding what audiobooks cannot do — and why that gap matters more than the audio industry has acknowledged.",
         "An audiobook was written by an author who didn't know you. Edited by a team who had never met you. Narrated by a voice chosen for a general audience. Published for everyone. Purchased by you because it seemed like it might fit.",
         "It might fit. It often does. But it was never made for you.",
-        "A personalised audio story begins somewhere completely different. It begins with a question about you — how you want to feel tonight, what kind of experience you need right now, the emotional register that matches the version of yourself that showed up at the end of this specific day.",
+        "A personalised audio story begins somewhere completely different. It begins with a question about you — how you want to feel right now, what kind of experience you need right now, the emotional register that matches the version of yourself that showed up at the end of this specific day.",
         "Then it is made. For you. Around those answers.",
         "The difference between these two experiences is not about quality. Some audiobooks are extraordinary. The difference is about relationship — between the content and the listener — and that relationship determines something important: whether you finish the experience feeling like you consumed something, or feeling like something happened to you.",
       ],
@@ -676,11 +676,11 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       ],
     },
     {
-      h2: "Made for Everyone vs Made for Tonight",
+      h2: "Made for Everyone vs Made for Right Now",
       paragraphs: [
         "Every audiobook in existence was written before you arrived. The author made choices — about tone, pacing, emotional register, where the story goes — without any knowledge of who you are or what you need when you listen.",
         "This is not a criticism. It is simply the nature of published content. A book written for a general audience will resonate with some readers some of the time and will miss others completely.",
-        "A personalised audio story is made for the specific mood you are in right now. The tone you chose. The kind of experience you said you needed. It did not exist before you asked for it. It was made in response to you, tonight.",
+        "A personalised audio story is made for the specific mood you are in right now. The tone you chose. The kind of experience you said you needed. It did not exist before you asked for it. It was made in response to you, right now.",
         "The difference in how this lands — how personal it feels, how specifically it meets you — is immediately apparent when you experience it.",
       ],
     },
@@ -726,11 +726,11 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
     },
     {
       heading: "Your story is created",
-      body: "Not retrieved from a library. Generated around your selections, now, for this session. The story that results exists because of what you chose tonight — it did not exist before you asked for it.",
+      body: "Not retrieved from a library. Generated around your selections, now, for this session. The story that results exists because of what you chose right now — it did not exist before you asked for it.",
     },
     {
       heading: "Listen privately",
-      body: "Saved to your account. Heard only by you. No social feed, no shared library, no visible history. Entirely yours — the specific story for the specific version of you that showed up tonight.",
+      body: "Saved to your account. Heard only by you. No social feed, no shared library, no visible history. Entirely yours — the specific story for the specific version of you that showed up right now.",
     },
   ],
   scenarios: {
@@ -747,10 +747,10 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       },
       {
         heading: "When you create a personalised audio story at midnight",
-        body: "An audiobook was written two years ago for a general audience. The story playing in your ears right now was made tonight, for the mood you described, for the version of you that is lying in the dark right now. It did not exist before you needed it. This distinction — small in description, enormous in experience — is what makes personalised audio storytelling a genuinely different category.",
+        body: "An audiobook was written two years ago for a general audience. The story playing in your ears right now was made right now, for the mood you described, for the version of you that is lying in the dark right now. It did not exist before you needed it. This distinction — small in description, enormous in experience — is what makes personalised audio storytelling a genuinely different category.",
       },
     ],
-    interstitial: "A story made for tonight. For the version of you that showed up right now.",
+    interstitial: "A story made for right now. For the version of you that showed up right now.",
   },
   benefits: {
     h2: "Why Personalised Audio Stories Go Further",
@@ -765,7 +765,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       },
       {
         heading: "You are the centre, not the observer",
-        body: "An audiobook places you outside the story looking in. A personalised audio story places you at its centre — the pacing, the tone, the emotional arc were all shaped around the specific version of you that is listening tonight.",
+        body: "An audiobook places you outside the story looking in. A personalised audio story places you at its centre — the pacing, the tone, the emotional arc were all shaped around the specific version of you that is listening right now.",
       },
       {
         heading: "No browsing, no settling",
@@ -777,7 +777,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       },
       {
         heading: "A different story every time",
-        body: "The audiobook you listened to six months ago is identical today. A personalised story created tonight reflects your current state. You can create something different tomorrow because tomorrow you might need something different.",
+        body: "The audiobook you listened to six months ago is identical today. A personalised story created right now reflects your current state. You can create something different tomorrow because tomorrow you might need something different.",
       },
     ],
   },
@@ -786,17 +786,17 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
     paragraphs: [
       "What The Private Story offers is the format that fills the gap — the one for the moments when a library of someone else's choices isn't what you need.",
       "If you've been looking for something better than audiobooks for winding down or sleep, personalised audio stories represent a meaningfully different option: toned for calm, shaped for your current mood, and designed to carry you toward rest rather than maintain your engagement.",
-      "If you've ever started an audiobook and thought: I'm not in the mood for this particular story tonight — this is the alternative. You don't adapt to the content. The content adapts to you.",
+      "If you've ever started an audiobook and thought: I'm not in the mood for this particular story right now — this is the alternative. You don't adapt to the content. The content adapts to you.",
       "For adult women in particular, who have consistently been underserved by audio content that was either designed for a younger audience or assumed a one-size-fits-all approach to desire and emotional experience, the personalised model represents something more fundamental: a format that starts by asking what you need instead of offering what it has.",
-      "The comparison between audio stories and audiobooks ultimately comes down to a single question: do you want to follow a story made for everyone, or inhabit one made for tonight?",
+      "The comparison between audio stories and audiobooks ultimately comes down to a single question: do you want to follow a story made for everyone, or inhabit one made for right now?",
     ],
   },
   finalCTA: {
     h2: "You've listened to stories made for everyone. Here is one made for you.",
     paragraphs: [
-      "The Private Story begins with a question about you — how you want to feel, what you need right now, the emotional register that matches this specific version of yourself tonight.",
+      "The Private Story begins with a question about you — how you want to feel, what you need right now, the emotional register that matches this specific version of yourself right now.",
       "Then it makes something around your answer.",
-      "Not selected from a library. Not adapted from a template. Made for tonight.",
+      "Not selected from a library. Not adapted from a template. Made for right now.",
     ],
     primary: { label: "Try a personalised story", href: "/create" },
     links: [
@@ -841,7 +841,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
         "This is not a case against podcasts.",
         "It is a case for understanding why podcasts — even the ones you love — often fail you in the specific moments you reach for them most. The late evenings. The wind-down hour. The space before sleep when you want to feel something quiet and personal rather than broadcast-at.",
         "Podcasts were built for public consumption. They are designed, produced, and distributed with a general audience in mind. The host does not know you. The episode was recorded weeks ago for whoever happens to press play. The tone is calibrated for engagement — which is exactly the opposite of what you need when you are trying to disengage.",
-        "A personalised audio story was built for private consumption. It exists for one listener. It was shaped around your current mood, your preferences tonight, the specific emotional experience you needed when you asked for it.",
+        "A personalised audio story was built for private consumption. It exists for one listener. It was shaped around your current mood, your preferences right now, the specific emotional experience you needed when you asked for it.",
         "The difference between these two formats is not about quality. Some podcasts are masterpieces of their form. The difference is about intention — and that intention determines everything about how the experience lands when you are lying in the dark trying to feel something other than what the day left behind.",
       ],
     },
@@ -871,7 +871,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       paragraphs: [
         "The deepest distinction between podcasts and personalised audio stories is not length, genre, or production style. It is the direction of travel.",
         "A podcast is a broadcast. It moves from one creator outward toward a mass audience. Even the most intimate, confessional, carefully crafted podcast is fundamentally a public act — made to be heard by thousands or millions, optimised for a general listener, existing in a shared cultural space.",
-        "A personalised audio story moves in the opposite direction. It begins with you — your preferences, your mood, your needs tonight — and moves inward toward a single listener. It is not optimised for a general audience because there is no general audience. There is only you.",
+        "A personalised audio story moves in the opposite direction. It begins with you — your preferences, your mood, your needs right now — and moves inward toward a single listener. It is not optimised for a general audience because there is no general audience. There is only you.",
         "This distinction matters most in the specific moments when you most want to feel that something was made for you rather than broadcast at you.",
         "Private audio content for adults designed around individual preferences creates a qualitatively different listening experience than any public broadcast can produce. Not because it is better produced — because it is specifically yours. Your imagination recognises the fit. Your mind relaxes into content that was shaped around it rather than content it has to shape itself around.",
         "This is the shift from consumer to recipient. From audience member to the only person in the room.",
@@ -900,7 +900,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
         "The category of podcasts vs audio stories for relaxation reveals an important truth about audio content that the podcast industry rarely acknowledges: engagement and relaxation are in tension with each other.",
         "The qualities that make a podcast excellent — compelling host, interesting ideas, narrative momentum — are the same qualities that keep you awake. The format is optimised for attention, not for release.",
         "Alternatives to podcasts for adults who want to wind down are genuinely limited. Music works for some people some of the time. Meditation apps ask too much of an already tired mind. Audiobooks require the sustained engagement of following someone else's narrative. White noise and ambient sound fill the silence without giving the mind anywhere to go.",
-        "Personalised audio stories fill this gap specifically. They are engaging enough to redirect an active mind away from the day. They are calm enough to carry that mind toward rest. They are personal enough to feel like they were made for tonight — because they were.",
+        "Personalised audio stories fill this gap specifically. They are engaging enough to redirect an active mind away from the day. They are calm enough to carry that mind toward rest. They are personal enough to feel like they were made for right now — because they were.",
         "Audio stories instead of podcasts at night is not a permanent replacement for a format that serves you well at other times. It is the right tool for the specific job of winding down — which podcasts, for all their excellence, were never designed to do.",
       ],
     },
@@ -908,11 +908,11 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
   howItWorks: [
     {
       heading: "Choose your mood and tone",
-      body: "Tell us how tonight feels and what you need. Calm and warm. Gently atmospheric. Slow burn tension. Emotionally connecting. Your choice determines everything — the pacing, the voice, the world of the story. Less than two minutes.",
+      body: "Tell us how right now feels and what you need. Calm and warm. Gently atmospheric. Slow burn tension. Emotionally connecting. Your choice determines everything — the pacing, the voice, the world of the story. Less than two minutes.",
     },
     {
       heading: "Your story is created",
-      body: "Not retrieved. Not selected from a catalogue. Generated around your selections, now, for this session. The story exists because you needed it tonight — it did not exist before you asked for it.",
+      body: "Not retrieved. Not selected from a catalogue. Generated around your selections, now, for this session. The story exists because you needed it right now — it did not exist before you asked for it.",
     },
     {
       heading: "Listen privately",
@@ -925,7 +925,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
     items: [
       {
         heading: "A typical podcast evening",
-        body: "You open the app. You scroll. You start an episode — it's good, actually, but your mind keeps slipping. The host is talking about something you'd find interesting tomorrow. Tonight you can't hold the thread. You listen to half of it. You switch to something shorter. You're still awake.",
+        body: "You open the app. You scroll. You start an episode — it's good, actually, but your mind keeps slipping. The host is talking about something you'd find interesting tomorrow. Right Now you can't hold the thread. You listen to half of it. You switch to something shorter. You're still awake.",
       },
       {
         heading: "A personalised audio story evening",
@@ -933,7 +933,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       },
       {
         heading: "The difference in the morning",
-        body: "The podcast app will be there tomorrow. The episode you couldn't follow last night will feel different when your mind is rested and available. Podcasts are morning and midday content for a reason — not because they aren't excellent, but because what they ask of you is better matched to a mind that has something to give. Tonight was for something else.",
+        body: "The podcast app will be there tomorrow. The episode you couldn't follow last night will feel different when your mind is rested and available. Podcasts are morning and midday content for a reason — not because they aren't excellent, but because what they ask of you is better matched to a mind that has something to give. Right Now was for something else.",
       },
     ],
     interstitial: "The podcast scroll at night is a symptom. There is an answer that isn't another podcast.",
@@ -947,7 +947,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       },
       {
         heading: "Content shaped around your mood",
-        body: "Podcasts are shaped around their host's agenda and audience. Your story is shaped around your mood tonight — the pacing, tone, and emotional destination all reflecting what you chose when you asked for it.",
+        body: "Podcasts are shaped around their host's agenda and audience. Your story is shaped around your mood right now — the pacing, tone, and emotional destination all reflecting what you chose when you asked for it.",
       },
       {
         heading: "Genuinely private",
@@ -973,14 +973,14 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       "The podcast scroll at night is a symptom. The search for something that matches your current emotional state, that feels private and personal rather than public and general, that asks nothing of you except to receive it — that search has an answer that is not another podcast.",
       "Audio stories instead of podcasts at night is the right tool for a specific job: winding down an active mind, carrying a tired person toward rest, and providing the specific experience of something that was made for you rather than broadcast at you.",
       "For adult listeners in particular, who have spent years reaching for podcast apps at night and experiencing the scrolling loop, the distinction between a format designed for engagement and a format designed for release is not academic. It is the difference between lying awake listening to half an episode and waking up in the morning having slept.",
-      "What The Private Story provides is the format for the evening. The podcast app will be there when you need it — in the morning, on the commute, during the run. Tonight, something was made for you.",
+      "What The Private Story provides is the format for the evening. The podcast app will be there when you need it — in the morning, on the commute, during the run. Right Now, something was made for you.",
     ],
   },
   finalCTA: {
-    h2: "Tonight, something was made for you.",
+    h2: "Right Now, something was made for you.",
     paragraphs: [
       "The podcast scroll ends here.",
-      "Three choices. Ninety seconds. A story shaped around your mood tonight — paced for exactly the version of you that showed up at the end of this day.",
+      "Three choices. Ninety seconds. A story shaped around your mood right now — paced for exactly the version of you that showed up at the end of this day.",
       "Not broadcast at you. Made for you.",
     ],
     primary: { label: "Create your first story", href: "/create" },
@@ -1003,7 +1003,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
     caption: "Personalised audio stories vs podcasts",
     otherLabel: "Podcasts",
     rows: [
-      { feature: "Content personalisation", thePrivateStory: "Created around your mood and choices tonight", other: "Made for a general audience; the same for everyone" },
+      { feature: "Content personalisation", thePrivateStory: "Created around your mood and choices right now", other: "Made for a general audience; the same for everyone" },
       { feature: "Cognitive demand", thePrivateStory: "Passive — no narrative tracking required", other: "Active — follow hosts, arguments, story arcs" },
       { feature: "Wind-down effectiveness", thePrivateStory: "Paced and toned for relaxation", other: "Optimised for engagement — keeps the mind active" },
       { feature: "Privacy", thePrivateStory: "Private account; no public listening history", other: "Listening data shared with platform and advertisers" },
@@ -1174,7 +1174,7 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
         "This is the most important distinction in the entire category and the one most marketing materials obscure.",
         "Presenting is what most apps do. They curate a library of pre-created content, organise it by genre or mood, and present it for your selection. The content was made before you arrived. Your job is to find the closest match.",
         "Creating is what the best apps do. They take information about your current mood, preferences, and needs and generate an experience around those inputs. The content exists because of you, not before you.",
-        "The difference in experience is dramatic. A story presented from a library may be excellent in absolute terms and still miss you completely because it was made for a general audience and you are not a general audience member tonight. A story created around your current mood cannot miss you — it was aimed directly at you from the start.",
+        "The difference in experience is dramatic. A story presented from a library may be excellent in absolute terms and still miss you completely because it was made for a general audience and you are not a general audience member right now. A story created around your current mood cannot miss you — it was aimed directly at you from the start.",
         "When evaluating a personalised story app for adults, the first question to ask is: does this app select content for me, or does it create content around me? The answer determines everything about how the experience will feel in practice.",
       ],
     },
@@ -1222,10 +1222,10 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
     {
       h2: "How The Private Story Measures Against These Criteria",
       paragraphs: [
-        "Personalisation: The Private Story creates stories around your mood and preferences rather than presenting pre-existing content. The story that plays in your ears was generated for this session, around your choices, tonight. It did not exist before you asked for it.",
+        "Personalisation: The Private Story creates stories around your mood and preferences rather than presenting pre-existing content. The story that plays in your ears was generated for this session, around your choices, right now. It did not exist before you asked for it.",
         "Privacy: Privacy at The Private Story is architectural. There is no social layer, no sharing function, no public-facing account. Your stories are stored privately in your account and heard only by you. This is not a setting — it is the only way the platform works.",
         "Adult emotional intelligence: The platform was built with women at the centre. The emotional register, the dynamics within stories, the tonal range available — all reflect a genuine understanding of female adult experience rather than a general adult audience assumption.",
-        "Tone calibration: You choose your mood and tone before your story is created. The selection shapes the pacing, emotional register, voice quality, and destination of what follows. The experience is calibrated to where you are tonight, not to a fixed category.",
+        "Tone calibration: You choose your mood and tone before your story is created. The selection shapes the pacing, emotional register, voice quality, and destination of what follows. The experience is calibrated to where you are right now, not to a fixed category.",
         "Content quality: Stories are generated with literary precision and emotional intelligence — calibrated to be premium rather than adequate, specific rather than general.",
       ],
     },
@@ -1334,7 +1334,7 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
 };
 
 export const confidentEnergyStoriesConfig: SEOPageConfig = {
-  meta: { title: `Confident Energy Audio Stories | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel tonight.` },
+  meta: { title: `Confident Energy Audio Stories | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel right now.` },
   hero: { badge: `Confident · Charged · Private`, h1: `Confident Energy Audio Stories — At the Centre of Something Cinematic`, tagline: `You as the protagonist — not waiting to be noticed. Already the reason the room changed.` },
   heroImage: "images/seo-hero-enemies.png",
   showCastingPreview: true,
@@ -1377,7 +1377,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Choose the energy you want to inhabit tonight",
+      heading: "Choose the energy you want to inhabit right now",
       body: "The room notices you. A charged encounter on your terms. Being someone's entire focus, specifically and deliberately. You choose the scenario and the dynamic — and the story is built around you as the protagonist at the centre of it.",
     },
     {
@@ -1428,7 +1428,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "Created around you",
-        body: "The scenario, the dynamic, the specific quality of the energy — chosen by you and built into the generation. Not a general empowerment story. Your version of confident, made for tonight.",
+        body: "The scenario, the dynamic, the specific quality of the energy — chosen by you and built into the generation. Not a general empowerment story. Your version of confident, made for right now.",
       },
       {
         heading: "Entirely private",
@@ -1442,7 +1442,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
       "Empowering audio stories for women have typically occupied one of two registers: inspirational content that addresses self-belief, or romance content in which the protagonist is ultimately passive in the face of desire. Confident energy audio stories sit in neither of these categories.",
       "Confident romantic audio stories, at their best, understand that confidence and desire are not in tension. The most compelling romantic scenarios are ones in which both people are fully present, fully capable, fully themselves — and the desire between them is exactly that complex. The Private Story creates for this dynamic.",
       "Stories where you feel desired — specifically, on your terms, from a position of agency rather than vulnerability — are rare in existing content because they require a different understanding of the protagonist's position. Not the woman who discovers her worth through being chosen. The woman who already knows it, and is choosing.",
-      "Audio stories for self-confidence work best when they produce the experience rather than describe the aspiration. Charged energy romance audio that places you inside the feeling — rather than coaching you toward it — does something that empowerment content cannot. It gives you the felt sense of what it is like to be that woman, right now, tonight.",
+      "Audio stories for self-confidence work best when they produce the experience rather than describe the aspiration. Charged energy romance audio that places you inside the feeling — rather than coaching you toward it — does something that empowerment content cannot. It gives you the felt sense of what it is like to be that woman, right now, right now.",
       "Whatever version of confident energy you are looking for — the room that notices you, the encounter on your terms, the specific pleasure of being someone's deliberate focus — that is what the story is built to create.",
     ],
   },
@@ -1451,7 +1451,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
     paragraphs: [
       "There is a version of you that exists when you feel entirely yourself. Confident, present, at the centre of something that has weight.",
       "A story built around that version of you is not a story about someone else. It is your story — in which you are the protagonist, the desire flows toward you, and the encounter is entirely on your terms.",
-      "Private, narrated, original. Created around the specific energy you want to inhabit tonight.",
+      "Private, narrated, original. Created around the specific energy you want to inhabit right now.",
     ],
     primary: { label: "Create your story", href: "/create" },
     links: [
@@ -1473,14 +1473,14 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
 
 export const createYourOwnAudioStoryConfig: SEOPageConfig = {
   meta: { title: `Create Your Own Audio Story | The Private Story`, description: `Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.` },
-  hero: { badge: `Create · Personalise · Listen Privately`, h1: `Create Your Own Audio Story in Minutes — Shaped Around You`, tagline: `You already know what you need to feel tonight. The Private Story makes it.` },
+  hero: { badge: `Create · Personalise · Listen Privately`, h1: `Create Your Own Audio Story in Minutes — Shaped Around You`, tagline: `You already know what you need to feel right now. The Private Story makes it.` },
   heroImage: "images/seo-hero-create.png",
   showCastingPreview: true,
   sections: [
     {
       h2: "What It Means to Create Your Own Audio Story",
       paragraphs: [
-        "Most audio content asks you to browse. You scroll through categories, read descriptions, pick something that seems close, and listen to something made for everyone — hoping it happens to work for you tonight.",
+        "Most audio content asks you to browse. You scroll through categories, read descriptions, pick something that seems close, and listen to something made for everyone — hoping it happens to work for you right now.",
         "Creating your own audio story is the opposite of that.",
         "At The Private Story, you don't choose from a catalogue. You don't browse genres or filter by length. You create — by answering a sequence of questions that shape everything about the story you're about to hear. The mood you want to inhabit. The dynamic you want between the voices. The setting. The pacing. The emotional register that feels right for wherever you are at eleven o'clock on whatever kind of day this has been.",
         "The story that comes out of that process belongs to you in a way that selected content never can. Not because you wrote it — you didn't, and you won't have to — but because it was written around you. The difference is considerable.",
@@ -1512,7 +1512,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
       paragraphs: [
         "A library — however good, however large — cannot give you something it doesn't have. And the thing it doesn't have is the specific combination of your mood, your preferences, and this particular moment.",
         "You might be looking for something tender and slightly charged, set somewhere unhurried, with a dynamic that feels like genuine connection rather than performance. A library either has that or it doesn't. If it doesn't, you settle for the closest thing. If it does, you might spend twenty minutes finding it.",
-        "When you create your own story, the story that doesn't exist yet gets made. Not approximated. Not selected from the closest category. Made. For tonight. For the exact emotional register you're trying to inhabit.",
+        "When you create your own story, the story that doesn't exist yet gets made. Not approximated. Not selected from the closest category. Made. For right now. For the exact emotional register you're trying to inhabit.",
         "There is no 'close enough' when the story is created around what you described. There is only what you asked for.",
       ],
     },
@@ -1520,7 +1520,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
   howItWorks: [
     {
       heading: "Choose your mood and dynamic",
-      body: "Tell us how you want this to feel. Slow burn — deliberate, building, worth the wait. Emotional connection — warm and present, a voice that sounds like it knows where you are tonight. Confident energy — cinematic, you at the centre of something charged and specific. Calm and absorbing — somewhere beautiful to be while your mind slows. Your mood determines everything that follows.",
+      body: "Tell us how you want this to feel. Slow burn — deliberate, building, worth the wait. Emotional connection — warm and present, a voice that sounds like it knows where you are right now. Confident energy — cinematic, you at the centre of something charged and specific. Calm and absorbing — somewhere beautiful to be while your mind slows. Your mood determines everything that follows.",
     },
     {
       heading: "Your story is written around you",
@@ -1528,7 +1528,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
     },
     {
       heading: "Listen to something you made",
-      body: "Your story is ready to play and saved privately to your account. Press play. This is the story you asked for — not a story that's been waiting for someone to choose it, but one that exists because you described what you needed tonight.",
+      body: "Your story is ready to play and saved privately to your account. Press play. This is the story you asked for — not a story that's been waiting for someone to choose it, but one that exists because you described what you needed right now.",
     },
   ],
   scenarios: {
@@ -1540,7 +1540,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
       },
       {
         heading: "A story that sounds like it knows you",
-        body: "You chose emotional closeness. You asked for warmth — the specific quality of feeling genuinely accompanied rather than entertained. The voice that arrived sounds like it was written knowing exactly how you feel tonight. Because the choices that produced it were yours, and they described exactly that.",
+        body: "You chose emotional closeness. You asked for warmth — the specific quality of feeling genuinely accompanied rather than entertained. The voice that arrived sounds like it was written knowing exactly how you feel right now. Because the choices that produced it were yours, and they described exactly that.",
       },
       {
         heading: "A story where you're entirely at the centre",
@@ -1592,7 +1592,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Create Something That Couldn't Have Existed Without You",
     paragraphs: [
-      "There is content made for everyone. There is content selected by an algorithm that believes it knows you. And then there is something you created yourself — shaped around how you want to feel, built for the specific version of you that showed up tonight.",
+      "There is content made for everyone. There is content selected by an algorithm that believes it knows you. And then there is something you created yourself — shaped around how you want to feel, built for the specific version of you that showed up right now.",
       "The Private Story makes the third thing possible. Not by asking you to write, or to choose from a shelf. By turning your choices into something that didn't exist until you described it.",
       "Create yours in under two minutes.",
     ],
@@ -1754,7 +1754,7 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
 
 export const emotionalAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Emotional Audio Stories | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
-  hero: { badge: `Emotional · Private · Made for Tonight`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For the nights when you need to feel something — but haven't quite found the words for what.` },
+  hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For the nights when you need to feel something — but haven't quite found the words for what.` },
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
   sections: [
@@ -1797,7 +1797,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Describe what you need to feel tonight",
+      heading: "Describe what you need to feel right now",
       body: "Quietly heavy. Warm but honest. Something that ends with light. A story for a feeling you can't quite name. You choose the emotional register as specifically as you can — and the story is built to meet you there.",
     },
     {
@@ -1825,7 +1825,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
         body: "Not resolution exactly. Not everything tied up or explained away. But movement — the sense that the story has been somewhere difficult and found its way toward something gentler. An ending that doesn't dismiss the weight of what came before but holds it differently. You arrive somewhere warmer than where you started, and that is enough.",
       },
     ],
-    interstitial: "Create an emotional story shaped around what you need to feel tonight.",
+    interstitial: "Create an emotional story shaped around what you need to feel right now.",
   },
   benefits: {
     h2: "Why Emotional Audio Stories Work",
@@ -1863,14 +1863,14 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
       "Audio stories for emotional nights serve a specific function that entertainment and wellness content mostly leaves unaddressed. Entertainment distracts. Wellness manages. Neither quite occupies the territory of simply being with a feeling — accompanying it, moving through it, finding the other side.",
       "Moving audio stories for adults require emotional intelligence in the writing — not just difficult events but the interior experience of difficulty, described with enough precision that the listener finds herself in the story rather than simply watching it from outside. This is what The Private Story's generation is calibrated to produce.",
       "Stories that make you feel something do so through specificity. Generic emotional content generates generic emotional response — a low-grade sensation that passes quickly. Deeply emotional audio stories that actually land do so because they arrived at something true — a texture of feeling that the listener recognises from the inside.",
-      "Whatever emotional territory you need to occupy tonight — whatever is being carried that needs to be felt rather than solved — that is what the story is built to meet.",
+      "Whatever emotional territory you need to occupy right now — whatever is being carried that needs to be felt rather than solved — that is what the story is built to meet.",
     ],
   },
   finalCTA: {
     h2: "Create Your Emotional Story",
     paragraphs: [
       "There is a kind of evening where nothing on offer quite reaches you. The podcast is interesting but adjacent. The film requires a version of your attention you don't currently have. You know what you need — something that goes where you are — but you haven't found it.",
-      "A story created around your emotional register tonight goes there.",
+      "A story created around your emotional register right now goes there.",
       "Describe what you need to feel. The story is built around that — written from the inside of the experience, narrated for private listening, held in a space that belongs entirely to you.",
       "Create yours in under two minutes.",
     ],
@@ -2168,7 +2168,7 @@ export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
 
 export const intimateAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Intimate Audio Stories | The Private Story`, description: `Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.` },
-  hero: { badge: `Intimate · Private · Adults Only`, h1: `Intimate Audio Stories — Private, Personal, Created Around Your Desire`, tagline: `The story that knows what you need tonight — because you told it.` },
+  hero: { badge: `Intimate · Private · Adults Only`, h1: `Intimate Audio Stories — Private, Personal, Created Around Your Desire`, tagline: `The story that knows what you need right now — because you told it.` },
   heroImage: "images/seo-hero-intimate.png",
   showCastingPreview: true,
   sections: [
@@ -2176,7 +2176,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
       h2: "What Intimate Audio Stories Are",
       paragraphs: [
         "Intimate is a word that covers a great deal of emotional and experiential territory. It describes closeness — the specific quality of being known by someone, of being genuinely seen rather than simply noticed. It describes desire — the pull between two people who are aware of each other in the way that changes the texture of a room. It describes warmth — the particular feeling of being wanted, specifically, for who you are.",
-        "Intimate audio stories work across this full range. They are not a category of content defined by a single intensity or a single mode. They are stories that place you at the centre of an experience of closeness — however closeness feels for you tonight.",
+        "Intimate audio stories work across this full range. They are not a category of content defined by a single intensity or a single mode. They are stories that place you at the centre of an experience of closeness — however closeness feels for you right now.",
         "At The Private Story, intimate audio stories are created around your choices for this session. The tone, the dynamic, the pace, the specific quality of the intimacy you want to inhabit — all chosen by you, all built into the generation. What comes back is original narrated audio shaped around what you described.",
         "Not borrowed from a library of adult content. Not matched by an algorithm to your listening history. Written, from language, around the intimate experience you asked for. Private, and entirely yours.",
       ],
@@ -2197,7 +2197,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
         "Some nights the need is for slow burn — the extended pleasure of tension that builds deliberately, that withholds in order to arrive somewhere worth arriving. Every sentence increases the charge. The pacing is the story. When something finally gives, it gives in a way that has been entirely earned by everything that came before.",
         "Other nights the need is for something more immediately charged — the electric quality of a specific encounter, two people who have been circling each other finally in the same space. The electricity is different from slow burn. It is present rather than accumulated — the charge is already there, the story is what happens when it's no longer contained.",
         "Other nights the need is for closeness rather than charge — the specific warmth of feeling genuinely wanted, a voice that is unhurried and fully present, the experience of being someone's entire attention without urgency or performance. This is intimate in the way that real intimacy is intimate: the kind that is not about intensity but about the quality of being genuinely there with another person.",
-        "All of these are what intimate audio stories can be. You choose the version that is right for tonight. The story is built around that choice.",
+        "All of these are what intimate audio stories can be. You choose the version that is right for right now. The story is built around that choice.",
       ],
     },
     {
@@ -2219,7 +2219,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Choose the intimate experience you want tonight",
+      heading: "Choose the intimate experience you want right now",
       body: "Slow burn. Charged encounter. Tender closeness. Something that builds. Something that arrives. You choose the tone, the dynamic, the pacing — and the story is built to deliver that specific experience rather than a general approximation of intimate.",
     },
     {
@@ -2244,10 +2244,10 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "An intimate closeness story",
-        body: "A voice, a presence, the specific warmth of feeling genuinely wanted. Unhurried. Fully attentive. The intimacy here is not in intensity but in quality — the rare experience of someone's complete and genuine attention, without performance or urgency. The story creates the feeling of being with someone who has nowhere else to be and no version of tonight that doesn't include you. That turns out to be its own kind of charged.",
+        body: "A voice, a presence, the specific warmth of feeling genuinely wanted. Unhurried. Fully attentive. The intimacy here is not in intensity but in quality — the rare experience of someone's complete and genuine attention, without performance or urgency. The story creates the feeling of being with someone who has nowhere else to be and no present moment that doesn't include you. That turns out to be its own kind of charged.",
       },
     ],
-    interstitial: "Create the intimate audio story that matches what you actually need tonight.",
+    interstitial: "Create the intimate audio story that matches what you actually need right now.",
   },
   benefits: {
     h2: "Why Intimate Audio Stories Work",
@@ -2274,7 +2274,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "The full intimate range",
-        body: "Slow burn, charged, tender, complex, quietly electric — the full spectrum of what intimate can mean. Not one mode. Your mode, created around what you described for tonight.",
+        body: "Slow burn, charged, tender, complex, quietly electric — the full spectrum of what intimate can mean. Not one mode. Your mode, created around what you described for right now.",
       },
     ],
   },
@@ -2285,14 +2285,14 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
       "Intimate romantic audio occupies a specific register that is distinct from both general romance content and overtly adult content. It requires the emotional intelligence of good literary fiction and the honesty of writing for adults who know their own desire. It requires pacing that understands what intimacy actually feels like — not just what it looks like from outside.",
       "Private intimate stories are not simply intimate stories with a privacy setting toggled on. Privacy is constitutive of the intimate experience — it is what allows the listener to inhabit the story rather than maintain the slight distance that social visibility always creates. The Private Story's architecture reflects this.",
       "An intimate story generator that produces genuinely intimate content needs to understand the difference between the slow burn listener and the charged-encounter listener and the tender-closeness listener — and write distinctly for each rather than producing a composite that serves none of them fully. The Private Story's creation flow exists to make that distinction precise, and the generation is built to honour it.",
-      "Adult intimate audio experiences, at their best, leave the listener feeling something specific — not just aroused, not just entertained, but met. Encountered by something that was shaped around who she is and what she needs tonight. That is the experience The Private Story is built to create.",
+      "Adult intimate audio experiences, at their best, leave the listener feeling something specific — not just aroused, not just entertained, but met. Encountered by something that was shaped around who she is and what she needs right now. That is the experience The Private Story is built to create.",
     ],
   },
   finalCTA: {
     h2: "Create Your Intimate Story",
     paragraphs: [
       "Most adult content was made for someone else. An imagined average listener, a general mood, a tone that serves nobody's specific desire particularly well.",
-      "An intimate audio story made around your choices tonight is different. It is shaped to the version of intimate you're actually looking for — the specific tone, dynamic, and experience you described.",
+      "An intimate audio story made around your choices right now is different. It is shaped to the version of intimate you're actually looking for — the specific tone, dynamic, and experience you described.",
       "Private, narrated, original. Created in under two minutes. Yours alone.",
     ],
     primary: { label: "Create your intimate story", href: "/create" },
@@ -2461,7 +2461,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
       paragraphs: [
         "Love stories have always done something particular for the people who need them. Not escapism, exactly — or not only that. Something closer to recognition. The experience of encountering, in narrative, a version of feeling you already know — and finding it handled with enough care that you feel less alone in having felt it.",
         "Audio love stories do this with the additional dimension of voice. The narration is not incidental to the experience. Hearing a story — following a voice through an emotional landscape — is a different kind of receiving than reading it. It is more immediate. More intimate. The feelings the story describes arrive closer.",
-        "At The Private Story, audio love stories are created around you specifically. Not around a general audience's version of what love feels like. Around the emotional register you are inhabiting tonight — the tone, the dynamic, the specific quality of romantic connection you want the story to explore.",
+        "At The Private Story, audio love stories are created around you specifically. Not around a general audience's version of what love feels like. Around the emotional register you are inhabiting right now — the tone, the dynamic, the specific quality of romantic connection you want the story to explore.",
         "That specificity is what makes the difference between a love story that moves you and one that almost does.",
       ],
     },
@@ -2494,7 +2494,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Describe the love story you need tonight",
+      heading: "Describe the love story you need right now",
       body: "Second chance. Slow realisation. Late night honesty. Tender and close. You choose the emotional situation and the register — not from a fixed list of titles but from the specific landscape of what you're looking for. The story is built around that.",
     },
     {
@@ -2560,14 +2560,14 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
       "Audio love stories to listen to, when they are made well, do something that genre romance often doesn't attempt — they render the interior experience of love rather than just its events. The feeling of being known. The specific texture of wanting. The weight that comes with history. These are the elements that make a love story land for an adult listener.",
       "Romantic love stories audio on most platforms are made for the broadest possible audience. The emotional register is flattened to serve everyone and no one in particular. Emotional love story audio that actually moves you requires a specificity that general content cannot provide — which is precisely what personalised generation makes possible.",
       "Love stories to fall asleep to have an additional quality requirement: they need to move the listener into a different emotional space from the one she arrived in, and leave her there gently enough to carry into sleep. The pacing, the resolution, the warmth of the voice — all of these are calibrated when the story is created for this purpose specifically.",
-      "Whatever the love story looks like for you tonight — the specific emotional situation you want to inhabit, the tone that will actually land — that is what the generation is built to deliver.",
+      "Whatever the love story looks like for you right now — the specific emotional situation you want to inhabit, the tone that will actually land — that is what the generation is built to deliver.",
     ],
   },
   finalCTA: {
     h2: "Create Your Love Story",
     paragraphs: [
       "Most love story content was made before you arrived. It carries someone else's choices about what love should feel like, what register it should use, how it should move.",
-      "A love story created around you tonight carries your choices. The emotional situation that speaks to where you are. The tone that will actually reach you. The specific quality of connection you are looking for.",
+      "A love story created around you right now carries your choices. The emotional situation that speaks to where you are. The tone that will actually reach you. The specific quality of connection you are looking for.",
       "Describe what you need. It gets made around that. Private, narrated, and entirely yours.",
     ],
     primary: { label: "Create your love story", href: "/create" },
@@ -2579,7 +2579,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
   },
   faqs: [
       { q: `What are audio love stories?`, a: `Audio love stories are narrated narrative pieces built around romantic love as an emotional experience — its weight, its texture, its specific interior quality. At The Private Story, they are generated around your choices for each session: the emotional situation, the tone, the dynamic, the pacing. The result is original narrated audio that delivers the specific love story experience you described, rather than a pre-authored piece matched from a library.` },
-      { q: `How are these different from romance novels?`, a: `Romance novels are authored works — finished before you arrive, written by a specific writer for a general readership. They are fixed. You adapt to them. An audio love story at The Private Story is generated around your choices for tonight — the emotional register, the situation, the dynamic between characters — which means the story responds to you rather than requiring you to match yourself to it. The difference in experience is significant.` },
+      { q: `How are these different from romance novels?`, a: `Romance novels are authored works — finished before you arrive, written by a specific writer for a general readership. They are fixed. You adapt to them. An audio love story at The Private Story is generated around your choices for right now — the emotional register, the situation, the dynamic between characters — which means the story responds to you rather than requiring you to match yourself to it. The difference in experience is significant.` },
       { q: `Can I choose the emotional tone of my love story?`, a: `Yes — this is the core of how The Private Story works. Before generation, you choose the emotional register: second chance, slow realisation, tender and close, late night honesty, emotionally complex. These choices direct the AI precisely. The tone is not a genre category applied afterward — it is the brief the story is written toward from the beginning.` },
       { q: `Are love stories private?`, a: `Completely. Your stories are created for your account and accessible only to you. No public feed, no social sharing, no visible history. The emotional experience your love stories create is held in a space that belongs entirely to you.` },
       { q: `Can I create a love story for a specific scenario?`, a: `The creation flow allows you to describe the emotional situation you want to inhabit — second chance, slow realisation, late night closeness, and many others. The AI writes into the specific scenario you chose, which means the story feels shaped to a real emotional situation rather than placed in a generic romantic context.` },
@@ -2589,7 +2589,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
 };
 
 export const personalisedAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Audio Stories | The Private Story`, description: `Personalised audio stories created around how you want to feel tonight. Not selected from a library — generated around your choices and private to you alone.` },
+  meta: { title: `Personalised Audio Stories | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
   hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Some nights you don't want to browse. You want something that already knows what you need.` },
   heroImage: "images/seo-hero-personalised.png",
   showCastingPreview: true,
@@ -2599,7 +2599,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "A personalised audio story is exactly what it sounds like — and nothing like what you've experienced before.",
         "It isn't a podcast. It isn't an audiobook. It isn't a playlist curated by an algorithm that knows your listening history but not your mood at 11pm on a Tuesday when the day has been a lot and you need something that feels like it was made for exactly this moment.",
-        "A personalised audio story is a piece of narrative audio created around you — your mood tonight, the tone you need, the kind of emotional experience you're looking for. Not chosen from a library. Not pre-written for a general audience. Created. For you. Right now.",
+        "A personalised audio story is a piece of narrative audio created around you — your mood right now, the tone you need, the kind of emotional experience you're looking for. Not chosen from a library. Not pre-written for a general audience. Created. For you. Right now.",
         "At The Private Story, every story begins with a question: how do you want to feel?",
         "The answer shapes everything.",
       ],
@@ -2609,7 +2609,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "They're for adults who have outgrown content that wasn't designed with them in mind.",
         "They're for the woman who finishes a long day and wants to feel something — tension, warmth, connection, calm — but doesn't want to spend forty minutes scrolling through options that are close but not quite right.",
-        "They're for anyone who has ever started an audiobook and thought: I'm not in the mood for this particular story tonight. Anyone who has paused a podcast mid-episode because the energy is wrong. Anyone who has wished, quietly, that there was something made for precisely the version of yourself you are right now.",
+        "They're for anyone who has ever started an audiobook and thought: I'm not in the mood for this particular story right now. Anyone who has paused a podcast mid-episode because the energy is wrong. Anyone who has wished, quietly, that there was something made for precisely the version of yourself you are right now.",
         "Personalised audio stories exist for that person. For that moment.",
         "They work beautifully for:",
       ],
@@ -2639,7 +2639,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
         "A library is built on a reasonable assumption: if we create enough content across enough categories, most people will find something that roughly fits most of the time.",
         "And most of the time, that works. You find something acceptable. You settle in. You get through it.",
         "But acceptable is a long way from made for you.",
-        "Pre-written audio stories have fixed narratives. The tone is set before you arrive. The pacing was decided by someone who didn't know what kind of day you'd had. The emotional arc leads somewhere that may or may not be where you need to go tonight.",
+        "Pre-written audio stories have fixed narratives. The tone is set before you arrive. The pacing was decided by someone who didn't know what kind of day you'd had. The emotional arc leads somewhere that may or may not be where you need to go right now.",
         "You adapt to the content. The content doesn't adapt to you.",
         "This works when you have hours to browse and plenty of patience. It works less well when you're tired, when you know what you need but can't find it, when you're lying in the dark at midnight wanting something that meets you exactly where you are.",
         "Personalised audio stories solve the problem that libraries cannot solve: the specific, individual, moment-to-moment reality of what you actually need right now.",
@@ -2650,7 +2650,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "The Private Story doesn't ask you to browse.",
         "It asks you one question — how do you want to feel? — and builds something around your answer.",
-        "You choose your mood. The atmosphere you want to inhabit for the next twenty minutes. The tone — slow and building, warm and connecting, charged and cinematic. The kind of voice you want in your ear tonight. The kind of story that will do something specific for you rather than something general for everyone.",
+        "You choose your mood. The atmosphere you want to inhabit for the next twenty minutes. The tone — slow and building, warm and connecting, charged and cinematic. The kind of voice you want in your ear right now. The kind of story that will do something specific for you rather than something general for everyone.",
         "Then your story is created. Not selected. Created.",
         "It exists because you needed it. It is shaped around your preferences. It sounds the way it sounds because of the choices you made. It goes where you directed it to go.",
         "When you listen, you are not hearing something made for an imagined average listener. You are hearing something that was built for the exact version of you sitting in the dark right now.",
@@ -2669,7 +2669,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
     },
     {
       heading: "Listen privately",
-      body: "Your story is saved to your account and heard only by you. There is no social feed. No sharing. No public profile. What you create and what you listen to stays entirely private — between you and the story you needed tonight.",
+      body: "Your story is saved to your account and heard only by you. There is no social feed. No sharing. No public profile. What you create and what you listen to stays entirely private — between you and the story you needed right now.",
     },
   ],
   scenarios: {
@@ -2678,7 +2678,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
     items: [
       {
         heading: "A slow burn tension story",
-        body: "Every word chosen for your specific mood tonight. The story builds — slowly, deliberately, exactly as long as the delay needs to be — toward a moment that lands because you were held at the edge of it long enough. The tension isn't incidental. It's the point. And because it was shaped around you, it knows exactly how long to hold you there.",
+        body: "Every word chosen for your specific mood right now. The story builds — slowly, deliberately, exactly as long as the delay needs to be — toward a moment that lands because you were held at the edge of it long enough. The tension isn't incidental. It's the point. And because it was shaped around you, it knows exactly how long to hold you there.",
       },
       {
         heading: "A calming connection story",
@@ -2686,7 +2686,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "A confident energy story",
-        body: "You at the centre of something cinematic. The room organised around your presence. A dynamic that places you exactly where you want to be — desired specifically, seen clearly, the focus of an attention that feels like the best kind of recognition. This is the story for the nights when you want to feel like the most interesting person in the room. Tonight, you are.",
+        body: "You at the centre of something cinematic. The room organised around your presence. A dynamic that places you exactly where you want to be — desired specifically, seen clearly, the focus of an attention that feels like the best kind of recognition. This is the story for the nights when you want to feel like the most interesting person in the room. Right Now, you are.",
       },
     ],
     interstitial: "Create a story shaped around how you want to feel.",
@@ -2696,7 +2696,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
     items: [
       {
         heading: "Your mood determines everything",
-        body: "Not genre tags. Not category filters. Your actual emotional state tonight determines the pacing, tone, atmosphere, and direction of your story. This is a fundamentally different experience from browsing.",
+        body: "Not genre tags. Not category filters. Your actual emotional state right now determines the pacing, tone, atmosphere, and direction of your story. This is a fundamentally different experience from browsing.",
       },
       {
         heading: "Complete privacy, always",
@@ -2728,7 +2728,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       "If you're drawn to personalised romantic audio stories, the platform offers dynamics across the full emotional range — from tender and emotionally connecting to slow burn tension that builds across the full length of a story designed to make the delay as pleasurable as the arrival.",
       "For those looking for custom audio stories for women that prioritise emotional intelligence over spectacle — stories that understand the specific texture of female experience and desire — this is where that lives.",
       "Audio stories tailored to my mood is perhaps the most accurate description of the core experience. The mood selector isn't a genre filter. It's the first word of a conversation between you and a story that doesn't exist yet.",
-      "And for anyone who has looked for personalised bedtime stories for adults and found only content designed for children or content designed for a lowest-common-denominator adult audience — the personalised audio story fills that gap. Premium. Intelligent. Made for tonight.",
+      "And for anyone who has looked for personalised bedtime stories for adults and found only content designed for children or content designed for a lowest-common-denominator adult audience — the personalised audio story fills that gap. Premium. Intelligent. Made for right now.",
     ],
   },
   finalCTA: {
@@ -2736,7 +2736,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
     paragraphs: [
       "You have been settling for content that wasn't made for you.",
       "Not because nothing better existed — but because nothing better had been built yet.",
-      "The Private Story is built on a single conviction: the most powerful audio experience is one that knows why you're listening tonight. Not your demographic. Not your listening history. Your mood. Your need. The specific version of yourself that showed up tonight wanting something real.",
+      "The Private Story is built on a single conviction: the most powerful audio experience is one that knows why you're listening right now. Not your demographic. Not your listening history. Your mood. Your need. The specific version of yourself that showed up right now wanting something real.",
       "This isn't a library. You won't browse here.",
       "You'll tell us how you want to feel. And we'll make you something for exactly that.",
     ],
@@ -2754,7 +2754,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       { q: `Are my stories saved privately?`, a: `Completely. Your stories are saved to your account and are visible to no one else. There is no social feed, no sharing feature, and no public component to the platform. Everything you create and everything you listen to is entirely private.` },
       { q: `How long does it take to create a personalised audio story?`, a: `The creation process — choosing your mood and preferences — takes less than two minutes. Your story is then generated and ready to listen to shortly after. The stories themselves are typically between fifteen and thirty minutes, depending on your selections.` },
       { q: `Is this for adults only?`, a: `Yes. The Private Story is an adult platform. All content is created for listeners aged eighteen and over. Age verification is required to access the platform.` },
-      { q: `Can I create more than one story?`, a: `Yes. You can create a new personalised story whenever you want one. Your mood tonight is different from your mood tomorrow night — your story should be too. Each creation begins fresh, shaped around wherever you are when you start.` },
+      { q: `Can I create more than one story?`, a: `Yes. You can create a new personalised story whenever you want one. Your mood right now is different from your mood tomorrow night — your story should be too. Each creation begins fresh, shaped around wherever you are when you start.` },
     ],
 };
 
@@ -2828,12 +2828,12 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
       h2: "This Is Not a Library. This Is Yours.",
       paragraphs: [
         "Most audio story platforms operate as libraries.",
-        "You arrive. You browse categories. You pick something that seems like it might work. You listen to something made for everyone, hoping it happens to work for you tonight.",
+        "You arrive. You browse categories. You pick something that seems like it might work. You listen to something made for everyone, hoping it happens to work for you right now.",
         "The Private Story does not work this way.",
         "You don't browse here. You create.",
-        "You tell the platform how you want to feel — the mood, the tone, the kind of emotional experience you're looking for tonight. A story is generated around those choices. It is not retrieved from a library. It is not adapted from a template sitting in a shared catalogue. It is created for this session, for this version of you, right now.",
+        "You tell the platform how you want to feel — the mood, the tone, the kind of emotional experience you're looking for right now. A story is generated around those choices. It is not retrieved from a library. It is not adapted from a template sitting in a shared catalogue. It is created for this session, for this version of you, right now.",
         "Then it is saved to your account. Visible to no one. Audible to no one.",
-        "The story that exists in your account tonight does not exist anywhere else. It was made for you. It belongs to you. And it will stay where you put it — in a private space that no one else can enter.",
+        "The story that exists in your account right now does not exist anywhere else. It was made for you. It belongs to you. And it will stay where you put it — in a private space that no one else can enter.",
       ],
     },
   ],
@@ -2859,12 +2859,12 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
         body: "Created at midnight for the mood you're in at midnight. Saved where only you can find it. Never shared, never visible, never part of anyone else's experience. Exactly what you needed and entirely yours.",
       },
       {
-        heading: "An intimate connection story for exactly how you feel tonight",
+        heading: "An intimate connection story for exactly how you feel right now",
         body: "A story shaped around your specific emotional state — not a general audience's assumed preferences. The intimacy of it is amplified by the privacy. Because it's only ever been heard by you, it feels like it was made only for you. It was.",
       },
       {
         heading: "A slow burn scenario shaped around your preferences",
-        body: "Built around the specific kind of tension you want to inhabit tonight. Saved to your account. Returnable whenever you want it. The kind of story you can come back to because it is yours to come back to — sitting in your account, waiting, private.",
+        body: "Built around the specific kind of tension you want to inhabit right now. Saved to your account. Returnable whenever you want it. The kind of story you can come back to because it is yours to come back to — sitting in your account, waiting, private.",
       },
     ],
     interstitial: "Your story is waiting. No one else will ever hear it.",
@@ -3051,7 +3051,7 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
     h2: "Create Your Quiet Intensity Story",
     paragraphs: [
       "The loudest desire is the kind that doesn't speak. The most charged room is the one where nothing has happened yet — where everything is implied, nothing stated, and both people in the story are fully aware of exactly what is in the air.",
-      "A quiet intensity story created around your choices tonight inhabits that register from the first sentence to the last. No announcement. No declaration. Only the precise rendering of what it feels like to be inside a moment where everything is present and nothing has been said.",
+      "A quiet intensity story created around your choices right now inhabits that register from the first sentence to the last. No announcement. No declaration. Only the precise rendering of what it feels like to be inside a moment where everything is present and nothing has been said.",
       "Private, psychological, entirely yours.",
     ],
     primary: { label: "Create your quiet intensity story", href: "/create" },
@@ -3074,7 +3074,7 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
 
 export const relaxingAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Relaxing Audio Stories | The Private Story`, description: `Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.` },
-  hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Relaxing Audio Stories for Adults — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what tonight requires.` },
+  hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Relaxing Audio Stories for Adults — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what right now requires.` },
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
   sections: [
@@ -3084,7 +3084,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
         "Relaxation is not a passive state you fall into when stimulation stops. For most adults, it is something that has to be actively arrived at — a destination the mind needs to be guided toward, because left to itself it will simply continue processing the day.",
         "Relaxing audio stories work because they give the mind somewhere better to go.",
         "Not the silence of switched-off screens, which quickly fills with the mental residue of everything unresolved. Not the cognitive activity of a podcast that requires you to follow an argument or absorb information. A story — with voice, atmosphere, and a world to inhabit — that redirects your attention away from the day and toward somewhere unhurried enough to let the body catch up.",
-        "At The Private Story, relaxing audio stories are created around your specific version of needing to decompress. Not around a general audience's idea of what calming should sound like. Around how your evening feels tonight, and what kind of story will actually do something for it.",
+        "At The Private Story, relaxing audio stories are created around your specific version of needing to decompress. Not around a general audience's idea of what calming should sound like. Around how your evening feels right now, and what kind of story will actually do something for it.",
       ],
     },
     {
@@ -3117,19 +3117,19 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "Most relaxation audio was made for an imagined listener — a composite of everyone who might need to relax, which means it is calibrated for no one in particular.",
         "The tone is someone else's idea of what calming sounds like. The pacing was chosen without knowing what kind of day you'd had. The setting — a forest, a beach, a quiet room — was selected by a creator who didn't know whether you find forests grounding or whether the beach makes you think of the holiday you haven't booked.",
-        "When it works, it works by coincidence. The content happened to match what you needed tonight. Often, it nearly works — close enough to stay on, not quite right enough to fully land.",
-        "A relaxing audio story created around your choices tonight does not rely on coincidence. You describe the tone you need. The setting that will actually feel like somewhere worth inhabiting. The kind of voice that will do something for you rather than something generic for everyone. The story is made around those choices — and it works because it was made for this, not borrowed from a library and hoped for the best.",
+        "When it works, it works by coincidence. The content happened to match what you needed right now. Often, it nearly works — close enough to stay on, not quite right enough to fully land.",
+        "A relaxing audio story created around your choices right now does not rely on coincidence. You describe the tone you need. The setting that will actually feel like somewhere worth inhabiting. The kind of voice that will do something for you rather than something generic for everyone. The story is made around those choices — and it works because it was made for this, not borrowed from a library and hoped for the best.",
       ],
     },
   ],
   howItWorks: [
     {
-      heading: "Choose how you need to relax tonight",
+      heading: "Choose how you need to relax right now",
       body: "Warm and quietly connecting. Somewhere atmospheric and unhurried. A voice that takes its time because you finally have yours. You describe the version of relaxation you need — not a category, but a feeling — and the story is shaped around it.",
     },
     {
       heading: "Your story is created around that",
-      body: "The pacing, the setting, the tone of the voice — all generated around your choices. Not retrieved from a library of calming content. Written for this session, for the specific way you need to decompress tonight.",
+      body: "The pacing, the setting, the tone of the voice — all generated around your choices. Not retrieved from a library of calming content. Written for this session, for the specific way you need to decompress right now.",
     },
     {
       heading: "Listen privately — let everything else go",
@@ -3141,7 +3141,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
     items: [
       {
         heading: "A warm, unhurried story — somewhere slow",
-        body: "Set on a coast, or in a quiet room, or somewhere with light that doesn't require anything from you. The narrative moves without urgency — not because nothing is happening, but because the story understands that tonight, the pace is the point. The voice arrives like something you've been waiting for all day without knowing it.",
+        body: "Set on a coast, or in a quiet room, or somewhere with light that doesn't require anything from you. The narrative moves without urgency — not because nothing is happening, but because the story understands that right now, the pace is the point. The voice arrives like something you've been waiting for all day without knowing it.",
       },
       {
         heading: "A story with no urgency",
@@ -3152,13 +3152,13 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
         body: "For when the exhaustion is social rather than just physical. A voice that is unhurried in the way that presence is unhurried — not filling silence, but comfortable in it. The specific quality of feeling genuinely accompanied, which turns out to be its own kind of decompression.",
       },
     ],
-    interstitial: "Create a relaxing story shaped around how tonight actually feels.",
+    interstitial: "Create a relaxing story shaped around how right now actually feels.",
   },
   benefits: {
     h2: "The Benefits of Personalised Relaxing Audio Stories",
     items: [
       {
-        heading: "Written for tonight, not a general audience",
+        heading: "Written for right now, not a general audience",
         body: "The tone, setting, and pacing are chosen by you and shaped by the story around them. Not pre-set. Not approximated. Made for the specific way you need to wind down this evening.",
       },
       {
@@ -3198,7 +3198,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
     paragraphs: [
       "You have been trying to relax with tools that weren't built for it.",
       "The podcast that keeps you slightly too engaged. The meditation that asks things of you when you have nothing left. The silence that fills immediately with the day you were trying to leave behind.",
-      "A story created around how you need to feel tonight is none of those things. It is somewhere to be for twenty minutes while the rest of you settles. It is a voice that takes its time because tonight, finally, you have yours.",
+      "A story created around how you need to feel right now is none of those things. It is somewhere to be for twenty minutes while the rest of you settles. It is a voice that takes its time because right now, finally, you have yours.",
       "Create yours in under two minutes.",
     ],
     primary: { label: "Create your relaxing story", href: "/create" },
@@ -3221,7 +3221,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
 
 export const romanticAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Romantic Audio Stories | The Private Story`, description: `Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.` },
-  hero: { badge: `Romantic · Private · Made for You`, h1: `Romantic Audio Stories — Intimate, Private, Made Around Your Mood`, tagline: `Choose how you want to feel tonight. The story is made around that.` },
+  hero: { badge: `Romantic · Private · Made for You`, h1: `Romantic Audio Stories — Intimate, Private, Made Around Your Mood`, tagline: `Choose how you want to feel right now. The story is made around that.` },
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
   sections: [
@@ -3230,8 +3230,8 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "A romantic audio story is not a romance audiobook with a different name.",
         "Romance audiobooks are authored works — written by a specific writer, from a fixed perspective, following a plot that exists independently of whoever listens to it. They are finished before you arrive. You adapt to them. Some nights that is exactly what you want, and audiobooks are made for that purpose.",
-        "A romantic audio story created at The Private Story is structurally different. The story is generated around your choices — the emotional register you want, the dynamic between the characters, the tone of the voice, the atmosphere of the world. It is written, by AI, in service of the specific romantic experience you described. Not around a general audience's idea of romance. Around you, for tonight, for the version of romantic you are feeling right now.",
-        "That distinction changes everything. Not because the writing is necessarily better — a great romance novelist brings craft that AI is not trying to replicate — but because the story responds to you in a way that pre-authored content structurally cannot. It was made for this version of tonight. That is what makes it different. That is what makes it work.",
+        "A romantic audio story created at The Private Story is structurally different. The story is generated around your choices — the emotional register you want, the dynamic between the characters, the tone of the voice, the atmosphere of the world. It is written, by AI, in service of the specific romantic experience you described. Not around a general audience's idea of romance. Around you, for right now, for the version of romantic you are feeling right now.",
+        "That distinction changes everything. Not because the writing is necessarily better — a great romance novelist brings craft that AI is not trying to replicate — but because the story responds to you in a way that pre-authored content structurally cannot. It was made for this present moment. That is what makes it different. That is what makes it work.",
       ],
     },
     {
@@ -3240,7 +3240,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
         "Romantic is not a single register. It is a spectrum that runs from quietly connecting to slowly charged to openly tender — and where you are on that spectrum changes, sometimes night to night.",
         "The slow burn listener — who wants tension that builds across every sentence, a story that holds her at the edge of something until it finally and deliberately gives — needs something entirely different from the listener who wants warmth and emotional closeness, a voice that speaks to her like it genuinely knows what she needs. Both are romantic. Neither is reducible to the other.",
         "Most romantic audio content is made for one point on that spectrum, or for a vague composite somewhere in the middle that is fully satisfying to almost nobody. The Private Story accommodates the full range — because the story is created around your choices rather than positioned in a fixed content category.",
-        "Tonight you might want something cinematic. You at the centre of a beautifully charged scenario — atmosphere, presence, the specific feeling of being someone's full attention. Another night you might want something quieter and more emotionally close. The platform creates for both. For all of it.",
+        "Right Now you might want something cinematic. You at the centre of a beautifully charged scenario — atmosphere, presence, the specific feeling of being someone's full attention. Another night you might want something quieter and more emotionally close. The platform creates for both. For all of it.",
       ],
     },
     {
@@ -3292,7 +3292,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
         body: "You at the centre of something beautifully charged. A setting with atmosphere — the kind of world that makes a story feel like it matters. A presence with weight and intention. The feeling of being inside a moment that is, by every measure, for you. Not watching a romantic story. Living inside one.",
       },
     ],
-    interstitial: "Create a romantic story shaped around the experience you actually want tonight.",
+    interstitial: "Create a romantic story shaped around the experience you actually want right now.",
   },
   benefits: {
     h2: "Why Personalised Romantic Audio Works",
@@ -3314,7 +3314,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
         body: "Your romantic stories are saved to your account alone. No visible history, no social dimension, no suggestion that this experience is anything other than entirely your own.",
       },
       {
-        heading: "Responds to how you feel tonight",
+        heading: "Responds to how you feel right now",
         body: "What you want romantically varies. The platform creates around your choices for this session — so you can want something different next time and get something different next time. No fixed library to exhaust.",
       },
       {
@@ -3330,14 +3330,14 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
       "Romantic audio stories for women, in particular, have tended toward either the sanitised or the overtly adult — rarely in the register that reflects how complex romantic feeling actually is. The Private Story was built for that register.",
       "Romantic stories to listen to, at their best, understand the difference between the slow burn listener and the tender-connection listener. Audio romance stories for adults that treat these as the same experience — and produce a composite that satisfies neither — are missing the point. Personalisation is not a feature. It is the mechanism.",
       "Intimate romantic audio stories require intimacy in the production, not just the content. The voice quality, the pacing, the first-person narration, the sense that this was made for your ears specifically — these qualities produce the experience of intimacy rather than just describing it. The best romantic audio stories feel close. Private. Personal. Like something that exists for you.",
-      "Whatever your version of romantic sounds like tonight — the best romantic audio stories are the ones made around the version you're actually experiencing, rather than approximated from a fixed catalogue.",
+      "Whatever your version of romantic sounds like right now — the best romantic audio stories are the ones made around the version you're actually experiencing, rather than approximated from a fixed catalogue.",
     ],
   },
   finalCTA: {
     h2: "Create Your Romantic Story",
     paragraphs: [
       "You have been scrolling past content that almost works. Romance built for a composite listener who is not you, in a tone that is adjacent to what you wanted but not quite it.",
-      "A romantic audio story created around your choices tonight is none of that.",
+      "A romantic audio story created around your choices right now is none of that.",
       "It is written for this version of romantic you are feeling right now. Slow burn, or tender, or cinematic, or something else entirely — you describe it, and the story is built around that description. Private, narrated, yours.",
       "Create yours in under two minutes.",
     ],
@@ -3656,8 +3656,8 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const audioEroticaForWomenConfig: SEOPageConfig = {
-  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy tonight. Private, AI-generated, and narrated. Not a library — a story built for you.` },
-  hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, tonight, and heard only by you.` },
+  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy right now. Private, AI-generated, and narrated. Not a library — a story built for you.` },
+  hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, right now, and heard only by you.` },
   heroImage: "images/seo-hero-women.png",
   showCastingPreview: true,
   sections: [
@@ -3665,7 +3665,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
       h2: "What Audio Erotica for Women Actually Means",
       paragraphs: [
         "The phrase 'audio erotica for women' gets used to describe a wide range of content — some of it genuinely created with a female audience in mind, much of it not. What women consistently report wanting from erotic audio fiction is different from the default assumptions that shaped most early audio erotica: emotional context, character depth, tension before resolution, a specific quality of attention that feels like it understands female desire rather than approximates it.",
-        "Audio erotica for women at The Private Story starts from this distinction. The content is generated around your emotional register and the quality of desire you want the story to explore — not from a template calibrated for the broadest possible audience. The difference between content made for a general audience that includes women and content made specifically around what you, tonight, want to feel is the difference between a best guess and an answer.",
+        "Audio erotica for women at The Private Story starts from this distinction. The content is generated around your emotional register and the quality of desire you want the story to explore — not from a template calibrated for the broadest possible audience. The difference between content made for a general audience that includes women and content made specifically around what you, right now, want to feel is the difference between a best guess and an answer.",
         "Personalisation here means that the dynamic you choose — its texture, its power register, its emotional weight — shapes the story from the first sentence. If you want a story that builds slowly through attention and proximity rather than rushing to resolution, that is what is created. If you want something more direct but still grounded in emotional specificity, the creation flow lets you express that. The story responds to your choices rather than presenting you with options from a pre-existing catalogue. Explore what <a href=\"/personalised-audio-stories\">personalised audio stories</a> can cover, or understand how <a href=\"/private-audio-stories\">private audio stories</a> are kept secure from the moment they are created.",
       ],
     },
@@ -3680,14 +3680,14 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
     {
       h2: "How Personalised Audio Erotica Differs from a Catalogue",
       paragraphs: [
-        "The dominant model for audio erotica platforms is the catalogue: a library of pre-existing content, searchable by keyword, navigable by category. The experience is browsing-based — you filter, select, and hope the resulting content matches what you actually wanted tonight. The content was made before your arrival, for a general audience, at a specific emotional register that you may or may not share.",
+        "The dominant model for audio erotica platforms is the catalogue: a library of pre-existing content, searchable by keyword, navigable by category. The experience is browsing-based — you filter, select, and hope the resulting content matches what you actually wanted right now. The content was made before your arrival, for a general audience, at a specific emotional register that you may or may not share.",
         "Personalised audio erotica works differently. The story does not exist until you create it. The creation process — choosing the dynamic, the emotional register, the character quality, the specific texture of the experience you want — happens first. Then the story is written, from the first sentence, around those choices. It is not retrieved from a library. It does not match a nearest-fit in a catalogue. It is genuinely original and genuinely yours.",
-        "The practical consequence is that the story fits the specific quality of desire you arrived with tonight, rather than requiring you to find something in a catalogue that fits well enough. Women who have used both describe the difference as analogous to the difference between choosing from a restaurant menu and having a meal prepared around what you actually wanted to eat.",
+        "The practical consequence is that the story fits the specific quality of desire you arrived with right now, rather than requiring you to find something in a catalogue that fits well enough. Women who have used both describe the difference as analogous to the difference between choosing from a restaurant menu and having a meal prepared around what you actually wanted to eat.",
       ],
     },
   ],
   howItWorks: [
-    { heading: "Choose your mood and dynamic", body: "Select the emotional register, character dynamic, and tone of the story you want tonight. The creation flow is designed to capture the specific quality of the experience — not just categories, but the texture of what you want to feel." },
+    { heading: "Choose your mood and dynamic", body: "Select the emotional register, character dynamic, and tone of the story you want right now. The creation flow is designed to capture the specific quality of the experience — not just categories, but the texture of what you want to feel." },
     { heading: "Your story is written from scratch", body: "The story is generated specifically for you based on your choices — not retrieved from a library. It begins with your preferences and builds outward, every element shaped by what you selected." },
     { heading: "Listen in complete privacy", body: "Your narrated story is saved to your account and accessible only to you. No social features, no public history, no visible activity. The story exists in your account and nowhere else." },
   ],
@@ -3705,10 +3705,10 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
   benefits: {
     h2: "Why Women Choose The Private Story",
     items: [
-      { heading: "Made for how you actually feel", body: "The story is created around the quality of desire you arrived with tonight, not a general audience's assumed preferences." },
+      { heading: "Made for how you actually feel", body: "The story is created around the quality of desire you arrived with right now, not a general audience's assumed preferences." },
       { heading: "Complete privacy, structurally", body: "No social layer, no public history, no recommendation engine. What you listen to is not information that belongs to a platform." },
       { heading: "Emotional intelligence", body: "The stories understand that female desire has texture, context, and emotional dimension — and are created to reflect that, not bypass it." },
-      { heading: "No browsing required", body: "You describe what you want; the story is created. No filtering through a catalogue hoping something fits your specific mood tonight." },
+      { heading: "No browsing required", body: "You describe what you want; the story is created. No filtering through a catalogue hoping something fits your specific mood right now." },
     ],
   },
   fullPicture: {
@@ -3716,13 +3716,13 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
     paragraphs: [
       "The Private Story was built on a specific premise: that personalised audio erotica for women is not a niche within a general adult content platform, but a category that deserves to be built from the ground up around how women actually experience desire. The content, the privacy model, and the creation flow are all shaped by this premise.",
       "What that means in practice: stories that begin with your emotional register rather than a production decision. A privacy architecture that removes the friction that public-facing library models create. Content that can be as quietly atmospheric or as explicitly adult as your creation choices specify — shaped by your preferences, not by a platform default calibrated for a general audience. If you are curious about the format itself, read our guide to <a href=\"/what-is-audio-erotica\">what audio erotica is</a> and how it differs from visual pornography and erotic audiobooks.",
-      "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Explore the creation flow and see what can be made for you tonight.",
+      "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Explore the creation flow and see what can be made for you right now.",
     ],
   },
   finalCTA: {
-    h2: "Your Story, Tonight",
+    h2: "Your Story, Right Now",
     paragraphs: [
-      "The story you want to hear tonight is created the moment you make your choices. No browsing required. Under two minutes to create. Completely private.",
+      "The story you want to hear right now is created the moment you make your choices. No browsing required. Under two minutes to create. Completely private.",
     ],
     primary: { label: "Create your story", href: "/create" },
     links: [
@@ -3735,31 +3735,31 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
   faqs: [
     { q: "What makes audio erotica specifically for women different?", a: "Audio erotica for women at The Private Story is built around how women report experiencing desire: with emotional context, character depth, and tension that builds toward resolution rather than bypassing it. The creation flow asks about the quality of the dynamic you want, not just the category. This produces stories that feel calibrated for female experience rather than approximating it from a general-audience template." },
     { q: "Is this content genuinely adult?", a: "Yes. The Private Story creates adult content for adults 18+. The intensity is shaped by your creation choices — from quietly sensual and atmospheric through to explicitly adult. The platform is designed for adult women who want private, emotionally intelligent erotic audio that reflects their actual preferences rather than a platform default." },
-    { q: "How is this different from other audio erotica platforms?", a: "Most audio erotica platforms operate on a catalogue model — you browse and select from fixed content. The Private Story generates an original story for you based on your choices at the moment of creation. The story exists because of your preferences tonight, not because it was produced in advance for a general audience. The privacy model also differs: no social features, no public listening history, no shared data." },
+    { q: "How is this different from other audio erotica platforms?", a: "Most audio erotica platforms operate on a catalogue model — you browse and select from fixed content. The Private Story generates an original story for you based on your choices at the moment of creation. The story exists because of your preferences right now, not because it was produced in advance for a general audience. The privacy model also differs: no social features, no public listening history, no shared data." },
     { q: "How long are the stories?", a: "Stories typically run between fifteen and thirty minutes, depending on your creation choices. This is sized for the specific listening window when audio erotica is most wanted — a complete, satisfying experience without requiring an hour-long commitment." },
     { q: "Is my listening history private?", a: "Yes. Your stories are saved to your account only. There is no social layer, no public listening history, and no recommendation engine that broadcasts what you have been exploring. The structural design of the platform makes your listening genuinely private rather than simply password-protected." },
   ],
 };
 
 export const personalisedEroticaConfig: SEOPageConfig = {
-  meta: { title: `Personalised Erotica — AI-Generated Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices tonight. AI-written, narrated, and completely private. Not a catalogue — an original story made for you.` },
-  hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices tonight. Not retrieved from a library. Written for you, from the first sentence.` },
+  meta: { title: `Personalised Erotica — AI-Generated Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices right now. AI-written, narrated, and completely private. Not a catalogue — an original story made for you.` },
+  hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices right now. Not retrieved from a library. Written for you, from the first sentence.` },
   heroImage: "images/seo-hero-create.png",
   showCastingPreview: true,
   sections: [
     {
       h2: "What Personalised Erotica Actually Is",
       paragraphs: [
-        "Personalised erotica is erotic fiction created around your specific choices rather than selected from a pre-existing library. The distinction matters more in this genre than in almost any other: the quality of erotic fiction depends on specificity — on the story reflecting the particular emotional register, dynamic, and character quality that you wanted tonight, not something close enough from a catalogue.",
+        "Personalised erotica is erotic fiction created around your specific choices rather than selected from a pre-existing library. The distinction matters more in this genre than in almost any other: the quality of erotic fiction depends on specificity — on the story reflecting the particular emotional register, dynamic, and character quality that you wanted right now, not something close enough from a catalogue.",
         "At The Private Story, personalised erotica begins with a creation process rather than a browsing interface. You choose the mood, the dynamic, the quality of the characters, the emotional register of the experience you want to feel. Those choices are the starting point for a story that is written from scratch — not retrieved from a library, not approximated from a nearest-fit in a catalogue, but generated specifically in response to what you said you wanted. See how <a href=\"/personalised-audio-stories\">personalised audio stories</a> work across all genres, not just erotica.",
-        "The result is erotic fiction that fits your mood tonight in a way that pre-existing content, by definition, cannot. It was not made for a general audience. It was made from your choices.",
+        "The result is erotic fiction that fits your mood right now in a way that pre-existing content, by definition, cannot. It was not made for a general audience. It was made from your choices.",
       ],
     },
     {
       h2: "The Seven Choices That Shape Your Story",
       paragraphs: [
         "The creation process at The Private Story works through seven structured selections that together define the emotional and dynamic shape of your story. These are not generic categories — they are chosen to capture the specific qualities of erotic experience that matter: the character of the dominant energy (if any), the pacing and intensity, the emotional register, the scenario type, and the quality of the connection between the characters.",
-        "What makes this work as personalisation rather than filtering is that the story is generated from these choices rather than selected from a catalogue that happens to match them. There is no pre-existing story that the selections narrow down to. There is only the story that exists because you made those particular choices, tonight, in that particular combination.",
+        "What makes this work as personalisation rather than filtering is that the story is generated from these choices rather than selected from a catalogue that happens to match them. There is no pre-existing story that the selections narrow down to. There is only the story that exists because you made those particular choices, right now, in that particular combination.",
         "This also means that the same set of choices will never produce exactly the same story twice. The generation uses your selections as a starting point and builds a genuinely original narrative — which is why the experience of personalised erotica differs from even the most precisely filtered catalogue in a fundamental way. If you want to understand how the experience compares to a curated library, see our guide to <a href=\"/what-is-a-personalised-audio-story\">what a personalised audio story is</a>.",
       ],
     },
@@ -3773,7 +3773,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
     },
   ],
   howItWorks: [
-    { heading: "Make your seven selections", body: "Choose the mood, dynamic, scenario type, character quality, and emotional register of your story. The creation flow takes under two minutes and captures the specific texture of what you want to feel tonight." },
+    { heading: "Make your seven selections", body: "Choose the mood, dynamic, scenario type, character quality, and emotional register of your story. The creation flow takes under two minutes and captures the specific texture of what you want to feel right now." },
     { heading: "An original story is written for you", body: "The story is generated from your choices — not retrieved from a library. Every element, from the opening sentence to the pace and character of the resolution, reflects what you specified." },
     { heading: "Narrated and private in your account", body: "Your story is narrated and saved to your account. Only you can access it. No public history, no social sharing, no platform visibility. Yours alone." },
   ],
@@ -3793,7 +3793,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
     items: [
       { heading: "Genuinely original", body: "Every story is written from scratch in response to your choices — not retrieved from a library, never the same story twice." },
       { heading: "Structurally private", body: "No social layer, no public history. Your listening and your creation choices belong to you, not to a platform." },
-      { heading: "Precisely calibrated", body: "Seven structured selections shape a story that fits your mood tonight — the character quality, the pacing, the emotional register." },
+      { heading: "Precisely calibrated", body: "Seven structured selections shape a story that fits your mood right now — the character quality, the pacing, the emotional register." },
       { heading: "Ready in under two minutes", body: "The creation process is fast. Your narrated story is ready to listen to shortly after you complete your selections." },
     ],
   },
@@ -3802,7 +3802,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
     paragraphs: [
       "Personalised erotica is not a niche within a general content platform. It is what erotic fiction becomes when the technology to generate it specifically for you exists and is used that way. The Private Story is built on that premise: that the quality of erotic fiction depends on its specificity, and that specificity requires generation rather than selection.",
       "The privacy architecture follows from the same premise. If the content is genuinely yours — made from your choices, saved to your account — then it should be genuinely private. The structural design reflects this: no social features, no public history, no recommendation engine that uses your listening to build a public profile.",
-      "Explore the creation flow to see what can be made around your choices tonight.",
+      "Explore the creation flow to see what can be made around your choices right now.",
     ],
   },
   finalCTA: {
@@ -3817,17 +3817,17 @@ export const personalisedEroticaConfig: SEOPageConfig = {
     ],
   },
   faqs: [
-    { q: "How personalised is personalised erotica on this platform?", a: "Very specifically personalised. The story is generated from seven structured selections you make about the mood, dynamic, character quality, scenario type, and emotional register of your story. These are not broad categories that narrow a catalogue — they are the starting point for an original story written specifically in response to your choices tonight." },
+    { q: "How personalised is personalised erotica on this platform?", a: "Very specifically personalised. The story is generated from seven structured selections you make about the mood, dynamic, character quality, scenario type, and emotional register of your story. These are not broad categories that narrow a catalogue — they are the starting point for an original story written specifically in response to your choices right now." },
     { q: "Is the content explicit?", a: "The intensity is shaped by your creation choices. The Private Story creates adult content from quietly sensual and atmospheric through to explicitly adult, depending on what you select. The platform is for adults 18+ only." },
-    { q: "How is this different from searching for erotica on another platform?", a: "On catalogue platforms, the content exists before you arrive and is selected based on your search terms. At The Private Story, the content is created in response to your choices at the moment of creation. Nothing was written in advance for a general audience — the story exists because of your specific preferences tonight." },
+    { q: "How is this different from searching for erotica on another platform?", a: "On catalogue platforms, the content exists before you arrive and is selected based on your search terms. At The Private Story, the content is created in response to your choices at the moment of creation. Nothing was written in advance for a general audience — the story exists because of your specific preferences right now." },
     { q: "Is it genuinely private?", a: "Yes. There is no social layer on the platform, no public listening history, and no recommendation engine that uses your content choices to build a visible profile. Your stories are saved to your account and accessible only to you." },
     { q: "Can I request any type of scenario?", a: "The creation flow covers a wide range of dynamics, scenarios, and emotional registers. All content is original fiction, all depicted parties are adults, and all content is legal. The specific parameters of what can be created are described in the platform's content policy." },
   ],
 };
 
 export const eroticAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Erotic Audio Stories — Private, AI-Generated, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Adult AI fiction, personalised around your mood tonight. Not a library — your story.` },
-  hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted tonight.` },
+  meta: { title: `Erotic Audio Stories — Private, AI-Generated, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Adult AI fiction, personalised around your mood right now. Not a library — your story.` },
+  hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted right now.` },
   heroImage: "images/seo-hero-intimate.png",
   showCastingPreview: true,
   sections: [
@@ -3873,7 +3873,7 @@ export const eroticAudioStoriesConfig: SEOPageConfig = {
   benefits: {
     h2: "Why This Is Different",
     items: [
-      { heading: "Original, not selected", body: "Every story is generated from your choices — not retrieved from a fixed catalogue. The story exists because of what you wanted tonight." },
+      { heading: "Original, not selected", body: "Every story is generated from your choices — not retrieved from a fixed catalogue. The story exists because of what you wanted right now." },
       { heading: "Genuinely private", body: "No public history, no social layer, no platform-visible activity. Your stories are in your account and nowhere else." },
       { heading: "Calibrated to your mood", body: "The creation flow captures the specific quality of the experience you want — intensity, character dynamic, pacing, emotional register." },
       { heading: "Adult, intelligent content", body: "The stories are written with literary attention to desire, tension, and character — not formulaic or mechanical in their approach to adult content." },
@@ -3987,8 +3987,8 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
 };
 
 export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
-  meta: { title: `AI Romance Stories for Women — Personalised, Private, Made for You | The Private Story`, description: `AI-generated romance stories for women, personalised around your mood and choices. Private, narrated audio fiction created for you tonight. Not a library — yours.` },
-  hero: { badge: `Romance · AI-Generated · For Women`, h1: `AI Romance Stories for Women — Created Around How You Want to Feel`, tagline: `Romance fiction generated for you from your choices tonight. Private, narrated, and made for the specific quality of connection you want to feel.` },
+  meta: { title: `AI Romance Stories for Women — Personalised, Private, Made for You | The Private Story`, description: `AI-generated romance stories for women, personalised around your mood and choices. Private, narrated audio fiction created for you right now. Not a library — yours.` },
+  hero: { badge: `Romance · AI-Generated · For Women`, h1: `AI Romance Stories for Women — Created Around How You Want to Feel`, tagline: `Romance fiction generated for you from your choices right now. Private, narrated, and made for the specific quality of connection you want to feel.` },
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
   sections: [
@@ -3996,8 +3996,8 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
       h2: "AI Romance Stories and What Makes Them Different",
       paragraphs: [
         "AI-generated romance stories differ from pre-written romance fiction in one fundamental way: they are created in response to your choices rather than written for a general audience before you arrived. This matters more in romance fiction than in almost any other genre because the emotional quality of a romance story — whether it feels real, whether the dynamic feels right, whether the tension builds in a way that satisfies — depends on specificity.",
-        "A romance story written for a general audience has to make assumptions about what most readers want from a romantic experience. Those assumptions may align with what you want tonight, or they may not. A story generated from your specific choices about mood, dynamic, pacing, and emotional register does not rely on this alignment — it starts from what you said you wanted and builds from there.",
-        "At The Private Story, AI romance stories for women are created through a structured selection process that captures the quality of the romantic experience you want — not just broad categories but the specific texture of the connection, tension, and dynamic you want the story to explore. The result is romance fiction that fits your mood tonight in a way that pre-existing content cannot replicate. For the full framework behind this approach, see <a href=\"/personalised-audio-stories\">personalised audio stories</a>.",
+        "A romance story written for a general audience has to make assumptions about what most readers want from a romantic experience. Those assumptions may align with what you want right now, or they may not. A story generated from your specific choices about mood, dynamic, pacing, and emotional register does not rely on this alignment — it starts from what you said you wanted and builds from there.",
+        "At The Private Story, AI romance stories for women are created through a structured selection process that captures the quality of the romantic experience you want — not just broad categories but the specific texture of the connection, tension, and dynamic you want the story to explore. The result is romance fiction that fits your mood right now in a way that pre-existing content cannot replicate. For the full framework behind this approach, see <a href=\"/personalised-audio-stories\">personalised audio stories</a>.",
       ],
     },
     {
@@ -4018,8 +4018,8 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
     },
   ],
   howItWorks: [
-    { heading: "Choose the romance you want to feel", body: "Select the mood, dynamic, and emotional register of your story. The creation flow asks about the quality of the connection and tension you want — not just categories but the specific character of what you are looking for tonight." },
-    { heading: "An original story is written for you", body: "Your AI romance story is generated from your choices — written from the first sentence with your preferences as the starting point. Not retrieved from a library. Original for tonight." },
+    { heading: "Choose the romance you want to feel", body: "Select the mood, dynamic, and emotional register of your story. The creation flow asks about the quality of the connection and tension you want — not just categories but the specific character of what you are looking for right now." },
+    { heading: "An original story is written for you", body: "Your AI romance story is generated from your choices — written from the first sentence with your preferences as the starting point. Not retrieved from a library. Original for right now." },
     { heading: "Listen privately", body: "Your narrated story is saved to your private account. No social layer, no public history. The romance is entirely yours." },
   ],
   scenarios: {
@@ -4035,7 +4035,7 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
   benefits: {
     h2: "Why AI Romance Stories Work",
     items: [
-      { heading: "Calibrated to what you want tonight", body: "Generated from your specific choices — the mood, the dynamic, the emotional register — rather than selected from a catalogue." },
+      { heading: "Calibrated to what you want right now", body: "Generated from your specific choices — the mood, the dynamic, the emotional register — rather than selected from a catalogue." },
       { heading: "Female experience at the centre", body: "The creation flow is built around the qualities of romance that women report mattering most — character depth, emotional texture, tension that earns its resolution." },
       { heading: "Structurally private", body: "No social layer, no public history. Your romance stories are in your account and nowhere else." },
       { heading: "Narrated audio fiction", body: "A story you listen to, not read — complete, narrated, and ready when you are." },
@@ -4045,11 +4045,11 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
     h2: "Romance That Starts with Your Choices",
     paragraphs: [
       "AI romance stories for women are at their best when they understand that female romantic experience is specific — that the quality of the dynamic, the emotional register, and the character of the tension matter as much as the narrative events. The Private Story is built to create this understanding at the point of generation, not filter for it in a catalogue.",
-      "The result is romance fiction that was made for you, tonight, in a listening experience that is completely private. Explore the creation flow and see what kind of romance can be made around your choices.",
+      "The result is romance fiction that was made for you, right now, in a listening experience that is completely private. Explore the creation flow and see what kind of romance can be made around your choices.",
     ],
   },
   finalCTA: {
-    h2: "Your Romance Story, Tonight",
+    h2: "Your Romance Story, Right Now",
     paragraphs: ["An AI-generated romance story personalised around your mood and choices. Narrated, private, and under two minutes to create."],
     primary: { label: "Create your story", href: "/create" },
     links: [
@@ -4060,8 +4060,8 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
     ],
   },
   faqs: [
-    { q: "What makes AI romance stories different from regular romance novels?", a: "AI romance stories generated by The Private Story are created from your specific choices at the moment of listening — not written for a general audience before you arrived. The dynamic, emotional register, and character quality are shaped by what you selected tonight, not by what an author assumed a general audience would want. The story exists because of your preferences, which is categorically different from the closest match in a catalogue." },
-    { q: "Can I choose what kind of romance I want?", a: "Yes. The creation flow lets you choose the character of the romantic dynamic — slow burn or direct, emotional or physical focus, forbidden or freely available attraction. These selections, combined with mood and scenario choices, produce a story that reflects the specific quality of romance you are looking for tonight." },
+    { q: "What makes AI romance stories different from regular romance novels?", a: "AI romance stories generated by The Private Story are created from your specific choices at the moment of listening — not written for a general audience before you arrived. The dynamic, emotional register, and character quality are shaped by what you selected right now, not by what an author assumed a general audience would want. The story exists because of your preferences, which is categorically different from the closest match in a catalogue." },
+    { q: "Can I choose what kind of romance I want?", a: "Yes. The creation flow lets you choose the character of the romantic dynamic — slow burn or direct, emotional or physical focus, forbidden or freely available attraction. These selections, combined with mood and scenario choices, produce a story that reflects the specific quality of romance you are looking for right now." },
     { q: "Are these stories for women specifically?", a: "Yes. The creation flow and the character of the content are built around what women report wanting from romance fiction — emotional depth, character specificity, tension that earns its resolution, and a dynamic that feels calibrated for female experience rather than a general audience's assumed preferences." },
     { q: "How private is the platform?", a: "Completely private, structurally. No social layer, no public listening history, no recommendation engine visible to others. Your stories are in your account and accessible only to you." },
     { q: "How long are AI romance stories?", a: "Typically between fifteen and thirty minutes, depending on your selections. This is sized for the specific listening window when romance fiction is most wanted — the wind-down hour, time alone, the pre-sleep session." },

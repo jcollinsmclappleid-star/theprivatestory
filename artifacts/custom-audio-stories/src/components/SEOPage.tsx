@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight } from "lucide-react";
+import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
@@ -15,6 +15,7 @@ const TRUST_ITEMS = [
   { icon: <Sparkles className="w-4 h-4" />, label: "Made for you", sub: "Generated around your choices" },
   { icon: <Headphones className="w-4 h-4" />, label: "Narrated audio", sub: "Ready to listen instantly" },
   { icon: <Lock className="w-4 h-4" />, label: "Yours alone", sub: "Only you can access your stories" },
+  { icon: <Heart className="w-4 h-4" />, label: "Designed for the female imagination", sub: "Emotionally intelligent, agency-first, privacy-led", colSpan: true },
 ];
 
 export default function SEOPage({ config }: { config: SEOPageConfig }) {
@@ -103,7 +104,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </p>
           <p>
             <strong className="text-foreground font-semibold">Who it's for:</strong>{" "}
-            Adults who want private, emotionally intelligent audio storytelling — personalised around their mood and tone, not retrieved from a fixed library.
+            Designed for the female imagination — adults who want private, emotionally intelligent audio storytelling personalised around their mood and tone, not retrieved from a fixed library.
           </p>
           <p>
             <strong className="text-foreground font-semibold">How it works:</strong>{" "}
@@ -114,7 +115,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
         {/* Trust bar */}
         <div className="grid grid-cols-2 gap-3 mb-16">
           {TRUST_ITEMS.map((t, i) => (
-            <div key={i} className="flex items-start gap-3 rounded-xl border border-border/30 bg-white/[0.02] p-4">
+            <div key={i} className={`flex items-start gap-3 rounded-xl border border-border/30 bg-white/[0.02] p-4 ${'colSpan' in t ? 'col-span-2' : ''}`}>
               <div className="mt-0.5 text-primary/70">{t.icon}</div>
               <div>
                 <p className="text-sm font-medium text-foreground">{t.label}</p>

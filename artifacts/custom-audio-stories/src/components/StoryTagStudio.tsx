@@ -560,6 +560,11 @@ export function StoryTagStudio({
             Your Usual
           </span>
         )}
+        {blockedByContradiction && (
+          <span className="text-[9px] text-muted-foreground/45 px-1.5 leading-tight italic">
+            Conflicts with "{contradictionPartners.find(cp => selectedTags.includes(cp))}"
+          </span>
+        )}
       </span>
     );
   }
@@ -582,7 +587,7 @@ export function StoryTagStudio({
           <div className="flex items-center gap-3">
             {categoryExcluded && (
               <span className="text-[10px] text-muted-foreground/60 italic">
-                not available with {excludedBy}
+                Opens when {excludedBy} is released
               </span>
             )}
             {!locked && !categoryExcluded && cat.maxSelect !== undefined && (
@@ -638,6 +643,22 @@ export function StoryTagStudio({
         </div>
       )}
       {activeCategories.map((cat) => renderCategory(cat, false))}
+      {lockedCategories.length > 0 && (
+        <div
+          className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <span className="text-xs font-semibold text-muted-foreground/50 uppercase tracking-widest">After Dark exclusive</span>
+          <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
+          <a
+            href={`${import.meta.env.BASE_URL}after-dark`}
+            className="text-[10px] font-semibold transition-colors hover:opacity-90"
+            style={{ color: "#c0392b" }}
+          >
+            Unlock →
+          </a>
+        </div>
+      )}
       {lockedCategories.map((cat) => renderCategory(cat, true))}
       {!afterDark && !bedtime && onAfterDark && (
         <div className="pt-2 pb-1 text-center">

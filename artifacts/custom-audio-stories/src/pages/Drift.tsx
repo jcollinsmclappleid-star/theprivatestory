@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronLeft, ArrowLeft, Moon, Loader2, Check } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { TermsGate } from "@/components/TermsGate";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
+import { VOICES } from "@/lib/voices";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -302,6 +303,25 @@ function ScenarioCard({
   );
 }
 
+/* ── Paywall preview teasers ────────────────────────────────────────── */
+const DRIFT_TEASERS: Record<string, string> = {
+  the_late_night: "It was past midnight. The city had gone quiet and neither of you had mentioned sleep. The kind of lateness that turns everything unhurried, where nothing is required except being exactly here.",
+  come_home: "They came back when the house was almost dark. You were almost asleep. Almost. That word doing a lot of quiet work in the warm air between you.",
+  the_long_week: "Five days of too much. And now — someone who knows what you need without having to be told. The long week, finally, releasing its grip.",
+  warm_weight: "Just the weight of them beside you. Not dramatic. Not required to be anything. Just the specific, irreplaceable comfort of not being alone in the dark.",
+  last_hour: "The last hour before everything stops. Slow and certain, unhurried. The day has nearly finished and all that's left is this — warm, quiet, and entirely your own.",
+  the_hour_before: "Before either of you has to be anything. Before the day asks anything back. Just this — unhurried and private, the hour that belongs only to you.",
+};
+
+const DRIFT_TITLES: Record<string, string> = {
+  the_late_night: "Past midnight, nowhere to be",
+  come_home: "When they came back late",
+  the_long_week: "The end of too much",
+  warm_weight: "The comfort of being beside someone",
+  last_hour: "Before you let the day go",
+  the_hour_before: "The unhurried hour",
+};
+
 /* ── Main Page ──────────────────────────────────────────────────────── */
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
@@ -311,10 +331,18 @@ export default function Drift() {
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(0);
-  const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; archetype?: string; dynamic?: string } | null>(null);
+  const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; roomId?: string; accent?: string; archetype?: string; dynamic?: string; voiceId?: string } | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
 
-  const lastCastingRef = useRef<{ archetype?: string; dynamic?: string } | null>(null);
+  useEffect(() => {
+    const handler = (e: PageTransitionEvent) => {
+      if (e.persisted) setPaywallLoadingPlan(null);
+    };
+    window.addEventListener("pageshow", handler);
+    return () => window.removeEventListener("pageshow", handler);
+  }, []);
+
+  const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string } | null>(null);
   const lastScenarioRef = useRef<DriftScenario | null>(null);
 
   const play = useAudioPlayer((s) => s.play);
@@ -334,8 +362,11 @@ export default function Drift() {
         if (isSubscriptionLimit) {
           setPaywallCapture({
             scenarioLabel: lastScenarioRef.current?.label ?? "Drift",
+            roomId: lastScenarioRef.current?.room,
+            accent: lastScenarioRef.current?.accent,
             archetype: lastCastingRef.current?.archetype,
             dynamic: lastCastingRef.current?.dynamic,
+            voiceId: lastCastingRef.current?.voiceId,
           });
           setPhase("paywall");
         } else {
@@ -352,7 +383,7 @@ export default function Drift() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
       });
       const data = await res.json();
       if (res.ok && data.url) {
@@ -384,7 +415,7 @@ export default function Drift() {
   const handleCastingComplete = useCallback(
     async (casting: CastingRoomResult) => {
       if (!selectedScenario) return;
-      lastCastingRef.current = { archetype: casting.archetype, dynamic: casting.dynamic };
+      lastCastingRef.current = { archetype: casting.archetype, dynamic: casting.dynamic, voiceId: casting.voiceId };
       lastScenarioRef.current = selectedScenario;
       setPhase("generating");
       const timer = startLoadingPhase();
@@ -729,6 +760,45 @@ export default function Drift() {
                   </div>
                 )}
               </div>
+
+              {/* Story preview card */}
+              {(() => {
+                const roomId = paywallCapture?.roomId ?? selectedScenario?.room ?? "the_late_night";
+                const accentHex = paywallCapture?.accent ?? selectedScenario?.accent ?? "#6366f1";
+                const excerpt = DRIFT_TEASERS[roomId] ?? DRIFT_TEASERS.the_late_night;
+                const titleLine = DRIFT_TITLES[roomId] ?? paywallCapture?.scenarioLabel ?? "Your story";
+                const voiceId = paywallCapture?.voiceId;
+                const voice = voiceId ? VOICES.find(v => v.id === voiceId) : null;
+                const voiceName = voice?.displayName ?? voice?.label ?? null;
+                return (
+                  <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "transparent" }}>
+                    <div className="relative h-32 flex items-end p-4 overflow-hidden"
+                      style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
+                      <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
+                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="relative z-10 text-left">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: accentHex }}>
+                          {roomId.replace(/_/g, " ")}
+                        </p>
+                        <h3 className="font-display text-base font-bold text-foreground leading-tight">{titleLine}</h3>
+                      </div>
+                    </div>
+                    <div className="px-4 py-3" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
+                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-3">"{excerpt}"</p>
+                    </div>
+                    {(voiceName) && (
+                      <div className="px-4 pb-3 flex flex-wrap gap-1.5 mt-1">
+                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: `${accentHex}18`, color: accentHex, border: `1px solid ${accentHex}30` }}>
+                          {voiceName}
+                        </span>
+                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#a5b4fc", border: "1px solid rgba(165,180,252,0.2)" }}>
+                          Audio ready to write
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Value bullets */}
               <div className="w-full flex flex-col gap-2 text-left">

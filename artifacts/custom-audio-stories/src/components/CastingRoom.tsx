@@ -1759,6 +1759,30 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               )}
             </div>
 
+            {/* Drift intensity note */}
+            {bedtime && (
+              <div
+                className="flex items-start gap-3 px-4 py-3 rounded-2xl mb-5"
+                style={{ background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.18)" }}
+              >
+                <Moon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#6366f1" }} />
+                <div>
+                  <p className="text-xs font-semibold text-foreground mb-0.5">Drift stays warm</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Elevated and Intense are exclusive to{" "}
+                    <a
+                      href={`${import.meta.env.BASE_URL}after-dark`}
+                      className="font-semibold underline underline-offset-2"
+                      style={{ color: "#c0392b" }}
+                    >
+                      After Dark
+                    </a>
+                    {" "}— a separate, fully unrestrained experience.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Mood</p>
               <div className="flex flex-wrap gap-2">
@@ -1986,6 +2010,34 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 Skip — no specific situation
               </button>
             </div>
+
+            {/* Drift upsell — more situations on other modes */}
+            {bedtime && (
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <a
+                  href={`${import.meta.env.BASE_URL}create`}
+                  className="flex flex-col gap-1.5 px-3.5 py-3 rounded-2xl transition-all hover:opacity-80"
+                  style={{ background: "rgba(201,162,39,0.07)", border: "1px solid rgba(201,162,39,0.22)" }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full" style={{ background: "#c9a227" }} />
+                    <p className="text-xs font-bold text-foreground">Private Story</p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-snug">More situations, full casting, any intensity</p>
+                </a>
+                <a
+                  href={`${import.meta.env.BASE_URL}after-dark`}
+                  className="flex flex-col gap-1.5 px-3.5 py-3 rounded-2xl transition-all hover:opacity-80"
+                  style={{ background: "rgba(192,57,43,0.07)", border: "1px solid rgba(192,57,43,0.22)" }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Moon className="w-2.5 h-2.5" style={{ color: "#c0392b" }} />
+                    <p className="text-xs font-bold text-foreground">After Dark</p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-snug">Explicit, unrestrained — nothing held back</p>
+                </a>
+              </div>
+            )}
           </motion.div>
         )}
 

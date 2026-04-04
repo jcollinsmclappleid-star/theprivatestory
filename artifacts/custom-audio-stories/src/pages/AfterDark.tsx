@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
+import { VOICES } from "@/lib/voices";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -1089,6 +1090,19 @@ const LOADING_PHASES = [
   { label: "Finalizing…", sub: "Your private story is almost ready" },
 ];
 
+/* ── Paywall preview teasers ────────────────────────────────────────── */
+const AFTER_DARK_TEASERS: Record<string, string> = {
+  unrestrained: "The restraint was over. Everything you'd been circling — the charge, the tension, the specific wanting — had reached its end. He was looking at you with the kind of certainty that meant there was nothing left to negotiate. This story holds nothing back.",
+  forbidden: "You both knew the rules. Had been following them with a precision that felt increasingly like a kind of foreplay. This was the version where the rules stopped mattering. Where the reason it's wrong becomes the reason it's everything.",
+  passionate: "The feeling and the desire had stopped taking turns. Both were fully present — neither reining the other in, neither making apologies. He was looking at you like you were the answer to a question he'd stopped pretending not to ask.",
+};
+
+const AFTER_DARK_TITLES: Record<string, string> = {
+  unrestrained: "Nothing held back",
+  forbidden: "The moment the rules stopped",
+  passionate: "Feeling and desire, both",
+};
+
 /* ── Darkness badge ─────────────────────────────────────────────────── */
 const DARKNESS_STYLES: Record<DarknessLevel, { text: string; border: string; bg: string }> = {
   "After Dark":  { text: "#e88", border: "rgba(192,57,43,0.3)",  bg: "rgba(192,57,43,0.06)" },
@@ -1206,6 +1220,15 @@ export default function AfterDark() {
   const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+
+  useEffect(() => {
+    const handler = (e: PageTransitionEvent) => {
+      if (e.persisted) setPaywallLoadingPlan(null);
+    };
+    window.addEventListener("pageshow", handler);
+    return () => window.removeEventListener("pageshow", handler);
+  }, []);
+
   const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
   // confirmedPairing: the most recently known pairing — set from handoff on load,
   // then updated after each casting completion so locking is always current.
@@ -1314,7 +1337,7 @@ export default function AfterDark() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
       });
       const data = await res.json() as { url?: string };
       if (res.ok && data.url) {
@@ -1397,6 +1420,7 @@ export default function AfterDark() {
         dynamic: casting.dynamic,
         intensity: casting.intensity,
         storyMode,
+        voiceId: casting.voiceId,
       };
 
       setLastCastingData(castingSnapshot);
@@ -1701,6 +1725,45 @@ export default function AfterDark() {
                   </div>
                 )}
               </div>
+
+              {/* Story preview card */}
+              {(() => {
+                const storyMode = selectedScenario?.storyMode ?? "unrestrained";
+                const excerpt = AFTER_DARK_TEASERS[storyMode] ?? AFTER_DARK_TEASERS.unrestrained;
+                const titleLine = AFTER_DARK_TITLES[storyMode] ?? selectedScenario?.label ?? "Your story";
+                const accentHex = selectedScenario?.accent ?? "#c0392b";
+                const voiceId = lastCastingData?.voiceId as string | undefined;
+                const voice = voiceId ? VOICES.find(v => v.id === voiceId) : null;
+                const voiceName = voice?.displayName ?? voice?.label ?? null;
+                return (
+                  <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "#08010100" }}>
+                    <div className="relative h-32 flex items-end p-4 overflow-hidden"
+                      style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
+                      <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
+                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="relative z-10 text-left">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: accentHex }}>
+                          {selectedScenario?.room?.replace(/_/g, " ") ?? "After Dark"}
+                        </p>
+                        <h3 className="font-display text-base font-bold text-foreground leading-tight">{titleLine}</h3>
+                      </div>
+                    </div>
+                    <div className="px-4 py-3" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
+                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-3">"{excerpt}"</p>
+                    </div>
+                    {(voiceName) && (
+                      <div className="px-4 pb-3 flex flex-wrap gap-1.5 mt-1">
+                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: `${accentHex}18`, color: accentHex, border: `1px solid ${accentHex}30` }}>
+                          {voiceName}
+                        </span>
+                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#e8a09a", border: "1px solid rgba(232,160,154,0.2)" }}>
+                          Audio ready to write
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Value bullets */}
               <div className="w-full flex flex-col gap-2 text-left">

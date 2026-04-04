@@ -896,6 +896,14 @@ export default function Create() {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    const handler = (e: PageTransitionEvent) => {
+      if (e.persisted) setPaywallLoadingPlan(null);
+    };
+    window.addEventListener("pageshow", handler);
+    return () => window.removeEventListener("pageshow", handler);
+  }, []);
+
+  useEffect(() => {
     if (step !== "paywall" || !paywallCapture) {
       setPaywallCoverUrl(null);
       return;
@@ -1830,7 +1838,7 @@ export default function Create() {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plan }),
+                body: JSON.stringify({ plan, returnPath: window.location.pathname }),
               });
               const data = await res.json();
               if (res.ok && data.url) {

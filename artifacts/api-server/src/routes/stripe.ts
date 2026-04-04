@@ -47,11 +47,14 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
   const isAuthenticated = !!(req.isAuthenticated && req.isAuthenticated());
   const userId = isAuthenticated ? (req.user?.id ?? null) : null;
 
-  const { plan } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive" };
+  const { plan, returnPath } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive"; returnPath?: string };
   if (!plan || !["monthly", "annual", "addon", "immersive"].includes(plan)) {
     res.status(400).json({ error: "Invalid plan. Choose monthly, annual, addon, or immersive." });
     return;
   }
+
+  const isValidReturnPath = typeof returnPath === "string" && returnPath.startsWith("/") && !returnPath.startsWith("//") && !/^\/[a-zA-Z][a-zA-Z0-9+-.]*:/.test(returnPath);
+  const cancelUrl = isValidReturnPath ? `${SITE_URL}${returnPath}?checkout=cancelled` : `${SITE_URL}/pricing?checkout=cancelled`;
 
   // Addon stories require an active subscription — always requires auth
   if (plan === "addon") {
@@ -101,7 +104,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
         line_items: [{ price: priceId, quantity: 1 }],
         mode: (plan === "addon" || plan === "immersive") ? "payment" : "subscription",
         success_url: `${SITE_URL}/me?checkout=success`,
-        cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
+        cancel_url: cancelUrl,
         allow_promotion_codes: true,
         metadata: { userId, plan },
       };
@@ -127,7 +130,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       line_items: [{ price: priceId, quantity: 1 }],
       mode: isSubscription ? "subscription" : "payment",
       success_url: `${SITE_URL}/checkout/success?token=${claimToken}`,
-      cancel_url: `${SITE_URL}/pricing?checkout=cancelled`,
+      cancel_url: cancelUrl,
       allow_promotion_codes: true,
       metadata: { guestToken: claimToken, plan },
       ...(!isSubscription ? { customer_creation: "always" } : {}),

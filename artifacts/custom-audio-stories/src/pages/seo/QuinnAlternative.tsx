@@ -11,7 +11,7 @@ const config: CompetitorPageConfig = {
   tagline:
     "Quinn built a community of creators. The Private Story does not have creators or a community — it has one thing: a story written from scratch, in private, around what you want.",
   intro:
-    "This page is written by The Private Story. We have a commercial interest in your choosing our platform — please weigh what we say here accordingly. What we can offer honestly is a clear account of what Quinn does well, and what The Private Story was built to do differently.",
+    "Written by The Private Story — an honest account of where each platform excels, and what sets us apart.",
   sections: [
     {
       h2: "What Quinn does well",

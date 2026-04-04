@@ -11,7 +11,7 @@ const config: CompetitorPageConfig = {
   tagline:
     "Dipsea built the category. The Private Story is for when you want something the category doesn't carry — a story written from scratch, around your imagination, that belongs entirely to you.",
   intro:
-    "This page is written by The Private Story. We have a commercial interest in your choosing our platform — please weigh what we say here accordingly. What we can offer honestly is a clear account of what Dipsea does well, and what The Private Story was built to do differently.",
+    "Written by The Private Story — an honest account of where each platform excels, and what sets us apart.",
   sections: [
     {
       h2: "What Dipsea does well",

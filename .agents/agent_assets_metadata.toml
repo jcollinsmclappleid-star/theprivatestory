@@ -46,19 +46,19 @@ title = "nathaniel gold line art male profile"
 id = "HEu6pzsXnFBr2oXOSdsnx"
 uri = "file://artifacts/custom-audio-stories/public/cover-romance.png"
 type = "image"
-title = "Romance story cover"
+title = "generated_image"
 
 [[generated]]
 id = "Cej9eK2N3VMjSqlZ6wmc7"
 uri = "file://artifacts/custom-audio-stories/public/cover-slow-burn.png"
 type = "image"
-title = "Slow burn story cover"
+title = "generated_image"
 
 [[generated]]
 id = "rDCOobAtiU4FY6ark9ppN"
 uri = "file://artifacts/custom-audio-stories/public/cover-passionate.png"
 type = "image"
-title = "Passionate story cover"
+title = "generated_image"
 
 [[generated]]
 id = "pn3KNoiGUvq7nfhF1q4la"
@@ -70,13 +70,13 @@ title = "Playful story cover"
 id = "Y0ampthfD7CzHANyRG2uV"
 uri = "file://artifacts/custom-audio-stories/public/cover-nostalgic.png"
 type = "image"
-title = "Nostalgic story cover"
+title = "generated_image"
 
 [[generated]]
 id = "wM1tAXXekFVHDMmbq8VyN"
 uri = "file://artifacts/custom-audio-stories/public/cover-forbidden.png"
 type = "image"
-title = "Forbidden story cover"
+title = "generated_image"
 
 [[generated]]
 id = "wIYv0umKQAk5znNwczZv6"

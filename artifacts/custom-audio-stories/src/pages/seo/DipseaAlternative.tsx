@@ -35,7 +35,7 @@ const config: CompetitorPageConfig = {
     },
     {
       h2: "Pricing and what you get",
-      body: `The Private Story offers two subscription tiers — Monthly at £29/month (5 story generations) and Annual at £179/year (50 story generations) — with additional stories available for subscribers beyond their plan allocation. Every story includes the full creation flow: your brief, the written narrative, professional AI narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a library. You are paying for the creation of something that has never existed before — written for you, and for no one else. See the <a href="/pricing">pricing page</a> for full details and any current offers.`,
+      body: `The Private Story offers two subscription tiers — Monthly at £29/month (5 story generations) and Annual at £179/year (50 story generations) — with additional stories available for subscribers beyond their plan allocation. Every story includes the full creation flow: your brief, the written narrative, professional narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a library. You are paying for the creation of something that has never existed before — written for you, and for no one else. See the <a href="/pricing">pricing page</a> for full details and any current offers.`,
     },
   ],
   faqs: [
@@ -45,7 +45,7 @@ const config: CompetitorPageConfig = {
     },
     {
       q: "Is the audio quality comparable to Dipsea's professionally narrated content?",
-      a: "The Private Story uses ElevenLabs voice synthesis — among the most sophisticated AI voice technology available — at production-grade quality settings. The narration is delivered by one of six available voices, each with its own character and pacing. It is AI narration rather than a human voice actor, and that distinction is real. What you gain in return is a story written precisely around what you wanted, rather than a professionally produced story you discovered and hoped would fit.",
+      a: "The Private Story uses production-grade digital voices — among the most sophisticated voice technology available. The narration is delivered by one of six available voices, each with its own character and pacing. The voices are digital rather than human voice actors, and that distinction is real. What you gain in return is a story written precisely around what you wanted, rather than a professionally produced story you discovered and hoped would fit.",
     },
     {
       q: "How long does it take to get a personalised story?",

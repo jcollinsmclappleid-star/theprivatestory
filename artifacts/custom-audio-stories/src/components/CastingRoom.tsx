@@ -2004,7 +2004,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     style={{ background: "rgba(192,57,43,0.09)", border: "1px solid rgba(192,57,43,0.28)", color: "#c0392b" }}
                   >
                     <Moon className="w-3 h-3" />
-                    After Dark unlocks more →
+                    After Dark has more choices here →
                   </button>
                 )}
                 {isSameGender && !step8NoteDismissed && (
@@ -2063,7 +2063,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 style={{ background: "rgba(192,57,43,0.09)", border: "1px solid rgba(192,57,43,0.28)", color: "#c0392b" }}
               >
                 <Moon className="w-3 h-3" />
-                After Dark unlocks more →
+                After Dark has more choices here →
               </button>
             )}
             <p className="text-xs text-muted-foreground/70 mb-2 italic">
@@ -2154,17 +2154,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.
             </p>
-            {!afterDark && onAfterDark && (
-              <button
-                type="button"
-                onClick={onAfterDark}
-                className="mb-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-[1.02]"
-                style={{ background: "rgba(192,57,43,0.09)", border: "1px solid rgba(192,57,43,0.28)", color: "#c0392b" }}
-              >
-                <Moon className="w-3 h-3" />
-                After Dark unlocks more →
-              </button>
-            )}
             <p className="text-xs text-muted-foreground/70 mb-2 italic">
               Optional — the story works beautifully either way.
             </p>

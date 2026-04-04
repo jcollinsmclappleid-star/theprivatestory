@@ -1675,7 +1675,7 @@ export default function AfterDark() {
                 Unlock After Dark
               </h2>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                Your story is ready to write. A subscription unlocks After Dark and all private stories — cancel anytime.
+                Your story is ready to write. A subscription unlocks After Dark and all private stories — cancel renewal anytime.
               </p>
             </div>
 

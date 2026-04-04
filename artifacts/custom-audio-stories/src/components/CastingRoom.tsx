@@ -1477,7 +1477,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   <ChevronDown className={`w-4 h-4 text-muted-foreground flex-shrink-0 transition-transform ${countryDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {countryDropdownOpen && (
-                  <div className="absolute z-50 top-full mt-2 left-0 right-0 bg-card border border-border/60 rounded-2xl shadow-2xl overflow-hidden">
+                  <div className="mt-2 bg-card border border-border/60 rounded-2xl shadow-2xl overflow-hidden">
                     <div className="p-2 border-b border-border/40">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />

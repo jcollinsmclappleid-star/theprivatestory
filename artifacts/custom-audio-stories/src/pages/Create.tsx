@@ -1929,68 +1929,84 @@ export default function Create() {
                   </div>
                 </button>
 
-                {/* Try one story — primary CTA */}
+                {/* Personalised bridge copy */}
+                <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
+                  Your casting is saved. Subscribe and your story writes immediately.
+                </p>
+
+                {/* Primary subscription CTAs */}
                 <div className="w-full flex flex-col gap-2">
-                  <p className="text-center text-xs text-muted-foreground/50 uppercase tracking-widest font-medium">Try it first</p>
+                  {/* Annual — primary hero button */}
                   <button
                     type="button"
                     disabled={!!paywallLoadingPlan}
-                    onClick={() => startCheckoutFromPaywall("immersive")}
-                    className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-all shadow-glow disabled:opacity-60 flex items-center justify-center gap-2"
+                    onClick={() => startCheckoutFromPaywall("annual")}
+                    className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-all shadow-glow disabled:opacity-60 flex items-center justify-between px-5"
                   >
-                    {paywallLoadingPlan === "immersive"
-                      ? <Loader2 className="w-4 h-4 animate-spin" />
-                      : null}
-                    Get this story — £7.99
+                    <span className="flex items-center gap-2">
+                      {paywallLoadingPlan === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      <span>Annual — £14.99/month</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-primary-foreground/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                    </span>
+                    <span className="text-xs text-primary-foreground/50">billed annually</span>
                   </button>
-                  <p className="text-center text-[11px] text-muted-foreground/40">
-                    One story, yours immediately. No subscription needed.
-                  </p>
+                  {/* Monthly — secondary */}
+                  <button
+                    type="button"
+                    disabled={!!paywallLoadingPlan}
+                    onClick={() => startCheckoutFromPaywall("monthly")}
+                    className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all disabled:opacity-60 flex items-center justify-center gap-2 px-4"
+                  >
+                    {paywallLoadingPlan === "monthly" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    Monthly — £29/month
+                  </button>
+                </div>
+
+                {/* Benefits micro-list */}
+                <div className="w-full flex flex-col gap-1.5">
+                  {[
+                    "Unlimited stories, any mood",
+                    "Every voice, fully personalised",
+                    "Complete privacy — no history, no sharing",
+                  ].map(benefit => (
+                    <div key={benefit} className="flex items-center gap-2 text-xs text-primary/70">
+                      <Check className="w-3 h-3 flex-shrink-0" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Divider */}
                 <div className="w-full flex items-center gap-3">
                   <div className="flex-1 h-px bg-white/8" />
-                  <p className="text-[10px] text-muted-foreground/30 uppercase tracking-widest whitespace-nowrap">or subscribe for more</p>
+                  <p className="text-[10px] text-muted-foreground/25 uppercase tracking-widest whitespace-nowrap">or try just one story</p>
                   <div className="flex-1 h-px bg-white/8" />
                 </div>
 
-                {/* Subscription options */}
-                <div className="w-full flex flex-col gap-2">
-                  <button
-                    type="button"
-                    disabled={!!paywallLoadingPlan}
-                    onClick={() => startCheckoutFromPaywall("annual")}
-                    className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all disabled:opacity-60 flex items-center justify-between px-4 gap-2"
-                  >
-                    <span className="flex items-center gap-2">
-                      {paywallLoadingPlan === "annual" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                      <span>Annual — £179/year</span>
-                      <span className="px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[9px] font-bold uppercase tracking-wider">Best value</span>
-                    </span>
-                    <span className="text-xs text-muted-foreground/50">50 stories</span>
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!!paywallLoadingPlan}
-                    onClick={() => startCheckoutFromPaywall("monthly")}
-                    className="w-full py-3 rounded-xl border border-white/8 bg-white/3 text-muted-foreground font-medium text-sm hover:bg-white/5 hover:text-foreground transition-all disabled:opacity-60 flex items-center justify-between px-4"
-                  >
-                    <span className="flex items-center gap-2">
-                      {paywallLoadingPlan === "monthly" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                      Monthly — £29/month
-                    </span>
-                    <span className="text-xs text-muted-foreground/40">5 stories</span>
-                  </button>
-                </div>
-
+                {/* Single story escape hatch */}
                 <button
                   type="button"
-                  onClick={() => { setCastingResetKey(k => k + 1); setStep("casting"); setGenerationError(null); }}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => startCheckoutFromPaywall("immersive")}
+                  className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
                 >
-                  Start over
+                  {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                  Not ready to commit? Get just this story — £7.99
                 </button>
+
+                {/* Privacy + start over */}
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-[11px] text-muted-foreground/30 text-center">
+                    No card stored beyond checkout · No story history shared
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { setCastingResetKey(k => k + 1); setStep("casting"); setGenerationError(null); }}
+                    className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                  >
+                    Start over
+                  </button>
+                </div>
               </div>
             </motion.div>
           );

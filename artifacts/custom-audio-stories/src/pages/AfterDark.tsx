@@ -1662,57 +1662,109 @@ export default function AfterDark() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center min-h-[70vh] gap-6 px-4 max-w-md mx-auto text-center"
+            className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
           >
+            {/* Cinematic dark-crimson background */}
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.35)" }}
-            >
-              <Moon className="w-8 h-8" style={{ color: "#c0392b" }} />
-            </div>
-            <div>
-              <h2 className="font-display text-2xl font-bold text-foreground mb-2">
-                Unlock After Dark
-              </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                Your story is ready to write. A subscription unlocks After Dark and all private stories — cancel renewal anytime.
-              </p>
-            </div>
+              className="absolute inset-0"
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a0505 0%, #0a0202 55%, #000 100%)" }}
+            />
+            <div className="absolute inset-0 opacity-30" style={{
+              background: "radial-gradient(ellipse at 50% 0%, rgba(192,57,43,0.25) 0%, transparent 55%)",
+            }} />
 
-            <div className="w-full space-y-3">
-              <button
-                disabled={!!paywallLoadingPlan}
-                onClick={() => void startAfterDarkCheckout("annual")}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5 disabled:opacity-60"
-                style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 24px rgba(192,57,43,0.3)" }}
+            {/* Content */}
+            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 overflow-y-auto max-h-screen text-center">
+
+              {/* Moon icon */}
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(192,57,43,0.15)", border: "1px solid rgba(192,57,43,0.4)" }}
               >
-                {paywallLoadingPlan === "annual" ? (
-                  <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                ) : (
-                  <Sparkles className="w-4 h-4" />
+                <Moon className="w-7 h-7" style={{ color: "#c0392b" }} />
+              </div>
+
+              {/* Personalised headline */}
+              <div className="flex flex-col gap-2">
+                <h2 className="font-display text-2xl font-bold text-foreground leading-tight">
+                  {selectedScenario?.label ?? "After Dark"} — your story is ready.
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Subscribe to write it now.
+                </p>
+                {/* Casting detail pill */}
+                {lastCastingData && (lastCastingData.archetype as string || lastCastingData.dynamic as string) && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full self-center text-xs font-medium"
+                    style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.3)", color: "#e8a09a" }}
+                  >
+                    {[lastCastingData.archetype as string, lastCastingData.dynamic as string].filter(Boolean).join(" · ")}
+                  </div>
                 )}
-                Annual — best value
-              </button>
-              <button
-                disabled={!!paywallLoadingPlan}
-                onClick={() => void startAfterDarkCheckout("monthly")}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all disabled:opacity-60"
-                style={{ border: "1px solid rgba(192,57,43,0.4)", color: "#e8a09a" }}
-              >
-                {paywallLoadingPlan === "monthly" ? (
-                  <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
-                ) : null}
-                Monthly
-              </button>
-            </div>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-            >
-              Start over
-            </button>
+              {/* Value bullets */}
+              <div className="w-full flex flex-col gap-2 text-left">
+                {[
+                  "Explicit, unrestrained stories",
+                  "Full casting unlocked — every option",
+                  "Complete privacy — nothing stored, nothing shared",
+                ].map(benefit => (
+                  <div key={benefit} className="flex items-center gap-2.5 text-sm" style={{ color: "#e8a09a" }}>
+                    <Moon className="w-3.5 h-3.5 flex-shrink-0 opacity-70" style={{ color: "#c0392b" }} />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTAs */}
+              <div className="w-full flex flex-col gap-3">
+                {/* Annual — primary */}
+                <button
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => void startAfterDarkCheckout("annual")}
+                  className="w-full flex flex-col items-center justify-center gap-0.5 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                  style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 28px rgba(192,57,43,0.35)" }}
+                >
+                  <span className="flex items-center gap-2">
+                    {paywallLoadingPlan === "annual" ? (
+                      <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4" />
+                    )}
+                    Annual — £14.99/month
+                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/70 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                  </span>
+                  <span className="text-[11px] text-white/50 font-normal">billed annually · cancel renewal anytime</span>
+                </button>
+
+                {/* Monthly — secondary */}
+                <button
+                  disabled={!!paywallLoadingPlan}
+                  onClick={() => void startAfterDarkCheckout("monthly")}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all disabled:opacity-60"
+                  style={{ border: "1px solid rgba(192,57,43,0.4)", color: "#e8a09a" }}
+                >
+                  {paywallLoadingPlan === "monthly" ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
+                  ) : null}
+                  Monthly — £29/month
+                </button>
+              </div>
+
+              {/* Privacy signal + start over */}
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-[11px] text-muted-foreground/30">
+                  Nothing stored. No history. Heard only by you.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
+                  className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                >
+                  Start over
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
 

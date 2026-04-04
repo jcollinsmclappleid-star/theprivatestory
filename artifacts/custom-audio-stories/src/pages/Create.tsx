@@ -1633,8 +1633,9 @@ export default function Create() {
   */
 
   return (
-    <div className="w-full">
+    <>
       <TermsGate />
+      <div className="w-full">
       <AnimatePresence mode="wait">
 
         {step === "casting" && (
@@ -2080,6 +2081,7 @@ export default function Create() {
         )}
       </AnimatePresence>
 
-    </div>
+      </div>
+    </>
   );
 }

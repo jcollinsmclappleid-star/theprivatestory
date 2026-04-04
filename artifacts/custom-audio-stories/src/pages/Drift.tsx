@@ -478,11 +478,12 @@ export default function Drift() {
   }
 
   return (
-    <div
-      className="w-full min-h-screen"
-      style={{ background: "linear-gradient(180deg, #020206 0%, #03030a 60%, #04040c 100%)" }}
-    >
+    <>
       <TermsGate />
+      <div
+        className="w-full min-h-screen"
+        style={{ background: "linear-gradient(180deg, #020206 0%, #03030a 60%, #04040c 100%)" }}
+      >
       <AnimatePresence mode="wait">
 
         {/* ── Scenario Selection ───────────────────────────────────────── */}
@@ -956,5 +957,6 @@ export default function Drift() {
 
       </AnimatePresence>
     </div>
+    </>
   );
 }

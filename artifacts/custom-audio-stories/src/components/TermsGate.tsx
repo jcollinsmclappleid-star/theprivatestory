@@ -8,6 +8,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 export function TermsGate() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [needsAcceptance, setNeedsAcceptance] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [checked, setChecked] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,6 +17,7 @@ export function TermsGate() {
   useEffect(() => {
     if (!isAuthenticated || authLoading || fetched) return;
     setFetched(true);
+    setChecking(true);
     fetch(`${API_BASE}/api/me`, { credentials: "include" })
       .then(res => res.ok ? res.json() : null)
       .then(data => {
@@ -23,7 +25,8 @@ export function TermsGate() {
           setNeedsAcceptance(true);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setChecking(false));
   }, [isAuthenticated, authLoading, fetched]);
 
   const handleAccept = async () => {
@@ -43,6 +46,10 @@ export function TermsGate() {
     }
   };
 
+  if (!isAuthenticated || authLoading) return null;
+  if (checking) return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-background/95 backdrop-blur-md" />
+  );
   if (!needsAcceptance) return null;
 
   return (

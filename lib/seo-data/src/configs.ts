@@ -24,7 +24,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
         "Personalisation in adult audio fiction means more than selecting from dropdown options. It means that the story genuinely starts from your choices and builds outward — that the narrative voice, the character of the person in the story, the emotional register, the dynamic, and the pacing are all built around what you specified, rather than approximated from a nearest-fit in an existing library.",
         "In practice, this means that when you choose the specific quality of the character — assured rather than aggressive, attentive rather than possessive, confident rather than domineering — the story written around that character actually has those qualities, not a generic version that could be any of the above. The precision of the fiction is proportional to the precision of the choices.",
         "It also means that the story's emotional register — what you want to feel, the specific quality of the connection you want to be inside — shapes the narrative from the first sentence. A story intended to feel quietly electric and slow is different from the first sentence, not just in its plot events but in its prose texture, its pacing, its specific quality of attention. Personalisation at the level of generation produces this kind of specificity. Personalisation at the level of filtering does not.",
-        "The voice matters too. Narration that suits the story's register — a voice that has the warmth, depth, and quality to carry the emotional texture of what has been written — is the difference between fiction that lands and fiction that technically exists. At The Private Story, narration via ElevenLabs is selected to complement the specific tone of each story.",
+        "The voice matters too. Narration that suits the story's register — a voice that has the warmth, depth, and quality to carry the emotional texture of what has been written — is the difference between fiction that lands and fiction that technically exists. At The Private Story, studio-quality narration is selected to complement the specific tone and register of each story.",
       ],
     },
     {
@@ -41,7 +41,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "The Private Story covers the full range of adult audio fiction — not a niche specialisation but the genuine breadth of what the genre encompasses for adult listeners. Romantic and slow burn, for those who want the emotional charge of restrained desire and accumulating tension. Confident energy and quiet intensity, for those who want the specific quality of assured, knowing attention. Dark romance and morally complex character dynamics. Forbidden romance. Enemies to lovers.",
         "The intensity level is a genuine choice. The range runs from emotionally charged and tender to fully unrestricted — and neither end of the spectrum is a default. Different moods suit different registers. The creation flow allows you to set exactly where your story sits, as a genuine choice for this session, not a platform constraint.",
-        "The cover images — generated with AI specifically for each story — add a visual dimension to the private library you're building. Each story has its own cover, its own title, and lives in your account as a complete and specific thing that belongs to your particular taste and that particular session.",
+        "The cover images — created specifically for each story — add a visual dimension to the private library you're building. Each story has its own cover, its own title, and lives in your account as a complete and specific thing that belongs to your particular taste and that particular session.",
         "Stories run to approximately 1,500–3,000 words in narrated form — long enough to build properly, short enough to be a complete listening experience in a session. This is adult audio fiction for adults with full lives who want the experience to be what it is rather than a significant time commitment.",
       ],
     },
@@ -99,7 +99,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "Ready to listen immediately",
-        body: "Created and narrated — ElevenLabs voice selected for the specific story's register — within minutes of your choices. Adult audio fiction for when you want it, not after a wait.",
+        body: "Created and narrated — with a voice selected to suit the story's register — within minutes of your choices. Adult audio fiction for when you want it, not after a wait.",
       },
       {
         heading: "A library that is actually yours",
@@ -162,9 +162,9 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       paragraphs: [
         "The input stage — the two minutes you spend before your story exists — is where the intelligence begins.",
         "You are not writing a prompt. You are not typing instructions into a text box and hoping the AI interprets them correctly. You are making a series of structured choices that The Private Story's system translates into precise creative direction.",
-        "The mood and emotional register you select — slow burn tension, emotional closeness, confident energy, calm and absorbing — are not tags applied to a search. They are creative constraints. The AI is told to write toward them, which means every sentence of the story that follows is generated in service of the emotional experience you described.",
-        "The dynamic you choose shapes the relationship between the voices. The setting and atmosphere you select determine the world the AI builds. The pacing determines how the story moves — whether it withholds or reveals, rushes or lingers.",
-        "What the AI produces from these inputs is original narrative — structured story, with character, atmosphere, and emotional arc — written around exactly what you specified. Not around what a general audience might want. Around you, for this session, for this present moment.",
+        "The mood and emotional register you select — slow burn tension, emotional closeness, confident energy, calm and absorbing — are not tags applied to a search. They are creative constraints. The system writes toward them — every sentence of the story that follows is generated in service of the emotional experience you described.",
+        "The dynamic you choose shapes the relationship between the voices. The setting and atmosphere you select determine the world that is built. The pacing determines how the story moves — whether it withholds or reveals, rushes or lingers.",
+        "What the system produces from these inputs is original narrative — structured story, with character, atmosphere, and emotional arc — written around exactly what you specified. Not around what a general audience might want. Around you, for this session, for this present moment.",
       ],
     },
     {
@@ -175,8 +175,8 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
         "But this framing gets the comparison the wrong way around.",
         "A human-written story is written for no one in particular. It is written by a writer who made choices about mood, pacing, tone, setting, and direction — without knowing you exist. When you encounter it, you adapt to those choices. The story cannot change because it is finished. It was finished before you arrived.",
         "An AI-generated story is written for you specifically — because the AI is given your choices as its starting point. The pacing you needed right now. The tone that works for this particular version of exhaustion or anticipation or wanting. The world that makes the scenario feel true for you.",
-        "The AI doesn't write a better story than a great human writer. But it writes your story in a way that no pre-existing human story can. That is the advantage — not quality versus quality, but personalisation versus universality.",
-        "The Private Story's AI is not writing generic fiction. It is writing to your emotional brief, in a register calibrated for private adult listening, at a literary quality high enough for the result to feel like a real story rather than machine-generated text.",
+        "The system doesn't write a better story than a great human writer. But it writes your story in a way that no pre-existing human story can. That is the advantage — not quality versus quality, but personalisation versus universality.",
+        "The Private Story's system is not writing generic fiction. It is writing to your emotional brief, in a register calibrated for private adult listening, at a literary quality high enough for the result to feel like a real story rather than machine-generated text.",
       ],
     },
     {
@@ -186,14 +186,14 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
         "ChatGPT is a general-purpose AI writing tool. It will write you a story if you ask it to. It will write you many things — emails, essays, code, poems, arguments, summaries. Its strength is versatility.",
         "That versatility is also its limitation for this specific purpose.",
         "ChatGPT doesn't know what makes a private audio story work. It doesn't understand the specific emotional architecture of slow burn tension — how long to hold the listener at the edge of something before moving, how much to say, how much to imply. It doesn't understand the pacing of calming narrative, or the voice that works for late night listening when your nervous system finally has room to decompress. It isn't calibrated for the listening experience — for the fact that this is audio, heard privately, meant to do something specific to a specific person in a specific state.",
-        "The Private Story's AI is built on the same class of language model technology, but its creative intelligence is in the architecture around it: the prompting system, the emotional calibration, the quality controls, the understanding of what private audio storytelling actually requires.",
+        "The Private Story's creation system is built on the same class of language model technology, but its creative intelligence is in the architecture around it: the prompting system, the emotional calibration, the quality controls, the understanding of what private audio storytelling actually requires.",
         "When you use a general AI tool, you are the prompter. When you use The Private Story, the system is the prompter — and it has been built by people who understand exactly what the output needs to do.",
       ],
     },
     {
       h2: "What You Get — Original Audio, Narrated and Private",
       paragraphs: [
-        "The AI output is not a text document you read. It is a narrated audio story — voiced, paced for listening, and delivered to your account privately.",
+        "The story output is not a text document you read. It is a narrated audio story — voiced, paced for listening, and delivered to your account privately.",
         "The generation produces narrative: the story itself. That story is passed through a voice synthesis system that narrates it — producing audio that is ready to play, that sounds like a story being told rather than text being read, that lands in your ear the way a story is supposed to land.",
         "The result sits in your private account. Not in a shared library. Not on a public feed. In your account, accessible only to you, removable whenever you want.",
         "This is what an AI audio story generator is capable of when it is built specifically for this experience: original narrative, emotionally calibrated to your input, narrated into audio, stored where only you can hear it.",
@@ -202,11 +202,11 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Tell the AI how you want to feel",
-      body: "You make a series of choices — mood, tone, dynamic, atmosphere, pacing. The system translates these into precise creative direction for the AI. You don't write a prompt. You describe an experience.",
+      heading: "Tell the system how you want to feel",
+      body: "You make a series of choices — mood, tone, dynamic, atmosphere, pacing. The system translates these into precise creative direction. You don't write a prompt. You describe an experience.",
     },
     {
-      heading: "The AI writes your story from scratch",
+      heading: "Your story is written from scratch",
       body: "Original narrative is generated around your inputs. Not retrieved. Not adapted. Written, from language, for this session. The story that emerges didn't exist before you asked for it.",
     },
     {
@@ -215,20 +215,20 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
     },
   ],
   scenarios: {
-    h2: "What the AI Can Create for You",
-    intro: "The AI writes toward the emotional experience you ask for. Here is what that looks like in practice:",
+    h2: "What the System Can Create for You",
+    intro: "The system writes toward the emotional experience you ask for. Here is what that looks like in practice:",
     items: [
       {
         heading: "You ask for slow burn tension",
-        body: "Every sentence is written to build toward something. The AI understands that the tension is the point — not a delay before the point — and writes accordingly. It holds the listener at the edge of something for exactly as long as the edge is worth inhabiting. The arrival is earned because the AI was told to earn it.",
+        body: "Every sentence is written to build toward something. The system understands that the tension is the point — not a delay before the point — and writes accordingly. It holds the listener at the edge of something for exactly as long as the edge is worth inhabiting. The arrival is earned because it was built to earn it.",
       },
       {
         heading: "You ask for something calming",
-        body: "The AI shifts register entirely. The pacing slows. The setting becomes somewhere atmospheric and unhurried. The voice — as narrated — moves at the pace your mind needs to follow it into quiet. It was not extracted from a library of calming stories. It was written calm, for you, right now.",
+        body: "The register shifts entirely. The pacing slows. The setting becomes somewhere atmospheric and unhurried. The voice — as narrated — moves at the pace your mind needs to follow it into quiet. It was not extracted from a library of calming stories. It was written calm, for you, right now.",
       },
       {
         heading: "You ask for late night atmosphere",
-        body: "The AI reads that request as a specific emotional brief — the particular quality of wanting that exists when the world has gone quiet and you finally have space to feel things. It writes toward that atmosphere rather than approximating it from a general romantic category. The result feels like the exact kind of story you were looking for. Because it was built around exactly what you described.",
+        body: "The system reads that request as a specific emotional brief — the particular quality of wanting that exists when the world has gone quiet and you finally have space to feel things. It writes toward that atmosphere rather than approximating it from a general romantic category. The result feels like the exact kind of story you were looking for. Because it was built around exactly what you described.",
       },
     ],
   },
@@ -241,11 +241,11 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       },
       {
         heading: "Emotionally calibrated",
-        body: "The AI isn't writing generic narrative. It is writing toward a specific emotional experience that you described. Slow burn builds slowly. Calm settles. Tension holds. The register is the brief.",
+        body: "Stories are written toward a specific emotional experience that you described — not generic narrative. Slow burn builds slowly. Calm settles. Tension holds. The register is the brief.",
       },
       {
         heading: "Narrated, not just text",
-        body: "The output is audio — voiced, paced for listening. The Private Story produces a story you hear, not a document you read. The AI's writing becomes a listening experience.",
+        body: "The output is audio — voiced, paced for listening. The Private Story produces a story you hear, not a document you read. The story becomes a complete listening experience.",
       },
       {
         heading: "Private by design",
@@ -253,11 +253,11 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       },
       {
         heading: "Responds to you specifically",
-        body: "The AI's inputs are your choices, not population-level data. It doesn't know what most people want on a Tuesday night. It knows what you told it you wanted right now.",
+        body: "The inputs are your choices, not population-level data. The system doesn't know what most people want on a Tuesday night. It knows what you told it you wanted right now.",
       },
       {
         heading: "No creative work required",
-        body: "You make structured choices, not open-ended decisions. You don't need to know how to prompt an AI or describe a story. You describe a feeling. The AI handles everything else.",
+        body: "You make structured choices, not open-ended decisions. You don't need to know how to prompt an AI or describe a story. You describe a feeling. The system handles everything else.",
       },
     ],
   },
@@ -288,11 +288,11 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
   },
   faqs: [
       { q: `What is an AI audio story generator?`, a: `An AI audio story generator creates original narrative audio based on your inputs — mood, tone, dynamic, atmosphere — rather than selecting from a pre-existing library. At The Private Story, the AI writes a story from scratch around your choices, which is then narrated and delivered to your account as audio you can listen to privately.` },
-      { q: `How does the AI know what kind of story to create?`, a: `Before your story is generated, you make a series of structured choices: the emotional register you want (slow burn tension, calm and connecting, confident energy), the dynamic between characters, the setting, and the pacing. The system translates these into precise creative direction for the AI. Your choices are the brief. The AI writes toward them.` },
+      { q: `How does the AI know what kind of story to create?`, a: `Before your story is generated, you make a series of structured choices: the emotional register you want (slow burn tension, calm and connecting, confident energy), the dynamic between characters, the setting, and the pacing. The system translates these into precise creative direction. Your choices are the brief. The system writes toward them.` },
       { q: `Is AI-generated content as good as human-written?`, a: `For this specific purpose — a story written around your mood, for you, right now — AI-generated content offers something human-written content structurally cannot: genuine personalisation. Human-written stories are made before you arrive. They are fixed. AI-generated stories are made around your inputs. The Private Story's generation is calibrated for literary quality and emotional intelligence — the output feels like a real story, not machine-generated text.` },
-      { q: `Can I guide the AI with specific details?`, a: `The creation flow gives you structured choices that the system uses to direct the AI precisely. You select mood, tone, dynamic, setting, and pacing. These are not tags — they are creative constraints the AI writes within. The more specifically you describe what you want to feel, the more specifically the story delivers it.` },
+      { q: `Can I guide the AI with specific details?`, a: `The creation flow gives you structured choices that the system uses for precise creative direction. You select mood, tone, dynamic, setting, and pacing. These are not tags — they are creative constraints the system writes within. The more specifically you describe what you want to feel, the more specifically the story delivers it.` },
       { q: `How is this different from ChatGPT?`, a: `ChatGPT is a general-purpose tool — it will write stories if asked, but it is not calibrated for private audio listening, emotional specificity, or the particular register that makes a story work for this experience. The Private Story uses similar underlying technology but applies it within a system specifically designed for private adult audio storytelling: the prompting architecture, the emotional calibration, the quality controls, and the audio delivery are all built for this purpose.` },
-      { q: `Is the AI content safe and moderated?`, a: `Yes. The Private Story operates under a content policy that defines what the AI produces. The system is designed for adult listeners — calibrated for emotional intelligence and adult intimacy, with intensity shaped by your choices in the creation flow, from quietly sensual and atmospheric through to deeply adult in tone. The content policy prevents harmful content; it does not prevent adult fiction. The AI writes toward your chosen brief, not toward a platform default.` },
+      { q: `Is the AI content safe and moderated?`, a: `Yes. The Private Story operates under a content policy that defines what the system produces. The system is designed for adult listeners — calibrated for emotional intelligence and adult intimacy, with intensity shaped by your choices in the creation flow, from quietly sensual and atmospheric through to deeply adult in tone. The content policy prevents harmful content; it does not prevent adult fiction. The system writes toward your chosen brief, not toward a platform default.` },
       { q: `Can I regenerate if I want something different?`, a: `Yes. If your first story isn't quite what you wanted, you can create a new one with adjusted choices. The creation process takes less than two minutes. Each generation starts fresh — there is no fixed inventory to exhaust.` },
     ],
 };
@@ -628,7 +628,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
       { q: `Why is The Private Story specifically for women?`, a: `Women are the dominant audience for romance and adult fiction — in written, audio, and digital formats — yet the majority of adult audio platforms have been built around assumptions that don't match what female listeners actually want. The Private Story is built around the recognition that centering female preferences in the design — the emotional dimensions, the character qualities, the intensity spectrum, the privacy requirements — produces a significantly better product for the audience that actually makes up the majority of the market. The platform is not exclusively for women, but it is designed with women as the primary audience.` },
       { q: `What makes the stories feel right for female listeners?`, a: `The creation flow is built around the dimensions that matter most for female fiction listeners: emotional authenticity, the quality of the character (specific, present, genuinely attentive rather than generically powerful), agency for the protagonist, and the full spectrum of intensity rather than a default towards a single register. The stories are generated to the choices you make rather than approximated from a generic template, which means the match between the story and what you actually wanted is significantly higher than a catalogue can achieve.` },
       { q: `Can I choose the kind of story — slow burn versus more direct?`, a: `Yes. The intensity and pacing of your story are genuine choices in the creation flow. The platform covers the full spectrum: slow burn and emotionally textured, confident and direct, deeply adult in tone, and the darker territory of morally complex romance. These are not fixed platform registers — they are choices you make for each story, because different moods require different kinds of fiction.` },
-      { q: `Are the stories narrated by a real voice?`, a: `Stories are narrated using ElevenLabs voices — studio-quality voice synthesis selected to complement the specific tone and register of each story. The voice quality is indistinguishable from professional human narration in the ways that matter for the listening experience: warmth, pacing, texture. The narration is part of what is created — not an afterthought — and the voice selected is matched to the story's character and emotional register.` },
+      { q: `Are the stories narrated by a real voice?`, a: `Stories are narrated using studio-quality voice synthesis selected to complement the specific tone and register of each story. The voice quality is indistinguishable from professional human narration in the ways that matter for the listening experience: warmth, pacing, texture. The narration is part of what is created — not an afterthought — and the voice selected is matched to the story's character and emotional register.` },
       { q: `How private is the platform, genuinely?`, a: `Genuinely private. There are no social features. There is no public profile. Your listening history is not visible to others, not shared with third parties for social purposes, and not used to build any public-facing recommendation or activity feed. Your stories are stored in your private account and are audible only to you. The platform was designed from the beginning with the requirement that adult fiction listening should be genuinely private — not a setting, but the fundamental premise.` },
       { q: `What does a subscription cost?`, a: `The monthly plan is £29/month for five stories. The annual plan is £179/year, which covers fifty stories — equivalent to £3.58 per story. Additional stories beyond your plan allowance are £3.99 each. All plans include full narration, generated cover images, and permanent storage in your private library.` },
       { q: `Is the platform UK-based?`, a: `The Private Story is a UK-based platform. Pricing is in GBP. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.` },
@@ -1144,7 +1144,7 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
   faqs: [
       { q: `What are adult bedtime audio stories?`, a: `Adult bedtime audio stories are narrated audio created specifically to help grown-up listeners wind down and transition into sleep. Unlike children's bedtime content, they are paced and toned for adult sensibilities — written for the emotional complexity of adult nights, calibrated to the way grown-up minds decompress, and created around the specific mood and preferences of the individual listener.` },
       { q: `How long are the bedtime stories?`, a: `Stories typically run between fifteen and thirty minutes — long enough for the mind to genuinely settle into the world of the story before you arrive at sleep. Your story is saved to your account, so if you fall asleep before it ends, you can return to it or create a new one the following night.` },
-      { q: `Can I choose a calming tone for my story?`, a: `Yes — this is central to how The Private Story works. Before your story is generated, you choose the emotional register you want. A slow, calming pace. A quietly connecting voice. A gentle story that resolves warmly. Your choices shape every element of what the AI creates — the tone, the pacing, the world of the story, the way it moves.` },
+      { q: `Can I choose a calming tone for my story?`, a: `Yes — this is central to how The Private Story works. Before your story is generated, you choose the emotional register you want. A slow, calming pace. A quietly connecting voice. A gentle story that resolves warmly. Your choices shape every element of what is created — the tone, the pacing, the world of the story, the way it moves.` },
       { q: `Will these help me sleep?`, a: `For many adults, yes — particularly those whose sleep difficulty comes from a mind that won't stop rather than from a physical cause. The story provides the mind with somewhere to go rather than continuing to process the day, which reduces the mental activity that delays sleep. Results vary between individuals and nights, and The Private Story is not a medical device, but the mechanism — redirecting a restless mind — is well-established.` },
       { q: `Are these different from sleep meditation apps?`, a: `Significantly. Sleep meditation apps typically ask you to actively participate — follow breathing, direct your attention, perform relaxation techniques. When you're tired and your mind is resistant, this active effort can be counterproductive. A bedtime audio story requires nothing of you except to listen. The narrative redirects your attention passively. For adults who find meditation difficult or ineffective when tired, stories often work considerably better.` },
       { q: `Can I listen offline?`, a: `Stories are saved to your private account and accessible whenever you're logged in. Offline listening is on the roadmap — if this is important to you, it's worth knowing that the experience is designed to be as low-friction as possible at the moment you need it.` },
@@ -1773,7 +1773,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
         "Not sadness. Not drama. Not the simple manipulation of playing sad music under difficult events.",
         "An emotional story is one in which the interior experience of the narrator is rendered with enough precision that you recognise it — not because it matches your situation exactly, but because it captures something true about the texture of feeling that you also carry. The specific quality of grief that is not grief for one thing but for a general awareness of loss. The kind of longing that is not for any particular person but for a version of your life that you can feel but not clearly see.",
         "Emotional precision is the mechanism. The story does not need to share your circumstances. It needs to share your feeling — to arrive at the same internal territory from a different direction and describe it accurately enough that you feel recognised.",
-        "Emotional audio stories at The Private Story are generated toward this experience. The AI writes with the emotional register you specify — not just the mood label but the specific texture of the feeling — and the narration carries it. First person, so the feeling is yours to inhabit rather than someone else's to observe. Close enough to matter.",
+        "Emotional audio stories at The Private Story are generated toward this experience. Stories are written with the emotional register you specify — not just the mood label but the specific texture of the feeling — and the narration carries it. First person, so the feeling is yours to inhabit rather than someone else's to observe. Close enough to matter.",
       ],
     },
     {
@@ -1791,7 +1791,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
         "Emotional is not a single tone. The full emotional range of human experience is wide, and what you need on any given night sits somewhere specific within it.",
         "Some nights you need something quietly devastating — beautiful and heavy, the specific combination of sadness and beauty that feels true to the actual texture of being alive. Some nights you need something that ends with warmth — not resolution exactly, but movement toward it. A story that acknowledges weight and then, gently, finds somewhere to set it down.",
         "Other nights you need something more complex — a feeling that contains both tenderness and difficulty, closeness and uncertainty. The specific emotional situation that doesn't resolve into a simple register because life doesn't resolve into simple registers.",
-        "The Private Story creates across this full range. You choose the emotional tone before generation. The AI writes toward it — not as a mood label applied to generic content, but as the precise emotional territory the story inhabits from first sentence to last.",
+        "The Private Story creates across this full range. You choose the emotional tone before generation. Stories are written toward it — not as a mood label applied to generic content, but as the precise emotional territory the story inhabits from first sentence to last.",
       ],
     },
   ],
@@ -1836,7 +1836,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "Emotional precision, not emotional performance",
-        body: "The AI writes toward the specific texture of the feeling rather than its surface expression. The result is recognition rather than manipulation — you feel understood rather than handled.",
+        body: "Stories are written toward the specific texture of the feeling rather than its surface expression. The result is recognition rather than manipulation — you feel understood rather than handled.",
       },
       {
         heading: "No articulation required",
@@ -1883,7 +1883,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
   },
   faqs: [
       { q: `What makes an audio story emotional?`, a: `An emotional audio story renders the interior experience of feeling with enough precision that the listener finds herself recognised rather than simply entertained. It is not about sad events — it is about the accurate description of what difficult, complex, or tender feeling actually feels like from the inside. At The Private Story, the generation is directed toward the specific emotional texture you describe, which means the story goes into the territory you're in rather than remaining at a safe surface distance.` },
-      { q: `Can I choose the emotional tone of my story?`, a: `Yes — this is central to how The Private Story works. Before generation, you choose the emotional register: quietly heavy, warm and honest, bittersweet, something that ends with light, something that holds difficulty without resolving it. These choices direct the AI precisely. The story is written toward the specific emotional territory you described, not positioned in a general emotional category.` },
+      { q: `Can I choose the emotional tone of my story?`, a: `Yes — this is central to how The Private Story works. Before generation, you choose the emotional register: quietly heavy, warm and honest, bittersweet, something that ends with light, something that holds difficulty without resolving it. These choices direct the story precisely. The story is written toward the specific emotional territory you described, not positioned in a general emotional category.` },
       { q: `Are these stories sad or hopeful or both?`, a: `Both — and everything between. The Private Story creates across the full emotional range. Some nights you need something that goes toward the difficult end and stays there honestly. Some nights you need something that acknowledges weight and finds a way through it. Some nights you need something that ends with warmth without pretending that the difficulty wasn't real. You describe the tone, and the story is built to deliver it.` },
       { q: `How do emotional audio stories differ from therapy podcasts?`, a: `Therapy podcasts explain, advise, and help you understand what you are feeling by giving it frameworks. They are valuable and serve a different purpose. Emotional audio stories don't explain anything — they accompany. The story goes into the emotional territory you're in and moves through it with you, without requiring articulation, analysis, or any particular response from you. For feelings that are pre-verbal or that don't need to be understood but simply felt, stories work differently from any kind of informational or therapeutic content.` },
       { q: `Can I create a story for a specific emotional need?`, a: `Yes. The creation flow allows you to describe the emotional situation and register you need: a story for processing something without talking about it, a quietly devastating story, something that ends with warmth, something for a specific kind of longing or grief or uncertainty. The more specifically you describe the need, the more specifically the story is built to meet it.` },
@@ -2480,7 +2480,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
         "A love story without emotional intelligence is a romance plot. Two characters, a series of events, a resolution. Technically a love story. Not particularly moving.",
         "Emotional intelligence in a love story means understanding the interior experience — what it feels like to be the person inside the moment rather than the person observing it from outside. The specific quality of wanting someone's attention and not being sure you have it. The way realisation arrives not all at once but gradually, in increments, each one changing the meaning of what came before. The particular satisfaction of being known.",
         "This is what makes love stories work as experiences rather than just as plots. And it is what The Private Story's generation is calibrated to produce — narrative that understands the difference between describing romantic events and rendering romantic feeling.",
-        "The AI writes toward the emotional experience you described. The pacing, the interiority of the narration, the quality of the connection between characters — all shaped by what you asked for. You don't get a love story that contains your preferences as features. You get a love story that feels like what you described.",
+        "The story is written toward the emotional experience you described. The pacing, the interiority of the narration, the quality of the connection between characters — all shaped by what you asked for. You don't get a love story that contains your preferences as features. You get a love story that feels like what you described.",
       ],
     },
     {
@@ -2499,7 +2499,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
     },
     {
       heading: "Your story is created from scratch",
-      body: "Original narrative, generated around your choices. Not retrieved from a library, not adapted from a template. Written by AI in service of the emotional experience you described — paced, voiced, and shaped to deliver it.",
+      body: "Original narrative, generated around your choices. Not retrieved from a library, not adapted from a template. Written from scratch in service of the emotional experience you described — paced, voiced, and shaped to deliver it.",
     },
     {
       heading: "Listen privately — the feeling is yours",
@@ -2580,9 +2580,9 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
   faqs: [
       { q: `What are audio love stories?`, a: `Audio love stories are narrated narrative pieces built around romantic love as an emotional experience — its weight, its texture, its specific interior quality. At The Private Story, they are generated around your choices for each session: the emotional situation, the tone, the dynamic, the pacing. The result is original narrated audio that delivers the specific love story experience you described, rather than a pre-authored piece matched from a library.` },
       { q: `How are these different from romance novels?`, a: `Romance novels are authored works — finished before you arrive, written by a specific writer for a general readership. They are fixed. You adapt to them. An audio love story at The Private Story is generated around your choices for right now — the emotional register, the situation, the dynamic between characters — which means the story responds to you rather than requiring you to match yourself to it. The difference in experience is significant.` },
-      { q: `Can I choose the emotional tone of my love story?`, a: `Yes — this is the core of how The Private Story works. Before generation, you choose the emotional register: second chance, slow realisation, tender and close, late night honesty, emotionally complex. These choices direct the AI precisely. The tone is not a genre category applied afterward — it is the brief the story is written toward from the beginning.` },
+      { q: `Can I choose the emotional tone of my love story?`, a: `Yes — this is the core of how The Private Story works. Before generation, you choose the emotional register: second chance, slow realisation, tender and close, late night honesty, emotionally complex. These choices direct the story precisely. The tone is not a genre category applied afterward — it is the brief the story is written toward from the beginning.` },
       { q: `Are love stories private?`, a: `Completely. Your stories are created for your account and accessible only to you. No public feed, no social sharing, no visible history. The emotional experience your love stories create is held in a space that belongs entirely to you.` },
-      { q: `Can I create a love story for a specific scenario?`, a: `The creation flow allows you to describe the emotional situation you want to inhabit — second chance, slow realisation, late night closeness, and many others. The AI writes into the specific scenario you chose, which means the story feels shaped to a real emotional situation rather than placed in a generic romantic context.` },
+      { q: `Can I create a love story for a specific scenario?`, a: `The creation flow allows you to describe the emotional situation you want to inhabit — second chance, slow realisation, late night closeness, and many others. The story is written into the specific scenario you chose, which means it feels shaped to a real emotional situation rather than placed in a generic romantic context.` },
       { q: `How long are audio love stories?`, a: `Stories typically run between fifteen and thirty minutes — long enough to develop the emotional arc and deliver the feeling properly, short enough to fit into an evening, a commute, or the space before sleep. Stories are saved to your account, so you can return to them or create new ones whenever you need.` },
       { q: `Can I share a story with someone?`, a: `Stories are created for your private account and designed for private listening. They are yours alone — which is part of what makes the experience work. The Private Story is built around the understanding that some feelings are best held in a space that belongs entirely to you.` },
     ],
@@ -3230,8 +3230,8 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "A romantic audio story is not a romance audiobook with a different name.",
         "Romance audiobooks are authored works — written by a specific writer, from a fixed perspective, following a plot that exists independently of whoever listens to it. They are finished before you arrive. You adapt to them. Some nights that is exactly what you want, and audiobooks are made for that purpose.",
-        "A romantic audio story created at The Private Story is structurally different. The story is generated around your choices — the emotional register you want, the dynamic between the characters, the tone of the voice, the atmosphere of the world. It is written, by AI, in service of the specific romantic experience you described. Not around a general audience's idea of romance. Around you, for right now, for the version of romantic you are feeling right now.",
-        "That distinction changes everything. Not because the writing is necessarily better — a great romance novelist brings craft that AI is not trying to replicate — but because the story responds to you in a way that pre-authored content structurally cannot. It was made for this present moment. That is what makes it different. That is what makes it work.",
+        "A romantic audio story created at The Private Story is structurally different. The story is generated around your choices — the emotional register you want, the dynamic between the characters, the tone of the voice, the atmosphere of the world. It is written in service of the specific romantic experience you described. Not around a general audience's idea of romance. Around you, for right now, for the version of romantic you are feeling right now.",
+        "That distinction changes everything. Not because the writing is necessarily better — a great romance novelist brings craft that the platform is not trying to replicate — but because the story responds to you in a way that pre-authored content structurally cannot. It was made for this present moment. That is what makes it different. That is what makes it work.",
       ],
     },
     {
@@ -3265,7 +3265,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
   howItWorks: [
     {
       heading: "Describe the romantic experience you want",
-      body: "Slow burn tension. Emotional closeness. Something cinematic. Something tender. You choose the mood, the dynamic, the atmosphere, and the tone. These are not filters applied to a library — they are the brief the AI writes toward.",
+      body: "Slow burn tension. Emotional closeness. Something cinematic. Something tender. You choose the mood, the dynamic, the atmosphere, and the tone. These are not filters applied to a library — they are the brief the story is written toward.",
     },
     {
       heading: "Your story is created around that",
@@ -3351,10 +3351,10 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
   faqs: [
       { q: `What are romantic audio stories?`, a: `Romantic audio stories are narrated audio pieces created around a romantic emotional experience — slow burn tension, tender connection, emotional closeness, cinematic charged scenarios. At The Private Story, they are generated around your specific choices before each session, which means the tone, pacing, dynamic, and world of the story are shaped around what you described wanting, rather than pre-authored and retrieved from a library.` },
       { q: `What intensity level do the romantic stories reach?`, a: `The Private Story creates content that is adult in register — emotionally sophisticated, romantically and sensually calibrated, written for grown-up listeners. The intensity of your story is shaped by the choices you make in the creation flow. The platform is designed for adult women who want content that takes their inner life seriously — not content that either sanitises or reduces.` },
-      { q: `Can I choose how romantic or intense my story is?`, a: `Yes. Before your story is generated, you choose the emotional register and intensity. Slow burn tension. Tender and connecting. Quietly atmospheric. Something more charged. Your choices are the brief the AI writes toward — the story reflects what you described, not a default setting.` },
-      { q: `Are these the same as romance audiobooks?`, a: `No — the distinction is meaningful. Romance audiobooks are authored works, fixed before you arrive, which you adapt to. Romantic audio stories at The Private Story are generated around your choices for this session — written, by AI, in service of the specific experience you described. You are not matching yourself to existing content. The content is built around you.` },
-      { q: `How is a romantic audio story personalised?`, a: `Before your story is created, you make a series of structured choices: emotional register, dynamic between the characters, atmosphere, pacing, and tone. These choices are translated into precise creative direction for the AI, which writes original narrative around them. The personalisation is not a recommendation algorithm — it is generative. Your story didn't exist before you described what you wanted.` },
-      { q: `Can I create a specific romantic scenario?`, a: `The creation flow gives you structured choices across mood, dynamic, setting, and atmosphere — which together shape the scenario your story inhabits. The more specifically you describe what you want to feel, the more specifically the story delivers it. The AI writes toward your emotional brief rather than approximating it from a category.` },
+      { q: `Can I choose how romantic or intense my story is?`, a: `Yes. Before your story is generated, you choose the emotional register and intensity. Slow burn tension. Tender and connecting. Quietly atmospheric. Something more charged. Your choices are the brief the story is written toward — the story reflects what you described, not a default setting.` },
+      { q: `Are these the same as romance audiobooks?`, a: `No — the distinction is meaningful. Romance audiobooks are authored works, fixed before you arrive, which you adapt to. Romantic audio stories at The Private Story are generated around your choices for this session — written in service of the specific experience you described. You are not matching yourself to existing content. The content is built around you.` },
+      { q: `How is a romantic audio story personalised?`, a: `Before your story is created, you make a series of structured choices: emotional register, dynamic between the characters, atmosphere, pacing, and tone. These choices are translated into precise creative direction, and original narrative is written around them. The personalisation is not a recommendation algorithm — it is generative. Your story didn't exist before you described what you wanted.` },
+      { q: `Can I create a specific romantic scenario?`, a: `The creation flow gives you structured choices across mood, dynamic, setting, and atmosphere — which together shape the scenario your story inhabits. The more specifically you describe what you want to feel, the more specifically the story delivers it. The story is written toward your emotional brief rather than approximating it from a category.` },
       { q: `Are romantic stories available for all preferences?`, a: `The Private Story creates across the full range of romantic experience — from slow burn tension to emotional closeness to warmly tender to quietly charged. The platform is built for adult women and designed around the understanding that what romantic means varies considerably. You describe your version, and the story is shaped around that.` },
     ],
 };
@@ -3656,7 +3656,7 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const audioEroticaForWomenConfig: SEOPageConfig = {
-  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy right now. Private, AI-generated, and narrated. Not a library — a story built for you.` },
+  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy right now. Private, personalised, and narrated. Not a library — a story built for you.` },
   hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, right now, and heard only by you.` },
   heroImage: "images/seo-hero-women.png",
   showCastingPreview: true,
@@ -3742,7 +3742,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
 };
 
 export const personalisedEroticaConfig: SEOPageConfig = {
-  meta: { title: `Personalised Erotica — AI-Generated Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices right now. AI-written, narrated, and completely private. Not a catalogue — an original story made for you.` },
+  meta: { title: `Personalised Erotica — Original Audio Stories Built for You | The Private Story`, description: `Personalised erotica created around your mood and choices right now. Original, narrated, and completely private. Not a catalogue — a story made for you right now.` },
   hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices right now. Not retrieved from a library. Written for you, from the first sentence.` },
   heroImage: "images/seo-hero-create.png",
   showCastingPreview: true,
@@ -3826,7 +3826,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
 };
 
 export const eroticAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Erotic Audio Stories — Private, AI-Generated, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Adult AI fiction, personalised around your mood right now. Not a library — your story.` },
+  meta: { title: `Erotic Audio Stories — Private, Original, Made for You | The Private Story`, description: `Erotic audio stories generated from your choices and narrated privately. Personalised adult fiction, created around your mood right now. Not a library — your story.` },
   hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted right now.` },
   heroImage: "images/seo-hero-intimate.png",
   showCastingPreview: true,
@@ -3899,7 +3899,7 @@ export const eroticAudioStoriesConfig: SEOPageConfig = {
   },
   faqs: [
     { q: "How adult is adult on this platform?", a: "The intensity of the story is shaped by your creation choices. The Private Story creates content from quietly sensual and romantic through to explicitly adult, depending on what you select. The platform is for adults 18+ only. All depicted parties in all content are adult." },
-    { q: "Is the content AI-generated?", a: "Yes. Stories are generated by AI from your creation choices and narrated using high-quality voice synthesis. The result is original fiction — not retrieved from a pre-existing library — with narration that suits the register of the story." },
+    { q: "How are stories created?", a: "Stories are written from scratch around your creation choices, then narrated using high-quality voice synthesis. The result is original fiction — not retrieved from a pre-existing library — with narration suited to the register of the story." },
     { q: "How long are erotic audio stories?", a: "Typically between fifteen and thirty minutes, depending on your selections. This is sized for the specific listening window when adult audio fiction is most wanted — a complete experience without requiring a multi-hour commitment." },
     { q: "Can I choose the character dynamic in the story?", a: "Yes. The creation flow lets you choose the character of the relationship dynamic — the quality of the power register, the emotional tone, the character type. These choices shape the story from the first sentence rather than being filters on a pre-existing catalogue." },
     { q: "Is my listening genuinely private?", a: "Yes. There is no social layer on the platform, no public listening history, and no activity that other users can see. Your stories are saved to your account and accessible only to you." },

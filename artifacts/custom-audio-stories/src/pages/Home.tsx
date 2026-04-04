@@ -819,8 +819,8 @@ export default function Home() {
   const [quickCreateLoading, setQuickCreateLoading] = useState(false);
 
   useSEO({
-    title: "The Private Story — Personalised AI Audio Stories",
-    description: "AI-written romantic and intimate audio stories, created around your choices and private to you alone. You choose the cast, the chemistry, the world. We write it, narrate it, and keep it entirely yours.",
+    title: "The Private Story — Personalised Audio Stories",
+    description: "Personalised romantic and intimate audio stories, created around your choices and private to you alone. You choose the cast, the chemistry, the world. We write it, narrate it, and keep it entirely yours.",
   });
 
   const handleQuickCreate = useCallback(async () => {

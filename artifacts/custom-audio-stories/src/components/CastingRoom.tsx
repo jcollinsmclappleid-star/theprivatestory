@@ -2118,9 +2118,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 After Dark has more choices here →
               </button>
             )}
-            <p className="text-xs text-muted-foreground/70 mb-2 italic">
-              Skip this step and the narrator will address you as "you".
-            </p>
             <p className="text-xs text-muted-foreground/50 mb-5">
               This is you — the character you inhabit.{isSameGender ? ` Not ${partnerRoleLabel} — you'll name them next.` : ""}
             </p>
@@ -2139,12 +2136,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </div>
             ) : (
               <div className="relative mb-6">
-                {/* No selection notice */}
+                {/* Skip reassurance — shown when no name is selected and not searching */}
                 {!listenerSearch && (
-                  <p className="text-xs text-muted-foreground/50 mb-3 flex items-center gap-1.5">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-border/60" />
-                    No name selected yet
-                  </p>
+                  <div className="mb-4 px-4 py-3 rounded-xl bg-primary/5 border border-primary/15">
+                    <p className="text-xs text-foreground/70 leading-relaxed">
+                      <span className="font-semibold text-primary/90">Skip and the experience is seamless.</span>{" "}
+                      The narrator addresses you as "you" — which many listeners prefer. You won't miss a thing.
+                    </p>
+                  </div>
                 )}
                 <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
                   <Search size={14} className="text-muted-foreground shrink-0" />
@@ -2182,13 +2181,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </>
                 )}
                 {listenerSearch.trim().length >= 1 && filteredListenerNames.length === 0 && (
-                  <div className="mt-3">
-                    <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
+                  <div className="mt-3 px-4 py-3 rounded-xl bg-card/60 border border-border/40">
+                    <p className="text-sm font-semibold text-foreground mb-1">"{listenerSearch}" isn't in our library yet.</p>
+                    <p className="text-xs text-muted-foreground/70 mb-3 leading-relaxed">
+                      You can request it — we add names within 48 hours. Or continue now — skipping gives you a fully immersive experience.
+                    </p>
                     <Link
                       href="/contact"
-                      className="text-xs text-primary/80 hover:text-primary underline transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/25 hover:bg-primary/20 transition-all"
                     >
-                      Request this name — added within 48 hours →
+                      Request this name →
                     </Link>
                   </div>
                 )}
@@ -2205,9 +2207,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             </h2>
             <p className="text-muted-foreground text-sm mb-2">
               Search from 6,000+ names — or skip and the narrator will choose one that fits.
-            </p>
-            <p className="text-xs text-muted-foreground/70 mb-2 italic">
-              Optional — the story works beautifully either way.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-5">
               {isSameGender
@@ -2229,12 +2228,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </div>
             ) : (
               <div className="relative mb-6">
-                {/* No selection notice */}
+                {/* Skip reassurance — shown when no name is selected and not searching */}
                 {!partnerSearch && (
-                  <p className="text-xs text-muted-foreground/50 mb-3 flex items-center gap-1.5">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-border/60" />
-                    No name selected yet
-                  </p>
+                  <div className="mb-4 px-4 py-3 rounded-xl bg-primary/5 border border-primary/15">
+                    <p className="text-xs text-foreground/70 leading-relaxed">
+                      <span className="font-semibold text-primary/90">Skipping is completely fine.</span>{" "}
+                      The narrator will choose a name that fits the character and tone — the story works beautifully either way.
+                    </p>
+                  </div>
                 )}
                 <div className="flex items-center gap-2 border border-border/40 rounded-xl px-4 py-3 bg-white/5 focus-within:border-primary/50 transition-colors">
                   <Search size={14} className="text-muted-foreground shrink-0" />
@@ -2272,13 +2273,16 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </>
                 )}
                 {partnerSearch.trim().length >= 1 && filteredPartnerNames.length === 0 && (
-                  <div className="mt-3">
-                    <p className="text-xs text-muted-foreground/60 italic mb-2">No names found — try a different spelling.</p>
+                  <div className="mt-3 px-4 py-3 rounded-xl bg-card/60 border border-border/40">
+                    <p className="text-sm font-semibold text-foreground mb-1">"{partnerSearch}" isn't in our library yet.</p>
+                    <p className="text-xs text-muted-foreground/70 mb-3 leading-relaxed">
+                      You can request it — we add names within 48 hours. Or continue now — the narrator will choose a name that fits perfectly.
+                    </p>
                     <Link
                       href="/contact"
-                      className="text-xs text-primary/80 hover:text-primary underline transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/25 hover:bg-primary/20 transition-all"
                     >
-                      Request this name — added within 48 hours →
+                      Request this name →
                     </Link>
                   </div>
                 )}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, CheckCircle2, Mail } from "lucide-react";
+import { MessageCircle, CheckCircle2, Mail, CreditCard, Sparkles } from "lucide-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -55,17 +55,18 @@ export default function Contact() {
           <h1 className="font-display text-3xl font-bold text-foreground">Contact</h1>
         </div>
         <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-          Get in touch with our team or request a name for your stories.
+          We're a small team and we read everything. Expect a response within one business day.
         </p>
 
-        <div className="glass-panel rounded-2xl p-5 mb-8 flex items-start gap-4">
+        {/* General Enquiries */}
+        <div className="glass-panel rounded-2xl p-5 mb-4 flex items-start gap-4">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
             <Mail className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground mb-1">General &amp; support enquiries</p>
+            <p className="text-sm font-semibold text-foreground mb-1">General enquiries</p>
             <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
-              Questions about your account, billing, or anything else — we're here.
+              Questions about the platform, how stories work, your account, or anything else — we're here.
             </p>
             <a
               href="mailto:support@theprivatestory.com"
@@ -76,8 +77,28 @@ export default function Contact() {
           </div>
         </div>
 
+        {/* Billing */}
+        <div className="glass-panel rounded-2xl p-5 mb-8 flex items-start gap-4">
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+            <CreditCard className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground mb-1">Billing &amp; subscriptions</p>
+            <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+              Payment queries, subscription changes, refunds, or anything to do with your plan — include your account email and we'll sort it promptly.
+            </p>
+            <a
+              href="mailto:support@theprivatestory.com?subject=Billing enquiry"
+              className="text-sm text-primary hover:underline font-medium"
+            >
+              support@theprivatestory.com
+            </a>
+          </div>
+        </div>
+
+        {/* Name Request */}
         <div className="flex items-center gap-3 mb-2">
-          <MessageCircle className="w-5 h-5 text-primary" />
+          <Sparkles className="w-5 h-5 text-primary" />
           <h2 className="font-display text-xl font-bold text-foreground">Request a name</h2>
         </div>
         <p className="text-muted-foreground text-sm mb-6 leading-relaxed">

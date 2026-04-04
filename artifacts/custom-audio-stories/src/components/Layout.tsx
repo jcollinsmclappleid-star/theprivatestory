@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon, MessageCircle } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -116,6 +116,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "My Library", href: isAuthenticated ? "/me" : "/library", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
+    { label: "Contact", href: "/contact", icon: <MessageCircle className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
@@ -381,6 +382,7 @@ function Footer() {
             { label: "Drift — Bedtime", href: "/drift" },
             { label: "My library", href: "/library" },
             { label: "About", href: "/about" },
+            { label: "Contact", href: "/contact" },
             { label: "Discover all types", href: "/discover" },
           ]} />
 

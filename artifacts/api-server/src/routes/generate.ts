@@ -3450,19 +3450,54 @@ Return JSON only in exactly this shape:
   };
 }
 
+const ABSTRACT_FALLBACK_PROMPT =
+  "Abstract painterly art, flowing amber and deep burgundy and gold liquid shapes, " +
+  "candlelight warmth radiating from centre, atmospheric dark mood, purely abstract forms, " +
+  "no people, no figures, no faces, no text, evocative darkness with golden light, " +
+  "luxury dark romance aesthetic, painterly brush strokes";
+
+async function attemptGenerateImageBuffer(
+  prompt: string,
+  attempts: number,
+  label: string
+): Promise<Buffer | null> {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const buf = await generateImageBuffer(prompt, "1024x1024");
+      return buf;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.warn({ attempt: i, attempts, label, err: msg }, `[generateAllImages] ${label} attempt ${i}/${attempts} failed`);
+      if (i < attempts) await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+  return null;
+}
+
 export async function generateAllImages(
   prompts: ImagePrompts,
   cacheKey: string
 ): Promise<{ cover: string; scenes: string[] }> {
   const imagesDir = getPublicImagesDir();
-
-  const coverBuffer = await generateImageBuffer(prompts.coverPrompt, "1024x1024");
-
   const coverFilename = `cover-${cacheKey}.png`;
-  fs.writeFileSync(path.join(imagesDir, coverFilename), coverBuffer);
-  const coverUrl = `/api/images/${coverFilename}`;
 
-  return { cover: coverUrl, scenes: [] };
+  // ── Tier 1: Story-specific cover, 3 attempts ────────────────────────────
+  let coverBuffer = await attemptGenerateImageBuffer(prompts.coverPrompt, 3, "story-cover");
+
+  // ── Tier 2: Abstract brand fallback, 2 attempts ─────────────────────────
+  if (!coverBuffer) {
+    logger.warn({ cacheKey }, "[generateAllImages] All 3 story-cover attempts failed — trying abstract brand fallback");
+    coverBuffer = await attemptGenerateImageBuffer(ABSTRACT_FALLBACK_PROMPT, 2, "abstract-fallback");
+  }
+
+  // ── Tier 3: Local stock file — guaranteed, no API call ──────────────────
+  if (!coverBuffer) {
+    logger.error({ cacheKey }, "[generateAllImages] Abstract fallback also failed — using local stock cover");
+    return { cover: "/cover-abstract-fallback.png", scenes: [] };
+  }
+
+  fs.writeFileSync(path.join(imagesDir, coverFilename), coverBuffer);
+  return { cover: `/api/images/${coverFilename}`, scenes: [] };
 }
 
 export async function generateAudioFile(

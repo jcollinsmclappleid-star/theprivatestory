@@ -938,7 +938,7 @@ export default function Create() {
         const status = (err as { status?: number }).status;
         const rawMessage = err instanceof Error ? err.message : "Generation failed. Please try again.";
         const message = rawMessage.replace(/^HTTP \d{3} [^:]+:\s*/, "").trim();
-        const isSubscriptionLimit = status === 402;
+        const isSubscriptionLimit = status === 402 || status === 401;
         setGenerationError({ message, isSubscriptionLimit });
         if (isSubscriptionLimit) {
           const vals = form.getValues();

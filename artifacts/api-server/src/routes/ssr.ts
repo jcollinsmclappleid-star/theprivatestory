@@ -681,6 +681,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   // { loc: "/personalised-erotica",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   // { loc: "/erotic-audio-stories",        lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   // { loc: "/adult-bedtime-stories",       lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/spicy-audio-stories",          lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/ai-romance-stories-for-women", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
   // SEO landing pages — Definition pages
   { loc: "/what-is-a-personalised-audio-story", lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },

@@ -4068,6 +4068,176 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
   ],
 };
 
+export const spicyAudioStoriesConfig: SEOPageConfig = {
+  meta: {
+    title: `Spicy Audio Stories — AI-Powered Heat, Tension, and Stories That Don't Hold Back | The Private Story`,
+    description: `Spicy audio stories created around your mood, dynamic, and heat level. Personalised adult audio fiction — narrated, private, and made for you. Not a library. Your story.`,
+  },
+  hero: {
+    badge: `Adult · Personalised · Private`,
+    h1: `Spicy Audio Stories — Heat, Tension, and Stories That Don't Hold Back`,
+    tagline: `Some stories play it safe. These don't. Personalised adult audio fiction created around your mood, your dynamic, and the exact level of heat you're looking for.`,
+  },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "What Are Spicy Audio Stories?",
+      paragraphs: [
+        "Spicy audio stories are adult narrative audio experiences built around heat, tension, and desire — created around your mood and preferences, and heard only by you.",
+        "Not a podcast. Not an audiobook. Not a meditation with romantic undertones.",
+        "Spicy audio stories are exactly what the name promises: stories with genuine charge. The kind that build slowly toward something inevitable, or arrive with immediate heat, or sit in the specific tension of two people who haven't yet done what they're both thinking about.",
+        "At The Private Story, spicy audio stories are not selected from a fixed library. They are created around you — your mood, the kind of heat you're looking for, the dynamic that does something specific for you. The story that plays in your ears was made because you asked for it. It did not exist before you needed it. That is a different experience from anything you can browse. See how <a href=\"/personalised-audio-stories\">personalised audio stories</a> differ from a catalogue, or explore the full <a href=\"/how-it-works\">creation process</a>.",
+      ],
+    },
+    {
+      h2: "Who Are Spicy Audio Stories For?",
+      paragraphs: [
+        "They are for adults who know what they want and are done settling for content that dances around it. For the woman who has read enough romance novels to know exactly which scenes she wishes were longer. For anyone who has listened to something that was almost right — almost charged enough, almost honest enough about what it was building toward — and wanted more.",
+        "The experience is adult. The tone is premium. The content is private. Nothing here is visible to anyone except you.",
+      ],
+      bullets: [
+        "Private wind-down — the specific pleasure of something that is entirely, unobservedly yours",
+        "Slow build sessions — when you want tension to accumulate before anything releases",
+        "Immediate heat — when you know exactly what you want and want it without delay",
+        "Emotional desire — stories where the charge is as psychological as it is physical",
+        "Late-night listening — when the world is quiet and you finally have room to want things",
+      ],
+    },
+    {
+      h2: "Why Audio Is the Perfect Format for Spicy Stories",
+      paragraphs: [
+        "There is something specific that audio does for desire that text and visual content cannot replicate.",
+        "Text engages the analytical mind. Part of your attention is always on the act of reading — tracking sentences, turning pages, decoding language. The story arrives at a slight remove. Visual content gives you everything immediately. Your imagination has nothing to do. The experience is consumed rather than felt.",
+        "Audio sits between these — and the space it occupies is exactly right for spicy storytelling. The voice arrives. It is close. In headphones, it is closer than close — it is inside your experience rather than outside it. Your imagination builds everything the voice describes, which means the story that plays for you is shaped by how you imagine desire. Not how someone else visualised it. How you feel it.",
+        "This is why spicy audio stories produce a quality of immersion that other formats rarely achieve. The voice creates presence. Your imagination creates specificity. Together they build something that feels genuinely real — because your mind made it real, from the raw material of a story that was aimed directly at you. Add personalisation — a story shaped around the specific dynamic, pacing, and heat level you chose — and the effect is something else entirely. Read more about <a href=\"/audio-stories-vs-audiobooks\">how audio stories differ from audiobooks</a> and <a href=\"/intimate-audio-stories\">what makes audio ideal for intimate fiction</a>.",
+      ],
+    },
+    {
+      h2: "The Problem With Generic Spicy Content",
+      paragraphs: [
+        "Most adult audio content operates on a library model. Content created in advance, for a general audience, categorised and made available for browsing. The problem with this model is not the content itself. Some of it is very good. The problem is that it was made before you arrived.",
+        "The pacing was decided by the creator. The dynamic reflects someone else's vision of what heat should feel like. The story goes exactly where it was always going to go — regardless of whether that destination is what you need right now. You adapt to the content. The content never adapts to you.",
+        "Some sessions that's fine. Other times — when you know exactly the kind of heat you're looking for, when the dynamic matters and the pacing matters and generic will simply not do it — the library model fails. <a href=\"/personalised-erotica\">Spicy audio stories created around your preferences</a> solve the problem that libraries cannot solve. The story is made for the specific version of you who arrived with specific needs. Not adjusted. Not approximately right. Built around you.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Choose your heat level and dynamic",
+      body: "Tell the system the kind of spicy story you want. <a href=\"/slow-burn-audio-stories\">Slow burn</a> — tension building toward something inevitable. Immediate heat — no preamble, direct arrival. <a href=\"/forbidden-romance-audio-stories\">Forbidden dynamic</a>. Dominant energy — someone who knows exactly what he wants and communicates it. Power exchange. Your choices determine everything.",
+    },
+    {
+      heading: "Your story is created",
+      body: "Generated around your selections, for this session. Not retrieved. Not adapted from a template. A spicy audio story built specifically around the heat level, dynamic, and atmosphere you chose. It exists because you needed it. <a href=\"/create-your-own-audio-story\">Learn more about creating your own story</a>.",
+    },
+    {
+      heading: "Listen privately",
+      body: "Saved to your account. Heard only by you. No social feed, no shared library, no visible history. Your spicy listening is entirely <a href=\"/private-audio-stories\">private</a> — between you and a story that was made for you.",
+    },
+  ],
+  scenarios: {
+    h2: "What Spicy Audio Stories Can Sound Like",
+    intro: "The same format can hold very different registers. Here are three.",
+    items: [
+      {
+        heading: "A slow burn that holds",
+        body: "The tension arrives in the first scene and doesn't release for a very long time. Every almost-touch. Every loaded pause. Every word that means exactly two things simultaneously. The heat builds until holding it any longer would be its own kind of cruelty. Then it doesn't hold anymore. The wait is the point — and because it was shaped around you, it knows exactly how long to make you wait. <a href=\"/slow-burn-audio-stories\">Explore slow burn audio stories</a>.",
+      },
+      {
+        heading: "A forbidden dynamic",
+        body: "The story involves something that shouldn't happen. A professional boundary bending past breaking point. An attraction that crosses a line both people knew was there. The specific heat of desire that is intensified precisely because it's wrong — and the specific moment when wrong stops mattering. This is one of the oldest and most reliably effective spicy story dynamics, and in audio it lands with particular force. <a href=\"/forbidden-romance-audio-stories\">Explore forbidden romance audio stories</a>.",
+      },
+      {
+        heading: "Immediate and unapologetic",
+        body: "No slow build. The story begins at a point of already wanting, already certain, already past the stage where pretending otherwise is interesting. Heat without delay. The specific satisfaction of a story that understands that sometimes you don't want to wait and gives you exactly that — without apology, without preamble, with complete commitment to the experience you asked for.",
+      },
+    ],
+    interstitial: "You know what kind of story you want. Here is where you create it.",
+  },
+  benefits: {
+    h2: "The Benefits of Personalised Spicy Audio Stories",
+    items: [
+      {
+        heading: "The dynamic you actually want",
+        body: "Not the most popular option in a given category. The specific combination of heat, tension, pacing, and dynamic that works for you — built around your choices rather than a creator's assumptions about what a general audience wants.",
+      },
+      {
+        heading: "Heat level on your terms",
+        body: "From <a href=\"/slow-burn-audio-stories\">slow burn tension that never lets up</a> to immediate charge that doesn't delay. The intensity is yours to set. The experience reflects what you specified rather than a fixed default.",
+      },
+      {
+        heading: "Private always",
+        body: "Your spicy audio stories are saved to your account and heard by no one else. No social feed. No sharing. No visible listening history. What you create and listen to here is yours entirely. <a href=\"/privacy\">Learn more about the privacy commitment</a>.",
+      },
+      {
+        heading: "No browsing, no compromising",
+        body: "The experience of scrolling through a library looking for something almost right — that doesn't exist here. You tell the system what you want. It gets made. It is right because it was built to be.",
+      },
+      {
+        heading: "Created fresh every session",
+        body: "Your mood varies. Your needs vary. The kind of spicy story that works on one occasion is not necessarily the one that works the next. <a href=\"/create\">Create something different</a> whenever you want something different. Each session begins from your current preferences, not a saved default.",
+      },
+      {
+        heading: "Premium quality throughout",
+        body: "The writing is literary. The production is premium. The tone understands that adult content can be sophisticated — that heat and intelligence are not in opposition. This is not content produced at volume. It is content produced for you specifically.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Spicy Audio Stories — The Full Picture",
+    paragraphs: [
+      "Spicy audio stories for adults represent a category that has historically been underserved by premium audio platforms. The options have been explicit content at one end and tasteful romance at the other — with very little occupying the space between: genuinely charged, adult, heat-forward storytelling that is premium in register without being clinical or generic.",
+      "The best spicy audio stories are not the most explicit ones. They are the ones that understand desire — that know heat is as much psychological as physical, that the right dynamic matters as much as the right content, that pacing is its own form of seduction. A <a href=\"/slow-burn-audio-stories\">spicy audio story that holds you at the edge of want</a> for exactly the right amount of time before releasing that tension does more than content that goes directly to explicit.",
+      "Personalised spicy audio solves the specific problem that every listener of this content type has encountered: the story that was almost right. Almost the right dynamic. Almost the right pacing. Almost the heat level you needed. Personalisation removes the almost. The story is built around what you specified. It is right because you told it what right looks like.",
+      "Spicy stories work best in private, in headphones, in the specific space that you've claimed as yours. The Private Story exists entirely in that space. No social layer. No public component. Just the story and you. <a href=\"/audio-erotica-for-women\">Audio erotica for women</a> and <a href=\"/erotic-audio-stories\">erotic audio stories</a> explore adjacent registers if you want to understand the full spectrum of what this platform creates.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Spicy Audio Story",
+    paragraphs: ["Your dynamic. Your heat level. Your story — made for you."],
+    primary: { label: "Create your story", href: "/create" },
+    links: [
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+      { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Adult audio stories", href: "/adult-audio-stories" },
+      { label: "Private audio stories", href: "/private-audio-stories" },
+      { label: "Personalised erotica", href: "/personalised-erotica" },
+    ],
+  },
+  faqs: [
+    {
+      q: "What are spicy audio stories?",
+      a: "Spicy audio stories are adult narrative audio experiences built around heat, tension, and desire — created around your mood, dynamic preferences, and heat level rather than selected from a fixed library. At The Private Story, your spicy story is generated specifically for you at the moment you request it. The tone, pacing, dynamic, and intensity all reflect what you chose. No two listeners receive the same story.",
+    },
+    {
+      q: "What makes spicy audio stories different from other adult content?",
+      a: "Most adult audio content is fixed — created in advance for a general audience, the same for every listener regardless of their specific preferences. Spicy audio stories at The Private Story are created around your specific choices: the dynamic you want, the heat level you need, the pacing that works for you right now. The story exists because of your preferences rather than waiting in a catalogue for you to find it.",
+    },
+    {
+      q: "Can I choose the heat level and dynamic of my story?",
+      a: "Yes — this is the foundation of the experience. Before your story is created you choose the dynamic, the pacing, and the intensity level. Slow burn that holds tension for as long as possible. Immediate heat with no delay. Forbidden dynamic. Dominant energy. Power exchange. Your selections shape every element of the story.",
+    },
+    {
+      q: "Are spicy audio stories explicit?",
+      a: "The Private Story creates content that is genuinely adult, heat-forward, and charged — written with the specificity and honesty that spicy content requires. The focus is on desire, tension, dynamic, and emotional experience rendered with literary intelligence. The content is adult and does not shy away from what it is.",
+    },
+    {
+      q: "Can I listen without headphones?",
+      a: "Headphones are strongly recommended. Spicy audio stories are written and produced for close listening — the proximity and intimacy of the narration is part of the experience. In headphones the voice is inside your experience rather than coming from outside it. Any private listening space works, but headphones produce the most immersive result.",
+    },
+    {
+      q: "Are spicy audio stories private?",
+      a: "Completely. Your stories are saved to your account and heard only by you. There is no social feed, no sharing feature, and no visible listening history. What you create and listen to here is entirely private — stored securely, accessible only through your account, visible to no one.",
+    },
+    {
+      q: "Who are spicy audio stories for?",
+      a: "They are for adults who know what they want and are done settling for content that dances around it. For anyone who has listened to something that was almost right — almost charged enough, almost honest enough about what it was building toward — and wanted more. The experience is adult, the tone is premium, and the content is entirely private.",
+    },
+  ],
+};
+
 export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["adult-audio-stories", adultAudioStoriesConfig],
   ["ai-audio-story-generator", aiAudioStoryGeneratorConfig],
@@ -4098,6 +4268,7 @@ export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["erotic-audio-stories", eroticAudioStoriesConfig],
   ["adult-bedtime-stories", adultBedtimeStoriesConfig],
   ["ai-romance-stories-for-women", aiRomanceStoriesForWomenConfig],
+  ["spicy-audio-stories", spicyAudioStoriesConfig],
 ]);
 
 export function getPageConfig(slug: string): SEOPageConfig | undefined {

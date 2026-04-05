@@ -65,6 +65,7 @@ import PersonalisedErotica from "@/pages/seo/PersonalisedErotica";
 import EroticAudioStories from "@/pages/seo/EroticAudioStories";
 import AdultBedtimeStories from "@/pages/seo/AdultBedtimeStories";
 import AIRomanceStoriesForWomen from "@/pages/seo/AIRomanceStoriesForWomen";
+import SpicyAudioStories from "@/pages/seo/SpicyAudioStories";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 
@@ -129,6 +130,7 @@ function Router() {
             <Route path="/erotic-audio-stories" component={EroticAudioStories} />
             <Route path="/adult-bedtime-stories" component={AdultBedtimeStories} />
             <Route path="/ai-romance-stories-for-women" component={AIRomanceStoriesForWomen} />
+            <Route path="/spicy-audio-stories" component={SpicyAudioStories} />
             <Route path="/discover" component={Discover} />
             <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />

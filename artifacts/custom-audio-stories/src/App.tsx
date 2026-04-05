@@ -68,6 +68,12 @@ import EroticAudioStories from "@/pages/seo/EroticAudioStories";
 import AdultBedtimeStories from "@/pages/seo/AdultBedtimeStories";
 import AIRomanceStoriesForWomen from "@/pages/seo/AIRomanceStoriesForWomen";
 import SpicyAudioStories from "@/pages/seo/SpicyAudioStories";
+import ForcedProximityRomanceAudioStories from "@/pages/seo/ForcedProximityRomanceAudioStories";
+import EroticAudiobooksForWomen from "@/pages/seo/EroticAudiobooksForWomen";
+import OfficeRomanceAudioStories from "@/pages/seo/OfficeRomanceAudioStories";
+import FerlyAlternative from "@/pages/seo/FerlyAlternative";
+import SteamyAudioStories from "@/pages/seo/SteamyAudioStories";
+import AIErotica from "@/pages/seo/AIErotica";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 
@@ -135,6 +141,12 @@ function Router() {
             <Route path="/adult-bedtime-stories" component={AdultBedtimeStories} />
             <Route path="/ai-romance-stories-for-women" component={AIRomanceStoriesForWomen} />
             <Route path="/spicy-audio-stories" component={SpicyAudioStories} />
+            <Route path="/forced-proximity-romance-audio-stories" component={ForcedProximityRomanceAudioStories} />
+            <Route path="/erotic-audiobooks-for-women" component={EroticAudiobooksForWomen} />
+            <Route path="/office-romance-audio-stories" component={OfficeRomanceAudioStories} />
+            <Route path="/ferly-alternative" component={FerlyAlternative} />
+            <Route path="/steamy-audio-stories" component={SteamyAudioStories} />
+            <Route path="/ai-erotica" component={AIErotica} />
             <Route path="/discover" component={Discover} />
             <Route path="/how-it-works" component={HowItWorks} />
             <Route component={NotFound} />

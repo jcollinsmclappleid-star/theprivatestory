@@ -4486,6 +4486,696 @@ export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
   ],
 };
 
+export const forcedProximityRomanceAudioStoriesConfig: SEOPageConfig = {
+  meta: { title: `Forced Proximity Romance Audio Stories | The Private Story`, description: `Forced proximity romance audio stories created for adults. Private, personalised, and built around the specific charge of shared space that removes the social permission to keep distance. Create yours.` },
+  hero: { badge: `Forced Proximity · Slow Burn · Private`, h1: `Forced Proximity Romance Audio Stories — When Shared Space Decides Something`, tagline: `The snowstorm doesn't ask permission. Neither does the shared deadline, the borrowed apartment, or the assignment that sent both of you to the same place.` },
+  heroImage: "images/seo-hero-intimate.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "Why Forced Proximity Is Romance Fiction's Most Productive Constraint",
+      paragraphs: [
+        "Forced proximity is not a plot device. It is a structural mechanism that does something to characters that choice-based meetings cannot: it removes the social architecture that allows people to maintain the distance that conceals what they actually feel. When circumstances place two people in the same space without a comfortable exit — a delayed flight, a shared apartment, a remote assignment, a deadline that requires sustained close work — the performance of polite neutrality becomes increasingly difficult to sustain.",
+        "This is why the trope has never gone away. From gothic fiction's isolated houses to contemporary romance's snowbound cabins and shared-office deadline stories, the mechanism is the same: constraint as revelation. When the exit is not available, you cannot choose not to know someone. The shared space reaches the unguarded version — the morning they did not curate, the habit they did not plan to reveal, the response that did not have time to be managed.",
+        "The constraint is productive precisely because it is neutral. It has no agenda. The shared space does not push the characters toward each other — it removes the architecture of avoidance that would have kept them from arriving there on their own timeline. What proximity reveals was always true. The circumstances simply stopped allowing it to remain hidden.",
+        "Forced proximity romance audio stories work because the first-person narration places the listener inside the experience of being constrained — the awareness of the shared space, the way it is already changing what she notices, the rationalisation that begins and begins to fail. The story is built from inside the constraint, not observing it from outside.",
+      ],
+    },
+    {
+      h2: "What Sustained Closeness Reveals",
+      paragraphs: [
+        "There is a version of a person that only extended proximity discloses. The public version — presented at work, in social situations, in brief encounters — is managed, curated, and largely consistent. It is not false, but it is selective. Sustained proximity removes the conditions under which selective presentation is possible.",
+        "This is what forced proximity stories are really about. Not the shared location — but what the shared location makes visible. The habit that reveals something essential. The unguarded moment where he responds to something real without the half-second it would take to decide how to respond. The quality of attention he brings to a small thing, when there is no audience for it except her.",
+        "The intimacy of forced proximity is built from accumulation rather than revelation. It does not arrive in a single disclosing scene — it builds from a series of small observations that add up to a person. By the time both characters have fully acknowledged what has been building, the foundation is real. The closeness was not romantic from the start; it became romantic because of what was learned within it.",
+        "In audio fiction, this accumulation is rendered as the narrator's growing awareness — the inventory of observations that the official account (this is just a situation, this does not mean anything yet) cannot quite contain. The listener hears the building before either character names it.",
+      ],
+    },
+    {
+      h2: "The Architecture of the Rationalisation",
+      paragraphs: [
+        "What distinguishes forced proximity from other romance structures is the specific character of the denial that accompanies it. In an enemies-to-lovers story, the denial is that the opposition is softening. In forced proximity, the rationalisation is simpler and more available: the situation is temporary, and therefore nothing it produces needs to be taken seriously.",
+        "This is the logic that makes forced proximity stories so rich in their middle sections. The temporariness of the constraint provides both characters with a coherent reason not to act on what is developing — and also makes the development itself feel safer, more available. The snowstorm cannot last. The assignment will end. The borrowed apartment has a lease. The temporary nature of the situation creates a space where things can be felt without being decided.",
+        "The story's tension lives in the approaching end of the constraint. As the conditions for the shared space begin to resolve — the storm clearing, the deadline arriving, the arrangement concluding — the question surfaces: is what developed within the constraint real enough to survive the return to normal conditions? The forced proximity created the situation. What grew within it must now decide whether it belongs to the situation or to something more permanent.",
+        "Audio fiction inhabits this question particularly well, because the first-person voice has been inside the rationalisation throughout. The listener knows, before the narrator has fully acknowledged it, whether the feeling is real.",
+      ],
+    },
+    {
+      h2: "The Spectrum of the Trope",
+      paragraphs: [
+        "Forced proximity covers a wide range of situations, each producing a different quality of intimacy. The difference is in the nature of the constraint and the relationship that exists before the proximity begins.",
+        "Strangers forced into proximity — the shared transport delay, the random circumstance — have the purest version of the dynamic. Nothing precedes it. The person who emerges from the situation has been built entirely within it.",
+        "The more layered version is prior-acquaintance proximity: two people who already have a relationship — professional colleagues, former connections, people with history — placed by circumstances into a closeness their existing relationship did not include. The prior knowledge changes everything. The observation of who he is in this setting is measured against who she already knew him to be. The discrepancy — what the proximity reveals that the acquaintance had never disclosed — is the story.",
+        "Professional forced proximity has its own particular register: the shared deadline, the project that requires sustained close work, the assignment that puts two people into the kind of working intimacy that professional life normally moderates. The structure of work provides cover and purpose. The emotional reality builds beneath it, unhurried, until the cover runs out.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Choose your proximity situation",
+      body: "The nature of the constraint — shared space, shared objective, shared circumstance. The relationship that precedes it, if any. Whether the proximity is at its beginning or already underway. You define the specific situation, and the story is built to inhabit it from inside.",
+    },
+    {
+      heading: "Your story is created around the constraint",
+      body: "An original forced proximity narrative, generated for this session, that invests in the accumulation — the observation, the rationalisation, the building — rather than rushing to the resolution. The story lives inside the constraint rather than treating it as scenery.",
+    },
+    {
+      heading: "Listen privately — entirely yours",
+      body: "Narrated and saved to your private account. No social features, no visible history, no one who can access your stories except you. The specific quality of what develops within a shared space — real, building, unacknowledged — suits a listening experience that belongs entirely to you.",
+    },
+  ],
+  scenarios: {
+    h2: "Three Forced Proximity Stories — Three Different Constraints",
+    items: [
+      {
+        heading: "The remote location neither of you chose",
+        body: "The assignment sent both of you somewhere. The location is unfamiliar, the social world each of you navigates separately does not exist here, and there is no easy retreat to different lives. The proximity is total in the sense that matters: there is no audience for the performance of professionalism, no schedule that provides an excuse to be elsewhere. The version of him that emerges in this context has nowhere to hide, and neither does hers. The story is what gets built in that total exposure.",
+      },
+      {
+        heading: "The shared deadline that closes the world down",
+        body: "The project requires it. The timeline is real, the stakes are real, and the only way through is together. The working closeness — the proximity of shared purpose, shared pressure, the specific intimacy of knowing someone's instincts and capabilities at close range — is legitimate. Professional. Necessary. What is developing beneath it is none of those things, and both of them know it, and neither names it, because the deadline provides a reason not to. And the deadline will end.",
+      },
+      {
+        heading: "The borrowed space that already knows something",
+        body: "One of them needs somewhere to stay. The reasons are practical. The arrangement has an end date. The shared domestic space is not by design — it is by necessity, and necessity has its own kind of permission. The ordinary intimacy of shared routines, the unguarded morning, the version of each other that the social world never reaches: these are not the product of intention. They are what happens when two people share space for long enough that intention stops being relevant.",
+      },
+    ],
+    interstitial: "Create a forced proximity story built around the specific constraint and situation that gives it charge.",
+  },
+  benefits: {
+    h2: "Why Forced Proximity Audio Works",
+    items: [
+      {
+        heading: "The constraint does the narrative work",
+        body: "Forced proximity removes the need for contrived reasons to spend time together. The situation provides the reason. The story can invest entirely in what develops within the shared space, rather than engineering reasons for the characters to be near each other.",
+      },
+      {
+        heading: "What proximity reveals is real",
+        body: "The intimacy built from sustained closeness is not artificial. What each character learns about the other during the shared time is genuinely observed — accumulated, specific, remembered. The connection that develops within forced proximity has a foundation that first-meeting attraction lacks.",
+      },
+      {
+        heading: "The rationalisation is the story",
+        body: "The long middle stretch — where the temporariness of the situation provides cover for the feeling — is where forced proximity stories earn their endings. The listener hears the rationalisation holding and then failing, which makes the moment it breaks feel genuinely earned.",
+      },
+      {
+        heading: "Specific to your situation",
+        body: "The constraint. The prior relationship, or its absence. The nature of the shared space. The approaching end of the arrangement. You shape the specific dynamic, and the story is built around it.",
+      },
+      {
+        heading: "First person places you inside the constraint",
+        body: "Audio narration in first person means inhabiting the experience of the shared space — the observation, the rationalisation, the building awareness — from inside it, not as a spectator. The emotional accumulation is yours to feel as it develops.",
+      },
+      {
+        heading: "Private by design",
+        body: "Your stories are saved to your private account, visible only to you. The specific quality of a story that lives in the space of a temporary situation — real but unacknowledged — suits a listening experience that belongs entirely to you.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Forced Proximity Romance Audio Stories — The Full Picture",
+    paragraphs: [
+      "Forced proximity has remained one of romance fiction's most reliable structures because it does something that no other narrative mechanism achieves: it creates genuine intimacy through observation rather than intention. The characters learn each other not because they decided to be close, but because the shared space made distance unavailable. The knowledge they build is real, specific, and indelible.",
+      "Forced proximity romance audio stories at The Private Story are created around this principle. The creation flow allows you to specify the nature of the constraint — the geographic situation, the professional necessity, the shared objective, the circumstantial arrangement — and the story is built to inhabit what develops within it. Not centred on the circumstance itself, but focused on what the shared space reveals.",
+      "Audio is particularly well-suited to forced proximity stories because the first-person narration renders the internal experience of the constraint with a closeness that written fiction partially achieves. The listener is inside the voice that is managing the situation — acknowledging the proximity, maintaining the rationalisation, accumulating evidence that the official account is becoming insufficient — and the strain between the account and the reality is present in every sentence.",
+      "What separates the best forced proximity stories from their less accomplished versions is investment in the texture of the shared time. Not the single dramatic scene — the long accumulation of ordinary moments that turn out to be anything but ordinary. The story that understands the constraint is not the point: what the constraint makes possible is the point.",
+      "Create your forced proximity story around the specific situation, relationship, and constraint that gives the dynamic its charge.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Forced Proximity Story",
+    paragraphs: [
+      "The shared space that removes the permission to keep distance. The accumulation of what proximity reveals. The rationalisation that holds until the end of the arrangement makes holding it unnecessary — or impossible.",
+      "Forced proximity works because the intimacy it produces is real. What is learned in shared space is genuinely known. The connection that develops within the constraint has a foundation that first-meeting attraction does not.",
+      "Create your story around the specific constraint, situation, and dynamic that gives it charge. Private, narrated, yours.",
+    ],
+    primary: { label: "Create your forced proximity story", href: "/create" },
+    links: [
+      { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+      { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: `What is forced proximity in romance fiction?`, a: `Forced proximity is a romance trope built around circumstances that place two characters in sustained shared space without a comfortable exit — a delayed flight, a shared assignment, a borrowed apartment, a remote location, a deadline that requires close working proximity. The mechanism is that the shared space removes the social architecture that would otherwise allow the characters to maintain distance, revealing versions of each other that choice-based interaction would not reach. The romantic development builds from what the proximity makes visible, rather than from a decision to be close.` },
+    { q: `What makes forced proximity different from enemies to lovers?`, a: `Enemies to lovers is defined by the starting dynamic — opposition that shifts over time into something else. Forced proximity is defined by the structural situation — circumstances that create intimacy regardless of the starting dynamic. The two frequently combine: characters who have existing friction and are then placed in unavoidable proximity find that the constraint and the prior dynamic interact in particular ways. But they are distinct structures. Forced proximity can begin with strangers, friendly acquaintances, or prior antagonism — the defining feature is the shared space, not the prior relationship.` },
+    { q: `Is forced proximity always a slow burn?`, a: `Almost always, and for structural reasons. The trope depends on the accumulation of what proximity reveals — the observation, the rationalisation, the building awareness — which requires time and narrative investment. A forced proximity story that resolves too quickly does not take full advantage of what the constraint offers. The best versions invest in the long middle: the stretch where the situation is ongoing, the feeling is building, and the temporariness of the arrangement provides cover for not acting on what is developing. The Private Story creates stories that invest in this accumulation.` },
+    { q: `Can I choose the specific forced proximity situation in my story?`, a: `Yes. The creation flow allows you to specify the nature of the constraint — whether it is geographical, professional, circumstantial, or domestic — and the relationship that precedes it, if any. You can specify strangers in shared circumstance, professional colleagues in unavoidable close working proximity, or people with prior history placed in a new kind of closeness. The story is built around the specific situation you choose.` },
+    { q: `How long is a typical forced proximity audio story?`, a: `Stories at The Private Story run to approximately 1,500–3,000 words, narrated at a comfortable listening pace. Forced proximity stories are built to invest in the accumulation of the shared time before the dynamic resolves. The length is sufficient to build the situation, inhabit the middle properly, and arrive at the story's turning point in a way that feels earned rather than rushed.` },
+    { q: `Are forced proximity stories private?`, a: `Completely. Your stories are saved to your private account and are not visible to anyone else — no social features, no shared recommendations, no history accessible by others. The Private Story is designed for private listening. Your stories are heard only by you.` },
+  ],
+};
+
+export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
+  meta: { title: `Erotic Audiobooks for Women | The Private Story`, description: `Erotic audiobooks for women — and something the audiobook format never offered: a story written specifically for you, this session, around exactly what you want to feel. Private and narrated.` },
+  hero: { badge: `Erotic Audio · Personalised · Private`, h1: `Erotic Audiobooks for Women — And Something the Catalogue Never Had`, tagline: `The audiobook brought literary erotic fiction to a listening audience. What it couldn't do was write a story that was yours.` },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "Why Audio Became the Preferred Format for Erotic Fiction",
+      paragraphs: [
+        "The shift from reading to listening in erotic fiction was not a matter of convenience. It reflected something specific about how audio engages with the imagination when the content is intimate. The voice creates presence without crowding out the listener's inner picture — it provides emotional texture, character, and pace while leaving space for the imagination to complete what the prose gestures toward. This is the particular strength of audio for erotic fiction: the imagination remains active.",
+        "For women especially, the appeal of erotic audio over visual alternatives is well-founded. Research into female sexual psychology — the work of Chivers, Nagoski, and others in the past two decades — consistently shows that the female imagination engages differently with erotic material than the male default assumes. Narrative, character, emotional register, and the quality of the connection matter as much as — often more than — the explicit content itself. Audio, with its capacity for close first-person narration and emotional texture, suits this mode of engagement in a way that visual formats do not.",
+        "The erotic audiobook emerged from this recognition. Literary romance with explicit content, produced as audio, narrated by voices that carried the emotional register of what was written — this was a significant development for listeners who had always wanted something better than what general-audience platforms offered.",
+        "What the erotic audiobook format could not solve, however, was the catalogue problem. Every audiobook is a fixed thing — written for a general audience, narrated once, produced and released. The listener who finds it either fits inside it or she doesn't. The gap between the story that exists and the story that would be exactly right is real, and in erotic fiction, it matters more than in almost any other genre.",
+      ],
+    },
+    {
+      h2: "The Catalogue Problem in Erotic Fiction",
+      paragraphs: [
+        "The appeal of erotic fiction is inseparable from specificity. What makes a story work for a particular listener is not its quality in the abstract but its specific qualities — the precise character of the lead, the exact dynamic between them, the emotional register, the pacing, the quality of the connection. A story that is mostly right is substantially less satisfying than a story that is specifically right.",
+        "This specificity gap is the fundamental limitation of any catalogue-based model for erotic fiction. The catalogue can be large. The editorial curation can be excellent. The production values can be high. But the listener's imagination — if it is at all specific — will always be at some distance from any fixed library, because no library was built around her particular preferences. It was built around an imagined general audience, of which she is a member with her own particular distance from the centre.",
+        "The problem is especially visible at the margins of the catalogue — the specific character type, the precise dynamic, the emotional register that was common to none of the available stories. Listeners who know exactly what they want and cannot find it in any catalogue are not difficult listeners with unreasonable expectations. They are listeners who have a clear picture of their own imagination, and no curated library has yet been able to reach it.",
+        "For these listeners — and the experience of being this listener is familiar to more people than tends to be acknowledged openly — the question has always been whether there is a model that does not have this limitation. Whether something can be built that is genuinely specific, rather than approximated from what already exists.",
+      ],
+    },
+    {
+      h2: "From Audiobook to Audio Story — What the Generative Model Offers",
+      paragraphs: [
+        "The Private Story does not offer a library. It offers the story for this session — written from scratch, around your choices, delivered as audio. The distinction is not a small one.",
+        "Before anything is generated, you make a series of creative choices: the dynamic between the characters, the emotional register, the character's specific quality of presence, the setting, the intensity, the situation. These choices become the brief. The story — narrated, literary, private — is then built around exactly what you described. Not the nearest available fit; the story itself.",
+        "For listeners who have spent time with erotic audiobooks and have always felt the gap between the story that exists and the one they actually wanted, this is what closes that gap. The character who has the specific qualities she finds compelling, not the closest analogue in a library. The dynamic she has in her imagination, not the nearest available approximation. The emotional register she wants to be inside, not the one the editorial team thought would have broad appeal.",
+        "The audio format is preserved — narrated, produced, listenable. What changes is that the story is original to the session. It existed nowhere before she described wanting it. It will be stored privately in her account, heard by no one else. The intimacy of the audiobook listening experience is combined with the specificity that catalogues cannot reach.",
+      ],
+    },
+    {
+      h2: "Privacy and the Erotic Audiobook Listener",
+      paragraphs: [
+        "The erotic audiobook listener has always navigated a particular privacy tension. The listening experience is private — headphones, a personal device, her own time. But the platform infrastructure around that experience often is not. Recommendation algorithms that surface listening history. Library displays that reveal what has been purchased. Social layers that assume the experience is something to be shared or discussed.",
+        "This infrastructure is borrowed from general entertainment platforms without accounting for the specific privacy requirements of erotic content. The preferences involved in erotic fiction — the specific dynamics, registers, and situations that make a story work for a particular person — are private in a different register from a preference for literary fiction over crime fiction. They deserve a different standard of discretion.",
+        "The Private Story is architecturally private. There are no social features, no recommendation feeds visible to others, no purchase history that accumulates on a general-purpose platform. Your stories are generated around your choices and saved to your private account. They are yours — heard only by you, accessible when you want them, deletable at any time.",
+        "This is not a feature added to an entertainment platform. It is the founding design principle of the platform. Erotic audio fiction that requires comfort with a social layer is offering something fundamentally different from erotic audio fiction that is private by design.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Shape your story brief",
+      body: "The dynamic, the character, the emotional register, the setting, the intensity — not filters on a fixed catalogue, but genuine choices that shape what is written. The creation flow is designed so that your choices produce something specific to you, not something in the general direction of your preferences.",
+    },
+    {
+      heading: "An original story is created and narrated",
+      body: "Literary erotic fiction, generated for this session, built from the first sentence around your brief. Narrated in the voice you selected, with the pacing and emotional texture the story calls for. Yours to listen to immediately. Not something that already existed — something that exists because you described wanting it.",
+    },
+    {
+      heading: "Yours privately, permanently",
+      body: "Saved to your private account. Narrated and complete. No social features, no visible history, no sharing. Your erotic audio stories are yours — heard only by you, accessible when you want them, deletable at any time.",
+    },
+  ],
+  scenarios: {
+    h2: "Three Stories the Catalogue Has Never Had",
+    items: [
+      {
+        heading: "The character who has been in your imagination but not in any book",
+        body: "She knows the specific quality she wants — not the archetype in the abstract, but a precise combination: assured without being aggressive, experienced without being practiced, interested in her specifically without the performance of interest. She has read a great many erotic novels and found elements of him in different books and never the complete version in one. The Casting Room is where she describes the complete version and the story is built around it.",
+      },
+      {
+        heading: "The dynamic that exists in her imagination, precisely",
+        body: "The emotional register she wants to inhabit is specific. The quality of the connection — the particular way she wants to be wanted, the specific nature of the chemistry — is not vague. She has browsed catalogues and found stories that were close, and the closeness made the gap more visible, not less. What she wants is a story that is in the right register, not approaching the right register from the general direction.",
+      },
+      {
+        heading: "The returning listener who wants something new every time",
+        body: "She has listened to every good erotic audiobook she can find. She has favourites she returns to. She has also noticed that the catalogue, even a good one, is finite — and that returning to an existing story is different from hearing something for the first time. The generative model is for her: the new story, for this session, around the specific dynamic or mood or character she wants right now. Not what she wanted last month. What she wants tonight.",
+      },
+    ],
+    interstitial: "Create your erotic audio story — the one the catalogue has never had, built around exactly what you want to feel.",
+  },
+  benefits: {
+    h2: "Why Personalised Erotic Audio Is Different from an Audiobook",
+    items: [
+      {
+        heading: "The story is specific to you",
+        body: "Not the nearest available fit in a library — the story built around the character, dynamic, and emotional register you specified. The specificity gap that every catalogue has is closed.",
+      },
+      {
+        heading: "Narrated audio, not text",
+        body: "The production-native audio experience of the erotic audiobook format, with the specificity of a story written for this session. Literary, narrated, and delivered in the voice you chose.",
+      },
+      {
+        heading: "New every time",
+        body: "Not a story to return to, but a story to hear for the first time. Every session produces something that has never existed before, built around what you want right now.",
+      },
+      {
+        heading: "Imagination remains active",
+        body: "First-person narration provides emotional texture and character presence without crowding out the listener's inner picture. The imagination completes what the prose gestures toward — which is where much of the power of erotic audio lives.",
+      },
+      {
+        heading: "Private by architecture",
+        body: "No social layer, no recommendation feed visible to others, no purchase history on a general platform. Your stories are generated and stored privately. The listening experience is entirely your own.",
+      },
+      {
+        heading: "The full intensity spectrum",
+        body: "From emotionally charged slow burn and literary romantic tension to fully explicit adult fiction. Intensity is one of the choices you make — the story is calibrated to match what you selected, not a platform default.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Erotic Audiobooks for Women — The Full Picture",
+    paragraphs: [
+      "The erotic audiobook represented a genuine step forward for adult fiction listeners: literary erotic content, produced for audio, designed for the listening imagination. For many listeners, it remains the gold standard of the format — a carefully written story, professionally narrated, built with craft and care.",
+      "What the erotic audiobook has never been able to offer is specificity. Every book was written for a general audience. Every catalogue selection was made by an editorial team with a view of what would have broad appeal. The listener who fits precisely inside that — whose preferences are well-served by what the editorial team imagined — has a genuinely good experience. The listener whose preferences are specific, particular, or slightly outside the mainstream of what the editorial team predicted will always feel the gap.",
+      "The Private Story closes this gap. Not by offering a larger catalogue — by offering a different model entirely: a story written from scratch, around the choices you made before this session, in the format that the erotic audiobook established as the right one for this kind of content. Narrated, literary, private.",
+      "The listener who knows what she wants and has not been able to find it in any catalogue is the listener this platform was built for. The Casting Room is the place where the story that does not yet exist gets described — and then created.",
+      "Create your erotic audio story around the dynamic, character, and emotional register that no catalogue has yet had.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Erotic Audio Story",
+    paragraphs: [
+      "The format that works. The story that is specific to you. The character, the dynamic, the emotional register — not approximated from what exists, but built around exactly what you described wanting.",
+      "The erotic audiobook demonstrated that narrated literary adult fiction is the right format for this kind of listening. The Private Story takes that format and removes the one thing it could never solve: the gap between any catalogue and your particular imagination.",
+      "Private, narrated, yours. Created in under two minutes.",
+    ],
+    primary: { label: "Create your erotic audio story", href: "/create" },
+    links: [
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Erotic audio stories for women", href: "/erotic-audio-stories-for-women" },
+      { label: "Personalised audio stories", href: "/personalised-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: `What is the difference between an erotic audiobook and an erotic audio story?`, a: `An erotic audiobook is a pre-written, pre-produced piece of content — a story written for a general audience, narrated and released as an audio product. An erotic audio story at The Private Story is generated for your specific session, around choices you make before anything is created. Nothing is retrieved from a library — the story is written from scratch, in service of your brief. The audio format (narrated, produced) is the same. The origin and specificity of the content are fundamentally different.` },
+    { q: `Why is audio particularly good for erotic fiction for women?`, a: `Audio erotic fiction engages the imagination differently from visual content. The voice provides emotional texture, character presence, and pacing without crowding out the listener's inner picture — the imagination remains active, completing what the narration gestures toward. Research into female erotic engagement consistently shows that narrative, emotional register, and character quality are central to the experience — which audio, with its capacity for close first-person narration, is particularly well-positioned to deliver. The Private Story's audio stories are written and narrated with this in mind.` },
+    { q: `Is there a catalogue to browse?`, a: `No. The Private Story does not offer a browse-and-select catalogue. Every story is created for the session in which it is requested, around the choices you make in the creation flow. This is not a limitation — it is the point. The model exists specifically because catalogues cannot reach the specificity that personalised generation offers. If you want to browse existing stories you have created, your private library contains everything you have generated.` },
+    { q: `How explicit is the content?`, a: `The Private Story supports the full spectrum from emotionally charged slow burn to fully explicit adult fiction. Intensity is one of the choices you make in the creation flow — the story is calibrated around what you selected. All explicit content is available only to age-verified users aged 18 and over.` },
+    { q: `How long is a typical audio story?`, a: `Stories run to approximately 1,500–3,000 words, narrated at a comfortable listening pace — typically eight to fifteen minutes. Long enough to build properly; short enough to be a complete listening experience in a session. This is erotic audio fiction designed for adults with full lives who want the experience to be complete and unhurried without being a significant time commitment.` },
+    { q: `Is my listening history private?`, a: `Completely. Your stories are stored in your private account and are not visible to anyone else. There are no social features, no shared listening history, no recommendation feed that reveals your choices. The platform was designed architecturally for private listening — your preferences and your stories belong only to you.` },
+  ],
+};
+
+export const officeRomanceAudioStoriesConfig: SEOPageConfig = {
+  meta: { title: `Office Romance Audio Stories | The Private Story`, description: `Office romance audio stories created for adults. Private, personalised, and built around the specific charge of professional proximity — where you have to behave normally around someone who makes normal impossible.` },
+  hero: { badge: `Office Romance · Professional Tension · Private`, h1: `Office Romance Audio Stories — The Most Charged Stories Begin at Work`, tagline: `The professional world has its own rules. It also has a specific kind of tension that no other setting produces — the wanting that has nowhere to go during business hours.` },
+  heroImage: "images/seo-hero-romantic.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "Why the Workplace Is Romance Fiction's Most Enduring Setting",
+      paragraphs: [
+        "Office romance has remained one of fiction's most reliable and most searched scenarios for a reason that has nothing to do with workplace statistics. The professional setting creates a specific structure of constraint that no other environment replicates: two people who are required to be together, professionally composed, performing competence in front of an audience, while something else operates beneath the surface entirely.",
+        "The constraint is the engine of the scenario. Unlike social situations where you can choose how much time to spend near someone, or domestic settings where proximity is chosen, the professional environment places people together without asking. You are there because the work requires it. Your presence near him is justified by the meeting agenda, the shared project, the professional necessity — not by what you are actually aware of when he is in the room.",
+        "The performance of professional neutrality under these conditions is where the tension of office romance lives. Not the explicit content — the before. The measured response to something he said in a meeting that required three more seconds of consideration than it should have. The specific effort of not noticing something. The quality of the awareness that has to be managed constantly, because the professional context demands it, and because the professional context is not going away.",
+        "Office romance fiction at its best is not about the workplace. The workplace is the structure that makes the particular quality of tension possible. The story is about what lives beneath the professional surface — and how long either character can maintain the surface before something changes.",
+      ],
+    },
+    {
+      h2: "The Specific Charge of Professional Hierarchy",
+      paragraphs: [
+        "The workplace is not a neutral space. It has hierarchies, power differentials, structures of authority and accountability that create their own particular texture when romantic feeling enters the dynamic. This is why professional power differential is one of the most consistently requested dynamics in romance fiction: it creates a situation where the feeling is real and its expression is genuinely complicated.",
+        "The complication is not simply professional risk — it is the specific quality of attraction in a context where the dynamic already has weight. The person with authority has a kind of presence that is partly professional and partly personal, and the two are not always distinguishable. The awareness of him changes the quality of ordinary professional interactions in ways that are difficult to attribute and impossible to explain.",
+        "What office romance fiction explores is the interior of this situation — the experience of maintaining professional composure while the interior register is not composed at all. The meeting that is entirely professional in its content and entirely charged in its experience. The conversation that is about the project and about nothing that the project has to do with. The awareness that something is happening, being managed, being contained by the structure of the professional context.",
+        "Audio fiction in first person is particularly suited to this territory because the narration inhabits the professional surface and the interior simultaneously. The listener hears both registers at once: the composed professional response and the actual experience beneath it.",
+      ],
+    },
+    {
+      h2: "The Settings Within the Workplace Scenario",
+      paragraphs: [
+        "Office romance encompasses a wide range of specific situations, each producing its own particular quality of tension. The dynamics vary enormously depending on the structure of the relationship, the nature of the shared work, and the specific circumstances that bring the tension to a head.",
+        "The late deadline situation is a classic of the genre for structural reasons: the shared pressure, the emptied building, the requirement to work closely and efficiently under conditions that strip away the daytime social architecture. The version of him that emerges when the professional world has gone home is not the same as the meeting-room version. The proximity required by the work becomes something else in that context.",
+        "The conference trip or off-site removes the professional world and places two people in a setting where the usual structure of the workplace does not apply. The shared meal, the evening without the structure of the office around it, the version of each other that travel and context extract — all of this changes the texture of the dynamic in ways that the office itself could not.",
+        "The professional rivalry variant — two colleagues in genuine competition, at the same level, both wanting the same thing professionally — creates a different register. The opposition is specific and credible. The mutual recognition of capability is real. When something else begins to operate beneath the professional competition, it has a particular charge that comes from the specific nature of what preceded it.",
+      ],
+    },
+    {
+      h2: "Office Romance in Audio — The Interior That Cannot Be Seen",
+      paragraphs: [
+        "The specific power of office romance in audio fiction is that the first-person narration gives access to the interior that the professional setting requires to be invisible. Every other person in the story sees the professional surface — the composed meeting-room version, the appropriate and measured response. The listener is inside what none of them can see.",
+        "This creates a particular listening experience: the intimacy of being the only one who knows what is actually happening. The version of the narrator that the professional world encounters is coherent, functional, and correct. The version the listener inhabits is aware of everything the professional surface is managing.",
+        "Pacing in office romance audio follows the structure of the professional constraint: the charged exchange that resolves back to the professional surface, the moment of awareness that is not acknowledged, the accumulation of small evidence that the dynamic is changing without the professional context providing any framework for what to do about it. The story respects the structure of the setting — the slowness and the containment — because the containment is where the tension lives.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Choose your professional dynamic",
+      body: "The nature of the professional relationship — hierarchy, rivalry, collaboration, mentorship. The specific situation — deadline, conference, shared project. The character's specific quality: assured, competent, attentive beneath the professionalism. You define the dynamic, and the story is built to inhabit it.",
+    },
+    {
+      heading: "Your story is created around the professional tension",
+      body: "Original office romance narrative, generated for this session, that invests in the interior of the professional constraint — the managed surface and what lives beneath it — rather than rushing past it to resolution. The tension is the story.",
+    },
+    {
+      heading: "Listen privately — yours alone",
+      body: "Narrated and saved to your private account. No social features, no visible history, no one who can access your stories except you. The specific interior that office romance fiction inhabits — the experience that no one else in the professional setting can see — suits a listening experience that belongs entirely to you.",
+    },
+  ],
+  scenarios: {
+    h2: "Three Office Romance Stories — Three Professional Situations",
+    items: [
+      {
+        heading: "The late deadline in an empty building",
+        body: "Everyone else has gone home. The work requires both of you to still be here — not by design, but by the timeline, and the timeline is real. The professional architecture that moderates everything during the day has gone with the rest of the team. What's left is the work, the close proximity it requires, and the version of him that emerges when there is no audience for the professional version. The distance between that version and the one she knows from meetings is the story.",
+      },
+      {
+        heading: "The conference trip that removes the frame",
+        body: "The same city, the same hotel, the shared professional purpose — but the structure of the office itself is not there. The evening meal without the meeting-room context. The corridor conversation without the professional schedule around it. The version of each other that travel extracts, which is not the version the professional setting was built to see. The dynamic that the workplace contained is no longer being contained by the workplace.",
+      },
+      {
+        heading: "The rivals who have always noticed each other",
+        body: "They have been in genuine competition for long enough that the opposition is its own kind of relationship. The professional respect is real — you do not have a real rival if you do not respect their capability. The awareness beneath the rivalry is also real, and has been for longer than either of them has acknowledged. What changes is the project that requires them to work on the same side of something for the first time. The professional opposition had a structure. What replaces it, when the opposition is removed, turns out to have a structure too.",
+      },
+    ],
+    interstitial: "Create an office romance story built around the specific professional tension and situation you want to inhabit.",
+  },
+  benefits: {
+    h2: "Why Office Romance Audio Works",
+    items: [
+      {
+        heading: "The constraint creates the charge",
+        body: "The professional setting requires composure — and the requirement to be composed around someone who makes composure difficult is the engine of office romance tension. The story lives in the gap between the professional surface and what is happening beneath it.",
+      },
+      {
+        heading: "First person accesses the interior",
+        body: "Audio narration in first person gives access to the inner register that the professional setting makes invisible — the experience that everyone else in the workplace cannot see. The listener inhabits the only version that is not performed.",
+      },
+      {
+        heading: "The setting provides genuine stakes",
+        body: "Professional context creates real complications that are not contrived for the sake of the story — hierarchies, accountabilities, professional reputations. The constraints are genuine, which gives the tension real weight.",
+      },
+      {
+        heading: "Specific to your professional dynamic",
+        body: "The nature of the professional relationship, the specific situation, the character's particular quality. You shape the dynamic — hierarchy, rivalry, collaboration — and the story is built around it.",
+      },
+      {
+        heading: "The slow burn of maintained composure",
+        body: "Office romance is almost always a slow burn, because the professional setting provides a constant pressure toward composure. The story respects this pacing — the accumulation of charged exchanges and managed moments — which is where the tension earns the resolution.",
+      },
+      {
+        heading: "Private by design",
+        body: "Your stories are saved to your private account, visible only to you. The interior that office romance inhabits — the experience that no professional audience can see — suits a listening experience that is entirely your own.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Office Romance Audio Stories — The Full Picture",
+    paragraphs: [
+      "Office romance has remained one of the most consistently searched romantic scenarios in fiction because the workplace creates something no other setting does: the requirement to maintain composure around someone who makes composure difficult. The professional context is not background — it is the structure that makes the tension possible.",
+      "Office romance audio stories at The Private Story are created around this principle. The creation flow allows you to specify the professional relationship — the hierarchy, the rivalry, the nature of the shared work — and the specific situation that brings the tension to a head. The story is built to inhabit the interior of the professional constraint: the managed surface and the genuine experience beneath it, simultaneously.",
+      "Audio is particularly well-suited to office romance because the first-person narration renders the interior that the professional setting makes invisible. Everyone else in the story sees the competent, composed version. The listener inhabits the one no one else can access.",
+      "What distinguishes well-crafted office romance from a less accomplished version is that it takes the professional setting seriously rather than treating it as thin backdrop. The constraints are real, the structure of the workplace matters, and the tension lives inside the specific friction between the professional requirement and the personal reality. The Private Story creates office romance that invests in this friction.",
+      "Create your office romance story around the specific professional dynamic, relationship, and situation that gives it charge.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Office Romance Story",
+    paragraphs: [
+      "The professional setting that requires composure. The specific person who makes composure difficult. The accumulation of charged exchanges managed back to professional neutrality — until the structure that enables the management is no longer there.",
+      "Office romance works because the constraint is real, the stakes are genuine, and the interior experience is one that the professional world never gets to see. The Private Story creates your office romance story around the specific dynamic and situation that gives it charge.",
+      "Private, narrated, yours. Created in under two minutes.",
+    ],
+    primary: { label: "Create your office romance story", href: "/create" },
+    links: [
+      { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+      { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+    ],
+  },
+  faqs: [
+    { q: `What makes office romance a distinct scenario in fiction?`, a: `The professional setting creates a specific structure of constraint that no other environment replicates: two people who are required to be together and professionally composed, while something else operates entirely beneath the surface. The fiction lives in the gap between the professional requirement — the meeting-room version, the appropriate response, the maintained composure — and the interior experience that the professional setting makes invisible. It is one of the most consistently searched scenarios precisely because the constraint creates a specific quality of tension that other settings cannot produce.` },
+    { q: `Is office romance the same as forbidden romance?`, a: `Office romance and forbidden romance overlap significantly — many office romance stories involve dynamics where the relationship would be professionally complicated — but they are not the same thing. Forbidden romance is about constraint and prohibition generally: situations where the pull is real but acting on it carries cost. Office romance is specifically about the professional setting and its particular quality of managed composure. An office romance can be between peers without hierarchy, where the professional complication is relatively low; a forbidden romance can take place in entirely non-professional contexts. The stories have different textures.` },
+    { q: `Can I choose the specific professional dynamic in my story?`, a: `Yes. The creation flow allows you to specify the nature of the professional relationship — senior and junior, colleagues at the same level, professional rivals, mentor and mentee — and the specific situation: shared deadline, conference trip, collaborative project, long-term proximity in the same team. You also choose the character's specific qualities: the nature of his professionalism, the quality of his attention, the version of him that emerges under the constraints you specify. The story is built around what you choose.` },
+    { q: `Does the story need to be entirely set in the workplace?`, a: `No. Many of the most effective office romance stories remove the professional setting at a key moment — the conference trip, the late evening when the office has emptied, the social event where the professional frame is absent. The workplace is what establishes the constraint and the dynamic; the story often arrives at its most charged moments when the professional structure is temporarily removed. You can specify this kind of transition in the creation flow.` },
+    { q: `Is office romance always a slow burn?`, a: `Almost always. The professional setting creates a constant pressure toward composure that structures the story's pacing naturally. The charged exchange that resolves back to professionalism, the accumulation of managed moments, the growing difficulty of maintaining the surface — this is the tempo of office romance, and it is inherently a slow burn tempo. The Private Story creates office romance stories that respect this pacing and invest in the accumulation rather than rushing toward resolution.` },
+    { q: `Are the stories private?`, a: `Completely. Your stories are saved to your private account and are not visible to anyone else. No social features, no shared recommendations, no history accessible by others. Your office romance audio stories are heard only by you.` },
+  ],
+};
+
+export const steamyAudioStoriesConfig: SEOPageConfig = {
+  meta: { title: `Steamy Audio Stories | The Private Story`, description: `Steamy audio stories created for adults — the warm, charged register where desire is present in every sentence and the imagination completes what the prose gestures toward. Private and personalised.` },
+  hero: { badge: `Steamy · Charged · Private`, h1: `Steamy Audio Stories — Where Wanting Has Room to Build`, tagline: `Not cold. Not explicit. The warm, building register where desire is present in every sentence and the story trusts you to feel what it describes.` },
+  heroImage: "images/seo-hero-dark-romance.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "What the Steamy Register Is — and Why It Is Its Own Thing",
+      paragraphs: [
+        "The temperature metaphor in fiction is precise in a way that most genre labels are not. Cold fiction is emotionally correct but does not carry erotic charge. Hot fiction is fully explicit, direct, leaving nothing to the imagination. Steamy fiction is neither — it is the warm, building register where desire is present in everything but the story does not rush toward its explicit expression. The heat is in the atmosphere, the quality of attention, the charged exchange, the awareness of what both people are holding in check.",
+        "Steamy is not a step toward explicit. It is its own register with its own appeal. The listener who wants steamy fiction is not someone who wants explicit fiction but with some removed — she is someone who wants the specific quality of the charged approach rather than the full arrival. The anticipation. The desire inhabiting the ordinary. The tension between what is felt and what is expressed.",
+        "This register has always been the most natural territory for audio. The voice that carries warmth and restrained charge — that communicates desire through pacing and the specific quality of attention without stating it — is doing something that the explicit register cannot do. Explicitness removes the need for the imagination to complete anything. The steamy register invites the imagination to do its best work.",
+        "What makes steamy fiction its own register rather than a lesser version of explicit fiction is that the imagination is the active partner in the experience. The prose gestures; the listener completes. This is not a limitation — it is the mechanism through which the most powerful erotic experiences in fiction operate. The story trusts the listener, and the listener's imagination does what it is trusted to do.",
+      ],
+    },
+    {
+      h2: "The Difference Between Steamy, Spicy, and Slow Burn",
+      paragraphs: [
+        "These three registers are related but distinct, and the distinctions matter for anyone trying to describe what they actually want from an erotic audio story.",
+        "Slow burn is about pacing: the deliberate delay of resolution, the accumulation of charged moments over a significant stretch of narrative time, the satisfaction that comes from an ending that has been fully earned. A slow burn story can exist at any temperature — it can be steamy throughout, or it can escalate. Slow burn is about the arc, not the register.",
+        "Spicy is a contemporary term that describes fiction with genuine erotic content and energy — stories that have heat, that are not coy about desire or its expression, but that carry it with a certain self-awareness and often some lightness. The tone is different from steamy: spicy tends toward directness and a certain confident energy, where steamy tends toward warmth and the charged approach.",
+        "Steamy is the register where the heat is atmospheric and cumulative. The story is invested in the quality of the tension rather than the resolution. A steamy story can be explicitly resolved — or it can hold at the charged approach and trust the imagination to take it further. It can be combined with slow burn (the warm accumulation over time) or with a more confident energy (the assured character who understands what is happening). The Private Story allows you to combine these dimensions into the specific register you want.",
+      ],
+    },
+    {
+      h2: "Why Audio Suits the Steamy Register Particularly Well",
+      paragraphs: [
+        "The steamy register depends on the voice. Not the content of the words — the quality of how they are delivered. The warmth and pace of the narration, the specific quality of attention the voice brings to a charged detail, the way pacing communicates desire more effectively than explicit statement. Audio is the format in which this quality of delivery is most present and most powerful.",
+        "Reading steamy fiction, the voice is constructed in the reader's imagination from the prose alone. Listening to steamy fiction, the voice is there — carrying the warmth, the charge, the restrained quality of attention that the steamy register requires. The narration becomes the instrument through which the story's temperature is felt.",
+        "First-person audio narration in the steamy register creates a particular kind of intimacy: the listener inhabits the experience of the charged approach from inside it. The awareness is hers. The quality of the wanting — present but not declared, real but held in the atmosphere of the story rather than stated directly — is something she feels rather than observes.",
+        "This is why steamy audio stories produce a specific listening experience that written steamy fiction approximates but does not fully reach. The voice carries what the prose describes. The warmth of the narration is the warmth of the story.",
+      ],
+    },
+    {
+      h2: "The Specific Appeal of What Is Not Quite Said",
+      paragraphs: [
+        "The most charged moments in steamy fiction are often not moments of explicit expression but moments where something is almost said, almost acknowledged, almost arrived at — and then the story holds at that edge. The charged look that goes on three seconds too long. The sentence that stops before its real ending. The moment of physical proximity where both people are aware of everything and neither moves.",
+        "These moments work because they activate the imagination rather than satisfying it. The imagination, invited to complete something that the prose has precisely set up, does so with the full force of the listener's own desire. The story has built the architecture of the moment; the listener furnishes it with everything that the architecture was designed to contain.",
+        "This is the specific power of the steamy register for audio fiction. The story is not withholding — it is being precise about what it gives the imagination to work with and trusting it to do what imagination does. The precision of the setup is the craft. The completion is the listener's.",
+        "Steamy audio stories at The Private Story are created with this register as a genuine creative choice — not a restriction of intensity but a different kind of intensity. The warmth and the charge, the quality of the held tension, the specific moment where the story trusts the imagination: this is the register you are choosing when you choose steamy.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Set the temperature",
+      body: "The steamy register sits between emotionally charged and fully explicit — warm, building, desire present in the atmosphere of the story rather than its direct expression. You set where your story sits on the full intensity spectrum, and steamy is a genuine and distinct choice within it.",
+    },
+    {
+      heading: "Your story is created in the register you chose",
+      body: "Original narrative, generated for this session, written with the steamy register from the first sentence. The warmth is in the prose texture, the quality of attention, the charged accumulation — not added by adjustment, built into the writing from the start.",
+    },
+    {
+      heading: "Listen privately — yours alone",
+      body: "Narrated and saved to your private account. No social features, no visible history, no one who can access your stories except you. The steamy register — intimate, charged, trusting — suits a listening experience that is entirely your own.",
+    },
+  ],
+  scenarios: {
+    h2: "Three Steamy Stories — Three Registers of the Charged Approach",
+    items: [
+      {
+        heading: "The story that is entirely wanting",
+        body: "Nothing explicit happens. The story is entirely composed of the charged approach — the quality of the tension between two people who are both aware of what is happening and neither of whom has said it. The wanting is present in every exchange, every description, every moment of attention. The imagination is invited into the space the prose has carefully set up. The story holds at the edge, which is where the listener's imagination does its best work.",
+      },
+      {
+        heading: "The first acknowledgement",
+        body: "The slow burn has been building — the accumulation of small evidence, the managed composure, the charged exchange that has resolved back to neutral. The story arrives at the first moment of acknowledgement: the first thing said or done that admits what has been present throughout. The heat is in this moment — the quality of what is finally not being held back, the specific register of the first expression of something real. The story does not rush past this moment. It stays with it.",
+      },
+      {
+        heading: "The warm, confident arrival",
+        body: "This is a steamy story with a different quality of charge: assured rather than restrained, warm rather than slow. The character knows what is happening and the story does not pretend otherwise. The warmth is in the quality of his certainty — the attention that is specific and real, the confidence that is not aggressive but present and clear. The steamy register here is in the warmth of the approach rather than the restraint, and the story is built to inhabit that specific temperature.",
+      },
+    ],
+    interstitial: "Create a steamy audio story in the specific register you want — warm, charged, and built for your imagination.",
+  },
+  benefits: {
+    h2: "Why Steamy Audio Works",
+    items: [
+      {
+        heading: "The imagination is the active partner",
+        body: "The steamy register invites the imagination to complete what the prose sets up — which is where much of the power of erotic experience in fiction lives. The story trusts the listener, and the listener's imagination does what it is trusted to do.",
+      },
+      {
+        heading: "The voice carries the temperature",
+        body: "In audio, the warmth and pace of the narration are the instrument through which the steamy register is felt. The voice carries what the prose describes — the warmth, the charge, the quality of restrained attention — in a way that written text approximates but does not fully achieve.",
+      },
+      {
+        heading: "A distinct register, not a lesser one",
+        body: "Steamy is not explicit fiction with some removed. It is its own register with its own particular appeal — the charged approach rather than the full arrival, the tension of the held edge, the specific power of what is not quite said.",
+      },
+      {
+        heading: "Specific to your story",
+        body: "The character, the dynamic, the situation, the specific quality of the warmth. You shape the story, and the steamy register is built into it from the first sentence — not applied as a filter but written as a creative choice.",
+      },
+      {
+        heading: "Combinable with other registers",
+        body: "Steamy combines naturally with slow burn (the warm accumulation over time), confident energy (the assured character who understands the situation), and dark romance (the complexity beneath the warmth). You can layer these dimensions in the creation flow.",
+      },
+      {
+        heading: "Private by design",
+        body: "Your stories are saved to your private account, visible only to you. The intimate quality of the steamy register — the trust between the story and the listener's imagination — suits a listening experience that is entirely your own.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Steamy Audio Stories — The Full Picture",
+    paragraphs: [
+      "The steamy register occupies a specific and valuable place in the spectrum of adult audio fiction — the warm, charged register where desire is present in the atmosphere of the story and the imagination is invited to do its best work. It is not a step toward explicit, not a restriction of explicit. It is its own creative choice with its own particular appeal.",
+      "Steamy audio stories at The Private Story are created with this register as a genuine commitment rather than a compromise. The creation flow allows you to choose where your story sits on the full intensity spectrum — and steamy, within that spectrum, is built into the story from the first sentence. Not applied as a filter to content that would otherwise be more explicit, but written as a deliberate creative register: the warmth, the charge, the quality of attention, the held edge.",
+      "Audio is the format for which the steamy register is best suited. The voice carries the temperature in a way that written text approximates. The narration's specific qualities — the warmth, the pacing, the quality of attention brought to charged details — are the instruments through which the steamy register is experienced. The Private Story's stories are narrated with this in mind.",
+      "The listener who wants steamy fiction is not a listener with a lower threshold — she is a listener who wants the specific experience of the charged approach, the imagination-inviting edge, the desire present in the ordinary. The Private Story was built to create exactly this, around her specific character, dynamic, and situation.",
+      "Create your steamy audio story in the register you want — warm, specific, and built for your imagination.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Steamy Audio Story",
+    paragraphs: [
+      "The warm, charged register. The desire present in every sentence. The story that holds at the edge and trusts your imagination to complete what it has carefully set up.",
+      "Steamy audio fiction works because the imagination is not a passive recipient — it is the active partner in the experience. The story creates the architecture. You furnish it with everything it was designed to contain.",
+      "Private, narrated, yours. Created in under two minutes.",
+    ],
+    primary: { label: "Create your steamy audio story", href: "/create" },
+    links: [
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+      { label: "Spicy audio stories", href: "/spicy-audio-stories" },
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+    ],
+  },
+  faqs: [
+    { q: `What does "steamy" mean in audio fiction?`, a: `Steamy describes a specific register of adult audio fiction: the warm, charged territory where desire is present throughout the story but the writing does not rush to its explicit expression. The heat is in the atmosphere — the quality of attention, the charged exchange, the tension of what is held in check — rather than in direct statement. Steamy fiction invites the imagination to complete what the prose sets up, which is where much of its power lives. It is distinct from "spicy" (more confident and direct in tone) and from fully explicit, and it is its own creative register rather than a lesser version of either.` },
+    { q: `Is steamy the same as slow burn?`, a: `Related but different. Slow burn is about narrative pacing: the deliberate delay of resolution, the accumulation of charged moments over time. A story can be slow burn and steamy (warm accumulation leading to a charged but not explicit arrival), or slow burn and explicit (the long build that arrives at a fully explicit resolution), or other combinations. Steamy is about temperature and register, not pacing. The two combine naturally, and many of the most effective steamy audio stories are also slow burns — but they are distinct dimensions that can be chosen independently.` },
+    { q: `Can I choose steamy as a specific intensity level?`, a: `Yes. The creation flow allows you to set where your story sits on the full intensity spectrum — from emotionally charged slow burn through to fully explicit. Steamy sits in the warm middle: desire is present and the story is genuinely erotic in register, but the writing does not move to explicit expression. This is a genuine creative choice, not a default — the story is written in this register from the first sentence.` },
+    { q: `Why does steamy work particularly well in audio?`, a: `The steamy register depends on the quality of the voice — its warmth, pacing, and the specific quality of attention it brings to charged details. Audio carries this in a way that written text approximates but does not fully achieve. Listening to a steamy story, the narration is the instrument through which the temperature is felt. The warmth is not described abstractly — it is present in the voice itself. The Private Story's narration is selected and calibrated to carry the specific register of what is written.` },
+    { q: `What is the difference between steamy and spicy?`, a: `Both registers involve genuine erotic charge, but with different tonal qualities. Spicy tends toward confidence, directness, and often a certain lightness or energy — stories that are clear about desire and express it with assurance. Steamy tends toward warmth, accumulation, and the charged approach rather than confident arrival — stories where the heat is in the atmosphere and the tension of what is held in check. The two can overlap, but they have distinct tonal signatures that produce different listening experiences.` },
+    { q: `Are steamy audio stories private?`, a: `Completely. Your stories are saved to your private account and are not visible to anyone else. No social features, no shared recommendations, no history accessible by others. Your steamy audio stories are heard only by you.` },
+  ],
+};
+
+export const aiEroticaConfig: SEOPageConfig = {
+  meta: { title: `AI Erotica | The Private Story`, description: `AI erotica that is actually worth listening to — literary, narrated, and built around your specific choices before anything is created. Private, personalised, and genuinely good.` },
+  hero: { badge: `AI Erotica · Personalised · Private`, h1: `AI Erotica — What It Is When It Is Built Properly`, tagline: `The category exists. The quality varies enormously. What changes everything is the brief — the specificity of your choices before the story is created.` },
+  heroImage: "images/seo-hero-ai.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "What AI Erotica Actually Is — and What It Is Not",
+      paragraphs: [
+        "AI erotica covers a wide range of quality and type, from low-quality text outputs to something genuinely different from everything the erotica category offered before. The difference is not primarily in the fact of generation — it is in the quality of the brief that precedes it, the sophistication of what is generated, and whether the result is something worth actually experiencing or simply something that technically exists.",
+        "The version worth paying attention to is built around a real creative brief — specific choices about character, dynamic, emotional register, situation, and intensity — and generates from that brief a piece of literary erotic fiction with genuine prose quality and production-grade audio narration. The result is not a mass-produced text that could apply to any listener. It is a story that is specifically about the situation, character, and feeling that the listener described.",
+        "This is what changes the category fundamentally. All pre-existing erotica — written novels, curated audio platforms, produced content of every kind — was made before the listener arrived. The person who wrote it did not know her. The editorial team that selected it was imagining a general audience. The story exists as a fixed thing, and she either fits inside it or she doesn't. AI erotica, when built correctly, reverses this completely: the story is made after she arrives, around exactly what she described.",
+        "The Private Story is built around this reversal. Before any story is created, the listener makes a series of precise creative choices — the character's specific qualities, the dynamic, the emotional register, the setting, the intensity. Those choices become the brief. The story is then generated in service of exactly that brief, narrated in the voice she selected, and delivered as a private listening experience that has never existed before and will belong to her alone.",
+      ],
+    },
+    {
+      h2: "What Separates Good AI Erotica from Poor AI Erotica",
+      paragraphs: [
+        "The quality gap in AI erotica is real and significant, and it is worth understanding where it comes from. The gap is not primarily a function of the generation technology — it is a function of the brief, the calibration of the generation toward literary quality, and the production values of the audio output.",
+        "A poorly briefed story — one generated from a vague prompt or a minimal description — will produce something vague in return. Erotica, more than almost any other genre, depends on specificity. The specific quality of the character. The precise emotional register. The exact dynamic. A story generated from a generic prompt cannot produce specific results, because specificity was not what it was given to work with.",
+        "Good AI erotica begins with a genuinely specific brief: a structured series of choices that give the generation model enough precise direction to produce something that is actually particular to this listener, this session, this emotional territory. The Casting Room at The Private Story is built around this principle — the seven choices it asks for are not generic preferences but specific directions that collectively define a creative brief detailed enough to generate something worth listening to.",
+        "The literary calibration matters equally. Generation that is calibrated toward prose quality — sentences that have rhythm and texture, character that is felt rather than stated, pacing that serves the emotional register — produces a fundamentally different experience from generation that is not. The Private Story's content is generated with literary quality as a requirement, not a bonus.",
+      ],
+    },
+    {
+      h2: "What Personalised AI Erotica Makes Possible",
+      paragraphs: [
+        "The central capability that personalised AI erotica offers — that nothing before it could — is specificity at scale. Every listener can receive a story that is specific to her choices, her mood, her imagination for this session. Not the nearest available fit in a library. The story itself.",
+        "For listeners who have a clear picture of what they want and have never been able to find it in any catalogue, this is not a small thing. The character who has the precise quality she finds compelling — not the archetype in the abstract, but the specific combination that she has encountered in fragments in different stories and never complete in one. The dynamic that exists clearly in her imagination. The emotional register she wants to inhabit, specifically, not in the general direction of.",
+        "The experience of hearing a story that is actually specific — where the character is the character, the dynamic is the dynamic, the emotional register is the one she described — is different in kind from the experience of finding something close in a catalogue. Close is not specific. The gap between close and specific is the gap that AI erotica, when built correctly, closes.",
+        "This specificity also means that the creative range is effectively unlimited. Any character type, any dynamic, any situation within the content policy — not what happens to be available in a library at the time of listening, but what the listener can describe. The constraint on what is possible is the listener's imagination, not a curator's selection.",
+      ],
+    },
+    {
+      h2: "Privacy in AI Erotica — Why It Matters Here More Than Elsewhere",
+      paragraphs: [
+        "AI erotica and privacy have a particular relationship. The erotic preferences involved in a personalised story — the specific dynamics, characters, and situations that make a story work for a particular listener — are more private than preferences in most other content categories. They deserve an architecture that reflects this.",
+        "The Private Story is built privacy-first: no social features, no recommendation feed visible to others, no shared library, no data sold or used for advertising. Your story does not exist in a catalogue. It was generated around your choices for this session and is stored only in your private account. No one else will hear it — not another user, not a recommendation algorithm surfacing it to a feed, not a platform team reviewing content. It is yours.",
+        "This combination — genuinely specific content combined with genuine privacy — is unusual. Most platforms that offer erotic content exist within social infrastructure that was not designed for erotic privacy. Most platforms that offer privacy do not offer the specificity that personalised generation makes possible. The Private Story was built to combine both, because the combination is what the category actually requires.",
+        "For listeners who have never felt comfortable exploring their full imagination on a platform with social infrastructure, the architectural privacy of The Private Story is not a feature among others. It is the reason the experience is possible at all.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Build your precise creative brief",
+      body: "Seven specific choices — the character, the dynamic, the chemistry, the setting, the emotional mood, the situation, the intensity. The precision of your choices determines the specificity of what is created. The Casting Room is designed so that the choices collectively produce a brief detailed enough to generate something genuinely yours.",
+    },
+    {
+      heading: "Your story is created and narrated",
+      body: "Literary erotic fiction, generated for this session in service of your brief, narrated in the voice you selected. Original in every sense: not retrieved from a library, not adapted from anything existing, built from the first sentence around exactly what you described. Yours to listen to within minutes.",
+    },
+    {
+      heading: "Stored privately — heard only by you",
+      body: "Your story is saved to your private account and is not accessible to anyone else. No social features, no shared library, no data sold or surfaced. The privacy is architectural — not a setting, but the foundational design of the platform.",
+    },
+  ],
+  scenarios: {
+    h2: "Three Ways AI Erotica Is Different from Everything Before It",
+    items: [
+      {
+        heading: "The listener who has never found what she was looking for",
+        body: "She has tried the catalogues. She has found good things — stories that were close, stories with elements she wanted. She has also noticed that the gap between close and right is real, and that in erotica it matters more than in other genres. The character was almost the one she had in mind. The dynamic was in the right direction but not precise. The emotional register was near but not exact. The Casting Room is for her: the place where she describes what she actually wants, and a story is created around that specific description.",
+      },
+      {
+        heading: "The listener who knows exactly what she wants",
+        body: "Her imagination is specific. She is not searching for discovery — she knows the character type, the dynamic, the emotional register she wants to inhabit. What she has not been able to find is a platform that can generate something specific enough to actually be what she wants, rather than what the platform thought she might want. The precision of the brief she can build here produces the precision of the story she receives.",
+      },
+      {
+        heading: "The listener for whom privacy is the enabling condition",
+        body: "The preferences she wants to explore are genuinely private — not in a complicated way, but in the way that any intimate preference is genuinely private. She has never found a platform whose infrastructure matched this reality. The social layer was always present — the recommendation feed, the purchase history, the platform that knew what she had read. The Private Story was built for her specifically: the story is hers, the privacy is architectural, and the experience she has been unable to have elsewhere is available here.",
+      },
+    ],
+    interstitial: "Create your AI erotica story — specific to your imagination, private by design, narrated and yours.",
+  },
+  benefits: {
+    h2: "Why AI Erotica, When Built Properly, Is Different",
+    items: [
+      {
+        heading: "Genuinely specific, not approximately right",
+        body: "The story is built around your precise choices — not approximated from the nearest available fit in a library. The specificity that no catalogue can offer is the central capability of personalised AI erotica.",
+      },
+      {
+        heading: "Literary quality, not just content",
+        body: "Generation calibrated toward prose quality — rhythm, texture, character that is felt rather than stated — produces something worth listening to. The craft is in the calibration of the generation, not just the fact of it.",
+      },
+      {
+        heading: "Narrated and produced",
+        body: "Not text that technically exists — a narrated audio story with production values that serve the content. The voice carries the emotional register of what is written. The experience is audio from the ground up.",
+      },
+      {
+        heading: "New every time",
+        body: "Not a story to return to — a story to hear for the first time. Every session produces something that has never existed before, built around what you want right now. The creative range is limited only by your imagination.",
+      },
+      {
+        heading: "Private by architecture",
+        body: "No social layer, no recommendation feed, no data sold. Your story does not exist in any library. It is yours, stored privately, heard only by you. The privacy is the founding design principle of the platform.",
+      },
+      {
+        heading: "The full intensity spectrum",
+        body: "From emotionally charged slow burn to fully explicit adult fiction. Intensity is a specific choice you make — the story is calibrated to match what you selected. The range is genuine.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "AI Erotica — The Full Picture",
+    paragraphs: [
+      "AI erotica is a category that encompasses a wide range of quality and intent. At one end is low-quality generation — text produced from minimal input with no literary calibration, no audio production, and no genuine personalisation beyond the broadest parameters. At the other end is something genuinely different from what the erotica category could offer before: a story built around the listener's specific choices, written with literary craft, narrated with production-grade audio, and stored privately as a piece of erotic fiction that exists nowhere else.",
+      "The Private Story is built at the quality end of this spectrum. The creative brief — the choices made in the Casting Room before anything is generated — is the mechanism through which specificity is achieved. The literary calibration of the generation is the mechanism through which quality is maintained. The audio production is the mechanism through which the experience is something worth actually listening to. And the privacy architecture is the mechanism through which the listener can explore her full imagination without the compromise of a social infrastructure that was not designed for this.",
+      "For listeners who have been searching the erotic fiction category — audiobooks, curated platforms, community content — and have always felt the gap between what is available and what they actually want, AI erotica done properly is the answer to that gap. Not a better catalogue. A different model entirely: the story created for this listener, this session, this imagination.",
+      "The combination of specificity, quality, and privacy that The Private Story offers is not available from any catalogue, however good. It requires the generative model — and the generative model, built with the right brief, calibration, and production infrastructure, is what makes it possible.",
+      "Create your AI erotica story around the specific brief that makes it genuinely yours.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your AI Erotica Story",
+    paragraphs: [
+      "The story that is specific to your imagination. The character, the dynamic, the emotional register — not approximated from what exists, but built around exactly what you described.",
+      "AI erotica, when built properly, closes the gap that every catalogue leaves: the distance between what is available and what you actually want. The Private Story creates that story for you, privately, for this session.",
+      "Private, narrated, yours. Created in under two minutes.",
+    ],
+    primary: { label: "Create your AI erotica story", href: "/create" },
+    links: [
+      { label: "Personalised audio stories", href: "/personalised-audio-stories" },
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Create your own audio story", href: "/create-your-own-audio-story" },
+    ],
+  },
+  faqs: [
+    { q: `What is AI erotica?`, a: `AI erotica is erotic fiction created using generative artificial intelligence rather than written in advance by a human author. The quality and type vary enormously across the category. At its best — when built around a specific creative brief, calibrated for literary quality, and delivered as production-grade narrated audio — AI erotica offers something that pre-existing erotica could not: a story that is genuinely specific to the listener's choices for this session, rather than retrieved from a library that was built for a general audience. At its worst, it is low-quality text generation with no genuine personalisation or craft.` },
+    { q: `Is AI erotica as good as human-written erotica?`, a: `The right comparison is not AI-generated versus human-written, but specific versus general. Any human-written erotic fiction was written before the listener arrived, for a general audience, with no knowledge of her particular preferences. AI erotica generated from a precise brief — with literary calibration and production-grade narration — produces something that is specific to the listener in a way that human-written fiction for a general audience cannot be. The quality question is about the calibration of the generation, not the technology itself. The Private Story generates from a detailed brief with literary quality as a requirement.` },
+    { q: `Is AI erotica private?`, a: `At The Private Story, completely. Your story is generated around your choices and stored only in your private account. There are no social features, no recommendation feed, no shared library, and no data sold or used for advertising. The privacy is architectural — not a setting that can be changed, but the foundational design of the platform. Your story does not exist in any catalogue and is not accessible to anyone except you.` },
+    { q: `How explicit is the content?`, a: `The Private Story supports the full spectrum from emotionally charged slow burn to fully explicit adult fiction. Intensity is one of the choices you make in the creation flow — the story is calibrated to match what you selected. All explicit content is available only to age-verified users aged 18 and over.` },
+    { q: `What makes the brief so important?`, a: `The specificity of the output is determined by the specificity of the input. A vague prompt produces a vague story. The Casting Room asks for seven specific creative choices — the character, the dynamic, the chemistry type, the setting, the emotional mood, the situation, and the intensity — which collectively produce a brief detailed enough to generate something genuinely particular to this listener and this session. The precision of the brief is the mechanism through which the story becomes genuinely yours rather than generically produced.` },
+    { q: `How long does it take to receive my story?`, a: `Most stories are generated and available to listen within a few minutes of completing the Casting Room. The brief itself typically takes under two minutes to complete. You can be listening to your story within five minutes of starting the creation flow.` },
+    { q: `Can I create more than one story?`, a: `Yes. Subscribers can create new stories for each session — a new brief, a new story, something that has never existed before. Every story is independent: a different character, a different dynamic, a different emotional register, built around what you want for that particular session. Your private library accumulates everything you create, each story with its own cover art and title.` },
+  ],
+};
+
 export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["adult-audio-stories", adultAudioStoriesConfig],
   ["ai-audio-story-generator", aiAudioStoryGeneratorConfig],
@@ -4518,6 +5208,11 @@ export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["adult-bedtime-stories", adultBedtimeStoriesConfig],
   ["ai-romance-stories-for-women", aiRomanceStoriesForWomenConfig],
   ["spicy-audio-stories", spicyAudioStoriesConfig],
+  ["forced-proximity-romance-audio-stories", forcedProximityRomanceAudioStoriesConfig],
+  ["erotic-audiobooks-for-women", eroticAudiobooksForWomenConfig],
+  ["office-romance-audio-stories", officeRomanceAudioStoriesConfig],
+  ["steamy-audio-stories", steamyAudioStoriesConfig],
+  ["ai-erotica", aiEroticaConfig],
 ]);
 
 export function getPageConfig(slug: string): SEOPageConfig | undefined {

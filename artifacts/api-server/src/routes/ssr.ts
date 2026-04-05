@@ -5,7 +5,7 @@ import { ssrHtmlShell } from "../ssrShared.js";
 const SITE_URL = "https://theprivatestory.com";
 const SITE_NAME = "The Private Story";
 const DATE_PUBLISHED = "2025-11-01";
-const DATE_MODIFIED = "2026-04-02";
+const DATE_MODIFIED = "2026-04-05";
 const CACHE_1D = "public, max-age=86400, stale-while-revalidate=3600";
 const CACHE_1H = "public, max-age=3600, stale-while-revalidate=300";
 
@@ -38,6 +38,7 @@ function makeWebPage(opts: {
   description: string;
   url: string;
   includesBreadcrumb?: boolean;
+  dateModified?: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@ function makeWebPage(opts: {
     description: opts.description,
     url: opts.url,
     datePublished: DATE_PUBLISHED,
-    dateModified: DATE_MODIFIED,
+    dateModified: opts.dateModified ?? DATE_MODIFIED,
     isFamilyFriendly: false,
     contentRating: "Adult Only 18+",
     publisher: {
@@ -63,6 +64,107 @@ function makeWebPage(opts: {
       : {}),
   };
 }
+
+function makeAudioObjectSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  genre?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AudioObject",
+    name: opts.name,
+    description: opts.description,
+    contentUrl: opts.url,
+    encodingFormat: "audio/mpeg",
+    genre: opts.genre ?? "Romance",
+    inLanguage: "en-GB",
+    isAccessibleForFree: false,
+    requiresSubscription: true,
+    producer: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
+function makeArticleSchema(opts: {
+  headline: string;
+  description: string;
+  url: string;
+  dateModified?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline,
+    description: opts.description,
+    url: opts.url,
+    datePublished: DATE_PUBLISHED,
+    dateModified: opts.dateModified ?? DATE_MODIFIED,
+    inLanguage: "en-GB",
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/logo.png`,
+      },
+    },
+  };
+}
+
+const SEO_PAGE_CROSS_LINKS: Record<string, Array<{ label: string; href: string }>> = {
+  "forced-proximity-romance-audio-stories": [
+    { label: "Office romance audio stories", href: "/office-romance-audio-stories" },
+    { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
+    { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+    { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+  ],
+  "erotic-audiobooks-for-women": [
+    { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+    { label: "Personalised erotica", href: "/personalised-erotica" },
+    { label: "Erotic audio stories", href: "/erotic-audio-stories" },
+    { label: "Audio stories for women", href: "/audio-stories-for-women" },
+  ],
+  "office-romance-audio-stories": [
+    { label: "Forced proximity romance audio stories", href: "/forced-proximity-romance-audio-stories" },
+    { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+    { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
+    { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+  ],
+  "steamy-audio-stories": [
+    { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+    { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+    { label: "Adult audio stories", href: "/adult-audio-stories" },
+    { label: "Dark romance audio stories", href: "/dark-romance-audio-stories" },
+  ],
+  "ai-erotica": [
+    { label: "Personalised erotica", href: "/personalised-erotica" },
+    { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+    { label: "Erotic audio stories", href: "/erotic-audio-stories" },
+    { label: "AI audio story generator", href: "/ai-audio-story-generator" },
+  ],
+  "ferly-alternative": [
+    { label: "Dipsea alternative", href: "/dipsea-alternative" },
+    { label: "Quinn alternative", href: "/quinn-alternative" },
+    { label: "Personalised audio stories", href: "/personalised-audio-stories" },
+    { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+  ],
+};
 
 function makeFaqSchema(faqs: Array<{ q: string; a: string }>) {
   return {
@@ -910,11 +1012,28 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     { name: page.hero.h1, item: canonical },
   ]);
 
+  const pageDate = page.dateModified ?? DATE_MODIFIED;
+
   const webPage = makeWebPage({
     name: page.meta.title,
     description: page.meta.description,
     url: canonical,
     includesBreadcrumb: true,
+    dateModified: pageDate,
+  });
+
+  const audioObjectSchema = makeAudioObjectSchema({
+    name: page.meta.title,
+    description: page.meta.description,
+    url: canonical,
+    genre: page.hero.badge ?? "Romance",
+  });
+
+  const articleSchema = makeArticleSchema({
+    headline: page.hero.h1,
+    description: page.meta.description,
+    url: canonical,
+    dateModified: pageDate,
   });
 
   const howToSchema = {
@@ -1080,6 +1199,15 @@ router.get("/:slug", (req: Request, res: Response, next) => {
       }
     : null;
 
+  const crossLinks = SEO_PAGE_CROSS_LINKS[slug];
+  const crossLinksHtml = crossLinks?.length
+    ? `
+    <section>
+      <h2>Related</h2>
+      <p>${crossLinks.map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join(" · ")}</p>
+    </section>`
+    : "";
+
   const bodyHtml = `
     <a class="cta-primary" href="/create">Create your story</a>
     ${TRUST_BAR_HTML}
@@ -1091,7 +1219,12 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     ${howItWorksHtml}
     ${faqsHtml}
     ${finalCtaHtml}
+    ${crossLinksHtml}
     ${EXPLORE_HTML}`;
+
+  const ogImage = page.heroImage
+    ? `${SITE_URL}/${page.heroImage}`
+    : undefined;
 
   const html = ssrHtmlShell({
     title: page.meta.title,
@@ -1101,7 +1234,8 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     badge: page.hero.badge,
     tagline: page.hero.tagline,
     bodyHtml,
-    schemas: [faqSchema, breadcrumb, webPage, howToSchema, ...(comparisonItemListSchema ? [comparisonItemListSchema] : [])],
+    ogImage,
+    schemas: [faqSchema, breadcrumb, webPage, audioObjectSchema, articleSchema, howToSchema, ...(comparisonItemListSchema ? [comparisonItemListSchema] : [])],
   });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");

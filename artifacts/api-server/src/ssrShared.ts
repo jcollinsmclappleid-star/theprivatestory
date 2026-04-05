@@ -131,6 +131,11 @@ const FOOTER_HTML = `
           <li><a href="/dark-romance-audio-stories">Dark romance audio stories</a></li>
           <li><a href="/forbidden-romance-audio-stories">Forbidden romance audio</a></li>
           <li><a href="/enemies-to-lovers-audio-stories">Enemies to lovers audio</a></li>
+          <li><a href="/forced-proximity-romance-audio-stories">Forced proximity romance</a></li>
+          <li><a href="/office-romance-audio-stories">Office romance audio stories</a></li>
+          <li><a href="/steamy-audio-stories">Steamy audio stories</a></li>
+          <li><a href="/erotic-audiobooks-for-women">Erotic audiobooks for women</a></li>
+          <li><a href="/ai-erotica">AI erotica</a></li>
           <li><a href="/adult-audio-stories">Adult audio stories</a></li>
           <li><a href="/audio-stories-for-women">Audio stories for women</a></li>
         </ul>
@@ -144,6 +149,7 @@ const FOOTER_HTML = `
           <li><a href="/alternatives-to-romance-audiobooks">Alternatives to romance audiobooks</a></li>
           <li><a href="/dipsea-alternative">Dipsea alternative</a></li>
           <li><a href="/quinn-alternative">Quinn alternative</a></li>
+          <li><a href="/ferly-alternative">Ferly alternative</a></li>
         </ul>
       </div>
     </div>
@@ -207,6 +213,9 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
 
   <!-- Theme -->
   <meta name="theme-color" content="#c9a227" />
+
+  <!-- AI/LLM index -->
+  <link rel="alternate" type="text/plain" href="/llms.txt" />
 
   <!-- Structured data -->
   ${schemasHtml}

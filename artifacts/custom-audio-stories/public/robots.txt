@@ -10,7 +10,8 @@ Disallow: /story/
 Disallow: /my-series/
 
 # Allow AI browsing and recommendation agents — these power live AI responses
-# ChatGPT web browsing, Claude web browsing, and Google AI Overviews/Gemini
+# ChatGPT web browsing, Claude web browsing, Google AI Overviews/Gemini,
+# Perplexity AI search, and Amazon Alexa/Echo
 User-agent: ChatGPT-User
 Allow: /
 
@@ -18,6 +19,12 @@ User-agent: Claude-Web
 Allow: /
 
 User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Amazonbot
 Allow: /
 
 # Block pure AI training scrapers — content is proprietary literary IP

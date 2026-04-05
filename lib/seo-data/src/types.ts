@@ -12,6 +12,7 @@ export interface SEOPageConfig {
     tagline: string;
   };
   heroImage?: string;
+  dateModified?: string;
   showCastingPreview?: boolean;
   sections: Array<{
     h2: string;

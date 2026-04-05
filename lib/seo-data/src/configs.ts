@@ -3656,88 +3656,171 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const audioEroticaForWomenConfig: SEOPageConfig = {
-  meta: { title: `Audio Erotica for Women — Private, Personalised, Made for You | The Private Story`, description: `Audio erotica for women created around your mood, tone, and fantasy right now. Private, personalised, and narrated. Not a library — a story built for you.` },
-  hero: { badge: `Adult · For Women · Personalised`, h1: `Audio Erotica for Women — Private and Made for You`, tagline: `Not a catalogue of someone else's fantasy. A story created around yours, right now, and heard only by you.` },
+  meta: {
+    title: `Audio Erotica for Women — AI-Personalised, Private, Made for You | The Private Story`,
+    description: `Audio erotica for women created around your mood, dynamic, and desires. Personalised, narrated, completely private. Not a catalogue — a story built for you right now.`,
+  },
+  hero: {
+    badge: `Adult · For Women · Private`,
+    h1: `Audio Erotica for Women — Private, Personalised, and Made for Your Imagination`,
+    tagline: `Not someone else's fantasy served in a catalogue. A story created around yours — your mood, your dynamic, your specific quality of desire. Heard only by you.`,
+  },
   heroImage: "images/seo-hero-women.png",
   showCastingPreview: true,
   sections: [
     {
       h2: "What Audio Erotica for Women Actually Means",
       paragraphs: [
-        "The phrase 'audio erotica for women' gets used to describe a wide range of content — some of it genuinely created with a female audience in mind, much of it not. What women consistently report wanting from erotic audio fiction is different from the default assumptions that shaped most early audio erotica: emotional context, character depth, tension before resolution, a specific quality of attention that feels like it understands female desire rather than approximates it.",
-        "Audio erotica for women at The Private Story starts from this distinction. The content is generated around your emotional register and the quality of desire you want the story to explore — not from a template calibrated for the broadest possible audience. The difference between content made for a general audience that includes women and content made specifically around what you, right now, want to feel is the difference between a best guess and an answer.",
-        "Personalisation here means that the dynamic you choose — its texture, its power register, its emotional weight — shapes the story from the first sentence. If you want a story that builds slowly through attention and proximity rather than rushing to resolution, that is what is created. If you want something more direct but still grounded in emotional specificity, the creation flow lets you express that. The story responds to your choices rather than presenting you with options from a pre-existing catalogue. Explore what <a href=\"/personalised-audio-stories\">personalised audio stories</a> can cover, or understand how <a href=\"/private-audio-stories\">private audio stories</a> are kept secure from the moment they are created.",
+        "The phrase gets used broadly. Audio erotica 'for women' on most platforms means erotica that women are permitted to use — a library of content produced for a general adult audience, with some effort made to include material that skews toward what a female listener might want. The calibration is toward the average. The experience is browsing a catalogue someone else built.",
+        "What audio erotica genuinely built for women means is something different: content that begins from female desire, not the approximation of it. That means emotional context before physical resolution. It means tension as a primary pleasure rather than a preamble to get through. It means that the quality of the dynamic — the specific character of the attention, the intelligence of the desire, the texture of the wanting — matters at least as much as what eventually happens.",
+        "Research into how women experience and describe erotic desire consistently returns to specificity: the situation, the character, the particular quality of the connection. Women who read romance fiction are not merely seeking physical content — they are inhabiting a complete emotional situation, with a character whose interiority they can follow and a dynamic that has texture. The translation of this to audio erotica requires the same specificity. A story that approximates it — that hits the broad category without the specific quality — falls short in a way that is immediately apparent to the listener.",
+        "At The Private Story, audio erotica for women starts from this specificity requirement. The creation process asks you about the quality of the dynamic you want — not just 'what kind of story' but the emotional register, the character of the desire, the pacing, the atmosphere. These choices are the starting point for a story generated from them, not selected from a catalogue that contains something in the right area. See how <a href=\"/personalised-audio-stories\">personalised audio stories</a> differ from browsing, or explore the <a href=\"/how-it-works\">full creation flow</a>.",
+      ],
+    },
+    {
+      h2: "Why Audio Is the Right Format for Erotic Fiction",
+      paragraphs: [
+        "The format matters as much as the content. Audio erotica for women is not the same experience as reading erotica or watching visual content, and the differences are significant.",
+        "Text-based erotica keeps part of your attention on the act of reading — the mechanics of decoding language, the small cognitive friction of turning pages or scrolling. This is not a problem for most reading, but for erotic fiction the slight remove matters. The analytical mind never fully disengages. The story arrives at one degree of separation from you.",
+        "Visual content goes in a different direction: it provides everything, which means your imagination has nothing to do. The actors, the setting, the aesthetic — all are fixed, and the viewer either matches them or doesn't. The experience is consumed rather than participated in.",
+        "Audio sits exactly between these, and the space it occupies is ideal for erotic fiction. The voice is close — in headphones, it is inside your experience rather than outside it. The voice describes; your imagination builds. The story that plays for you is partly the narration and partly what your mind makes of it — which means it has a quality of personal specificity that visual content cannot provide. The listener is active in a way the viewer is not.",
+        "Add personalisation — a story shaped specifically around the dynamic, pacing, and atmosphere you chose — and the immersion deepens further. The voice is delivering a story that was made for you. Your imagination is filling in what was shaped around how you specifically experience desire. The experience of listening to something written for you is different in a way that is felt from the first scene. Explore <a href=\"/intimate-audio-stories\">intimate audio stories</a> or <a href=\"/erotic-audio-stories-for-women\">erotic audio stories for women</a> across all intensity registers.",
       ],
     },
     {
       h2: "The Privacy Architecture Women Actually Need",
       paragraphs: [
-        "Privacy in erotic audio content matters differently for women than the industry has historically assumed. It is not simply a preference for a secure login. It is about the content itself — whether the story you listened to becomes data that describes your desires, whether it is visible in any way to other people in your life, whether you need to worry about what a platform knows about what you find exciting.",
-        "The Private Story is built around the position that what you listen to here is not information that should belong to a platform. The story created for you exists in your account and nowhere else. There is no social layer, no public activity, no recommendation engine that broadcasts what you have been exploring. The creation choices you make are used to create the story and are not shared or used to build a permanent behavioural profile.",
-        "This is what private actually means in practice — not just a login screen, but a structural absence of the public-facing features that would make your listening history feel exposed. For women who want to explore audio erotica, this architecture removes a significant friction that the library model, with its reviews, recommendations, and social features, consistently creates.",
+        "Privacy in erotic content matters differently for women than the industry has historically assumed. It is not simply a preference for a secure password. It is about what the platform knows about you, what surfaces that information, and whether the content you engage with becomes part of a profile that could, in any way, be seen by anyone else.",
+        "Most audio erotica platforms fail this standard in obvious ways. Public recommendation feeds that surface 'listeners also liked'. Review systems that leave traces of what you responded to. Browsing histories that accumulate by default and may persist. Social features borrowed from general entertainment platforms that were never designed for content with the privacy requirements of erotic fiction.",
+        "The Private Story is architecturally different. There are no social features. No public recommendation feed. No reviews. No activity visible to anyone other than you. Your stories are generated around your choices and saved to your account — and your account is not a public-facing object that others can see. This is not a privacy setting you can enable. It is the structural design of the platform: the public-facing features that would create privacy risk simply do not exist.",
+        "What this means in practice: you can explore what you want without that exploration feeling witnessed. The specific dynamic you are curious about, the intensity you choose, the scenario you build — none of this is information held against a public profile. It exists in your account, created for you, visible to no one. <a href=\"/privacy\">Read the full privacy commitment</a> to understand exactly how your data is handled.",
       ],
     },
     {
-      h2: "How Personalised Audio Erotica Differs from a Catalogue",
+      h2: "From Catalogue to Creation — the Shift That Changes the Experience",
       paragraphs: [
-        "The dominant model for audio erotica platforms is the catalogue: a library of pre-existing content, searchable by keyword, navigable by category. The experience is browsing-based — you filter, select, and hope the resulting content matches what you actually wanted right now. The content was made before your arrival, for a general audience, at a specific emotional register that you may or may not share.",
-        "Personalised audio erotica works differently. The story does not exist until you create it. The creation process — choosing the dynamic, the emotional register, the character quality, the specific texture of the experience you want — happens first. Then the story is written, from the first sentence, around those choices. It is not retrieved from a library. It does not match a nearest-fit in a catalogue. It is genuinely original and genuinely yours.",
-        "The practical consequence is that the story fits the specific quality of desire you arrived with right now, rather than requiring you to find something in a catalogue that fits well enough. Women who have used both describe the difference as analogous to the difference between choosing from a restaurant menu and having a meal prepared around what you actually wanted to eat.",
+        "Most audio erotica platforms operate on a catalogue model. The content exists before you arrive. It was produced for a general audience, polished, categorised, and placed in a library. Your job is to browse it — to filter by category, read descriptions, and select from what already exists. On a good day, you find something that matches your mood closely enough to work.",
+        "The problem is the gap between 'closely enough' and 'exactly'. In most entertainment genres, this gap is tolerable. A film that is not quite your taste is still watchable. In erotic fiction, the gap is more significant. The experience depends on specificity — on the story inhabiting the right emotional register, the right dynamic, the right quality of character and pacing. A story that is mostly right is substantially less satisfying than one that is precisely right.",
+        "Generation closes this gap. At The Private Story, the story does not exist until you describe what you want. Your creation choices — the dynamic, the emotional register, the character quality, the setting, the pacing, the intensity — are the starting point for a story written from the first sentence in response to them. There is no catalogue to be closest-fit. There is only the story that began with your preferences and built outward from there.",
+        "This is the core of what personalised audio erotica for women means at this platform. Not filtered browsing. Not algorithmic recommendation. Generation — original fiction created from your choices, for this session, specifically for you. Read more about <a href=\"/personalised-erotica\">personalised erotica</a> and how it compares to standard adult audio platforms, or see the <a href=\"/erotic-audio-stories\">erotic audio stories</a> overview for the full range of what can be created.",
       ],
     },
   ],
   howItWorks: [
-    { heading: "Choose your mood and dynamic", body: "Select the emotional register, character dynamic, and tone of the story you want right now. The creation flow is designed to capture the specific quality of the experience — not just categories, but the texture of what you want to feel." },
-    { heading: "Your story is written from scratch", body: "The story is generated specifically for you based on your choices — not retrieved from a library. It begins with your preferences and builds outward, every element shaped by what you selected." },
-    { heading: "Listen in complete privacy", body: "Your narrated story is saved to your account and accessible only to you. No social features, no public history, no visible activity. The story exists in your account and nowhere else." },
+    {
+      heading: "Choose your mood and dynamic",
+      body: "Tell the system what you want. The emotional register, the character of the desire, the dynamic between the characters, the intensity, the setting. The creation flow is built to capture the quality of the experience — not just broad categories, but the specific texture of what you want to feel. <a href=\"/create\">Start creating</a>.",
+    },
+    {
+      heading: "Your story is written from scratch",
+      body: "Generated specifically for you based on your choices — not retrieved from a library. The story begins with your preferences and builds outward. Every element, from the opening scene to the pacing of the resolution, reflects what you selected. It did not exist before you described it.",
+    },
+    {
+      heading: "Listen in complete privacy",
+      body: "Your narrated story is saved to your account and accessible only to you. No social features, no public history, no visible activity. <a href=\"/private-audio-stories\">Private audio stories</a> that exist in your account and nowhere else.",
+    },
   ],
   scenarios: {
-    h2: "What This Can Feel Like",
-    intro: "Audio erotica for women can take many forms depending on your mood and the experience you want to feel. Here are some of the registers the platform can create.",
+    h2: "The Registers Your Story Can Take",
+    intro: "Audio erotica for women can occupy many different emotional registers depending on your mood and what you want to feel. These are four of them.",
     items: [
-      { heading: "The slow approach", body: "A story that builds through proximity, attention, and restrained wanting — where the charge between characters is the point, and the resolution arrives because everything before it was worth it." },
-      { heading: "Confident, direct, grounded", body: "A story where desire is expressed clearly and responded to with full presence — no games, no ambiguity, just two people who know what they want and move toward it with mutual attention." },
-      { heading: "Emotionally close", body: "A story where intimacy is the primary register — physical closeness that is also emotional closeness, a dynamic that understands both elements as inseparable from each other." },
-      { heading: "Forbidden attraction", body: "A scenario where the appeal lies in the tension between desire and restraint — professional distance, unlikely connection, the specific charge that comes from wanting someone who is not quite available to want." },
+      {
+        heading: "The slow approach",
+        body: "A story that builds through proximity, charged attention, and restrained wanting. The dynamic between the characters is present from the first scene — the awareness of each other, the small moments of near-contact, the loaded exchanges that mean more than they say. Resolution arrives because everything before it was worth it. The restraint is not a delay — it is the experience. See <a href=\"/slow-burn-audio-stories\">slow burn audio stories</a>.",
+      },
+      {
+        heading: "Confident, direct, and grounded",
+        body: "A story where desire is expressed clearly and responded to with full presence. No ambiguity, no games, no pretending otherwise. The character who wants you is assured in a way that is specific — not aggressive, not performative, but the particular quality of someone who knows what they want and communicates it without apology. The dynamic is mutual and honest from the start.",
+      },
+      {
+        heading: "Emotionally close and physically present",
+        body: "Intimacy where the emotional and physical are inseparable — a story where closeness is the point, where the depth of connection between the characters is what makes everything else feel significant. This is the register where erotic fiction and literary fiction overlap: the story matters because of what is felt, and what is physical is felt because of what came before it.",
+      },
+      {
+        heading: "Forbidden and charged",
+        body: "The specific tension of attraction that exists where it probably shouldn't — professional distance, the wrong moment, a line that both people know is there. The appeal is in the restraint and what the restraint cannot ultimately hold back. The charge is intensified by the context. This is one of the oldest and most reliably effective registers for erotic fiction, and in audio it lands with particular force. See <a href=\"/forbidden-romance-audio-stories\">forbidden romance audio stories</a>.",
+      },
     ],
-    interstitial: "These are starting points. The story created for you reflects the specific choices you make in the creation flow.",
+    interstitial: "Your choices shape the exact register of the story created for you. These are starting points.",
   },
   benefits: {
     h2: "Why Women Choose The Private Story",
     items: [
-      { heading: "Made for how you actually feel", body: "The story is created around the quality of desire you arrived with right now, not a general audience's assumed preferences." },
-      { heading: "Complete privacy, structurally", body: "No social layer, no public history, no recommendation engine. What you listen to is not information that belongs to a platform." },
-      { heading: "Emotional intelligence", body: "The stories understand that female desire has texture, context, and emotional dimension — and are created to reflect that, not bypass it." },
-      { heading: "No browsing required", body: "You describe what you want; the story is created. No filtering through a catalogue hoping something fits your specific mood right now." },
+      {
+        heading: "Built around your specific mood",
+        body: "The story is created from the quality of desire you arrived with right now, not a general audience's assumed preferences. The emotional register, the dynamic, the pacing — all are set by you, not by a platform deciding what most women want.",
+      },
+      {
+        heading: "Complete privacy, structurally",
+        body: "No social layer, no public listening history, no recommendation engine. The features that would make your exploration feel witnessed simply don't exist on this platform. <a href=\"/private-audio-stories\">Privacy is architectural</a>, not a setting.",
+      },
+      {
+        heading: "Emotional intelligence in the writing",
+        body: "The stories understand that female desire has texture, context, and emotional dimension. The creation process captures the specific quality of what you want to feel, not just the category. The resulting fiction reflects that specificity.",
+      },
+      {
+        heading: "No browsing, no compromise",
+        body: "The experience of filtering through a catalogue hoping something fits your specific mood — that is not what this is. You describe what you want. A story is created. It fits because it was built to.",
+      },
+      {
+        heading: "The full intensity spectrum",
+        body: "From quietly atmospheric and emotionally charged to fully explicit adult content. The intensity is a genuine choice you make, not a platform default. Different moods require different registers. All are available.",
+      },
+      {
+        heading: "Premium, literary quality",
+        body: "The writing is adult and the tone is sophisticated — fiction that takes desire seriously as a subject and treats the listener as someone with taste and intelligence. Not content produced at volume. Content produced for you specifically.",
+      },
     ],
   },
   fullPicture: {
-    h2: "Audio Erotica That Belongs to You",
+    h2: "Audio Erotica for Women — The Full Picture",
     paragraphs: [
-      "The Private Story was built on a specific premise: that personalised audio erotica for women is not a niche within a general adult content platform, but a category that deserves to be built from the ground up around how women actually experience desire. The content, the privacy model, and the creation flow are all shaped by this premise.",
-      "What that means in practice: stories that begin with your emotional register rather than a production decision. A privacy architecture that removes the friction that public-facing library models create. Content that can be as quietly atmospheric or as explicitly adult as your creation choices specify — shaped by your preferences, not by a platform default calibrated for a general audience. If you are curious about the format itself, read our guide to <a href=\"/what-is-audio-erotica\">what audio erotica is</a> and how it differs from visual pornography and erotic audiobooks.",
-      "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Explore the creation flow and see what can be made for you right now.",
+      "The Private Story was built on a specific premise: that audio erotica genuinely designed for women is not a niche within a general adult content platform, but a category that deserves to be built from the ground up around how women actually experience and describe desire. The content, the privacy model, and the creation flow are all shaped by this premise.",
+      "What that means in practice: stories that begin with your emotional register rather than a production decision. A privacy architecture that removes the friction that public-facing library models create for a category of content that requires genuine privacy. Content that can be as quietly atmospheric or as explicitly adult as your creation choices specify — shaped by your preferences, not by a platform default calibrated for a general audience.",
+      "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Not because the technology is magic, but because a story written specifically around what you chose to want right now is different — in kind, not just in degree — from a story selected from a library someone else produced.",
+      "This is audio erotica for women in the most specific sense: built around female desire, designed for private exploration, and created in response to your choices rather than someone else's production schedule. Explore the <a href=\"/create\">creation flow</a> to see what can be made around your choices, or see the <a href=\"/pricing\">pricing page</a> for how access works.",
     ],
   },
   finalCTA: {
-    h2: "Your Story, Right Now",
+    h2: "Your Story, Created for You",
     paragraphs: [
-      "The story you want to hear right now is created the moment you make your choices. No browsing required. Under two minutes to create. Completely private.",
+      "The story you want to hear is created the moment you make your choices. Under two minutes to create. Completely private. Made for you, not for a general audience.",
     ],
     primary: { label: "Create your story", href: "/create" },
     links: [
-      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Personalised erotica", href: "/personalised-erotica" },
+      { label: "Erotic audio stories for women", href: "/erotic-audio-stories-for-women" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
-      { label: "Adult audio stories", href: "/adult-audio-stories" },
+      { label: "Private audio stories", href: "/private-audio-stories" },
+      { label: "Spicy audio stories", href: "/spicy-audio-stories" },
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
     ],
   },
   faqs: [
-    { q: "What makes audio erotica specifically for women different?", a: "Audio erotica for women at The Private Story is built around how women report experiencing desire: with emotional context, character depth, and tension that builds toward resolution rather than bypassing it. The creation flow asks about the quality of the dynamic you want, not just the category. This produces stories that feel calibrated for female experience rather than approximating it from a general-audience template." },
-    { q: "Is this content genuinely adult?", a: "Yes. The Private Story creates adult content for adults 18+. The intensity is shaped by your creation choices — from quietly sensual and atmospheric through to explicitly adult. The platform is designed for adult women who want private, emotionally intelligent erotic audio that reflects their actual preferences rather than a platform default." },
-    { q: "How is this different from other audio erotica platforms?", a: "Most audio erotica platforms operate on a catalogue model — you browse and select from fixed content. The Private Story generates an original story for you based on your choices at the moment of creation. The story exists because of your preferences right now, not because it was produced in advance for a general audience. The privacy model also differs: no social features, no public listening history, no shared data." },
-    { q: "How long are the stories?", a: "Stories typically run between fifteen and thirty minutes, depending on your creation choices. This is sized for the specific listening window when audio erotica is most wanted — a complete, satisfying experience without requiring an hour-long commitment." },
-    { q: "Is my listening history private?", a: "Yes. Your stories are saved to your account only. There is no social layer, no public listening history, and no recommendation engine that broadcasts what you have been exploring. The structural design of the platform makes your listening genuinely private rather than simply password-protected." },
+    {
+      q: "What makes audio erotica specifically for women different from general adult content?",
+      a: "Audio erotica for women at The Private Story is built around how women report experiencing desire: with emotional context, character depth, and tension that builds toward resolution rather than bypassing it. The creation flow asks about the quality of the dynamic you want — its emotional register, its pacing, the character of the attention — not just the category. This produces stories calibrated for female experience rather than approximating it from a general-audience template.",
+    },
+    {
+      q: "Is this content genuinely adult and explicit?",
+      a: "Yes. The Private Story creates adult content for adults 18+. The intensity is shaped by your creation choices — from quietly sensual and atmospheric through to explicitly adult. The platform is designed for adult women who want private, emotionally intelligent erotic audio that reflects their actual preferences rather than a platform default.",
+    },
+    {
+      q: "How is this different from other audio erotica platforms for women?",
+      a: "Most audio erotica platforms operate on a catalogue model — you browse and select from fixed content that was produced before you arrived. The Private Story generates an original story for you based on your choices at the moment of creation. The story exists because of your preferences right now, not because it was produced in advance for a general audience. The privacy model also differs: no social features, no public listening history, no shared data.",
+    },
+    {
+      q: "Can I choose exactly what kind of story I get?",
+      a: "Yes — this is the core of the experience. The creation flow asks you about the emotional register, the dynamic between the characters, the intensity level, the setting, the pacing, and what you want the story to feel like. These choices shape the story that is generated. You are not filtering a catalogue — you are describing what you want, and a story is created from that description.",
+    },
+    {
+      q: "Is my listening history private?",
+      a: "Yes. Your stories are saved to your account only. There is no social layer, no public listening history, and no recommendation engine that broadcasts what you have been exploring. The structural design of the platform makes your listening genuinely private rather than simply password-protected. No social features exist on the platform — by design.",
+    },
+    {
+      q: "How long are audio erotica stories on this platform?",
+      a: "Story length reflects your creation choices and the narrative arc they produce — long enough to build properly and reach a satisfying resolution. Stories are designed for a single listening session: complete in themselves, sized for the specific window when audio erotica is most wanted, without requiring an hour-long commitment.",
+    },
   ],
 };
 
@@ -4238,6 +4321,170 @@ export const spicyAudioStoriesConfig: SEOPageConfig = {
   ],
 };
 
+export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
+  meta: {
+    title: `Erotic Audio Stories for Women — AI-Personalised, Private, Created for Your Imagination | The Private Story`,
+    description: `Erotic audio stories for women generated around your mood, dynamic, and desires. Original, narrated, completely private. Not a library — your story, made for you.`,
+  },
+  hero: {
+    badge: `For Women · Adult · Personalised`,
+    h1: `Erotic Audio Stories for Women — Written Around Your Imagination`,
+    tagline: `Erotic fiction that begins with what you actually want to feel. Not a catalogue someone else curated. Your story, created from your choices, heard only by you.`,
+  },
+  heroImage: "images/seo-hero-women.png",
+  showCastingPreview: true,
+  sections: [
+    {
+      h2: "Erotic Audio Stories Built Around Women's Imagination — Not a General Audience",
+      paragraphs: [
+        "The category 'erotic audio stories for women' exists on most platforms as a filtering layer over content that was not originally designed with women in mind. Stories are tagged as 'female-friendly', or a curation is labelled 'for her', but the underlying content often reflects the assumptions of a general adult audience: physical content prioritised over emotional context, resolution before tension has properly built, dynamics calibrated to a broadest-possible-audience setting that differs from what women consistently report wanting.",
+        "Women who read romance fiction at volume — and they are the largest demographic for the genre by a significant margin — are not looking primarily for physical content. They are inhabiting emotional situations with full interiority. The character of the desire matters as much as the desire itself. The tension and the slow build carry as much weight as what eventually happens. The dynamic — who pursues, how, with what quality of attention — is often the point.",
+        "Erotic audio stories genuinely built for women start from these preferences rather than approximating them. At The Private Story, the creation process is designed to capture the specific quality of what you want to feel: the emotional register, the character of the dynamic, the pacing that works for you. The story generated reflects these choices from the first sentence. It is not a category label over general-audience content. It is content that began with your specific preferences and built outward from there.",
+        "This is the difference between audio erotica for women as a marketing label and audio erotica for women as a design principle. See how <a href=\"/personalised-audio-stories\">personalised audio stories</a> are built around your specific mood, or explore <a href=\"/audio-erotica-for-women\">audio erotica for women</a> for a deeper account of how this platform approaches the category.",
+      ],
+    },
+    {
+      h2: "What Women Actually Want from Erotic Audio Stories",
+      paragraphs: [
+        "This is not theoretical. Women who use audio erotica platforms, read erotic fiction, and consume romance novels have been studied and have spoken at length about what they are looking for. The picture that emerges is consistent across formats.",
+        "Emotional context matters. A character who is compelling — whose desire is specific and felt rather than generic — creates the conditions for erotic content to land with full force. A story that goes straight to physical content without establishing who these people are and why the tension between them matters tends to fall flat for female listeners in a way it may not for others.",
+        "Tension is a pleasure, not a delay. The build — the charged exchanges, the moments of almost-contact, the accumulation of wanting before anything resolves — is often the most sought-after quality in erotic fiction among women. Stories that treat this phase as something to get through are missing the point for a significant portion of female listeners.",
+        "The quality of the dynamic matters. The specific character of the attention, the intelligence of the desire, the way the characters relate to each other before and during — these are what make a story land with the emotional specificity that makes it genuinely erotic rather than technically explicit. Explore the <a href=\"/slow-burn-audio-stories\">slow burn audio stories</a> page for more on this register, or see <a href=\"/intimate-audio-stories\">intimate audio stories</a> for the full range of emotional registers available.",
+      ],
+    },
+    {
+      h2: "Why Audio Works for Erotic Fiction in a Way Other Formats Cannot",
+      paragraphs: [
+        "Audio fiction occupies a specific space in the landscape of erotic content — and it is the space best suited to the qualities that women most want from the genre.",
+        "Text requires part of your attention to remain on the mechanics of reading. The analytical mind never fully disengages. The story arrives through language, which means there is always a small cognitive step between the text and the experience. For most fiction this is negligible. For erotic fiction — where immersion is the point — it creates a degree of remove that matters.",
+        "Visual content goes in the opposite direction. Everything is provided. The actors, the setting, the aesthetic — all are fixed by someone else's creative decisions. Your imagination has nothing to build. The experience is consumed rather than participated in, and the very specificity that makes visual content immediate also limits it: the thing on screen is the thing, not the version your imagination would have made.",
+        "Audio sits between these and the space is exactly right. The voice arrives close — in headphones, inside your experience rather than outside it. Your imagination does the work of building what the voice describes. The story that plays for you is partly the narration and partly what your mind makes of it — which means it has a specificity that cannot be manufactured in any other format. It matches how you imagine, because part of the work of imagining is yours.",
+        "Add personalisation — the story shaped specifically around what you chose — and the quality of immersion deepens further. The voice is delivering something made for you. Your imagination fills in what was designed around how you specifically wanted to feel. This is why erotic audio stories for women, when built around female desire and delivered privately, can produce experiences no other format matches. See <a href=\"/audio-stories-vs-audiobooks\">how audio stories differ from audiobooks</a> for more on the format distinction.",
+      ],
+    },
+    {
+      h2: "The Catalogue Cannot Give You What Generation Can",
+      paragraphs: [
+        "The dominant model for erotic audio content is the catalogue. Content is produced in advance, categorised, and made available to browse. You filter by mood, intensity, dynamic, and select from what exists. On a good session, something fits closely enough.",
+        "The problem is the gap between 'closely enough' and 'exactly'. In erotic fiction, this gap is particularly costly. The experience depends on the story inhabiting the right emotional register — not approximately the right one, but the specific quality of desire you arrived with. A story that is in the right category but slightly off in tone, dynamic, or pacing can feel like trying to wear someone else's clothing that is almost your size.",
+        "Generation closes this gap. At The Private Story, the story does not exist until you describe what you want. The creation choices — dynamic, emotional register, character quality, intensity, setting — become the brief. The story is then written from the first sentence in response to them. There is no catalogue to be nearest-fit to. There is a story that began with your specific preferences for this session.",
+        "This is not a marginal improvement over the best catalogue. It is a different model of what erotic audio stories for women can be. Explore <a href=\"/personalised-erotica\">personalised erotica</a> for a full account of how generation works, or see the <a href=\"/create\">creation flow</a> to experience the process directly.",
+      ],
+    },
+  ],
+  howItWorks: [
+    {
+      heading: "Describe what you want to feel",
+      body: "The creation flow asks about the quality of the dynamic, the emotional register, the character of the desire, the intensity, the atmosphere. These are not broad categories — they capture the specific texture of the erotic experience you are looking for. Under two minutes to complete.",
+    },
+    {
+      heading: "An original story is created",
+      body: "Generated from your choices, not retrieved from a library. The story is written from the first sentence around what you described — original fiction that exists because of your specific preferences for this session. See <a href=\"/create-your-own-audio-story\">how creating your own audio story works</a>.",
+    },
+    {
+      heading: "Listen privately, completely",
+      body: "Saved to your account, heard only by you. No social features, no public history, no visible activity. <a href=\"/private-audio-stories\">Private audio stories</a> kept in your account and accessible only to you.",
+    },
+  ],
+  scenarios: {
+    h2: "Registers Your Erotic Audio Story Can Take",
+    intro: "Erotic fiction for women occupies many different emotional registers. Here are four — each shaped by what you choose in the creation flow.",
+    items: [
+      {
+        heading: "Slow burn and charged",
+        body: "A story that holds the tension between two people for as long as the narrative can sustain it. The awareness of each other, the near-misses, the charged exchanges that carry multiple meanings. Resolution arrives because everything before it was worth it. This is the register that female readers of romance fiction most consistently seek out — and in audio, narrated with the exact quality of that restraint, it arrives with particular force. <a href=\"/slow-burn-audio-stories\">Explore slow burn audio stories</a>.",
+      },
+      {
+        heading: "Direct, assured, and honest",
+        body: "Desire expressed clearly by someone who is specific in their wanting — assured without being aggressive, attentive without being possessive. The character knows what they want and communicates it without games. This dynamic is often described as rare in real life and deeply satisfying in fiction: confidence that is earned, attention that is specific, desire that is direct.",
+      },
+      {
+        heading: "Forbidden and irresistible",
+        body: "The charge of attraction that exists where it probably shouldn't. Professional distance, an impossible situation, the line that both people know is there. The appeal is the tension between desire and restraint, and what the restraint cannot ultimately hold back. In audio, this dynamic is extraordinarily specific and powerful. <a href=\"/forbidden-romance-audio-stories\">Explore forbidden romance audio stories</a>.",
+      },
+      {
+        heading: "Deeply intimate and emotionally present",
+        body: "A story where the emotional connection between the characters is as erotic as anything else. Physical closeness that is also emotional closeness — where the depth of what is between the characters makes the physical feel significant in a way it would not otherwise. This is the register where erotic fiction and literary fiction are genuinely the same thing.",
+      },
+    ],
+    interstitial: "These are starting points. Your creation choices shape the specific register of the story made for you.",
+  },
+  benefits: {
+    h2: "Why This Platform for Erotic Audio Stories",
+    items: [
+      {
+        heading: "Written around your imagination",
+        body: "The story reflects the specific quality of desire you arrived with — not a general audience's average. The emotional register, the dynamic, the pacing — set by your choices, not by a platform default.",
+      },
+      {
+        heading: "Structurally private",
+        body: "No public history, no social layer, no activity visible to anyone. The platform has no public-facing features that would expose your listening. <a href=\"/privacy\">Privacy by architecture</a>.",
+      },
+      {
+        heading: "Literary quality throughout",
+        body: "Erotic fiction written with intelligence and craft — prose that has texture, characters that have presence, tension that is earned. Not content produced at volume. Fiction produced around your specific request.",
+      },
+      {
+        heading: "Full intensity spectrum",
+        body: "From quietly sensual and atmospheric to fully and explicitly adult. The intensity is your choice, not a platform setting. Different moods call for different registers — all are available.",
+      },
+      {
+        heading: "No browsing required",
+        body: "You describe what you want; the story is created. The experience of filtering a catalogue hoping something is close enough — that does not exist here.",
+      },
+    ],
+  },
+  fullPicture: {
+    h2: "Erotic Audio Stories for Women — What This Platform Actually Is",
+    paragraphs: [
+      "The Private Story was built on the premise that erotic audio stories genuinely designed for women require a different model from the catalogue. Not a better catalogue — a different approach entirely. One where the story begins with your preferences rather than a production team's editorial decisions, where privacy is structural rather than a setting, and where the experience is private by design rather than by policy.",
+      "The result is erotic audio fiction that begins with you. Your mood, your dynamic, your specific quality of what you want to feel. The story is created from these choices — not retrieved, not approximated from a nearest-fit, but generated from the first sentence in response to them. It does not exist before you ask for it. It exists because you did.",
+      "This is erotic audio stories for women in the most specific sense: content that began with female desire, designed for complete privacy, and created from your choices rather than someone else's assumptions about what a female listener probably wants. Explore the <a href=\"/create\">creation flow</a>, read the <a href=\"/pricing\">pricing page</a>, or see <a href=\"/audio-erotica-for-women\">audio erotica for women</a> for more on the platform's approach to the category.",
+    ],
+  },
+  finalCTA: {
+    h2: "Create Your Erotic Audio Story",
+    paragraphs: [
+      "Original. Private. Created from your choices right now. The story you want to hear is made the moment you describe it.",
+    ],
+    primary: { label: "Create your story", href: "/create" },
+    links: [
+      { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
+      { label: "Personalised erotica", href: "/personalised-erotica" },
+      { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
+      { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
+      { label: "Intimate audio stories", href: "/intimate-audio-stories" },
+      { label: "Spicy audio stories", href: "/spicy-audio-stories" },
+    ],
+  },
+  faqs: [
+    {
+      q: "How are erotic audio stories for women different from standard adult audio content?",
+      a: "Erotic audio stories for women at The Private Story are generated around how women describe wanting to experience desire — with emotional context, character depth, and tension that builds before it resolves. The creation flow asks about the specific quality of the dynamic you want, not just the category. The result is a story calibrated for female experience rather than approximating it from a general-audience template.",
+    },
+    {
+      q: "Can I choose the dynamic and intensity of my story?",
+      a: "Yes. The creation flow is built around these choices. You set the emotional register, the character of the dynamic, the intensity, the pacing, and what you want the story to feel like. These choices shape the story from its opening sentence. You are not filtering a catalogue — you are describing what you want, and an original story is created from that description.",
+    },
+    {
+      q: "Is the content explicit?",
+      a: "The intensity is shaped entirely by your creation choices. The Private Story creates adult content from quietly sensual and atmospheric through to explicitly adult, depending on what you select. The platform is for adults 18+ only.",
+    },
+    {
+      q: "Is my listening completely private?",
+      a: "Yes. Your stories are saved to your account and accessible only to you. There is no social layer, no public listening history, and no recommendation engine that exposes your preferences. The platform has no public-facing social features — by design. Your erotic audio stories are entirely private.",
+    },
+    {
+      q: "How is this different from using Dipsea, Quinn, or another audio erotica platform?",
+      a: "Most audio erotica platforms are curated libraries — content produced in advance for a general audience. The Private Story generates an original story in response to your specific choices at the moment of creation. The story did not exist before you requested it. It exists because of what you described wanting right now. See the <a href=\"/dipsea-alternative\">Dipsea alternative</a> and <a href=\"/quinn-alternative\">Quinn alternative</a> pages for direct comparisons.",
+    },
+    {
+      q: "How long are erotic audio stories on this platform?",
+      a: "Story length reflects your creation choices and the natural arc of the narrative they produce. Stories are designed to be complete in a single session — long enough to build properly, with room for the tension and resolution to land with full force.",
+    },
+  ],
+};
+
 export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["adult-audio-stories", adultAudioStoriesConfig],
   ["ai-audio-story-generator", aiAudioStoryGeneratorConfig],
@@ -4264,6 +4511,7 @@ export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["sleep-audio-stories", sleepAudioStoriesConfig],
   ["slow-burn-audio-stories", slowBurnAudioStoriesConfig],
   ["audio-erotica-for-women", audioEroticaForWomenConfig],
+  ["erotic-audio-stories-for-women", eroticAudioStoriesForWomenConfig],
   ["personalised-erotica", personalisedEroticaConfig],
   ["erotic-audio-stories", eroticAudioStoriesConfig],
   ["adult-bedtime-stories", adultBedtimeStoriesConfig],

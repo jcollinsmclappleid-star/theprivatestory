@@ -60,7 +60,9 @@ import BestAudioStoryAppForAdults from "@/pages/seo/BestAudioStoryAppForAdults";
 import AlternativesToRomanceAudiobooks from "@/pages/seo/AlternativesToRomanceAudiobooks";
 import DipseaAlternative from "@/pages/seo/DipseaAlternative";
 import QuinnAlternative from "@/pages/seo/QuinnAlternative";
+import GoneWildAudioAlternative from "@/pages/seo/GoneWildAudioAlternative";
 import AudioEroticaForWomen from "@/pages/seo/AudioEroticaForWomen";
+import EroticAudioStoriesForWomen from "@/pages/seo/EroticAudioStoriesForWomen";
 import PersonalisedErotica from "@/pages/seo/PersonalisedErotica";
 import EroticAudioStories from "@/pages/seo/EroticAudioStories";
 import AdultBedtimeStories from "@/pages/seo/AdultBedtimeStories";
@@ -125,7 +127,9 @@ function Router() {
             <Route path="/alternatives-to-romance-audiobooks" component={AlternativesToRomanceAudiobooks} />
             <Route path="/dipsea-alternative" component={DipseaAlternative} />
             <Route path="/quinn-alternative" component={QuinnAlternative} />
+            <Route path="/gonewildaudio-alternative" component={GoneWildAudioAlternative} />
             <Route path="/audio-erotica-for-women" component={AudioEroticaForWomen} />
+            <Route path="/erotic-audio-stories-for-women" component={EroticAudioStoriesForWomen} />
             <Route path="/personalised-erotica" component={PersonalisedErotica} />
             <Route path="/erotic-audio-stories" component={EroticAudioStories} />
             <Route path="/adult-bedtime-stories" component={AdultBedtimeStories} />

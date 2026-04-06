@@ -809,12 +809,12 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero Eyebrow                                                         */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-10 w-full pt-16 pb-0 md:pt-20 md:pb-0 flex flex-col items-center justify-center text-center px-4">
+      <section className="relative z-30 w-full pt-16 pb-6 md:pt-20 md:pb-8 flex flex-col items-center justify-center text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.75 }}
-          className="flex flex-col items-center gap-5"
+          className="flex flex-col items-center gap-4"
         >
           <div className="flex flex-wrap items-center justify-center gap-2">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
@@ -835,13 +835,17 @@ export default function Home() {
             <span className="text-primary">around the feeling you choose.</span>
           </h1>
 
-          <p className="text-[12px] text-white/30 tracking-widest uppercase">
+          <p className="text-sm text-white/40 leading-relaxed max-w-xs">
+            Built for the adult female imagination — literary, private, entirely yours.
+          </p>
+
+          <p className="text-[11px] text-white/22 tracking-widest uppercase mt-1">
             Three creation rooms — pick your door to begin
           </p>
         </motion.div>
       </section>
 
-      <div className="relative z-20 space-y-0 -mt-16 md:-mt-24">
+      <div className="relative z-20 space-y-0 -mt-10 md:-mt-14">
 
         {/* ---------------------------------------------------------------- */}
         {/* Three Doors                                                       */}

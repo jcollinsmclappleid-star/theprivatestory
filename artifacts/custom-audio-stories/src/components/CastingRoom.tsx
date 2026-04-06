@@ -1084,7 +1084,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         <StepBar current={step} total={TOTAL_STEPS} />
 
         <p className="text-xs font-medium uppercase tracking-widest mb-2" style={{ color: accentColor }}>
-          {afterDark ? "After Dark" : "The Casting Room"} · Step {step + 1} of {TOTAL_STEPS}
+          {afterDark ? "After Dark" : "The Creation Room"} · Step {step + 1} of {TOTAL_STEPS}
         </p>
       </div>
 

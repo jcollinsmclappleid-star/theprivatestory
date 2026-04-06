@@ -102,7 +102,7 @@ export default function Contact() {
           <h2 className="font-display text-xl font-bold text-foreground">Request a name</h2>
         </div>
         <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-          Don't see your name — or your love interest's — in the Casting Room?
+          Don't see your name — or your love interest's — in the Creation Room?
           Submit a request below and we'll add it within 48 hours.
         </p>
 
@@ -115,7 +115,7 @@ export default function Contact() {
             <CheckCircle2 className="w-10 h-10 text-primary" />
             <h2 className="font-display text-xl font-bold text-foreground">Request received</h2>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Thank you — we'll add your name to the Casting Room within 48 hours.
+              Thank you — we'll add your name to the Creation Room within 48 hours.
             </p>
           </motion.div>
         ) : (

@@ -605,7 +605,7 @@ function CastingPreview() {
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            The Casting Room
+            The Creation Room
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
             The version of them<br className="hidden md:block" /> that's been in your head.
@@ -809,7 +809,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero Eyebrow                                                         */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative w-full pt-20 pb-8 md:pt-28 md:pb-10 flex flex-col items-center justify-center text-center px-4">
+      <section className="relative z-10 w-full pt-16 pb-0 md:pt-20 md:pb-0 flex flex-col items-center justify-center text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -822,7 +822,7 @@ export default function Home() {
               <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-white/35 tracking-wide">
-              <span>Built around you</span>
+              <span>Created for you</span>
               <span>·</span>
               <span>Narrated</span>
               <span>·</span>
@@ -831,13 +831,17 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight drop-shadow-xl max-w-2xl">
-            A private story built around{" "}
-            <span className="text-primary">the feeling you're after.</span>
+            Create your private story{" "}
+            <span className="text-primary">around the feeling you choose.</span>
           </h1>
+
+          <p className="text-[12px] text-white/30 tracking-widest uppercase">
+            Three creation rooms — pick your door to begin
+          </p>
         </motion.div>
       </section>
 
-      <div className="relative z-20 space-y-0">
+      <div className="relative z-20 space-y-0 -mt-16 md:-mt-24">
 
         {/* ---------------------------------------------------------------- */}
         {/* Three Doors                                                       */}
@@ -942,7 +946,7 @@ export default function Home() {
                     Premium adult audio stories — written for you, narrated for you, private to you. Darker scenarios, more charged atmosphere, the same complete creative control.
                   </p>
                   <p className="text-white/30 text-sm leading-relaxed mb-8 max-w-md">
-                    The same Casting Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
+                    The same Creation Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-8">

@@ -12,7 +12,7 @@ const HOW_IT_WORKS_STEPS = [
     step: "01",
     icon: <Globe className="w-4 h-4" />,
     accent: "#c9a227",
-    heading: "Cast your story in the Casting Room",
+    heading: "Shape your story in the Creation Room",
     body: "Choose who's in your story, the energy between them, where it's set, and the mood you want to be left with. Every choice is yours — nothing defaults to someone else's idea of what you want.",
   },
   {
@@ -258,7 +258,7 @@ export default function HowItWorks() {
       <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="mb-10">
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            The Casting Room
+            The Creation Room
           </span>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div className="max-w-xl">
@@ -268,7 +268,7 @@ export default function HowItWorks() {
                 <span className="text-primary"> We write it into existence.</span>
               </h2>
               <p className="text-base text-muted-foreground leading-relaxed mb-3">
-                The Casting Room is where your story takes shape — one deliberate choice at a
+                The Creation Room is where your story takes shape — one deliberate choice at a
                 time. You choose who's in the room, what pulls them together, the setting that
                 holds it all, and the mood that runs underneath every line.
               </p>
@@ -283,7 +283,7 @@ export default function HowItWorks() {
               className="flex-shrink-0 flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-full font-bold text-sm hover:bg-primary/90 transition-all hover:shadow-glow"
             >
               <Sparkles className="w-4 h-4" />
-              Open the Casting Room
+              Open the Creation Room
             </Link>
           </div>
         </div>
@@ -360,7 +360,7 @@ export default function HowItWorks() {
               icon: <PenLine className="w-5 h-5" />,
               accent: "#c9a227",
               heading: "Written for you",
-              body: "An original story — not a template — shaped around every choice you made in the Casting Room. No two stories are alike.",
+              body: "An original story — not a template — shaped around every choice you made in the Creation Room. No two stories are alike.",
             },
             {
               icon: <Headphones className="w-5 h-5" />,

@@ -796,14 +796,14 @@ export default function Profile() {
         ) : (
           <div className="rounded-xl border border-dashed border-border/40 p-6 text-center">
             <p className="text-sm text-muted-foreground mb-3">
-              When you save a casting combination in The Casting Room, it appears here — ready to use again.
+              When you save a creation combination in The Creation Room, it appears here — ready to use again.
             </p>
             <Link
               href="/create"
               className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
               <Wand2 className="w-3.5 h-3.5" />
-              Open The Casting Room
+              Open The Creation Room
             </Link>
           </div>
         )}

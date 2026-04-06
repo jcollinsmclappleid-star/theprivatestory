@@ -387,7 +387,7 @@ export default function CastingPreview({ soft = false }: CastingPreviewProps) {
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            The Casting Room
+            The Creation Room
           </span>
           <h2 className={`font-display font-bold text-foreground leading-tight ${soft ? "text-2xl md:text-3xl" : "text-3xl md:text-4xl"}`}>
             {soft ? "Choose every detail." : "The version of them\u00a0that's been in your head."}

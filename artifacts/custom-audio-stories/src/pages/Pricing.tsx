@@ -440,7 +440,7 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* The Casting Room                                                     */}
+      {/* The Creation Room                                                    */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/20 p-10 md:p-16">
@@ -449,14 +449,14 @@ export default function Pricing() {
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="w-4 h-4 text-primary/70" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">The Casting Room</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">The Creation Room</span>
             </div>
             <div className="max-w-xl mb-10">
               <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-5 leading-tight">
                 You build the world.
               </h2>
               <p className="text-muted-foreground/80 leading-relaxed text-lg mb-3">
-                Every personalised story begins in the Casting Room — where you decide who's in it, what the energy between them feels like, and exactly how far it goes.
+                Every personalised story begins in the Creation Room — where you decide who's in it, what the energy between them feels like, and exactly how far it goes.
               </p>
               <p className="text-muted-foreground/50 leading-relaxed text-sm">
                 This isn't a form. It's a creative act. The story that comes out is one only you could have made — because only you made those choices.

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { BookOpen, Headphones, Sparkles, ArrowLeft } from "lucide-react";
+import { BookOpen, Moon, Sparkles, ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -43,8 +43,12 @@ export default function NotFound() {
             <Link href="/pricing" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border/20 text-xs text-muted-foreground hover:border-primary/30 hover:text-primary transition-all">
               Pricing
             </Link>
-            <Link href="/after-dark" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border/20 text-xs text-muted-foreground hover:border-primary/30 hover:text-primary transition-all">
-              <Headphones className="w-3 h-3" />
+            <Link
+              href="/after-dark"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition-all hover:opacity-80"
+              style={{ background: "rgba(123,143,255,0.10)", border: "1px solid rgba(123,143,255,0.35)", color: "#9baeff" }}
+            >
+              <Moon className="w-3 h-3" />
               After Dark
             </Link>
           </div>

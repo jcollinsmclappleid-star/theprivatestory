@@ -1700,8 +1700,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           ? "border-white/5 bg-white/2 opacity-30 cursor-not-allowed"
                           : isGateway
                           ? showAfterDarkTeaser
-                            ? "border-[#c0392b]/40 bg-[#c0392b]/8 opacity-75"
-                            : "border-[#c0392b]/25 bg-[#c0392b]/5 opacity-50 hover:opacity-70 hover:border-[#c0392b]/35"
+                            ? "border-[#7b8fff]/50 bg-[#7b8fff]/10 opacity-90"
+                            : "border-[#7b8fff]/35 bg-[#7b8fff]/8 opacity-80 hover:opacity-100 hover:border-[#7b8fff]/55"
                           : data.intensity === i.id
                             ? "border-primary bg-primary/10 shadow-glow"
                             : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
@@ -1709,15 +1709,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     >
                       <div className="flex items-center gap-2 mb-1">
                         {isGateway ? (
-                          <Moon className="w-3 h-3 shrink-0" style={{ color: "#c0392b99" }} />
+                          <Moon className="w-3 h-3 shrink-0" style={{ color: "#9baeff" }} />
                         ) : (
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ background: isDriftLocked ? "#444" : i.color }} />
                         )}
                         <p className={`font-semibold text-sm ${
-                          isDriftLocked ? "text-muted-foreground/40" : isGateway ? "text-[#c0392b]/60" : data.intensity === i.id ? "text-primary" : "text-foreground"
+                          isDriftLocked ? "text-muted-foreground/40" : isGateway ? "text-[#9baeff]" : data.intensity === i.id ? "text-primary" : "text-foreground"
                         }`}>{i.label}</p>
                         {isGateway && (
-                          <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-[#c0392b]/50">After Dark</span>
+                          <span className="ml-auto text-[9px] font-bold uppercase tracking-widest" style={{ color: "#7b8fff" }}>After Dark</span>
                         )}
                         {isDriftLocked && (
                           <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">Drift</span>
@@ -1734,13 +1734,14 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 <motion.div
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 rounded-2xl p-4 border border-[#c0392b]/30 bg-[#c0392b]/6"
+                  className="mt-4 rounded-2xl p-4"
+                  style={{ background: "rgba(123,143,255,0.10)", border: "1px solid rgba(123,143,255,0.35)" }}
                 >
                   <div className="flex items-start gap-3">
-                    <Moon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#c0392b" }} />
+                    <Moon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#9baeff" }} />
                     <div>
-                      <p className="text-sm font-semibold text-foreground mb-1">After Dark — where your deepest fantasies live</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                      <p className="text-sm font-semibold mb-1" style={{ color: "#c8d4ff" }}>After Dark — where your deepest fantasies live</p>
+                      <p className="text-xs leading-relaxed mb-3" style={{ color: "rgba(155,174,255,0.75)" }}>
                         After Dark is a separate world: unrestrained intensity, explicit scenarios, and every casting option fully unlocked. Nothing held back, nothing left unwritten.
                       </p>
                       <button
@@ -1748,8 +1749,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                         onClick={() => {
                           window.location.href = `${import.meta.env.BASE_URL}after-dark`;
                         }}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors hover:opacity-80"
-                        style={{ color: "#c0392b" }}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold transition-all hover:opacity-80"
+                        style={{ color: "#7b8fff" }}
                       >
                         Continue your selections in After Dark <ChevronRight className="w-3.5 h-3.5" />
                       </button>
@@ -1773,7 +1774,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <a
                       href={`${import.meta.env.BASE_URL}after-dark`}
                       className="font-semibold underline underline-offset-2"
-                      style={{ color: "#c0392b" }}
+                      style={{ color: "#9baeff" }}
                     >
                       After Dark
                     </a>
@@ -2028,13 +2029,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 <a
                   href={`${import.meta.env.BASE_URL}after-dark`}
                   className="flex flex-col gap-1.5 px-3.5 py-3 rounded-2xl transition-all hover:opacity-80"
-                  style={{ background: "rgba(192,57,43,0.07)", border: "1px solid rgba(192,57,43,0.22)" }}
+                  style={{ background: "rgba(123,143,255,0.10)", border: "1px solid rgba(123,143,255,0.35)" }}
                 >
                   <div className="flex items-center gap-1.5">
-                    <Moon className="w-2.5 h-2.5" style={{ color: "#c0392b" }} />
-                    <p className="text-xs font-bold text-foreground">After Dark</p>
+                    <Moon className="w-2.5 h-2.5" style={{ color: "#9baeff" }} />
+                    <p className="text-xs font-bold" style={{ color: "#c8d4ff" }}>After Dark</p>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-snug">Explicit, unrestrained — nothing held back</p>
+                  <p className="text-[11px] leading-snug" style={{ color: "rgba(155,174,255,0.70)" }}>Explicit, unrestrained — nothing held back</p>
                 </a>
               </div>
             )}
@@ -2053,7 +2054,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     type="button"
                     onClick={onAfterDark}
                     className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-[1.02]"
-                    style={{ background: "rgba(192,57,43,0.09)", border: "1px solid rgba(192,57,43,0.28)", color: "#c0392b" }}
+                    style={{ background: "rgba(123,143,255,0.10)", border: "1px solid rgba(123,143,255,0.35)", color: "#9baeff" }}
                   >
                     <Moon className="w-3 h-3" />
                     After Dark has more choices here →
@@ -2112,7 +2113,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 type="button"
                 onClick={onAfterDark}
                 className="mb-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-[1.02]"
-                style={{ background: "rgba(192,57,43,0.09)", border: "1px solid rgba(192,57,43,0.28)", color: "#c0392b" }}
+                style={{ background: "rgba(123,143,255,0.10)", border: "1px solid rgba(123,143,255,0.35)", color: "#9baeff" }}
               >
                 <Moon className="w-3 h-3" />
                 After Dark has more choices here →

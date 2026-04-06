@@ -56,6 +56,28 @@ p{color:#a09080;margin-bottom:16px;line-height:1.75}
 .defined-term-box{border-left:3px solid #c9a227;background:rgba(201,162,39,.04);padding:20px 24px;margin-bottom:32px;border-radius:0 8px 8px 0}
 .defined-term-box h2{font-size:1.2rem;margin-bottom:8px;color:#e8e6e3}
 .defined-term-box p{margin:0;color:#a09080;font-size:.95rem}
+.three-doors-wrap{margin:36px 0 44px}
+.three-doors-heading{font-family:Georgia,serif;font-size:.8rem;color:#4a3f35;letter-spacing:.08em;margin-bottom:16px;text-align:center}
+.three-doors{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.door{display:block;text-decoration:none;border-radius:14px;padding:22px 20px;border:1px solid;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
+.door:hover{text-decoration:none}
+.door-story{background:linear-gradient(160deg,#1a0f06,#0a0a0b);border-color:rgba(201,162,39,.28)}
+.door-story:hover{border-color:rgba(201,162,39,.62);box-shadow:0 0 28px -8px rgba(201,162,39,.15)}
+.door-quiet{background:linear-gradient(160deg,#08081c,#0a0a0b);border-color:rgba(99,102,241,.25)}
+.door-quiet:hover{border-color:rgba(99,102,241,.58);box-shadow:0 0 28px -8px rgba(99,102,241,.12)}
+.door-dark{background:linear-gradient(160deg,#05050f,#0a0a0b);border-color:rgba(123,143,255,.22)}
+.door-dark:hover{border-color:rgba(123,143,255,.52);box-shadow:0 0 28px -8px rgba(123,143,255,.10)}
+.door-room{font-size:9px;font-weight:bold;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;display:block}
+.door-room-story{color:rgba(201,162,39,.70)}.door-room-quiet{color:rgba(99,102,241,.68)}.door-room-dark{color:rgba(123,143,255,.65)}
+.door-name{font-family:Georgia,serif;font-size:1.25rem;font-weight:bold;margin-bottom:6px;line-height:1.2;display:block}
+.door-name-story{color:#e8d5a0}.door-name-quiet{color:#c8caff}.door-name-dark{color:#9baeff}
+.door-tagline{font-size:11.5px;line-height:1.65;margin-bottom:14px;display:block}
+.door-tagline-story{color:rgba(201,162,39,.48)}.door-tagline-quiet{color:rgba(155,158,255,.48)}.door-tagline-dark{color:rgba(155,174,255,.45)}
+.door-btn{display:inline-block;font-size:11px;font-weight:bold;padding:6px 14px;border-radius:999px;border:1px solid}
+.door-btn-story{background:rgba(201,162,39,.10);border-color:rgba(201,162,39,.38);color:#c9a227}
+.door-btn-quiet{background:rgba(99,102,241,.10);border-color:rgba(99,102,241,.35);color:#9b9fff}
+.door-btn-dark{background:rgba(123,143,255,.10);border-color:rgba(123,143,255,.32);color:#9baeff}
+@media(max-width:600px){.three-doors{grid-template-columns:1fr}}
 .competitor-table{width:100%;border-collapse:collapse;margin:24px 0 40px;font-size:.9rem}
 .competitor-table th{padding:12px 14px;border-bottom:2px solid #333;text-align:left;color:#e8e6e3;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#0f0f10}
 .competitor-table td{padding:12px 14px;border-bottom:1px solid #1a1a1a;color:#a09080;vertical-align:top}
@@ -80,6 +102,32 @@ footer{border-top:1px solid #1a1a1a;background:#050506;padding:48px 24px 32px}
 .footer-legal a{font-size:12px;color:#3a3530}
 .footer-copy{font-size:11px;color:#2a2520}
 @media(max-width:600px){h1{font-size:1.65rem}.trust-bar{grid-template-columns:1fr}}
+`;
+
+const THREE_DOORS_HTML = `
+<div class="three-doors-wrap">
+  <p class="three-doors-heading">Where does your story begin?</p>
+  <div class="three-doors">
+    <a href="/create" class="door door-story">
+      <span class="door-room door-room-story">The Story Room</span>
+      <span class="door-name door-name-story">Romance</span>
+      <span class="door-tagline door-tagline-story">Tension, atmosphere, the feeling you&rsquo;re after.</span>
+      <span class="door-btn door-btn-story">Create My Story &rarr;</span>
+    </a>
+    <a href="/drift" class="door door-quiet">
+      <span class="door-room door-room-quiet">The Quiet Room</span>
+      <span class="door-name door-name-quiet">Bedtime Stories</span>
+      <span class="door-tagline door-tagline-quiet">Calm, warm, written to let you drift.</span>
+      <span class="door-btn door-btn-quiet">Explore Drift &rarr;</span>
+    </a>
+    <a href="/after-dark" class="door door-dark">
+      <span class="door-room door-room-dark">After Dark</span>
+      <span class="door-name door-name-dark">Erotica</span>
+      <span class="door-tagline door-tagline-dark">Further. Unrestrained. Entirely yours.</span>
+      <span class="door-btn door-btn-dark">Enter After Dark &rarr;</span>
+    </a>
+  </div>
+</div>
 `;
 
 const FOOTER_HTML = `
@@ -239,7 +287,8 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
       opts.h1
         ? `${opts.badge ? `<span class="badge">${escHtml(opts.badge)}</span>` : ""}
     <h1>${escHtml(opts.h1)}</h1>
-    ${opts.tagline ? `<p class="tagline">${escHtml(opts.tagline)}</p>` : ""}`
+    ${opts.tagline ? `<p class="tagline">${escHtml(opts.tagline)}</p>` : ""}
+    ${THREE_DOORS_HTML}`
         : ""
     }
     ${opts.bodyHtml}

@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import type { Story } from "@workspace/api-client-react";
+import { ThreeDoors } from "@/components/ThreeDoors";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -1070,6 +1071,11 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Three Doors                                                       */}
+        {/* ---------------------------------------------------------------- */}
+        <ThreeDoors />
 
         {/* ---------------------------------------------------------------- */}
         {/* How it works                                                      */}

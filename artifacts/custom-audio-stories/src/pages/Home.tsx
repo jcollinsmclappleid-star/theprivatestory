@@ -943,6 +943,18 @@ export default function Home() {
               </a>
             </div>
 
+            <div className="mb-4">
+              <Link
+                href="/after-dark"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#7b8fff]/40 text-[#7b8fff] text-xs font-medium hover:border-[#7b8fff]/60 transition-all"
+                style={{ background: "rgba(123,143,255,0.10)" }}
+              >
+                <Moon className="w-3.5 h-3.5" />
+                For something that goes further — After Dark
+                <ChevronRight className="w-3 h-3" />
+              </Link>
+            </div>
+
             {!isPaid && (
               <div className="mb-4">
                 <button
@@ -1135,6 +1147,103 @@ export default function Home() {
         {/* CastingRoom preview — directly after How it works                 */}
         {/* ---------------------------------------------------------------- */}
         <CastingPreview />
+
+        {/* ---------------------------------------------------------------- */}
+        {/* After Dark — premium marketing block (anchor target)              */}
+        {/* ---------------------------------------------------------------- */}
+        <section
+          id="after-dark-section"
+          className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full scroll-mt-24"
+        >
+          <Link href="/after-dark" className="block group">
+            <div className="relative overflow-hidden rounded-3xl border border-[#1a1a3e]/80 bg-[#060610]">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#08081a] via-[#060610] to-[#0a0a1e] pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-950/30 via-transparent to-violet-950/20 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-900/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-950/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 bg-[#3b3bff]/5 rounded-full blur-3xl pointer-events-none" />
+              <div
+                className="absolute inset-y-0 right-0 w-2/5 pointer-events-none"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.png)`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
+                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
+                }}
+              />
+
+              <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Moon className="w-4 h-4 text-[#7b8fff]" />
+                    <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#7b8fff]/70">
+                      The Private Story · After Dark
+                    </span>
+                  </div>
+                  <h2 className="font-display text-3xl md:text-5xl font-bold text-white/90 mb-5 leading-tight">
+                    A deeper, darker side<br className="hidden md:block" />
+                    <span className="text-[#7b8fff]"> of the experience.</span>
+                  </h2>
+                  <p className="text-white/60 text-base leading-relaxed mb-2 max-w-md">
+                    Premium adult audio stories — written for you, narrated for you, private to you. Darker scenarios, more charged atmosphere, the same complete creative control.
+                  </p>
+                  <p className="text-white/30 text-sm leading-relaxed mb-8 max-w-md">
+                    The same Casting Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {[
+                      "Power Exchange",
+                      "The Forbidden",
+                      "A more charged atmosphere",
+                      "Your story, your terms",
+                    ].map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#7b8fff]/20 bg-[#7b8fff]/8 text-[#7b8fff]/70"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#7b8fff]/15 border border-[#7b8fff]/30 text-[#9baeff] text-sm font-semibold group-hover:bg-[#7b8fff]/25 group-hover:border-[#7b8fff]/50 transition-all">
+                      <Moon className="w-4 h-4" />
+                      Enter After Dark
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    <span className="text-[#7b8fff]/40 text-xs">Included with your subscription</span>
+                  </div>
+                </div>
+
+                <div className="hidden md:flex flex-col gap-3 flex-shrink-0 w-56">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/20 mb-1">
+                    Scenarios waiting for you
+                  </p>
+                  {[
+                    { label: "The one who takes control", opacity: "opacity-70" },
+                    { label: "Everything forbidden", opacity: "opacity-50" },
+                    { label: "Your fantasy, from the first line", opacity: "opacity-30" },
+                    { label: "A world with no rules", opacity: "opacity-15" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className={`px-4 py-2.5 rounded-xl border border-white/6 bg-white/3 ${item.opacity}`}
+                    >
+                      <span className="text-xs text-white/70 leading-snug">{item.label}</span>
+                    </div>
+                  ))}
+                  <div className="px-4 py-2.5 rounded-xl border border-white/4 bg-white/2 opacity-8">
+                    <span className="text-xs text-white/50 blur-[3px] select-none">•••••••••••••••</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </section>
 
         {/* ---------------------------------------------------------------- */}
         {/* Product shot — the finished story                                 */}
@@ -1385,103 +1494,6 @@ export default function Home() {
         {/* Library Promo — curated collection                               */}
         {/* ---------------------------------------------------------------- */}
         <LibraryPromo stories={libraryStories} isPaid={isPaid} />
-
-        {/* ---------------------------------------------------------------- */}
-        {/* After Dark — premium marketing block (anchor target)              */}
-        {/* ---------------------------------------------------------------- */}
-        <section
-          id="after-dark-section"
-          className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full scroll-mt-24"
-        >
-          <Link href="/after-dark" className="block group">
-            <div className="relative overflow-hidden rounded-3xl border border-[#1a1a3e]/80 bg-[#060610]">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#08081a] via-[#060610] to-[#0a0a1e] pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-950/30 via-transparent to-violet-950/20 pointer-events-none" />
-              <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-900/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-950/15 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 bg-[#3b3bff]/5 rounded-full blur-3xl pointer-events-none" />
-              <div
-                className="absolute inset-y-0 right-0 w-2/5 pointer-events-none"
-                aria-hidden="true"
-                style={{
-                  backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.png)`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
-                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",
-                }}
-              />
-
-              <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Moon className="w-4 h-4 text-[#7b8fff]" />
-                    <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#7b8fff]/70">
-                      The Private Story · After Dark
-                    </span>
-                  </div>
-                  <h2 className="font-display text-3xl md:text-5xl font-bold text-white/90 mb-5 leading-tight">
-                    A deeper, darker side<br className="hidden md:block" />
-                    <span className="text-[#7b8fff]"> of the experience.</span>
-                  </h2>
-                  <p className="text-white/60 text-base leading-relaxed mb-2 max-w-md">
-                    Premium adult audio stories — written for you, narrated for you, private to you. Darker scenarios, more charged atmosphere, the same complete creative control.
-                  </p>
-                  <p className="text-white/30 text-sm leading-relaxed mb-8 max-w-md">
-                    The same Casting Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {[
-                      "Power Exchange",
-                      "The Forbidden",
-                      "A more charged atmosphere",
-                      "Your story, your terms",
-                    ].map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#7b8fff]/20 bg-[#7b8fff]/8 text-[#7b8fff]/70"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#7b8fff]/15 border border-[#7b8fff]/30 text-[#9baeff] text-sm font-semibold group-hover:bg-[#7b8fff]/25 group-hover:border-[#7b8fff]/50 transition-all">
-                      <Moon className="w-4 h-4" />
-                      Enter After Dark
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                    </span>
-                    <span className="text-[#7b8fff]/40 text-xs">Included with your subscription</span>
-                  </div>
-                </div>
-
-                <div className="hidden md:flex flex-col gap-3 flex-shrink-0 w-56">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/20 mb-1">
-                    Scenarios waiting for you
-                  </p>
-                  {[
-                    { label: "The one who takes control", opacity: "opacity-70" },
-                    { label: "Everything forbidden", opacity: "opacity-50" },
-                    { label: "Your fantasy, from the first line", opacity: "opacity-30" },
-                    { label: "A world with no rules", opacity: "opacity-15" },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className={`px-4 py-2.5 rounded-xl border border-white/6 bg-white/3 ${item.opacity}`}
-                    >
-                      <span className="text-xs text-white/70 leading-snug">{item.label}</span>
-                    </div>
-                  ))}
-                  <div className="px-4 py-2.5 rounded-xl border border-white/4 bg-white/2 opacity-8">
-                    <span className="text-xs text-white/50 blur-[3px] select-none">•••••••••••••••</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </section>
 
         {/* ---------------------------------------------------------------- */}
         {/* Story rows                                                        */}

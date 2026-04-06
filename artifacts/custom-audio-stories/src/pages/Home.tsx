@@ -931,7 +931,7 @@ export default function Home() {
                   <div className="flex items-center gap-3 mb-6">
                     <Moon className="w-4 h-4 text-[#7b8fff]" />
                     <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#7b8fff]/70">
-                      The Private Story · After Dark
+                      The Story Room · After Dark
                     </span>
                   </div>
                   <h2 className="font-display text-3xl md:text-5xl font-bold text-white/90 mb-5 leading-tight">

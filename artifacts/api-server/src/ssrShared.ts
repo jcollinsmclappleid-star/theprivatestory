@@ -114,17 +114,17 @@ const THREE_DOORS_HTML = `
       <span class="door-tagline door-tagline-story">Tension, atmosphere, the feeling you&rsquo;re after.</span>
       <span class="door-btn door-btn-story">Create My Story &rarr;</span>
     </a>
+    <a href="/after-dark" class="door door-dark">
+      <span class="door-room door-room-dark">The Story Room</span>
+      <span class="door-name door-name-dark">After Dark</span>
+      <span class="door-tagline door-tagline-dark">Further. Unrestrained. Entirely yours.</span>
+      <span class="door-btn door-btn-dark">Enter After Dark &rarr;</span>
+    </a>
     <a href="/drift" class="door door-quiet">
       <span class="door-room door-room-quiet">The Quiet Room</span>
       <span class="door-name door-name-quiet">Bedtime Stories</span>
       <span class="door-tagline door-tagline-quiet">Calm, warm, written to let you drift.</span>
       <span class="door-btn door-btn-quiet">Explore Drift &rarr;</span>
-    </a>
-    <a href="/after-dark" class="door door-dark">
-      <span class="door-room door-room-dark">After Dark</span>
-      <span class="door-name door-name-dark">Erotica</span>
-      <span class="door-tagline door-tagline-dark">Further. Unrestrained. Entirely yours.</span>
-      <span class="door-btn door-btn-dark">Enter After Dark &rarr;</span>
     </a>
   </div>
 </div>

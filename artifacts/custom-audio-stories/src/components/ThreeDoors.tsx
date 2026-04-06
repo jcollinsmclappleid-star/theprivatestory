@@ -36,6 +36,16 @@ const DOORS = [
       { text: "He should have left an hour ago.", blur: false },
       { text: "Her name is yours. So is his.", blur: false },
     ],
+    sceneFragments: [
+      { text: "Forbidden Pull", x: 12, y: 7,  rot: -3, size: 11, italic: true  },
+      { text: "They can't stop.",  x: 46, y: 11, rot: -1, size:  8, italic: true  },
+      { text: "Victorian London",  x: 44, y: 20, rot:  2, size: 10, italic: false },
+      { text: "The Stranger",      x: 13, y: 34, rot: -5, size:  9, italic: false },
+      { text: "Slow Surrender",    x:  8, y: 47, rot:  1, size: 10, italic: false },
+      { text: "Luxury Hotel",      x: 50, y: 42, rot:  4, size:  9, italic: false },
+      { text: "Inevitable",        x: 20, y: 58, rot: -4, size: 13, italic: false },
+      { text: "Charged Dynamic",   x: 52, y: 58, rot:  2, size:  8, italic: false },
+    ],
   },
   {
     id: "quiet",
@@ -68,6 +78,16 @@ const DOORS = [
       { text: "A voice written for the quiet hour.", blur: false },
       { text: "Close your eyes. This one starts slowly.", blur: false },
     ],
+    sceneFragments: [
+      { text: "Mountain Retreat",      x: 13, y:  7, rot: -2, size: 10, italic: false },
+      { text: "Slow Burn",             x: 52, y: 14, rot: -1, size: 12, italic: false },
+      { text: "Rain on a window",      x: 42, y: 22, rot:  3, size: 10, italic: true  },
+      { text: "Almost midnight",       x: 15, y: 34, rot: -4, size: 11, italic: true  },
+      { text: "Georgian Scotland",     x: 44, y: 39, rot:  2, size:  9, italic: false },
+      { text: "Snowbound. Firelit.",   x:  9, y: 48, rot: -1, size:  9, italic: true  },
+      { text: "Quiet Intensity",       x: 46, y: 54, rot:  3, size: 10, italic: false },
+      { text: "Lingering",             x: 18, y: 59, rot:  1, size: 12, italic: false },
+    ],
   },
   {
     id: "dark",
@@ -99,6 +119,16 @@ const DOORS = [
       { text: "Further than the others.", blur: false },
       { text: "Only you will know what's behind this door.", blur: false },
       { text: "Nothing held back.", blur: true },
+    ],
+    sceneFragments: [
+      { text: "Private Club",              x: 13, y:  7, rot: -3, size: 11, italic: false },
+      { text: "Rooftop, 3am",              x: 46, y: 14, rot:  2, size: 10, italic: true  },
+      { text: "No names. No history.",     x:  7, y: 30, rot: -2, size:  8, italic: true  },
+      { text: "VIP Suite",                 x: 52, y: 36, rot:  4, size: 12, italic: false },
+      { text: "City below. No witnesses.", x:  6, y: 46, rot: -1, size:  8, italic: true  },
+      { text: "Invitation only.",          x: 42, y: 52, rot:  3, size: 10, italic: false },
+      { text: "Further.",                  x: 18, y: 58, rot: -5, size: 15, italic: false },
+      { text: "Nothing held back.",        x: 50, y: 58, rot:  1, size:  8, italic: true  },
     ],
   },
 ];
@@ -274,6 +304,41 @@ export function ThreeDoors() {
                     opacity: isHovered ? 0.85 : 0.65,
                   }}
                 />
+
+                {/* Scene fragments — faded casting-room words layered over the scene */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    zIndex: 2,
+                  }}
+                >
+                  {door.sceneFragments.map((frag, fi) => (
+                    <span
+                      key={fi}
+                      style={{
+                        position: "absolute",
+                        left: `${frag.x}%`,
+                        top: `${frag.y}%`,
+                        fontSize: `${frag.size}px`,
+                        fontStyle: frag.italic ? "italic" : "normal",
+                        fontWeight: frag.italic ? 400 : 600,
+                        letterSpacing: frag.italic ? "0.01em" : "0.12em",
+                        textTransform: frag.italic ? "none" : "uppercase",
+                        color: `rgba(${door.rgb},1)`,
+                        opacity: isHovered ? 0.18 : 0.07,
+                        transform: `rotate(${frag.rot}deg)`,
+                        transition: `opacity 0.5s ease ${fi * 0.04}s`,
+                        whiteSpace: "nowrap",
+                        userSelect: "none",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {frag.text}
+                    </span>
+                  ))}
+                </div>
 
                 {/* Arch glow — light bleeding through the top of the door */}
                 <div

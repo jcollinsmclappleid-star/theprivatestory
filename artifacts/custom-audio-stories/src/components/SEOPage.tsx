@@ -51,16 +51,9 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
               {config.hero.h1}
             </h1>
-            <p className="text-white/75 text-xl leading-relaxed mb-8 max-w-xl">
+            <p className="text-white/75 text-xl leading-relaxed max-w-xl">
               {config.hero.tagline}
             </p>
-            <Link
-              href="/create"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <Sparkles className="w-4 h-4" />
-              {config.finalCTA.primary.label}
-            </Link>
           </div>
         </div>
       ) : (
@@ -74,16 +67,9 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {config.hero.h1}
             </h1>
-            <p className="text-muted-foreground text-xl leading-relaxed mb-8">
+            <p className="text-muted-foreground text-xl leading-relaxed">
               {config.hero.tagline}
             </p>
-            <Link
-              href="/create"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <Sparkles className="w-4 h-4" />
-              {config.finalCTA.primary.label}
-            </Link>
           </div>
         </div>
       )}
@@ -194,15 +180,8 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
             ))}
           </div>
           {config.scenarios.interstitial && (
-            <div className="mt-8 text-center">
-              <p className="text-muted-foreground italic mb-5">{config.scenarios.interstitial}</p>
-              <Link
-                href="/create"
-                className="inline-flex items-center gap-2 border border-primary/40 text-primary px-5 py-2.5 rounded-full text-sm font-medium hover:bg-primary/10 transition-colors"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                {config.finalCTA.primary.label}
-              </Link>
+            <div className="mt-8">
+              <p className="text-muted-foreground italic">{config.scenarios.interstitial}</p>
             </div>
           )}
         </section>
@@ -248,14 +227,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
               </p>
             ))}
           </div>
-          <div className="flex flex-col gap-4">
-            <Link
-              href={config.finalCTA.primary.href}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm w-fit hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <Sparkles className="w-4 h-4" />
-              {config.finalCTA.primary.label}
-            </Link>
+          {config.finalCTA.links.length > 0 && (
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               {config.finalCTA.links.map((l, i) => (
                 <Link key={i} href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -263,7 +235,7 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
                 </Link>
               ))}
             </div>
-          </div>
+          )}
         </section>
 
         {/* USP bridge */}

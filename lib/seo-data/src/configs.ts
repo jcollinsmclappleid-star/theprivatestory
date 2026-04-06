@@ -830,7 +830,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
 
 export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
   meta: { title: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You. | The Private Story`, description: `Podcasts are brilliant — but not at 11pm. Discover why personalised audio stories outperform podcasts for winding down, relaxation, and sleep, and when to reach for each format.` },
-  hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You.`, tagline: `You reach for your phone at night. You open the podcast app. You scroll. Nothing feels right. This is not a coincidence.` },
+  hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You.`, tagline: `You reach for your phone. You open the podcast app. You scroll. Nothing feels right. This is not a coincidence.` },
   heroImage: "images/seo-hero-women.png",
   showCastingPreview: true,
   sections: [
@@ -1754,7 +1754,7 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
 
 export const emotionalAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Emotional Audio Stories | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
-  hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For the nights when you need to feel something — but haven't quite found the words for what.` },
+  hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For whenever you need to feel something — but haven't quite found the words for what.` },
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
   sections: [
@@ -1788,9 +1788,9 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
     {
       h2: "The Emotional Register Is Yours to Choose",
       paragraphs: [
-        "Emotional is not a single tone. The full emotional range of human experience is wide, and what you need on any given night sits somewhere specific within it.",
-        "Some nights you need something quietly devastating — beautiful and heavy, the specific combination of sadness and beauty that feels true to the actual texture of being alive. Some nights you need something that ends with warmth — not resolution exactly, but movement toward it. A story that acknowledges weight and then, gently, finds somewhere to set it down.",
-        "Other nights you need something more complex — a feeling that contains both tenderness and difficulty, closeness and uncertainty. The specific emotional situation that doesn't resolve into a simple register because life doesn't resolve into simple registers.",
+        "Emotional is not a single tone. The full emotional range of human experience is wide, and what you need at any given moment sits somewhere specific within it.",
+        "Sometimes you need something quietly devastating — beautiful and heavy, the specific combination of sadness and beauty that feels true to the actual texture of being alive. Sometimes you need something that ends with warmth — not resolution exactly, but movement toward it. A story that acknowledges weight and then, gently, finds somewhere to set it down.",
+        "Other times you need something more complex — a feeling that contains both tenderness and difficulty, closeness and uncertainty. The specific emotional situation that doesn't resolve into a simple register because life doesn't resolve into simple registers.",
         "The Private Story creates across this full range. You choose the emotional tone before generation. Stories are written toward it — not as a mood label applied to generic content, but as the precise emotional territory the story inhabits from first sentence to last.",
       ],
     },
@@ -1813,7 +1813,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
     h2: "Three Emotional Stories — Three Different Needs",
     items: [
       {
-        heading: "A story for the nights when you need to process without talking",
+        heading: "A story for when you need to process without talking",
         body: "Some feelings are not ready to be spoken. The right response to them is not conversation but the particular quality of being accompanied through them — a story that goes into the same territory you're in, without asking you to explain why you're there. You follow the narrator. The feeling becomes more navigable simply by being moved through rather than analysed.",
       },
       {
@@ -1859,8 +1859,8 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
   fullPicture: {
     h2: "Emotional Audio Stories — The Full Picture",
     paragraphs: [
-      "Emotional stories to listen to have always existed — in literature, in music, in the particular kind of film that you watch alone late at night and that does something to you that you couldn't fully explain afterward. The Private Story brings that experience to audio storytelling that is personalised, private, and made for adult emotional lives.",
-      "Audio stories for emotional nights serve a specific function that entertainment and wellness content mostly leaves unaddressed. Entertainment distracts. Wellness manages. Neither quite occupies the territory of simply being with a feeling — accompanying it, moving through it, finding the other side.",
+      "Emotional stories to listen to have always existed — in literature, in music, in the particular kind of film that you watch alone and that does something to you that you couldn't fully explain afterward. The Private Story brings that experience to audio storytelling that is personalised, private, and made for adult emotional lives.",
+      "Audio stories for emotional moments serve a specific function that entertainment and wellness content mostly leaves unaddressed. Entertainment distracts. Wellness manages. Neither quite occupies the territory of simply being with a feeling — accompanying it, moving through it, finding the other side.",
       "Moving audio stories for adults require emotional intelligence in the writing — not just difficult events but the interior experience of difficulty, described with enough precision that the listener finds herself in the story rather than simply watching it from outside. This is what The Private Story's generation is calibrated to produce.",
       "Stories that make you feel something do so through specificity. Generic emotional content generates generic emotional response — a low-grade sensation that passes quickly. Deeply emotional audio stories that actually land do so because they arrived at something true — a texture of feeling that the listener recognises from the inside.",
       "Whatever emotional territory you need to occupy right now — whatever is being carried that needs to be felt rather than solved — that is what the story is built to meet.",
@@ -1869,7 +1869,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Create Your Emotional Story",
     paragraphs: [
-      "There is a kind of evening where nothing on offer quite reaches you. The podcast is interesting but adjacent. The film requires a version of your attention you don't currently have. You know what you need — something that goes where you are — but you haven't found it.",
+      "There are moments when nothing on offer quite reaches you. The podcast is interesting but adjacent. The film requires a version of your attention you don't currently have. You know what you need — something that goes where you are — but you haven't found it.",
       "A story created around your emotional register right now goes there.",
       "Describe what you need to feel. The story is built around that — written from the inside of the experience, narrated for private listening, held in a space that belongs entirely to you.",
       "Create yours in under two minutes.",
@@ -2193,10 +2193,10 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
     {
       h2: "The Range of Intimate — and Why Yours Is Your Own",
       paragraphs: [
-        "Intimate audio stories exist across a wide emotional and experiential spectrum, and where you are on that spectrum on any given night is entirely your own business.",
-        "Some nights the need is for slow burn — the extended pleasure of tension that builds deliberately, that withholds in order to arrive somewhere worth arriving. Every sentence increases the charge. The pacing is the story. When something finally gives, it gives in a way that has been entirely earned by everything that came before.",
-        "Other nights the need is for something more immediately charged — the electric quality of a specific encounter, two people who have been circling each other finally in the same space. The electricity is different from slow burn. It is present rather than accumulated — the charge is already there, the story is what happens when it's no longer contained.",
-        "Other nights the need is for closeness rather than charge — the specific warmth of feeling genuinely wanted, a voice that is unhurried and fully present, the experience of being someone's entire attention without urgency or performance. This is intimate in the way that real intimacy is intimate: the kind that is not about intensity but about the quality of being genuinely there with another person.",
+        "Intimate audio stories exist across a wide emotional and experiential spectrum, and where you are on that spectrum at any given moment is entirely your own business.",
+        "Sometimes the need is for slow burn — the extended pleasure of tension that builds deliberately, that withholds in order to arrive somewhere worth arriving. Every sentence increases the charge. The pacing is the story. When something finally gives, it gives in a way that has been entirely earned by everything that came before.",
+        "Other times the need is for something more immediately charged — the electric quality of a specific encounter, two people who have been circling each other finally in the same space. The electricity is different from slow burn. It is present rather than accumulated — the charge is already there, the story is what happens when it's no longer contained.",
+        "Other times the need is for closeness rather than charge — the specific warmth of feeling genuinely wanted, a voice that is unhurried and fully present, the experience of being someone's entire attention without urgency or performance. This is intimate in the way that real intimacy is intimate: the kind that is not about intensity but about the quality of being genuinely there with another person.",
         "All of these are what intimate audio stories can be. You choose the version that is right for right now. The story is built around that choice.",
       ],
     },
@@ -2686,7 +2686,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "A confident energy story",
-        body: "You at the centre of something cinematic. The room organised around your presence. A dynamic that places you exactly where you want to be — desired specifically, seen clearly, the focus of an attention that feels like the best kind of recognition. This is the story for the nights when you want to feel like the most interesting person in the room. Right Now, you are.",
+        body: "You at the centre of something cinematic. The room organised around your presence. A dynamic that places you exactly where you want to be — desired specifically, seen clearly, the focus of an attention that feels like the best kind of recognition. This is the story for the moments when you want to feel like the most interesting person in the room. Right now, you are.",
       },
     ],
     interstitial: "Create a story shaped around how you want to feel.",
@@ -4700,7 +4700,7 @@ export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
       },
       {
         heading: "The returning listener who wants something new every time",
-        body: "She has listened to every good erotic audiobook she can find. She has favourites she returns to. She has also noticed that the catalogue, even a good one, is finite — and that returning to an existing story is different from hearing something for the first time. The generative model is for her: the new story, for this session, around the specific dynamic or mood or character she wants right now. Not what she wanted last month. What she wants tonight.",
+        body: "She has listened to every good erotic audiobook she can find. She has favourites she returns to. She has also noticed that the catalogue, even a good one, is finite — and that returning to an existing story is different from hearing something for the first time. The generative model is for her: the new story, for this session, around the specific dynamic or mood or character she wants right now. Not what she wanted last month. What she wants right now.",
       },
     ],
     interstitial: "Create your erotic audio story — the one the catalogue has never had, built around exactly what you want to feel.",

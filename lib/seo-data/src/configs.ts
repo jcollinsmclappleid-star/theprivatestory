@@ -123,7 +123,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
       "Not the library version. Not the nearest match in a catalogue. An original story, created for right now, around exactly what you want to feel.",
       "Literary, narrated, private. Ready to listen within minutes.",
     ],
-    primary: { label: "Create your adult audio story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
       { label: "Private audio stories", href: "/private-audio-stories" },
@@ -3778,7 +3778,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
       "The Private Story was built on a specific premise: that audio erotica genuinely designed for women is not a niche within a general adult content platform, but a category that deserves to be built from the ground up around how women actually experience and describe desire. The content, the privacy model, and the creation flow are all shaped by this premise.",
       "What that means in practice: stories that begin with your emotional register rather than a production decision. A privacy architecture that removes the friction that public-facing library models create for a category of content that requires genuine privacy. Content that can be as quietly atmospheric or as explicitly adult as your creation choices specify — shaped by your preferences, not by a platform default calibrated for a general audience.",
       "The result is a listening experience that feels closer, more personal, and more specifically yours than any catalogue can produce. Not because the technology is magic, but because a story written specifically around what you chose to want right now is different — in kind, not just in degree — from a story selected from a library someone else produced.",
-      "This is audio erotica for women in the most specific sense: built around female desire, designed for private exploration, and created in response to your choices rather than someone else's production schedule. Explore the <a href=\"/create\">creation flow</a> to see what can be made around your choices, or see the <a href=\"/pricing\">pricing page</a> for how access works.",
+      "This is audio erotica for women in the most specific sense: built around female desire, designed for private exploration, and created in response to your choices rather than someone else's production schedule. Explore the <a href=\"/after-dark\">After Dark creation flow</a> to see what can be made around your choices, or see the <a href=\"/pricing\">pricing page</a> for how access works.",
     ],
   },
   finalCTA: {
@@ -3786,7 +3786,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
     paragraphs: [
       "The story you want to hear is created the moment you make your choices. Under two minutes to create. Completely private. Made for you, not for a general audience.",
     ],
-    primary: { label: "Create your story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Personalised erotica", href: "/personalised-erotica" },
       { label: "Erotic audio stories for women", href: "/erotic-audio-stories-for-women" },
@@ -3891,7 +3891,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Create Your Story Now",
     paragraphs: ["Seven selections. Under two minutes. A story made for you, privately."],
-    primary: { label: "Start creating", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Erotic audio stories", href: "/erotic-audio-stories" },
@@ -3972,7 +3972,7 @@ export const eroticAudioStoriesConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Start Creating",
     paragraphs: ["An original erotic audio story created from your choices, narrated, and private. Under two minutes to create."],
-    primary: { label: "Create your story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Personalised erotica", href: "/personalised-erotica" },
@@ -4052,7 +4052,7 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Your Story for Tonight",
     paragraphs: ["A private adult bedtime story created around how you want to feel as you settle in. Under two minutes to create."],
-    primary: { label: "Create tonight's story", href: "/create" },
+    primary: { label: "Explore Drift", href: "/drift" },
     links: [
       { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
       { label: "Sleep audio stories", href: "/sleep-audio-stories" },
@@ -4259,7 +4259,7 @@ export const spicyAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "Created fresh every session",
-        body: "Your mood varies. Your needs vary. The kind of spicy story that works on one occasion is not necessarily the one that works the next. <a href=\"/create\">Create something different</a> whenever you want something different. Each session begins from your current preferences, not a saved default.",
+        body: "Your mood varies. Your needs vary. The kind of spicy story that works on one occasion is not necessarily the one that works the next. <a href=\"/after-dark\">Create something different in After Dark</a> whenever you want something different. Each session begins from your current preferences, not a saved default.",
       },
       {
         heading: "Premium quality throughout",
@@ -4279,7 +4279,7 @@ export const spicyAudioStoriesConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Create Your Spicy Audio Story",
     paragraphs: ["Your dynamic. Your heat level. Your story — made for you."],
-    primary: { label: "Create your story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
       { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
@@ -4440,7 +4440,7 @@ export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
     paragraphs: [
       "The Private Story was built on the premise that erotic audio stories genuinely designed for women require a different model from the catalogue. Not a better catalogue — a different approach entirely. One where the story begins with your preferences rather than a production team's editorial decisions, where privacy is structural rather than a setting, and where the experience is private by design rather than by policy.",
       "The result is erotic audio fiction that begins with you. Your mood, your dynamic, your specific quality of what you want to feel. The story is created from these choices — not retrieved, not approximated from a nearest-fit, but generated from the first sentence in response to them. It does not exist before you ask for it. It exists because you did.",
-      "This is erotic audio stories for women in the most specific sense: content that began with female desire, designed for complete privacy, and created from your choices rather than someone else's assumptions about what a female listener probably wants. Explore the <a href=\"/create\">creation flow</a>, read the <a href=\"/pricing\">pricing page</a>, or see <a href=\"/audio-erotica-for-women\">audio erotica for women</a> for more on the platform's approach to the category.",
+      "This is erotic audio stories for women in the most specific sense: content that began with female desire, designed for complete privacy, and created from your choices rather than someone else's assumptions about what a female listener probably wants. Explore the <a href=\"/after-dark\">After Dark creation flow</a>, read the <a href=\"/pricing\">pricing page</a>, or see <a href=\"/audio-erotica-for-women\">audio erotica for women</a> for more on the platform's approach to the category.",
     ],
   },
   finalCTA: {
@@ -4448,7 +4448,7 @@ export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
     paragraphs: [
       "Original. Private. Created from your choices right now. The story you want to hear is made the moment you describe it.",
     ],
-    primary: { label: "Create your story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Personalised erotica", href: "/personalised-erotica" },
@@ -4752,7 +4752,7 @@ export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
       "The erotic audiobook demonstrated that narrated literary adult fiction is the right format for this kind of listening. The Private Story takes that format and removes the one thing it could never solve: the gap between any catalogue and your particular imagination.",
       "Private, narrated, yours. Created in under two minutes.",
     ],
-    primary: { label: "Create your erotic audio story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Erotic audio stories for women", href: "/erotic-audio-stories-for-women" },
@@ -5036,7 +5036,7 @@ export const steamyAudioStoriesConfig: SEOPageConfig = {
       "Steamy audio fiction works because the imagination is not a passive recipient — it is the active partner in the experience. The story creates the architecture. You furnish it with everything it was designed to contain.",
       "Private, narrated, yours. Created in under two minutes.",
     ],
-    primary: { label: "Create your steamy audio story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
       { label: "Spicy audio stories", href: "/spicy-audio-stories" },
@@ -5179,7 +5179,7 @@ export const aiEroticaConfig: SEOPageConfig = {
       "AI erotica, when built properly, closes the gap that every catalogue leaves: the distance between what is available and what you actually want. The Private Story creates that story for you, privately, for this session.",
       "Private, narrated, yours. Created in under two minutes.",
     ],
-    primary: { label: "Create your AI erotica story", href: "/create" },
+    primary: { label: "Enter After Dark", href: "/after-dark" },
     links: [
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },

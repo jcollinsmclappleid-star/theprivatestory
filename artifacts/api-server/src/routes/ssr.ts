@@ -1161,7 +1161,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
       </div>`,
         )
         .join("")}
-      <p><a href="/create">Create yours in under two minutes →</a></p>
+      <p><a href="${esc(page.finalCTA.primary.href)}">Create yours in under two minutes →</a></p>
     </section>`;
 
   const comparisonTableHtml = page.comparisonTable
@@ -1216,7 +1216,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     : "";
 
   const bodyHtml = `
-    <a class="cta-primary" href="/create">Create your story</a>
+    <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">Create your story</a>
     ${TRUST_BAR_HTML}
     ${sectionsHtml}
     ${comparisonTableHtml}

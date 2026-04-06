@@ -879,22 +879,18 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="pt-2 space-y-8 flex flex-col items-center w-full">
-              <MiniDoorCTA />
-
-              <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-                {[
-                  { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
-                  { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
-                  { icon: <Lock className="w-3 h-3" />, label: "No profile" },
-                  { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
-                ].map(({ icon, label }) => (
-                  <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/25">
-                    <span className="text-primary/35">{icon}</span>
-                    {label}
-                  </span>
-                ))}
-              </div>
+            <div className="pt-2 flex flex-wrap justify-center gap-x-5 gap-y-2">
+              {[
+                { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
+                { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
+                { icon: <Lock className="w-3 h-3" />, label: "No profile" },
+                { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
+              ].map(({ icon, label }) => (
+                <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/25">
+                  <span className="text-primary/35">{icon}</span>
+                  {label}
+                </span>
+              ))}
             </div>
           </motion.div>
         </section>
@@ -1362,41 +1358,20 @@ export default function Home() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* Final CTA                                                          */}
+        {/* Final CTA — mini doors                                            */}
         {/* ---------------------------------------------------------------- */}
-        <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="rounded-3xl border border-primary/20 bg-gradient-to-br from-card/60 to-background p-10 md:p-16 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-primary/6 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Entirely yours. Entirely private.</p>
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-                A private story,<br className="hidden md:block" />{" "}
-                <span className="text-primary">built around you.</span>
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-8 leading-relaxed">
-                Choose the feeling, the setting, and the energy. We write it, narrate it, and keep it where it belongs — yours.
-              </p>
-              <div className="flex items-center justify-center gap-4 flex-wrap">
-                <Link
-                  href="/create"
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:-translate-y-0.5 shadow-[0_0_48px_-12px_hsl(37_42%_68%_/_0.45)]"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Create my story
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-primary/30 text-primary font-semibold text-base hover:bg-primary/10 transition-all"
-                >
-                  View pricing
-                </Link>
-              </div>
-              <p className="text-xs text-muted-foreground/40 mt-5">
-                Under a minute to begin. Private from the first word.{" "}
-                <Link href="/privacy" className="hover:text-primary transition-colors">How we protect it →</Link>
-              </p>
-            </div>
-          </div>
+        <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col items-center gap-6">
+          <MiniDoorCTA />
+          <Link
+            href="/pricing"
+            className="text-xs text-primary/50 hover:text-primary transition-colors tracking-widest uppercase"
+          >
+            View pricing →
+          </Link>
+          <p className="text-[11px] text-muted-foreground/30">
+            Under a minute to begin. Private from the first word.{" "}
+            <Link href="/privacy" className="hover:text-primary/60 transition-colors">How we protect it →</Link>
+          </p>
         </section>
 
       </div>

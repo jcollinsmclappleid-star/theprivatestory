@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
 import CastingPreview from "@/components/CastingPreview";
+import { ThreeDoors } from "@/components/ThreeDoors";
 
 export type { SEOPageConfig };
 
@@ -86,6 +87,9 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
           </div>
         </div>
       )}
+
+      {/* Three Doors — choose your path */}
+      <ThreeDoors />
 
       {/* Casting Preview — soft version */}
       {config.showCastingPreview && (

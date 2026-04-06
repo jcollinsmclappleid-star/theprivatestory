@@ -2,15 +2,19 @@ import { Link } from "wouter";
 import { Sparkles, Moon, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const BASE = import.meta.env.BASE_URL;
+
 const DOORS = [
   {
     id: "story",
     room: "The Story Room",
     name: "Romance",
+    shortName: "Romance",
     tagline: "Tension, atmosphere, the feeling you're after.",
     cta: "Create My Story",
     href: "/create",
     Icon: Sparkles,
+    image: `${BASE}images/door-romance.png`,
     accent: "#c9a227",
     rgb: "201,162,39",
     labelColor: "rgba(201,162,39,0.72)",
@@ -37,26 +41,28 @@ const DOORS = [
     id: "quiet",
     room: "The Quiet Room",
     name: "Bedtime Stories",
+    shortName: "Drift",
     tagline: "Calm, warm, written to let you drift.",
     cta: "Explore Drift",
     href: "/drift",
     Icon: Moon,
-    accent: "#8b8fff",
-    rgb: "99,102,241",
-    labelColor: "rgba(99,102,241,0.68)",
-    nameColor: "#c8caff",
-    taglineColor: "rgba(155,158,255,0.46)",
-    bg: "linear-gradient(180deg, #08081d 0%, #060614 55%, #070709 100%)",
-    border: "rgba(99,102,241,0.20)",
-    borderHover: "rgba(99,102,241,0.62)",
-    borderPulse: "rgba(99,102,241,0.38)",
-    glow: "rgba(99,102,241,0.18)",
-    glowPulse: "rgba(99,102,241,0.08)",
-    panelBorder: "rgba(99,102,241,0.11)",
-    panelBorderHover: "rgba(99,102,241,0.26)",
-    knob: "rgba(99,102,241,0.26)",
-    knobHover: "rgba(99,102,241,0.60)",
-    underLight: "rgba(99,102,241,0.10)",
+    image: `${BASE}images/door-drift.png`,
+    accent: "#56b4e0",
+    rgb: "86,180,224",
+    labelColor: "rgba(86,180,224,0.68)",
+    nameColor: "#b8e4f5",
+    taglineColor: "rgba(86,180,224,0.44)",
+    bg: "linear-gradient(180deg, #04111a 0%, #030d14 55%, #050a0d 100%)",
+    border: "rgba(86,180,224,0.20)",
+    borderHover: "rgba(86,180,224,0.62)",
+    borderPulse: "rgba(86,180,224,0.36)",
+    glow: "rgba(86,180,224,0.18)",
+    glowPulse: "rgba(86,180,224,0.08)",
+    panelBorder: "rgba(86,180,224,0.11)",
+    panelBorderHover: "rgba(86,180,224,0.26)",
+    knob: "rgba(86,180,224,0.24)",
+    knobHover: "rgba(86,180,224,0.58)",
+    underLight: "rgba(86,180,224,0.10)",
     teasers: [
       { text: "Rain on a window. Almost midnight.", blur: false },
       { text: "A voice written for the quiet hour.", blur: false },
@@ -67,10 +73,12 @@ const DOORS = [
     id: "dark",
     room: "After Dark",
     name: "Erotica",
+    shortName: "After Dark",
     tagline: "Further. Unrestrained. Entirely yours.",
     cta: "Enter After Dark",
     href: "/after-dark",
     Icon: Moon,
+    image: `${BASE}images/door-afterdark.png`,
     accent: "#7b8fff",
     rgb: "123,143,255",
     labelColor: "rgba(123,143,255,0.68)",
@@ -98,6 +106,7 @@ const DOORS = [
 export function ThreeDoors() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [pulsing, setPulsing] = useState<number>(0);
+  const [miniHovered, setMiniHovered] = useState<string | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -142,6 +151,30 @@ export function ThreeDoors() {
                   overflow: "hidden",
                 }}
               >
+                {/* Woman listening — world imagery */}
+                <img
+                  src={door.image}
+                  alt=""
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    width: "100%",
+                    height: "68%",
+                    objectFit: "cover",
+                    objectPosition: "center top",
+                    borderRadius: "110px 110px 0 0",
+                    maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
+                    pointerEvents: "none",
+                    zIndex: 1,
+                    transition: "opacity 0.4s ease",
+                    opacity: isHovered ? 0.85 : 0.65,
+                  }}
+                />
+
                 {/* Arch glow — light bleeding through the top of the door */}
                 <div
                   style={{
@@ -153,6 +186,7 @@ export function ThreeDoors() {
                     background: `radial-gradient(ellipse at 50% -15%, ${isHovered ? door.glow : isPulsing ? door.glowPulse : "rgba(255,255,255,0.008)"} 0%, transparent 70%)`,
                     transition: "background 0.5s ease",
                     pointerEvents: "none",
+                    zIndex: 2,
                   }}
                 />
 
@@ -170,6 +204,7 @@ export function ThreeDoors() {
                     transition: "background 0.4s ease",
                     filter: "blur(3px)",
                     pointerEvents: "none",
+                    zIndex: 2,
                   }}
                 />
 
@@ -186,6 +221,7 @@ export function ThreeDoors() {
                     boxShadow: isHovered ? `inset 0 6px 24px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.02)` : "none",
                     transition: "all 0.4s ease",
                     pointerEvents: "none",
+                    zIndex: 3,
                   }}
                 />
 
@@ -202,6 +238,7 @@ export function ThreeDoors() {
                     boxShadow: isHovered ? `inset 0 4px 16px rgba(0,0,0,0.4)` : "none",
                     transition: "all 0.4s ease",
                     pointerEvents: "none",
+                    zIndex: 3,
                   }}
                 />
 
@@ -220,6 +257,7 @@ export function ThreeDoors() {
                       : "none",
                     transition: "all 0.4s ease",
                     pointerEvents: "none",
+                    zIndex: 4,
                   }}
                 />
 
@@ -338,13 +376,100 @@ export function ThreeDoors() {
         })}
       </div>
 
-      {/* Footer hint */}
-      <p
-        className="text-center mt-8"
-        style={{ fontSize: "10px", color: "rgba(255,255,255,0.12)", letterSpacing: "0.05em" }}
-      >
-        Every door leads to a different world. Only one has your name on it.
-      </p>
+      {/* ------------------------------------------------------------------ */}
+      {/* Mini door CTA — choose your path                                    */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="mt-14 flex flex-col items-center gap-6">
+        <p
+          style={{
+            fontSize: "10px",
+            fontWeight: 700,
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.20)",
+          }}
+        >
+          Choose where your story begins
+        </p>
+
+        <div className="flex items-end justify-center gap-4">
+          {DOORS.map((door) => {
+            const isMin = miniHovered === door.id;
+            return (
+              <Link key={door.id} href="/create">
+                <div
+                  onMouseEnter={() => setMiniHovered(door.id)}
+                  onMouseLeave={() => setMiniHovered(null)}
+                  style={{
+                    width: "76px",
+                    height: "114px",
+                    background: door.bg,
+                    border: `1px solid ${isMin ? door.borderHover : door.border}`,
+                    borderRadius: "50px 50px 5px 5px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    paddingBottom: "12px",
+                    cursor: "pointer",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transform: isMin ? "translateY(-5px) scale(1.05)" : "translateY(0) scale(1)",
+                    boxShadow: isMin
+                      ? `0 0 40px -8px ${door.glow}, 0 12px 28px -12px rgba(0,0,0,0.8)`
+                      : `0 4px 16px -8px rgba(0,0,0,0.6)`,
+                  }}
+                >
+                  {/* Arch glow */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "55px",
+                      background: `radial-gradient(ellipse at 50% -10%, ${isMin ? door.glow : door.glowPulse} 0%, transparent 70%)`,
+                      pointerEvents: "none",
+                    }}
+                  />
+                  {/* Knob */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: "22%",
+                      top: "54%",
+                      width: "5px",
+                      height: "5px",
+                      borderRadius: "50%",
+                      background: isMin ? door.knobHover : door.knob,
+                      transition: "background 0.3s ease",
+                    }}
+                  />
+                  {/* Label */}
+                  <span
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      fontSize: "8px",
+                      fontWeight: 700,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: isMin ? door.nameColor : door.labelColor,
+                      textAlign: "center",
+                      transition: "color 0.3s ease",
+                      lineHeight: 1.3,
+                      paddingInline: "4px",
+                    }}
+                  >
+                    {door.shortName}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }

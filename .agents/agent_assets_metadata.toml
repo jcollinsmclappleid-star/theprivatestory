@@ -348,6 +348,24 @@ uri = "file://artifacts/api-server/public/images/cover-lib-su2_03-1775047799057.
 type = "image"
 title = "cover-lib-su2_03-1775047799057"
 
+[[generated]]
+id = "hDlVFp3gVQHLQsfedazPd"
+uri = "file://artifacts/api-server/public/images/door-romance.png"
+type = "image"
+title = "romance door woman"
+
+[[generated]]
+id = "0BKiqnA4kJeT_hQUuOev1"
+uri = "file://artifacts/api-server/public/images/door-drift.png"
+type = "image"
+title = "drift door woman"
+
+[[generated]]
+id = "w3NvA1ysU3Ezr50zfqhQf"
+uri = "file://artifacts/api-server/public/images/door-afterdark.png"
+type = "image"
+title = "after dark door woman"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

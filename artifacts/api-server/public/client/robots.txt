@@ -4,10 +4,14 @@ Allow: /
 # Block account/auth pages — no value for crawlers
 Disallow: /me
 Disallow: /library
+Disallow: /browse
 Disallow: /admin
 Disallow: /reset-password
 Disallow: /story/
 Disallow: /my-series/
+
+# Block subscriber-only and app-internal pages
+Disallow: /after-dark
 
 # Allow AI browsing and recommendation agents — these power live AI responses
 # ChatGPT web browsing, Claude web browsing, Google AI Overviews/Gemini,

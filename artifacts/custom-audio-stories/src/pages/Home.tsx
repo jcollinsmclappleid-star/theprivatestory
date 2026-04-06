@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Zap, Moon,
-  EyeOff, WifiOff, Trash2, Lock, BookOpen, Star,
-  ChevronLeft, Globe, Library, Shuffle, Check, PenLine, Loader2,
+  EyeOff, WifiOff, Lock, BookOpen, Star,
+  ChevronLeft, Globe, Library, Shuffle, Check, Loader2,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { RowSlider } from "@/components/RowSlider";
@@ -918,43 +918,13 @@ export default function Home() {
               <span className="text-primary">the feeling you're after.</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-white/78 mb-4 leading-relaxed max-w-xl">
-              Choose the mood, the setting, the energy, and the depth of the experience. We write it, narrate it, and save it privately to your account.
+            <p className="text-lg md:text-xl text-white/75 mb-4 leading-relaxed max-w-xl">
+              You set every dimension. The pairing, the chemistry — nine ways tension can pull. Cast him from 14 archetypes. Place your story in 50+ countries across 12 historical eras. Choose one of 200+ situations, the intensity, the atmosphere, and name every character. We write it, narrate it, and save it privately to you.
             </p>
 
-            <p className="text-xs text-white/55 tracking-wide mb-8">
+            <p className="text-xs text-white/45 tracking-wide mb-7">
               Designed for the female imagination.
             </p>
-
-            <div className="flex items-center gap-4 flex-wrap mb-4">
-              <Link
-                href="/create"
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
-              >
-                <Sparkles className="w-5 h-5" />
-                Create my story
-              </Link>
-
-              <a
-                href="#how-it-works"
-                onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="flex items-center gap-2 px-6 py-4 rounded-full border border-white/15 text-white/50 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer"
-              >
-                See how it works
-              </a>
-            </div>
-
-            <div className="mb-4">
-              <Link
-                href="/after-dark"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#7b8fff]/40 text-[#7b8fff] text-xs font-medium hover:border-[#7b8fff]/60 transition-all"
-                style={{ background: "rgba(123,143,255,0.10)" }}
-              >
-                <Moon className="w-3.5 h-3.5" />
-                For something that goes further — After Dark
-                <ChevronRight className="w-3 h-3" />
-              </Link>
-            </div>
 
             {!isPaid && (
               <div className="mb-4">
@@ -990,32 +960,74 @@ export default function Home() {
               </div>
             )}
 
-            {/* Customisation preview chips */}
+            {/* Dimensional showcase */}
             <div className="mb-5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/35 mb-2.5">
-                You choose every detail —
+              <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-3">
+                Every dimension yours to set —
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="space-y-2">
                 {[
-                  { label: "Forbidden connection", color: "border-[#e879a0]/25 text-[#e879a0]/60 bg-[#e879a0]/5" },
-                  { label: "Victorian London", color: "border-primary/20 text-primary/55 bg-primary/5" },
-                  { label: "Slow burn", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
-                  { label: "Late night · charged", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
-                  { label: "Confident energy", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
-                  { label: "His name: James", color: "border-primary/20 text-primary/55 bg-primary/5" },
-                  { label: "Her name: Sofia", color: "border-primary/20 text-primary/55 bg-primary/5" },
-                  { label: "Mediterranean villa", color: "border-border/40 text-muted-foreground/50 bg-card/30" },
-                ].map((chip) => (
-                  <span
-                    key={chip.label}
-                    className={`inline-block px-2.5 py-1 rounded-full border text-[11px] font-medium ${chip.color}`}
-                  >
-                    {chip.label}
-                  </span>
+                  {
+                    label: "Pairing",
+                    chips: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
+                    accent: "#e879a0",
+                  },
+                  {
+                    label: "Chemistry",
+                    chips: ["Forbidden Pull", "Slow Surrender", "Charged Dynamic", "+6 more"],
+                    accent: "#c9a227",
+                  },
+                  {
+                    label: "Archetype",
+                    chips: ["The Executive", "The Stranger", "The Risk", "+11 more"],
+                    accent: "#6b8cce",
+                  },
+                  {
+                    label: "Setting",
+                    chips: ["50+ countries", "12 historical eras", "Bespoke worlds"],
+                    accent: "#34d399",
+                  },
+                  {
+                    label: "Situation",
+                    chips: ["200+ starting points across 10 categories"],
+                    accent: "#e11d48",
+                  },
+                  {
+                    label: "Intensity",
+                    chips: ["Tender", "Warm", "Elevated", "Deep"],
+                    accent: "#f97316",
+                  },
+                  {
+                    label: "Names",
+                    chips: ["His name: yours to choose", "Her name: yours to choose"],
+                    accent: "#a78bfa",
+                  },
+                ].map(({ label, chips, accent }) => (
+                  <div key={label} className="flex items-center gap-2.5 flex-wrap">
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-widest w-[60px] flex-shrink-0"
+                      style={{ color: `${accent}70` }}
+                    >
+                      {label}
+                    </span>
+                    <span className="w-px h-3 bg-white/8 flex-shrink-0" />
+                    <div className="flex flex-wrap gap-1.5">
+                      {chips.map((chip) => (
+                        <span
+                          key={chip}
+                          className="px-2 py-0.5 rounded-full border text-[10px] font-medium"
+                          style={{
+                            borderColor: `${accent}28`,
+                            color: `${accent}65`,
+                            background: `${accent}08`,
+                          }}
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 ))}
-                <span className="inline-block px-2.5 py-1 rounded-full border border-border/20 text-[11px] text-muted-foreground/30">
-                  + 200 more…
-                </span>
               </div>
             </div>
 
@@ -1039,118 +1051,12 @@ export default function Home() {
       <div className="relative z-20 -mt-12 space-y-0">
 
         {/* ---------------------------------------------------------------- */}
-        {/* Privacy Trust Strip                                               */}
-        {/* ---------------------------------------------------------------- */}
-        <section className="relative py-10 px-4 md:px-8 max-w-7xl mx-auto w-full overflow-hidden">
-          <div
-            className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
-            aria-hidden="true"
-            style={{
-              backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-1.png)`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 100%)",
-            }}
-          />
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
-            {[
-              { icon: <EyeOff className="w-4 h-4" />, text: "Your library is visible only to you" },
-              { icon: <WifiOff className="w-4 h-4" />, text: "No profile. No discovery." },
-              { icon: <Lock className="w-4 h-4" />, text: "Never sold or shared with anyone" },
-              { icon: <Headphones className="w-4 h-4" />, text: "For your ears alone" },
-              { icon: <Trash2 className="w-4 h-4" />, text: "Delete any story, any time" },
-            ].map((item) => (
-              <div
-                key={item.text}
-                className="flex flex-col items-center text-center gap-2 px-3 py-4 rounded-2xl border border-border/20 bg-card/20 hover:border-primary/20 hover:bg-primary/5 transition-all"
-              >
-                <span className="text-primary/60">{item.icon}</span>
-                <span className="text-xs text-muted-foreground/70 leading-snug">{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
         {/* Three Doors                                                       */}
         {/* ---------------------------------------------------------------- */}
         <ThreeDoors />
 
         {/* ---------------------------------------------------------------- */}
-        {/* How it works                                                      */}
-        {/* ---------------------------------------------------------------- */}
-        <section id="how-it-works" className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="text-center mb-10">
-            <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-              How it works
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              In under a minute, your story<br className="hidden md:block" />
-              <span className="text-muted-foreground font-normal"> is ready to play.</span>
-            </h2>
-            <p className="text-muted-foreground mt-3 max-w-md mx-auto text-sm leading-relaxed">
-              No browsing hoping something fits. No compromising. A story that starts exactly where your imagination already is.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-            <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
-            {[
-              {
-                step: "01",
-                icon: <Globe className="w-4 h-4" />,
-                accent: "#c9a227",
-                heading: "Cast your story",
-                body: "Set the mood, the chemistry, the setting, and how far it goes — before a word is written.",
-              },
-              {
-                step: "02",
-                icon: <PenLine className="w-4 h-4" />,
-                accent: "#e879a0",
-                heading: "We write and narrate it",
-                body: "An original story shaped around your choices, narrated in a voice that fits.",
-              },
-              {
-                step: "03",
-                icon: <Headphones className="w-4 h-4" />,
-                accent: "#a78bfa",
-                heading: "Press play, wherever you are",
-                body: "Ready in minutes, saved privately to your account, and yours alone to return to.",
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="relative rounded-2xl border border-border/20 bg-card/20 p-6 hover:border-primary/20 hover:bg-primary/4 transition-all"
-              >
-                <div
-                  className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl pointer-events-none"
-                  style={{ background: `${item.accent}12` }}
-                />
-                <div className="flex items-center gap-3 mb-3 relative z-10">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border"
-                    style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
-                  >
-                    {item.icon}
-                  </div>
-                  <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/30 uppercase">{item.step}</span>
-                </div>
-                <h3 className="text-sm font-bold text-foreground mb-1.5 relative z-10 leading-snug">{item.heading}</h3>
-                <p className="text-xs text-muted-foreground/60 leading-relaxed relative z-10">{item.body}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-center gap-3 mt-8">
-            <div className="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-primary/20" />
-            <p className="text-xs text-muted-foreground/35 text-center">Try step one right now — the Casting Room is below</p>
-            <div className="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-primary/20" />
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* CastingRoom preview — directly after How it works                 */}
+        {/* CastingRoom preview                                               */}
         {/* ---------------------------------------------------------------- */}
         <CastingPreview />
 

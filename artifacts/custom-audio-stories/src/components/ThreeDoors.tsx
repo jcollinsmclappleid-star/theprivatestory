@@ -107,23 +107,7 @@ export function ThreeDoors() {
   }, []);
 
   return (
-    <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <p
-          className="text-[9px] font-bold uppercase tracking-[0.40em] mb-5"
-          style={{ color: "rgba(255,255,255,0.15)" }}
-        >
-          Three Doors
-        </p>
-        <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground leading-tight mb-4">
-          Which door calls to you?
-        </h2>
-        <p style={{ color: "rgba(255,255,255,0.28)" }} className="text-sm max-w-[220px] mx-auto leading-relaxed">
-          Your story is on the other side.
-        </p>
-      </div>
-
+    <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
       {/* The three doors */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-4xl mx-auto">
         {DOORS.map((door, idx) => {

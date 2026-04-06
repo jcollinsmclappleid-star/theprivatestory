@@ -877,57 +877,80 @@ export default function Home() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col">
 
       {/* ------------------------------------------------------------------ */}
-      {/* Hero                                                                 */}
+      {/* Hero Eyebrow                                                         */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative w-full h-auto md:h-[90vh] min-h-auto md:min-h-[760px] flex flex-col justify-center md:justify-end pt-6 md:pt-0 pb-16">
-        <div className="absolute inset-0 z-0">
-          <img
-            src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-transparent" />
-          <div className="absolute inset-0 bg-background/15" />
-        </div>
+      <section className="relative w-full pt-20 pb-8 md:pt-28 md:pb-10 flex flex-col items-center justify-center text-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.75 }}
+          className="flex flex-col items-center gap-5"
+        >
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
+              <Headphones className="w-3.5 h-3.5 text-primary/70" />
+              <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-white/35 tracking-wide">
+              <span>Built around you</span>
+              <span>·</span>
+              <span>Narrated</span>
+              <span>·</span>
+              <span>Private</span>
+            </div>
+          </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight drop-shadow-xl max-w-2xl">
+            A private story built around{" "}
+            <span className="text-primary">the feeling you're after.</span>
+          </h1>
+        </motion.div>
+      </section>
+
+      <div className="relative z-20 space-y-0">
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Three Doors                                                       */}
+        {/* ---------------------------------------------------------------- */}
+        <ThreeDoors />
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Emotion-led hook                                                  */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-20 px-4 md:px-8 max-w-2xl mx-auto w-full text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="max-w-2xl"
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            {/* Format signal */}
-            <div className="flex flex-col gap-3 mb-5 md:flex-row md:items-center md:gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8 w-fit">
-                <Headphones className="w-3.5 h-3.5 text-primary/70" />
-                <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-1 text-[11px] text-white/55 tracking-wide">
-                <span>Built around you</span>
-                <span>·</span>
-                <span>Narrated</span>
-                <span>·</span>
-                <span>Private</span>
-              </div>
+            <div className="space-y-5">
+              <p className="text-2xl md:text-3xl font-display font-medium text-white/88 leading-snug">
+                Have you ever wanted a story written entirely around you?
+              </p>
+              <p className="text-base md:text-lg text-white/50 leading-relaxed">
+                Your world. Your rules. The energy you want, the tension that builds exactly as you like it — and a character who feels written for you, because he was.
+              </p>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
-              A private story built around<br className="hidden md:block" />{" "}
-              <span className="text-primary">the feeling you're after.</span>
-            </h1>
+            <div className="space-y-3">
+              {[
+                "Not browsed. Not compromised. Yours from the first line.",
+                "Choose the feeling. Choose how far it goes.",
+                "Written for you. Narrated for you. Saved privately for you.",
+              ].map((line) => (
+                <p
+                  key={line}
+                  className="text-sm text-white/28 tracking-wide italic"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
 
-            <p className="text-lg md:text-xl text-white/75 mb-4 leading-relaxed max-w-xl">
-              You set every dimension. The pairing, the chemistry — nine ways tension can pull. Cast him from 14 archetypes. Place your story in 50+ countries across 12 historical eras. Choose one of 200+ situations, the intensity, the atmosphere, and name every character. We write it, narrate it, and save it privately to you.
-            </p>
-
-            <p className="text-xs text-white/45 tracking-wide mb-7">
-              Designed for the female imagination.
-            </p>
-
-            {!isPaid && (
-              <div className="mb-4">
+            <div className="pt-2 space-y-3 flex flex-col items-center">
+              {!isPaid && (
                 <button
                   onClick={() => startCheckout("immersive")}
                   disabled={checkoutLoading === "immersive"}
@@ -940,11 +963,9 @@ export default function Home() {
                   )}
                   Try one story for £7.99 — no subscription needed
                 </button>
-              </div>
-            )}
+              )}
 
-            {quickCreateReady && isPaid && (
-              <div className="mb-4">
+              {quickCreateReady && isPaid && (
                 <button
                   onClick={handleQuickCreate}
                   disabled={quickCreateLoading}
@@ -957,103 +978,24 @@ export default function Home() {
                   )}
                   Narrate one for me based on my taste
                 </button>
-              </div>
-            )}
+              )}
 
-            {/* Dimensional showcase */}
-            <div className="mb-5">
-              <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-3">
-                Every dimension yours to set —
-              </p>
-              <div className="space-y-2">
+              <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-2">
                 {[
-                  {
-                    label: "Pairing",
-                    chips: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
-                    accent: "#e879a0",
-                  },
-                  {
-                    label: "Chemistry",
-                    chips: ["Forbidden Pull", "Slow Surrender", "Charged Dynamic", "+6 more"],
-                    accent: "#c9a227",
-                  },
-                  {
-                    label: "Archetype",
-                    chips: ["The Executive", "The Stranger", "The Risk", "+11 more"],
-                    accent: "#6b8cce",
-                  },
-                  {
-                    label: "Setting",
-                    chips: ["50+ countries", "12 historical eras", "Bespoke worlds"],
-                    accent: "#34d399",
-                  },
-                  {
-                    label: "Situation",
-                    chips: ["200+ starting points across 10 categories"],
-                    accent: "#e11d48",
-                  },
-                  {
-                    label: "Intensity",
-                    chips: ["Tender", "Warm", "Elevated", "Deep"],
-                    accent: "#f97316",
-                  },
-                  {
-                    label: "Names",
-                    chips: ["His name: yours to choose", "Her name: yours to choose"],
-                    accent: "#a78bfa",
-                  },
-                ].map(({ label, chips, accent }) => (
-                  <div key={label} className="flex items-center gap-2.5 flex-wrap">
-                    <span
-                      className="text-[9px] font-bold uppercase tracking-widest w-[60px] flex-shrink-0"
-                      style={{ color: `${accent}70` }}
-                    >
-                      {label}
-                    </span>
-                    <span className="w-px h-3 bg-white/8 flex-shrink-0" />
-                    <div className="flex flex-wrap gap-1.5">
-                      {chips.map((chip) => (
-                        <span
-                          key={chip}
-                          className="px-2 py-0.5 rounded-full border text-[10px] font-medium"
-                          style={{
-                            borderColor: `${accent}28`,
-                            color: `${accent}65`,
-                            background: `${accent}08`,
-                          }}
-                        >
-                          {chip}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
+                  { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
+                  { icon: <Lock className="w-3 h-3" />, label: "No profile" },
+                  { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
+                ].map(({ icon, label }) => (
+                  <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/25">
+                    <span className="text-primary/35">{icon}</span>
+                    {label}
+                  </span>
                 ))}
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground/45 tracking-wide">
-              {[
-                { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
-                { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
-                { icon: <Lock className="w-3 h-3" />, label: "No profile" },
-                { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
-              ].map(({ icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-white/35">
-                  <span className="text-primary/40">{icon}</span>
-                  {label}
-                </span>
-              ))}
-            </div>
           </motion.div>
-        </div>
-      </section>
-
-      <div className="relative z-20 -mt-12 space-y-0">
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Three Doors                                                       */}
-        {/* ---------------------------------------------------------------- */}
-        <ThreeDoors />
+        </section>
 
         {/* ---------------------------------------------------------------- */}
         {/* CastingRoom preview                                               */}

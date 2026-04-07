@@ -950,11 +950,11 @@ router.get("/", (_req: Request, res: Response) => {
   };
 
   const html = ssrHtmlShell({
-    title: "The Private Story — Private AI Audio Stories Made for You",
+    title: "The Private Story — Create the Story You've Been Looking For",
     description:
-      "AI-generated personalised audio stories. Choose your mood, your voice, your story. Completely private. Narrated and ready to listen.",
+      "Private audio stories written around you — your world, your feeling, your voice. Heard only by you.",
     canonical: url,
-    h1: "AI-Powered Private Audio Stories — Made for You",
+    h1: "Create the Story You've Been Looking For",
     tagline:
       "Your story, your voice, your moment. Private, intimate, and completely yours.",
     bodyHtml,

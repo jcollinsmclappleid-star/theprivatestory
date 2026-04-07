@@ -91,11 +91,25 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 
       let customerId = user.stripeCustomerId ?? undefined;
       if (!customerId) {
-        const customer = await stripe.customers.create({
-          email: user.email ?? undefined,
-          metadata: { userId },
-        });
-        customerId = customer.id;
+        // Before creating a new customer, search by email to avoid creating an
+        // orphan if the user already has a Stripe customer from a previous session
+        // where the customer ID wasn't persisted correctly.
+        if (user.email) {
+          const existing = await stripe.customers.search({
+            query: `email:"${user.email}" AND metadata["userId"]:"${userId}"`,
+            limit: 1,
+          });
+          if (existing.data.length > 0) {
+            customerId = existing.data[0].id;
+          }
+        }
+        if (!customerId) {
+          const customer = await stripe.customers.create({
+            email: user.email ?? undefined,
+            metadata: { userId },
+          });
+          customerId = customer.id;
+        }
         await db.update(usersTable).set({ stripeCustomerId: customerId }).where(eq(usersTable.id, userId));
       }
 
@@ -482,11 +496,22 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
 
         if (userId) {
           // Authenticated purchase — apply credits directly
+          // Always persist the Stripe customer ID from the session so future
+          // subscription lookups, cancellations, and billing-portal sessions
+          // use the correct customer — not an orphan created later.
+          const sessionCustomerId =
+            typeof session.customer === "string"
+              ? session.customer
+              : (session.customer as Stripe.Customer | Stripe.DeletedCustomer | null)?.id ?? null;
+
           if (plan === "addon") {
             // Add-on story for active subscribers
             await db
               .update(usersTable)
-              .set({ addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1` })
+              .set({
+                addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
+                ...(sessionCustomerId ? { stripeCustomerId: sessionCustomerId } : {}),
+              })
               .where(eq(usersTable.id, userId));
             logger.info({ userId, plan }, "[stripe-webhook] Addon story credited (+1)");
           } else if (plan === "immersive") {
@@ -505,6 +530,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
               .set({
                 ...(hasActiveSub ? {} : { subscriptionPlan: "immersive" }),
                 addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
+                ...(sessionCustomerId ? { stripeCustomerId: sessionCustomerId } : {}),
               })
               .where(eq(usersTable.id, userId));
             logger.info({ userId, hasActiveSub }, "[stripe-webhook] Immersive entry activated");
@@ -523,6 +549,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
                 subscriptionRenewDate: renewDate,
                 storiesGeneratedThisMonth: 0,
                 storiesGeneratedThisYear: 0,
+                ...(sessionCustomerId ? { stripeCustomerId: sessionCustomerId } : {}),
               })
               .where(eq(usersTable.id, userId));
             logger.info({ userId, plan }, "[stripe-webhook] Subscription activated");

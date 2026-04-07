@@ -1,0 +1,35 @@
+Root Cause
+
+When a user completes a Stripe Checkout session, Stripe creates (or reuses) a Stripe Customer and attaches the subscription to it. The checkout confirmation endpoint retrieved the session to record the tier and trial date — but never saved checkoutSession.customer (the Stripe customer ID) to the database.
+
+Later, when the same user visited the billing/upgrade page, the code saw no stored customer ID and called stripe.customers.create() to make a fresh, empty customer. That orphan ID was then saved to the database. From that point, every subscription lookup (stripe.subscriptions.list({ customer: storedId })) queries the wrong customer and finds nothing — so cancellation silently fails and falls through to the "no subscription found" cleanup path.
+
+The Fix — two lines in the checkout confirmation handler:
+
+// After updating the user's subscription tier in your database:
+if (checkoutSession.customer && typeof checkoutSession.customer === 'string') {
+  await storage.updateUserStripeInfo(userId, checkoutSession.customer);
+}
+That's it. Wherever you call stripe.checkout.sessions.retrieve(sessionId) and then write the tier to your database, immediately follow it by persisting checkoutSession.customer as the user's stripe_customer_id.
+
+Secondary hardening — cancel endpoint fallback:
+
+If you want to protect existing accounts already affected, add an email-based fallback before concluding "no active subscription":
+
+// If primary lookup returns nothing, search Stripe by the user's email
+if (subscriptions.data.length === 0 && userEmail.includes('@')) {
+  const customers = await stripe.customers.search({
+    query: `email:"${userEmail}"`,
+    limit: 5,
+  });
+  for (const cust of customers.data) {
+    if (cust.id === storedCustomerId) continue;
+    const custSubs = await stripe.subscriptions.list({ customer: cust.id, limit: 10 });
+    if (custSubs.data.length > 0) {
+      subscriptions = custSubs;
+      // Fix the stored customer ID while we're here
+      await storage.updateUserStripeInfo(userId, cust.id);
+      break;
+    }
+  }
+}

@@ -98,14 +98,17 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
     return;
   }
 
-  // 2FA check temporarily disabled — re-enable once 2FA is re-implemented.
-  // const user = req.user as { twoFactorVerifiedAt?: Date | null } | undefined;
-  // if (!user?.twoFactorVerifiedAt) {
-  //   res.status(403).json({
-  //     error: "Admin access requires two-factor authentication. Please log out and sign in with 2FA.",
-  //     code: "ADMIN_2FA_REQUIRED",
-  //   });
-  //   return;
-  // }
+  // 2FA gate — session-based admins must have completed a TOTP or backup-code
+  // challenge during this session. Use the 2FA setup flow in the admin panel
+  // (/api/admin/2fa/*, protected by requireAdminIdentity) to enrol before this
+  // gate will pass. Script access via ADMIN_SCRIPT_KEY already bypassed above.
+  const user = req.user as { twoFactorVerifiedAt?: Date | null } | undefined;
+  if (!user?.twoFactorVerifiedAt) {
+    res.status(403).json({
+      error: "Admin access requires two-factor authentication. Please complete the 2FA challenge.",
+      code: "ADMIN_2FA_REQUIRED",
+    });
+    return;
+  }
   next();
 }

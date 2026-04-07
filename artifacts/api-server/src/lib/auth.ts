@@ -35,6 +35,18 @@ function getTrustedOrigins(): string[] {
   return [...origins];
 }
 
+// Refuse to start in production with no secret or the insecure dev fallback.
+// Gate on NODE_ENV so local development continues to work without a secret set.
+if (process.env.NODE_ENV !== "development") {
+  const _secret = process.env.BETTER_AUTH_SECRET;
+  if (!_secret || _secret === "dev-secret-change-in-production") {
+    throw new Error(
+      "[auth] BETTER_AUTH_SECRET is not set or uses the insecure dev fallback. " +
+      "Set a high-entropy secret in the environment before starting in production.",
+    );
+  }
+}
+
 export const auth = betterAuth({
   baseURL: getBaseURL(),
   basePath: "/api/auth",

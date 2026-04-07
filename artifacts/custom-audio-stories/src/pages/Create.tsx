@@ -1940,7 +1940,7 @@ export default function Create() {
 
                 {/* Personalised bridge copy */}
                 <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
-                  Your casting is saved. Subscribe and your story writes immediately.
+                  Your casting is saved. Begin your story now — written, narrated, and ready to play in minutes.
                 </p>
 
                 {/* Primary subscription CTAs */}
@@ -1974,9 +1974,9 @@ export default function Create() {
                 {/* Benefits micro-list */}
                 <div className="w-full flex flex-col gap-1.5">
                   {[
-                    "Unlimited stories, any mood",
-                    "Every voice, fully personalised",
-                    "Complete privacy — no history, no sharing",
+                    "Stories written to your cast, your mood, your world",
+                    "Every voice — choose your narrator each time",
+                    "Completely private — seen and heard only by you",
                   ].map(benefit => (
                     <div key={benefit} className="flex items-center gap-2 text-xs text-primary/70">
                       <Check className="w-3 h-3 flex-shrink-0" />
@@ -2006,7 +2006,7 @@ export default function Create() {
                 {/* Privacy + start over */}
                 <div className="flex flex-col items-center gap-2">
                   <p className="text-[11px] text-muted-foreground/30 text-center">
-                    No card stored beyond checkout · No story history shared
+                    Billed discreetly · Cancel instantly, any time · No story history shared
                   </p>
                   <button
                     type="button"

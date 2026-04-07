@@ -6,6 +6,7 @@ import {
   Users, Heart, MapPin, Zap, BookOpen, Layers,
 } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
+import { VoiceShowcase } from "@/components/VoiceShowcase";
 
 const HOW_IT_WORKS_STEPS = [
   {
@@ -335,6 +336,11 @@ export default function HowItWorks() {
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
+      </section>
+
+      {/* ── Voice narrator showcase ── */}
+      <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <VoiceShowcase />
       </section>
 
       {/* ── What you get ── */}

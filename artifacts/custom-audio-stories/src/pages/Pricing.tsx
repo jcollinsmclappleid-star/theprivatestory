@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar } from "@/components/TrustBar";
+import { VoiceShowcase } from "@/components/VoiceShowcase";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -277,6 +278,13 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
+      {/* Voice narrator showcase                                              */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <VoiceShowcase />
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
       {/* Pricing cards                                                        */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
@@ -432,7 +440,7 @@ export default function Pricing() {
                 )}
               </button>
               <p className="text-center text-[10px] text-muted-foreground/30 mt-3">
-                The most complete experience, at the best rate.
+                The most complete experience, at the best rate. Not sure yet? Start monthly and switch any time.
               </p>
             </div>
           </div>
@@ -605,10 +613,10 @@ export default function Pricing() {
               <span className="text-primary"> further.</span>
             </h2>
             <p className="text-muted-foreground/80 leading-relaxed mb-4 text-base">
-              After Dark is a space within The Private Story for those who want more — stories written with full literary freedom, for an adult imagination. Discreet, crafted, and entirely private.
+              Some stories want to go further. After Dark is the room where they do — written without restraint, for a part of you that doesn't need to justify itself. The same voice. The same absolute privacy.
             </p>
             <p className="text-muted-foreground/50 leading-relaxed text-sm mb-6">
-              The same quality and care. The same absolute privacy. Simply no limits on where the story goes.
+              Nothing softened. Nothing left out. Included with every plan — accessed discreetly from your private library.
             </p>
             <div className="flex flex-col gap-2">
               {[

@@ -216,6 +216,26 @@ app.use(
 );
 
 // ---------------------------------------------------------------------------
+// Content-Security-Policy for HTML responses.
+// Helmet's CSP is disabled globally because the API also serves binary
+// media responses (audio, images). This targeted header applies only to
+// the SSR and SPA catch-all routes that actually return HTML.
+// ---------------------------------------------------------------------------
+const HTML_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self' blob: https:",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "connect-src 'self' https: wss:",
+  "frame-src https://js.stripe.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
+// ---------------------------------------------------------------------------
 // SSR HTML routes — serve pre-rendered HTML for SEO landing pages.
 // Uses dynamic rendering: bots receive the server-rendered HTML with full
 // meta tags and structured data; real users receive the React SPA so they
@@ -237,6 +257,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   // Always serve utility files regardless of user-agent
   const alwaysSSR = req.path === "/sitemap.xml" || req.path === "/robots.txt" || req.path.endsWith(".xml");
   if (alwaysSSR || isBot(req)) {
+    res.setHeader("Content-Security-Policy", HTML_CSP);
     return ssrRouter(req, res, next);
   }
   next();
@@ -271,6 +292,7 @@ if (existsSync(CLIENT_DIR)) {
 app.get(/.*/, (_req: Request, res: Response, next: NextFunction) => {
   const indexFile = path.resolve(CLIENT_DIR, "index.html");
   if (existsSync(indexFile)) {
+    res.setHeader("Content-Security-Policy", HTML_CSP);
     res.sendFile(indexFile);
   } else {
     next();

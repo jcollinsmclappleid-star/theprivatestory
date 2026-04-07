@@ -1825,6 +1825,18 @@ export default function Create() {
 
           const excerpt = MOOD_TEASERS[paywallCapture.storyMode] ?? MOOD_TEASERS.romance;
           const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
+
+          const MOOD_COVER_IMAGES: Record<string, string> = {
+            romance: "/cover-romance.png",
+            slow_burn: "/cover-slow-burn.png",
+            passionate: "/cover-passionate.png",
+            playful: "/cover-playful.png",
+            nostalgic: "/cover-nostalgic.png",
+            forbidden: "/cover-forbidden.png",
+            unrestrained: "/cover-forbidden.png",
+          };
+          const doorImage = MOOD_COVER_IMAGES[paywallCapture.storyMode] ?? "/cover-romance.png";
+          const heroImage = paywallCoverUrl || doorImage;
           const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
@@ -1880,22 +1892,33 @@ export default function Create() {
 
                 {/* Cover / Title area */}
                 <div className="w-full rounded-2xl overflow-hidden border border-white/8 bg-gradient-to-br from-[#1e1208] to-[#0d0905] shadow-2xl">
-                  {/* Cover visual */}
-                  <div className="relative h-44 flex items-end justify-start p-5 overflow-hidden"
-                    style={{
-                      background: paywallCoverUrl
-                        ? `url(${paywallCoverUrl}) center/cover no-repeat`
-                        : "linear-gradient(135deg, #2a1a08 0%, #1a0f05 40%, #0d0803 100%)",
-                    }}
-                  >
-                    <div className="absolute inset-0 opacity-30" style={{
-                      background: "radial-gradient(ellipse at 70% 30%, rgba(201,162,39,0.35) 0%, transparent 65%)",
+
+                  {/* Title block */}
+                  <div className="px-5 pt-5 pb-4">
+                    <p className="text-primary/60 text-[10px] font-bold uppercase tracking-widest mb-1.5">
+                      {paywallCapture.mood} · {paywallCapture.intensity}
+                    </p>
+                    <h2 className="font-display text-2xl font-bold text-foreground leading-tight">
+                      {titleLine}
+                    </h2>
+                  </div>
+
+                  {/* Door / mood image */}
+                  <div className="relative h-52 overflow-hidden">
+                    <img
+                      src={heroImage}
+                      alt=""
+                      className="w-full h-full object-cover object-center"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "/cover-romance.png"; }}
+                    />
+                    {/* top fade — blends into card bg above */}
+                    <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#1e1208] to-transparent pointer-events-none" />
+                    {/* bottom fade — bleeds into excerpt below */}
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0d0905] to-transparent pointer-events-none" />
+                    {/* subtle warmth glow */}
+                    <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+                      background: "radial-gradient(ellipse at 50% 35%, rgba(201,162,39,0.45) 0%, transparent 65%)",
                     }} />
-                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d0905] to-transparent" />
-                    <div className="relative z-10">
-                      <p className="text-primary/70 text-xs font-medium uppercase tracking-widest mb-1">{paywallCapture.mood} · {paywallCapture.intensity}</p>
-                      <h2 className="font-display text-2xl font-bold text-foreground leading-tight">{titleLine}</h2>
-                    </div>
                   </div>
 
                   {/* Excerpt */}

@@ -46,6 +46,39 @@ const TRUST_ITEMS = [
   },
 ];
 
+// ── CountryStrip — compact reusable flag strip (no privacy cards) ─────────────
+export function CountryStrip({ className }: { className?: string }) {
+  return (
+    <div className={`text-center ${className ?? ""}`}>
+      <p
+        style={{
+          fontSize: "10px",
+          fontWeight: 700,
+          letterSpacing: "0.26em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.20)",
+          marginBottom: "10px",
+        }}
+      >
+        Discovered across {COUNTRIES.length} countries
+      </p>
+      <div className="flex flex-wrap justify-center gap-x-2 gap-y-1.5">
+        {COUNTRIES.map((c) => (
+          <span
+            key={c.name}
+            title={c.name}
+            className="text-lg leading-none opacity-50 hover:opacity-90 transition-opacity duration-200 cursor-default"
+            aria-label={c.name}
+          >
+            {c.flag}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── TrustBar — full section (flag strip + privacy cards + Stripe line) ────────
 export function TrustBar() {
   return (
     <section className="w-full py-12 px-4 md:px-8">

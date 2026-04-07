@@ -8,7 +8,7 @@ import {
   Users, Sliders, Flame,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { TrustBar } from "@/components/TrustBar";
+import { TrustBar, CountryStrip } from "@/components/TrustBar";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
 
 const BASE = import.meta.env.BASE_URL;
@@ -282,6 +282,13 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       <section className="py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <VoiceShowcase />
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Country trust strip                                                  */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="pb-4 pt-2 px-4 md:px-8 max-w-3xl mx-auto w-full">
+        <CountryStrip />
       </section>
 
       {/* ------------------------------------------------------------------ */}

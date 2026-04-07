@@ -17,6 +17,7 @@ import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { TermsGate } from "@/components/TermsGate";
+import { CountryStrip } from "@/components/TrustBar";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -1984,6 +1985,9 @@ export default function Create() {
                     </div>
                   ))}
                 </div>
+
+                {/* Country trust signal */}
+                <CountryStrip className="w-full" />
 
                 {/* Divider */}
                 <div className="w-full flex items-center gap-3">

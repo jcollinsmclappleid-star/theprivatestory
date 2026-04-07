@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { useEffect } from "react";
+import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 const CLUSTERS = [
   {
@@ -108,13 +109,7 @@ export default function Discover() {
           <p className="text-muted-foreground text-xl leading-relaxed mb-8">
             Twenty-four ways into a story that was made for you. Private, narrated, created in under two minutes. Choose the category that fits tonight.
           </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Sparkles className="w-4 h-4" />
-            Create your story now
-          </Link>
+          <MiniDoorCTA />
         </div>
 
         <div className="space-y-14">
@@ -152,13 +147,7 @@ export default function Discover() {
           <p className="text-muted-foreground mb-6 leading-relaxed max-w-md mx-auto">
             Every story type starts from the same place — a question about how you want to feel tonight. The story builds from your answer.
           </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Sparkles className="w-4 h-4" />
-            Start creating
-          </Link>
+          <MiniDoorCTA />
         </div>
 
       </div>

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
+import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 const HOW_IT_WORKS_STEPS = [
   {
@@ -168,25 +169,17 @@ export default function HowItWorks() {
               Written, narrated, and saved privately to your account — ready to play in minutes.
             </p>
 
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link
-                href="/create"
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
-              >
-                <Sparkles className="w-5 h-5" />
-                Build your story
-              </Link>
-              <a
-                href="#how-it-works"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="flex items-center gap-2 px-6 py-4 rounded-full border border-white/15 text-white/50 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer"
-              >
-                See how it works
-              </a>
-            </div>
+            <MiniDoorCTA />
+            <a
+              href="#how-it-works"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/50 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-2"
+            >
+              See how it works
+            </a>
 
             <div className="flex items-center gap-5 mt-8">
               {[
@@ -279,13 +272,6 @@ export default function HowItWorks() {
                 nothing left to someone else's imagination.
               </p>
             </div>
-            <Link
-              href="/create"
-              className="flex-shrink-0 flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-full font-bold text-sm hover:bg-primary/90 transition-all hover:shadow-glow"
-            >
-              <Sparkles className="w-4 h-4" />
-              Open the Creation Room
-            </Link>
           </div>
         </div>
 
@@ -328,13 +314,7 @@ export default function HowItWorks() {
         </div>
 
         <div className="mt-8 flex items-center justify-center">
-          <Link
-            href="/create"
-            className="flex items-center gap-2 px-7 py-3 rounded-full border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-all"
-          >
-            Start casting your story
-            <ChevronRight className="w-4 h-4" />
-          </Link>
+          <MiniDoorCTA />
         </div>
       </section>
 
@@ -543,15 +523,9 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-glow"
-          >
-            <Sparkles className="w-5 h-5" />
-            Build your story
-          </Link>
-          <p className="text-xs text-muted-foreground/40 mt-4">
+        <div className="mt-10 flex flex-col items-center gap-4">
+          <MiniDoorCTA />
+          <p className="text-xs text-muted-foreground/40">
             No commitment needed to start. Cancel monthly, any time.
           </p>
         </div>

@@ -11,6 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import type { Story } from "@workspace/api-client-react";
 import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
+import { TrustBar } from "@/components/TrustBar";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -851,6 +852,11 @@ export default function Home() {
         {/* Three Doors                                                       */}
         {/* ---------------------------------------------------------------- */}
         <ThreeDoors />
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Trust bar                                                         */}
+        {/* ---------------------------------------------------------------- */}
+        <TrustBar />
 
         {/* ---------------------------------------------------------------- */}
         {/* Emotion-led hook                                                  */}

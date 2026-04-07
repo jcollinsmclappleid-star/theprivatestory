@@ -8,6 +8,7 @@ import {
   Users, Sliders, Flame,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { TrustBar } from "@/components/TrustBar";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -732,6 +733,11 @@ export default function Pricing() {
           </div>
         </div>
       </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Trust bar                                                            */}
+      {/* ------------------------------------------------------------------ */}
+      <TrustBar />
 
       {/* ------------------------------------------------------------------ */}
       {/* FAQ                                                                  */}

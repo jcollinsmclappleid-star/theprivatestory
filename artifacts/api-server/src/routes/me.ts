@@ -868,6 +868,8 @@ router.delete("/", async (req, res) => {
     // Fetch subscription state to enforce the "cancel first" rule.
     const [userRow] = await db
       .select({
+        email: usersTable.email,
+        stripeCustomerId: usersTable.stripeCustomerId,
         stripeSubscriptionId: usersTable.stripeSubscriptionId,
         subscriptionStatus: usersTable.subscriptionStatus,
         subscriptionPlan: usersTable.subscriptionPlan,
@@ -876,9 +878,10 @@ router.delete("/", async (req, res) => {
       .where(eq(usersTable.id, userId))
       .limit(1);
 
+    // Active recurring: subscription ID not required here — we may need the email
+    // fallback for accounts where stripeSubscriptionId was never persisted correctly.
     const hasActiveRecurring =
       userRow?.subscriptionStatus === "active" &&
-      !!userRow?.stripeSubscriptionId &&
       (userRow?.subscriptionPlan === "monthly" || userRow?.subscriptionPlan === "annual");
 
     if (hasActiveRecurring) {
@@ -887,18 +890,58 @@ router.delete("/", async (req, res) => {
         res.status(503).json({ error: "Payment processing is unavailable. Please cancel your subscription manually before deleting your account, or contact support@theprivatestory.com." });
         return;
       }
-      try {
-        await stripe.subscriptions.cancel(userRow.stripeSubscriptionId!);
-        await db.update(usersTable).set({
-          subscriptionStatus: "canceled",
-          subscriptionCancelAt: new Date(),
-        }).where(eq(usersTable.id, userId));
-        logger.info({ userId, stripeSubscriptionId: userRow.stripeSubscriptionId }, "[account-deletion] Active subscription cancelled immediately before account deletion");
-      } catch (stripeErr) {
-        logger.error({ err: stripeErr, userId }, "[account-deletion] Stripe cancellation failed — blocking deletion");
+
+      let cancelled = false;
+
+      // Primary path: cancel by stored subscription ID
+      if (userRow.stripeSubscriptionId) {
+        try {
+          await stripe.subscriptions.cancel(userRow.stripeSubscriptionId);
+          cancelled = true;
+          logger.info({ userId, stripeSubscriptionId: userRow.stripeSubscriptionId }, "[account-deletion] Subscription cancelled via stored ID");
+        } catch (stripeErr) {
+          logger.warn({ err: stripeErr, userId }, "[account-deletion] Direct cancel failed — trying email fallback");
+        }
+      }
+
+      // Email fallback: handles accounts where the stored customer/subscription ID
+      // is an orphan or was never saved correctly.
+      if (!cancelled && userRow.email) {
+        try {
+          const customers = await stripe.customers.search({
+            query: `email:"${userRow.email}" AND metadata["userId"]:"${userId}"`,
+            limit: 5,
+          });
+          for (const cust of customers.data) {
+            const subs = await stripe.subscriptions.list({ customer: cust.id, status: "active", limit: 5 });
+            if (subs.data.length > 0) {
+              const sub = subs.data[0];
+              await stripe.subscriptions.cancel(sub.id);
+              // Correct the stored IDs while we're here
+              await db.update(usersTable).set({
+                stripeCustomerId: cust.id,
+                stripeSubscriptionId: sub.id,
+              }).where(eq(usersTable.id, userId));
+              cancelled = true;
+              logger.info({ userId, customerId: cust.id, subId: sub.id }, "[account-deletion] Subscription cancelled via email fallback");
+              break;
+            }
+          }
+        } catch (fallbackErr) {
+          logger.error({ err: fallbackErr, userId }, "[account-deletion] Email fallback also failed");
+        }
+      }
+
+      if (!cancelled) {
+        logger.error({ userId }, "[account-deletion] Stripe cancellation failed — blocking deletion");
         res.status(500).json({ error: "We couldn't cancel your subscription automatically. Please cancel it from your profile first, then delete your account. Contact support@theprivatestory.com if you need help." });
         return;
       }
+
+      await db.update(usersTable).set({
+        subscriptionStatus: "canceled",
+        subscriptionCancelAt: new Date(),
+      }).where(eq(usersTable.id, userId));
     }
 
     // Soft-delete the user row by setting deletedAt

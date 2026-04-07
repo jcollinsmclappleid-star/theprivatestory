@@ -20,6 +20,21 @@ function getBaseURL(): string {
   return "http://localhost:8080";
 }
 
+function getTrustedOrigins(): string[] {
+  const origins = new Set<string>();
+  origins.add(getBaseURL());
+  origins.add("https://theprivatestory.com");
+  if (process.env.REPLIT_DEV_DOMAIN) {
+    origins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
+  }
+  if (process.env.REPLIT_DOMAINS) {
+    for (const d of process.env.REPLIT_DOMAINS.split(",")) {
+      origins.add(`https://${d.trim()}`);
+    }
+  }
+  return [...origins];
+}
+
 export const auth = betterAuth({
   baseURL: getBaseURL(),
   basePath: "/api/auth",
@@ -138,7 +153,7 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [getBaseURL()],
+  trustedOrigins: getTrustedOrigins(),
 });
 
 export type Auth = typeof auth;

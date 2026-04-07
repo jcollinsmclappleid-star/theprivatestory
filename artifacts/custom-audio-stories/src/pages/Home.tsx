@@ -809,7 +809,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero Eyebrow                                                         */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-16 pb-6 md:pt-20 md:pb-8 flex flex-col items-center justify-center text-center px-4">
+      <section className="relative z-30 w-full pt-16 pb-12 md:pt-20 md:pb-14 flex flex-col items-center justify-center text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -845,7 +845,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <div className="relative z-20 space-y-0 -mt-10 md:-mt-14">
+      <div className="relative z-20 space-y-0 -mt-4 md:-mt-6">
 
         {/* ---------------------------------------------------------------- */}
         {/* Three Doors                                                       */}

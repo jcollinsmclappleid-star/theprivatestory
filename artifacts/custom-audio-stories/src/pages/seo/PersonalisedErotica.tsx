@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("personalised-erotica")!;
 
 export default function PersonalisedErotica() {
-  return <SEOPage config={config} />;
+  return <SEOPage config={config} doorFilter={["dark"]} />;
 }

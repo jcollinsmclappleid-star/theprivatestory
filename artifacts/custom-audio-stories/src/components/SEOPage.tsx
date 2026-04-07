@@ -5,9 +5,11 @@ import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
 import CastingPreview from "@/components/CastingPreview";
-import { ThreeDoors } from "@/components/ThreeDoors";
+import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
 
 export type { SEOPageConfig };
+
+type DoorId = "story" | "dark" | "quiet";
 
 const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -19,7 +21,15 @@ const TRUST_ITEMS = [
   { icon: <Heart className="w-4 h-4" />, label: "Designed for the female imagination", sub: "Emotionally intelligent, agency-first, privacy-led", colSpan: true },
 ];
 
-export default function SEOPage({ config }: { config: SEOPageConfig }) {
+export default function SEOPage({
+  config,
+  doorFilter,
+  showSecondaryDoors,
+}: {
+  config: SEOPageConfig;
+  doorFilter?: DoorId[];
+  showSecondaryDoors?: boolean;
+}) {
   useSEO({ title: config.meta.title, description: config.meta.description });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -75,7 +85,21 @@ export default function SEOPage({ config }: { config: SEOPageConfig }) {
       )}
 
       {/* Three Doors — choose your path */}
-      <ThreeDoors />
+      <ThreeDoors filter={doorFilter} />
+
+      {/* Secondary doors — for bedtime pages: "Also in The Private Story" */}
+      {showSecondaryDoors && doorFilter && (() => {
+        const secondaryIds = (["story", "dark", "quiet"] as DoorId[]).filter(id => !doorFilter.includes(id));
+        if (!secondaryIds.length) return null;
+        return (
+          <div className="flex flex-col items-center gap-3 py-4 px-4">
+            <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.18)" }}>
+              Also in The Private Story
+            </p>
+            <MiniDoorCTA filter={secondaryIds} />
+          </div>
+        );
+      })()}
 
       {/* Casting Preview — soft version */}
       {config.showCastingPreview && (

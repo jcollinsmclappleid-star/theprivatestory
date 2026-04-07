@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Sparkles, EyeOff, Lock, Headphones } from "lucide-react";
-import { Link } from "wouter";
+import { ChevronDown, EyeOff, Lock, Headphones, Sparkles } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
+import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 export interface CompetitorPageConfig {
   slug: string;
@@ -46,13 +46,7 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           <p className="text-muted-foreground text-xl leading-relaxed mb-8">
             {config.tagline}
           </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-6 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Sparkles className="w-4 h-4" />
-            Write my story
-          </Link>
+          <MiniDoorCTA />
         </div>
 
         <div className="mb-12 p-5 rounded-xl border border-border/30 bg-white/[0.02]">
@@ -135,13 +129,7 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           <p className="text-muted-foreground mb-6 text-sm leading-relaxed max-w-md mx-auto">
             Your story, written from scratch, around exactly what you want. Private. Personal. Yours.
           </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-7 py-3 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Sparkles className="w-4 h-4" />
-            Write my story
-          </Link>
+          <MiniDoorCTA />
         </div>
       </div>
     </motion.div>

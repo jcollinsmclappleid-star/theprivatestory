@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("erotic-audiobooks-for-women")!;
 
 export default function EroticAudiobooksForWomen() {
-  return <SEOPage config={config} />;
+  return <SEOPage config={config} doorFilter={["dark"]} />;
 }

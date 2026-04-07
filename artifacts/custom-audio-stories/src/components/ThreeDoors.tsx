@@ -126,8 +126,9 @@ const DOORS = [
 // MiniDoorCTA — standalone reusable mini doors (named export)
 // ---------------------------------------------------------------------------
 
-export function MiniDoorCTA() {
+export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "quiet"> } = {}) {
   const [miniHovered, setMiniHovered] = useState<string | null>(null);
+  const visibleDoors = filter ? DOORS.filter(d => filter.includes(d.id as "story" | "dark" | "quiet")) : DOORS;
   return (
     <div className="flex flex-col items-center gap-6">
       <p
@@ -142,7 +143,7 @@ export function MiniDoorCTA() {
         Choose where your story begins
       </p>
       <div className="flex items-end justify-center gap-4">
-        {DOORS.map((door) => {
+        {visibleDoors.map((door) => {
           const isMin = miniHovered === door.id;
           return (
             <Link key={door.id} href="/create">
@@ -223,22 +224,23 @@ export function MiniDoorCTA() {
 // ThreeDoors — main hero component
 // ---------------------------------------------------------------------------
 
-export function ThreeDoors() {
+export function ThreeDoors({ filter }: { filter?: Array<"story" | "dark" | "quiet"> } = {}) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [pulsing, setPulsing] = useState<number>(0);
+  const visibleDoors = filter ? DOORS.filter(d => filter.includes(d.id as "story" | "dark" | "quiet")) : DOORS;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPulsing((p) => (p + 1) % 3);
+      setPulsing((p) => (p + 1) % visibleDoors.length);
     }, 2400);
     return () => clearInterval(interval);
-  }, []);
+  }, [visibleDoors.length]);
 
   return (
     <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
       {/* The three doors */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-4xl mx-auto">
-        {DOORS.map((door, idx) => {
+        {visibleDoors.map((door, idx) => {
           const isHovered = hovered === door.id;
           const isPulsing = hovered === null && pulsing === idx;
 

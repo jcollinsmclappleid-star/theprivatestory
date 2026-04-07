@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("sleep-audio-stories")!;
 
 export default function SleepAudioStories() {
-  return <SEOPage config={config} />;
+  return <SEOPage config={config} doorFilter={["quiet"]} showSecondaryDoors />;
 }

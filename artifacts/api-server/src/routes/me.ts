@@ -2,7 +2,7 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import Stripe from "stripe";
 import { tasteStore, storiesStore, progressStore, presetsStore, libraryStore, reactionHistoryStore } from "../lib/storage.js";
 import { db, usersTable } from "@workspace/db";
-import { nameSubmissions } from "@workspace/db/schema";
+import { nameSubmissions, consentLog } from "@workspace/db/schema";
 import { eq, and, desc, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
@@ -262,12 +262,13 @@ router.get("/export", async (req, res) => {
       .from(usersTable)
       .where(eq(usersTable.id, userId));
 
-    const [taste, progressMap, savedIds, generatedRows, presets] = await Promise.all([
+    const [taste, progressMap, savedIds, generatedRows, presets, consentHistory] = await Promise.all([
       tasteStore.get(userId),
       progressStore.getUserProgress(userId),
       libraryStore.getSavedStoryIds(userId),
       libraryStore.getGeneratedStoryIds(userId),
       presetsStore.getAll(userId),
+      db.select().from(consentLog).where(eq(consentLog.userId, userId)),
     ]);
 
     const exportData = {
@@ -283,6 +284,12 @@ router.get("/export", async (req, res) => {
         termsAcceptedAt: userRow?.termsAcceptedAt,
         ageDeclarationAt: userRow?.ageDeclarationAt,
       },
+      consentHistory: consentHistory.map((r) => ({
+        consentType: r.consentType,
+        termsVersion: r.termsVersion,
+        ipAddress: r.ipAddress,
+        createdAt: r.createdAt,
+      })),
       tasteProfile: taste,
       listeningProgress: Object.values(progressMap),
       savedStoryIds: savedIds,
@@ -814,11 +821,33 @@ router.get("/name-submissions", async (req, res) => {
 // ---------------------------------------------------------------------------
 router.patch("/accept-terms", async (req, res) => {
   const userId = getUserId(req);
+  const ipAddress = (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim()
+    ?? req.socket.remoteAddress
+    ?? null;
+  const userAgent = req.headers["user-agent"] ?? null;
   try {
     await db
       .update(usersTable)
       .set({ termsAcceptedAt: new Date(), ageDeclarationAt: new Date() })
       .where(eq(usersTable.id, userId));
+
+    await db.insert(consentLog).values([
+      {
+        userId,
+        consentType: "terms_accepted",
+        termsVersion: "v1",
+        ipAddress,
+        userAgent,
+      },
+      {
+        userId,
+        consentType: "age_declaration",
+        termsVersion: "v1",
+        ipAddress,
+        userAgent,
+      },
+    ]);
+
     res.json({ ok: true });
   } catch (err) {
     logger.error({ err, userId }, "[accept-terms] Failed to record acceptance");

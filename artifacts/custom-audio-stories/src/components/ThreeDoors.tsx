@@ -146,7 +146,7 @@ export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "qui
         {visibleDoors.map((door) => {
           const isMin = miniHovered === door.id;
           return (
-            <Link key={door.id} href="/create">
+            <Link key={door.id} href={door.href}>
               <div
                 onMouseEnter={() => setMiniHovered(door.id)}
                 onMouseLeave={() => setMiniHovered(null)}

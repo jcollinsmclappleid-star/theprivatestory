@@ -4,6 +4,8 @@ import { Lock, Sparkles } from "lucide-react";
 import type { Story } from "@workspace/api-client-react";
 import { PremiumModal } from "./PremiumModal";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 interface StoryCardProps {
   story: Story;
   className?: string;
@@ -42,13 +44,13 @@ export function StoryCard({ story, className = "", showProgress, progress }: Sto
       >
         <div className="aspect-[3/4] overflow-hidden relative">
           <img
-            src={story.coverImage || "/cover-slow-burn.png"}
+            src={story.coverImage || `${BASE}/cover-slow-burn.png`}
             alt={story.title}
             className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${
               story.isPremium ? "brightness-75" : ""
             }`}
             loading="lazy"
-            onError={(e) => { (e.target as HTMLImageElement).src = "/cover-slow-burn.png"; }}
+            onError={(e) => { (e.target as HTMLImageElement).src = `${BASE}/cover-slow-burn.png`; }}
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-80" />

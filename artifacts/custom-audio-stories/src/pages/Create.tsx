@@ -1827,15 +1827,15 @@ export default function Create() {
           const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
 
           const MOOD_COVER_IMAGES: Record<string, string> = {
-            romance: "/cover-romance.png",
-            slow_burn: "/cover-slow-burn.png",
-            passionate: "/cover-passionate.png",
-            playful: "/cover-playful.png",
-            nostalgic: "/cover-nostalgic.png",
-            forbidden: "/cover-forbidden.png",
-            unrestrained: "/cover-forbidden.png",
+            romance: `${API_BASE}/cover-romance.png`,
+            slow_burn: `${API_BASE}/cover-slow-burn.png`,
+            passionate: `${API_BASE}/cover-passionate.png`,
+            playful: `${API_BASE}/cover-playful.png`,
+            nostalgic: `${API_BASE}/cover-nostalgic.png`,
+            forbidden: `${API_BASE}/cover-forbidden.png`,
+            unrestrained: `${API_BASE}/cover-forbidden.png`,
           };
-          const doorImage = MOOD_COVER_IMAGES[paywallCapture.storyMode] ?? "/cover-romance.png";
+          const doorImage = MOOD_COVER_IMAGES[paywallCapture.storyMode] ?? `${API_BASE}/cover-romance.png`;
           const heroImage = paywallCoverUrl || doorImage;
           const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
@@ -1909,7 +1909,7 @@ export default function Create() {
                       src={heroImage}
                       alt=""
                       className="w-full h-full object-cover object-center"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "/cover-romance.png"; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = `${API_BASE}/cover-romance.png`; }}
                     />
                     {/* top fade — blends into card bg above */}
                     <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#1e1208] to-transparent pointer-events-none" />

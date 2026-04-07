@@ -391,6 +391,7 @@ export default function Profile() {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
   const [addonLoading, setAddonLoading] = useState(false);
+  const [deleteSubLoading, setDeleteSubLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -983,23 +984,6 @@ export default function Profile() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Subscription management */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="border border-border/30 rounded-2xl p-5 mt-2">
-        <h3 className="font-display font-semibold text-sm text-foreground mb-1">Subscription</h3>
-        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-          To cancel or modify your subscription, email us and we'll handle it within one business day.
-          You keep access until the end of your current billing period.
-        </p>
-        <a
-          href="mailto:support@theprivatestory.com?subject=Cancel%20Subscription&body=Hi%2C%20I%27d%20like%20to%20cancel%20my%20subscription.%20My%20account%20email%20is%3A%20"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-        >
-          Email support@theprivatestory.com
-        </a>
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
       {/* GDPR data export */}
       {/* ------------------------------------------------------------------ */}
       <div className="rounded-2xl p-5 bg-card/30 border border-border/20">
@@ -1032,20 +1016,46 @@ export default function Profile() {
           Permanently delete your account and all personal data within 30 days. This cannot be undone.
         </p>
 
-        {/* Gate: active recurring subscription blocks deletion */}
+        {/* Gate: active recurring subscription — must cancel before deleting */}
         {usageData && (usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus === "active" ? (
-          <div className="space-y-3">
-            <p className="text-xs text-destructive/80 font-medium">
-              Your account cannot be deleted while a paid plan is active.
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Cancel your subscription first, then return here to delete your account.
-            </p>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
+              <AlertCircle className="w-4 h-4 text-destructive/60 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-destructive/80">Step 1 — Cancel your subscription</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Your active subscription must be cancelled before your account can be deleted. You'll keep access until the end of your current billing period.
+                </p>
+              </div>
+            </div>
             <button
-              onClick={() => setCancelConfirmOpen(true)}
-              className="text-xs text-primary hover:text-primary/80 transition-colors underline underline-offset-2"
+              disabled={deleteSubLoading}
+              onClick={async () => {
+                setDeleteSubLoading(true);
+                try {
+                  const res = await fetch(`${API_BASE}/api/stripe/cancel-subscription`, {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                  const json = await res.json();
+                  if (res.ok) {
+                    setUsageData(prev => prev ? {
+                      ...prev,
+                      subscriptionStatus: "canceling",
+                      cancelAt: json.cancelAt ?? prev.renewDate,
+                    } : prev);
+                  }
+                } finally {
+                  setDeleteSubLoading(false);
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-destructive/30 text-destructive/70 hover:bg-destructive/8 hover:text-destructive hover:border-destructive/50 text-xs font-medium transition-all disabled:opacity-50"
             >
-              Cancel subscription
+              {deleteSubLoading ? (
+                <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Cancelling subscription…</>
+              ) : (
+                "Cancel subscription — then proceed to delete"
+              )}
             </button>
           </div>
         ) : (

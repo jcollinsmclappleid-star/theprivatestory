@@ -1,30 +1,31 @@
+import "flag-icons/css/flag-icons.min.css";
 import { EyeOff, Lock, Ban, Trash2, ShieldCheck } from "lucide-react";
 
 const COUNTRIES = [
-  { flag: "🇺🇸", name: "United States" },
-  { flag: "🇬🇧", name: "United Kingdom" },
-  { flag: "🇦🇺", name: "Australia" },
-  { flag: "🇨🇦", name: "Canada" },
-  { flag: "🇮🇳", name: "India" },
-  { flag: "🇩🇪", name: "Germany" },
-  { flag: "🇳🇱", name: "Netherlands" },
-  { flag: "🇫🇷", name: "France" },
-  { flag: "🇸🇪", name: "Sweden" },
-  { flag: "🇳🇿", name: "New Zealand" },
-  { flag: "🇧🇷", name: "Brazil" },
-  { flag: "🇯🇲", name: "Jamaica" },
-  { flag: "🇳🇵", name: "Nepal" },
-  { flag: "🇹🇭", name: "Thailand" },
-  { flag: "🇲🇾", name: "Malaysia" },
-  { flag: "🇻🇳", name: "Vietnam" },
-  { flag: "🇨🇳", name: "China" },
-  { flag: "🇦🇲", name: "Armenia" },
-  { flag: "🇺🇦", name: "Ukraine" },
-  { flag: "🇵🇰", name: "Pakistan" },
-  { flag: "🇪🇸", name: "Spain" },
-  { flag: "🇨🇱", name: "Chile" },
-  { flag: "🇮🇹", name: "Italy" },
-  { flag: "🇹🇷", name: "Turkey" },
+  { code: "us", name: "United States" },
+  { code: "gb", name: "United Kingdom" },
+  { code: "au", name: "Australia" },
+  { code: "ca", name: "Canada" },
+  { code: "in", name: "India" },
+  { code: "de", name: "Germany" },
+  { code: "nl", name: "Netherlands" },
+  { code: "fr", name: "France" },
+  { code: "se", name: "Sweden" },
+  { code: "nz", name: "New Zealand" },
+  { code: "br", name: "Brazil" },
+  { code: "jm", name: "Jamaica" },
+  { code: "np", name: "Nepal" },
+  { code: "th", name: "Thailand" },
+  { code: "my", name: "Malaysia" },
+  { code: "vn", name: "Vietnam" },
+  { code: "cn", name: "China" },
+  { code: "am", name: "Armenia" },
+  { code: "ua", name: "Ukraine" },
+  { code: "pk", name: "Pakistan" },
+  { code: "es", name: "Spain" },
+  { code: "cl", name: "Chile" },
+  { code: "it", name: "Italy" },
+  { code: "tr", name: "Turkey" },
 ];
 
 const TRUST_ITEMS = [
@@ -67,11 +68,20 @@ export function CountryStrip({ className }: { className?: string }) {
           <span
             key={c.name}
             title={c.name}
-            className="text-lg leading-none opacity-50 hover:opacity-90 transition-opacity duration-200 cursor-default"
+            className={`fi fi-${c.code}`}
             aria-label={c.name}
-          >
-            {c.flag}
-          </span>
+            style={{
+              width: "1.25em",
+              height: "1em",
+              borderRadius: "2px",
+              opacity: 0.5,
+              display: "inline-block",
+              transition: "opacity 0.2s",
+              cursor: "default",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.5")}
+          />
         ))}
       </div>
     </div>
@@ -103,11 +113,20 @@ export function TrustBar() {
               <span
                 key={c.name}
                 title={c.name}
-                className="text-xl leading-none opacity-60 hover:opacity-100 transition-opacity duration-200 cursor-default"
+                className={`fi fi-${c.code}`}
                 aria-label={c.name}
-              >
-                {c.flag}
-              </span>
+                style={{
+                  width: "1.4em",
+                  height: "1.05em",
+                  borderRadius: "2px",
+                  opacity: 0.6,
+                  display: "inline-block",
+                  transition: "opacity 0.2s",
+                  cursor: "default",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
+              />
             ))}
           </div>
         </div>

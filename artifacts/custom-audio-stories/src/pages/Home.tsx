@@ -932,7 +932,7 @@ export default function Home() {
                 className="absolute inset-y-0 right-0 w-2/5 pointer-events-none"
                 aria-hidden="true"
                 style={{
-                  backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.png)`,
+                  backgroundImage: `url(${import.meta.env.BASE_URL}images/home-visual-3.webp)`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   maskImage: "linear-gradient(to left, rgba(0,0,0,0.65) 0%, transparent 80%)",

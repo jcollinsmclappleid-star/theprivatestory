@@ -41,63 +41,63 @@ const ROOMS: Room[] = [
     name: "Power Exchange",
     sub: "Control given. Or taken. Either way, everything changes.",
     accent: "#c0392b",
-    image: "images/rooms/power_exchange.png",
+    image: "images/rooms/power_exchange.webp",
   },
   {
     id: "the_forbidden",
     name: "The Forbidden",
     sub: "The reason it's wrong is the reason it's everything.",
     accent: "#8b5cf6",
-    image: "images/rooms/the_forbidden.png",
+    image: "images/rooms/the_forbidden.webp",
   },
   {
     id: "slow_burn",
     name: "Slow Burn",
     sub: "Weeks of tension. One moment of finally. Everything held back until now.",
     accent: "#e07840",
-    image: "images/rooms/slow_burn.png",
+    image: "images/rooms/slow_burn.webp",
   },
   {
     id: "in_character",
     name: "In Character",
     sub: "A role, a premise, a fiction that becomes completely real.",
     accent: "#d97706",
-    image: "images/rooms/in_character.png",
+    image: "images/rooms/in_character.webp",
   },
   {
     id: "eyes_on_us",
     name: "Eyes On Us",
     sub: "Watched. Watching. Every motion deliberate and felt.",
     accent: "#14b8a6",
-    image: "images/rooms/eyes_on_us.png",
+    image: "images/rooms/eyes_on_us.webp",
   },
   {
     id: "sweet_and_savage",
     name: "Sweet & Savage",
     sub: "Tenderness that turns feral. Softness that breaks into something wilder.",
     accent: "#db2777",
-    image: "images/rooms/sweet_and_savage.png",
+    image: "images/rooms/sweet_and_savage.webp",
   },
   {
     id: "more_than_two",
     name: "More Than Two",
     sub: "Desire doesn't always arrive in pairs.",
     accent: "#6366f1",
-    image: "images/rooms/more_than_two.png",
+    image: "images/rooms/more_than_two.webp",
   },
   {
     id: "the_edge",
     name: "The Edge",
     sub: "Psychological intensity. Obsession. The kind of wanting that unsettles.",
     accent: "#7c3aed",
-    image: "images/rooms/the_edge.png",
+    image: "images/rooms/the_edge.webp",
   },
   {
     id: "dark_territory",
     name: "Dark Territory",
     sub: "Past the edge. Written without restraint or apology.",
     accent: "#c0392b",
-    image: "images/rooms/dark_territory.png",
+    image: "images/rooms/dark_territory.webp",
   },
   {
     id: "all_of_them",
@@ -1546,6 +1546,9 @@ export default function AfterDark() {
                           src={`${import.meta.env.BASE_URL}${room.image}`}
                           alt=""
                           aria-hidden="true"
+                          loading="lazy"
+                          width={600}
+                          height={600}
                           className="absolute inset-0 w-full h-full object-cover"
                           style={{ opacity: 0.22 }}
                         />

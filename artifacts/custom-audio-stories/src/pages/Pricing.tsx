@@ -209,7 +209,7 @@ export default function Pricing() {
           <div
             className="absolute inset-0 opacity-[0.07]"
             style={{
-              backgroundImage: `url(${BASE}images/hero-bg.png)`,
+              backgroundImage: `url(${BASE}images/hero-bg.webp)`,
               backgroundSize: "cover",
               backgroundPosition: "center 30%",
             }}
@@ -601,7 +601,7 @@ export default function Pricing() {
         <div
           className="relative overflow-hidden rounded-3xl border border-border/20 p-10 md:p-14"
           style={{
-            backgroundImage: `url(${BASE}images/home-visual-1.png)`,
+            backgroundImage: `url(${BASE}images/home-visual-1.webp)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -674,7 +674,7 @@ export default function Pricing() {
         <div
           className="relative overflow-hidden rounded-3xl border border-border/20 bg-card/20 p-10 md:p-14"
           style={{
-            backgroundImage: `url(${BASE}images/home-visual-2.png)`,
+            backgroundImage: `url(${BASE}images/home-visual-2.webp)`,
             backgroundSize: "cover",
             backgroundPosition: "center right",
           }}
@@ -778,7 +778,7 @@ export default function Pricing() {
             <div
               className="absolute inset-0 opacity-[0.05]"
               style={{
-                backgroundImage: `url(${BASE}images/home-visual-1.png)`,
+                backgroundImage: `url(${BASE}images/home-visual-1.webp)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}

@@ -129,7 +129,7 @@ export default function HowItWorks() {
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img
-            src={`${import.meta.env.BASE_URL}images/hiw-hero-bg.png`}
+            src={`${import.meta.env.BASE_URL}images/hiw-hero-bg.webp`}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover object-center"

@@ -124,6 +124,9 @@ function ArtTile({ gradient, accent, children, selected, onClick, image }: {
           src={`${import.meta.env.BASE_URL}${image}`}
           alt=""
           aria-hidden="true"
+          loading="lazy"
+          width={600}
+          height={600}
           className="absolute inset-0 w-full h-full object-cover"
         />
       )}
@@ -223,7 +226,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Certain.`,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
-      image: "images/chemistry/takes_charge.png",
+      image: "images/chemistry/takes_charge.webp",
     },
     {
       id: "Equal Tension",
@@ -231,7 +234,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Neither one yields. That's the whole story.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#080010] via-[#100020] to-[#040008]", accent: "#818cf8",
-      image: "images/chemistry/equal_tension.png",
+      image: "images/chemistry/equal_tension.webp",
     },
     {
       id: `${ME.subject} Leads`,
@@ -239,7 +242,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${ME.subject} decides the pace. ${P.subject} follows ${ME.possessive} lead.`,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
-      image: "images/chemistry/leads.png",
+      image: "images/chemistry/leads.webp",
     },
     {
       id: "Push & Pull",
@@ -247,7 +250,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `Back and forth. Who ${conjugateBreaks(P.subject)} first?`,
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#100000] via-[#200000] to-[#080000]", accent: "#fb923c",
-      image: "images/chemistry/push_pull.png",
+      image: "images/chemistry/push_pull.webp",
     },
     {
       id: "Slow Surrender",
@@ -255,7 +258,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "The tension holds until it can't. Both of them know exactly how this ends.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8",
-      image: "images/chemistry/slow_surrender.png",
+      image: "images/chemistry/slow_surrender.webp",
     },
     {
       id: "Charged Dynamic",
@@ -263,7 +266,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} holds the advantage. ${ME.subject} already decided. That's what made it possible.`,
       dynamic: "Leading and following",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
-      image: "images/chemistry/power_play.png",
+      image: "images/chemistry/power_play.webp",
     },
     {
       id: "Forbidden Pull",
@@ -271,7 +274,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "They shouldn't. They've been trying not to. They can't stop.",
       dynamic: "Forbidden desire",
       gradient: "from-[#08000a] via-[#120014] to-[#040008]", accent: "#9333ea",
-      image: "images/chemistry/forbidden_pull.png",
+      image: "images/chemistry/forbidden_pull.webp",
     },
     {
       id: "Pure Devotion",
@@ -279,7 +282,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: `${P.subject} makes ${ME.object} feel like the only thing in the room. The world.`,
       dynamic: "Adoration and devotion",
       gradient: "from-[#001010] via-[#001e1e] to-[#000a0a]", accent: "#2dd4bf",
-      image: "images/chemistry/worship.png",
+      image: "images/chemistry/worship.webp",
     },
     {
       id: "Rivals",
@@ -287,7 +290,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "They've always been at each other's throats. This is what that was.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0800] via-[#121000] to-[#050600]", accent: "#84cc16",
-      image: "images/chemistry/rivals.png",
+      image: "images/chemistry/rivals.webp",
     },
     {
       id: "Lovers",
@@ -295,7 +298,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Two people who chose each other. The familiarity only makes it better.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0010] via-[#120018] to-[#060009]", accent: "#e879a0",
-      image: "images/chemistry/lovers.png",
+      image: "images/chemistry/lovers.webp",
     },
     {
       id: "Playful",
@@ -303,7 +306,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "It starts with a joke. Ends somewhere neither of them expected.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#001808] via-[#002810] to-[#000e04]", accent: "#34d399",
-      image: "images/chemistry/playful.png",
+      image: "images/chemistry/playful.webp",
     },
     {
       id: "Romantic",
@@ -311,7 +314,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Deliberate. Everything intentional. This kind of attention is rare.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0a0600] via-[#180e00] to-[#060300]", accent: "#f59e0b",
-      image: "images/chemistry/romantic.png",
+      image: "images/chemistry/romantic.webp",
     },
     {
       id: "The Best Friend",
@@ -319,7 +322,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "Known each other too long to pretend. Not long enough to stop feeling this.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#000a14] via-[#001020] to-[#00050c]", accent: "#7dd3fc",
-      image: "images/chemistry/the_best_friend.png",
+      image: "images/chemistry/the_best_friend.webp",
     },
     {
       id: "Sweet & Tender",
@@ -327,7 +330,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "No games, no strategy. Two people being honest with each other.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0c0008] via-[#180010] to-[#080005]", accent: "#f0abfc",
-      image: "images/chemistry/sweet_tender.png",
+      image: "images/chemistry/sweet_tender.webp",
     },
     {
       id: "Nervous Energy",
@@ -335,20 +338,20 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
       sub: "First time together. Neither is sure what comes next. That's the whole thing.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#080800] via-[#141400] to-[#050500]", accent: "#fde68a",
-      image: "images/chemistry/nervous_energy.png",
+      image: "images/chemistry/nervous_energy.webp",
     },
   ];
 }
 
 const HERITAGES = [
-  { id: "Latina",         label: "Latina",         sub: "Warm, magnetic, fire beneath calm",         gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840", image: "images/heritage/latina.png" },
-  { id: "Black",          label: "Black",           sub: "Radiant, commanding presence",              gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc", image: "images/heritage/black.png" },
-  { id: "South Asian",    label: "South Asian",     sub: "Layered beauty, quiet intensity",           gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24", image: "images/heritage/south_asian.png" },
-  { id: "European",       label: "European",        sub: "Refined edges, complicated wanting",        gradient: "from-[#040814] via-[#081220] to-[#02060e]", accent: "#94a3b8", image: "images/heritage/european.png" },
-  { id: "East Asian",     label: "East Asian",      sub: "Elegant, precise, quietly devastating",     gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#2dd4bf", image: "images/heritage/east_asian.png" },
-  { id: "Middle Eastern", label: "Middle Eastern",  sub: "Striking depth, magnetic gravity",          gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#f59e0b", image: "images/heritage/middle_eastern.png" },
-  { id: "Indigenous",     label: "Indigenous",      sub: "Rooted, fierce, unapologetically present",  gradient: "from-[#060e02] via-[#0e1a04] to-[#030800]", accent: "#86efac", image: "images/heritage/indigenous.png" },
-  { id: "Ambiguous",      label: "Ambiguous",       sub: "Leave it open. Let imagination fill it.",   gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af", image: "images/heritage/ambiguous.png" },
+  { id: "Latina",         label: "Latina",         sub: "Warm, magnetic, fire beneath calm",         gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840", image: "images/heritage/latina.webp" },
+  { id: "Black",          label: "Black",           sub: "Radiant, commanding presence",              gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc", image: "images/heritage/black.webp" },
+  { id: "South Asian",    label: "South Asian",     sub: "Layered beauty, quiet intensity",           gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24", image: "images/heritage/south_asian.webp" },
+  { id: "European",       label: "European",        sub: "Refined edges, complicated wanting",        gradient: "from-[#040814] via-[#081220] to-[#02060e]", accent: "#94a3b8", image: "images/heritage/european.webp" },
+  { id: "East Asian",     label: "East Asian",      sub: "Elegant, precise, quietly devastating",     gradient: "from-[#001414] via-[#001e1e] to-[#000f0f]", accent: "#2dd4bf", image: "images/heritage/east_asian.webp" },
+  { id: "Middle Eastern", label: "Middle Eastern",  sub: "Striking depth, magnetic gravity",          gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#f59e0b", image: "images/heritage/middle_eastern.webp" },
+  { id: "Indigenous",     label: "Indigenous",      sub: "Rooted, fierce, unapologetically present",  gradient: "from-[#060e02] via-[#0e1a04] to-[#030800]", accent: "#86efac", image: "images/heritage/indigenous.webp" },
+  { id: "Ambiguous",      label: "Ambiguous",       sub: "Leave it open. Let imagination fill it.",   gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]", accent: "#9ca3af", image: "images/heritage/ambiguous.webp" },
 ];
 
 /* ── Archetypes — pronoun-aware, 21 options ───────────────────────── */
@@ -357,75 +360,75 @@ function buildArchetypes(pairingId: string | undefined) {
   const s = P.subject; const o = P.object; const p = P.possessive;
   const me = ME.subject;
   return [
-    { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227", image: "images/energy/executive.png" },
-    { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                                  gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280", image: "images/energy/stranger.png" },
-    { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                     gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa", image: "images/energy/artist.png" },
-    { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399", image: "images/energy/protector.png" },
-    { id: "The Risk",        label: "The Risk",        sub: `Everything says this is complicated. Impossible to walk away from.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.png" },
-    { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa", image: "images/energy/professor.png" },
-    { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185", image: "images/energy/wanderer.png" },
-    { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                                 gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d", image: "images/energy/old_friend.png" },
-    { id: "The Detective",   label: "The Detective",   sub: `${s} notices everything. Nothing slips past ${o}. That attention has a cost.`,                   gradient: "from-[#040808] via-[#081010] to-[#020404]", accent: "#67e8f9", image: "images/energy/detective.png" },
-    { id: "The Doctor",      label: "The Doctor",      sub: `Clinical precision. Unshakeable calm. Until ${s} isn't.`,                                        gradient: "from-[#00080a] via-[#000c10] to-[#000406]", accent: "#a3e635", image: "images/energy/doctor.png" },
-    { id: "The Musician",    label: "The Musician",    sub: `${s} plays like ${s.toLowerCase()} already knows how this ends. ${s} might.`,                    gradient: "from-[#0a0002] via-[#140004] to-[#050001]", accent: "#f9a8d4", image: "images/energy/musician.png" },
-    { id: "The Athlete",     label: "The Athlete",     sub: `Physical command. Total focus. That discipline doesn't stop here.`,                              gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80", image: "images/energy/athlete.png" },
-    { id: "The Chef",        label: "The Chef",        sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                           gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c", image: "images/energy/chef.png" },
-    { id: "The Soldier",     label: "The Soldier",     sub: `Discipline runs through ${o}. So does something much harder to control.`,                        gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264", image: "images/energy/soldier.png" },
-    { id: "The Charmer",     label: "The Charmer",     sub: `Effortless with people. ${s} could have anyone. Somehow ${p} focus on ${o} is the whole point.`, gradient: "from-[#0a0008] via-[#160010] to-[#060005]", accent: "#f472b6", image: "images/energy/charmer.png" },
-    { id: "The Good One",    label: "The Good One",    sub: `No games, no pretence. This is genuinely who ${s} is. You keep waiting for the catch.`,          gradient: "from-[#001208] via-[#001e10] to-[#000a04]", accent: "#6ee7b7", image: "images/energy/good_one.png" },
-    { id: "The Funny One",   label: "The Funny One",   sub: `Makes ${o} laugh first. Then does something that makes laughing impossible.`,                    gradient: "from-[#0a0800] via-[#160e00] to-[#050500]", accent: "#fbbf24", image: "images/energy/funny_one.png" },
-    { id: "The Refined One", label: "The Refined One", sub: `Old-fashioned in the best ways. ${s} notices the small things and means everything behind them.`, gradient: "from-[#060008] via-[#0e0012] to-[#030005]", accent: "#c4b5fd", image: "images/energy/refined_one.png" },
-    { id: "The Introvert",   label: "The Introvert",   sub: `Quiet until ${s} isn't. You didn't expect the person underneath.`,                              gradient: "from-[#000810] via-[#001018] to-[#000408]", accent: "#93c5fd", image: "images/energy/introvert.png" },
-    { id: "The Softie",      label: "The Softie",      sub: `Looks one way. Is entirely another. You figure it out before ${s} admits it.`,                  gradient: "from-[#0a0002] via-[#140004] to-[#060001]", accent: "#fda4af", image: "images/energy/softie.png" },
-    { id: "The Adventurer",  label: "The Adventurer",  sub: `Always somewhere new. This time ${s} wants ${o} to see it too.`,                                gradient: "from-[#001006] via-[#001a0a] to-[#000803]", accent: "#86efac", image: "images/energy/adventurer.png" },
+    { id: "The Executive",   label: "The Executive",   sub: `Measured control. Understated power. ${s} never raises ${p} voice.`,                           gradient: "from-[#0a0800] via-[#181200] to-[#060500]", accent: "#c9a227", image: "images/energy/executive.webp" },
+    { id: "The Stranger",    label: "The Stranger",    sub: `No backstory. No promises. Only this moment.`,                                                  gradient: "from-[#040408] via-[#080810] to-[#020206]", accent: "#6b7280", image: "images/energy/stranger.webp" },
+    { id: "The Artist",      label: "The Artist",      sub: `${s} sees everything. Says very little. That's what makes ${o} dangerous.`,                     gradient: "from-[#0a0010] via-[#140020] to-[#080008]", accent: "#a78bfa", image: "images/energy/artist.webp" },
+    { id: "The Protector",   label: "The Protector",   sub: `Steady, watchful. There's one thing that undoes ${o} completely.`,                               gradient: "from-[#001000] via-[#001a00] to-[#000a00]", accent: "#34d399", image: "images/energy/protector.webp" },
+    { id: "The Risk",        label: "The Risk",        sub: `Everything says this is complicated. Impossible to walk away from.`,                                           gradient: "from-[#150000] via-[#250000] to-[#0f0000]", accent: "#ef4444", image: "images/energy/bad_one.webp" },
+    { id: "The Professor",   label: "The Professor",   sub: `Brilliant, reserved. ${s} comes apart slowly, then all at once.`,                                gradient: "from-[#000810] via-[#001020] to-[#000408]", accent: "#60a5fa", image: "images/energy/professor.webp" },
+    { id: "The Wanderer",    label: "The Wanderer",    sub: `${s} doesn't stay. That's exactly what makes this hurt.`,                                        gradient: "from-[#080004] via-[#10000a] to-[#040002]", accent: "#fb7185", image: "images/energy/wanderer.webp" },
+    { id: "The Old Friend",  label: "The Old Friend",  sub: `Years of knowing each other. Tonight something finally breaks.`,                                 gradient: "from-[#000810] via-[#000c18] to-[#000408]", accent: "#fcd34d", image: "images/energy/old_friend.webp" },
+    { id: "The Detective",   label: "The Detective",   sub: `${s} notices everything. Nothing slips past ${o}. That attention has a cost.`,                   gradient: "from-[#040808] via-[#081010] to-[#020404]", accent: "#67e8f9", image: "images/energy/detective.webp" },
+    { id: "The Doctor",      label: "The Doctor",      sub: `Clinical precision. Unshakeable calm. Until ${s} isn't.`,                                        gradient: "from-[#00080a] via-[#000c10] to-[#000406]", accent: "#a3e635", image: "images/energy/doctor.webp" },
+    { id: "The Musician",    label: "The Musician",    sub: `${s} plays like ${s.toLowerCase()} already knows how this ends. ${s} might.`,                    gradient: "from-[#0a0002] via-[#140004] to-[#050001]", accent: "#f9a8d4", image: "images/energy/musician.webp" },
+    { id: "The Athlete",     label: "The Athlete",     sub: `Physical command. Total focus. That discipline doesn't stop here.`,                              gradient: "from-[#001400] via-[#002000] to-[#000c00]", accent: "#4ade80", image: "images/energy/athlete.webp" },
+    { id: "The Chef",        label: "The Chef",        sub: `${s} works with ${p} hands. Takes pride in making something perfect.`,                           gradient: "from-[#080400] via-[#0e0800] to-[#040200]", accent: "#fb923c", image: "images/energy/chef.webp" },
+    { id: "The Soldier",     label: "The Soldier",     sub: `Discipline runs through ${o}. So does something much harder to control.`,                        gradient: "from-[#040600] via-[#080c00] to-[#020300]", accent: "#bef264", image: "images/energy/soldier.webp" },
+    { id: "The Charmer",     label: "The Charmer",     sub: `Effortless with people. ${s} could have anyone. Somehow ${p} focus on ${o} is the whole point.`, gradient: "from-[#0a0008] via-[#160010] to-[#060005]", accent: "#f472b6", image: "images/energy/charmer.webp" },
+    { id: "The Good One",    label: "The Good One",    sub: `No games, no pretence. This is genuinely who ${s} is. You keep waiting for the catch.`,          gradient: "from-[#001208] via-[#001e10] to-[#000a04]", accent: "#6ee7b7", image: "images/energy/good_one.webp" },
+    { id: "The Funny One",   label: "The Funny One",   sub: `Makes ${o} laugh first. Then does something that makes laughing impossible.`,                    gradient: "from-[#0a0800] via-[#160e00] to-[#050500]", accent: "#fbbf24", image: "images/energy/funny_one.webp" },
+    { id: "The Refined One", label: "The Refined One", sub: `Old-fashioned in the best ways. ${s} notices the small things and means everything behind them.`, gradient: "from-[#060008] via-[#0e0012] to-[#030005]", accent: "#c4b5fd", image: "images/energy/refined_one.webp" },
+    { id: "The Introvert",   label: "The Introvert",   sub: `Quiet until ${s} isn't. You didn't expect the person underneath.`,                              gradient: "from-[#000810] via-[#001018] to-[#000408]", accent: "#93c5fd", image: "images/energy/introvert.webp" },
+    { id: "The Softie",      label: "The Softie",      sub: `Looks one way. Is entirely another. You figure it out before ${s} admits it.`,                  gradient: "from-[#0a0002] via-[#140004] to-[#060001]", accent: "#fda4af", image: "images/energy/softie.webp" },
+    { id: "The Adventurer",  label: "The Adventurer",  sub: `Always somewhere new. This time ${s} wants ${o} to see it too.`,                                gradient: "from-[#001006] via-[#001a0a] to-[#000803]", accent: "#86efac", image: "images/energy/adventurer.webp" },
   ];
 }
 
 /* ── Settings — tile data ─────────────────────────────────────────── */
 const CONTEMPORARY_SETTINGS = [
-  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce", image: "images/settings/late_night_city.png" },
-  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: "images/settings/luxury_hotel.png" },
-  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706", image: "images/settings/european_villa.png" },
-  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9", image: "images/settings/private_yacht.png" },
-  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80", image: "images/settings/mountain_retreat.png" },
-  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc", image: "images/settings/penthouse_suite.png" },
-  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8", image: "images/settings/art_gallery.png" },
-  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8", image: "images/settings/office_after_hours.png" },
-  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0", image: "images/settings/rooftop_bar.png" },
-  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8", image: "images/settings/beach_house.png" },
-  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d", image: "images/settings/private_members_club.png" },
-  { id: "Orient Express Style",     label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c", image: "images/settings/orient_express.png" },
-  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef", image: "images/settings/concert_backstage.png" },
-  { id: "Ski Chalet",               label: "Ski Chalet",               sub: "Snowstorm outside. Nowhere to go until morning.",  gradient: "from-[#030812] via-[#060e1c] to-[#020509]", accent: "#7dd3fc", image: "images/settings/ski_chalet.png" },
+  { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce", image: "images/settings/late_night_city.webp" },
+  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: "images/settings/luxury_hotel.webp" },
+  { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706", image: "images/settings/european_villa.webp" },
+  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9", image: "images/settings/private_yacht.webp" },
+  { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80", image: "images/settings/mountain_retreat.webp" },
+  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc", image: "images/settings/penthouse_suite.webp" },
+  { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8", image: "images/settings/art_gallery.webp" },
+  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8", image: "images/settings/office_after_hours.webp" },
+  { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0", image: "images/settings/rooftop_bar.webp" },
+  { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8", image: "images/settings/beach_house.webp" },
+  { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d", image: "images/settings/private_members_club.webp" },
+  { id: "Orient Express Style",     label: "Orient Express Style",     sub: "Moving through the night. No way off until dawn.", gradient: "from-[#080506] via-[#100a0c] to-[#040304]", accent: "#fb923c", image: "images/settings/orient_express.webp" },
+  { id: "Concert Backstage",        label: "Concert Backstage",        sub: "The adrenaline hasn't faded. Neither have they.",  gradient: "from-[#050008] via-[#090010] to-[#030005]", accent: "#d946ef", image: "images/settings/concert_backstage.webp" },
+  { id: "Ski Chalet",               label: "Ski Chalet",               sub: "Snowstorm outside. Nowhere to go until morning.",  gradient: "from-[#030812] via-[#060e1c] to-[#020509]", accent: "#7dd3fc", image: "images/settings/ski_chalet.webp" },
   { id: "Private Estate",           label: "Private Estate",           sub: "Countryside house. Acres. Locked gates.",         gradient: "from-[#040a04] via-[#081208] to-[#020502]", accent: "#86efac" },
   { id: "Casino High-Stakes Room",  label: "Casino — High Stakes",     sub: "Chips down. Everyone's watching. Except them.",    gradient: "from-[#0a0800] via-[#181200] to-[#050400]", accent: "#fbbf24" },
 ];
 
 const HISTORICAL_SETTINGS = [
-  { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d", image: "images/settings/regency_england.png" },
-  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: "images/settings/victorian_london.png" },
-  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b", image: "images/settings/belle_epoque.png" },
-  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",      sub: "1920s — speakeasies, jazz, smoke and consequence",   gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6", image: "images/settings/roaring_twenties.png" },
-  { id: "Wartime (1940s)",            label: "Wartime",               sub: "1940s — last night together, everything at stake",   gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac", image: "images/settings/wartime.png" },
+  { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d", image: "images/settings/regency_england.webp" },
+  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: "images/settings/victorian_london.webp" },
+  { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b", image: "images/settings/belle_epoque.webp" },
+  { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",      sub: "1920s — speakeasies, jazz, smoke and consequence",   gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6", image: "images/settings/roaring_twenties.webp" },
+  { id: "Wartime (1940s)",            label: "Wartime",               sub: "1940s — last night together, everything at stake",   gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac", image: "images/settings/wartime.webp" },
   { id: "Swinging Sixties (1960s)",   label: "Swinging Sixties",      sub: "1960s — revolution, hotel rooms, free desire",       gradient: "from-[#000a10] via-[#001020] to-[#000408]", accent: "#38bdf8" },
-  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",        sub: "1970s — heat, mirror balls, all night long",         gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0", image: "images/settings/disco_velvet.png" },
+  { id: "Disco & Velvet (1970s)",     label: "Disco & Velvet",        sub: "1970s — heat, mirror balls, all night long",         gradient: "from-[#100010] via-[#200020] to-[#080008]", accent: "#e879a0", image: "images/settings/disco_velvet.webp" },
   { id: "Neon Decade (1980s)",        label: "Neon Decade",           sub: "1980s — excess, power, after hours at the top",      gradient: "from-[#060010] via-[#0c0020] to-[#030008]", accent: "#818cf8" },
-  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean",  sub: "Marble, olives, conquest, and the gods watching",   gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24", image: "images/settings/ancient_mediterranean.png" },
-  { id: "Renaissance Italy",         label: "Renaissance Italy",      sub: "Florence, 1490s — art, ambition, private chambers",  gradient: "from-[#0c0600] via-[#1a0e00] to-[#060300]", accent: "#f59e0b", image: "images/settings/renaissance_italy.png" },
-  { id: "Feudal Japan",              label: "Feudal Japan",           sub: "Silk screens, silence, honour at risk",              gradient: "from-[#080010] via-[#10001a] to-[#040008]", accent: "#c084fc", image: "images/settings/feudal_japan.png" },
-  { id: "Georgian Scotland",         label: "Georgian Scotland",      sub: "Highland estate, candlelight, a storm coming",       gradient: "from-[#020a04] via-[#041208] to-[#010502]", accent: "#6ee7b7", image: "images/settings/georgian_scotland.png" },
+  { id: "Ancient Mediterranean",     label: "Ancient Mediterranean",  sub: "Marble, olives, conquest, and the gods watching",   gradient: "from-[#0a0800] via-[#181400] to-[#050600]", accent: "#fbbf24", image: "images/settings/ancient_mediterranean.webp" },
+  { id: "Renaissance Italy",         label: "Renaissance Italy",      sub: "Florence, 1490s — art, ambition, private chambers",  gradient: "from-[#0c0600] via-[#1a0e00] to-[#060300]", accent: "#f59e0b", image: "images/settings/renaissance_italy.webp" },
+  { id: "Feudal Japan",              label: "Feudal Japan",           sub: "Silk screens, silence, honour at risk",              gradient: "from-[#080010] via-[#10001a] to-[#040008]", accent: "#c084fc", image: "images/settings/feudal_japan.webp" },
+  { id: "Georgian Scotland",         label: "Georgian Scotland",      sub: "Highland estate, candlelight, a storm coming",       gradient: "from-[#020a04] via-[#041208] to-[#010502]", accent: "#6ee7b7", image: "images/settings/georgian_scotland.webp" },
 ];
 
 const AFTER_DARK_SETTINGS = [
-  { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185", image: "images/settings/private_club.png" },
-  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: "images/settings/vip_suite.png" },
+  { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185", image: "images/settings/private_club.webp" },
+  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: "images/settings/vip_suite.webp" },
   { id: "The Back Room",         label: "The Back Room",            sub: "Velvet curtains. Low light. No questions.",           gradient: "from-[#0c0004] via-[#180008] to-[#060002]", accent: "#e11d48" },
   { id: "Moving Elevator",       label: "Moving Elevator",          sub: "Thirty floors of anticipation.",                     gradient: "from-[#08000a] via-[#130010] to-[#040005]", accent: "#c026d3" },
   { id: "Private Cinema",        label: "Private Cinema",           sub: "The film is not what they're watching.",             gradient: "from-[#080004] via-[#120008] to-[#040002]", accent: "#dc2626" },
   { id: "Hotel Balcony",         label: "Hotel Balcony",            sub: "Floor above the party. No one can see them.",        gradient: "from-[#06000a] via-[#0e0012] to-[#030005]", accent: "#9333ea" },
   { id: "Dressing Room",         label: "Dressing Room",            sub: "After the show ends. The adrenaline hasn't.",        gradient: "from-[#0a0002] via-[#160004] to-[#050001]", accent: "#e11d48" },
   { id: "Locked Room",           label: "Locked Room",              sub: "House full of people. Only they know.",              gradient: "from-[#0c0003] via-[#1a0005] to-[#060002]", accent: "#f43f5e" },
-  { id: "Rooftop 3am",           label: "Rooftop, 3am",             sub: "City below. No witnesses.",                          gradient: "from-[#02020a] via-[#04041a] to-[#010108]", accent: "#6366f1", image: "images/settings/rooftop_3am.png" },
+  { id: "Rooftop 3am",           label: "Rooftop, 3am",             sub: "City below. No witnesses.",                          gradient: "from-[#02020a] via-[#04041a] to-[#010108]", accent: "#6366f1", image: "images/settings/rooftop_3am.webp" },
   { id: "First-Class Cabin",     label: "First-Class Cabin",        sub: "Overnight. No names. Nowhere to go.",                gradient: "from-[#02050a] via-[#040a16] to-[#010306]", accent: "#3b82f6" },
   { id: "The Glass House",       label: "The Glass House",          sub: "Floor-to-ceiling windows. No curtains.",             gradient: "from-[#04080a] via-[#080e14] to-[#020406]", accent: "#0ea5e9" },
   { id: "Yacht Cabin",           label: "Yacht Cabin",              sub: "Open water. No escape. No reason to want one.",      gradient: "from-[#001018] via-[#001a26] to-[#000810]", accent: "#38bdf8" },

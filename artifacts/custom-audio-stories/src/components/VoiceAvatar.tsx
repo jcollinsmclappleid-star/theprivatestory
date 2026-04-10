@@ -4,12 +4,12 @@ interface VoiceAvatarProps {
 }
 
 const PORTRAIT_AVATARS: Record<string, string> = {
-  FA6HhUjVbervLw2rNl8M: "images/avatar-eleanor.png",  // Clara
-  tQ4MEZFJOzsahSEEZtHK: "images/avatar-maya.png",     // Maya
-  aTxZrSrp47xsP6Ot4Kgd: "images/avatar-isla.png",     // Kayla
-  AeRdCCKzvd23BpJoofzx: "images/avatar-nathaniel.png", // Nathaniel
-  n1PvBOwxb8X6m7tahp2h: "images/avatar-caleb.png",    // Caleb
-  jfIS2w2yJi0grJZPyEsk: "images/avatar-oliver.png",   // Oliver
+  FA6HhUjVbervLw2rNl8M: "images/avatar-eleanor.webp",  // Clara
+  tQ4MEZFJOzsahSEEZtHK: "images/avatar-maya.webp",     // Maya
+  aTxZrSrp47xsP6Ot4Kgd: "images/avatar-isla.webp",     // Kayla
+  AeRdCCKzvd23BpJoofzx: "images/avatar-nathaniel.webp", // Nathaniel
+  n1PvBOwxb8X6m7tahp2h: "images/avatar-caleb.webp",    // Caleb
+  jfIS2w2yJi0grJZPyEsk: "images/avatar-oliver.webp",   // Oliver
 };
 
 export function VoiceAvatar({ voiceId, size = "md" }: VoiceAvatarProps) {
@@ -23,6 +23,7 @@ export function VoiceAvatar({ voiceId, size = "md" }: VoiceAvatarProps) {
     <img
       src={`${BASE_URL}${imagePath}`}
       alt="Voice"
+      loading="lazy"
       width={px}
       height={px}
       style={{

@@ -1,0 +1,98 @@
+Do a full security, abuse-prevention, and launch-hardening pass on this website.
+
+Do not just identify risks. Act like the engineer responsible for making this site safe enough to expose publicly today.
+
+Your task is to find and fix security weaknesses, trust risks, data handling issues, and deployment gaps across the full project.
+
+You must audit and improve:
+
+- authentication and authorization
+- route protection
+- API endpoints
+- server actions / backend handlers
+- form input validation
+- sanitization and escaping
+- secrets handling
+- environment variable usage
+- database access patterns
+- error leakage
+- session handling
+- cookie settings
+- CORS / origin checks
+- rate limiting
+- bot/spam abuse prevention
+- webhook verification
+- payment flow integrity
+- email/contact flow abuse prevention
+- file upload safety if present
+- XSS / CSRF / SSRF / injection risks
+- open redirects
+- broken access control
+- exposed admin/debug routes
+- client-side trust assumptions
+- insecure localStorage usage
+- analytics / tracking / privacy compliance basics
+- security headers
+- robots / sitemap / indexing safety for sensitive routes
+- logging / monitoring / alert readiness
+- production environment readiness
+
+Your goals:
+
+1. Prevent unauthorized access
+2. Prevent abuse and spam
+3. Prevent data leaks and secret exposure
+4. Prevent fake or manipulated requests
+5. Ensure users only see and do what they are supposed to
+6. Ensure the app fails safely and credibly
+7. Make the site launch-safe, not just feature-complete
+
+Fix issues such as:
+
+- missing auth guards
+- missing server-side authorization checks
+- trusting client-provided values
+- unvalidated form/body/query params
+- missing schema validation
+- unsafe HTML rendering
+- insecure direct object references
+- weak error messages exposing internals
+- missing webhook signature verification
+- payment success pages not backed by real verification
+- missing rate limits on forms/auth/API routes
+- spam-prone contact or signup flows
+- secrets exposed to client bundle
+- overly broad CORS settings
+- missing cookie security flags
+- admin pages accessible without protection
+- sensitive routes indexed by search engines
+- missing security headers
+- unsafe redirects
+- missing retry/idempotency protections where needed
+- poor handling of third-party API failure
+- no audit trail/logging for critical flows
+
+Be pragmatic and product-minded:
+- preserve conversion where possible
+- do not add fake enterprise complexity
+- implement lightweight, real protections appropriate for a modern production launch
+- remove or simplify risky features if they cannot be made safe quickly
+
+Also check for:
+- graceful handling when env vars are missing
+- disabled functionality that should be hidden when not configured
+- clear user-safe error messages
+- safe fallback states
+- no fake “success” states without real backend confirmation
+
+When done, provide:
+
+- security issues found
+- fixes made
+- remaining risks
+- manual checks still required
+- any external setup required (API keys, webhook secrets, DNS, email domain auth, captcha keys, etc.)
+- launch-blockers vs non-blockers
+
+Operate like the final engineer before production launch:
+the website must be safe, trustworthy, abuse-resistant, and ready for real users.

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock,
+  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock, DoorOpen, Flame,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -808,7 +808,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-10 pb-10 md:pt-14 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
+      <section className="relative z-30 w-full pt-3 pb-10 md:pt-4 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -832,6 +832,23 @@ export default function Home() {
             <p className="text-xs text-white/30 tracking-wide sm:text-center">
               Built from 2.6M+ combinations — no two stories the same.
             </p>
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+            <div className="flex items-center gap-1.5 text-white/35">
+              <DoorOpen className="w-3.5 h-3.5" />
+              <span className="text-[11px] tracking-wide">Enter a room</span>
+            </div>
+            <span className="text-white/20 text-xs">→</span>
+            <div className="flex items-center gap-1.5 text-white/35">
+              <Flame className="w-3.5 h-3.5" />
+              <span className="text-[11px] tracking-wide">Shape your desire</span>
+            </div>
+            <span className="text-white/20 text-xs">→</span>
+            <div className="flex items-center gap-1.5 text-white/35">
+              <Headphones className="w-3.5 h-3.5" />
+              <span className="text-[11px] tracking-wide">Hear it privately</span>
+            </div>
           </div>
         </motion.div>
       </section>

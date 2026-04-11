@@ -76,6 +76,7 @@ import SteamyAudioStories from "@/pages/seo/SteamyAudioStories";
 import AIErotica from "@/pages/seo/AIErotica";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
+import PurchaseConfirmed from "@/pages/PurchaseConfirmed";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/admin/moderation" component={AdminModeration} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/purchase/confirmed" component={PurchaseConfirmed} />
       <Route>
         <Layout>
           <Switch>

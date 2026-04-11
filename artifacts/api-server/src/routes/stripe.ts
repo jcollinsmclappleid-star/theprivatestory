@@ -117,7 +117,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
         customer: customerId,
         line_items: [{ price: priceId, quantity: 1 }],
         mode: (plan === "addon" || plan === "immersive") ? "payment" : "subscription",
-        success_url: `${SITE_URL}/me?checkout=success`,
+        success_url: `${SITE_URL}/purchase/confirmed`,
         cancel_url: cancelUrl,
         allow_promotion_codes: true,
         metadata: { userId, plan },
@@ -143,7 +143,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       line_items: [{ price: priceId, quantity: 1 }],
       mode: isSubscription ? "subscription" : "payment",
-      success_url: `${SITE_URL}/checkout/success?token=${claimToken}`,
+      success_url: `${SITE_URL}/purchase/confirmed?token=${claimToken}`,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       metadata: { guestToken: claimToken, plan },
@@ -572,7 +572,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
 
           // Send claim email to the guest
           if (guestEmail) {
-            const claimUrl = `${SITE_URL}/checkout/success?token=${guestToken}`;
+            const claimUrl = `${SITE_URL}/purchase/confirmed?token=${guestToken}`;
             const planLabel = plan === "immersive" ? "a single Immersive Story" : plan === "monthly" ? "a monthly subscription (5 stories/month)" : "an annual subscription (50 stories/year)";
             await sendEmail({
               to: guestEmail,

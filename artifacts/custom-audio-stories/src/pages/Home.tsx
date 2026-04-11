@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Library, Shuffle, Check, Loader2,
+  ChevronLeft, Globe, Library, Shuffle, Check, Loader2, Clock,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -836,8 +836,16 @@ export default function Home() {
             <span className="text-primary">around the feeling you choose.</span>
           </h1>
 
-          <p className="text-sm text-white/80 leading-relaxed max-w-xs">
-            Built for the adult female imagination — literary, private, entirely yours.
+          <div className="flex flex-wrap items-center justify-center gap-2 max-w-sm">
+            {["Who he is", "His energy", "Chemistry between you", "The setting & era", "How far it goes"].map((tag) => (
+              <span key={tag} className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/12 bg-white/4 text-white/80">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <p className="text-sm text-white/80 leading-relaxed max-w-sm">
+            Built for the adult female imagination — literary, private, entirely yours. Written and narrated around your choices, ready to listen in around 10 minutes.
           </p>
 
           <p className="text-[11px] text-white/80 tracking-widest uppercase mt-1">
@@ -852,6 +860,25 @@ export default function Home() {
         {/* Three Doors                                                       */}
         {/* ---------------------------------------------------------------- */}
         <ThreeDoors />
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Story reassurance strip                                           */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="flex flex-wrap items-center justify-center gap-3 px-4 py-4">
+          {[
+            { icon: <Sparkles className="w-3 h-3" />, label: "Cast entirely around your choices" },
+            { icon: <Headphones className="w-3 h-3" />, label: "Premium voice narration" },
+            { icon: <Clock className="w-3 h-3" />, label: "Around 10 minutes to listen" },
+          ].map(({ icon, label }) => (
+            <span
+              key={label}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/12 bg-white/4 text-[11px] text-white/85 font-medium"
+            >
+              <span className="text-primary/80">{icon}</span>
+              {label}
+            </span>
+          ))}
+        </section>
 
         {/* ---------------------------------------------------------------- */}
         {/* Trust bar                                                         */}

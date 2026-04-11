@@ -15,10 +15,10 @@ const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REASSURANCE = [
-  { icon: <Sparkles className="w-4 h-4" />, label: "Written around you", sub: "Your choices shape every word" },
-  { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library exists for you alone" },
-  { icon: <Moon className="w-4 h-4" />, label: "After Dark included", sub: "Stories that explore further" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Ready to listen", sub: "Narrated — press play instantly" },
+  { icon: <Sliders className="w-4 h-4" />, label: "Fully cast by you", sub: "Character, energy, chemistry, setting — every detail yours before a word is written" },
+  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — ready to play, around 10 minutes" },
+  { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library is visible only to you. Nothing shared, ever" },
+  { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
 ];
 
 const MONTHLY_FEATURES = [
@@ -250,8 +250,11 @@ export default function Pricing() {
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
-          <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-5">
+          <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
             Each plan also gives you access to a curated collection, monthly releases, and After Dark — a space for stories that go further.
+          </p>
+          <p className="text-xs text-primary/80 tracking-wide mb-4 font-medium">
+            Every personalised story: written, narrated, and ready to play — around 10 minutes to listen.
           </p>
           <p className="text-xs text-muted-foreground/80 tracking-wide">
             Billed discreetly. No subscription name appears on your statement.
@@ -289,6 +292,35 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       <section className="pb-4 pt-2 px-4 md:px-8 max-w-3xl mx-auto w-full">
         <CountryStrip />
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Personalisation depth — what you set before it's written            */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="py-12 px-4 md:px-8 max-w-3xl mx-auto w-full text-center">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
+          What you decide before a word is written
+        </p>
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-snug mb-4">
+          No two stories are alike — because no two people are.
+        </h2>
+        <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-xl mx-auto">
+          Before the story exists, you build it. Every element — who he is, what's between you, where it happens, how it feels — is yours to define. The story is then written, narrated, and saved privately, exactly as you designed it.
+        </p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {[
+            "His name", "His heritage", "His archetype", "Chemistry between you",
+            "The dynamic", "Your name", "The setting", "Historical era",
+            "Mood & atmosphere", "Intensity", "His voice", "How far it goes",
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1.5 rounded-full text-[11px] font-medium border border-primary/20 bg-primary/6 text-primary"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}

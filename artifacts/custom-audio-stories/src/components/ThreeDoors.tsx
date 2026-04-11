@@ -19,7 +19,7 @@ const DOORS = [
     rgb: "201,162,39",
     labelColor: "rgba(201,162,39,0.72)",
     nameColor: "#e8d5a0",
-    taglineColor: "rgba(201,162,39,0.46)",
+    taglineColor: "rgba(201,162,39,0.90)",
     bg: "linear-gradient(180deg, #1d1105 0%, #130d07 55%, #0b0906 100%)",
     border: "rgba(201,162,39,0.24)",
     borderHover: "rgba(201,162,39,0.70)",
@@ -57,7 +57,7 @@ const DOORS = [
     rgb: "123,143,255",
     labelColor: "rgba(123,143,255,0.68)",
     nameColor: "#9baeff",
-    taglineColor: "rgba(123,143,255,0.44)",
+    taglineColor: "rgba(123,143,255,0.90)",
     bg: "linear-gradient(180deg, #05050f 0%, #040409 55%, #060608 100%)",
     border: "rgba(123,143,255,0.18)",
     borderHover: "rgba(123,143,255,0.60)",
@@ -96,7 +96,7 @@ const DOORS = [
     rgb: "86,180,224",
     labelColor: "rgba(86,180,224,0.68)",
     nameColor: "#b8e4f5",
-    taglineColor: "rgba(86,180,224,0.44)",
+    taglineColor: "rgba(86,180,224,0.90)",
     bg: "linear-gradient(180deg, #04111a 0%, #030d14 55%, #050a0d 100%)",
     border: "rgba(86,180,224,0.20)",
     borderHover: "rgba(86,180,224,0.62)",
@@ -137,7 +137,7 @@ export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "qui
           fontWeight: 700,
           letterSpacing: "0.28em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.20)",
+          color: "rgba(255,255,255,0.85)",
         }}
       >
         Choose where your story begins

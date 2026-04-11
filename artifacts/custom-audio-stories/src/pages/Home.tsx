@@ -806,71 +806,41 @@ export default function Home() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col">
 
       {/* ------------------------------------------------------------------ */}
-      {/* Hero Eyebrow                                                         */}
+      {/* Hero                                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-16 pb-12 md:pt-20 md:pb-14 flex flex-col items-center justify-center text-center px-4">
+      <section className="relative z-30 w-full pt-20 pb-10 md:pt-28 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.75 }}
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-start sm:items-center gap-7 max-w-2xl"
         >
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
-              <Headphones className="w-3.5 h-3.5 text-primary/70" />
-              <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-white/80 tracking-wide">
-              <span>Created for you</span>
-              <span>·</span>
-              <span>Narrated</span>
-              <span>·</span>
-              <span>Private</span>
-            </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
+            <Headphones className="w-3.5 h-3.5 text-primary/70" />
+            <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight drop-shadow-xl max-w-2xl">
-            Your private immersive story experience —{" "}
+          <h1 className="text-[2.6rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
+            Your story —{" "}
             <span className="text-primary">built around the feeling you choose.</span>
           </h1>
 
-          <div className="flex flex-col items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <span className="text-3xl md:text-4xl font-display font-bold text-primary leading-none">2.6M+</span>
-              <span className="text-[11px] text-white/60 leading-tight max-w-[120px]">unique personalised story combinations</span>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-              {[
-                { n: "50+",  label: "Countries" },
-                { n: "12",   label: "Historical eras" },
-                { n: "14",   label: "Archetypes" },
-                { n: "9",    label: "Chemistries" },
-                { n: "200+", label: "Situations" },
-              ].map(({ n, label }) => (
-                <div key={label} className="text-center">
-                  <p className="text-sm font-bold text-primary/90 leading-none">{n}</p>
-                  <p className="text-[9px] text-white/50 uppercase tracking-widest mt-0.5">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-sm text-white/80 leading-relaxed max-w-sm">
-            Built for the adult female imagination — literary, private, entirely yours. Written and narrated around your choices — each story is a fully immersive audio experience, typically around 10 minutes.
-          </p>
-
-          <p className="text-[11px] text-white/80 tracking-widest uppercase mt-1">
-            Three creation rooms — pick your door to begin
+          <p className="text-sm md:text-base text-white/45 tracking-wide sm:text-center">
+            Literary. Private. Entirely yours.
           </p>
         </motion.div>
       </section>
 
-      <div className="relative z-20 space-y-0 -mt-4 md:-mt-6">
+      <div className="relative z-20 space-y-0 mt-2 md:mt-4">
 
         {/* ---------------------------------------------------------------- */}
         {/* Three Doors                                                       */}
         {/* ---------------------------------------------------------------- */}
         <ThreeDoors />
+
+        <p className="text-center text-[10px] text-white/25 tracking-widest pt-3 pb-1 px-4">
+          2.6M+ unique story combinations possible
+        </p>
 
         {/* ---------------------------------------------------------------- */}
         {/* Story reassurance strip                                           */}

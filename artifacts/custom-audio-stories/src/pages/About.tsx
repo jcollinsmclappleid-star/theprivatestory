@@ -21,10 +21,10 @@ export default function About() {
           >
             <p className="text-primary text-sm uppercase tracking-widest font-semibold mb-4">Our story</p>
             <h1 className="font-display text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              A more private kind of storytelling
+              Built for people who want something different
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-              The Private Story was created for people who want something more personal than a catalogue, and more private than a typical app.
+              Not a catalogue. Not a stream. The Private Story was built around a single idea: a story that responds to you — personalised, private, and entirely your own.
             </p>
           </motion.div>
         </div>
@@ -84,7 +84,7 @@ export default function About() {
               {
                 icon: <Lock className="w-6 h-6 text-primary" />,
                 title: "Private by design",
-                desc: "Your stories are saved to your private library and are intended to be visible only to you. This is a personal experience, not a social one.",
+                desc: "Your stories are saved to your private archive and are visible only to you. This is a personal experience, not a social one.",
               },
               {
                 icon: <Heart className="w-6 h-6 text-primary" />,

@@ -549,7 +549,7 @@ interface ScenePlan {
   primary_touch_action: string;
   /** Physical arrangement of characters — must vary across scenes */
   staging_position: string;
-  /** Sentence-level prose texture — ESTABLISH=flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing; no two adjacent scenes share the same rhythm */
+  /** Sentence-level prose texture — ESTABLISH=flowing, SIMMER=baroque, CRACK=fragmented, IGNITE=baroque, RESONATE=flowing; no two adjacent scenes share the same rhythm */
   prose_rhythm: string;
   /** How the scene's first sentence arrives — must differ from adjacent scenes */
   scene_open_beat: string;
@@ -737,11 +737,10 @@ const SCENE_SENSORY_DIVERSITY = {
   ],
   /**
    * Sentence-level prose texture for each scene.
-   * Arc guidance: ESTABLISH=flowing, SIMMER=baroque or flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing.
+   * Arc guidance: ESTABLISH=flowing, SIMMER=baroque, CRACK=fragmented, IGNITE=baroque, RESONATE=flowing.
    * No two adjacent scenes may share the same prose_rhythm.
    */
   prose_rhythms: [
-    "staccato — sentences of 3–8 words. Each one stops. The gap matters. Nothing is joined. Urgency through brevity.",
     "flowing — long subordinate clauses gather momentum; the sentence doesn't release until the end; sense arrives late and fully",
     "fragmented — incomplete thoughts. Ellipsis. The sentence starts and something stops it. No landing. The rhythm of interruption.",
     "baroque — dense accumulated layers of sensory detail; multiple registers stacked in a single paragraph; the prose doesn't breathe until the very end",
@@ -2349,7 +2348,7 @@ You must infer and return:
   • touch_register: physical contact level for this scene. Must follow the phase arc naturally (ESTABLISH = absent, SIMMER = incidental, CRACK = deliberate, IGNITE = intense, RESONATE = aftermath). Choose from: ${SCENE_SENSORY_DIVERSITY.touch_registers.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
   • primary_touch_action: the specific primary verb for physical contact in this scene. Must NEVER repeat across scenes within the same story. If touch_register is "absent", use "(none)". Choose from the appropriate register pool: incidental: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.incidental.join(", ")} | deliberate: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.deliberate.join(", ")} | intense: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.intense.join(", ")} | aftermath: ${SCENE_SENSORY_DIVERSITY.touch_verb_pools.aftermath.join(", ")}
   • staging_position: physical arrangement of characters in this scene. Must be DIFFERENT from adjacent scenes. Choose from: ${SCENE_SENSORY_DIVERSITY.staging_positions.map(s => `"${s.split(" — ")[0]}"`).join(" / ")}
-  • prose_rhythm: sentence-level texture for this scene. Arc guidance: ESTABLISH=flowing, SIMMER=baroque or flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing. No two adjacent scenes may share the same rhythm. Choose from: ${SCENE_SENSORY_DIVERSITY.prose_rhythms.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
+  • prose_rhythm: sentence-level texture for this scene. Arc guidance: ESTABLISH=flowing, SIMMER=baroque, CRACK=fragmented, IGNITE=baroque, RESONATE=flowing. No two adjacent scenes may share the same rhythm. Choose from: ${SCENE_SENSORY_DIVERSITY.prose_rhythms.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
   • scene_open_beat: how the first sentence of this scene arrives. Arc guidance: ESTABLISH=environment or temporal_marker, SIMMER=sensory_anchor or internal_thought, CRACK=action or internal_thought, IGNITE=action or sensory_anchor, RESONATE=internal_thought. No two adjacent scenes may share the same open beat. Choose from: ${SCENE_SENSORY_DIVERSITY.scene_open_beats.map(b => `"${b.split(" — ")[0]}"`).join(" / ")}
   • interiority_depth: depth of internal narration in this scene. Arc guidance: ESTABLISH=shallow, SIMMER=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep. Choose from: ${SCENE_SENSORY_DIVERSITY.interiority_depths.map(d => `"${d.split(" — ")[0]}"`).join(" / ")}
   • dialogue_mode: proportion and mode of spoken dialogue in this scene. Arc guidance: ESTABLISH=minimal, SIMMER=exchange, CRACK=exchange, IGNITE=sustained (dirty talk leads every beat), RESONATE=minimal. Dialogue is mandatory in every scene. Choose from: ${SCENE_SENSORY_DIVERSITY.dialogue_modes.map(m => `"${m.split(" — ")[0]}"`).join(" / ")}
@@ -2602,12 +2601,9 @@ function openBeatExample(beat: string): string {
 }
 
 /**
- * Repairs staccato overreach — model-generated sentence breaks that land in the
- * middle of a clause, after a preposition, or inside quoted dialogue.
- *
- * Runs on EVERY scene (not just staccato) because the model sometimes applies
- * staccato habits globally.  Must run BEFORE enforceStaccato so it doesn't split
- * sentences that are still mid-repair.
+ * Repairs model-generated sentence breaks that land in the middle of a clause,
+ * after a preposition, or inside quoted dialogue. Runs as a safety pass on every
+ * scene regardless of prose_rhythm.
  *
  * Fixes:
  *  1. Double period after closing quote:  .".<space>  →  ." <space>
@@ -2684,57 +2680,6 @@ function repairBrokenFragments(text: string): string {
   });
 
   return text;
-}
-
-/**
- * Deterministic staccato sentence enforcer.
- * Splits any sentence > 8 words at the first natural conjunction/clause boundary.
- * Applied post-write to every scene whose prose_rhythm === "staccato".
- */
-function enforceStaccato(text: string): string {
-  if (!text) return text;
-
-  // Split text into individual sentences, preserving trailing punctuation+space.
-  // Strategy: split on ". " / "! " / "? " only when followed by a capital letter.
-  const raw = text.replace(/([.!?])\s+(?=[A-Z"'])/g, "$1\x00").split("\x00");
-
-  const processed = raw.flatMap(sentence => splitIfLong(sentence.trim()));
-  return processed.join(" ").replace(/\s{2,}/g, " ").trim();
-}
-
-function splitIfLong(sentence: string): string[] {
-  const wordCount = sentence.split(/\s+/).filter(Boolean).length;
-  if (wordCount <= 8) return [sentence];
-
-  // Ordered split attempts — prefer natural clause breaks
-  const splitPoints: Array<{ re: RegExp; joiner: string }> = [
-    { re: /,\s+(and|but|or)\s+/i,                                          joiner: ". " },
-    { re: /,\s+(as|when|while|though|although|since|because|before|after|until)\s+/i, joiner: ". " },
-    { re: /\s+—\s+/,                                                       joiner: ". " },
-    { re: /;\s*/,                                                          joiner: ". " },
-    { re: /\s+(and|but)\s+(?=[A-Z])/,                                     joiner: ". " },
-  ];
-
-  for (const { re, joiner } of splitPoints) {
-    const match = re.exec(sentence);
-    if (match) {
-      const left  = sentence.slice(0, match.index).trimEnd();
-      const right = sentence.slice(match.index + match[0].length).trimStart();
-      if (!left || !right) continue;
-
-      const leftFinal  = left.match(/[.!?]$/)  ? left  : left  + ".";
-      const rightFinal = right.charAt(0).toUpperCase() + right.slice(1);
-      // Recursively handle any still-long halves
-      return [...splitIfLong(leftFinal), ...splitIfLong(rightFinal)];
-    }
-  }
-
-  // Hard split at midpoint as last resort
-  const words = sentence.split(/\s+/);
-  const mid   = Math.ceil(words.length / 2);
-  const left  = words.slice(0, mid).join(" ").replace(/[,;—]$/, "") + ".";
-  const right = words.slice(mid).join(" ");
-  return [left, right.charAt(0).toUpperCase() + right.slice(1)];
 }
 
 // ---------------------------------------------------------------------------
@@ -2947,25 +2892,9 @@ You must honour ALL FOUR for every scene:
 
 NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
   • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule. You will audit your sentences after drafting each scene.
-    - staccato: EVERY sentence is 3–8 words. Hard stop after each one. Each sentence must be a GRAMMATICALLY COMPLETE THOUGHT — subject + verb + whatever it needs. Urgency through brevity, not through breaking mid-clause.
-      ABSOLUTE PROHIBITION: A sentence MUST NEVER end with a preposition, subordinating conjunction, article, or incomplete clause. NEVER end a sentence on: in, into, on, at, of, to, for, from, with, by, through, between, among, when, as, while, because, although, since, until, though, unless, if, that, which, who, the, a, an — these words DEMAND what follows them. If you write "in." you have broken a sentence. Fix it.
-      DIALOGUE RULE: Staccato rhythm NEVER breaks inside quoted speech. A speech line is always one complete unit even if long. Break AROUND dialogue, not inside it.
-      SENTENCE AUDIT (required for staccato): After drafting, re-read every sentence. Any sentence over 8 words MUST be split at its first COMPLETE clause boundary — never mid-phrase.
-      WRONG: "She wanted him in. Her mouth." (broken after preposition — join it)
-      WRONG: "He groaned when. She moved." (broken after subordinator — join it)
-      WRONG: "She felt the weight of. Him." (broken after preposition — join it)
-      WRONG: "The words hit. Her like a physical force." (broken between verb and direct object — join: "The words hit her like a physical force.")
-      WRONG: "His hand pinned. Her wrists above her head." (broken between verb and object noun phrase — join: "His hand pinned her wrists above her head.")
-      WRONG: "The first taste of him. Was salt and heat." (predicate detached from subject — join: "The first taste of him was salt and heat.")
-      RIGHT:  "She wanted him. She took him in her mouth."
-      RIGHT:  "He groaned. She moved against him."
-      RIGHT:  "She felt the weight of him."
-      RIGHT:  "The words hit her like a physical force."
-      RIGHT:  "His hand pinned her wrists above her head."
-      RIGHT:  "The first taste of him was salt and heat."
     - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
     - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
-    - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage.
+    - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage. IGNITE scenes use this — let sensation accumulate; do not rush the sentence to its end; layer touch, sound, heat, breath, and the protagonist's internal response before releasing the full weight of what is happening.
   • scene_open_beat: The first sentence of this scene MUST arrive in this exact mode. Not the second sentence. The first.
     - sensory_anchor: a specific physical sensation or sensory detail, no preamble, no context.
     - dialogue: something is already being said when the scene opens.
@@ -2999,29 +2928,10 @@ DIALOGUE MANDATE — apply before finalising:
   For intensity 4–5 IGNITE scenes: name the sexual acts being performed in dialogue. Characters say what they want and what they are doing. Position changes are introduced by speech.
   Speech-before-action rule: before any physical escalation (undressing, positioning, the act itself), one character must speak — command, request, or declaration. Physical action follows speech, not the other way around.
 
-STACCATO ENFORCEMENT — apply before finalising:
-  Any scene assigned prose_rhythm=staccato: re-read every sentence in that scene.
-  Flag any sentence longer than 8 words. Split it. No exceptions.
-  A staccato scene with sentences averaging 15+ words is a technical failure, not a style choice.
-
-  STACCATO — WRONG (too long, flowing — this is what staccato must NOT look like):
-    "She watched him move across the room toward her, each step deliberate, and felt the familiar
-     tension in her chest that she'd been trying to ignore since the moment he'd walked in."
-
-  STACCATO — RIGHT (short, stopped, each thought its own full stop):
-    "He moved. She watched. The space between them shrank. Her chest ached. He didn't look away."
-    "She reached for the glass. Stopped. His hand was already there. Waiting."
-    "The door closed. Loud. She didn't move. Neither did he."
-
-  STACCATO RULE: Write the sentence. Count the words. If more than 8: split it.
-  Do this for every single sentence before moving to the next one.
-
 PROSE RHYTHM GATE — before you write each scene, note its assigned rhythm:
-  If staccato → set a mental rule: maximum 8 words per sentence, full stop.
-    Every sentence must be a complete thought. Short. Stopped. Deliberate. Nothing joined.
   If fragmented → ellipsis permitted, incomplete thoughts expected, trailing silence is correct.
   If flowing → clauses may extend; withhold the main verb until late.
-  If baroque → stack sensory registers; delay resolution until end of paragraph.
+  If baroque → stack sensory registers; delay resolution until end of paragraph. For IGNITE scenes assigned baroque: let sensation accumulate across the sentence; layer touch, heat, sound, breath, and the protagonist's internal response before the sentence releases.
 
 TOUCH VERB MAP — absolute law for this story (check before writing each scene):
 ${brief.scene_plan.map((sp, i) =>
@@ -3042,11 +2952,6 @@ ${brief.scene_plan.map((sp, i) => {
     `staging_position=${sp.staging_position}`,
   ];
   const warnings: string[] = [];
-
-  // — prose_rhythm enforcement
-  if (sp.prose_rhythm === "staccato") {
-    warnings.push("⚠ STACCATO: count the words in EVERY sentence before moving on. If any sentence exceeds 8 words, split it immediately. This is a hard technical constraint — not a style suggestion.");
-  }
 
   // — dialogue arc mandate for IGNITE scenes
   if (sp.phase === "IGNITE") {
@@ -3086,7 +2991,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
   2. No touch verb appears in more than one scene
   3. No two consecutive scenes feel like they inhabit the same physical world
   4. The progression of touch_register follows the arc — never escalates then retreats
-  5. Each scene's sentences are constructed according to its assigned prose_rhythm (staccato scenes: every sentence ≤8 words)
+  5. Each scene's sentences are constructed according to its assigned prose_rhythm (flowing = long clauses building to release; fragmented = ellipsis and incomplete thoughts; baroque = dense accumulated sensory layers)
   6. Each scene opens with its assigned scene_open_beat as the literal first sentence
   7. The depth of internal narration in each scene matches its assigned interiority_depth
   8. Every scene contains at least one line of spoken dialogue; IGNITE scenes have sustained dialogue (40–60% of beats); the three arc beats (opening, pivot, closing) are executed from the scene plan
@@ -3105,9 +3010,8 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Staccato audit: For each scene with prose_rhythm=staccato, scan every sentence. (a) Fix any sentence that ends on a preposition, conjunction, or article — these words cannot end a sentence; join the fragment to the next word. (b) Fix any period that appears inside a quoted speech line — dialogue is never broken mid-speech. (c) Fix any double period "."." after quoted speech. (d) Split any remaining sentence over 8 words at its first COMPLETE clause boundary.
-  Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
-  Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
+  Step 2 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
+  Step 3 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 
 Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. Start your response with the opening brace { and end with the closing brace }.
 {
@@ -3207,25 +3111,13 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
       const scenePlan = brief.scene_plan[idx];
       let text: string = s.text ?? "";
 
-      // Post-write pass 1 — repair staccato overreach on ALL scenes.
-      // Fixes: periods after prepositions/subordinators/articles that cannot
-      // grammatically end a sentence, and double-periods after quoted speech.
-      // Must run BEFORE enforceStaccato so we don't re-split repaired text.
+      // Post-write safety pass — repair any double-period-after-quote or
+      // broken-preposition artefacts that may appear in any prose style.
       if (text) {
         const beforeRepair = text;
         text = repairBrokenFragments(text);
         if (text !== beforeRepair) {
-          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired broken sentence fragments");
-        }
-      }
-
-      // Post-write pass 2 — staccato enforcement: split any sentence that
-      // still exceeds 8 words in scenes assigned staccato prose_rhythm.
-      if (scenePlan?.prose_rhythm === "staccato" && text) {
-        const before = text;
-        text = enforceStaccato(text);
-        if (text !== before) {
-          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Enforced staccato rhythm — long sentences split");
+          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired sentence fragments");
         }
       }
 
@@ -3347,7 +3239,7 @@ Return only JSON — no explanation, no markdown.`;
 5. originality — fresh and distinctive, not clichéd or formulaic
 6. sensory_detail — strong grounding sensory images present in each scene
 7. ending_strength — the ending lands emotionally and feels earned
-8. scene_diversity_compliance — the story honoured all per-scene structural diversity assignments shown in SCENE DIVERSITY ASSIGNMENTS below. Score 10 if every scene clearly reflects: (1) dominant_sense as the primary narration lens; (2) touch_register — contact level not exceeded and not held back; (3) primary_touch_action — the assigned verb used exclusively in that scene; (4) staging_position — the characters in the assigned spatial arrangement; (5) prose_rhythm — sentences actually constructed in the assigned texture (staccato = short clipped sentences; flowing = long clauses; fragmented = ellipsis and interruption; baroque = dense stacked description); (6) scene_open_beat — the literal first sentence of the scene arriving in the assigned mode; (7) interiority_depth — the depth of internal narration matching the assignment; (8) every scene carries at least one line of quoted speech; IGNITE scenes have sustained dialogue and execute the three arc beats (opening, pivot, closing) from the plan; (9) partner_attention_focus — the protagonist's awareness specifically narrowing to that aspect of the partner. Deduct 2 points for each scene where any diversity field is clearly violated or ignored. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.${castingDimensionInstruction}${eroticArchDimension}
+8. scene_diversity_compliance — the story honoured all per-scene structural diversity assignments shown in SCENE DIVERSITY ASSIGNMENTS below. Score 10 if every scene clearly reflects: (1) dominant_sense as the primary narration lens; (2) touch_register — contact level not exceeded and not held back; (3) primary_touch_action — the assigned verb used exclusively in that scene; (4) staging_position — the characters in the assigned spatial arrangement; (5) prose_rhythm — sentences actually constructed in the assigned texture (flowing = long clauses building to release; fragmented = ellipsis and interruption; baroque = dense stacked sensory description); (6) scene_open_beat — the literal first sentence of the scene arriving in the assigned mode; (7) interiority_depth — the depth of internal narration matching the assignment; (8) every scene carries at least one line of quoted speech; IGNITE scenes have sustained dialogue and execute the three arc beats (opening, pivot, closing) from the plan; (9) partner_attention_focus — the protagonist's awareness specifically narrowing to that aspect of the partner. Deduct 2 points for each scene where any diversity field is clearly violated or ignored. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.${castingDimensionInstruction}${eroticArchDimension}
 ${castingBriefBlock}${sceneDiversityBlock}
 Story Brief Context:
 ${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type }, null, 2)}
@@ -3466,7 +3358,7 @@ export async function rewriteStory(brief: StoryBrief, story: WrittenStory, strat
     rotate_dynamic_or_setting:
       "Introduce a fresh angle on the relationship dynamic or shift one element of the setting slightly to add originality. Preserve the core emotional arc entirely.",
     enforce_scene_diversity:
-      "Rewrite each scene to honour its per-scene diversity assignments from the brief. For each scene: (1) reconstruct sentences in the assigned prose_rhythm (staccato = 3–8 word sentences; flowing = long clauses; fragmented = incomplete thoughts with ellipsis; baroque = dense accumulated layers); (2) rewrite the first sentence to match the assigned scene_open_beat exactly; (3) adjust the depth of internal narration to match interiority_depth (external = no internal monologue; surface = body-only; shallow = one or two thought-flickers; deep = sustained inner monologue); (4) adjust spoken dialogue to match dialogue_mode — DIALOGUE IS MANDATORY IN EVERY SCENE, never remove speech entirely (minimal = at most two lines but at least one; exchange = back-and-forth; sustained = dialogue-driven dirty talk); (5) narrow the protagonist's attention to the partner's assigned partner_attention_focus in that scene. Do not change the plot, setting, or emotional arc — only the prose texture and interiority level.",
+      "Rewrite each scene to honour its per-scene diversity assignments from the brief. For each scene: (1) reconstruct sentences in the assigned prose_rhythm (flowing = long clauses building to release; fragmented = incomplete thoughts with ellipsis; baroque = dense accumulated sensory layers); (2) rewrite the first sentence to match the assigned scene_open_beat exactly; (3) adjust the depth of internal narration to match interiority_depth (external = no internal monologue; surface = body-only; shallow = one or two thought-flickers; deep = sustained inner monologue); (4) adjust spoken dialogue to match dialogue_mode — DIALOGUE IS MANDATORY IN EVERY SCENE, never remove speech entirely (minimal = at most two lines but at least one; exchange = back-and-forth; sustained = dialogue-driven dirty talk); (5) narrow the protagonist's attention to the partner's assigned partner_attention_focus in that scene. Do not change the plot, setting, or emotional arc — only the prose texture and interiority level.",
   };
 
   const instruction = strategyInstructions[strategy] ?? strategyInstructions.rewrite_ending;

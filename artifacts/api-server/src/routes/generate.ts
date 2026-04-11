@@ -2696,31 +2696,27 @@ function repairBrokenFragments(text: string): string {
 }
 
 /**
- * repairRunOns — fixes the most reliable class of missing-period run-on sentences.
+ * repairRunOns — fixes two specific, high-confidence run-on patterns the model
+ * occasionally produces in "flowing" or "baroque" prose.
  *
- * The model occasionally omits the period between two independent clauses when
- * writing "flowing" or "baroque" prose, producing constructions like:
- *   "you don't want to the wood is cool"
- *   "whiting out you can feel him"
- *   "weakness it feels like"
- *
- * Three targeted patterns — all require the new clause to contain a finite verb,
- * so they don't fire on mid-clause constructions:
+ * Only two patterns are handled. Both require unambiguous syntactic evidence —
+ * a genuine sentence boundary cannot be reliably detected by regex for the
+ * general case; attempting it produces false positives that damage correct prose.
+ * The UNIVERSAL SENTENCE LAW in the system prompt is the primary guard against
+ * run-ons; this function handles the narrow residual cases where the model
+ * structurally cannot produce anything other than a run-on.
  *
  * A) Dangling infinitive marker: "[desire-verb] to [article/possessive] [noun] [finite-verb]"
+ *    The desire-verb's infinitive was never written; a new NP+verb follows the article.
  *    "want to the wood is" → "want to. The wood is"
- *    Guards: not fired when a real infinitive verb follows "to" (catches wrong
- *    cases by requiring the word after "to" to be a determiner, not a verb).
+ *    Guard: only fires when the word after "to" is a determiner, not a verb stem,
+ *    so "want to feel him" is never touched.
  *
- * B) Aspectual particle + subject pronoun + finite verb without punctuation:
+ * B) Aspectual particle (out/up/down/off/away/back/over/through/in) + subject pronoun
+ *    + finite verb, where the word before the particle is not a safe connector.
  *    "whiting out you can feel" → "whiting out. You can feel"
- *    Guards: "out you go" (set phrase) excluded; requires a finite/modal verb
- *    following the pronoun so mid-clause "out you" is not affected.
- *
- * C) Bare noun/adjective followed by "it/they/he/she/you" + copula/modal:
- *    "weakness it feels" → "weakness. It feels"
- *    Guards: won't fire when preceded by a conjunction, preposition, or relative pronoun;
- *    "it" used as object ("taste it") protected by requiring a finite verb after pronoun.
+ *    Guard: preceding word checked against SAFE_BEFORE (conjunctions, prepositions,
+ *    adverbs) so "without you can feel" and "step out you go" are not touched.
  */
 function repairRunOns(text: string): string {
   if (!text) return text;
@@ -2745,19 +2741,6 @@ function repairRunOns(text: string): string {
     "above","below","between","among","against","across","behind","beside",
     "along","around","off","out","up","down","about","near","upon","within",
     "without","toward","towards","outside","inside","past","beyond","into","onto",
-    // Complement-head words — these head relative/complement clauses and must never
-    // be treated as sentence endings by Pattern C.
-    // e.g. "all you can see", "the best you could do", "the rest you needed",
-    //      "more than you knew", "everything you were", "nothing you could say"
-    "all","more","most","less","least","much","many","enough","best","worst",
-    "rest","part","what","whatever","wherever","whoever","same","last","first",
-    "next","only","everything","something","nothing","anything","little","few",
-    "both","either","neither","each","other","another","such","plenty",
-    // Personal / object pronouns as prevWord — these are always direct objects, never
-    // sentence-ending bare nouns. Prevents false splits on:
-    //   "without you it would be nothing", "she'll tell you it was fine",
-    //   "against you it would crumble", "around him she was safe"
-    "you","he","she","they","it","we","me","him","her","them","us","one",
   ]);
 
   // Finite/modal verbs — used to confirm the next clause is an independent clause,
@@ -2818,30 +2801,6 @@ function repairRunOns(text: string): string {
     const beforeMatch = str.slice(0, offset + 1).trim().split(/\s+/).pop() ?? "";
     if (SAFE_BEFORE.has(beforeMatch.toLowerCase().replace(/[^a-z]/g, ""))) return m;
     return `${prevChar} ${particle}. ${pron.charAt(0).toUpperCase() + pron.slice(1)} ${fv}`;
-  });
-
-  // C) Bare noun/adjective + subject pronoun + copula/modal — no connecting word between.
-  //    "weakness it feels" → "weakness. It feels"
-  //    Guard: the word before the pronoun must NOT be a safe connector.
-  //    Guard: only fires for copula/modal + next word (avoids object-pronoun constructions).
-  const COPULA_MODAL = "is|are|was|were|can|could|will|would|shall|should|may|might|must|has|have|had|feels?|seems?|looks?";
-  const bareNounRunOnRe = new RegExp(
-    `([a-z]{3,})\\s+(${SUBJ_PRONS})\\s+(${COPULA_MODAL})\\b`,
-    "g"
-  );
-  text = text.replace(bareNounRunOnRe, (m, prevWord: string, pron: string, verb: string) => {
-    if (SAFE_BEFORE.has(prevWord.toLowerCase())) return m;
-    // Gerunds and present participles (-ing) always take clause complements —
-    // "thinking you were", "knowing she could", "feeling he might" — never a sentence end.
-    // Past participles / adjectives ending -ed can also take complements ("frightened you were")
-    // so guard those too.
-    if (/ing$/i.test(prevWord) || /ed$/i.test(prevWord)) return m;
-    // Also protect cases like "tell it", "show it", "give you" — where prevWord is a verb
-    // that takes a direct object pronoun. We detect this by checking if the preceding
-    // word ends in a common verb suffix or is in the safe-verb set.
-    const TRANS_VERB_RE = /^(tell|show|give|make|let|help|hear|see|feel|watch|leave|find|keep|get|take|hold|send|bring|call|ask|need|want|use|try|like|love|hate|stop|push|pull|move|hit|catch|grab|touch|press|pin|lift|tip|pull|wrap|free|open|close|tie|bind|turn|lead|guide|place|put|set|sit|lay|throw|drop|carry|wear|suit|fit|mean|cost|owe|trust|fear|thank|beg|forgive|accept|ignore|avoid|notice|meet|miss|lose|save|serve|join|choose|taste|breathe|smell|sense|bite|lick|stroke|trace|cup|read|think|remember|imagine|picture|consider|expect|believe|know|understand|remember|forget|recognise|recognize|follow|watch|greet|welcome|approach|reach|enter|cross)$/i;
-    if (TRANS_VERB_RE.test(prevWord)) return m;
-    return `${prevWord}. ${pron.charAt(0).toUpperCase() + pron.slice(1)} ${verb}`;
   });
 
   return text;

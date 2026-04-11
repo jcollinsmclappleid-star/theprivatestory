@@ -2682,6 +2682,140 @@ function repairBrokenFragments(text: string): string {
   return text;
 }
 
+/**
+ * repairRunOns — fixes the most reliable class of missing-period run-on sentences.
+ *
+ * The model occasionally omits the period between two independent clauses when
+ * writing "flowing" or "baroque" prose, producing constructions like:
+ *   "you don't want to the wood is cool"
+ *   "whiting out you can feel him"
+ *   "weakness it feels like"
+ *
+ * Three targeted patterns — all require the new clause to contain a finite verb,
+ * so they don't fire on mid-clause constructions:
+ *
+ * A) Dangling infinitive marker: "[desire-verb] to [article/possessive] [noun] [finite-verb]"
+ *    "want to the wood is" → "want to. The wood is"
+ *    Guards: not fired when a real infinitive verb follows "to" (catches wrong
+ *    cases by requiring the word after "to" to be a determiner, not a verb).
+ *
+ * B) Aspectual particle + subject pronoun + finite verb without punctuation:
+ *    "whiting out you can feel" → "whiting out. You can feel"
+ *    Guards: "out you go" (set phrase) excluded; requires a finite/modal verb
+ *    following the pronoun so mid-clause "out you" is not affected.
+ *
+ * C) Bare noun/adjective followed by "it/they/he/she/you" + copula/modal:
+ *    "weakness it feels" → "weakness. It feels"
+ *    Guards: won't fire when preceded by a conjunction, preposition, or relative pronoun;
+ *    "it" used as object ("taste it") protected by requiring a finite verb after pronoun.
+ */
+function repairRunOns(text: string): string {
+  if (!text) return text;
+
+  // Safe preceding words that legitimately allow a subject clause without punctuation.
+  // e.g. "and you can feel", "but she was", "while he moved", "that it feels"
+  // Prepositions included because they form valid fronted phrases ("against you, you…")
+  // and Pattern C cannot safely determine the split point after a preposition.
+  const SAFE_BEFORE = new Set([
+    // Coordinating conjunctions
+    "and","but","or","nor","yet","so","for",
+    // Subordinating conjunctions
+    "when","while","as","because","although","though","since","if","unless",
+    "until","after","before","once","where","wherever","that","which","who",
+    "whom","whose","than","like",
+    // Common adverbs that can open a clause
+    "then","now","maybe","perhaps","still","just","even","only","already",
+    "always","never","sometimes","soon","here","there",
+    // Prepositions — Pattern C cannot reliably split "against you can feel"
+    // because "you" is both the prep object and the new clause's subject.
+    "in","on","at","of","to","for","from","with","by","through","over","under",
+    "above","below","between","among","against","across","behind","beside",
+    "along","around","off","out","up","down","about","near","upon","within",
+    "without","toward","towards","outside","inside","past","beyond","into","onto",
+  ]);
+
+  // Finite/modal verbs — used to confirm the next clause is an independent clause,
+  // not an object or continuation of the current sentence.
+  const FINITE =
+    // Auxiliaries and copulas
+    "is|are|was|were|can|could|will|would|shall|should|may|might|must|" +
+    "has|have|had|do|does|did|" +
+    // Common stative / perceptual
+    "feel|feels|felt|seem|seems|seemed|look|looks|looked|sound|sounds|sounded|" +
+    // Motion / change-of-state
+    "come|comes|came|go|goes|went|turn|turns|turned|step|steps|stepped|" +
+    "lean|leans|leaned|shift|shifts|shifted|rise|rises|rose|fall|falls|fell|" +
+    "start|starts|started|begin|begins|began|keep|keeps|kept|stay|stays|stayed|" +
+    // Contact / force
+    "take|takes|took|make|makes|made|press|presses|pressed|hold|holds|held|" +
+    "catch|catches|caught|grab|grabs|grabbed|pull|pulls|pulled|push|pushes|pushed|" +
+    "reach|reaches|reached|grip|grips|gripped|wrap|wraps|wrapped|" +
+    // Speech / sound
+    "say|says|said|speak|speaks|spoke|whisper|whispers|whispered|" +
+    "gasp|gasps|gasped|moan|moans|moaned|groan|groans|groaned|" +
+    "growl|growls|growled|breathe|breathes|breathed|" +
+    // Cognitive / epistemic
+    "see|sees|saw|know|knows|knew|need|needs|needed|" +
+    "want|wants|wanted|move|moves|moved";
+
+  // A) Dangling infinitive: "[desire-verb] to [article/possessive]" — "to" is left
+  //    hanging because the infinitive's verb was never written; instead a new sentence
+  //    immediately follows the article.
+  //    "[verb] to the [noun] [finite-verb]" → "[verb] to. The [noun] [finite-verb]"
+  const DESIRE_VERBS =
+    "want|wanted|needs|needed|wish|wished|try|tried|intend|intended|mean|meant|" +
+    "refuse|refused|decide|decided|dare|dared|long|longed|start|started|" +
+    "begin|began|manage|managed|fail|failed|love|loved|like|liked|prefer|preferred|" +
+    "choose|chose|expect|expected|have|had|used";
+  text = text.replace(
+    new RegExp(
+      `\\b(${DESIRE_VERBS})\\s+to\\s+(the|a|an|this|that|these|those|your|his|her|their|my|our|its)\\s+(\\w+)\\s+(${FINITE})\\b`,
+      "gi"
+    ),
+    (_m, verb: string, det: string, noun: string, fv: string) =>
+      `${verb} to. ${det.charAt(0).toUpperCase() + det.slice(1)} ${noun} ${fv}`
+  );
+
+  // B) Aspectual particle (out/up/down/off/away/back/over/through/in) + subject pronoun
+  //    + finite/modal verb, where the word before the particle is not a safe connector.
+  //    "whiting out you can feel" → "whiting out. You can feel"
+  //    Guard: "out you go" excluded (go/went don't appear in FINITE set deliberately).
+  //    Guard: "without", "throughout" etc. won't match because \b won't sit mid-word.
+  const PARTICLES = "out|up|down|off|away|back|over|through|in";
+  const SUBJ_PRONS = "I|you|he|she|they|we|it";
+  const particleRunOnRe = new RegExp(
+    `([a-z])\\s+(${PARTICLES})\\s+(${SUBJ_PRONS})\\s+(${FINITE})\\b`,
+    "gi"
+  );
+  text = text.replace(particleRunOnRe, (m, prevChar: string, particle: string, pron: string, fv: string, offset: number, str: string) => {
+    // Find the word immediately before this match to check safe connectors
+    const beforeMatch = str.slice(0, offset + 1).trim().split(/\s+/).pop() ?? "";
+    if (SAFE_BEFORE.has(beforeMatch.toLowerCase().replace(/[^a-z]/g, ""))) return m;
+    return `${prevChar} ${particle}. ${pron.charAt(0).toUpperCase() + pron.slice(1)} ${fv}`;
+  });
+
+  // C) Bare noun/adjective + subject pronoun + copula/modal — no connecting word between.
+  //    "weakness it feels" → "weakness. It feels"
+  //    Guard: the word before the pronoun must NOT be a safe connector.
+  //    Guard: only fires for copula/modal + next word (avoids object-pronoun constructions).
+  const COPULA_MODAL = "is|are|was|were|can|could|will|would|shall|should|may|might|must|has|have|had|feels?|seems?|looks?";
+  const bareNounRunOnRe = new RegExp(
+    `([a-z]{3,})\\s+(${SUBJ_PRONS})\\s+(${COPULA_MODAL})\\b`,
+    "g"
+  );
+  text = text.replace(bareNounRunOnRe, (m, prevWord: string, pron: string, verb: string) => {
+    if (SAFE_BEFORE.has(prevWord.toLowerCase())) return m;
+    // Also protect cases like "tell it", "show it", "give you" — where prevWord is a verb
+    // that takes a direct object pronoun. We detect this by checking if the preceding
+    // word ends in a common verb suffix or is in the safe-verb set.
+    const TRANS_VERB_RE = /^(tell|show|give|make|let|help|hear|see|feel|watch|leave|find|keep|get|take|hold|send|bring|call|ask|need|want|use|try|like|love|hate|stop|push|pull|move|hit|catch|grab|touch|press|pin|lift|tip|tip|pull|wrap|free|open|close|tie|bind|turn|lead|guide|place|put|set|sit|lay|throw|drop|carry|wear|suit|fit|mean|cost|owe|trust|fear|thank|beg|forgive|accept|ignore|avoid|notice|meet|miss|lose|save|serve|join|choose|trust)$/i;
+    if (TRANS_VERB_RE.test(prevWord)) return m;
+    return `${prevWord}. ${pron.charAt(0).toUpperCase() + pron.slice(1)} ${verb}`;
+  });
+
+  return text;
+}
+
 // ---------------------------------------------------------------------------
 
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Warm", originalInput?: OriginalUserInput): Promise<WrittenStory> {
@@ -3118,13 +3252,13 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
       const scenePlan = brief.scene_plan[idx];
       let text: string = s.text ?? "";
 
-      // Post-write safety pass — repair any double-period-after-quote or
-      // broken-preposition artefacts that may appear in any prose style.
+      // Post-write safety pass — repair fragment artefacts and run-on sentences.
       if (text) {
         const beforeRepair = text;
         text = repairBrokenFragments(text);
+        text = repairRunOns(text);
         if (text !== beforeRepair) {
-          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired sentence fragments");
+          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired sentence artefacts (fragments / run-ons)");
         }
       }
 

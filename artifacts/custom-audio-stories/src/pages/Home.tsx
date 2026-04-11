@@ -832,6 +832,13 @@ export default function Home() {
             <p className="text-xs text-white/30 tracking-wide sm:text-center">
               Built from 2.6M+ combinations — no two stories the same.
             </p>
+            <Link
+              href="/listen"
+              className="mt-1 flex items-center gap-1.5 text-xs text-primary/75 hover:text-primary transition-colors tracking-wide"
+            >
+              <Headphones className="w-3 h-3" />
+              Hear a sample story first →
+            </Link>
           </div>
 
           <div className="flex items-center justify-start sm:justify-center gap-3 sm:gap-5 flex-wrap w-full">

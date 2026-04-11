@@ -8,8 +8,8 @@ import { MiniDoorCTA } from "@/components/ThreeDoors";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const SAMPLE_ID = "lib-dd2_02-1775048422711";
-const COVER_URL = `${API_BASE}/api/images/cover-${SAMPLE_ID}.png`;
-const AUDIO_URL = `${API_BASE}/api/audio/audio-${SAMPLE_ID}.mp3`;
+const COVER_URL = `${API_BASE}/images/cover-${SAMPLE_ID}.png`;
+const AUDIO_URL = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
 
 function formatTime(seconds: number): string {
   if (!seconds || isNaN(seconds)) return "0:00";
@@ -81,10 +81,10 @@ export default function Listen() {
         <Link href="/" className="opacity-50 hover:opacity-90 transition-opacity">
           <img src={`${API_BASE}/favicon.svg`} alt="The Private Story" className="w-8 h-8" />
         </Link>
-        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.22em]">Sample story</span>
+        <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.22em]">Sample story</span>
         <Link
           href="/pricing"
-          className="text-[11px] text-primary/50 hover:text-primary transition-colors tracking-widest uppercase"
+          className="text-[11px] text-primary/80 hover:text-primary transition-colors tracking-widest uppercase"
         >
           Pricing →
         </Link>
@@ -111,13 +111,13 @@ export default function Listen() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className="text-center mb-7 w-full"
         >
-          <p className="text-[10px] font-bold text-primary/40 uppercase tracking-widest mb-2">
+          <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest mb-2">
             Forbidden · 8 min · Narrated by Clara
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
             The Back Room in Rainlight
           </h1>
-          <p className="text-sm text-white/40 italic leading-relaxed">
+          <p className="text-sm text-white/70 italic leading-relaxed">
             You shouldn't want him. But Chicago at midnight doesn't care about shoulds.
           </p>
         </motion.div>
@@ -147,7 +147,7 @@ export default function Listen() {
 
           {/* Time + play */}
           <div className="flex items-center gap-5">
-            <span className="text-xs text-white/25 font-mono tabular-nums w-9">
+            <span className="text-xs text-white/55 font-mono tabular-nums w-9">
               {formatTime(currentTime)}
             </span>
             <button
@@ -165,7 +165,7 @@ export default function Listen() {
                 <Play className="w-5 h-5 text-primary-foreground ml-0.5" />
               )}
             </button>
-            <span className="text-xs text-white/25 font-mono tabular-nums w-9 text-right">
+            <span className="text-xs text-white/55 font-mono tabular-nums w-9 text-right">
               {formatTime(duration)}
             </span>
           </div>
@@ -176,7 +176,7 @@ export default function Listen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="text-center text-xs text-white/22 italic leading-relaxed mb-10 max-w-[220px]"
+          className="text-center text-xs text-white/55 italic leading-relaxed mb-10 max-w-[220px]"
         >
           This story wasn't built around you.<br />Yours will be.
         </motion.p>
@@ -188,16 +188,16 @@ export default function Listen() {
           transition={{ delay: 0.75, duration: 0.5 }}
           className="flex flex-col items-center gap-5 w-full"
         >
-          <p className="text-[10px] font-bold text-white/25 uppercase tracking-[0.2em]">
+          <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">
             Create a story built around your desire
           </p>
           <MiniDoorCTA />
           <div className="flex items-center gap-4 mt-1">
-            <Link href="/pricing" className="text-xs text-white/25 hover:text-white/55 transition-colors">
+            <Link href="/pricing" className="text-xs text-white/50 hover:text-white/75 transition-colors">
               View pricing
             </Link>
-            <span className="text-white/12 text-xs">·</span>
-            <Link href="/about" className="text-xs text-white/25 hover:text-white/55 transition-colors">
+            <span className="text-white/25 text-xs">·</span>
+            <Link href="/about" className="text-xs text-white/50 hover:text-white/75 transition-colors">
               About us
             </Link>
           </div>
@@ -205,7 +205,7 @@ export default function Listen() {
       </div>
 
       {/* Footer note */}
-      <p className="text-center text-[10px] text-white/15 tracking-wide pb-8 px-6">
+      <p className="text-center text-[10px] text-white/35 tracking-wide pb-8 px-6">
         Literary. Private. Entirely yours. ·{" "}
         <Link href="/privacy" className="hover:text-white/35 transition-colors">
           How we protect it →

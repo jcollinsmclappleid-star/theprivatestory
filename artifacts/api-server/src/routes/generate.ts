@@ -741,9 +741,9 @@ const SCENE_SENSORY_DIVERSITY = {
    * No two adjacent scenes may share the same prose_rhythm.
    */
   prose_rhythms: [
-    "flowing — a single sentence carries multiple subordinate clauses before it releases; the main verb arrives late; the period comes only when the thought is complete",
-    "fragmented — incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Each fragment ends with correct punctuation. The interruption is the point.",
-    "baroque — multiple sensory registers stack within a single grammatically complete sentence; density through clause structure, not through merged sentences",
+    "flowing — subordinate clauses and participial phrases precede or follow ONE main clause, all sharing a single subject. Pattern: [When/As/Before clause], [participial phrase], [main subject + verb]. A second independent subject always starts a new sentence.",
+    "fragmented — short bursts that stop at or before grammatical completion. Ellipsis where thought fails. Each burst ends with its own punctuation. No burst bleeds into the next.",
+    "baroque — a periodic sentence: noun phrases and participial clauses accumulate before the main verb releases. Pattern: [noun phrase], [noun phrase], [participial clause] — [main subject + verb]. All clauses share one subject.",
   ],
   /**
    * How each scene's opening sentence arrives.
@@ -3025,15 +3025,21 @@ You must honour ALL FOUR for every scene:
   • staging_position: The spatial arrangement of the characters in this scene. Open and close the scene in this configuration. If a transition occurs, arrive at this position before the scene ends.
 
 NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
-  • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule. You will audit your sentences after drafting each scene.
-    SENTENCE TERMINAL LAW — applies to ALL rhythms: every sentence must end with a period, exclamation mark, or question mark. Long-sentence prose (flowing, baroque) achieves length through commas, em-dashes, semicolons, and subordinating conjunctions WITHIN a single sentence — never by running two independent sentences together without terminal punctuation.
-      WRONG: "She felt him beside her his breath was warm" (two subjects, no period between them — merged sentence)
-      WRONG: "The door opened you're already inside" (two independent clauses, no period — merged sentence)
-      RIGHT:  "She felt him beside her, his breath warm against her neck, the weight of him filling the room." (one sentence, commas extending it)
-      RIGHT:  "The door opened. You were already inside." (two properly-terminated sentences)
-    - flowing: a single sentence carries multiple subordinate clauses — the main verb is withheld until near the end; the period arrives only when the full thought lands. Each sentence is grammatically complete and properly terminated.
-    - fragmented: incomplete thoughts. Ellipsis. A sentence begins and something stops it before it can land... Each fragment still ends with a period, ellipsis, or dash. Incompleteness is intentional — not an omitted full stop.
-    - baroque: multiple sensory registers stack within a SINGLE grammatically complete sentence; the density comes from clause structure — touch, sound, heat, thought, breath layered by commas and em-dashes before the sentence releases. Do not run two sentences together. Each baroque sentence is one long, complete, properly-terminated unit.
+  • prose_rhythm: Sentence-level architecture for this scene. This is a construction rule, not a mood. Audit sentence structure after drafting each scene.
+
+    UNIVERSAL SENTENCE LAW — all rhythms: a new INDEPENDENT SUBJECT + FINITE VERB always starts a new sentence with a capital letter after a period. A sentence grows longer by adding DEPENDENT structures only — subordinate clauses (beginning when/as/before/while/after/though), participial phrases (-ing/-ed forms), or noun phrases in apposition. Two independent clauses are never merged without punctuation.
+
+    - flowing: build each sentence around ONE main clause, preceded or followed by subordinate clauses and participial phrases that share or modify its subject.
+      Construction: [Before/As/When clause], [participial phrase], [main subject + verb + object].
+      Example: "Before she could answer, before the question had even fully formed, he was already crossing the room."
+      When a new independent subject appears (he, she, you, they — with its own verb): full stop, new sentence.
+
+    - fragmented: each fragment is its own unit of punctuation. Short. Stopped. Ellipsis signals failure to complete a thought... A dash signals sudden interruption — like this. Never let one fragment run into the next; the white space between them is the point.
+
+    - baroque: write a periodic sentence where noun phrases and participial clauses accumulate BEFORE the main subject-verb releases.
+      Construction: [noun phrase], [noun phrase], [participial clause] — [main subject + verb].
+      Example: "The salt of his skin at her back, the roughness of his hands, the low catch of his breath against her neck — all of it registered before her mind could form a word."
+      Every clause modifies the same subject. When a new independent subject arrives: full stop, new sentence.
   • scene_open_beat: The first sentence of this scene MUST arrive in this exact mode. Not the second sentence. The first.
     - sensory_anchor: a specific physical sensation or sensory detail, no preamble, no context.
     - dialogue: something is already being said when the scene opens.
@@ -3067,11 +3073,11 @@ DIALOGUE MANDATE — apply before finalising:
   For intensity 4–5 IGNITE scenes: name the sexual acts being performed in dialogue. Characters say what they want and what they are doing. Position changes are introduced by speech.
   Speech-before-action rule: before any physical escalation (undressing, positioning, the act itself), one character must speak — command, request, or declaration. Physical action follows speech, not the other way around.
 
-PROSE RHYTHM GATE — before you write each scene, note its assigned rhythm:
-  ALL RHYTHMS: every sentence ends with a period, exclamation mark, or question mark — no exceptions. "Long" prose extends a sentence internally through commas and subordinate clauses; it does NOT join two sentences by omitting the terminal between them.
-  If fragmented → each fragment ends with correct punctuation (period, ellipsis, or dash); incompleteness is intentional, not an omitted full stop.
-  If flowing → clauses build inside a single sentence; withhold the main verb until late; terminate the sentence properly when the full thought lands.
-  If baroque → stack sensory registers within a single properly-terminated sentence; layer touch, heat, sound, breath as comma-separated clauses; release the sentence at the end of the accumulated image.
+PROSE RHYTHM GATE — before writing each scene, identify the assigned rhythm and apply its construction rule:
+  ALL RHYTHMS — universal law: a new independent subject + its finite verb ALWAYS starts a new sentence (capital letter, preceded by a period). Sentences grow longer only through dependent structures: subordinate clauses, participial phrases, noun phrases. Never through joining two independent clauses without punctuation.
+  If flowing → each sentence: [dependent clause(s)], [main subject + verb]. The dependent clause carries most of the weight. Second independent subject = full stop, new sentence.
+  If fragmented → each burst ends with period / ellipsis / dash. No burst continues into the next. Length is measured in fragments, not sentences.
+  If baroque → each sentence: [noun phrase], [noun phrase], [participial clause] — [main subject + verb]. Accumulation precedes the main verb. Second independent subject = full stop, new sentence.
 
 TOUCH VERB MAP — absolute law for this story (check before writing each scene):
 ${brief.scene_plan.map((sp, i) =>
@@ -3150,7 +3156,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Sentence terminal audit: Scan every scene for run-on sentences — two independent clauses merged without a period between them. Look for a new subject (he, she, you, they, his, her, your, I) that appears after a complete verb phrase without a period before it. Fix each by inserting the missing period and capitalising the new sentence. Example fix: "the ocean outside you're" → "the ocean outside. You're".
+  Step 2 — Independent subject audit: Scan every sentence in every scene. If a sentence contains more than one independent subject + finite verb pair (e.g. "...outside you're the one", "...weakness it feels like"), split it: period after the first clause, capitalise the second. Only subordinating conjunctions (when/as/while/before/after/though/because/if/until), relative pronouns (that/which/who), or participial phrases (-ing/-ed) may introduce additional clauses within a single sentence without starting a new one. Every other new subject + verb must open a new sentence.
   Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
   Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 

@@ -829,7 +829,7 @@ export default function Home() {
             <p className="text-sm md:text-base text-white/45 tracking-wide sm:text-center">
               Literary. Private. Entirely yours.
             </p>
-            <p className="text-xs text-white/28 tracking-wide sm:text-center">
+            <p className="text-xs text-white/30 tracking-wide sm:text-center">
               Built from 2.6M+ combinations — no two stories the same.
             </p>
           </div>

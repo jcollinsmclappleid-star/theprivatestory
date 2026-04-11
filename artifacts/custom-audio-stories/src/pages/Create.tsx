@@ -963,7 +963,7 @@ export default function Create() {
           setContinueAfterDark(false);
           setStep("paywall");
         } else {
-          setStep("casting");
+          setStep("voice");
         }
       },
     },
@@ -1139,6 +1139,7 @@ export default function Create() {
   // bypassing stale React state for casting fields (they are set via setState above
   // but aren't available in closures until next render).
   const handleAutoGenerate = useCallback(async (casting: CastingRoomResult) => {
+    setGenerationError(null);
     setStep("generating");
     startLoadingPhase();
     const apiPerspective =
@@ -1278,6 +1279,7 @@ export default function Create() {
       }).then(() => setPresetSaved(true)).catch(() => {});
     }
 
+    setGenerationError(null);
     setStep("generating");
     startLoadingPhase();
 
@@ -1669,6 +1671,12 @@ export default function Create() {
               <p className="text-muted-foreground mb-1">Choose the voice you want to hear your story in.</p>
               <p className="text-xs text-muted-foreground/80">Most people start with Eleanor for their first story.</p>
             </div>
+
+            {generationError && !generationError.isSubscriptionLimit && (
+              <div className="mb-6 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {generationError.message || "Generation failed. Please try again."}
+              </div>
+            )}
 
             {(() => {
               const selectedVoiceId = form.watch("voiceFeel");

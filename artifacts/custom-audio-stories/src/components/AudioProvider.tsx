@@ -208,9 +208,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         }}
         onLoadedMetadata={(e) => {
           const d = e.currentTarget.duration;
-          if (d && isFinite(d) && d > 0) {
-            setDuration(d);
-          }
+          if (d && isFinite(d) && d > 0) setDuration(d);
+        }}
+        onDurationChange={(e) => {
+          const d = e.currentTarget.duration;
+          if (d && isFinite(d) && d > 0) setDuration(d);
         }}
         onEnded={handleEnded}
       />

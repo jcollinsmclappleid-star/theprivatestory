@@ -97,7 +97,14 @@ export function VoiceSamplePlayer({ src, onPlayStart }: VoiceSamplePlayerProps) 
         ref={audioRef}
         src={src}
         preload="metadata"
-        onLoadedMetadata={() => setDuration(audioRef.current?.duration ?? 0)}
+        onLoadedMetadata={() => {
+          const d = audioRef.current?.duration ?? 0;
+          if (d && isFinite(d) && d > 0) setDuration(d);
+        }}
+        onDurationChange={() => {
+          const d = audioRef.current?.duration ?? 0;
+          if (d && isFinite(d) && d > 0) setDuration(d);
+        }}
         onEnded={handleEnded}
         onError={() => setError(true)}
       />

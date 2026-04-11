@@ -33,14 +33,19 @@ export default function Listen() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const onMeta = () => setDuration(audio.duration);
+    const onMeta = () => {
+      const d = audio.duration;
+      if (d && isFinite(d) && d > 0) setDuration(d);
+    };
     const onTime = () => setCurrentTime(audio.currentTime);
     const onEnd = () => setPlaying(false);
     audio.addEventListener("loadedmetadata", onMeta);
+    audio.addEventListener("durationchange", onMeta);
     audio.addEventListener("timeupdate", onTime);
     audio.addEventListener("ended", onEnd);
     return () => {
       audio.removeEventListener("loadedmetadata", onMeta);
+      audio.removeEventListener("durationchange", onMeta);
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("ended", onEnd);
     };
@@ -79,7 +84,7 @@ export default function Listen() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-5">
         <Link href="/" className="opacity-50 hover:opacity-90 transition-opacity">
-          <img src={`${API_BASE}/favicon.svg`} alt="The Private Story" className="w-8 h-8" />
+          <img src={`${API_BASE}/images/logo.png`} alt="The Private Story" className="w-8 h-8" />
         </Link>
         <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.22em]">Sample story</span>
         <Link

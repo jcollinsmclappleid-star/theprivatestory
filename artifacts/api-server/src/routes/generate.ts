@@ -555,8 +555,30 @@ interface ScenePlan {
   scene_open_beat: string;
   /** Depth of internal narration — ESTABLISH=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep */
   interiority_depth: string;
-  /** Proportion of speech in this scene — ESTABLISH=minimal, CRACK=exchange, IGNITE=minimal/none */
+  /** Proportion and mode of speech — ESTABLISH=minimal, SIMMER=exchange, CRACK=exchange, IGNITE=sustained, RESONATE=minimal */
   dialogue_mode: string;
+  /**
+   * Three-beat spoken arc for the scene — what is said, when the dynamic shifts, how it closes.
+   * Required for all scenes. IGNITE scenes: use dirty talk register. SIMMER/CRACK: use charged ordinary speech.
+   */
+  dialogue_arc_opening: string;
+  dialogue_arc_pivot: string;
+  dialogue_arc_closing: string;
+  /**
+   * For IGNITE scenes at intensity ≥ 3: the explicit verbal desire declaration one character makes.
+   * Should be a scripted line or close paraphrase, not a description.
+   */
+  verbal_desire_declaration?: string;
+  /**
+   * For IGNITE scenes at intensity ≥ 4: ordered list of physical position transitions,
+   * each introduced by character speech (e.g. "—Turn over," he said low, and she did.").
+   */
+  position_changes?: string[];
+  /**
+   * Dirty-talk register for IGNITE scenes: "tender_explicit" | "commanding" | "reciprocal" | "filthy_declarative"
+   * Required when intensity ≥ 3 and phase = IGNITE.
+   */
+  dirty_talk_register?: string;
   /** Which specific aspect of the partner the protagonist's attention narrows to — must vary across scenes */
   partner_attention_focus: string;
 }
@@ -750,10 +772,10 @@ const SCENE_SENSORY_DIVERSITY = {
   ],
   /**
    * Proportion and mode of spoken dialogue per scene.
-   * Arc guidance: ESTABLISH=minimal, SIMMER=exchange or minimal, CRACK=exchange, IGNITE=minimal or none, RESONATE=minimal.
+   * Arc guidance: ESTABLISH=minimal, SIMMER=exchange, CRACK=exchange, IGNITE=sustained (dirty talk runs the scene), RESONATE=minimal.
+   * "none" is intentionally removed — every scene must carry at least one spoken exchange.
    */
   dialogue_modes: [
-    "none — no spoken words; the scene is entirely action, touch, narration, and internal",
     "minimal — one or two lines only; words are scarce and loaded; their value comes from their rarity",
     "exchange — back-and-forth; the spoken dynamic carries the scene; something shifts in what is said",
     "sustained — dialogue is the primary vehicle; what is said matters as much as what is done; the conversation drives the scene",
@@ -1172,6 +1194,8 @@ interface QcSubScores {
   casting_compliance?: number;
   /** Always present — verifies that scene-level diversity assignments were honoured in the prose */
   scene_diversity_compliance: number;
+  /** Present only for intensity 4–5 — verifies erotic architecture requirements (oral, penetrative, dirty talk, positions) */
+  erotic_architecture_compliance?: number;
 }
 
 interface QcResult {
@@ -2328,7 +2352,13 @@ You must infer and return:
   • prose_rhythm: sentence-level texture for this scene. Arc guidance: ESTABLISH=flowing, SIMMER=baroque or flowing, CRACK=fragmented, IGNITE=staccato, RESONATE=flowing. No two adjacent scenes may share the same rhythm. Choose from: ${SCENE_SENSORY_DIVERSITY.prose_rhythms.map(r => `"${r.split(" — ")[0]}"`).join(" / ")}
   • scene_open_beat: how the first sentence of this scene arrives. Arc guidance: ESTABLISH=environment or temporal_marker, SIMMER=sensory_anchor or internal_thought, CRACK=action or internal_thought, IGNITE=action or sensory_anchor, RESONATE=internal_thought. No two adjacent scenes may share the same open beat. Choose from: ${SCENE_SENSORY_DIVERSITY.scene_open_beats.map(b => `"${b.split(" — ")[0]}"`).join(" / ")}
   • interiority_depth: depth of internal narration in this scene. Arc guidance: ESTABLISH=shallow, SIMMER=shallow, CRACK=deep, IGNITE=surface, RESONATE=deep. Choose from: ${SCENE_SENSORY_DIVERSITY.interiority_depths.map(d => `"${d.split(" — ")[0]}"`).join(" / ")}
-  • dialogue_mode: proportion and mode of spoken dialogue in this scene. Arc guidance: ESTABLISH=minimal, SIMMER=exchange or minimal, CRACK=exchange, IGNITE=minimal or none, RESONATE=minimal. Choose from: ${SCENE_SENSORY_DIVERSITY.dialogue_modes.map(m => `"${m.split(" — ")[0]}"`).join(" / ")}
+  • dialogue_mode: proportion and mode of spoken dialogue in this scene. Arc guidance: ESTABLISH=minimal, SIMMER=exchange, CRACK=exchange, IGNITE=sustained (dirty talk leads every beat), RESONATE=minimal. Dialogue is mandatory in every scene. Choose from: ${SCENE_SENSORY_DIVERSITY.dialogue_modes.map(m => `"${m.split(" — ")[0]}"`).join(" / ")}
+  • dialogue_arc_opening: the spoken exchange or verbal act that opens this scene's dialogue. One sentence — what is actually said (scripted), who says it, and the tone. For IGNITE scenes, use dirty talk register. Example: '"Say it again," she breathed against his ear.'
+  • dialogue_arc_pivot: the line or exchange where the verbal dynamic shifts — a confession, command, question, or revelation. One sentence. Required for all scenes.
+  • dialogue_arc_closing: the final spoken beat or silence-after-speech that closes the scene. One sentence.
+  • verbal_desire_declaration: (IGNITE scenes, intensity ≥ 3 only) one scripted line where a character explicitly names their desire. Must be direct, not metaphorical. Example: '"I want you inside me,"' or '"Tell me what you want."'
+  • position_changes: (IGNITE scenes, intensity ≥ 4 only) ordered array of 2–4 physical position transitions, each introduced by speech. Example: ['"—Turn over," he said low.', '"—Come here," he breathed, pulling her onto his lap.']
+  • dirty_talk_register: (IGNITE scenes, intensity ≥ 3 only) one of: "tender_explicit" (intimate, emotionally fused desire talk), "commanding" (D/s directed speech, low and certain), "reciprocal" (both voices taking turns naming what they want), "filthy_declarative" (explicit, anatomical, nothing held back — intensity 5 only)
   • partner_attention_focus: the specific aspect of the partner that the protagonist's awareness narrows to in this scene. Must vary across scenes; no two consecutive scenes share the same focus. Choose from: ${SCENE_SENSORY_DIVERSITY.partner_attention_focuses.map(f => `"${f.split(" — ")[0]}"`).join(" / ")}
 
 SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
@@ -2340,8 +2370,15 @@ SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
   6. No two consecutive scenes share the same prose_rhythm
   7. No two consecutive scenes share the same scene_open_beat
   8. interiority_depth follows the arc (shallow early, deep at CRACK and RESONATE)
-  9. dialogue_mode follows the arc (exchange at CRACK, minimal or none at IGNITE)
+  9. dialogue_mode follows the arc (exchange at SIMMER and CRACK, sustained at IGNITE) — "none" is never permitted; every scene carries spoken dialogue
   10. No two consecutive scenes share the same partner_attention_focus
+  11. Every IGNITE scene at intensity ≥ 3 has a verbal_desire_declaration and dirty_talk_register populated
+  12. Every IGNITE scene at intensity ≥ 4 has position_changes populated with 2–4 speech-introduced transitions
+
+IGNITE SCENE SEX ACT MANDATE (intensity 4–5 only):
+  At intensity 4: at least one IGNITE scene must contain oral sex and at least one must contain penetrative intercourse. Both must be described with full anatomical specificity — no euphemism, no fade-to-black.
+  At intensity 5: both oral and penetrative intercourse are mandatory in IGNITE. Add a second position change minimum. Both characters' arousal must be described explicitly throughout. Nothing is implied that can be named.
+  Plan these acts in the scene_plan goal field — e.g. "oral: she on him, then intercourse, missionary to her-on-top transition".
 
 ${castingAnchorsInstruction}
 - recurring_motif
@@ -2386,6 +2423,9 @@ Return JSON in exactly this shape:
       "scene_open_beat": "environment",
       "interiority_depth": "shallow",
       "dialogue_mode": "minimal",
+      "dialogue_arc_opening": "\"I didn't think you'd actually come,\" he said, not turning from the window.",
+      "dialogue_arc_pivot": "\"You never asked me not to,\" she said.",
+      "dialogue_arc_closing": "He didn't answer. That was its own kind of answer.",
       "partner_attention_focus": "spatial_presence"${castingAnchorsExample}
     },
     {
@@ -2402,6 +2442,9 @@ Return JSON in exactly this shape:
       "scene_open_beat": "sensory_anchor",
       "interiority_depth": "shallow",
       "dialogue_mode": "exchange",
+      "dialogue_arc_opening": "\"Stop looking at me like that,\" she said.",
+      "dialogue_arc_pivot": "\"Like what?\" He knew exactly like what.",
+      "dialogue_arc_closing": "\"Like you mean it,\" she said finally, quiet enough that he could have missed it.",
       "partner_attention_focus": "body_detail"
     }
   ],
@@ -2836,11 +2879,12 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
     - surface: body reacts before the mind. Physical responses only — sensation, not thought.
     - shallow: one or two sentences of internal thought appear, then the scene pulls back to action.
     - deep: the protagonist's thoughts run alongside action throughout; the inner life is as present as the outer.
-  • dialogue_mode: This governs the proportion and mode of spoken words in the scene. THIS IS STRUCTURAL, NOT STYLISTIC.
-    - none: ZERO spoken words. No quotation marks. No "he said". No utterances of any kind. If your draft contains any speech in a none-dialogue scene, replace it with internal thought, held breath, or physical action. This is not optional.
-    - minimal: one or two lines of speech maximum. After two lines, silence. Words are rare and loaded.
-    - exchange: back-and-forth spoken dynamic; something shifts in what is said.
-    - sustained: dialogue is the primary vehicle; the conversation drives the scene.
+  • dialogue_mode: This governs the proportion and mode of spoken words in the scene. Speech is mandatory in EVERY scene — no scene may be entirely voiceless. THIS IS STRUCTURAL, NOT STYLISTIC.
+    - minimal: one or two lines of speech maximum. Words are rare, loaded with meaning, and weighted.
+    - exchange: back-and-forth spoken dynamic; something shifts in what is said; the verbal exchange carries the scene.
+    - sustained: dialogue is the primary vehicle; the conversation drives the scene; what is said matters as much as what is done.
+    IGNITE scenes: use the dirty_talk_register from the scene plan. Characters name what they want, name what is happening, direct each other. Speech precedes or accompanies every physical escalation.
+  • dialogue_arc: The scene plan contains three dialogue arc fields — opening, pivot, closing. You must execute these beats exactly. The arc_opening scripted line should appear near the start of the scene. The arc_pivot should be the line that shifts the dynamic. The arc_closing should be the last or second-to-last spoken beat.
   • partner_attention_focus: The protagonist's awareness narrows to THIS specific aspect of the partner in this scene — not everything, not a general impression, this one thing. Return to it at least twice across the scene.
     - voice_quality: something specific about how they speak — pitch, pace, the catch in their throat.
     - body_detail: one precise physical detail fixed upon — exclude everything else.
@@ -2849,10 +2893,12 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
     - eyes: the direction of the gaze, what looking at the protagonist does to them.
     - spatial_presence: how they occupy the room, how they change its atmosphere — weight, heat, gravity.
 
-DIALOGUE ENFORCEMENT — apply before finalising:
-  Any scene assigned dialogue_mode=none must contain ZERO spoken words.
-  Scan your draft for quotation marks (" "), em-dash dialogue (— word), or speech tags (said/asked/told/whispered/replied).
-  Every instance found in a none-dialogue scene is a failure — remove it and replace with physical action or internal thought.
+DIALOGUE MANDATE — apply before finalising:
+  Every scene must contain at least one line of spoken dialogue. There is no such thing as a voiceless scene.
+  IGNITE scenes: dialogue must carry 40–60% of the scene's beats. Characters speak before physical escalation, during it, and after. Dirty talk is not decoration — it is the primary driver of each IGNITE scene. Use the dirty_talk_register from the scene plan.
+  Execute the three dialogue arc beats (opening, pivot, closing) from the scene plan in order. The arc_opening line should appear early. The arc_pivot line shifts the dynamic. The arc_closing line ends the spoken thread.
+  For intensity 4–5 IGNITE scenes: name the sexual acts being performed in dialogue. Characters say what they want and what they are doing. Position changes are introduced by speech.
+  Speech-before-action rule: before any physical escalation (undressing, positioning, the act itself), one character must speak — command, request, or declaration. Physical action follows speech, not the other way around.
 
 STACCATO ENFORCEMENT — apply before finalising:
   Any scene assigned prose_rhythm=staccato: re-read every sentence in that scene.
@@ -2883,6 +2929,7 @@ ${brief.scene_plan.map((sp, i) =>
   `  Scene ${i + 1} (${sp.phase}): ONLY '${sp.primary_touch_action}' for physical contact — every other touch verb is a violation.`
 ).join("\n")}
   Any physical contact verb NOT listed above for its scene is a technical failure. Before finishing each scene, scan every touch verb you have written and verify it matches the scene's assigned verb.
+  CRITICAL — EMBEDDING RULE: Touch verbs must ALWAYS be embedded inside a complete clause with a subject and object. NEVER write a touch verb as a standalone word, fragment, or one-word sentence (e.g. WRONG: "Grip." or "She. Grip." — RIGHT: "He gripped her wrist before she could move."). The verb is the action of a full sentence, never an isolated command or label.
 
 ${brief.scene_plan.map((sp, i) => {
   const contract = [
@@ -2902,8 +2949,20 @@ ${brief.scene_plan.map((sp, i) => {
     warnings.push("⚠ STACCATO: count the words in EVERY sentence before moving on. If any sentence exceeds 8 words, split it immediately. This is a hard technical constraint — not a style suggestion.");
   }
 
-  // — dialogue enforcement
-  if (sp.dialogue_mode === "none") warnings.push("⚠ DIALOGUE=NONE: zero spoken words, no quotes, no speech tags");
+  // — dialogue arc mandate for IGNITE scenes
+  if (sp.phase === "IGNITE") {
+    const register = (sp as ScenePlan & { dirty_talk_register?: string }).dirty_talk_register ?? "tender_explicit";
+    warnings.push(`⚠ IGNITE DIALOGUE: dialogue_mode=sustained; dirty_talk_register=${register}. Characters must speak before and during every physical escalation. Execute the three dialogue arc beats from the scene plan (opening → pivot → closing) in order.`);
+    if ((sp as ScenePlan & { verbal_desire_declaration?: string }).verbal_desire_declaration) {
+      warnings.push(`⚠ VERBAL DESIRE: include this scripted line or close variation: ${(sp as ScenePlan & { verbal_desire_declaration?: string }).verbal_desire_declaration}`);
+    }
+    const posChanges = (sp as ScenePlan & { position_changes?: string[] }).position_changes;
+    if (posChanges && posChanges.length > 0) {
+      warnings.push(`⚠ POSITION CHANGES (speech-introduced): ${posChanges.join(" → ")}`);
+    }
+  } else {
+    warnings.push(`⚠ DIALOGUE (${sp.dialogue_mode ?? "minimal"}): execute arc — opening: "${(sp as ScenePlan & { dialogue_arc_opening?: string }).dialogue_arc_opening ?? "..."}" | pivot: "${(sp as ScenePlan & { dialogue_arc_pivot?: string }).dialogue_arc_pivot ?? "..."}" | closing: "${(sp as ScenePlan & { dialogue_arc_closing?: string }).dialogue_arc_closing ?? "..."}"`);
+  }
 
   // — scene_open_beat: example first sentence for every type
   const beatEx = openBeatExample(sp.scene_open_beat ?? "environment");
@@ -2931,7 +2990,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
   5. Each scene's sentences are constructed according to its assigned prose_rhythm (staccato scenes: every sentence ≤8 words)
   6. Each scene opens with its assigned scene_open_beat as the literal first sentence
   7. The depth of internal narration in each scene matches its assigned interiority_depth
-  8. The proportion of spoken dialogue in each scene matches its assigned dialogue_mode (none = zero spoken words)
+  8. Every scene contains at least one line of spoken dialogue; IGNITE scenes have sustained dialogue (40–60% of beats); the three arc beats (opening, pivot, closing) are executed from the scene plan
   9. In each scene, the protagonist's attention returns at least twice to the assigned partner_attention_focus
 
 - Match the emotional arc exactly: ${brief.emotional_arc}
@@ -2946,7 +3005,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 - Ideal for intimate voice narration — use pauses, ellipsis, short sentences at peak moments
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
-  Step 1 — Dialogue audit: For each scene with dialogue_mode=none, scan the text for quotation marks, em-dash speech, or words like "said/asked/whispered/told/replied". Remove every instance. Replace with physical action or internal thought.
+  Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
   Step 2 — Staccato audit: For each scene with prose_rhythm=staccato, scan every sentence. Split any sentence over 8 words at its first clause boundary. Do this sentence by sentence.
   Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
   Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
@@ -3048,26 +3107,6 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
     scenes: scenesArr.map((s, idx) => {
       const scenePlan = brief.scene_plan[idx];
       let text: string = s.text ?? "";
-
-      // Post-write dialogue enforcement: strip spoken words from dialogue_mode=none scenes.
-      // This is a safety net for cases where the model ignores the instruction.
-      // We remove: quoted speech ("..."), em-dash speech (— Word ...), and speech-tagged utterances.
-      if (scenePlan?.dialogue_mode === "none" && text) {
-        const before = text;
-        // 1. Remove double-quoted strings that look like speech (up to ~200 chars)
-        text = text.replace(/"[^"]{1,250}"/g, "");
-        // 2. Remove single-quoted speech
-        text = text.replace(/\u2018[^\u2019]{1,250}\u2019/g, "");
-        // 3. Remove em-dash dialogue starters (—Word ...)
-        text = text.replace(/\u2014[A-Z][^\n.!?]{0,200}[.!?]/g, "");
-        // 4. Clean up orphaned speech attribution ("he said," / "she whispered,")
-        text = text.replace(/\b(said|asked|whispered|replied|told|breathed|groaned|moaned)[,.]?\s*/gi, "");
-        // 5. Clean up doubled whitespace and empty sentences left behind
-        text = text.replace(/\s{2,}/g, " ").replace(/\.\s*\./g, ".").trim();
-        if (text !== before) {
-          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Stripped dialogue from dialogue_mode=none scene");
-        }
-      }
 
       // Post-write staccato enforcement: deterministically split any sentence
       // that exceeds 8 words in staccato scenes.  This is a hard backstop —
@@ -3174,9 +3213,20 @@ Return only JSON — no explanation, no markdown.`;
 
   const castingJsonExample = hasCastingRequirements ? `\n    "casting_compliance": 9,` : "";
 
-  // Build per-scene diversity assignment summary for QC — all nine dimensions
+  // Erotic architecture criterion — only applied when intensity is 4 or 5
+  const numericIntensity = originalInput?.numericIntensity
+    ?? (originalInput?.intensity ? labelToIntensityLevel(originalInput.intensity) : 0);
+  const hasEroticArchitectureCheck = numericIntensity >= 4;
+  const eroticArchDimension = hasEroticArchitectureCheck
+    ? `\n${hasCastingRequirements ? "10" : "9"}. erotic_architecture_compliance — at this intensity level, IGNITE scenes are required to contain: (a) at least one scene of oral sex described with anatomical specificity — no euphemism; (b) at least one scene of penetrative intercourse described with anatomical specificity — no euphemism; (c) sustained dirty talk in every IGNITE scene — characters name what they want and what is happening; (d) at least one speech-introduced position change per IGNITE scene; (e) both characters' arousal described explicitly throughout. Score 10 if all five are present. Deduct 2 for each element missing. Score 1–3 if IGNITE scenes are vague, euphemistic, or pornography-free despite the intensity mandate.`
+    : "";
+  const eroticArchJsonExample = hasEroticArchitectureCheck
+    ? `\n    "erotic_architecture_compliance": 8,`
+    : "";
+
+  // Build per-scene diversity assignment summary for QC — all ten dimensions
   const sceneDiversityBlock = brief.scene_plan && brief.scene_plan.length > 0
-    ? `\nSCENE DIVERSITY ASSIGNMENTS — check whether the prose honoured each of the nine assignments per scene:\n${brief.scene_plan.map((sp, i) => `Scene ${i + 1} (${sp.phase}): dominant_sense=${sp.dominant_sense} | touch_register=${sp.touch_register} | primary_touch_action=${sp.primary_touch_action} | staging_position=${sp.staging_position} | prose_rhythm=${sp.prose_rhythm ?? "unspecified"} | scene_open_beat=${sp.scene_open_beat ?? "unspecified"} | interiority_depth=${sp.interiority_depth ?? "unspecified"} | dialogue_mode=${sp.dialogue_mode ?? "unspecified"} | partner_attention_focus=${sp.partner_attention_focus ?? "unspecified"}`).join("\n")}\n`
+    ? `\nSCENE DIVERSITY ASSIGNMENTS — check whether the prose honoured each assignment per scene:\n${brief.scene_plan.map((sp, i) => `Scene ${i + 1} (${sp.phase}): dominant_sense=${sp.dominant_sense} | touch_register=${sp.touch_register} | primary_touch_action=${sp.primary_touch_action} | staging_position=${sp.staging_position} | prose_rhythm=${sp.prose_rhythm ?? "unspecified"} | scene_open_beat=${sp.scene_open_beat ?? "unspecified"} | interiority_depth=${sp.interiority_depth ?? "unspecified"} | dialogue_mode=${sp.dialogue_mode ?? "unspecified"} | dialogue_arc_opening=${(sp as ScenePlan & { dialogue_arc_opening?: string }).dialogue_arc_opening ?? "unspecified"} | partner_attention_focus=${sp.partner_attention_focus ?? "unspecified"}`).join("\n")}\n`
     : "";
 
   const userPrompt = `Score this story on the following dimensions (1-10 each):
@@ -3188,7 +3238,7 @@ Return only JSON — no explanation, no markdown.`;
 5. originality — fresh and distinctive, not clichéd or formulaic
 6. sensory_detail — strong grounding sensory images present in each scene
 7. ending_strength — the ending lands emotionally and feels earned
-8. scene_diversity_compliance — the story honoured all nine per-scene structural diversity assignments shown in SCENE DIVERSITY ASSIGNMENTS below. Score 10 if every scene clearly reflects: (1) dominant_sense as the primary narration lens; (2) touch_register — contact level not exceeded and not held back; (3) primary_touch_action — the assigned verb used exclusively in that scene; (4) staging_position — the characters in the assigned spatial arrangement; (5) prose_rhythm — sentences actually constructed in the assigned texture (staccato = short clipped sentences; flowing = long clauses; fragmented = ellipsis and interruption; baroque = dense stacked description); (6) scene_open_beat — the literal first sentence of the scene arriving in the assigned mode; (7) interiority_depth — the depth of internal narration matching the assignment; (8) dialogue_mode — the proportion of spoken words matching the assignment; (9) partner_attention_focus — the protagonist's awareness specifically narrowing to that aspect of the partner. Deduct 2 points for each scene where any diversity field is clearly violated or ignored. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.${castingDimensionInstruction}
+8. scene_diversity_compliance — the story honoured all per-scene structural diversity assignments shown in SCENE DIVERSITY ASSIGNMENTS below. Score 10 if every scene clearly reflects: (1) dominant_sense as the primary narration lens; (2) touch_register — contact level not exceeded and not held back; (3) primary_touch_action — the assigned verb used exclusively in that scene; (4) staging_position — the characters in the assigned spatial arrangement; (5) prose_rhythm — sentences actually constructed in the assigned texture (staccato = short clipped sentences; flowing = long clauses; fragmented = ellipsis and interruption; baroque = dense stacked description); (6) scene_open_beat — the literal first sentence of the scene arriving in the assigned mode; (7) interiority_depth — the depth of internal narration matching the assignment; (8) every scene carries at least one line of quoted speech; IGNITE scenes have sustained dialogue and execute the three arc beats (opening, pivot, closing) from the plan; (9) partner_attention_focus — the protagonist's awareness specifically narrowing to that aspect of the partner. Deduct 2 points for each scene where any diversity field is clearly violated or ignored. Score 1–3 if the story makes no visible attempt to vary these dimensions across scenes.${castingDimensionInstruction}${eroticArchDimension}
 ${castingBriefBlock}${sceneDiversityBlock}
 Story Brief Context:
 ${JSON.stringify({ emotional_arc: brief.emotional_arc, relationship_dynamic: brief.relationship_dynamic, ending_type: brief.ending_type }, null, 2)}
@@ -3208,13 +3258,13 @@ Return JSON only:
     "originality": 7,
     "sensory_detail": 9,
     "ending_strength": 8,
-    "scene_diversity_compliance": 8${castingJsonExample}
+    "scene_diversity_compliance": 8${castingJsonExample}${eroticArchJsonExample}
   },
   "issues": ["list any specific problems here, or empty array if none"],
   "rewrite_strategy": null
 }
 
-rewrite_strategy must be one of: "rewrite_ending", "increase_specificity", "tighten_scene_flow", "increase_vulnerability", "rotate_dynamic_or_setting", "enforce_scene_diversity", or null.
+rewrite_strategy must be one of: "rewrite_ending", "increase_specificity", "tighten_scene_flow", "increase_vulnerability", "rotate_dynamic_or_setting", "enforce_scene_diversity", "enforce_erotic_architecture", or null.
 Set it to the single most impactful fix needed, or null if the story passes.`;
 
   const completion = await openrouter.chat.completions.create({
@@ -3241,16 +3291,25 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
   const castingComplianceScore: number | undefined =
     hasCastingRequirements ? ((parsed.sub_scores as Record<string, unknown>)?.casting_compliance as number ?? 0) : undefined;
 
-  // scene_diversity_compliance is always present — verifies all nine scene-level diversity
+  // scene_diversity_compliance is always present — verifies all scene-level diversity
   // dimensions were honoured in the prose. A score < 7 triggers a pass failure.
   const sceneDiversityScore: number =
     ((parsed.sub_scores as Record<string, unknown>)?.scene_diversity_compliance as number ?? subScores.scene_diversity_compliance ?? 0);
+
+  // erotic_architecture_compliance is only present for intensity 4–5.
+  const eroticArchScore: number | undefined = hasEroticArchitectureCheck
+    ? ((parsed.sub_scores as Record<string, unknown>)?.erotic_architecture_compliance as number ?? 0)
+    : undefined;
+  if (eroticArchScore !== undefined) {
+    subScores.erotic_architecture_compliance = eroticArchScore;
+  }
 
   const passed =
     scoreTotal >= 7.5 &&
     subScores.ending_strength >= 7 &&
     sceneDiversityScore >= 7 &&
-    (castingComplianceScore === undefined || castingComplianceScore >= 7);
+    (castingComplianceScore === undefined || castingComplianceScore >= 7) &&
+    (eroticArchScore === undefined || eroticArchScore >= 6);
 
   // Hard rules for targeted rewrite strategies — applied independently of pass status.
   // The pipeline decides whether to regenerate (score_total < 7.5 or casting_compliance < 7)
@@ -3503,11 +3562,11 @@ export async function generateAudioFile(
   voiceFeel: string,
   cacheKey: string,
   pairing?: string
-): Promise<string> {
+): Promise<{ url: string; durationSeconds: number }> {
   // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
   if (process.env.DISABLE_AUDIO === "true") {
     console.info("[audio] DISABLE_AUDIO=true — skipping ElevenLabs TTS");
-    return "";
+    return { url: "", durationSeconds: 0 };
   }
 
   const voiceId = resolveVoiceId(voiceFeel, pairing);
@@ -3595,8 +3654,11 @@ export async function generateAudioFile(
   }
 
   const filename = `audio-${cacheKey}.mp3`;
-  await uploadAudioFile(filename, Buffer.concat(buffers));
-  return `/api/audio/${filename}`;
+  const finalBuffer = Buffer.concat(buffers);
+  // Estimate duration from MP3 size: ElevenLabs turbo v2.5 outputs ~128 kbps = 16,000 bytes/sec
+  const durationSeconds = Math.max(1, Math.round(finalBuffer.length / 16000));
+  await uploadAudioFile(filename, finalBuffer);
+  return { url: `/api/audio/${filename}`, durationSeconds };
 }
 
 // ---------------------------------------------------------------------------
@@ -3831,10 +3893,15 @@ async function runDerivedPipeline(
 
   // Images + audio in parallel
   const pipelineKey = getCacheKey({ storyId, ts: Date.now() });
-  const [images, audioUrl] = await Promise.all([
+  const [images, audioResult] = await Promise.all([
     generateAllImages(imagePrompts, pipelineKey),
     generateAudioFile(finalStory.scenes, voiceFeel, pipelineKey, brief.pairing),
   ]);
+  const audioUrl = audioResult.url;
+  const derivedDurationSec = audioResult.durationSeconds;
+  const computedDuration = derivedDurationSec > 0
+    ? (() => { const m = Math.floor(derivedDurationSec / 60); const s = derivedDurationSec % 60; return s > 0 ? `${m} min ${s} sec` : `${m} min`; })()
+    : duration;
 
   // Assemble scenes
   const scenesWithImages = finalStory.scenes.map((scene) => ({
@@ -3847,7 +3914,7 @@ async function runDerivedPipeline(
     description: finalStory.description,
     mood,
     audioUrl,
-    duration,
+    duration: computedDuration,
     coverImage: images.cover || "",
     brief,
     scenes: scenesWithImages,
@@ -4192,7 +4259,7 @@ router.post("/generate-audio", async (req, res) => {
 
   try {
     const fakeScene: Scene = { id: 1, heading: "", text, visualPrompt: "", durationEstimate: 0 };
-    const audioUrl = await generateAudioFile([fakeScene], voiceFeel, cacheKey);
+    const { url: audioUrl } = await generateAudioFile([fakeScene], voiceFeel, cacheKey);
     audioCache.set(cacheKey, audioUrl);
     res.json({ audioUrl });
   } catch (err) {
@@ -4490,10 +4557,12 @@ router.post("/generate-full-story", async (req, res) => {
 
     // Step 8: Images + audio in parallel
     const storyHash = getCacheKey({ brief, story });
-    const [images, audioUrl] = await Promise.all([
+    const [images, audioResult] = await Promise.all([
       generateAllImages(imagePrompts, storyHash),
       generateAudioFile(story.scenes, intake.voiceFeel, storyHash, intake.pairing),
     ]);
+    const audioUrl = audioResult.url;
+    const audioDurationSeconds = audioResult.durationSeconds;
 
     // Step 9: Assemble final result
     const scenesWithImages = story.scenes.map((scene, i) => ({
@@ -4523,7 +4592,11 @@ router.post("/generate-full-story", async (req, res) => {
       description: story.description,
       mood: intake.mood,
       audioUrl,
-      duration: intake.storyLength,
+      duration: (() => {
+        const m = Math.floor(audioDurationSeconds / 60);
+        const s = audioDurationSeconds % 60;
+        return s > 0 ? `${m} min ${s} sec` : `${m} min`;
+      })(),
       coverImage: images.cover || "",
       brief,
       scenes: scenesWithImages,

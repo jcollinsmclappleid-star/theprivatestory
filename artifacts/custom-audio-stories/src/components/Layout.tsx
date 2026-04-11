@@ -114,9 +114,10 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "How It Works", href: "/how-it-works", icon: <Sparkles className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
+    { label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAuthenticated
       ? [{ label: "My Account", href: "/me", icon: <User className="w-4 h-4" /> }]
-      : [{ label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> }]
+      : []
     ),
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Listen to a sample", href: "/listen", icon: <Sparkles className="w-4 h-4" /> },

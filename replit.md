@@ -92,8 +92,22 @@ The project is structured as a pnpm workspace monorepo.
 
 **Authentication (`better-auth`):**
 - Integrated into `lib/db/src/schema/auth.ts` (users, sessions, accounts, verifications tables).
-- `artifacts/api-server/src/lib/auth.ts` configures `betterAuth()` with `drizzleAdapter`, email/password, and Google social provider.
+- `artifacts/api-server/src/lib/auth.ts` configures `betterAuth()` with `drizzleAdapter`, email/password, and Google social provider. `twoFactor` plugin configured server-side with TOTP support.
 - `authMiddleware.ts` populates `req.user` from session.
+- `AuthModal.tsx` has a "totp" view: after password sign-in, checks `/admin/2fa/status`; if 2FA enabled and not verified, shows TOTP code prompt. Uses `authClient.twoFactor.verifyTotp()`.
+- `authClient.ts` includes `twoFactorClient()` plugin from `better-auth/client/plugins`.
+
+**Story Generation Architecture (v2 — full-immersion, dialogue-led):**
+- `generateAudioFile()` returns `{ url, durationSeconds }`. Duration computed from MP3 buffer (16,000 bytes/sec at 128kbps) and stored as human-readable string (e.g. "12 min 4 sec").
+- Dialogue stripping post-processor (`dialogue_mode=none`) **removed** — all spoken content is preserved.
+- `ScenePlan` interface extended with `dialogue_arc_opening`, `dialogue_arc_pivot`, `dialogue_arc_closing`, `verbal_desire_declaration`, `position_changes`, `dirty_talk_register`.
+- `SCENE_SENSORY_DIVERSITY.dialogue_modes` no longer includes "none" — every scene carries dialogue. IGNITE arc guidance updated to "sustained".
+- `buildIntensityLayer()` (buildPrompt.ts) fully rewritten — per-level mandates for dialogue register, IGNITE sex act requirements (oral + penetrative at 4-5), dirty talk, position changes.
+- Scene-planning prompt: new `dialogue_arc_*` and IGNITE sex act mandate fields.
+- Story-writer prompt: "DIALOGUE MANDATE" replaces "DIALOGUE ENFORCEMENT"; speech-before-action rule; three-arc-beat execution mandate.
+- Scene contracts: IGNITE scenes receive expanded dialogue + position change warnings with scripted lines from plan.
+- QC: `erotic_architecture_compliance` dimension added for intensity 4–5 (oral, penetrative, dirty talk, positions, dual arousal). `enforce_erotic_architecture` rewrite strategy added.
+- Nav bug fixed: "My Stories" always present; "My Account" appended only when authenticated.
 
 # External Dependencies
 

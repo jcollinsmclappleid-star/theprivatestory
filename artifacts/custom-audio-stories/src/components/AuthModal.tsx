@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { authClient } from "../lib/authClient";
 import { registerAuthModalOpener } from "../hooks/useAuth";
 import { Logo } from "./Logo";
-import { X, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
+import { X, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft, CheckCircle, Shield } from "lucide-react";
+
+const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 interface AuthModalProps {
   onSuccess?: () => void;
 }
 
-type View = "signin" | "signup" | "forgot" | "forgot-sent";
+type View = "signin" | "signup" | "forgot" | "forgot-sent" | "totp";
 
 export function AuthModal({ onSuccess }: AuthModalProps) {
   const [open, setOpen] = useState(false);
@@ -16,6 +18,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [totpCode, setTotpCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +30,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
       setEmail("");
       setPassword("");
       setName("");
+      setTotpCode("");
       setOpen(true);
     });
   }, []);
@@ -46,6 +50,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
     setOpen(false);
     setError(null);
     setView("signin");
+    setTotpCode("");
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -56,10 +61,49 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
     setLoading(false);
     if (res.error) {
       setError(res.error.message ?? "Invalid email or password.");
-    } else {
-      close();
-      onSuccess?.();
-      window.location.reload();
+      return;
+    }
+    // Check if this account has 2FA enabled and requires verification
+    try {
+      const statusRes = await fetch(`${API_BASE}/admin/2fa/status`, { credentials: "include" });
+      if (statusRes.ok) {
+        const status = await statusRes.json() as { twoFactorEnabled: boolean; twoFactorVerifiedThisSession: boolean };
+        if (status.twoFactorEnabled && !status.twoFactorVerifiedThisSession) {
+          setView("totp");
+          return;
+        }
+      }
+    } catch {
+      // Not an admin or 2FA check failed — proceed normally
+    }
+    close();
+    onSuccess?.();
+    window.location.reload();
+  };
+
+  const handleTotpVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (totpCode.length !== 6 || !/^\d+$/.test(totpCode)) {
+      setError("Please enter your 6-digit authenticator code.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await authClient.twoFactor.verifyTotp({ code: totpCode });
+      setLoading(false);
+      if (res.error) {
+        setError("Incorrect code. Please try again.");
+        setTotpCode("");
+      } else {
+        close();
+        onSuccess?.();
+        window.location.reload();
+      }
+    } catch {
+      setLoading(false);
+      setError("Verification failed. Please try again.");
+      setTotpCode("");
     }
   };
 
@@ -132,8 +176,55 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
             </p>
           </div>
 
-          {/* ── Forgot-password sent confirmation ── */}
-          {view === "forgot-sent" ? (
+          {/* ── TOTP 2FA challenge ── */}
+          {view === "totp" ? (
+            <div>
+              <div className="flex flex-col items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-primary" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-foreground font-medium">Two-factor verification</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter the 6-digit code from your authenticator app
+                  </p>
+                </div>
+              </div>
+              <form onSubmit={handleTotpVerify} className="space-y-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={totpCode}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    setTotpCode(val);
+                    setError(null);
+                  }}
+                  autoFocus
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50 focus:bg-white/8 transition-all text-center tracking-[0.5em] font-mono text-lg"
+                />
+                {error && (
+                  <div className="flex items-start gap-2 py-2.5 px-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    {error}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={loading || totpCode.length !== 6}
+                  className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 mt-1"
+                >
+                  {loading ? (
+                    <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  ) : "Verify"}
+                </button>
+              </form>
+            </div>
+          ) : view === "forgot-sent" ? (
+            /* ── Forgot-password sent confirmation ── */
             <div className="text-center space-y-4 py-2">
               <CheckCircle className="w-12 h-12 text-primary/70 mx-auto" />
               <p className="text-sm text-foreground font-medium">Check your inbox</p>

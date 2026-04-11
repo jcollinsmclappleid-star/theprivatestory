@@ -294,32 +294,43 @@ REMINDER: Complete all structural phases fully as specified above. Do not stop e
 export function buildIntensityLayer(intensity: number): string {
   const layers: Record<number, string> = {
     1: `INTENSITY LEVEL 1 — TENDER:
-Keep content romantic and emotionally charged.
-Physical content implied rather than explicit.
-Focus on longing, proximity, and almost-touch.`,
+Content is romantic and emotionally charged. Physical desire is present but never described directly — it lives in proximity, in glances, in the charged silence between people. No explicit content. No named body parts below the shoulder. No consummation.
+DIALOGUE REGISTER (all scenes): Ordinary speech carrying subtext. What is NOT said is as important as what is said.
+IGNITE scenes at this level: emotional peak only — a confession, a first touch, an almost-kiss. Nothing further.`,
 
     2: `INTENSITY LEVEL 2 — WARM:
-Allow suggestive content with clear physical awareness.
-Kisses, touch, closeness — described with sensory detail.
-Leave the most explicit moments to imagination but don't shy from heat.`,
+Suggestive content with clear physical awareness. Kisses are described in full sensory detail. Touch is present and acknowledged — the warmth of it, the weight. Desire is named internally but acts are not described explicitly.
+DIALOGUE REGISTER (all scenes): Suggestive and loaded. Characters say things they mean twice over. Flirtation with a current underneath.
+IGNITE scenes at this level: physical escalation up to and including kissing, undressing, and explicit desire — but no sex acts described. Cut away at the threshold.`,
 
     3: `INTENSITY LEVEL 3 — HOT:
-Explicit emotional and physical content.
-Describe desire and physical response clearly and specifically.
-The story should feel genuinely arousing as well as emotionally engaging.`,
+Explicit emotional and physical content. Desire is named. Arousal is described. Sex acts are present in the IGNITE phase — described with clear, specific language. No euphemism for anatomy. Bodies are named.
+DIALOGUE REGISTER (SIMMER/CRACK): Desire declared out loud. Characters say what they want. Dirty talk begins here — tender but direct.
+DIALOGUE REGISTER (IGNITE): Sustained dirty talk throughout. Characters name what is happening and what they want. Register: "tender_explicit" or "commanding".
+IGNITE scenes at this level: oral sex or intercourse must be present in at least one IGNITE scene. Describe it with physical specificity — sensation, friction, sound, response.`,
 
     4: `INTENSITY LEVEL 4 — EXPLICIT:
-Fully explicit adult content. Name anatomy. Describe acts.
-Every physical scene stays present and specific — no fading, no cutting away, no implication where description is required.
-Describe exactly what he does, what she feels, what sounds they make, what words pass between them.
-Physical and emotional detail must be equally specific throughout.`,
+Fully explicit adult content. Anatomy is named. Acts are named. Nothing fades, cuts away, or implies where it can describe.
+IGNITE SCENE MANDATE — ALL OF THE FOLLOWING ARE REQUIRED:
+  (a) At least one IGNITE scene must contain oral sex — described anatomically. Who is giving, what exactly they are doing, the physical and vocal response.
+  (b) At least one IGNITE scene must contain penetrative intercourse — described in full. Entry, movement, friction, sensation, sound, both arousal states.
+  (c) At least two position changes per IGNITE scene — each introduced by speech (command, request, or direction).
+  (d) Dirty talk is mandatory throughout IGNITE — register "commanding" or "reciprocal". Characters direct, declare, respond.
+  (e) Both characters' arousal described explicitly: his erection, her wetness — named, not implied.
+DIALOGUE REGISTER (IGNITE): Sustained. Characters narrate their own desire. They say what they want done to them. They say what they are doing. No silence without speech nearby.
+Nothing implied that can be described. No metaphor in place of anatomy. No restraint in place of specificity.`,
 
     5: `INTENSITY LEVEL 5 — MAXIMUM:
-Maximum explicit adult content. No qualifier. No hedge. Nothing held back.
-Name anatomy directly. Name acts directly. Describe every physical moment in full.
-His arousal and hers must be described explicitly, not implied.
-Penetration, movement, friction, sensation, sound — describe all of it as it happens.
-This story must be genuinely, viscerally arousing. Not tasteful. Not literary. Explicit.`,
+Maximum explicit adult content. No qualifier. No hedge. No tasteful retreat. Nothing held back.
+IGNITE SCENE MANDATE — ALL OF THE FOLLOWING ARE MANDATORY, NON-NEGOTIABLE:
+  (a) Oral sex: at least one full scene or extended sequence — anatomically explicit, both giver and receiver's experience described in full. Sounds. Response. Duration.
+  (b) Penetrative intercourse: at least two scenes or two distinct phases — entry, movement, positions, sensation, friction, the build to climax. Named anatomy throughout.
+  (c) Multiple position changes (minimum three across IGNITE) — each change introduced by speech. Characters tell each other what they want next.
+  (d) Dual climax: both characters' orgasms described explicitly — the physical sensations, the sounds, the words said at the moment.
+  (e) Dirty talk throughout: register "filthy_declarative" — characters name anatomy directly, declare acts as they perform them, nothing euphemised.
+  (f) Both arousal states described throughout: erection, wetness, and their changes — not once, continuously.
+DIALOGUE REGISTER (IGNITE): Dominant. Characters narrate everything. They say the explicit anatomical names. They describe what they are doing as they do it. The story is as much spoken as written.
+This is not literary erotica with an explicit scene. This is explicit erotica written with literary quality. Explicit first. Beautiful second. In that order, always.`,
   };
 
   const clamped = Math.max(1, Math.min(5, Math.round(intensity)));

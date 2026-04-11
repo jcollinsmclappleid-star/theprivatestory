@@ -629,7 +629,7 @@ function CastingPreview() {
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-muted-foreground/35 mt-2.5">
+              <p className="text-[10px] text-muted-foreground/80 mt-2.5">
             Your name not listed?{" "}
             <Link href="/name-club" className="text-primary/55 hover:text-primary transition-colors underline-offset-2 hover:underline">
               Submit it to the Name Club →
@@ -1174,7 +1174,7 @@ export default function Home() {
                 </button>
                 <div className="mt-3 flex items-center gap-2">
                   <div className="flex-1 h-px bg-border/20" />
-                  <span className="text-[10px] text-primary/50 font-medium whitespace-nowrap px-1">Cancel any time — stories stay yours</span>
+                  <span className="text-[10px] text-primary/80 font-medium whitespace-nowrap px-1">Cancel any time — stories stay yours</span>
                   <div className="flex-1 h-px bg-border/20" />
                 </div>
               </div>
@@ -1221,12 +1221,12 @@ export default function Home() {
               {isPaid && (
                 <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Additional stories</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Additional stories</p>
                     <div className="flex items-end gap-1.5 mb-1">
                       <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
                       <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
                     </div>
-                    <p className="text-xs text-muted-foreground/50 leading-relaxed mt-3">
+                    <p className="text-xs text-muted-foreground/80 leading-relaxed mt-3">
                       Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
                     </p>
                   </div>
@@ -1240,7 +1240,7 @@ export default function Home() {
               </div>
             )}
             <div className="text-center space-y-2">
-              <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/40">
+              <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
                 {["Private library included", "After Dark included", "Cast every character yourself", "Add more stories whenever you want"].map((item) => (
                   <span key={item} className="flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
@@ -1248,9 +1248,9 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground/30">
+              <p className="text-xs text-muted-foreground/80">
                 Every plan includes: private library · original cover art · premium voice narration · full curated collection ·{" "}
-                <Link href="/pricing" className="text-primary/50 hover:text-primary transition-colors">full plan details →</Link>
+                <Link href="/pricing" className="text-primary/80 hover:text-primary transition-colors">full plan details →</Link>
               </p>
             </div>
           </div>
@@ -1270,7 +1270,7 @@ export default function Home() {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight mb-2">
               Explore by mood, feeling, and story type.
             </h2>
-            <p className="text-sm text-muted-foreground/50 max-w-lg">
+            <p className="text-sm text-muted-foreground/80 max-w-lg">
               Browse the collection by how you want to feel — or find the kind of story you've been looking for.
             </p>
           </div>

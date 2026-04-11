@@ -822,12 +822,17 @@ export default function Home() {
 
           <h1 className="text-[2.6rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
             Your story —{" "}
-            <span className="text-primary">built around the feeling you choose.</span>
+            <span className="text-primary">built around the desire you choose.</span>
           </h1>
 
-          <p className="text-sm md:text-base text-white/45 tracking-wide sm:text-center">
-            Literary. Private. Entirely yours.
-          </p>
+          <div className="flex flex-col items-start sm:items-center gap-1.5">
+            <p className="text-sm md:text-base text-white/45 tracking-wide sm:text-center">
+              Literary. Private. Entirely yours.
+            </p>
+            <p className="text-xs text-white/28 tracking-wide sm:text-center">
+              Built from 2.6M+ combinations — no two stories the same.
+            </p>
+          </div>
         </motion.div>
       </section>
 

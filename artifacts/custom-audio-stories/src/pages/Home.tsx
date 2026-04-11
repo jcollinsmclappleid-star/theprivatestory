@@ -879,6 +879,11 @@ export default function Home() {
               </svg>
               <span className="text-[11px] tracking-wide text-white/55">Hear it privately</span>
             </div>
+            <span className="text-white/15 text-xs">·</span>
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3 h-3 text-primary/60" />
+              <span className="text-[10px] tracking-wide text-primary/60 font-semibold uppercase tracking-widest">Under 3 min</span>
+            </div>
           </div>
         </motion.div>
       </section>
@@ -1440,7 +1445,7 @@ export default function Home() {
             View pricing →
           </Link>
           <p className="text-[11px] text-muted-foreground/80">
-            Under a minute to begin. Private from the first word.{" "}
+            Under 3 minutes from first choice to listening. Private from the first word.{" "}
             <Link href="/privacy" className="hover:text-primary/60 transition-colors">How we protect it →</Link>
           </p>
         </section>

@@ -49,7 +49,7 @@ const config: CompetitorPageConfig = {
     },
     {
       q: "How long does it take to get a personalised story?",
-      a: "Most stories are generated and ready to listen within a few minutes of completing the Creation Room. The brief itself — seven structured choices — typically takes under two minutes. You can be listening to your story within five minutes of starting the process.",
+      a: "Most stories are generated and ready to listen within a few minutes of completing the Creation Room. The brief itself — seven structured choices — typically takes under three minutes. You can be listening to your story within minutes of starting.",
     },
     {
       q: "Is the content on The Private Story explicit?",

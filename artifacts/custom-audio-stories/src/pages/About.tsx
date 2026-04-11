@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Heart, Lock, Music, Check, Sparkles } from "lucide-react";
+import { Heart, Lock, Music, Check, Sparkles, Clock } from "lucide-react";
 import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 export default function About() {
@@ -209,7 +209,7 @@ export default function About() {
         >
           <h2 className="font-display text-3xl font-bold text-foreground mb-4">Begin privately</h2>
           <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-            If you have been looking for something more personal than a catalogue, this is where to start. Create a story shaped around your mood, your choices, and your moment — and keep it where it belongs: yours.
+            If you have been looking for something more personal than a catalogue, this is where to start. Create a story shaped around your mood, your choices, and your moment — in under 3 minutes — and keep it where it belongs: yours.
           </p>
           <div className="flex flex-col items-center gap-6">
             <MiniDoorCTA />

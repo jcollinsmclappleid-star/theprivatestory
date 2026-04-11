@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart } from "lucide-react";
+import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clock } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
@@ -18,6 +18,7 @@ const TRUST_ITEMS = [
   { icon: <Sparkles className="w-4 h-4" />, label: "Made for you", sub: "Generated around your choices" },
   { icon: <Headphones className="w-4 h-4" />, label: "Narrated audio", sub: "Ready to listen instantly" },
   { icon: <Lock className="w-4 h-4" />, label: "Yours alone", sub: "Only you can access your stories" },
+  { icon: <Clock className="w-4 h-4" />, label: "Under 3 minutes", sub: "From first choice to listening" },
   { icon: <Heart className="w-4 h-4" />, label: "Designed for the female imagination", sub: "Emotionally intelligent, agency-first, privacy-led", colSpan: true },
 ];
 

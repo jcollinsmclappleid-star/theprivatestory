@@ -107,7 +107,7 @@ export default function Discover() {
             Every Story Type — Find What You're Looking For Tonight
           </h1>
           <p className="text-muted-foreground text-xl leading-relaxed mb-8">
-            Twenty-four ways into a story that was made for you. Private, narrated, created in under two minutes. Choose the category that fits tonight.
+            Twenty-four ways into a story that was made for you. Private, narrated, created in under three minutes. Choose the category that fits tonight.
           </p>
           <MiniDoorCTA />
         </div>

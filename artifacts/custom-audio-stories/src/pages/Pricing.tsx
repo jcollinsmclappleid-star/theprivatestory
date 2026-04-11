@@ -812,6 +812,7 @@ export default function Pricing() {
             <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-8 leading-relaxed">
               Private from the first word. Cast by you. Heard only by you. A collection that grows alongside them.
             </p>
+            <p className="text-xs text-primary/50 uppercase tracking-widest font-medium mb-8 -mt-4">Under 3 minutes from first choice to listening</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/create"

@@ -446,7 +446,7 @@ export default function CastingPreview({ soft = false }: CastingPreviewProps) {
             </div>
             <div>
               <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">Begin your story</p>
-              <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed max-w-[180px] mx-auto">Written for you. Narrated. Private from the first word.</p>
+              <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed max-w-[180px] mx-auto">Written for you. Narrated. Private — and ready in under 3 minutes.</p>
             </div>
             <span className="text-xs text-primary/70 group-hover:text-primary/80 transition-colors tracking-widest uppercase">Create My Story →</span>
           </Link>

@@ -53,7 +53,7 @@ const config: CompetitorPageConfig = {
     },
     {
       q: "How long does a personalised story take to receive?",
-      a: "Most stories are generated and ready to listen within a few minutes of completing the Creation Room. The brief — seven structured choices — typically takes under two minutes. You can be listening within five minutes of starting.",
+      a: "Most stories are generated and ready to listen within a few minutes of completing the Creation Room. The brief — seven structured choices — typically takes under three minutes. You can be listening within minutes of starting.",
     },
     {
       q: "Can I use The Private Story alongside Quinn?",

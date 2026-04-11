@@ -21,6 +21,7 @@ import { fileURLToPath } from "url";
 import { db, generatedStories } from "@workspace/db";
 import { eq, or, sql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
+import { streamAudioFile, streamImageFile } from "../lib/mediaStorage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(__dirname, "../public");
@@ -149,12 +150,8 @@ router.get("/audio/:filename", async (req: Request, res: Response, next: NextFun
   const allowed = await checkOwnership(req, res, "audio", filename);
   if (!allowed) return;
 
-  const filePath = path.join(publicDir, "audio", filename);
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "File not found." });
-  }
-
-  return res.sendFile(filePath);
+  const found = await streamAudioFile(filename, res);
+  if (!found) return res.status(404).json({ error: "File not found." });
 });
 
 // ---------------------------------------------------------------------------
@@ -169,22 +166,16 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
 
   // Category images are public assets — serve without auth or story ownership check.
   if (/^category-[a-z0-9_]+-[a-z0-9_]+\.png$/.test(filename) || /^category-[a-z0-9_]+\.png$/.test(filename)) {
-    const filePath = path.join(publicDir, "images", filename);
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "File not found." });
-    }
-    return res.sendFile(filePath);
+    const found = await streamImageFile(filename, res);
+    if (!found) return res.status(404).json({ error: "File not found." });
+    return;
   }
 
   const allowed = await checkOwnership(req, res, "image", filename);
   if (!allowed) return;
 
-  const filePath = path.join(publicDir, "images", filename);
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "File not found." });
-  }
-
-  return res.sendFile(filePath);
+  const found = await streamImageFile(filename, res);
+  if (!found) return res.status(404).json({ error: "File not found." });
 });
 
 export default router;

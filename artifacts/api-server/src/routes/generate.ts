@@ -7,6 +7,7 @@ import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { uploadAudioFile, uploadImageFile } from "../lib/mediaStorage.js";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
 import { getMasterEroticLayer, MASTER_EROTIC_LAYER, PROHIBITED_CONTENT_BLOCK } from "../lib/masterEroticLayer.js";
@@ -3476,7 +3477,6 @@ export async function generateAllImages(
   prompts: ImagePrompts,
   cacheKey: string
 ): Promise<{ cover: string; scenes: string[] }> {
-  const imagesDir = getPublicImagesDir();
   const coverFilename = `cover-${cacheKey}.png`;
 
   // ── Tier 1: Story-specific cover, 3 attempts ────────────────────────────
@@ -3494,7 +3494,7 @@ export async function generateAllImages(
     return { cover: "/cover-abstract-fallback.png", scenes: [] };
   }
 
-  fs.writeFileSync(path.join(imagesDir, coverFilename), coverBuffer);
+  await uploadImageFile(coverFilename, coverBuffer);
   return { cover: `/api/images/${coverFilename}`, scenes: [] };
 }
 
@@ -3594,9 +3594,8 @@ export async function generateAudioFile(
     }
   }
 
-  const audioDir = getPublicAudioDir();
   const filename = `audio-${cacheKey}.mp3`;
-  fs.writeFileSync(path.join(audioDir, filename), Buffer.concat(buffers));
+  await uploadAudioFile(filename, Buffer.concat(buffers));
   return `/api/audio/${filename}`;
 }
 

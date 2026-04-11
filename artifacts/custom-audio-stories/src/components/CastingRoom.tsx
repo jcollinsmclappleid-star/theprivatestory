@@ -2376,6 +2376,38 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               );
             })()}
 
+            {/* ── Your cast at a glance ── */}
+            <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/[0.03] p-5">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-4">Your cast at a glance</p>
+              <div className="space-y-0">
+                {([
+                  { label: "Chemistry",   value: chemistries.find(c => c.id === data.chemistry)?.label,                                                      goTo: 1,  fallback: "—" },
+                  { label: "Heritage",    value: data.heritage && data.heritage !== "Ambiguous" ? data.heritage : undefined,                                  goTo: 3,  fallback: "Ambiguous" },
+                  { label: "Archetype",   value: data.archetype,                                                                                              goTo: 3,  fallback: "—" },
+                  { label: "Setting",     value: data.setting,                                                                                                goTo: 5,  fallback: "—" },
+                  { label: "Intensity",   value: data.intensity,                                                                                              goTo: 6,  fallback: "—" },
+                  { label: "Situation",   value: data.situation,                                                                                              goTo: 7,  fallback: "We'll choose for you" },
+                  { label: "Your name",   value: listenerName || undefined,                                                                                   goTo: 9,  fallback: "Addressed as 'you'" },
+                  { label: "Their name",  value: partnerName || undefined,                                                                                    goTo: 10, fallback: "Narrator will choose" },
+                  { label: "Voice",       value: (() => { const v = VOICES.find(v => v.id === voiceId); return v ? (v.displayName || v.label) : undefined; })(), goTo: 11, fallback: "—" },
+                ] as { label: string; value: string | undefined; goTo: number; fallback: string }[]).map(({ label, value, goTo, fallback }) => (
+                  <div key={label} className="flex items-center justify-between gap-3 py-2.5 border-b border-white/5 last:border-0">
+                    <span className="text-[11px] text-muted-foreground/50 w-24 flex-shrink-0 uppercase tracking-wide font-medium">{label}</span>
+                    <span className={`text-sm flex-1 leading-snug ${value ? "text-foreground font-medium" : "text-muted-foreground/35 italic"}`}>
+                      {value || fallback}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setStep(goTo)}
+                      className="text-[11px] text-muted-foreground/40 hover:text-primary transition-colors flex-shrink-0 font-medium"
+                    >
+                      Change
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </motion.div>
         )}
 

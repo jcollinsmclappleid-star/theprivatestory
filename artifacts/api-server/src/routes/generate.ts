@@ -893,9 +893,7 @@ export function buildCoverPromptFromCasting(intake: GenerateStoryRequest): strin
 
   const subjectDesc = heritageLabel
     ? `a ${heritageLabel} ${loveInterestNoun}`
-    : heritageKey === "Ambiguous"
-    ? `a ${loveInterestNoun}`
-    : `a European ${loveInterestNoun}`;
+    : `a ${loveInterestNoun}`;
 
   // --- partnerAppearance → build and colouring descriptors (whitelist only) ---
   // Parse the structured "Build: X, Colouring: Y" string emitted by CastingRoom.

@@ -10,6 +10,63 @@ const SAMPLE_ID = "lib-dd2_02-1775048422711";
 const COVER_URL = `${API_BASE}/images/cover-${SAMPLE_ID}.png`;
 const AUDIO_URL = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
 
+const AGE_GATE_KEY = "tps_age_confirmed";
+
+function AgeGate({ onConfirm }: { onConfirm: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="fixed inset-0 z-[999] flex items-center justify-center px-6"
+      style={{ background: "radial-gradient(ellipse at 50% 40%, #1a1209 0%, #0a0908 60%, #050403 100%)" }}
+    >
+      <div className="w-full max-w-sm text-center">
+        {/* Lock mark */}
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border border-primary/30 bg-primary/8 mb-7">
+          <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: "#c9a227" }}>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+
+        {/* Heading */}
+        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary/60 mb-3">Adults only</p>
+        <h1 className="font-display text-3xl font-bold text-foreground leading-tight mb-4">
+          This story contains<br />explicit content.
+        </h1>
+        <p className="text-sm text-white/55 leading-relaxed mb-8">
+          You must be 18 years of age or older to enter.<br />
+          By continuing you confirm this is true.
+        </p>
+
+        {/* Confirm button */}
+        <button
+          onClick={onConfirm}
+          className="w-full bg-primary text-primary-foreground font-bold text-sm py-4 rounded-2xl
+                     hover:bg-primary/90 active:scale-[0.98] transition-all mb-3
+                     shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]"
+        >
+          I am 18 or older — enter
+        </button>
+
+        {/* Leave link */}
+        <Link
+          href="/"
+          className="block w-full text-center text-xs text-white/35 hover:text-white/60 transition-colors py-2"
+        >
+          Leave
+        </Link>
+
+        <p className="text-[10px] text-white/20 mt-5 leading-relaxed">
+          Your confirmation is stored on this device only.<br />
+          We never share or track it.
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
 function formatTime(seconds: number): string {
   if (!seconds || isNaN(seconds)) return "0:00";
   const m = Math.floor(seconds / 60);
@@ -23,6 +80,15 @@ export default function Listen() {
     description:
       "Hear what a private, personalised audio story sounds like. Then create one built entirely around your desire.",
   });
+
+  const [ageConfirmed, setAgeConfirmed] = useState(() => {
+    try { return localStorage.getItem(AGE_GATE_KEY) === "1"; } catch { return false; }
+  });
+
+  const confirmAge = useCallback(() => {
+    try { localStorage.setItem(AGE_GATE_KEY, "1"); } catch { /* noop */ }
+    setAgeConfirmed(true);
+  }, []);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -72,6 +138,8 @@ export default function Listen() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
+    <>
+    {!ageConfirmed && <AgeGate onConfirm={confirmAge} />}
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -246,5 +314,6 @@ export default function Listen() {
         </Link>
       </p>
     </motion.div>
+    </>
   );
 }

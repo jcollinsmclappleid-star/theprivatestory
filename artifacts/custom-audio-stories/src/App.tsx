@@ -78,6 +78,8 @@ import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
 import PurchaseConfirmed from "@/pages/PurchaseConfirmed";
 import Listen from "@/pages/Listen";
+import ListenPrivate from "@/pages/ListenPrivate";
+import ListenAfterDark from "@/pages/ListenAfterDark";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +90,8 @@ function Router() {
       <Route path="/admin/moderation" component={AdminModeration} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/purchase/confirmed" component={PurchaseConfirmed} />
+      <Route path="/listen/private" component={ListenPrivate} />
+      <Route path="/listen/after-dark" component={ListenAfterDark} />
       <Route path="/listen" component={Listen} />
       <Route>
         <Layout>

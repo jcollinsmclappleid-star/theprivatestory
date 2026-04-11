@@ -763,6 +763,95 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 }
 
 // ---------------------------------------------------------------------------
+// Sample story inline player (home page demo)
+// ---------------------------------------------------------------------------
+
+const SAMPLE_ID   = "lib-dd2_02-1775048422711";
+const SAMPLE_COVER = `${API_BASE}/images/cover-${SAMPLE_ID}.png`;
+const SAMPLE_AUDIO = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
+const SAMPLE_START = 200; // ~3:20 — mid Scene 3, just before the sexual turn
+
+function formatSampleTime(s: number) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
+function SampleStoryPlayer() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(SAMPLE_START);
+  const [duration, setDuration] = useState(512);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onTime = () => setCurrentTime(audio.currentTime);
+    const onMeta = () => {
+      const d = audio.duration;
+      if (d && isFinite(d) && d > 0) setDuration(d);
+    };
+    const onEnd = () => { setPlaying(false); setCurrentTime(SAMPLE_START); };
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("loadedmetadata", onMeta);
+    audio.addEventListener("durationchange", onMeta);
+    audio.addEventListener("ended", onEnd);
+    return () => {
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("loadedmetadata", onMeta);
+      audio.removeEventListener("durationchange", onMeta);
+      audio.removeEventListener("ended", onEnd);
+    };
+  }, []);
+
+  const togglePlay = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      if (!audio.src) audio.src = SAMPLE_AUDIO;
+      audio.currentTime = SAMPLE_START;
+      await audio.play();
+      setPlaying(true);
+    }
+  }, [playing]);
+
+  const progress = (currentTime / duration) * 100;
+
+  return (
+    <>
+      <audio ref={audioRef} preload="none" />
+      <div className="flex items-center gap-4 mb-3">
+        <button
+          onClick={togglePlay}
+          className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)]"
+        >
+          {playing
+            ? <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            : <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          }
+          {playing ? "Pause" : "Play Story"}
+        </button>
+        <div className="flex items-center gap-3 text-xs text-white/80">
+          <span>8 min</span>
+          <span>·</span>
+          <span>5 scenes</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] text-white/80 font-mono w-8">{formatSampleTime(currentTime)}</span>
+        <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
+          <div className="h-full rounded-full bg-primary/70 transition-all duration-300" style={{ width: `${progress}%` }} />
+        </div>
+        <span className="text-[10px] text-white/80 font-mono w-8 text-right">{formatSampleTime(duration)}</span>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Home
 // ---------------------------------------------------------------------------
 
@@ -1098,42 +1187,35 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Product mockup */}
+          {/* Product mockup — real sample story */}
           <div className="max-w-3xl mx-auto">
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.8)]"
               style={{ background: "linear-gradient(160deg, #0f0d0a 0%, #120e0b 50%, #0e0c09 100%)" }}>
 
-              {/* Cover art area */}
+              {/* Cover art — real image */}
               <div className="relative h-56 md:h-72 overflow-hidden">
-                <div className="absolute inset-0" style={{
-                  background: "linear-gradient(135deg, #1a0f08 0%, #130e0b 30%, #0d0c09 60%, #100e0a 100%)"
-                }} />
-                {/* Atmospheric overlays */}
-                <div className="absolute inset-0" style={{
-                  background: "radial-gradient(ellipse at 25% 35%, #c9a22726 0%, transparent 55%), radial-gradient(ellipse at 75% 65%, #a0784014 0%, transparent 50%), radial-gradient(ellipse at 60% 20%, #e879a014 0%, transparent 45%)"
-                }} />
-                {/* Grain texture */}
-                <div className="absolute inset-0 opacity-[0.04]" style={{
-                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
-                  backgroundSize: "128px 128px",
-                }} />
+                <img
+                  src={SAMPLE_COVER}
+                  alt="The Back Room in Rainlight"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
+                />
                 {/* Bottom gradient fade */}
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#120e0b] to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#120e0b] to-transparent" />
                 {/* Top chrome */}
                 <div className="absolute top-4 left-5 right-5 flex items-center justify-between z-10">
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Heated</span>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/50 border border-white/8">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <span className="text-[10px] text-white/80 font-medium">Now Playing</span>
+                    <span className="text-[10px] text-white/80 font-medium">Sample Story</span>
                   </div>
                 </div>
                 {/* Setting badge */}
                 <div className="absolute bottom-12 right-5 z-10">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/80">Victorian London, 1884</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/80">Chicago · The Back Room</span>
                 </div>
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-5 z-10">
-                  <p className="font-display text-2xl md:text-3xl font-bold text-white/92 leading-tight drop-shadow-lg">The Fog Between Us</p>
+                  <p className="font-display text-2xl md:text-3xl font-bold text-white/92 leading-tight drop-shadow-lg">The Back Room in Rainlight</p>
                 </div>
               </div>
 
@@ -1141,36 +1223,19 @@ export default function Home() {
               <div className="p-6 md:p-8">
                 {/* Description */}
                 <p className="text-sm text-white/80 leading-relaxed mb-6 max-w-lg">
-                  He shouldn't be in her study at this hour. She should have locked the door. Neither of them mentions the letter still folded in his pocket.
+                  You shouldn't want him. But Chicago at midnight doesn't care about shoulds.
                 </p>
 
-                {/* Audio player */}
+                {/* Real audio player — starts at ~3:20, just before the turn */}
                 <div className="mb-6">
-                  <div className="flex items-center gap-4 mb-3">
-                    <button className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)] cursor-default">
-                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                      Play Story
-                    </button>
-                    <div className="flex items-center gap-3 text-xs text-white/80">
-                      <span>10 min</span>
-                      <span>·</span>
-                      <span>4 scenes</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-white/80 font-mono w-8">0:42</span>
-                    <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
-                      <div className="h-full rounded-full bg-primary/70" style={{ width: "7%" }} />
-                    </div>
-                    <span className="text-[10px] text-white/80 font-mono w-8 text-right">10:00</span>
-                  </div>
+                  <SampleStoryPlayer />
                 </div>
 
-                {/* Story excerpt — "reading along" panel */}
+                {/* Story excerpt — Scene 3, the charged moment */}
                 <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5 mb-5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 1 of 4</p>
-                  <p className="text-sm text-white/80 leading-[1.9] font-light">
-                    The fog had come in early, pressing itself against the windowpanes as though it wanted to be invited inside. She didn't look up when she heard the door — she knew the sound of him now, the particular way he entered a room as if he'd already decided whether to stay.
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 3 of 5</p>
+                  <p className="text-sm text-white/80 leading-[1.9] font-light italic">
+                    You'd rehearsed exactly what you'd say, and now you remember none of it. The words dissolve the moment his eyes lock onto yours, dark and unreadable. There's a question in them, or maybe it's a challenge. The air between you is charged, electric, and your chest feels too tight. His hand moves first — reaching for yours, gripping your wrist with a pressure that's firm but not rough.
                   </p>
                 </div>
 
@@ -1181,10 +1246,45 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="text-center text-xs text-muted-foreground/80 mt-5">
-              Every story is original — written, narrated, and illustrated for this moment only.{" "}
-              <Link href="/create" className="text-primary/70 hover:text-primary transition-colors">Create yours →</Link>
-            </p>
+            {/* Personalisation pitch */}
+            <div className="mt-10 max-w-lg mx-auto text-center">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.22em] whitespace-nowrap">This isn't your story</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+              <p className="font-display text-xl md:text-2xl font-bold text-foreground leading-snug mb-3">
+                Yours is written entirely around you.
+              </p>
+              <p className="text-sm text-white/55 leading-relaxed mb-7">
+                Choose the room. Cast the man. Set your mood, your intensity, your fantasy.<br className="hidden md:block" />
+                Every detail tailored to what you actually desire — under 3 minutes to create.
+              </p>
+              <div className="grid grid-cols-3 gap-3 mb-7 max-w-xs mx-auto">
+                <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+                  <span className="text-xl">🚪</span>
+                  <span className="text-[10px] font-bold text-white/60 uppercase tracking-wide">Your room</span>
+                  <span className="text-[9px] text-white/35 text-center leading-tight">Bar, hotel, study…</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+                  <span className="text-xl">✦</span>
+                  <span className="text-[10px] font-bold text-white/60 uppercase tracking-wide">Your cast</span>
+                  <span className="text-[9px] text-white/35 text-center leading-tight">Who he is to you</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+                  <span className="text-xl">🔥</span>
+                  <span className="text-[10px] font-bold text-white/60 uppercase tracking-wide">Your desire</span>
+                  <span className="text-[9px] text-white/35 text-center leading-tight">Mood & intensity</span>
+                </div>
+              </div>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-8 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
+              >
+                Build my private story →
+              </Link>
+              <p className="text-[10px] text-white/30 mt-3">Under 3 minutes to create · Private to your account · Never shared</p>
+            </div>
           </div>
         </section>
 

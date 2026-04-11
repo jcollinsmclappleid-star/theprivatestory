@@ -87,6 +87,33 @@ export default function SEOPage({
       {/* Three Doors — choose your path */}
       <ThreeDoors filter={doorFilter} />
 
+      {/* USP stats block — propagates to all SEO pages */}
+      <div className="py-8 px-4 border-b border-border/20">
+        <div className="max-w-2xl mx-auto flex flex-col items-center gap-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60">
+            Nothing else goes this deep
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-3xl font-display font-bold text-primary leading-none">2.6M+</span>
+            <span className="text-xs text-muted-foreground/70 leading-snug text-left max-w-[140px]">unique personalised story combinations</span>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-1">
+            {[
+              { n: "50+",  label: "Countries" },
+              { n: "12",   label: "Historical eras" },
+              { n: "14",   label: "Archetypes" },
+              { n: "9",    label: "Chemistries" },
+              { n: "200+", label: "Situations" },
+            ].map(({ n, label }) => (
+              <div key={label} className="text-center">
+                <p className="text-sm font-bold text-primary/80 leading-none">{n}</p>
+                <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest mt-0.5">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Secondary doors — for bedtime pages: "Also in The Private Story" */}
       {showSecondaryDoors && doorFilter && (() => {
         const secondaryIds = (["story", "dark", "quiet"] as DoorId[]).filter(id => !doorFilter.includes(id));

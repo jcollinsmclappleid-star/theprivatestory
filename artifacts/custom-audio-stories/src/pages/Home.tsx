@@ -621,7 +621,6 @@ function CastingPreview() {
               { n: "14", label: "Archetypes" },
               { n: "9", label: "Chemistries" },
               { n: "200+", label: "Situations" },
-              { n: "6,100+", label: "Names" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>
@@ -832,16 +831,29 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight drop-shadow-xl max-w-2xl">
-            Create your private story{" "}
-            <span className="text-primary">around the feeling you choose.</span>
+            Your private immersive story experience —{" "}
+            <span className="text-primary">built around the feeling you choose.</span>
           </h1>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 max-w-sm">
-            {["Who he is", "His energy", "Chemistry between you", "The setting & era", "How far it goes"].map((tag) => (
-              <span key={tag} className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/12 bg-white/4 text-white/80">
-                {tag}
-              </span>
-            ))}
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-3xl md:text-4xl font-display font-bold text-primary leading-none">2.6M+</span>
+              <span className="text-[11px] text-white/60 leading-tight max-w-[120px]">unique personalised story combinations</span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+              {[
+                { n: "50+",  label: "Countries" },
+                { n: "12",   label: "Historical eras" },
+                { n: "14",   label: "Archetypes" },
+                { n: "9",    label: "Chemistries" },
+                { n: "200+", label: "Situations" },
+              ].map(({ n, label }) => (
+                <div key={label} className="text-center">
+                  <p className="text-sm font-bold text-primary/90 leading-none">{n}</p>
+                  <p className="text-[9px] text-white/50 uppercase tracking-widest mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <p className="text-sm text-white/80 leading-relaxed max-w-sm">

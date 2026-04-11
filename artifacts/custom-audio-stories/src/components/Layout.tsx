@@ -119,6 +119,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
       : [{ label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> }]
     ),
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
+    { label: "Listen to a sample", href: "/listen", icon: <Sparkles className="w-4 h-4" /> },
     { label: "Contact", href: "/contact", icon: <MessageCircle className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
@@ -381,6 +382,7 @@ function Footer() {
             { label: "Browse stories", href: "/browse" },
             { label: "Create your story", href: "/create" },
             { label: "Pricing", href: "/pricing" },
+            { label: "Listen to a sample", href: "/listen" },
             { label: "After Dark", href: "/after-dark" },
             { label: "Drift — Bedtime", href: "/drift" },
             { label: "My Stories", href: "/library" },

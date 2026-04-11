@@ -1678,6 +1678,7 @@ export default function AfterDark() {
               afterDark={true}
               handoff={castingHandoff ?? undefined}
               handoffStep={castingHandoff ? (castingHandoff.handoffStep ?? 5) : undefined}
+              scenarioTags={selectedScenario?.tags}
             />
           </motion.div>
         )}

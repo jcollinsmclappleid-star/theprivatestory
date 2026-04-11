@@ -67,12 +67,16 @@ function buildContradictionPairs(p: PronounCtx): [string, string][] {
     ["Dialogue-rich", "Mostly sensation"],
     ["Sharp & direct", "Lyrical"],
 
+    // Pacing vs scene-structure cross-section
+    ["Slow simmer", "Skip the tension — we're already there"],
+
     // Energy opposites
     ["Slow Build", "Instant Chemistry"],
     ["Slow Build", "Skip the tension — we're already there"],
 
     // "What makes this yours?" opposites
     ["The timing was complicated", "It was always going to happen"],
+    ["It happens just once",       "It happens more than once"],
 
     // "Just the Scene" vs story structure
     ["No backstory — start in the moment", "There's a complication first"],
@@ -81,10 +85,6 @@ function buildContradictionPairs(p: PronounCtx): [string, string][] {
     ["No plot, no premise — just this",    "There's a complication first"],
     ["No plot, no premise — just this",    "The story earns its ending"],
     ["No plot, no premise — just this",    "The obstacle makes the ending better"],
-
-    // Praise ↔ degradation opposites
-    [`${sub} wanted to be praised`,                     `${sub} wanted to be degraded`],
-    [`${sub} wanted to be told ${p.refl} was perfect`,  `${sub} wanted to be degraded`],
 
     // Power dynamic opposites
     ...powerPairs,
@@ -107,7 +107,7 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
     {
       heading: "How do you want to feel?",
       sub: "The emotional register of this story",
-      maxSelect: 5,
+      maxSelect: 4,
       tags: [
         "Desired", "Seen", "Powerful", "Chosen",
         "Adored", "Electric", "Wanted", "Known",
@@ -226,7 +226,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Sensation & Restraint",
       sub: "The things you rarely say out loud",
-      maxSelect: 5,
+      maxSelect: 3,
       tags: [
         `${p.sub} wanted to be tied up`,
         `${p.sub} wanted to be blindfolded`,
@@ -261,9 +261,9 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Surrender & Power",
       sub: "How deep the surrender goes",
-      maxSelect: 5,
+      maxSelect: 2,
       tags: [
-        `${p.sub} wanted to be degraded`,
+        `${p.sub} wanted to feel completely surrendered to them`,
         `${p.sub} wanted to be spanked`,
         `${p.sub} wanted to be edged`,
         `${p.sub} wanted to be worshipped`,
@@ -285,7 +285,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "Just the Scene",
       sub: "No buildup. Start in the middle of it.",
-      maxSelect: 5,
+      maxSelect: 1,
       tags: [
         "No backstory — start in the moment",
         "Skip the tension — we're already there",
@@ -298,7 +298,7 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
     {
       heading: "How does it end?",
       sub: "The final note of your story",
-      maxSelect: 5,
+      maxSelect: 2,
       tags: [
         `${p.sub} falls asleep in their arms`,
         "They don't leave until morning",
@@ -388,6 +388,7 @@ const CATEGORY_EXCLUSION_PAIRS: [string, string][] = [
   ["Just the Scene",            "Story Arc & Plot"],
   ["Fantasy & The Impossible",  "Dark Fantasy"],
   ["Pure Romance",              "Surrender & Power"],
+  ["Pure Romance",              "Sensation & Restraint"],
   ["Praise & Devotion",         "Surrender & Power"],
 ];
 
@@ -474,8 +475,8 @@ export function StoryTagStudio({
 
   const contradictionPairs = buildContradictionPairs(p);
 
-  // Global cap: 10 standard, 12 after dark, 5 nocturne/bedtime
-  const totalCap = afterDark ? 12 : bedtime ? 5 : 10;
+  // Global cap: 10 standard, 8 after dark, 5 nocturne/bedtime
+  const totalCap = afterDark ? 8 : bedtime ? 5 : 10;
   const totalSelected = selectedTags.length;
   const globalAtCap = totalSelected >= totalCap;
 

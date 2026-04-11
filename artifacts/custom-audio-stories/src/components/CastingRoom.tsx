@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuffle, ChevronLeft, Moon, Check } from "lucide-react";
@@ -77,6 +77,7 @@ interface Props {
   handoff?: CastingRoomHandoff;
   handoffStep?: number;
   onAfterDark?: () => void;
+  scenarioTags?: string[];
 }
 
 /* ── Perspective helpers ──────────────────────────────────────────── */
@@ -436,6 +437,35 @@ const AFTER_DARK_SETTINGS = [
   { id: "Private Spa Suite",     label: "Private Spa Suite",        sub: "Late booking. No other guests.",                     gradient: "from-[#080008] via-[#100012] to-[#040006]", accent: "#c084fc" },
 ];
 
+/* ── Setting geography rules ─────────────────────────────────────── */
+
+const HISTORICAL_SETTING_IDS = new Set([
+  "Regency England (1810s)", "Victorian London (1880s)", "Belle Époque Paris (1900s)",
+  "Roaring Twenties (1920s)", "Wartime (1940s)", "Swinging Sixties (1960s)",
+  "Disco & Velvet (1970s)", "Neon Decade (1980s)", "Ancient Mediterranean",
+  "Renaissance Italy", "Feudal Japan", "Georgian Scotland",
+]);
+const ORIENT_EXPRESS_ID = "Orient Express Style";
+const MOUNTAIN_SETTING_IDS = new Set(["Ski Chalet", "Mountain Retreat"]);
+const EUROPEAN_VILLA_ID = "European Villa";
+
+const EUROPEAN_COUNTRIES = new Set([
+  "France", "United Kingdom", "Italy", "Spain", "Monaco", "Greece", "Turkey",
+  "Portugal", "Switzerland", "Austria", "Germany", "Netherlands", "Denmark",
+  "Sweden", "Norway", "Finland", "Belgium", "Poland", "Croatia", "Czechia",
+  "Hungary", "Ireland", "Iceland",
+]);
+const ORIENT_EXPRESS_COUNTRIES = new Set([
+  "France", "Belgium", "Germany", "Austria", "Hungary", "Romania", "Turkey",
+  "Switzerland", "Greece", "Serbia",
+]);
+const MOUNTAIN_COUNTRIES = new Set([
+  "France", "Switzerland", "Austria", "Norway", "Sweden", "Iceland", "Germany",
+  "Italy", "Spain", "Greece", "Turkey", "Portugal", "Peru", "Argentina",
+  "USA", "New Zealand", "Japan", "South Korea", "India",
+  "Morocco", "Ethiopia", "Jordan", "Oman", "South Africa", "Kenya", "Tanzania",
+]);
+
 /* ── Country / City data ──────────────────────────────────────────── */
 const COUNTRY_FLAGS: Record<string, string> = {
   "France": "🇫🇷", "United Kingdom": "🇬🇧", "Italy": "🇮🇹", "Spain": "🇪🇸",
@@ -742,7 +772,7 @@ function buildPreview(data: Partial<CastingRoomResult>): string {
 const CASTING_STORAGE_KEY = "casting-room-session";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark }: Props) {
+export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = false, handoff, handoffStep, onAfterDark, scenarioTags }: Props) {
   const initialHandoff = handoff ?? null;
 
   // Restore previous session from localStorage when there is no handoff.
@@ -872,6 +902,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           const stillValid = allowedVoices.some(v => v.id === prev);
           return stillValid ? prev : getDefaultVoiceId(value);
         });
+      }
+      // When a historically-fixed or transit-route setting is chosen, country/city
+      // are irrelevant — auto-clear them so they don't reach the prompt
+      if (key === "setting" && (HISTORICAL_SETTING_IDS.has(value) || value === ORIENT_EXPRESS_ID)) {
+        delete next.country;
+        delete next.city;
       }
       return next;
     });
@@ -1064,6 +1100,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const chemistries = buildChemistries(data.pairing);
   const archetypes  = buildArchetypes(data.pairing);
 
+  const isChemistryRestricted = useCallback((chemId: string) => {
+    if (!scenarioTags || scenarioTags.length === 0) return false;
+    if (scenarioTags.some(t => t === "I'm completely in control" || t === "I take what I want")) {
+      if (chemId.includes("Takes Charge") || chemId === "Charged Dynamic") return true;
+    }
+    if (scenarioTags.some(t => t === "He's completely in control" || t === "Total surrender")) {
+      if (chemId.includes("Leads")) return true;
+    }
+    return false;
+  }, [scenarioTags]);
+
   const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
@@ -1133,12 +1180,18 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     ? true
                     : ["Lovers", "Slow Surrender", "Romantic", "Sweet & Tender", "Pure Devotion", "The Best Friend", "Nervous Energy", "Playful", "Equal Tension", "Push & Pull"].includes(c.label)
                 )
-                .map(c => (
-                  <ArtTile key={c.id} gradient={c.gradient} accent={c.accent} image={c.image} selected={data.chemistry === c.id} onClick={() => update("chemistry", c.id)}>
-                    <p className="font-semibold text-white text-base">{c.label}</p>
-                    <p className="text-white/75 text-sm mt-0.5">{c.sub}</p>
-                  </ArtTile>
-                ))}
+                .map(c => {
+                  const restricted = isChemistryRestricted(c.id);
+                  return (
+                    <div key={c.id} className={restricted ? "opacity-35 cursor-not-allowed pointer-events-none" : ""} title={restricted ? "Not compatible with your chosen scenario" : undefined}>
+                      <ArtTile gradient={c.gradient} accent={c.accent} image={c.image} selected={!restricted && data.chemistry === c.id} onClick={restricted ? () => {} : () => update("chemistry", c.id)}>
+                        <p className="font-semibold text-white text-base">{c.label}</p>
+                        <p className="text-white/75 text-sm mt-0.5">{c.sub}</p>
+                        {restricted && <p className="text-white/50 text-xs mt-1.5 italic">Not available with your scenario</p>}
+                      </ArtTile>
+                    </div>
+                  );
+                })}
             </div>
           </motion.div>
         )}
@@ -1456,9 +1509,31 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: accentColor }} />
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Where in the world?</h2>
             </div>
-            <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
               A real country and city weave genuine cultural texture into your story — its sounds, its light, its customs. Entirely optional.
             </p>
+
+            {/* Setting-geography advisory */}
+            {data.setting && (HISTORICAL_SETTING_IDS.has(data.setting) || data.setting === ORIENT_EXPRESS_ID) && (
+              <div className="mb-6 px-4 py-3 rounded-xl text-xs text-muted-foreground/80 leading-relaxed"
+                style={{ background: "rgba(201,162,39,0.08)", border: "1px solid rgba(201,162,39,0.2)" }}>
+                <span className="font-semibold" style={{ color: accentColor }}>Setting note — </span>
+                {HISTORICAL_SETTING_IDS.has(data.setting)
+                  ? "Your chosen setting carries its own era and geography. A country or city selection won't apply to this story."
+                  : "The Orient Express travels its own fixed route. A country or city selection won't apply to this story."}
+              </div>
+            )}
+            {data.setting && (MOUNTAIN_SETTING_IDS.has(data.setting) || data.setting === EUROPEAN_VILLA_ID || data.setting === ORIENT_EXPRESS_ID) && !HISTORICAL_SETTING_IDS.has(data.setting ?? "") && (
+              <div className="mb-6 px-4 py-3 rounded-xl text-xs text-muted-foreground/80 leading-relaxed"
+                style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.15)" }}>
+                <span className="font-semibold" style={{ color: accentColor }}>Location filter active — </span>
+                {MOUNTAIN_SETTING_IDS.has(data.setting)
+                  ? "Only countries with mountain regions are shown below."
+                  : data.setting === EUROPEAN_VILLA_ID
+                  ? "Only European countries are shown below."
+                  : "Only Orient Express route countries are shown below."}
+              </div>
+            )}
 
             {/* Country */}
             <div className="mb-4">
@@ -1497,7 +1572,13 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <div className="max-h-56 overflow-y-auto">
                       {Object.keys(COUNTRY_CITIES)
                         .sort()
-                        .filter(c => !countrySearch || c.toLowerCase().includes(countrySearch.toLowerCase()))
+                        .filter(c => {
+                          if (countrySearch && !c.toLowerCase().includes(countrySearch.toLowerCase())) return false;
+                          if (data.setting === ORIENT_EXPRESS_ID) return ORIENT_EXPRESS_COUNTRIES.has(c);
+                          if (data.setting && MOUNTAIN_SETTING_IDS.has(data.setting)) return MOUNTAIN_COUNTRIES.has(c);
+                          if (data.setting === EUROPEAN_VILLA_ID) return EUROPEAN_COUNTRIES.has(c);
+                          return true;
+                        })
                         .map(c => (
                           <button
                             key={c}
@@ -1640,6 +1721,20 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 </ArtTile>
               ))}
             </div>
+
+            {/* Setting-geography advisory in step 5 */}
+            {data.setting && (HISTORICAL_SETTING_IDS.has(data.setting) || data.setting === ORIENT_EXPRESS_ID || MOUNTAIN_SETTING_IDS.has(data.setting) || data.setting === EUROPEAN_VILLA_ID) && (
+              <div className="mb-5 px-4 py-3 rounded-xl text-xs text-muted-foreground/70 leading-relaxed"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                {HISTORICAL_SETTING_IDS.has(data.setting)
+                  ? "This setting carries its own era and world — your country and city choices won't apply to this story."
+                  : data.setting === ORIENT_EXPRESS_ID
+                  ? "Your location selection has been cleared — the Orient Express travels its own route."
+                  : MOUNTAIN_SETTING_IDS.has(data.setting)
+                  ? "This setting works best with mountainous countries — only compatible locations will appear in the location step."
+                  : "This setting is European by nature — only European countries will appear in the location step."}
+              </div>
+            )}
 
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
               Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>

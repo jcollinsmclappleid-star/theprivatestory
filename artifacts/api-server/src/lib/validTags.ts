@@ -55,6 +55,7 @@ const STANDARD_TAGS: string[] = [
   // The Energy Between Them
   "Slow Build", "Instant Chemistry", "Unfinished Business",
   "Old Wounds", "Forbidden", "Push & Pull",
+  "A pull neither can explain",
   "Inevitable", "Complicated", "Playful tension", "Bittersweet",
   "First time", "Reunion after years", "Rivals to lovers",
   "One night only", "A decade of tension finally breaking",
@@ -91,6 +92,7 @@ const STANDARD_TAGS: string[] = [
   "It happens more than once",
   "It shouldn't have happened",
   "It was always going to happen",
+  "The timing was complicated",
   "No one gets hurt",
   "Feelings are involved whether they want them or not",
   // What Makes It Yours — pronoun-substituted
@@ -181,7 +183,7 @@ const STANDARD_TAGS: string[] = [
   // protagonist is the obsession
   "She is the obsession and she knows it",
   "He is the obsession and he knows it",
-  "They is the obsession and they knows it",
+  "They are the obsession and they know it",
   // partner catalogues protagonist
   "He catalogues everything about her",
   "She catalogues everything about her",
@@ -209,7 +211,7 @@ const STANDARD_TAGS: string[] = [
   "He is everything and he tells him",
   "She is everything and they tell her",
   "He is everything and they tell him",
-  "They is everything and they tell them",
+  "They are everything and they tell them",
 
   // Story Arc & Plot
   "There's a complication first",
@@ -267,7 +269,7 @@ const AFTER_DARK_TAGS: string[] = [
   ...variants(p => `${p.sub} wanted to be called ${p.poss} name when it happened`),
 
   // Surrender & Power
-  ...variants(p => `${p.sub} wanted to be degraded`),
+  ...variants(p => `${p.sub} wanted to feel completely surrendered to them`),
   ...variants(p => `${p.sub} wanted to be spanked`),
   ...variants(p => `${p.sub} wanted to be edged`),
   ...variants(p => `${p.sub} wanted to be worshipped`),

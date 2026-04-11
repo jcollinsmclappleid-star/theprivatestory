@@ -808,7 +808,7 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-20 pb-10 md:pt-28 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
+      <section className="relative z-30 w-full pt-10 pb-10 md:pt-14 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

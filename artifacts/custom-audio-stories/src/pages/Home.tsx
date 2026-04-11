@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock, DoorOpen, Volume2,
+  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -836,7 +836,19 @@ export default function Home() {
 
           <div className="flex items-center justify-start sm:justify-center gap-3 sm:gap-5 flex-wrap w-full">
             <div className="flex items-center gap-2">
-              <DoorOpen className="w-4 h-4 text-primary" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="door-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#e8c45a" />
+                    <stop offset="100%" stopColor="#c9a227" />
+                  </linearGradient>
+                </defs>
+                <path d="M13 4h3a2 2 0 0 1 2 2v14" stroke="url(#door-grad)" />
+                <path d="M2 20h3" stroke="url(#door-grad)" />
+                <path d="M13 20h9" stroke="url(#door-grad)" />
+                <path d="M10 12v.01" stroke="url(#door-grad)" />
+                <path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z" stroke="url(#door-grad)" />
+              </svg>
               <span className="text-[11px] tracking-wide text-white/55">Enter a room</span>
             </div>
             <span className="text-white/20 text-xs">→</span>
@@ -855,7 +867,16 @@ export default function Home() {
             </div>
             <span className="text-white/20 text-xs">→</span>
             <div className="flex items-center gap-2">
-              <Volume2 className="w-4 h-4 text-primary" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="volume-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#7b8fff" />
+                    <stop offset="100%" stopColor="#56b4e0" />
+                  </linearGradient>
+                </defs>
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="url(#volume-grad)" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="url(#volume-grad)" />
+              </svg>
               <span className="text-[11px] tracking-wide text-white/55">Hear it privately</span>
             </div>
           </div>

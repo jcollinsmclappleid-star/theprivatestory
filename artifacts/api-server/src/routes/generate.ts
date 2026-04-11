@@ -2602,6 +2602,63 @@ function openBeatExample(beat: string): string {
 }
 
 /**
+ * Repairs staccato overreach — model-generated sentence breaks that land in the
+ * middle of a clause, after a preposition, or inside quoted dialogue.
+ *
+ * Runs on EVERY scene (not just staccato) because the model sometimes applies
+ * staccato habits globally.  Must run BEFORE enforceStaccato so it doesn't split
+ * sentences that are still mid-repair.
+ *
+ * Fixes:
+ *  1. Double period after closing quote:  .".<space>  →  ." <space>
+ *  2. Sentence-ending preposition/subordinator/article:
+ *       "word in. My mouth" → "word in my mouth"
+ *       "when. You hollow"  → "when you hollow"
+ */
+function repairBrokenFragments(text: string): string {
+  if (!text) return text;
+
+  // 1. Double period after closing quote (e.g. `"I want to taste you.". You`)
+  text = text.replace(/\."\.(\s+|$)/g, '."$1');
+
+  // 2. Words that grammatically CANNOT end a sentence.
+  //    When followed by ". <Capital>" the period is a staccato overreach — join
+  //    the fragment back and lowercase the following capital.
+  const CANT_END = [
+    // Prepositions
+    "in","into","on","onto","at","of","to","for","from","with","by",
+    "through","over","under","above","below","between","among","against",
+    "across","behind","beside","along","around","off","out","up","down",
+    "about","near","upon","within","without","toward","towards","outside",
+    "inside","past","beyond",
+    // Subordinating conjunctions
+    "when","as","while","because","although","since","until","though",
+    "unless","whether","if","that","which","who","whose","what","how","where",
+    // Articles / determiners (never end a prose sentence)
+    "the","a","an",
+  ];
+
+  // Build a single-pass regex  \b(word1|word2|...)\. ([A-Z])
+  // The trailing capital is lowercased so the joined sentence reads naturally.
+  const cantEndRe = new RegExp(
+    `\\b(${CANT_END.join("|")})\\.( +)([A-Z])`,
+    "gi"
+  );
+
+  // Keep looping until no more changes — handles chained breaks like
+  // "going in. My mouth. When. You" in a single pass.
+  let prev = "";
+  while (prev !== text) {
+    prev = text;
+    text = text.replace(cantEndRe, (_m, word: string, space: string, cap: string) =>
+      `${word.toLowerCase()}${space}${cap.toLowerCase()}`
+    );
+  }
+
+  return text;
+}
+
+/**
  * Deterministic staccato sentence enforcer.
  * Splits any sentence > 8 words at the first natural conjunction/clause boundary.
  * Applied post-write to every scene whose prose_rhythm === "staccato".
@@ -2862,12 +2919,16 @@ You must honour ALL FOUR for every scene:
 
 NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
   • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule. You will audit your sentences after drafting each scene.
-    - staccato: EVERY sentence is 3–8 words. Hard stop after each one. No conjunctions joining clauses. No subordinate clauses. No "as", "while", "when", "and then" linking two things. Each sentence is a complete unit. Urgency through brevity.
-      SENTENCE AUDIT (required for staccato): After drafting, re-read every sentence. Any sentence over 8 words MUST be split at its first clause boundary.
-      WRONG: "She crossed the room, her breath catching as he turned to look at her."
-      WRONG: "He moved closer and she felt the warmth of him before he spoke."
-      RIGHT:  "She crossed the room. He turned. Her breath caught."
-      RIGHT:  "He moved closer. She felt his warmth. He hadn't spoken yet."
+    - staccato: EVERY sentence is 3–8 words. Hard stop after each one. Each sentence must be a GRAMMATICALLY COMPLETE THOUGHT — subject + verb + whatever it needs. Urgency through brevity, not through breaking mid-clause.
+      ABSOLUTE PROHIBITION: A sentence MUST NEVER end with a preposition, subordinating conjunction, article, or incomplete clause. NEVER end a sentence on: in, into, on, at, of, to, for, from, with, by, through, between, among, when, as, while, because, although, since, until, though, unless, if, that, which, who, the, a, an — these words DEMAND what follows them. If you write "in." you have broken a sentence. Fix it.
+      DIALOGUE RULE: Staccato rhythm NEVER breaks inside quoted speech. A speech line is always one complete unit even if long. Break AROUND dialogue, not inside it.
+      SENTENCE AUDIT (required for staccato): After drafting, re-read every sentence. Any sentence over 8 words MUST be split at its first COMPLETE clause boundary — never mid-phrase.
+      WRONG: "She wanted him in. Her mouth." (broken after preposition — join it)
+      WRONG: "He groaned when. She moved." (broken after subordinator — join it)
+      WRONG: "She felt the weight of. Him." (broken after preposition — join it)
+      RIGHT:  "She wanted him. She took him in." or "She wanted him in her mouth."
+      RIGHT:  "He groaned. She moved against him."
+      RIGHT:  "She felt the weight of him."
     - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
     - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
     - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage.
@@ -3010,7 +3071,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Staccato audit: For each scene with prose_rhythm=staccato, scan every sentence. Split any sentence over 8 words at its first clause boundary. Do this sentence by sentence.
+  Step 2 — Staccato audit: For each scene with prose_rhythm=staccato, scan every sentence. (a) Fix any sentence that ends on a preposition, conjunction, or article — these words cannot end a sentence; join the fragment to the next word. (b) Fix any period that appears inside a quoted speech line — dialogue is never broken mid-speech. (c) Fix any double period "."." after quoted speech. (d) Split any remaining sentence over 8 words at its first COMPLETE clause boundary.
   Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
   Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 
@@ -3112,10 +3173,20 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
       const scenePlan = brief.scene_plan[idx];
       let text: string = s.text ?? "";
 
-      // Post-write staccato enforcement: deterministically split any sentence
-      // that exceeds 8 words in staccato scenes.  This is a hard backstop —
-      // the model is instructed to keep sentences short, but this guarantees
-      // compliance even when the instruction is partially ignored.
+      // Post-write pass 1 — repair staccato overreach on ALL scenes.
+      // Fixes: periods after prepositions/subordinators/articles that cannot
+      // grammatically end a sentence, and double-periods after quoted speech.
+      // Must run BEFORE enforceStaccato so we don't re-split repaired text.
+      if (text) {
+        const beforeRepair = text;
+        text = repairBrokenFragments(text);
+        if (text !== beforeRepair) {
+          logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired broken sentence fragments");
+        }
+      }
+
+      // Post-write pass 2 — staccato enforcement: split any sentence that
+      // still exceeds 8 words in scenes assigned staccato prose_rhythm.
       if (scenePlan?.prose_rhythm === "staccato" && text) {
         const before = text;
         text = enforceStaccato(text);

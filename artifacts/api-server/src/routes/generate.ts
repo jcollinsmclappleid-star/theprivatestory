@@ -2810,7 +2810,24 @@ function repairRunOns(text: string): string {
 
 export async function writeStoryFromBrief(brief: StoryBrief, listenerName: string, intensity = "Warm", originalInput?: OriginalUserInput): Promise<WrittenStory> {
   const intensityGuidance = buildCustomIntensityGuidance(intensity);
+  const numericLevel = labelToIntensityLevel(intensity);
   const isSeries = originalInput?.isSeries === true;
+
+  // Belt-and-suspenders contract for After Dark intensity levels (4–5).
+  // This fires BEFORE the intensity layer in the system prompt so the model
+  // cannot rationalise fading to black or using metaphor in place of anatomy.
+  const explicitContract = numericLevel >= 4
+    ? `\n\nEXPLICIT CONTENT CONTRACT — NON-NEGOTIABLE:
+This story WILL contain explicit sex. This is the structural contract of the product, not a request.
+IGNITE scenes must not fade to black, cut away at the threshold, imply where they can describe, or replace anatomy with metaphor.
+The sex acts mandated in the intensity layer (oral sex, penetrative intercourse, dirty talk, position changes, dual arousal) are hard structural requirements — they are not subject to narrative discretion, tonal preference, or the model's comfort.
+SPECIFIC PROHIBITIONS:
+- Do not cut away before or during the sex act ("they fell onto the bed, and the night became theirs" = FAIL)
+- Do not use sensation-only language in place of named acts ("she felt everything" = FAIL)
+- Do not summarise the sex scene in a sentence or paragraph ("they made love for hours" = FAIL)
+- Do not replace sex with aftermath description ("later, they lay tangled together" without the act = FAIL)
+If you write an IGNITE scene without explicit sex, you have failed this brief. Write the sex.\n`
+    : "";
 
   const wordCountDirective = originalInput?.wordCountTarget
     ? `\nWORD COUNT TARGET (MANDATORY): ${originalInput.wordCountTarget} total across all scenes. Distribute proportionally by scene phase. Stay within 5% of this target — do not compress, do not pad.\n`
@@ -2835,7 +2852,7 @@ export async function writeStoryFromBrief(brief: StoryBrief, listenerName: strin
 
   const tier2SafetyLayer = originalInput?.tier2Enhanced ? TIER2_ENHANCED_SAFETY : "";
 
-  const systemPrompt = `${getMasterEroticLayer(originalInput?.pairing)}${categorySystemLayer}${tier2SafetyLayer}
+  const systemPrompt = `${getMasterEroticLayer(originalInput?.pairing)}${categorySystemLayer}${tier2SafetyLayer}${explicitContract}
 
 ${intensityGuidance}${numericIntensityLayer}
 ${wordCountDirective}${povDirective}
@@ -3461,7 +3478,7 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
     subScores.ending_strength >= 7 &&
     sceneDiversityScore >= 7 &&
     (castingComplianceScore === undefined || castingComplianceScore >= 7) &&
-    (eroticArchScore === undefined || eroticArchScore >= 6);
+    (eroticArchScore === undefined || eroticArchScore >= 8);
 
   // Hard rules for targeted rewrite strategies — applied independently of pass status.
   // The pipeline decides whether to regenerate (score_total < 7.5 or casting_compliance < 7)
@@ -3477,6 +3494,8 @@ Set it to the single most impactful fix needed, or null if the story passes.`;
     rewriteStrategy = "increase_specificity";
   } else if (subScores.originality < 6.5) {
     rewriteStrategy = "rotate_dynamic_or_setting";
+  } else if (eroticArchScore !== undefined && eroticArchScore < 8) {
+    rewriteStrategy = "enforce_erotic_architecture";
   } else if (!passed) {
     rewriteStrategy = parsed.rewrite_strategy ?? "rewrite_ending";
   }
@@ -3510,6 +3529,8 @@ export async function rewriteStory(brief: StoryBrief, story: WrittenStory, strat
       "Introduce a fresh angle on the relationship dynamic or shift one element of the setting slightly to add originality. Preserve the core emotional arc entirely.",
     enforce_scene_diversity:
       "Rewrite each scene to honour its per-scene diversity assignments from the brief. For each scene: (1) reconstruct sentences in the assigned prose_rhythm (flowing = long clauses building to release; fragmented = incomplete thoughts with ellipsis; baroque = dense accumulated sensory layers); (2) rewrite the first sentence to match the assigned scene_open_beat exactly; (3) adjust the depth of internal narration to match interiority_depth (external = no internal monologue; surface = body-only; shallow = one or two thought-flickers; deep = sustained inner monologue); (4) adjust spoken dialogue to match dialogue_mode — DIALOGUE IS MANDATORY IN EVERY SCENE, never remove speech entirely (minimal = at most two lines but at least one; exchange = back-and-forth; sustained = dialogue-driven dirty talk); (5) narrow the protagonist's attention to the partner's assigned partner_attention_focus in that scene. Do not change the plot, setting, or emotional arc — only the prose texture and interiority level.",
+    enforce_erotic_architecture:
+      "The IGNITE scenes are missing required explicit content for this intensity level. Rewrite every IGNITE-phase scene to ensure ALL of the following are present — do not skip any: (a) at least one anatomically explicit oral sex sequence — describe who is giving, the precise physical actions, and both characters' full responses including sound and movement; (b) at least one scene of penetrative intercourse described with full physical specificity — entry, movement, friction, sensation, sound, and both characters' arousal states named throughout; (c) at least two position changes across the IGNITE scenes, each introduced by a spoken line (command, request, or direction from one character to the other); (d) sustained dirty talk throughout every IGNITE scene — characters must name what they are doing, what they want, and what they feel in direct explicit language — no euphemism, no metaphor, no implication; (e) both characters' arousal described continuously — erection and wetness named and tracked throughout, never implied or replaced with sensation-only language. Do not fade to black. Do not cut away at the threshold. Do not use metaphor in place of anatomy. Preserve all non-IGNITE scenes exactly as written — only the IGNITE phases are being corrected.",
   };
 
   const instruction = strategyInstructions[strategy] ?? strategyInstructions.rewrite_ending;

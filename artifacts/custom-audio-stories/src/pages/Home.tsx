@@ -767,8 +767,8 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 // ---------------------------------------------------------------------------
 
 const SAMPLE_ID    = "b46f97f830345edb4687ed19b7a28ad1";
-const SAMPLE_COVER = `${API_BASE}/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
-const SAMPLE_AUDIO = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
+const SAMPLE_COVER = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
+const SAMPLE_AUDIO = `${API_BASE}/api/audio/audio-${SAMPLE_ID}.mp3`;
 const SAMPLE_START = 0;   // 0:00 — opening of Scene 1, elevator doors close
 const SAMPLE_END   = 195; // 3:15 — Scene 2 peak: "his hand drifts toward yours, then stops"
 

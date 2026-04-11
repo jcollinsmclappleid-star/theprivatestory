@@ -7,8 +7,8 @@ import { useSEO } from "@/hooks/useSEO";
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const SAMPLE_ID   = "b46f97f830345edb4687ed19b7a28ad1";
-const COVER_URL   = `${API_BASE}/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
-const AUDIO_URL   = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
+const COVER_URL   = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
+const AUDIO_URL   = `${API_BASE}/api/audio/audio-${SAMPLE_ID}.mp3`;
 const SCENE3_START = 253; // Scene 3 begins here — the kiss, the hook
 
 const AGE_GATE_KEY = "tps_age_confirmed";

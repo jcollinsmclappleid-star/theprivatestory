@@ -766,10 +766,11 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 // Sample story inline player (home page demo)
 // ---------------------------------------------------------------------------
 
-const SAMPLE_ID   = "lib-dd2_02-1775048422711";
+const SAMPLE_ID    = "lib-dd2_02-1775048422711";
 const SAMPLE_COVER = `${API_BASE}/images/cover-${SAMPLE_ID}.png`;
 const SAMPLE_AUDIO = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
-const SAMPLE_START = 200; // ~3:20 — mid Scene 3, just before the sexual turn
+const SAMPLE_START = 200; // 3:20 — mid Scene 3
+const SAMPLE_END   = 295; // 4:55 — just after "You taste whiskey. Smoke. Him."
 
 function formatSampleTime(s: number) {
   const m = Math.floor(s / 60);
@@ -781,28 +782,41 @@ function SampleStoryPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(SAMPLE_START);
-  const [duration, setDuration] = useState(512);
+
+  const stopSample = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause();
+    audio.currentTime = SAMPLE_START;
+    setPlaying(false);
+    setCurrentTime(SAMPLE_START);
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const onTime = () => setCurrentTime(audio.currentTime);
-    const onMeta = () => {
-      const d = audio.duration;
-      if (d && isFinite(d) && d > 0) setDuration(d);
+    const onTime = () => {
+      const t = audio.currentTime;
+      setCurrentTime(t);
+      if (t >= SAMPLE_END) {
+        audio.pause();
+        audio.currentTime = SAMPLE_START;
+        setPlaying(false);
+        setCurrentTime(SAMPLE_START);
+      }
     };
-    const onEnd = () => { setPlaying(false); setCurrentTime(SAMPLE_START); };
+    const onEnd = () => {
+      audio.currentTime = SAMPLE_START;
+      setPlaying(false);
+      setCurrentTime(SAMPLE_START);
+    };
     audio.addEventListener("timeupdate", onTime);
-    audio.addEventListener("loadedmetadata", onMeta);
-    audio.addEventListener("durationchange", onMeta);
     audio.addEventListener("ended", onEnd);
     return () => {
       audio.removeEventListener("timeupdate", onTime);
-      audio.removeEventListener("loadedmetadata", onMeta);
-      audio.removeEventListener("durationchange", onMeta);
       audio.removeEventListener("ended", onEnd);
     };
-  }, []);
+  }, [stopSample]);
 
   const togglePlay = useCallback(async () => {
     const audio = audioRef.current;
@@ -818,7 +832,11 @@ function SampleStoryPlayer() {
     }
   }, [playing]);
 
-  const progress = (currentTime / duration) * 100;
+  // Progress fills 0→100% across the SAMPLE_START→SAMPLE_END window
+  const progress = Math.min(
+    ((currentTime - SAMPLE_START) / (SAMPLE_END - SAMPLE_START)) * 100,
+    100
+  );
 
   return (
     <>
@@ -832,20 +850,16 @@ function SampleStoryPlayer() {
             ? <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             : <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           }
-          {playing ? "Pause" : "Play Story"}
+          {playing ? "Pause" : "Play sample"}
         </button>
-        <div className="flex items-center gap-3 text-xs text-white/80">
-          <span>8 min</span>
-          <span>·</span>
-          <span>5 scenes</span>
-        </div>
+        <span className="text-[10px] text-white/45 italic">Scenes 3–4 · 1½ min clip</span>
       </div>
       <div className="flex items-center gap-3">
         <span className="text-[10px] text-white/80 font-mono w-8">{formatSampleTime(currentTime)}</span>
         <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
           <div className="h-full rounded-full bg-primary/70 transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
-        <span className="text-[10px] text-white/80 font-mono w-8 text-right">{formatSampleTime(duration)}</span>
+        <span className="text-[10px] text-white/80 font-mono w-8 text-right">{formatSampleTime(SAMPLE_END)}</span>
       </div>
     </>
   );

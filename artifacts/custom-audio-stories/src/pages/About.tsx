@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Heart, Lock, Music, Check } from "lucide-react";
+import { Heart, Lock, Music, Check, Sparkles } from "lucide-react";
 import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 export default function About() {
@@ -94,7 +94,7 @@ export default function About() {
               {
                 icon: <Music className="w-6 h-6 text-primary" />,
                 title: "More than a single moment",
-                desc: "Alongside your private library, paid access includes a curated collection with regular new releases, so there is always something to return to.",
+                desc: "Alongside your own creations, members receive a curated story each month — a carefully chosen extra to return to between your own.",
               },
             ].map((item, i) => (
               <motion.div
@@ -148,7 +148,7 @@ export default function About() {
             </p>
             <ul className="space-y-3">
               {[
-                "More personal than a standard library",
+                "More personal than a standard catalogue",
                 "More discreet than a social platform",
                 "More emotionally aware than a generic app",
                 "More refined than most digital story platforms",

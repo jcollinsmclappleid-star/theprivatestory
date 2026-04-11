@@ -383,3 +383,9 @@ id = "3rYT8GFk01ACpjGTXObDG"
 uri = "file://artifacts/custom-audio-stories/public/images/logo.png"
 type = "image"
 title = "Logo (images/logo.png — used in nav & favicon)"
+
+[[outputs]]
+id = "DFUmTNwQEfhIJ7TWcoKWd"
+uri = "file://artifacts/api-server/test-stories/plan-test-output.md"
+type = "text"
+title = "Story Plan Test Output + Grammar QC"

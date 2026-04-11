@@ -365,6 +365,19 @@ async function moderateOutputWithLLM(text: string): Promise<ModerationResult> {
 
     if (!parsed.safe) {
       const violations = parsed.violations ?? [];
+
+      // When Mistral returns safe=false but names NO specific violation from our
+      // prohibited list, it is triggering on its own general content policy rather
+      // than on anything we actually prohibit. Adult erotic fiction is legal and
+      // explicitly permitted on this platform — do not block on a general flag.
+      if (violations.length === 0) {
+        logger.info(
+          {},
+          "[llm-output-moderation] safe=false but no prohibited category named — Mistral general flag, passing through",
+        );
+        return { blocked: false, tier2Flagged: false, reason: null, source: null };
+      }
+
       const consentOnly =
         violations.length > 0 && violations.every((v) => v.trim() === CONSENT_VIOLATION_LABEL);
 

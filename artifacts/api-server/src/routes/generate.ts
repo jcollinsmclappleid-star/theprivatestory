@@ -741,9 +741,9 @@ const SCENE_SENSORY_DIVERSITY = {
    * No two adjacent scenes may share the same prose_rhythm.
    */
   prose_rhythms: [
-    "flowing — long subordinate clauses gather momentum; the sentence doesn't release until the end; sense arrives late and fully",
-    "fragmented — incomplete thoughts. Ellipsis. The sentence starts and something stops it. No landing. The rhythm of interruption.",
-    "baroque — dense accumulated layers of sensory detail; multiple registers stacked in a single paragraph; the prose doesn't breathe until the very end",
+    "flowing — a single sentence carries multiple subordinate clauses before it releases; the main verb arrives late; the period comes only when the thought is complete",
+    "fragmented — incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Each fragment ends with correct punctuation. The interruption is the point.",
+    "baroque — multiple sensory registers stack within a single grammatically complete sentence; density through clause structure, not through merged sentences",
   ],
   /**
    * How each scene's opening sentence arrives.
@@ -2892,9 +2892,14 @@ You must honour ALL FOUR for every scene:
 
 NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fields. Honour ALL FIVE for every scene:
   • prose_rhythm: Write the scene's sentences in THIS specific texture. It is not a mood suggestion — it is a sentence-construction rule. You will audit your sentences after drafting each scene.
-    - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
-    - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
-    - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage. IGNITE scenes use this — let sensation accumulate; do not rush the sentence to its end; layer touch, sound, heat, breath, and the protagonist's internal response before releasing the full weight of what is happening.
+    SENTENCE TERMINAL LAW — applies to ALL rhythms: every sentence must end with a period, exclamation mark, or question mark. Long-sentence prose (flowing, baroque) achieves length through commas, em-dashes, semicolons, and subordinating conjunctions WITHIN a single sentence — never by running two independent sentences together without terminal punctuation.
+      WRONG: "She felt him beside her his breath was warm" (two subjects, no period between them — merged sentence)
+      WRONG: "The door opened you're already inside" (two independent clauses, no period — merged sentence)
+      RIGHT:  "She felt him beside her, his breath warm against her neck, the weight of him filling the room." (one sentence, commas extending it)
+      RIGHT:  "The door opened. You were already inside." (two properly-terminated sentences)
+    - flowing: a single sentence carries multiple subordinate clauses — the main verb is withheld until near the end; the period arrives only when the full thought lands. Each sentence is grammatically complete and properly terminated.
+    - fragmented: incomplete thoughts. Ellipsis. A sentence begins and something stops it before it can land... Each fragment still ends with a period, ellipsis, or dash. Incompleteness is intentional — not an omitted full stop.
+    - baroque: multiple sensory registers stack within a SINGLE grammatically complete sentence; the density comes from clause structure — touch, sound, heat, thought, breath layered by commas and em-dashes before the sentence releases. Do not run two sentences together. Each baroque sentence is one long, complete, properly-terminated unit.
   • scene_open_beat: The first sentence of this scene MUST arrive in this exact mode. Not the second sentence. The first.
     - sensory_anchor: a specific physical sensation or sensory detail, no preamble, no context.
     - dialogue: something is already being said when the scene opens.
@@ -2929,9 +2934,10 @@ DIALOGUE MANDATE — apply before finalising:
   Speech-before-action rule: before any physical escalation (undressing, positioning, the act itself), one character must speak — command, request, or declaration. Physical action follows speech, not the other way around.
 
 PROSE RHYTHM GATE — before you write each scene, note its assigned rhythm:
-  If fragmented → ellipsis permitted, incomplete thoughts expected, trailing silence is correct.
-  If flowing → clauses may extend; withhold the main verb until late.
-  If baroque → stack sensory registers; delay resolution until end of paragraph. For IGNITE scenes assigned baroque: let sensation accumulate across the sentence; layer touch, heat, sound, breath, and the protagonist's internal response before the sentence releases.
+  ALL RHYTHMS: every sentence ends with a period, exclamation mark, or question mark — no exceptions. "Long" prose extends a sentence internally through commas and subordinate clauses; it does NOT join two sentences by omitting the terminal between them.
+  If fragmented → each fragment ends with correct punctuation (period, ellipsis, or dash); incompleteness is intentional, not an omitted full stop.
+  If flowing → clauses build inside a single sentence; withhold the main verb until late; terminate the sentence properly when the full thought lands.
+  If baroque → stack sensory registers within a single properly-terminated sentence; layer touch, heat, sound, breath as comma-separated clauses; release the sentence at the end of the accumulated image.
 
 TOUCH VERB MAP — absolute law for this story (check before writing each scene):
 ${brief.scene_plan.map((sp, i) =>
@@ -3010,8 +3016,9 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
-  Step 3 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
+  Step 2 — Sentence terminal audit: Scan every scene for run-on sentences — two independent clauses merged without a period between them. Look for a new subject (he, she, you, they, his, her, your, I) that appears after a complete verb phrase without a period before it. Fix each by inserting the missing period and capitalising the new sentence. Example fix: "the ocean outside you're" → "the ocean outside. You're".
+  Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
+  Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 
 Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. Start your response with the opening brace { and end with the closing brace }.
 {

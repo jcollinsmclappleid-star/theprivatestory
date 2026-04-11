@@ -769,8 +769,8 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 const SAMPLE_ID    = "b46f97f830345edb4687ed19b7a28ad1";
 const SAMPLE_COVER = `${API_BASE}/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
 const SAMPLE_AUDIO = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
-const SAMPLE_START = 253; // 4:13 — start of Scene 3, the elevator jerks
-const SAMPLE_END   = 375; // 6:15 — end of Scene 3, "Tell me to stop"
+const SAMPLE_START = 0;   // 0:00 — opening of Scene 1, elevator doors close
+const SAMPLE_END   = 195; // 3:15 — Scene 2 peak: "his hand drifts toward yours, then stops"
 
 function formatSampleTime(s: number) {
   const m = Math.floor(s / 60);
@@ -852,7 +852,7 @@ function SampleStoryPlayer() {
           }
           {playing ? "Pause" : "Play sample"}
         </button>
-        <span className="text-[10px] text-white/45 italic">Scene 3 · 2 min clip</span>
+        <span className="text-[10px] text-white/45 italic">Scenes 1–2 · 3 min preview</span>
       </div>
       <div className="flex items-center gap-3">
         <span className="text-[10px] text-white/80 font-mono w-8">{formatSampleTime(currentTime)}</span>
@@ -1240,16 +1240,29 @@ export default function Home() {
                   He has a ring on his finger. The elevator has stalled. Neither of you mentions either.
                 </p>
 
-                {/* Real audio player — starts at ~4:13, Scene 3 — the elevator jerks */}
-                <div className="mb-6">
+                {/* Real audio player — Scenes 1–2, clean hook, cuts before physical contact */}
+                <div className="mb-3">
                   <SampleStoryPlayer />
                 </div>
 
-                {/* Story excerpt — Scene 3, the charged moment */}
+                {/* Hear more link */}
+                <div className="mb-6">
+                  <Link
+                    href="/listen"
+                    className="inline-flex items-center gap-1.5 text-xs text-primary/75 hover:text-primary transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+                    </svg>
+                    Hear what happens next →
+                  </Link>
+                </div>
+
+                {/* Story excerpt — Scene 2, the tension before anything breaks */}
                 <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5 mb-5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 3 of 5</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 2 of 5</p>
                   <p className="text-sm text-white/80 leading-[1.9] font-light italic">
-                    The elevator jerks. His hand is on your waist before you can react, pulling you toward him, the ring pressing into your side like a brand. You should push him away. But your fingers curl into his shirt instead — gripping the fabric like it's the only thing keeping you upright. "Tell me to stop," he breathes against your lips, his hands tightening on your waist. You don't.
+                    The elevator stalls between floors. The lights flicker, and the hum of the motor dies into silence. He steps closer — not touching, but the heat of him brushes against your arm, a whisper of contact. His hand drifts toward yours, then stops. Neither of you moves.
                   </p>
                 </div>
 

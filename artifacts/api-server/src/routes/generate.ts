@@ -2455,10 +2455,14 @@ Return JSON in exactly this shape:
   "quality_target": "A story that lingers like the feeling after a conversation you didn't want to end."
 }`;
 
+  // Budget scales with scene count — 9-scene long stories need significantly more tokens
+  // for all the new dialogue arc fields (opening/pivot/closing × 9 scenes + position_changes etc.)
+  const planMaxTokens = sceneCount >= 7 ? 6144 : 4096;
+
   async function attemptPlan(): Promise<StoryBrief> {
     const completion = await openrouter.chat.completions.create({
       model: MISTRAL_MODEL,
-      max_tokens: 2048,
+      max_tokens: planMaxTokens,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

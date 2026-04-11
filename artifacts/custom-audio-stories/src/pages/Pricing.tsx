@@ -829,7 +829,10 @@ export default function Pricing() {
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground/80 mt-6">
+            <p className="text-xs text-primary/50 hover:text-primary/70 transition-colors mt-6">
+              <Link href="/listen">Not sure yet? Listen to a sample story first →</Link>
+            </p>
+            <p className="text-xs text-muted-foreground/80 mt-3">
               Private from the first word. Monthly plans cancel any time.{" "}
               <Link href="/privacy" className="hover:text-primary transition-colors">How we protect it →</Link>
             </p>

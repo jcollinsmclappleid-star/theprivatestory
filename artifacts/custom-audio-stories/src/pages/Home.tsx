@@ -1438,12 +1438,21 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col items-center gap-6">
           <MiniDoorCTA />
-          <Link
-            href="/pricing"
-            className="text-xs text-primary/70 hover:text-primary transition-colors tracking-widest uppercase"
-          >
-            View pricing →
-          </Link>
+          <div className="flex items-center gap-5">
+            <Link
+              href="/pricing"
+              className="text-xs text-primary/70 hover:text-primary transition-colors tracking-widest uppercase"
+            >
+              View pricing →
+            </Link>
+            <span className="text-white/15 text-xs">·</span>
+            <Link
+              href="/listen"
+              className="text-xs text-white/40 hover:text-white/70 transition-colors tracking-widest uppercase"
+            >
+              Listen to a sample →
+            </Link>
+          </div>
           <p className="text-[11px] text-muted-foreground/80">
             Under 3 minutes from first choice to listening. Private from the first word.{" "}
             <Link href="/privacy" className="hover:text-primary/60 transition-colors">How we protect it →</Link>

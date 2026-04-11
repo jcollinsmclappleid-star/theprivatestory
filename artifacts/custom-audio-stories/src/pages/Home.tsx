@@ -766,11 +766,11 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 // Sample story inline player (home page demo)
 // ---------------------------------------------------------------------------
 
-const SAMPLE_ID    = "lib-dd2_02-1775048422711";
-const SAMPLE_COVER = `${API_BASE}/images/cover-${SAMPLE_ID}.png`;
+const SAMPLE_ID    = "b46f97f830345edb4687ed19b7a28ad1";
+const SAMPLE_COVER = `${API_BASE}/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
 const SAMPLE_AUDIO = `${API_BASE}/audio/audio-${SAMPLE_ID}.mp3`;
-const SAMPLE_START = 200; // 3:20 — mid Scene 3
-const SAMPLE_END   = 295; // 4:55 — just after "You taste whiskey. Smoke. Him."
+const SAMPLE_START = 253; // 4:13 — start of Scene 3, the elevator jerks
+const SAMPLE_END   = 375; // 6:15 — end of Scene 3, "Tell me to stop"
 
 function formatSampleTime(s: number) {
   const m = Math.floor(s / 60);
@@ -852,7 +852,7 @@ function SampleStoryPlayer() {
           }
           {playing ? "Pause" : "Play sample"}
         </button>
-        <span className="text-[10px] text-white/45 italic">Scenes 3–4 · 1½ min clip</span>
+        <span className="text-[10px] text-white/45 italic">Scene 3 · 2 min clip</span>
       </div>
       <div className="flex items-center gap-3">
         <span className="text-[10px] text-white/80 font-mono w-8">{formatSampleTime(currentTime)}</span>
@@ -1210,14 +1210,14 @@ export default function Home() {
               <div className="relative h-56 md:h-72 overflow-hidden">
                 <img
                   src={SAMPLE_COVER}
-                  alt="The Back Room in Rainlight"
+                  alt="The Ring in the Mirror"
                   className="absolute inset-0 w-full h-full object-cover object-top"
                 />
                 {/* Bottom gradient fade */}
                 <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#120e0b] to-transparent" />
                 {/* Top chrome */}
                 <div className="absolute top-4 left-5 right-5 flex items-center justify-between z-10">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Heated</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Intense</span>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/50 border border-white/8">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     <span className="text-[10px] text-white/80 font-medium">Sample Story</span>
@@ -1225,11 +1225,11 @@ export default function Home() {
                 </div>
                 {/* Setting badge */}
                 <div className="absolute bottom-12 right-5 z-10">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/80">Chicago · The Back Room</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/80">Montego Bay · Moving Elevator</span>
                 </div>
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-5 z-10">
-                  <p className="font-display text-2xl md:text-3xl font-bold text-white/92 leading-tight drop-shadow-lg">The Back Room in Rainlight</p>
+                  <p className="font-display text-2xl md:text-3xl font-bold text-white/92 leading-tight drop-shadow-lg">The Ring in the Mirror</p>
                 </div>
               </div>
 
@@ -1237,10 +1237,10 @@ export default function Home() {
               <div className="p-6 md:p-8">
                 {/* Description */}
                 <p className="text-sm text-white/80 leading-relaxed mb-6 max-w-lg">
-                  You shouldn't want him. But Chicago at midnight doesn't care about shoulds.
+                  He has a ring on his finger. The elevator has stalled. Neither of you mentions either.
                 </p>
 
-                {/* Real audio player — starts at ~3:20, just before the turn */}
+                {/* Real audio player — starts at ~4:13, Scene 3 — the elevator jerks */}
                 <div className="mb-6">
                   <SampleStoryPlayer />
                 </div>
@@ -1249,7 +1249,7 @@ export default function Home() {
                 <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5 mb-5">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 3 of 5</p>
                   <p className="text-sm text-white/80 leading-[1.9] font-light italic">
-                    You'd rehearsed exactly what you'd say, and now you remember none of it. The words dissolve the moment his eyes lock onto yours, dark and unreadable. There's a question in them, or maybe it's a challenge. The air between you is charged, electric, and your chest feels too tight. His hand moves first — reaching for yours, gripping your wrist with a pressure that's firm but not rough.
+                    The elevator jerks. His hand is on your waist before you can react, pulling you toward him, the ring pressing into your side like a brand. You should push him away. But your fingers curl into his shirt instead — gripping the fabric like it's the only thing keeping you upright. "Tell me to stop," he breathes against your lips, his hands tightening on your waist. You don't.
                   </p>
                 </div>
 

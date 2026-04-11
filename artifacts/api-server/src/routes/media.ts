@@ -79,8 +79,11 @@ async function checkOwnership(
     if (story.isLibraryStory && mediaType === "image") return true;
 
     // Sample story audio is publicly accessible for conversion/preview purposes.
-    const SAMPLE_AUDIO_FILENAME = "audio-lib-dd2_02-1775048422711.mp3";
-    if (story.isLibraryStory && mediaType === "audio" && filename === SAMPLE_AUDIO_FILENAME) return true;
+    const SAMPLE_AUDIO_FILENAMES = [
+      "audio-lib-dd2_02-1775048422711.mp3",
+      "audio-b46f97f830345edb4687ed19b7a28ad1.mp3",
+    ];
+    if (story.isLibraryStory && mediaType === "audio" && SAMPLE_AUDIO_FILENAMES.includes(filename)) return true;
 
     // All other access requires a valid session.
     if (!req.isAuthenticated() || !req.user?.id) {

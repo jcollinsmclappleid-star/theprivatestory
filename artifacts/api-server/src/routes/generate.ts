@@ -3030,6 +3030,12 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
       Construction: [noun phrase], [noun phrase], [participial clause] — [main subject + verb].
       Example: "The salt of his skin at her back, the roughness of his hands, the low catch of his breath against her neck — all of it registered before her mind could form a word."
       Every clause modifies the same subject. When a new independent subject arrives: full stop, new sentence.
+      ACCUMULATION ENDS AT THE MAIN VERB. After the main verb fires, any new noun phrase with its own finite verb is a new sentence — never another accumulated element.
+      Key test: -ing/-ed form = still accumulating (no period needed). Present/past tense finite verb = new independent clause (period required, new sentence).
+      WRONG: "he slides into you from behind the stretch burns" — "the stretch" has its own finite verb "burns"; new sentence.
+      RIGHT: "He slides into you from behind. The stretch burns."
+      WRONG: "before slamming down his hands grip your waist" — "his hands" has its own finite verb "grip"; new sentence.
+      RIGHT: "before slamming down. His hands grip your waist."
   • scene_open_beat: The first sentence of this scene MUST arrive in this exact mode. Not the second sentence. The first.
     - sensory_anchor: a specific physical sensation or sensory detail, no preamble, no context.
     - dialogue: something is already being said when the scene opens.
@@ -3146,7 +3152,12 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Independent subject audit: Scan every sentence in every scene. If a sentence contains more than one independent subject + finite verb pair (e.g. "...outside you're the one", "...weakness it feels like", "...catch up Raphael is thirty-eight"), split it: period after the first clause, capitalise the second. This applies equally to pronouns (he/she/you/they) and character names — a name followed by its own verb is a new independent subject and always opens a new sentence. Only subordinating conjunctions (when/as/while/before/after/though/because/if/until), relative pronouns (that/which/who), or participial phrases (-ing/-ed) may introduce additional clauses within a single sentence without starting a new one. Every other new subject + verb must open a new sentence.
+  Step 2 — Independent subject audit: Scan every sentence in every scene. If a sentence contains more than one independent subject + finite verb pair, split it: period after the first clause, capitalise the second. This applies to ALL subject types — not just pronouns:
+    • Pronouns: "...outside you're the one" → split; "...weakness it feels like" → split
+    • Character names: "...catch up Raphael is thirty-eight" → split
+    • Article-headed noun phrases: "...from behind the stretch burns" → split; "...the heat floods" after a prior clause → split
+    • Possessive noun phrases: "...slamming down his hands grip your waist" → split; "...her breath catches" after a prior clause → split
+    The test: is the new word group a finite-verb clause with its own subject? If yes — new sentence, period, capital. The only exceptions are subordinating conjunctions (when/as/while/before/after/though/because/if/until), relative pronouns (that/which/who), and participial phrases (-ing/-ed forms) — these may extend a sentence without a period. Everything else must open a new sentence.
   Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
   Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 

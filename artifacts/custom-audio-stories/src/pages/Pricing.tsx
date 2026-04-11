@@ -16,7 +16,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REASSURANCE = [
   { icon: <Sliders className="w-4 h-4" />, label: "Fully cast by you", sub: "Character, energy, chemistry, setting — every detail yours before a word is written" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — ready to play, around 10 minutes" },
+  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — a fully immersive audio experience, typically around 10 minutes (length varies by story)" },
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library is visible only to you. Nothing shared, ever" },
   { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
 ];
@@ -254,7 +254,7 @@ export default function Pricing() {
             Each plan also gives you access to a curated collection, monthly releases, and After Dark — a space for stories that go further.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-4 font-medium">
-            Every personalised story: written, narrated, and ready to play — around 10 minutes to listen.
+            Every personalised story is a fully narrated audio experience — typically around 10 minutes, though each story is different.
           </p>
           <p className="text-xs text-muted-foreground/80 tracking-wide">
             Billed discreetly. No subscription name appears on your statement.

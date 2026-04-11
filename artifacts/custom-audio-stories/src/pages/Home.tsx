@@ -845,7 +845,7 @@ export default function Home() {
           </div>
 
           <p className="text-sm text-white/80 leading-relaxed max-w-sm">
-            Built for the adult female imagination — literary, private, entirely yours. Written and narrated around your choices, ready to listen in around 10 minutes.
+            Built for the adult female imagination — literary, private, entirely yours. Written and narrated around your choices — each story is a fully immersive audio experience, typically around 10 minutes.
           </p>
 
           <p className="text-[11px] text-white/80 tracking-widest uppercase mt-1">
@@ -868,7 +868,7 @@ export default function Home() {
           {[
             { icon: <Sparkles className="w-3 h-3" />, label: "Cast entirely around your choices" },
             { icon: <Headphones className="w-3 h-3" />, label: "Premium voice narration" },
-            { icon: <Clock className="w-3 h-3" />, label: "Around 10 minutes to listen" },
+            { icon: <Clock className="w-3 h-3" />, label: "Immersive audio — typically ~10 min" },
           ].map(({ icon, label }) => (
             <span
               key={label}

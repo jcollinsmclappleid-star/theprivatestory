@@ -3022,7 +3022,7 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
     - flowing: build each sentence around ONE main clause, preceded or followed by subordinate clauses and participial phrases that share or modify its subject.
       Construction: [Before/As/When clause], [participial phrase], [main subject + verb + object].
       Example: "Before she could answer, before the question had even fully formed, he was already crossing the room."
-      When a new independent subject appears (he, she, you, they — with its own verb): full stop, new sentence.
+      When a new independent subject appears (he, she, you, they, or any character name — with its own verb): full stop, new sentence.
 
     - fragmented: each fragment is its own unit of punctuation. Short. Stopped. Ellipsis signals failure to complete a thought... A dash signals sudden interruption — like this. Never let one fragment run into the next; the white space between them is the point.
 
@@ -3146,7 +3146,7 @@ DIVERSITY SELF-CHECK — before finalising your output, verify all nine dimensio
 ${castingReminder}
 FINAL ZERO-TOLERANCE CHECKS — perform these in order before generating your JSON:
   Step 1 — Dialogue audit: Scan every scene. Every scene must contain at least one line of quoted speech. Every IGNITE scene must contain at least 3 spoken exchanges plus the arc beats from the scene plan. If any IGNITE scene has fewer than 3 spoken exchanges, add them now — they are not optional.
-  Step 2 — Independent subject audit: Scan every sentence in every scene. If a sentence contains more than one independent subject + finite verb pair (e.g. "...outside you're the one", "...weakness it feels like"), split it: period after the first clause, capitalise the second. Only subordinating conjunctions (when/as/while/before/after/though/because/if/until), relative pronouns (that/which/who), or participial phrases (-ing/-ed) may introduce additional clauses within a single sentence without starting a new one. Every other new subject + verb must open a new sentence.
+  Step 2 — Independent subject audit: Scan every sentence in every scene. If a sentence contains more than one independent subject + finite verb pair (e.g. "...outside you're the one", "...weakness it feels like", "...catch up Raphael is thirty-eight"), split it: period after the first clause, capitalise the second. This applies equally to pronouns (he/she/you/they) and character names — a name followed by its own verb is a new independent subject and always opens a new sentence. Only subordinating conjunctions (when/as/while/before/after/though/because/if/until), relative pronouns (that/which/who), or participial phrases (-ing/-ed) may introduce additional clauses within a single sentence without starting a new one. Every other new subject + verb must open a new sentence.
   Step 3 — Scene open audit: For each scene, confirm the very first sentence matches the assigned scene_open_beat. If it does not, rewrite only the opening sentence.
   Step 4 — Word count check: Sum the words across all scenes. If the total is below 1,440, expand the shortest scenes first.
 

@@ -5,7 +5,7 @@ import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, ChevronRight, Check, Moon,
   EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame,
+  Users, Sliders, Flame, Gift,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
@@ -24,8 +24,6 @@ const REASSURANCE = [
 const MONTHLY_FEATURES = [
   { text: "5 personalised stories each month", special: false },
   { text: "Unused stories roll over (up to 10)", special: false },
-  { text: "Full access to the curated collection", special: false },
-  { text: "Monthly curated releases", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
@@ -34,8 +32,6 @@ const MONTHLY_FEATURES = [
 
 const ANNUAL_FEATURES = [
   { text: "50 personalised stories per year", special: false },
-  { text: "Full access to the curated collection", special: false },
-  { text: "Monthly curated releases", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
@@ -52,7 +48,7 @@ const LIBRARY_VS_PERSONAL = [
   {
     label: "The Collection",
     accent: "#a78bfa",
-    badge: "Included in every plan",
+    badge: "Members extra",
     heading: "Immediate. Beautifully crafted. Always there.",
     body: "A curated library of original stories — available the moment you sign in. No waiting, no creating. Something to listen to tonight, chosen with care. A new release added each month.",
     items: ["Ready immediately", "New story every month", "Across every mood and tone", "Beautifully narrated"],
@@ -70,8 +66,6 @@ const LIBRARY_VS_PERSONAL = [
 const INCLUDED = [
   { icon: <Sparkles className="w-5 h-5" />, label: "Personalised story creation", desc: "Every story is written around your mood, your cast, and your world. Nothing pulled from a shelf." },
   { icon: <Lock className="w-5 h-5" />, label: "Private library access", desc: "Your stories live in your own private archive. No one else can see them — not even us." },
-  { icon: <BookOpen className="w-5 h-5" />, label: "Full curated collection", desc: "Access every story in the collection, available whenever you want something immediate." },
-  { icon: <Calendar className="w-5 h-5" />, label: "Monthly curated releases", desc: "A new release added each month — thoughtfully selected for something to return to between your own." },
   { icon: <Headphones className="w-5 h-5" />, label: "Premium voice narration", desc: "A curated selection of voices, chosen for their intimacy and depth. Heard only by you." },
   { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
 ];
@@ -251,7 +245,7 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Each plan also gives you access to a curated collection, monthly releases, and After Dark — a space for stories that go further.
+            Each plan also includes After Dark — a space for stories that go further, and a curated story added to your library each month as a members extra.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-4 font-medium">
             Every personalised story is a fully narrated audio experience — typically around 10 minutes, though each story is different.
@@ -393,7 +387,7 @@ export default function Pricing() {
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
 
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 mb-3">
                 {MONTHLY_FEATURES.map((f) => (
                   <div key={f.text} className="flex items-start gap-3">
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/60 bg-primary/10" : "border-primary/40"}`}>
@@ -407,6 +401,10 @@ export default function Pricing() {
                     </span>
                   </div>
                 ))}
+              </div>
+              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
+                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
+                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
               </div>
 
               <button
@@ -451,7 +449,7 @@ export default function Pricing() {
                 Equivalent to £14.91 per month — less than half the monthly price.
               </p>
 
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 mb-3">
                 {ANNUAL_FEATURES.map((f) => (
                   <div key={f.text} className="flex items-start gap-3">
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
@@ -465,6 +463,10 @@ export default function Pricing() {
                     </span>
                   </div>
                 ))}
+              </div>
+              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
+                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
+                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
               </div>
 
               <button
@@ -700,34 +702,14 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Monthly release section                                             */}
+      {/* Members extra — curated monthly story                              */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div
-          className="relative overflow-hidden rounded-3xl border border-border/20 bg-card/20 p-10 md:p-14"
-          style={{
-            backgroundImage: `url(${BASE}images/home-visual-2.webp)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center right",
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40 rounded-3xl" />
-          <div className="relative z-10 max-w-lg">
-            <div className="flex items-center gap-2 mb-5">
-              <Calendar className="w-4 h-4 text-primary/70" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">A curated release, every month</span>
-            </div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
-              A collection that
-              <br className="hidden md:block" />
-              <span className="text-primary"> evolves with you.</span>
-            </h2>
-            <p className="text-muted-foreground/80 leading-relaxed mb-4">
-              Alongside the stories created for you, a curated release is added each month — giving you something immediate to return to between your own creations.
-            </p>
-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
-              Not a constant stream. Not a content farm. A thoughtfully selected addition — an editorial event, released with intention.
-            </p>
+      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div className="flex items-center gap-4 px-6 py-4 rounded-2xl border border-border/20 bg-card/20">
+          <Gift className="w-4 h-4 text-primary/40 flex-shrink-0" />
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mr-2">Members extra</span>
+            <span className="text-sm text-muted-foreground/60">A curated story added to your library each month — something crafted and ready, for the moments between your own.</span>
           </div>
         </div>
       </section>

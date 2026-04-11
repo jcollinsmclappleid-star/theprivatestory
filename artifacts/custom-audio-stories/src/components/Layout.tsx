@@ -116,7 +116,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAuthenticated
       ? [{ label: "My Account", href: "/me", icon: <User className="w-4 h-4" /> }]
-      : [{ label: "My Library", href: "/library", icon: <BookOpen className="w-4 h-4" /> }]
+      : [{ label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> }]
     ),
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Contact", href: "/contact", icon: <MessageCircle className="w-4 h-4" /> },
@@ -383,7 +383,7 @@ function Footer() {
             { label: "Pricing", href: "/pricing" },
             { label: "After Dark", href: "/after-dark" },
             { label: "Drift — Bedtime", href: "/drift" },
-            { label: "My library", href: "/library" },
+            { label: "My Stories", href: "/library" },
             { label: "About", href: "/about" },
             { label: "Contact", href: "/contact" },
             { label: "Discover all types", href: "/discover" },

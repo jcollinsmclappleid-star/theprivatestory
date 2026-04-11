@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Library, Shuffle, Check, Loader2, Clock,
+  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -734,24 +734,23 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
           <div className="flex items-start justify-between gap-6 flex-col sm:flex-row">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Library className="w-4 h-4 text-primary/70" />
-                <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest">
-                  The Collection
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-[#34d399]/40 bg-[#34d399]/10 text-[#34d399]">
-                  New this month
+                <Gift className="w-4 h-4 text-primary/40" />
+                <span className="inline-block px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary/60 text-xs font-medium uppercase tracking-widest">
+                  Members extra
                 </span>
               </div>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                A curated release, every month.
+                Your story, your way —
+                <br className="hidden md:block" />
+                <span className="text-primary"> and something extra.</span>
               </h2>
-              <p className="text-muted-foreground mt-2 text-sm leading-relaxed max-w-md">
-                A new story added each month — every one available to members the moment it drops. Browse what's waiting for you.
+              <p className="text-muted-foreground/80 mt-2 text-sm leading-relaxed max-w-md">
+                The Private Story is built entirely around you — your cast, your mood, your world. As a member you also get a curated story added each month — crafted and ready, for the moments between your own.
               </p>
             </div>
             <Link
               href="/browse"
-              className="flex-shrink-0 flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105 whitespace-nowrap"
+              className="flex-shrink-0 flex items-center gap-2 border border-border/40 text-muted-foreground/70 px-5 py-2.5 rounded-full font-medium text-sm hover:border-primary/30 hover:text-foreground transition-all whitespace-nowrap"
             >
               <BookOpen className="w-4 h-4" />
               Browse the collection
@@ -1187,11 +1186,10 @@ export default function Home() {
                   <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
                 </div>
                 <p className="text-xs text-muted-foreground/80 mb-4">Billed monthly. Stories yours to keep.</p>
-                <div className="space-y-2 mb-5">
+                <div className="space-y-2 mb-3">
                   {[
                     { text: "5 personalised stories / month", special: false },
-                    { text: "Full curated collection", special: false },
-                    { text: "Monthly new releases", special: false },
+                    { text: "Private library — visible only to you", special: false },
                     { text: "Premium voice narration", special: false },
                     { text: "After Dark — stories that explore further", special: true },
                   ].map((f) => (
@@ -1203,6 +1201,10 @@ export default function Home() {
                       <span className={`text-xs leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>{f.text}</span>
                     </div>
                   ))}
+                </div>
+                <div className="flex items-center gap-1.5 py-2.5 border-t border-border/15 mb-3">
+                  <Gift className="w-2.5 h-2.5 text-primary/30 flex-shrink-0" />
+                  <span className="text-[10px] text-muted-foreground/40">Members extra — curated stories added monthly</span>
                 </div>
                 <button
                   onClick={() => startCheckout("monthly")}
@@ -1230,11 +1232,10 @@ export default function Home() {
                   <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
                 </div>
                 <p className="text-xs text-muted-foreground/80 mb-4">£14.91/month — less than half the monthly price.</p>
-                <div className="space-y-2 mb-5">
+                <div className="space-y-2 mb-3">
                   {[
                     { text: "50 personalised stories / year", special: false },
-                    { text: "Full curated collection", special: false },
-                    { text: "Monthly new releases", special: false },
+                    { text: "Private library — visible only to you", special: false },
                     { text: "Premium voice narration", special: false },
                     { text: "After Dark — stories that explore further", special: true },
                   ].map((f) => (
@@ -1246,6 +1247,10 @@ export default function Home() {
                       <span className={`text-xs leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
                     </div>
                   ))}
+                </div>
+                <div className="flex items-center gap-1.5 py-2.5 border-t border-border/15 mb-3">
+                  <Gift className="w-2.5 h-2.5 text-primary/30 flex-shrink-0" />
+                  <span className="text-[10px] text-muted-foreground/40">Members extra — curated stories added monthly</span>
                 </div>
                 <button
                   onClick={() => startCheckout("annual")}
@@ -1288,7 +1293,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-xs text-muted-foreground/80">
-                Every plan includes: private library · original cover art · premium voice narration · full curated collection ·{" "}
+                Every plan includes: private library · original cover art · premium voice narration ·{" "}
                 <Link href="/pricing" className="text-primary/80 hover:text-primary transition-colors">full plan details →</Link>
               </p>
             </div>
@@ -1301,18 +1306,9 @@ export default function Home() {
         <LibraryPromo isPaid={isPaid} />
 
         {/* ---------------------------------------------------------------- */}
-        {/* Explore by mood — SEO page links                                  */}
+        {/* SEO page links                                                    */}
         {/* ---------------------------------------------------------------- */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">Explore</p>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight mb-2">
-              Explore by mood, feeling, and story type.
-            </h2>
-            <p className="text-sm text-muted-foreground/80 max-w-lg">
-              Browse the collection by how you want to feel — or find the kind of story you've been looking for.
-            </p>
-          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
             {/* Core */}

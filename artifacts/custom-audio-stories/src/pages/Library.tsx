@@ -39,6 +39,32 @@ function StoryCard({ story, showProgress, progress, onUnsave, isSaved, onDeleted
   const sceneCount = story.scenes?.length ?? 0;
   const progressSeconds = (progress?.audioProgressSeconds as number) ?? 0;
   const sceneIndex = (progress?.sceneIndex as number) ?? 0;
+  const hasAudio = !!story.audioUrl;
+
+  if (!hasAudio) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex gap-4 p-4 rounded-2xl bg-card/40 border border-border/20 opacity-50 relative cursor-default select-none"
+      >
+        <div className="absolute top-3 right-3 z-10">
+          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-card/80 border border-border/30 text-[10px] text-muted-foreground/60 font-medium">
+            <Clock className="w-2.5 h-2.5" />
+            Coming soon
+          </span>
+        </div>
+        <div className="flex-shrink-0">
+          <img src={story.coverImage} alt={story.title} className="w-16 h-16 rounded-xl object-cover" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-primary/50 font-medium tracking-widest uppercase mb-0.5">{story.mood}</p>
+          <h3 className="font-display font-semibold text-foreground/60 text-sm leading-tight line-clamp-1">{story.title}</h3>
+          <p className="text-xs text-muted-foreground/40 mt-1">Released monthly for members</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   const handleSave = async () => {
     if (isSaved) {
@@ -213,7 +239,7 @@ function EmptyState({ tab }: { tab: LibraryTab }) {
           href="/browse"
           className="border border-border/50 text-muted-foreground px-6 py-3 rounded-full text-sm font-medium hover:border-primary/30 hover:text-foreground transition-all"
         >
-          Browse Library
+          Browse the Collection
         </Link>
       </div>
     </div>
@@ -230,12 +256,12 @@ function SubscriptionGate() {
       <div className="mb-6 opacity-60">
         <Lock className="w-12 h-12 text-primary/40 mx-auto" />
       </div>
-      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Your library awaits</h2>
+      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Your stories await</h2>
       <p className="text-muted-foreground text-sm max-w-xs mb-2">
-        Subscribe to save stories, track your listening progress, and build your personal private collection.
+        Subscribe to create personalised stories, track your listening progress, and access the members' collection.
       </p>
       <p className="text-muted-foreground text-xs max-w-xs mb-8 opacity-70">
-        One-time immersive stories are played immediately and not stored in a library.
+        One-time immersive stories are played immediately and not stored here.
       </p>
       <Link
         href="/pricing"
@@ -257,9 +283,9 @@ function AuthGate({ openSignIn }: { openSignIn: () => void }) {
       <div className="mb-6 opacity-60">
         <BookOpen className="w-12 h-12 text-primary/40 mx-auto" />
       </div>
-      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Sign in to access your library</h2>
+      <h2 className="font-display text-2xl font-bold text-foreground mb-3">Sign in to access your stories</h2>
       <p className="text-muted-foreground text-sm max-w-xs mb-8">
-        Your saved stories, generated stories, and listening progress are all stored in your personal library.
+        Your creations, saved stories, and listening progress are all private to your account.
       </p>
       <button
         onClick={openSignIn}
@@ -273,8 +299,8 @@ function AuthGate({ openSignIn }: { openSignIn: () => void }) {
 }
 
 const TAB_CONFIG = [
-  { id: "saved" as LibraryTab, label: "Saved", icon: Heart },
-  { id: "generated" as LibraryTab, label: "Generated", icon: Sparkles },
+  { id: "saved" as LibraryTab, label: "The Collection", icon: Heart },
+  { id: "generated" as LibraryTab, label: "My Creations", icon: Sparkles },
   { id: "continue" as LibraryTab, label: "Continue", icon: Clock },
   { id: "variations" as LibraryTab, label: "Variations", icon: Shuffle },
 ];
@@ -385,7 +411,7 @@ export default function Library() {
       <div className="max-w-2xl mx-auto px-4 py-8 w-full">
         <div className="mb-8">
           <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
-          <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground">My Stories</h1>
         </div>
         <AuthGate openSignIn={openSignIn} />
       </div>
@@ -398,7 +424,7 @@ export default function Library() {
       <div className="max-w-2xl mx-auto px-4 py-8 w-full">
         <div className="mb-8">
           <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
-          <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground">My Stories</h1>
         </div>
         <SubscriptionGate />
       </div>
@@ -414,7 +440,7 @@ export default function Library() {
       <div className="mb-8">
         <p className="text-xs font-medium uppercase tracking-widest text-primary mb-2">Private Collection</p>
         <div className="flex items-center justify-between">
-          <h1 className="font-display text-4xl font-bold text-foreground">My Library</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground">My Stories</h1>
           <button
             onClick={load}
             className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-white/5"

@@ -165,7 +165,7 @@ export default function HowItWorks() {
               where your imagination already is — shaped to your mood, your cast, and the
               feeling you want to be left with.
             </p>
-            <p className="text-base text-muted-foreground/70 mb-10 leading-relaxed max-w-xl">
+            <p className="text-base text-muted-foreground/80 mb-10 leading-relaxed max-w-xl">
               Written, narrated, and saved privately to your account — ready to play in minutes.
             </p>
 
@@ -176,7 +176,7 @@ export default function HowItWorks() {
                 e.preventDefault();
                 document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/50 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-2"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/80 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-2"
             >
               See how it works
             </a>
@@ -189,7 +189,7 @@ export default function HowItWorks() {
               ].map(({ n, label }) => (
                 <div key={label} className="text-center">
                   <p className="text-sm font-bold text-primary">{n}</p>
-                  <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">{label}</p>
+                  <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
                 </div>
               ))}
             </div>
@@ -235,14 +235,14 @@ export default function HowItWorks() {
                 >
                   {item.icon}
                 </div>
-                <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/30 uppercase">
+                <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/80 uppercase">
                   {item.step}
                 </span>
               </div>
               <h3 className="text-sm font-bold text-foreground mb-1.5 relative z-10 leading-snug">
                 {item.heading}
               </h3>
-              <p className="text-xs text-muted-foreground/60 leading-relaxed relative z-10">{item.body}</p>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed relative z-10">{item.body}</p>
             </motion.div>
           ))}
         </div>
@@ -266,7 +266,7 @@ export default function HowItWorks() {
                 time. You choose who's in the room, what pulls them together, the setting that
                 holds it all, and the mood that runs underneath every line.
               </p>
-              <p className="text-sm text-muted-foreground/70 leading-relaxed">
+              <p className="text-sm text-muted-foreground/80 leading-relaxed">
                 Each choice adds a layer. By the time you reach the end, the story already
                 feels like it belongs to you — because it does. Nothing left to chance,
                 nothing left to someone else's imagination.
@@ -297,7 +297,7 @@ export default function HowItWorks() {
                 </div>
                 <span className="text-xs font-bold text-foreground/80 tracking-wide">{f.label}</span>
               </div>
-              <p className="text-xs text-muted-foreground/60 leading-relaxed mb-3 relative z-10">{f.desc}</p>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed mb-3 relative z-10">{f.desc}</p>
               <div className="flex flex-wrap gap-1.5 relative z-10">
                 {f.examples.map((ex) => (
                   <span
@@ -326,7 +326,7 @@ export default function HowItWorks() {
       {/* ── What you get ── */}
       <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
             What you get at the end
           </p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
@@ -372,7 +372,7 @@ export default function HowItWorks() {
                 {item.icon}
               </div>
               <h3 className="text-sm font-bold text-foreground">{item.heading}</h3>
-              <p className="text-xs text-muted-foreground/60 leading-relaxed">{item.body}</p>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
             </div>
           ))}
         </div>
@@ -383,14 +383,14 @@ export default function HowItWorks() {
         <div className="rounded-3xl border border-border/25 bg-card/20 p-8 md:p-12">
           <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
             <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
                 Access
               </p>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
                 One subscription.
                 <br className="hidden md:block" /> Private stories whenever the moment calls.
               </h2>
-              <p className="text-sm text-muted-foreground/60 mt-2 max-w-sm leading-relaxed">
+              <p className="text-sm text-muted-foreground/80 mt-2 max-w-sm leading-relaxed">
                 Every plan includes the full curated collection, monthly releases, private
                 library, narration, and original cover art.
               </p>
@@ -407,25 +407,25 @@ export default function HowItWorks() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             {/* Monthly */}
             <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
                 Monthly
               </p>
               <div className="flex items-end gap-1.5 mb-1">
                 <span className="font-display text-3xl font-bold text-foreground">£29</span>
-                <span className="text-muted-foreground/50 text-sm mb-0.5">/ month</span>
+                <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
               </div>
-              <p className="text-xs text-muted-foreground/40 mb-4">Cancel any time.</p>
+              <p className="text-xs text-muted-foreground/80 mb-4">Cancel any time.</p>
               <div className="space-y-2 mb-5">
                 {MONTHLY_FEATURES.map((f) => (
                   <div key={f} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-muted-foreground/70 leading-snug">{f}</span>
+                    <Check className="w-3.5 h-3.5 text-primary/70 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs text-muted-foreground/80 leading-snug">{f}</span>
                   </div>
                 ))}
               </div>
               <Link
                 href="/pricing"
-                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all"
+                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
               >
                 Choose Monthly
               </Link>
@@ -435,7 +435,7 @@ export default function HowItWorks() {
             <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
               <div className="flex items-center gap-2 mb-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
                   Annual
                 </p>
                 <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">
@@ -444,9 +444,9 @@ export default function HowItWorks() {
               </div>
               <div className="flex items-end gap-1.5 mb-1">
                 <span className="font-display text-3xl font-bold text-foreground">£179</span>
-                <span className="text-muted-foreground/50 text-sm mb-0.5">/ year</span>
+                <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
               </div>
-              <p className="text-xs text-muted-foreground/40 mb-4">
+              <p className="text-xs text-muted-foreground/80 mb-4">
                 £14.91/month — less than half the monthly price.
               </p>
               <div className="space-y-2 mb-5">
@@ -468,21 +468,21 @@ export default function HowItWorks() {
             {/* Add-on */}
             <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
                   Additional stories
                 </p>
                 <div className="flex items-end gap-1.5 mb-1">
                   <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
-                  <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
+                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ story</span>
                 </div>
-                <p className="text-xs text-muted-foreground/50 leading-relaxed mt-3">
+                <p className="text-xs text-muted-foreground/80 leading-relaxed mt-3">
                   Add more whenever you want — without changing your plan. Each one written,
                   narrated, and private to you.
                 </p>
               </div>
               <Link
                 href="/pricing"
-                className="mt-6 flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all"
+                className="mt-6 flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
               >
                 See all options
               </Link>
@@ -491,7 +491,7 @@ export default function HowItWorks() {
 
           {/* Reassurance row */}
           <div className="text-center space-y-2">
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/40">
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
               {[
                 "Private library included",
                 "Cancel monthly anytime",
@@ -517,7 +517,7 @@ export default function HowItWorks() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground mb-1">{t.label}</p>
-                <p className="text-xs text-muted-foreground/60 leading-relaxed">{t.desc}</p>
+                <p className="text-xs text-muted-foreground/80 leading-relaxed">{t.desc}</p>
               </div>
             </div>
           ))}
@@ -525,7 +525,7 @@ export default function HowItWorks() {
 
         <div className="mt-10 flex flex-col items-center gap-4">
           <MiniDoorCTA />
-          <p className="text-xs text-muted-foreground/40">
+          <p className="text-xs text-muted-foreground/80">
             No commitment needed to start. Cancel monthly, any time.
           </p>
         </div>

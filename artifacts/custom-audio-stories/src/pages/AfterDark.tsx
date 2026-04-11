@@ -1178,7 +1178,7 @@ function ScenarioCard({
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-white/70 text-xs leading-relaxed"
+              className="text-white/80 text-xs leading-relaxed"
             >
               {scenario.sub}
             </motion.p>
@@ -1189,7 +1189,7 @@ function ScenarioCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="text-white/65 text-xs leading-snug line-clamp-3"
+              className="text-white/80 text-xs leading-snug line-clamp-3"
             >
               {scenario.sub}
             </motion.p>
@@ -1798,9 +1798,9 @@ export default function AfterDark() {
                       <Sparkles className="w-4 h-4" />
                     )}
                     Annual — £14.99/month
-                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/70 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
-                  <span className="text-[11px] text-white/50 font-normal">billed annually · cancel renewal anytime</span>
+                  <span className="text-[11px] text-white/80 font-normal">billed annually · cancel renewal anytime</span>
                 </button>
 
                 {/* Monthly — secondary */}
@@ -1819,13 +1819,13 @@ export default function AfterDark() {
 
               {/* Privacy signal + start over */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-[11px] text-muted-foreground/30">
+                <p className="text-[11px] text-muted-foreground/80">
                   Nothing stored. No history. Heard only by you.
                 </p>
                 <button
                   type="button"
                   onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
-                  className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                  className="text-xs text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2"
                 >
                   Start over
                 </button>

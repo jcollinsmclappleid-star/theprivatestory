@@ -354,12 +354,12 @@ export default function Pricing() {
           <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/30 backdrop-blur-sm p-8">
             <div className="absolute inset-0 bg-gradient-to-br from-card/60 to-background/40 pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/50 mb-4">Monthly</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-4">Monthly</p>
               <div className="flex items-end gap-2 mb-1">
                 <span className="font-display text-5xl font-bold text-foreground">£29</span>
-                <span className="text-muted-foreground/60 mb-1.5">/ month</span>
+                <span className="text-muted-foreground/80 mb-1.5">/ month</span>
               </div>
-              <p className="text-xs text-muted-foreground/40 mb-8">Billed monthly. Stories yours to keep.</p>
+              <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
 
               <div className="space-y-3 mb-8">
                 {MONTHLY_FEATURES.map((f) => (
@@ -392,7 +392,7 @@ export default function Pricing() {
               {/* Prominent cancel anytime */}
               <div className="mt-4 flex items-center justify-center gap-2">
                 <div className="flex-1 h-px bg-border/20" />
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/60 font-medium tracking-wide whitespace-nowrap">
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/70 font-medium tracking-wide whitespace-nowrap">
                   Cancel any time — stories stay yours
                 </span>
                 <div className="flex-1 h-px bg-border/20" />
@@ -406,16 +406,16 @@ export default function Pricing() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/50">Annual</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
                 <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
                   Best value
                 </span>
               </div>
               <div className="flex items-end gap-2 mb-1">
                 <span className="font-display text-5xl font-bold text-foreground">£179</span>
-                <span className="text-muted-foreground/60 mb-1.5">/ year</span>
+                <span className="text-muted-foreground/80 mb-1.5">/ year</span>
               </div>
-              <p className="text-xs text-muted-foreground/40 mb-8">
+              <p className="text-xs text-muted-foreground/80 mb-8">
                 Equivalent to £14.91 per month — less than half the monthly price.
               </p>
 
@@ -446,7 +446,7 @@ export default function Pricing() {
                   isAuthenticated ? "Subscribe annually" : "Get started"
                 )}
               </button>
-              <p className="text-center text-[10px] text-muted-foreground/30 mt-3">
+              <p className="text-center text-[10px] text-muted-foreground/80 mt-3">
                 The most complete experience, at the best rate. Not sure yet? Start monthly and switch any time.
               </p>
             </div>
@@ -474,16 +474,16 @@ export default function Pricing() {
               <p className="text-muted-foreground/80 leading-relaxed text-lg mb-3">
                 Every personalised story begins in the Creation Room — where you decide who's in it, what the energy between them feels like, and exactly how far it goes.
               </p>
-              <p className="text-muted-foreground/50 leading-relaxed text-sm">
+              <p className="text-muted-foreground/80 leading-relaxed text-sm">
                 This isn't a form. It's a creative act. The story that comes out is one only you could have made — because only you made those choices.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {CASTING_DETAILS.map((item) => (
                 <div key={item.heading} className="rounded-2xl border border-border/20 bg-card/30 p-6">
-                  <span className="text-primary/60 mb-3 block">{item.icon}</span>
+                  <span className="text-primary/70 mb-3 block">{item.icon}</span>
                   <p className="text-sm font-semibold text-foreground/90 mb-2">{item.heading}</p>
-                  <p className="text-xs text-muted-foreground/60 leading-relaxed">{item.body}</p>
+                  <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
                 </div>
               ))}
             </div>
@@ -496,13 +496,13 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">Why access feels different here</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Why access feels different here</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight mb-3">
             Two kinds of stories.
             <br className="hidden md:block" />
             <span className="text-muted-foreground font-normal"> Both entirely yours.</span>
           </h2>
-          <p className="text-muted-foreground/60 max-w-lg mx-auto text-sm leading-relaxed">
+          <p className="text-muted-foreground/80 max-w-lg mx-auto text-sm leading-relaxed">
             Every plan gives you access to both. They serve different moments — and together, they mean you always have something waiting.
           </p>
         </div>
@@ -524,7 +524,7 @@ export default function Pricing() {
                   >
                     {col.label}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-muted-foreground/50 font-medium">
+                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-muted-foreground/80 font-medium">
                     {col.badge}
                   </span>
                 </div>
@@ -534,7 +534,7 @@ export default function Pricing() {
                 >
                   {col.heading}
                 </h3>
-                <p className="text-sm text-muted-foreground/70 leading-relaxed mb-5">{col.body}</p>
+                <p className="text-sm text-muted-foreground/80 leading-relaxed mb-5">{col.body}</p>
                 <div className="space-y-2">
                   {col.items.map((item) => (
                     <div key={item} className="flex items-center gap-2">
@@ -544,7 +544,7 @@ export default function Pricing() {
                       >
                         <Check className="w-2 h-2" style={{ color: col.accent }} />
                       </div>
-                      <span className="text-xs text-muted-foreground/60">{item}</span>
+                      <span className="text-xs text-muted-foreground/80">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -568,7 +568,7 @@ export default function Pricing() {
               </div>
             </div>
             <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">Privacy, by design</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Privacy, by design</p>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-5 leading-tight">
                 Your library belongs to
                 <span className="text-primary"> no one else.</span>
@@ -582,11 +582,11 @@ export default function Pricing() {
                 ].map((item) => (
                   <div key={item.heading} className="rounded-xl border border-border/20 bg-card/30 p-5">
                     <p className="text-sm font-semibold text-foreground/90 mb-1.5">{item.heading}</p>
-                    <p className="text-xs text-muted-foreground/60 leading-relaxed">{item.body}</p>
+                    <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
                   </div>
                 ))}
               </div>
-              <Link href="/privacy" className="text-xs text-primary/60 hover:text-primary transition-colors">
+              <Link href="/privacy" className="text-xs text-primary/70 hover:text-primary transition-colors">
                 Read our privacy policy →
               </Link>
             </div>
@@ -622,7 +622,7 @@ export default function Pricing() {
             <p className="text-muted-foreground/80 leading-relaxed mb-4 text-base">
               Some stories want to go further. After Dark is the room where they do — written without restraint, for a part of you that doesn't need to justify itself. The same voice. The same absolute privacy.
             </p>
-            <p className="text-muted-foreground/50 leading-relaxed text-sm mb-6">
+            <p className="text-muted-foreground/80 leading-relaxed text-sm mb-6">
               Nothing softened. Nothing left out. Included with every plan — accessed discreetly from your private library.
             </p>
             <div className="flex flex-col gap-2">
@@ -646,7 +646,7 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">Every plan includes</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Every plan includes</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
             The same private experience,
             <br className="hidden md:block" />
@@ -659,9 +659,9 @@ export default function Pricing() {
               key={item.label}
               className="rounded-2xl border border-border/20 bg-card/20 p-6 hover:border-primary/20 hover:bg-primary/4 transition-all"
             >
-              <span className="text-primary/60 mb-3 block">{item.icon}</span>
+              <span className="text-primary/70 mb-3 block">{item.icon}</span>
               <p className="text-sm font-semibold text-foreground/90 mb-2">{item.label}</p>
-              <p className="text-xs text-muted-foreground/60 leading-relaxed">{item.desc}</p>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -690,10 +690,10 @@ export default function Pricing() {
               <br className="hidden md:block" />
               <span className="text-primary"> evolves with you.</span>
             </h2>
-            <p className="text-muted-foreground/70 leading-relaxed mb-4">
+            <p className="text-muted-foreground/80 leading-relaxed mb-4">
               Alongside the stories created for you, a curated release is added each month — giving you something immediate to return to between your own creations.
             </p>
-            <p className="text-sm text-muted-foreground/45 leading-relaxed">
+            <p className="text-sm text-muted-foreground/80 leading-relaxed">
               Not a constant stream. Not a content farm. A thoughtfully selected addition — an editorial event, released with intention.
             </p>
           </div>
@@ -709,15 +709,15 @@ export default function Pricing() {
             <Plus className="w-6 h-6 text-primary/70" />
           </div>
           <div className="flex-1 text-center md:text-left">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Additional stories</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">Additional stories</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3 leading-tight">
               Continue your experience,
               <br className="hidden md:block" /> whenever you want.
             </h2>
-            <p className="text-muted-foreground/70 leading-relaxed mb-4 max-w-md mx-auto md:mx-0">
+            <p className="text-muted-foreground/80 leading-relaxed mb-4 max-w-md mx-auto md:mx-0">
               Additional personalised stories are available for £3.99 each — whenever the moment calls for it, without changing your plan.
             </p>
-            <p className="text-sm text-muted-foreground/40 italic">
+            <p className="text-sm text-muted-foreground/80 italic">
               "Add another story without any compromise."
             </p>
           </div>
@@ -725,7 +725,7 @@ export default function Pricing() {
             <div className="rounded-2xl border border-primary/20 bg-primary/8 px-8 py-6 flex flex-col items-center gap-4">
               <div>
                 <p className="font-display text-4xl font-bold text-primary mb-0.5">£3.99</p>
-                <p className="text-xs text-muted-foreground/40">per additional story</p>
+                <p className="text-xs text-muted-foreground/80">per additional story</p>
               </div>
               {isActiveSub ? (
                 <button
@@ -740,7 +740,7 @@ export default function Pricing() {
                   )}
                 </button>
               ) : (
-                <p className="text-xs text-muted-foreground/50 text-center max-w-[140px] leading-relaxed">
+                <p className="text-xs text-muted-foreground/80 text-center max-w-[140px] leading-relaxed">
                   Available to active subscribers only
                 </p>
               )}
@@ -759,7 +759,7 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       <section className="py-12 px-4 md:px-8 max-w-2xl mx-auto w-full">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">Questions</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Questions</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Answered quietly.</h2>
         </div>
         <div className="rounded-2xl border border-border/20 bg-card/20 px-6">
@@ -808,13 +808,13 @@ export default function Pricing() {
               </Link>
               <Link
                 href="/"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-border/30 text-muted-foreground/70 hover:text-foreground hover:border-border/60 transition-all text-sm"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-border/30 text-muted-foreground/80 hover:text-foreground hover:border-border/60 transition-all text-sm"
               >
                 Learn more first
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground/30 mt-6">
+            <p className="text-xs text-muted-foreground/80 mt-6">
               Private from the first word. Monthly plans cancel any time.{" "}
               <Link href="/privacy" className="hover:text-primary transition-colors">How we protect it →</Link>
             </p>

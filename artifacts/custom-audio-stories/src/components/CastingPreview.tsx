@@ -114,7 +114,7 @@ function WorldIntroCard() {
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#34d399]/70">Your World</span>
           </div>
           <p className="text-base font-bold text-white/90 mb-1 leading-snug">Place your story anywhere on earth.</p>
-          <p className="text-xs text-white/40 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
+          <p className="text-xs text-white/80 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
           <div className="overflow-hidden mb-2 -mx-1">
             <div className="flex gap-2" style={{ animation: "ticker-left 22s linear infinite", width: "max-content" }}>
               {allCitiesDup.map((city, i) => (
@@ -122,7 +122,7 @@ function WorldIntroCard() {
               ))}
             </div>
           </div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-2">Or step into another era entirely</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/80 mb-2">Or step into another era entirely</p>
           <div className="overflow-hidden -mx-1">
             <div className="flex gap-2" style={{ animation: "ticker-left 35s linear infinite", width: "max-content" }}>
               {allEras.map((era, i) => (
@@ -133,7 +133,7 @@ function WorldIntroCard() {
         </div>
         <div className="relative z-10 mx-4 mb-4 mt-3 rounded-xl border p-3" style={{ borderColor: "#34d39920", background: "#34d3990a" }}>
           <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#34d39966" }}>The scene you chose</p>
-          <p className="text-xs text-white/60 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
+          <p className="text-xs text-white/80 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
         </div>
         <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: "#34d39915" }}>
           <ChevronRight className="w-4 h-4 rotate-90" style={{ color: "#34d39950" }} />
@@ -152,10 +152,10 @@ function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
       <div className="relative z-10 p-5 pb-3">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border" style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}>{s.category}</span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
       <div className="relative z-10 px-5 pb-3 space-y-3">
         {[
@@ -201,10 +201,10 @@ function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
       <div className="relative z-10 p-5 pb-3">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border" style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}>{s.category}</span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed mb-4">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed mb-4">{s.sub}</p>
         <div className="space-y-2">
           {(s.options as readonly string[]).map((opt, idx) => {
             const isSel = opt === s.selected;
@@ -236,14 +236,14 @@ function SituationCard({ s }: { s: StepCard }) {
       <div className="relative z-10 p-5 pb-3">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border" style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}>{s.category}</span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed mb-3">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed mb-3">{s.sub}</p>
         <div className="flex items-center gap-2 px-3 py-2 rounded-xl border mb-3" style={{ borderColor: `${s.accent}30`, background: `${s.accent}10` }}>
           <Shuffle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.accent }} />
           <span className="text-xs font-semibold" style={{ color: s.accent }}>Choose For Me</span>
-          <span className="text-[10px] text-white/30 ml-auto">or pick yours →</span>
+          <span className="text-[10px] text-white/80 ml-auto">or pick yours →</span>
         </div>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {SITUATION_CATEGORIES.map((cat) => (
@@ -273,10 +273,10 @@ function FinalOutputCard({ s }: { s: StepCard }) {
       <div className="relative z-10 p-5 pb-3">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border" style={{ color: "#c9a227", borderColor: "#c9a22730", background: "#c9a2270d" }}>{s.category}</span>
-          <span className="text-[9px] text-white/20 tracking-widest">✦ Your result</span>
+          <span className="text-[9px] text-white/80 tracking-widest">✦ Your result</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
       <div className="relative z-10 mx-4 mb-3 rounded-2xl overflow-hidden border border-white/10">
         <div className="h-28 relative" style={{ background: "linear-gradient(135deg, #1a0810 0%, #0a0514 50%, #060a18 100%)" }}>
@@ -286,12 +286,12 @@ function FinalOutputCard({ s }: { s: StepCard }) {
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0]">Forbidden</span>
           </div>
           <div className="absolute top-3 right-3">
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-medium border border-white/10 bg-white/5 text-white/40">Victorian London</span>
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-medium border border-white/10 bg-white/5 text-white/80">Victorian London</span>
           </div>
         </div>
         <div className="bg-[#0c0a08] px-3 py-2.5">
           <p className="text-sm font-bold text-white/90 mb-0.5">The Fog Between Us</p>
-          <p className="text-[10px] text-white/40 italic leading-relaxed">"He shouldn't be in her study. She should have locked the door."</p>
+          <p className="text-[10px] text-white/80 italic leading-relaxed">"He shouldn't be in her study. She should have locked the door."</p>
         </div>
       </div>
       <div className="relative z-10 mx-4 mb-4 space-y-1.5">
@@ -300,7 +300,7 @@ function FinalOutputCard({ s }: { s: StepCard }) {
             <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
             </div>
-            <span className="text-xs text-white/60">{item}</span>
+            <span className="text-xs text-white/80">{item}</span>
           </div>
         ))}
       </div>
@@ -316,10 +316,10 @@ function StandardCard({ s }: { s: StepCard }) {
       <div className="relative z-10 p-5 pb-3">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border" style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}>{s.category}</span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
       <div className="relative z-10 px-5 pb-2">
         <div className="flex flex-wrap gap-1.5">
@@ -407,7 +407,7 @@ export default function CastingPreview({ soft = false }: CastingPreviewProps) {
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>
-                <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">{label}</p>
+                <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
               </div>
             ))}
           </div>
@@ -446,14 +446,14 @@ export default function CastingPreview({ soft = false }: CastingPreviewProps) {
             </div>
             <div>
               <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">Begin your story</p>
-              <p className="text-xs text-muted-foreground/45 mt-1.5 leading-relaxed max-w-[180px] mx-auto">Written for you. Narrated. Private from the first word.</p>
+              <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed max-w-[180px] mx-auto">Written for you. Narrated. Private from the first word.</p>
             </div>
-            <span className="text-xs text-primary/50 group-hover:text-primary/80 transition-colors tracking-widest uppercase">Create My Story →</span>
+            <span className="text-xs text-primary/70 group-hover:text-primary/80 transition-colors tracking-widest uppercase">Create My Story →</span>
           </Link>
         </div>
       </div>
 
-      <p className="md:hidden text-center text-xs text-muted-foreground/30 mt-2 tracking-widest">Swipe to explore →</p>
+      <p className="md:hidden text-center text-xs text-muted-foreground/80 mt-2 tracking-widest">Swipe to explore →</p>
     </section>
   );
 }

@@ -510,7 +510,7 @@ function ScenarioPicker({ value, onChange }: { value: string; onChange: (text: s
     <div className="space-y-5 mt-4">
       {SCENARIO_GROUPS.map((group) => (
         <div key={group.heading}>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2.5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-2.5">
             {group.heading}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -573,7 +573,7 @@ function WorldPicker({ value, onChange }: { value: string; onChange: (place: str
         }`}
       >
         <span className="flex items-center gap-2">
-          <Globe className="w-4 h-4 text-primary/60 flex-shrink-0" />
+          <Globe className="w-4 h-4 text-primary/70 flex-shrink-0" />
           {value || "Choose a world…"}
         </span>
         {value && (
@@ -606,7 +606,7 @@ function WorldPicker({ value, onChange }: { value: string; onChange: (place: str
           <div className="overflow-y-auto flex-1 p-3 space-y-4">
             {filtered.map((region) => (
               <div key={region.heading}>
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/50 mb-1.5 px-1">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1.5 px-1">
                   {region.heading}
                 </p>
                 <div className="space-y-0.5">
@@ -1667,7 +1667,7 @@ export default function Create() {
             <div className="mb-10 text-center">
               <h2 className="font-display text-2xl font-bold text-foreground mb-2">Voice</h2>
               <p className="text-muted-foreground mb-1">Choose the voice you want to hear your story in.</p>
-              <p className="text-xs text-muted-foreground/50">Most people start with Eleanor for their first story.</p>
+              <p className="text-xs text-muted-foreground/80">Most people start with Eleanor for their first story.</p>
             </div>
 
             {(() => {
@@ -1704,9 +1704,9 @@ export default function Create() {
                           </div>
                           {isSelected && <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />}
                         </div>
-                        <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accentLabel || voice.accent}</span>
+                        <span className="text-[11px] text-muted-foreground/80 font-medium tracking-wide">{voice.accentLabel || voice.accent}</span>
                         {voice.presence && (
-                          <p className="text-xs text-muted-foreground/65 mt-1 leading-snug">{voice.presence}</p>
+                          <p className="text-xs text-muted-foreground/80 mt-1 leading-snug">{voice.presence}</p>
                         )}
                       </div>
                       <div className="flex-shrink-0">
@@ -1718,7 +1718,7 @@ export default function Create() {
 
                     {voice.bestFor && (
                       <div className="mb-4 pt-2">
-                        <p className="text-[10px] font-medium uppercase tracking-wide text-primary/60 mb-1.5">Best for this mood</p>
+                        <p className="text-[10px] font-medium uppercase tracking-wide text-primary/70 mb-1.5">Best for this mood</p>
                         <p className="text-[11px] text-primary/75 font-medium leading-relaxed">{voice.bestFor}</p>
                       </div>
                     )}
@@ -1762,7 +1762,7 @@ export default function Create() {
 
                   {showMaleVoices && (
                     <>
-                      <p className="pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                      <p className="pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                         Male Voices
                       </p>
                       {MALE_VOICES.map(renderVoiceCard)}
@@ -1895,7 +1895,7 @@ export default function Create() {
 
                   {/* Title block */}
                   <div className="px-5 pt-5 pb-4">
-                    <p className="text-primary/60 text-[10px] font-bold uppercase tracking-widest mb-1.5">
+                    <p className="text-primary/70 text-[10px] font-bold uppercase tracking-widest mb-1.5">
                       {paywallCapture.mood} · {paywallCapture.intensity}
                     </p>
                     <h2 className="font-display text-2xl font-bold text-foreground leading-tight">
@@ -1933,11 +1933,11 @@ export default function Create() {
                 {/* Voice & Tone metadata */}
                 <div className="flex flex-wrap gap-2 justify-center">
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/8 text-xs text-muted-foreground">
-                    <Volume2 className="w-3 h-3 text-primary/60" />
+                    <Volume2 className="w-3 h-3 text-primary/70" />
                     Narrated by {voiceName} · {voiceAccent}
                   </div>
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/8 text-xs text-muted-foreground">
-                    <Headphones className="w-3 h-3 text-primary/60" />
+                    <Headphones className="w-3 h-3 text-primary/70" />
                     Audio ready to play
                   </div>
                 </div>
@@ -1963,7 +1963,7 @@ export default function Create() {
                 </button>
 
                 {/* Personalised bridge copy */}
-                <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
+                <p className="text-center text-xs text-muted-foreground/80 leading-relaxed">
                   Your casting is saved. Begin your story now — written, narrated, and ready to play in minutes.
                 </p>
 
@@ -2015,7 +2015,7 @@ export default function Create() {
                 {/* Divider */}
                 <div className="w-full flex items-center gap-3">
                   <div className="flex-1 h-px bg-white/8" />
-                  <p className="text-[10px] text-muted-foreground/25 uppercase tracking-widest whitespace-nowrap">or try just one story</p>
+                  <p className="text-[10px] text-muted-foreground/80 uppercase tracking-widest whitespace-nowrap">or try just one story</p>
                   <div className="flex-1 h-px bg-white/8" />
                 </div>
 
@@ -2024,7 +2024,7 @@ export default function Create() {
                   type="button"
                   disabled={!!paywallLoadingPlan}
                   onClick={() => startCheckoutFromPaywall("immersive")}
-                  className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
+                  className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
                 >
                   {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
                   Not ready to commit? Get just this story — £7.99
@@ -2032,13 +2032,13 @@ export default function Create() {
 
                 {/* Privacy + start over */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-[11px] text-muted-foreground/30 text-center">
+                  <p className="text-[11px] text-muted-foreground/80 text-center">
                     Billed discreetly · Cancel instantly, any time · No story history shared
                   </p>
                   <button
                     type="button"
                     onClick={() => { setCastingResetKey(k => k + 1); setStep("casting"); setGenerationError(null); }}
-                    className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                    className="text-xs text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2"
                   >
                     Start over
                   </button>

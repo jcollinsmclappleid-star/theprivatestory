@@ -218,7 +218,7 @@ function WorldIntroCard() {
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#34d399]/70">Your World</span>
           </div>
           <p className="text-base font-bold text-white/90 mb-1 leading-snug">Place your story anywhere on earth.</p>
-          <p className="text-xs text-white/40 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
+          <p className="text-xs text-white/80 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
 
           <div className="overflow-hidden mb-2 -mx-1">
             <div
@@ -237,7 +237,7 @@ function WorldIntroCard() {
             </div>
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-2">Or step into another era entirely</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/80 mb-2">Or step into another era entirely</p>
           <div className="overflow-hidden -mx-1">
             <div
               className="flex gap-2"
@@ -258,7 +258,7 @@ function WorldIntroCard() {
 
         <div className="relative z-10 mx-4 mb-4 mt-3 rounded-xl border p-3" style={{ borderColor: "#34d39920", background: "#34d3990a" }}>
           <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#34d39966" }}>The scene you chose</p>
-          <p className="text-xs text-white/60 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
+          <p className="text-xs text-white/80 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
         </div>
 
         <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: "#34d39915" }}>
@@ -284,10 +284,10 @@ function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
           >
             {s.category}
           </span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
 
       <div className="relative z-10 px-5 pb-3 space-y-3">
@@ -348,10 +348,10 @@ function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
           >
             {s.category}
           </span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed mb-4">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed mb-4">{s.sub}</p>
 
         <div className="space-y-2">
           {(s.options as readonly string[]).map((opt, idx) => {
@@ -414,10 +414,10 @@ function SituationCard({ s }: { s: StepCard }) {
           >
             {s.category}
           </span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed mb-3">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed mb-3">{s.sub}</p>
 
         <div
           className="flex items-center gap-2 px-3 py-2 rounded-xl border mb-3"
@@ -425,7 +425,7 @@ function SituationCard({ s }: { s: StepCard }) {
         >
           <Shuffle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.accent }} />
           <span className="text-xs font-semibold" style={{ color: s.accent }}>Choose For Me</span>
-          <span className="text-[10px] text-white/30 ml-auto">or pick yours →</span>
+          <span className="text-[10px] text-white/80 ml-auto">or pick yours →</span>
         </div>
 
         <div className="flex flex-wrap gap-1.5 mb-3">
@@ -472,10 +472,10 @@ function FinalOutputCard({ s }: { s: StepCard }) {
           >
             {s.category}
           </span>
-          <span className="text-[9px] text-white/20 tracking-widest">✦ Your result</span>
+          <span className="text-[9px] text-white/80 tracking-widest">✦ Your result</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
 
       {/* Mock story output card */}
@@ -487,12 +487,12 @@ function FinalOutputCard({ s }: { s: StepCard }) {
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0]">Forbidden</span>
           </div>
           <div className="absolute top-3 right-3">
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-medium border border-white/10 bg-white/5 text-white/40">Victorian London</span>
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-medium border border-white/10 bg-white/5 text-white/80">Victorian London</span>
           </div>
         </div>
         <div className="bg-[#0c0a08] px-3 py-2.5">
           <p className="text-sm font-bold text-white/90 mb-0.5">The Fog Between Us</p>
-          <p className="text-[10px] text-white/40 italic leading-relaxed">"He shouldn't be in her study. She should have locked the door."</p>
+          <p className="text-[10px] text-white/80 italic leading-relaxed">"He shouldn't be in her study. She should have locked the door."</p>
         </div>
       </div>
 
@@ -507,7 +507,7 @@ function FinalOutputCard({ s }: { s: StepCard }) {
             <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
             </div>
-            <span className="text-xs text-white/60">{item}</span>
+            <span className="text-xs text-white/80">{item}</span>
           </div>
         ))}
       </div>
@@ -529,10 +529,10 @@ function StandardCard({ s }: { s: StepCard }) {
           >
             {s.category}
           </span>
-          <span className="text-[9px] text-white/20 tracking-widest">{s.step}</span>
+          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
         </div>
         <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/45 leading-relaxed">{s.sub}</p>
+        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
       </div>
 
       <div className="relative z-10 px-5 pb-2">
@@ -625,13 +625,13 @@ function CastingPreview() {
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
                 <p className="text-sm font-bold text-primary">{n}</p>
-                <p className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">{label}</p>
+                <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
               </div>
             ))}
           </div>
               <p className="text-[10px] text-muted-foreground/80 mt-2.5">
             Your name not listed?{" "}
-            <Link href="/name-club" className="text-primary/55 hover:text-primary transition-colors underline-offset-2 hover:underline">
+            <Link href="/name-club" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
               Submit it to the Name Club →
             </Link>
           </p>
@@ -703,11 +703,11 @@ function CastingPreview() {
               <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
                 Begin your story
               </p>
-              <p className="text-xs text-muted-foreground/45 mt-1.5 leading-relaxed max-w-[180px] mx-auto">
+              <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed max-w-[180px] mx-auto">
                 Written for you. Narrated. Private from the first word.
               </p>
             </div>
-            <span className="text-xs text-primary/50 group-hover:text-primary/80 transition-colors tracking-widest uppercase">
+            <span className="text-xs text-primary/70 group-hover:text-primary/80 transition-colors tracking-widest uppercase">
               Create My Story →
             </span>
           </Link>
@@ -715,7 +715,7 @@ function CastingPreview() {
       </div>
 
       {/* Scroll hint — mobile */}
-      <p className="md:hidden text-center text-xs text-muted-foreground/30 mt-2 tracking-widest">Swipe to explore →</p>
+      <p className="md:hidden text-center text-xs text-muted-foreground/80 mt-2 tracking-widest">Swipe to explore →</p>
     </section>
   );
 }
@@ -735,7 +735,7 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
           <div className="flex items-start justify-between gap-6 flex-col sm:flex-row">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Library className="w-4 h-4 text-primary/60" />
+                <Library className="w-4 h-4 text-primary/70" />
                 <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest">
                   The Collection
                 </span>
@@ -822,7 +822,7 @@ export default function Home() {
               <Headphones className="w-3.5 h-3.5 text-primary/70" />
               <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-white/35 tracking-wide">
+            <div className="flex items-center gap-1.5 text-[11px] text-white/80 tracking-wide">
               <span>Created for you</span>
               <span>·</span>
               <span>Narrated</span>
@@ -836,11 +836,11 @@ export default function Home() {
             <span className="text-primary">around the feeling you choose.</span>
           </h1>
 
-          <p className="text-sm text-white/40 leading-relaxed max-w-xs">
+          <p className="text-sm text-white/80 leading-relaxed max-w-xs">
             Built for the adult female imagination — literary, private, entirely yours.
           </p>
 
-          <p className="text-[11px] text-white/22 tracking-widest uppercase mt-1">
+          <p className="text-[11px] text-white/80 tracking-widest uppercase mt-1">
             Three creation rooms — pick your door to begin
           </p>
         </motion.div>
@@ -873,7 +873,7 @@ export default function Home() {
               <p className="text-2xl md:text-3xl font-display font-medium text-white/88 leading-snug">
                 Have you ever wanted a story written entirely around you?
               </p>
-              <p className="text-base md:text-lg text-white/50 leading-relaxed">
+              <p className="text-base md:text-lg text-white/80 leading-relaxed">
                 Your world. Your rules. The energy you want, the tension that builds exactly as you like it — and a character who feels written for you, because he was.
               </p>
             </div>
@@ -886,7 +886,7 @@ export default function Home() {
               ].map((line) => (
                 <p
                   key={line}
-                  className="text-sm text-white/28 tracking-wide italic"
+                  className="text-sm text-white/80 tracking-wide italic"
                 >
                   {line}
                 </p>
@@ -900,8 +900,8 @@ export default function Home() {
                 { icon: <Lock className="w-3 h-3" />, label: "No profile" },
                 { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
               ].map(({ icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/25">
-                  <span className="text-primary/35">{icon}</span>
+                <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/80">
+                  <span className="text-primary/70">{icon}</span>
                   {label}
                 </span>
               ))}
@@ -952,10 +952,10 @@ export default function Home() {
                     A deeper, darker side<br className="hidden md:block" />
                     <span className="text-[#7b8fff]"> of the experience.</span>
                   </h2>
-                  <p className="text-white/60 text-base leading-relaxed mb-2 max-w-md">
+                  <p className="text-white/80 text-base leading-relaxed mb-2 max-w-md">
                     Premium adult audio stories — written for you, narrated for you, private to you. Darker scenarios, more charged atmosphere, the same complete creative control.
                   </p>
-                  <p className="text-white/30 text-sm leading-relaxed mb-8 max-w-md">
+                  <p className="text-white/80 text-sm leading-relaxed mb-8 max-w-md">
                     The same Creation Room depth — 50+ countries, 12 eras, 14 archetypes, 9 chemistries — but the intensity dial goes further. Still private. Still entirely yours.
                   </p>
 
@@ -986,7 +986,7 @@ export default function Home() {
                 </div>
 
                 <div className="hidden md:flex flex-col gap-3 flex-shrink-0 w-56">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/20 mb-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/80 mb-1">
                     Scenarios waiting for you
                   </p>
                   {[
@@ -999,7 +999,7 @@ export default function Home() {
                       key={item.label}
                       className={`px-4 py-2.5 rounded-xl border border-white/6 bg-white/3 ${item.opacity}`}
                     >
-                      <span className="text-xs text-white/70 leading-snug">{item.label}</span>
+                      <span className="text-xs text-white/80 leading-snug">{item.label}</span>
                     </div>
                   ))}
                   <div className="px-4 py-2.5 rounded-xl border border-white/4 bg-white/2 opacity-8">
@@ -1016,7 +1016,7 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-3">What you get at the end</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">What you get at the end</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
               A complete immersive story —<br className="hidden md:block" />
               <span className="text-primary"> written, narrated, illustrated.</span>
@@ -1052,12 +1052,12 @@ export default function Home() {
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0] tracking-wide">Forbidden · Heated</span>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/50 border border-white/8">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <span className="text-[10px] text-white/50 font-medium">Now Playing</span>
+                    <span className="text-[10px] text-white/80 font-medium">Now Playing</span>
                   </div>
                 </div>
                 {/* Setting badge */}
                 <div className="absolute bottom-12 right-5 z-10">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/40">Victorian London, 1884</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/10 bg-white/5 text-white/80">Victorian London, 1884</span>
                 </div>
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-5 z-10">
@@ -1068,7 +1068,7 @@ export default function Home() {
               {/* Story details + player */}
               <div className="p-6 md:p-8">
                 {/* Description */}
-                <p className="text-sm text-white/50 leading-relaxed mb-6 max-w-lg">
+                <p className="text-sm text-white/80 leading-relaxed mb-6 max-w-lg">
                   He shouldn't be in her study at this hour. She should have locked the door. Neither of them mentions the letter still folded in his pocket.
                 </p>
 
@@ -1079,39 +1079,39 @@ export default function Home() {
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                       Play Story
                     </button>
-                    <div className="flex items-center gap-3 text-xs text-white/30">
+                    <div className="flex items-center gap-3 text-xs text-white/80">
                       <span>5 min</span>
                       <span>·</span>
                       <span>4 scenes</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-white/25 font-mono w-8">0:42</span>
+                    <span className="text-[10px] text-white/80 font-mono w-8">0:42</span>
                     <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
                       <div className="h-full rounded-full bg-primary/70" style={{ width: "14%" }} />
                     </div>
-                    <span className="text-[10px] text-white/25 font-mono w-8 text-right">5:00</span>
+                    <span className="text-[10px] text-white/80 font-mono w-8 text-right">5:00</span>
                   </div>
                 </div>
 
                 {/* Story excerpt — "reading along" panel */}
                 <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5 mb-5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Reading Along · Scene 1 of 4</p>
-                  <p className="text-sm text-white/75 leading-[1.9] font-light">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Reading Along · Scene 1 of 4</p>
+                  <p className="text-sm text-white/80 leading-[1.9] font-light">
                     The fog had come in early, pressing itself against the windowpanes as though it wanted to be invited inside. She didn't look up when she heard the door — she knew the sound of him now, the particular way he entered a room as if he'd already decided whether to stay.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-white/20">
-                  <Lock className="w-3 h-3 text-primary/30 flex-shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-white/80">
+                  <Lock className="w-3 h-3 text-primary/70 flex-shrink-0" />
                   <span>Private · Visible only in your account · Never shared with anyone, ever</span>
                 </div>
               </div>
             </div>
 
-            <p className="text-center text-xs text-muted-foreground/30 mt-5">
+            <p className="text-center text-xs text-muted-foreground/80 mt-5">
               Every story is original — written, narrated, and illustrated for this moment only.{" "}
-              <Link href="/create" className="text-primary/50 hover:text-primary transition-colors">Create yours →</Link>
+              <Link href="/create" className="text-primary/70 hover:text-primary transition-colors">Create yours →</Link>
             </p>
           </div>
         </section>
@@ -1124,7 +1124,7 @@ export default function Home() {
           <div className="rounded-3xl border border-border/25 bg-card/20 p-8 md:p-12">
             <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
               <div className="flex-1">
-                <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Private access</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">Private access</p>
                 <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
                   A story written entirely for you.<br className="hidden md:block" />
                   <span className="text-muted-foreground font-normal"> Whenever the moment calls for it.</span>
@@ -1142,12 +1142,12 @@ export default function Home() {
             <div className={`grid grid-cols-1 gap-4 mb-6 ${isPaid ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
               {/* Monthly */}
               <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-3">Monthly</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Monthly</p>
                 <div className="flex items-end gap-1.5 mb-1">
                   <span className="font-display text-3xl font-bold text-foreground">£29</span>
-                  <span className="text-muted-foreground/50 text-sm mb-0.5">/ month</span>
+                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
                 </div>
-                <p className="text-xs text-muted-foreground/40 mb-4">Billed monthly. Stories yours to keep.</p>
+                <p className="text-xs text-muted-foreground/80 mb-4">Billed monthly. Stories yours to keep.</p>
                 <div className="space-y-2 mb-5">
                   {[
                     { text: "5 personalised stories / month", special: false },
@@ -1159,16 +1159,16 @@ export default function Home() {
                     <div key={f.text} className="flex items-start gap-2">
                       {f.special
                         ? <Moon className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-                        : <Check className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
+                        : <Check className="w-3.5 h-3.5 text-primary/70 flex-shrink-0 mt-0.5" />
                       }
-                      <span className={`text-xs leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/70"}`}>{f.text}</span>
+                      <span className={`text-xs leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>{f.text}</span>
                     </div>
                   ))}
                 </div>
                 <button
                   onClick={() => startCheckout("monthly")}
                   disabled={checkoutLoading === "monthly"}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/70 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
                 >
                   {checkoutLoading === "monthly" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Monthly"}
                 </button>
@@ -1183,14 +1183,14 @@ export default function Home() {
               <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
                 <div className="flex items-center gap-2 mb-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Annual</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
                   <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">Best value</span>
                 </div>
                 <div className="flex items-end gap-1.5 mb-1">
                   <span className="font-display text-3xl font-bold text-foreground">£179</span>
-                  <span className="text-muted-foreground/50 text-sm mb-0.5">/ year</span>
+                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
                 </div>
-                <p className="text-xs text-muted-foreground/40 mb-4">£14.91/month — less than half the monthly price.</p>
+                <p className="text-xs text-muted-foreground/80 mb-4">£14.91/month — less than half the monthly price.</p>
                 <div className="space-y-2 mb-5">
                   {[
                     { text: "50 personalised stories / year", special: false },
@@ -1224,7 +1224,7 @@ export default function Home() {
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Additional stories</p>
                     <div className="flex items-end gap-1.5 mb-1">
                       <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
-                      <span className="text-muted-foreground/50 text-sm mb-0.5">/ story</span>
+                      <span className="text-muted-foreground/80 text-sm mb-0.5">/ story</span>
                     </div>
                     <p className="text-xs text-muted-foreground/80 leading-relaxed mt-3">
                       Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
@@ -1266,7 +1266,7 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Explore</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">Explore</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight mb-2">
               Explore by mood, feeling, and story type.
             </h2>
@@ -1278,7 +1278,7 @@ export default function Home() {
 
             {/* Core */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Personalised</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Personalised</p>
               <div className="flex flex-col gap-2">
                 {[
                   { label: "Personalised audio stories", href: "/personalised-audio-stories" },
@@ -1291,9 +1291,9 @@ export default function Home() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                    className="text-sm text-muted-foreground/80 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
                   >
-                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    <ChevronRight className="w-3 h-3 text-primary/70 group-hover:text-primary/60 transition-colors flex-shrink-0" />
                     {link.label}
                   </Link>
                 ))}
@@ -1302,7 +1302,7 @@ export default function Home() {
 
             {/* Bedtime */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Relaxation</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Relaxation</p>
               <div className="flex flex-col gap-2">
                 {[
                   { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
@@ -1312,9 +1312,9 @@ export default function Home() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                    className="text-sm text-muted-foreground/80 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
                   >
-                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    <ChevronRight className="w-3 h-3 text-primary/70 group-hover:text-primary/60 transition-colors flex-shrink-0" />
                     {link.label}
                   </Link>
                 ))}
@@ -1323,7 +1323,7 @@ export default function Home() {
 
             {/* Romantic */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Romantic</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Romantic</p>
               <div className="flex flex-col gap-2">
                 {[
                   { label: "Romantic audio stories", href: "/romantic-audio-stories" },
@@ -1333,9 +1333,9 @@ export default function Home() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                    className="text-sm text-muted-foreground/80 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
                   >
-                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    <ChevronRight className="w-3 h-3 text-primary/70 group-hover:text-primary/60 transition-colors flex-shrink-0" />
                     {link.label}
                   </Link>
                 ))}
@@ -1344,7 +1344,7 @@ export default function Home() {
 
             {/* Intimate */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Intimate & Genre</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Intimate & Genre</p>
               <div className="flex flex-col gap-2">
                 {[
                   { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -1359,9 +1359,9 @@ export default function Home() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm text-muted-foreground/70 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                    className="text-sm text-muted-foreground/80 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
                   >
-                    <ChevronRight className="w-3 h-3 text-primary/30 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    <ChevronRight className="w-3 h-3 text-primary/70 group-hover:text-primary/60 transition-colors flex-shrink-0" />
                     {link.label}
                   </Link>
                 ))}
@@ -1378,11 +1378,11 @@ export default function Home() {
           <MiniDoorCTA />
           <Link
             href="/pricing"
-            className="text-xs text-primary/50 hover:text-primary transition-colors tracking-widest uppercase"
+            className="text-xs text-primary/70 hover:text-primary transition-colors tracking-widest uppercase"
           >
             View pricing →
           </Link>
-          <p className="text-[11px] text-muted-foreground/30">
+          <p className="text-[11px] text-muted-foreground/80">
             Under a minute to begin. Private from the first word.{" "}
             <Link href="/privacy" className="hover:text-primary/60 transition-colors">How we protect it →</Link>
           </p>

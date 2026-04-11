@@ -816,7 +816,7 @@ export default function Drift() {
               </div>
 
               {/* Personalised bridge copy */}
-              <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
+              <p className="text-center text-xs text-muted-foreground/80 leading-relaxed">
                 Your casting is saved. Subscribe and your story writes immediately.
               </p>
 
@@ -836,9 +836,9 @@ export default function Drift() {
                       <Sparkles className="w-4 h-4" />
                     )}
                     <span>Annual — £14.99/month</span>
-                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/70 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
-                  <span className="text-xs text-white/40">billed annually</span>
+                  <span className="text-xs text-white/80">billed annually</span>
                 </button>
 
                 {/* Monthly — secondary */}
@@ -859,7 +859,7 @@ export default function Drift() {
               <button
                 disabled={!!paywallLoadingPlan}
                 onClick={() => void startDriftCheckout("immersive")}
-                className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
+                className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
               >
                 {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
                 Not ready to commit? Get just this story — £7.99
@@ -867,13 +867,13 @@ export default function Drift() {
 
               {/* Privacy signal + start over */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-[11px] text-muted-foreground/30">
+                <p className="text-[11px] text-muted-foreground/80">
                   Nothing stored. No history. Heard only by you.
                 </p>
                 <button
                   type="button"
                   onClick={() => { setPhase("scenario"); setSelectedScenario(null); setPaywallCapture(null); }}
-                  className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                  className="text-xs text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2"
                 >
                   Start over
                 </button>

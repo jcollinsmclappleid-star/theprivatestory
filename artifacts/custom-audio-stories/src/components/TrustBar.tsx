@@ -141,18 +141,18 @@ export function TrustBar() {
               key={i}
               className="flex items-start gap-3 rounded-xl border border-border/20 bg-white/[0.02] px-4 py-3.5"
             >
-              <div className="mt-0.5 flex-shrink-0 text-primary/50">{item.icon}</div>
-              <p className="text-xs text-muted-foreground/70 leading-relaxed">{item.text}</p>
+              <div className="mt-0.5 flex-shrink-0 text-primary/70">{item.icon}</div>
+              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.text}</p>
             </div>
           ))}
         </div>
 
         {/* Stripe trust line */}
         <div className="flex items-center justify-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0" />
-          <p className="text-xs text-muted-foreground/35 text-center">
+          <ShieldCheck className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
+          <p className="text-xs text-muted-foreground/80 text-center">
             Payments processed securely by{" "}
-            <span className="text-muted-foreground/55 font-medium">Stripe</span>
+            <span className="text-muted-foreground/80 font-medium">Stripe</span>
             {" "}— your card details never reach our servers
           </p>
         </div>

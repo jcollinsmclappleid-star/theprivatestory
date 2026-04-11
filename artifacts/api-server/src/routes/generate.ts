@@ -2618,12 +2618,12 @@ function openBeatExample(beat: string): string {
 function repairBrokenFragments(text: string): string {
   if (!text) return text;
 
-  // 1. Double period after closing quote (e.g. `"I want to taste you.". You`)
+  // 1. Double period after closing quote: `"I want to taste you.". You` → `"..." You`
   text = text.replace(/\."\.(\s+|$)/g, '."$1');
 
   // 2. Words that grammatically CANNOT end a sentence.
-  //    When followed by ". <Capital>" the period is a staccato overreach — join
-  //    the fragment back and lowercase the following capital.
+  //    Pattern: <word>. <Capital> → joined, capital lowercased.
+  //    Loops until stable to handle chained breaks: "going in. My mouth. When. You"
   const CANT_END = [
     // Prepositions
     "in","into","on","onto","at","of","to","for","from","with","by",
@@ -2637,16 +2637,7 @@ function repairBrokenFragments(text: string): string {
     // Articles / determiners (never end a prose sentence)
     "the","a","an",
   ];
-
-  // Build a single-pass regex  \b(word1|word2|...)\. ([A-Z])
-  // The trailing capital is lowercased so the joined sentence reads naturally.
-  const cantEndRe = new RegExp(
-    `\\b(${CANT_END.join("|")})\\.( +)([A-Z])`,
-    "gi"
-  );
-
-  // Keep looping until no more changes — handles chained breaks like
-  // "going in. My mouth. When. You" in a single pass.
+  const cantEndRe = new RegExp(`\\b(${CANT_END.join("|")})\\.( +)([A-Z])`, "gi");
   let prev = "";
   while (prev !== text) {
     prev = text;
@@ -2654,6 +2645,43 @@ function repairBrokenFragments(text: string): string {
       `${word.toLowerCase()}${space}${cap.toLowerCase()}`
     );
   }
+
+  // 3. Predicate fragment — copular verb with no subject.
+  //    "The first taste of him. Was salt and heat." → "...of him was salt and heat."
+  //    Guard A: don't join if a subject pronoun follows Was/Were (real interrogative).
+  //    Guard B: implicitly safe — the pattern requires rest to end with "." not "?".
+  text = text.replace(
+    /\. (Was|Were) (?!(she|he|it|they|you|we|I)\b)((?:(?!\?)[^.!])+\.)/g,
+    (_m, verb: string, _la: string, rest: string) => ` ${verb.toLowerCase()} ${rest}`
+  );
+
+  // 4a. Object pronoun + immediate preposition.
+  //     "The words hit. Her like a physical force." → "...hit her like..."
+  const OBJ_PRONOUNS = "her|him|them|me|us|it";
+  const POSITIONAL_PREPS =
+    "like|above|across|along|around|at|behind|below|beneath|beside|between|" +
+    "beyond|by|down|except|for|from|in|into|near|of|off|on|onto|out|over|" +
+    "past|through|to|toward|under|until|up|upon|with|within|without";
+  const objDirectRe = new RegExp(
+    `\\. (${OBJ_PRONOUNS}) (${POSITIONAL_PREPS})\\b`, "gi"
+  );
+  text = text.replace(objDirectRe, (_m, pronoun: string, prep: string) =>
+    ` ${pronoun.toLowerCase()} ${prep.toLowerCase()}`
+  );
+
+  // 4b. Object pronoun + noun + preposition with no verb between.
+  //     "His hand pinned. Her wrists above her head." → "...pinned her wrists above..."
+  //     Guard: if the middle word is a conjugated verb the next phrase is a real sentence
+  //     ("Her voice came across the room") — don't join.
+  const CONJ_VERB_RE =
+    /^(was|were|is|are|has|had|have|will|would|could|should|may|might|can|shall|must|did|do|does|came|went|said|felt|saw|heard|moved|turned|looked|stood|reached|lay|sat|pulled|pushed|pressed|held|grabbed|gripped|took|made|got|fell|ran|stopped|started|began|wanted|needed|tried|seemed|became|thought|knew|found|left|opened|closed|smiled|laughed|cried|wondered|noticed|realized|waited|watched|listened)$/i;
+  const objPhraseRe = new RegExp(
+    `\\. (${OBJ_PRONOUNS}) (\\w+) (${POSITIONAL_PREPS})\\b`, "gi"
+  );
+  text = text.replace(objPhraseRe, (m, pronoun: string, noun: string, prep: string) => {
+    if (CONJ_VERB_RE.test(noun)) return m;
+    return ` ${pronoun.toLowerCase()} ${noun} ${prep.toLowerCase()}`;
+  });
 
   return text;
 }
@@ -2926,9 +2954,15 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
       WRONG: "She wanted him in. Her mouth." (broken after preposition — join it)
       WRONG: "He groaned when. She moved." (broken after subordinator — join it)
       WRONG: "She felt the weight of. Him." (broken after preposition — join it)
-      RIGHT:  "She wanted him. She took him in." or "She wanted him in her mouth."
+      WRONG: "The words hit. Her like a physical force." (broken between verb and direct object — join: "The words hit her like a physical force.")
+      WRONG: "His hand pinned. Her wrists above her head." (broken between verb and object noun phrase — join: "His hand pinned her wrists above her head.")
+      WRONG: "The first taste of him. Was salt and heat." (predicate detached from subject — join: "The first taste of him was salt and heat.")
+      RIGHT:  "She wanted him. She took him in her mouth."
       RIGHT:  "He groaned. She moved against him."
       RIGHT:  "She felt the weight of him."
+      RIGHT:  "The words hit her like a physical force."
+      RIGHT:  "His hand pinned her wrists above her head."
+      RIGHT:  "The first taste of him was salt and heat."
     - flowing: long subordinate clauses gather momentum; the sentence doesn't release until the very end; sense arrives late and fully; the rhythm pulls the listener forward without pausing.
     - fragmented: incomplete thoughts. Ellipsis. The sentence starts and doesn't land... Something stops it. The rhythm of interruption, not completion.
     - baroque: dense accumulated sensory layers stacked in a single paragraph; multiple registers simultaneously; the prose doesn't breathe until the very end of the passage.

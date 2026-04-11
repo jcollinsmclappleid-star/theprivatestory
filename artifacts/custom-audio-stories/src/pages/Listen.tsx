@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Play, Pause } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
-import { MiniDoorCTA } from "@/components/ThreeDoors";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -176,33 +175,63 @@ export default function Listen() {
           </div>
         </motion.div>
 
-        {/* Framing */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="text-center text-xs text-white/55 italic leading-relaxed mb-10 max-w-[220px]"
-        >
-          This story wasn't built around you.<br />Yours will be.
-        </motion.p>
-
-        {/* CTA */}
+        {/* Make it yours — personalisation pitch */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.75, duration: 0.5 }}
-          className="flex flex-col items-center gap-5 w-full"
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="w-full mb-8"
         >
-          <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">
-            Create a story built around your desire
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.22em]">Now make it yours</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+
+          {/* Headline */}
+          <p className="text-center text-base font-display text-foreground leading-snug mb-2">
+            This was someone else's story.
           </p>
-          <MiniDoorCTA />
-          <div className="flex items-center gap-4 mt-1">
-            <Link href="/pricing" className="text-xs text-white/50 hover:text-white/75 transition-colors">
+          <p className="text-center text-sm text-white/60 leading-relaxed mb-6">
+            Yours is written from scratch — around your cast,<br />your room, your desire.
+          </p>
+
+          {/* Customisation pillars */}
+          <div className="grid grid-cols-3 gap-2 mb-7">
+            <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+              <span className="text-lg">🚪</span>
+              <span className="text-[10px] font-bold text-white/70 uppercase tracking-wide text-center">The room</span>
+              <span className="text-[10px] text-white/40 text-center leading-tight">Bar, hotel, study&hellip;</span>
+            </div>
+            <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+              <span className="text-lg">✦</span>
+              <span className="text-[10px] font-bold text-white/70 uppercase tracking-wide text-center">The cast</span>
+              <span className="text-[10px] text-white/40 text-center leading-tight">Who he is to you</span>
+            </div>
+            <div className="flex flex-col items-center gap-1.5 rounded-xl border border-white/8 bg-white/3 px-2 py-3">
+              <span className="text-lg">🔥</span>
+              <span className="text-[10px] font-bold text-white/70 uppercase tracking-wide text-center">The desire</span>
+              <span className="text-[10px] text-white/40 text-center leading-tight">Mood & intensity</span>
+            </div>
+          </div>
+
+          {/* CTA button */}
+          <Link
+            href="/pricing"
+            className="block w-full text-center bg-primary text-primary-foreground font-bold text-sm
+                       py-4 rounded-2xl hover:bg-primary/90 active:scale-[0.98] transition-all
+                       shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]"
+          >
+            Build my private story →
+          </Link>
+
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <Link href="/pricing" className="text-xs text-white/40 hover:text-white/70 transition-colors">
               View pricing
             </Link>
-            <span className="text-white/25 text-xs">·</span>
-            <Link href="/about" className="text-xs text-white/50 hover:text-white/75 transition-colors">
+            <span className="text-white/20 text-xs">·</span>
+            <Link href="/about" className="text-xs text-white/40 hover:text-white/70 transition-colors">
               About us
             </Link>
           </div>

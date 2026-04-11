@@ -1152,7 +1152,7 @@ export default function Home() {
                       Play Story
                     </button>
                     <div className="flex items-center gap-3 text-xs text-white/80">
-                      <span>5 min</span>
+                      <span>10 min</span>
                       <span>·</span>
                       <span>4 scenes</span>
                     </div>
@@ -1160,9 +1160,9 @@ export default function Home() {
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-white/80 font-mono w-8">0:42</span>
                     <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
-                      <div className="h-full rounded-full bg-primary/70" style={{ width: "14%" }} />
+                      <div className="h-full rounded-full bg-primary/70" style={{ width: "7%" }} />
                     </div>
-                    <span className="text-[10px] text-white/80 font-mono w-8 text-right">5:00</span>
+                    <span className="text-[10px] text-white/80 font-mono w-8 text-right">10:00</span>
                   </div>
                 </div>
 

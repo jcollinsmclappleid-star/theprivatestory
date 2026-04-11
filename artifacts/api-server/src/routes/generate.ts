@@ -2745,6 +2745,19 @@ function repairRunOns(text: string): string {
     "above","below","between","among","against","across","behind","beside",
     "along","around","off","out","up","down","about","near","upon","within",
     "without","toward","towards","outside","inside","past","beyond","into","onto",
+    // Complement-head words — these head relative/complement clauses and must never
+    // be treated as sentence endings by Pattern C.
+    // e.g. "all you can see", "the best you could do", "the rest you needed",
+    //      "more than you knew", "everything you were", "nothing you could say"
+    "all","more","most","less","least","much","many","enough","best","worst",
+    "rest","part","what","whatever","wherever","whoever","same","last","first",
+    "next","only","everything","something","nothing","anything","little","few",
+    "both","either","neither","each","other","another","such","plenty",
+    // Personal / object pronouns as prevWord — these are always direct objects, never
+    // sentence-ending bare nouns. Prevents false splits on:
+    //   "without you it would be nothing", "she'll tell you it was fine",
+    //   "against you it would crumble", "around him she was safe"
+    "you","he","she","they","it","we","me","him","her","them","us","one",
   ]);
 
   // Finite/modal verbs — used to confirm the next clause is an independent clause,
@@ -2776,7 +2789,7 @@ function repairRunOns(text: string): string {
   //    immediately follows the article.
   //    "[verb] to the [noun] [finite-verb]" → "[verb] to. The [noun] [finite-verb]"
   const DESIRE_VERBS =
-    "want|wanted|needs|needed|wish|wished|try|tried|intend|intended|mean|meant|" +
+    "want|wanted|need|needs|needed|wish|wished|try|tried|intend|intended|mean|meant|" +
     "refuse|refused|decide|decided|dare|dared|long|longed|start|started|" +
     "begin|began|manage|managed|fail|failed|love|loved|like|liked|prefer|preferred|" +
     "choose|chose|expect|expected|have|had|used";
@@ -2818,10 +2831,15 @@ function repairRunOns(text: string): string {
   );
   text = text.replace(bareNounRunOnRe, (m, prevWord: string, pron: string, verb: string) => {
     if (SAFE_BEFORE.has(prevWord.toLowerCase())) return m;
+    // Gerunds and present participles (-ing) always take clause complements —
+    // "thinking you were", "knowing she could", "feeling he might" — never a sentence end.
+    // Past participles / adjectives ending -ed can also take complements ("frightened you were")
+    // so guard those too.
+    if (/ing$/i.test(prevWord) || /ed$/i.test(prevWord)) return m;
     // Also protect cases like "tell it", "show it", "give you" — where prevWord is a verb
     // that takes a direct object pronoun. We detect this by checking if the preceding
     // word ends in a common verb suffix or is in the safe-verb set.
-    const TRANS_VERB_RE = /^(tell|show|give|make|let|help|hear|see|feel|watch|leave|find|keep|get|take|hold|send|bring|call|ask|need|want|use|try|like|love|hate|stop|push|pull|move|hit|catch|grab|touch|press|pin|lift|tip|tip|pull|wrap|free|open|close|tie|bind|turn|lead|guide|place|put|set|sit|lay|throw|drop|carry|wear|suit|fit|mean|cost|owe|trust|fear|thank|beg|forgive|accept|ignore|avoid|notice|meet|miss|lose|save|serve|join|choose|trust)$/i;
+    const TRANS_VERB_RE = /^(tell|show|give|make|let|help|hear|see|feel|watch|leave|find|keep|get|take|hold|send|bring|call|ask|need|want|use|try|like|love|hate|stop|push|pull|move|hit|catch|grab|touch|press|pin|lift|tip|pull|wrap|free|open|close|tie|bind|turn|lead|guide|place|put|set|sit|lay|throw|drop|carry|wear|suit|fit|mean|cost|owe|trust|fear|thank|beg|forgive|accept|ignore|avoid|notice|meet|miss|lose|save|serve|join|choose|taste|breathe|smell|sense|bite|lick|stroke|trace|cup|read|think|remember|imagine|picture|consider|expect|believe|know|understand|remember|forget|recognise|recognize|follow|watch|greet|welcome|approach|reach|enter|cross)$/i;
     if (TRANS_VERB_RE.test(prevWord)) return m;
     return `${prevWord}. ${pron.charAt(0).toUpperCase() + pron.slice(1)} ${verb}`;
   });

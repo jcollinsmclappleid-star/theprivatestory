@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock, DoorOpen, Flame,
+  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock, DoorOpen, Flame, Volume2,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -834,20 +834,20 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-            <div className="flex items-center gap-1.5 text-white/35">
-              <DoorOpen className="w-3.5 h-3.5" />
-              <span className="text-[11px] tracking-wide">Enter a room</span>
+          <div className="flex items-center justify-start sm:justify-center gap-3 sm:gap-5 flex-wrap w-full">
+            <div className="flex items-center gap-2">
+              <DoorOpen className="w-4 h-4 text-primary" />
+              <span className="text-[11px] tracking-wide text-white/55">Enter a room</span>
             </div>
             <span className="text-white/20 text-xs">→</span>
-            <div className="flex items-center gap-1.5 text-white/35">
-              <Flame className="w-3.5 h-3.5" />
-              <span className="text-[11px] tracking-wide">Shape your desire</span>
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-primary" />
+              <span className="text-[11px] tracking-wide text-white/55">Shape your desire</span>
             </div>
             <span className="text-white/20 text-xs">→</span>
-            <div className="flex items-center gap-1.5 text-white/35">
-              <Headphones className="w-3.5 h-3.5" />
-              <span className="text-[11px] tracking-wide">Hear it privately</span>
+            <div className="flex items-center gap-2">
+              <Volume2 className="w-4 h-4 text-primary" />
+              <span className="text-[11px] tracking-wide text-white/55">Hear it privately</span>
             </div>
           </div>
         </motion.div>

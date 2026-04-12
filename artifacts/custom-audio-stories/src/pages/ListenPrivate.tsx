@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, RotateCcw, RotateCw } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 
@@ -90,7 +90,8 @@ export default function ListenPrivate() {
     setAgeConfirmed(true);
   }, []);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef      = useRef<HTMLAudioElement>(null);
+  const hasPlayedRef  = useRef(false); // true once user presses play for the first time
   const [playing, setPlaying]         = useState(false);
   const [currentTime, setCurrentTime] = useState(SCENE3_START);
   const [duration, setDuration]       = useState(TOTAL_DURATION_S);
@@ -124,7 +125,13 @@ export default function ListenPrivate() {
         setSeeked(true);
       }
     };
-    const onTime = () => setCurrentTime(audio.currentTime);
+    // Before first play, suppress frame-boundary rounding that shows "4:12" vs "4:13".
+    // Once user has played (hasPlayedRef=true), update freely (allows seeking backwards).
+    const onTime = () => {
+      const t = audio.currentTime;
+      if (!hasPlayedRef.current && t < SCENE3_START - 0.5) return;
+      setCurrentTime(t);
+    };
     const onEnd  = () => setPlaying(false);
 
     audio.addEventListener("loadedmetadata", onMeta);
@@ -150,8 +157,26 @@ export default function ListenPrivate() {
     const audio = audioRef.current;
     if (!audio) return;
     if (playing) { audio.pause(); setPlaying(false); }
-    else { try { await audio.play(); setPlaying(true); } catch { /* audio may not be ready */ } }
+    else {
+      try {
+        await audio.play();
+        hasPlayedRef.current = true;
+        setPlaying(true);
+      } catch { /* audio may not be ready */ }
+    }
   }, [playing]);
+
+  const skipBack = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.max(0, audio.currentTime - 30);
+  }, []);
+
+  const skipForward = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.min(duration, audio.currentTime + 30);
+  }, [duration]);
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
@@ -265,19 +290,34 @@ export default function ListenPrivate() {
               />
             </div>
 
-            <div className="flex items-center gap-5">
-              <span className="text-xs text-white/55 font-mono tabular-nums w-9">{formatTime(currentTime)}</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-white/55 font-mono tabular-nums w-9 shrink-0">{formatTime(currentTime)}</span>
+              <button
+                onClick={skipBack}
+                className="flex flex-col items-center gap-0.5 text-white/45 hover:text-white/80 active:scale-90 transition-all"
+                aria-label="Skip back 30 seconds"
+              >
+                <RotateCcw className="w-5 h-5" />
+                <span className="text-[9px] font-semibold tabular-nums leading-none">30</span>
+              </button>
               <button
                 onClick={togglePlay}
-                className="flex-1 flex items-center justify-center w-14 h-14 rounded-full
+                className="flex items-center justify-center w-14 h-14 rounded-full shrink-0
                            bg-primary hover:bg-primary/90 active:scale-95 transition-all hover:scale-105
                            shadow-[0_0_40px_-8px_rgba(201,162,39,0.55)]"
-                style={{ maxWidth: "56px", minWidth: "56px" }}
                 aria-label={playing ? "Pause" : "Play"}
               >
                 {playing ? <Pause className="w-5 h-5 text-primary-foreground" /> : <Play className="w-5 h-5 text-primary-foreground ml-0.5" />}
               </button>
-              <span className="text-xs text-white/55 font-mono tabular-nums w-9 text-right">{formatTime(duration)}</span>
+              <button
+                onClick={skipForward}
+                className="flex flex-col items-center gap-0.5 text-white/45 hover:text-white/80 active:scale-90 transition-all"
+                aria-label="Skip forward 30 seconds"
+              >
+                <RotateCw className="w-5 h-5" />
+                <span className="text-[9px] font-semibold tabular-nums leading-none">30</span>
+              </button>
+              <span className="text-xs text-white/55 font-mono tabular-nums w-9 text-right shrink-0">{formatTime(duration)}</span>
             </div>
           </motion.div>
 

@@ -1,13 +1,19 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Sparkles, Headphones, Globe, PenLine, Check,
+  Sparkles, Headphones, Globe, PenLine, Check, X,
   Lock, EyeOff, Bookmark, Calendar, ChevronRight,
-  Users, Heart, MapPin, Zap, BookOpen, Layers,
+  Users, Heart, MapPin, Zap, BookOpen, Layers, Moon,
 } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
-import { MiniDoorCTA } from "@/components/ThreeDoors";
+import { MiniDoorCTA, ThreeDoors } from "@/components/ThreeDoors";
+
+const fade = (delay = 0) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.55, delay },
+});
 
 const HOW_IT_WORKS_STEPS = [
   {
@@ -78,23 +84,53 @@ const CASTING_FEATURES = [
   },
 ];
 
-const MONTHLY_FEATURES = [
-  "5 Immersive Stories each month",
-  "Full access to the curated collection",
-  "Monthly curated releases",
-  "Private library storage",
-  "Premium narration — press play instantly",
-  "Original cover art for every story",
+const DOOR_EXPLANATIONS = [
+  {
+    id: "story",
+    icon: <Sparkles className="w-4 h-4" />,
+    accent: "#c9a227",
+    rgb: "201,162,39",
+    name: "Romance",
+    desc: "A fully personalised story — your cast, your chemistry, your world. Tension, atmosphere, and the feeling you're after.",
+    cta: "Create My Story",
+    href: "/create",
+  },
+  {
+    id: "dark",
+    icon: <Moon className="w-4 h-4" />,
+    accent: "#7b8fff",
+    rgb: "123,143,255",
+    name: "After Dark",
+    desc: "Everything in Romance, unrestrained. Goes further. Completely private.",
+    cta: "Enter After Dark",
+    href: "/after-dark",
+  },
+  {
+    id: "quiet",
+    icon: <Moon className="w-4 h-4" />,
+    accent: "#56b4e0",
+    rgb: "86,180,224",
+    name: "Drift",
+    desc: "Personalised bedtime stories, calm and warm — written to carry you off.",
+    cta: "Explore Drift",
+    href: "/drift",
+  },
 ];
 
-const ANNUAL_FEATURES = [
-  "50 Immersive Stories per year",
-  "Full access to the curated collection",
-  "Monthly curated releases",
-  "Private library storage",
-  "Premium narration — press play instantly",
-  "Original cover art for every story",
-];
+const LIBRARY_VS = {
+  them: [
+    "Choose from what already exists",
+    "Hope something fits your mood",
+    "Someone else's cast, their world",
+    "Read what everyone else reads",
+  ],
+  us: [
+    "Built from your choices, every time",
+    "Your cast. Your chemistry. Your world.",
+    "No two stories are ever the same",
+    "Visible to no one but you",
+  ],
+};
 
 const TRUST_POINTS = [
   {
@@ -126,7 +162,6 @@ export default function HowItWorks() {
 
       {/* ── Hero ── */}
       <section className="relative w-full min-h-[600px] md:min-h-[720px] flex flex-col justify-center pt-12 pb-20 px-4 md:px-8 overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img
             src={`${import.meta.env.BASE_URL}images/hiw-hero-bg.webp`}
@@ -138,12 +173,7 @@ export default function HowItWorks() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="max-w-2xl"
-          >
+          <motion.div {...fade()} className="max-w-2xl">
             <div className="flex items-center gap-2 mb-6">
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
                 <Sparkles className="w-3.5 h-3.5 text-primary/70" />
@@ -170,16 +200,14 @@ export default function HowItWorks() {
             </p>
 
             <MiniDoorCTA />
-            <a
-              href="#how-it-works"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/80 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-2"
+
+            <Link
+              href="/listen"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/80 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-4"
             >
-              See how it works
-            </a>
+              <Headphones className="w-4 h-4" />
+              Hear a sample story — free
+            </Link>
 
             <div className="flex items-center gap-5 mt-8">
               {[
@@ -197,6 +225,150 @@ export default function HowItWorks() {
         </div>
       </section>
 
+      {/* ── Three Doors with explanations ── */}
+      <motion.section {...fade(0.1)} className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <div className="text-center mb-6">
+          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
+            Three rooms
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+            Every story personalised to you.
+            <br className="hidden md:block" />
+            <span className="text-muted-foreground font-normal"> Choose where yours begins.</span>
+          </h2>
+        </div>
+
+        <ThreeDoors />
+
+        {/* Door explanations row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 max-w-4xl mx-auto">
+          {DOOR_EXPLANATIONS.map((door) => (
+            <Link key={door.id} href={door.href}>
+              <div
+                className="rounded-2xl border p-5 hover:opacity-90 transition-all cursor-pointer"
+                style={{
+                  borderColor: `rgba(${door.rgb},0.22)`,
+                  background: `rgba(${door.rgb},0.05)`,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: `rgba(${door.rgb},0.15)`, color: door.accent }}
+                  >
+                    {door.icon}
+                  </div>
+                  <span className="text-xs font-bold tracking-wide" style={{ color: door.accent }}>
+                    {door.name}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground/80 leading-relaxed mb-3">{door.desc}</p>
+                <span
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold"
+                  style={{ color: door.accent }}
+                >
+                  <ChevronRight className="w-3 h-3" />
+                  {door.cta}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* ── Not a library contrast strip ── */}
+      <motion.section {...fade(0.1)} className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <div className="rounded-3xl border border-border/20 bg-card/15 overflow-hidden">
+          <div className="px-8 py-8 md:py-10">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
+                Not a library. Not a compromise.
+              </h2>
+              <p className="text-sm text-muted-foreground/80 max-w-md mx-auto">
+                Every story starts with you — not with what someone else already wrote.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-3xl mx-auto">
+              {/* Left — other platforms */}
+              <div className="p-6 md:border-r border-border/20">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-4">
+                  Other platforms
+                </p>
+                <div className="space-y-3">
+                  {LIBRARY_VS.them.map((item) => (
+                    <div key={item} className="flex items-start gap-2.5">
+                      <X className="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-muted-foreground/40 line-through leading-snug">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right — The Private Story */}
+              <div className="p-6 rounded-2xl md:rounded-none" style={{ background: "rgba(201,162,39,0.04)" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest mb-4"
+                  style={{ color: "rgba(201,162,39,0.7)" }}
+                >
+                  The Private Story
+                </p>
+                <div className="space-y-3">
+                  {LIBRARY_VS.us.map((item) => (
+                    <div key={item} className="flex items-start gap-2.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#c9a227" }} />
+                      <span className="text-sm text-foreground/80 font-medium leading-snug">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Sample story CTA banner ── */}
+      <motion.section {...fade(0.1)} className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <div
+          className="rounded-3xl border p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6"
+          style={{
+            borderColor: "rgba(232,121,160,0.25)",
+            background: "linear-gradient(135deg, rgba(232,121,160,0.06) 0%, rgba(123,143,255,0.04) 100%)",
+          }}
+        >
+          <div className="flex items-center gap-5">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: "rgba(232,121,160,0.12)", color: "#e879a0" }}
+            >
+              <Headphones className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-1">
+                Hear what a personalised story sounds like.
+              </h3>
+              <p className="text-sm text-muted-foreground/80">
+                Two sample stories — free to listen, no account needed.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/listen"
+            className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap"
+            style={{
+              background: "rgba(232,121,160,0.15)",
+              border: "1px solid rgba(232,121,160,0.35)",
+              color: "#f0a0c0",
+            }}
+          >
+            <Headphones className="w-4 h-4" />
+            Listen now — free
+          </Link>
+        </div>
+      </motion.section>
+
       {/* ── How it works (3 steps) ── */}
       <section id="how-it-works" className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="text-center mb-10">
@@ -204,9 +376,9 @@ export default function HowItWorks() {
             How it works
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            In under a minute, your story
+            From your imagination to your ears —
             <br className="hidden md:block" />
-            <span className="text-muted-foreground font-normal"> is ready to play.</span>
+            <span className="text-muted-foreground font-normal"> in under 3 minutes.</span>
           </h2>
           <p className="text-muted-foreground mt-3 max-w-md mx-auto text-sm leading-relaxed">
             No browsing hoping something fits. No compromising. A story that starts exactly
@@ -248,7 +420,7 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* ── The Casting Room ── */}
+      {/* ── The Creation Room ── */}
       <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="mb-10">
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
@@ -311,10 +483,6 @@ export default function HowItWorks() {
               </div>
             </motion.div>
           ))}
-        </div>
-
-        <div className="mt-8 flex items-center justify-center">
-          <MiniDoorCTA />
         </div>
       </section>
 
@@ -391,8 +559,7 @@ export default function HowItWorks() {
                 <br className="hidden md:block" /> Private stories whenever the moment calls.
               </h2>
               <p className="text-sm text-muted-foreground/80 mt-2 max-w-sm leading-relaxed">
-                Every plan includes the full curated collection, monthly releases, private
-                library, narration, and original cover art.
+                Every plan includes custom stories, the full curated collection, private library, narration, and original cover art.
               </p>
             </div>
             <Link
@@ -414,15 +581,9 @@ export default function HowItWorks() {
                 <span className="font-display text-3xl font-bold text-foreground">£29</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
               </div>
-              <p className="text-xs text-muted-foreground/80 mb-4">Cancel any time.</p>
-              <div className="space-y-2 mb-5">
-                {MONTHLY_FEATURES.map((f) => (
-                  <div key={f} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-primary/70 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-muted-foreground/80 leading-snug">{f}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
+                5 custom stories · full collection · private library · narration · cover art
+              </p>
               <Link
                 href="/pricing"
                 className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
@@ -446,17 +607,9 @@ export default function HowItWorks() {
                 <span className="font-display text-3xl font-bold text-foreground">£179</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
               </div>
-              <p className="text-xs text-muted-foreground/80 mb-4">
-                £14.91/month — less than half the monthly price.
+              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
+                50 custom stories · full collection · private library · narration · cover art · £14.91/month
               </p>
-              <div className="space-y-2 mb-5">
-                {ANNUAL_FEATURES.map((f) => (
-                  <div key={f} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-xs text-foreground/80 leading-snug">{f}</span>
-                  </div>
-                ))}
-              </div>
               <Link
                 href="/pricing"
                 className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
@@ -475,9 +628,8 @@ export default function HowItWorks() {
                   <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
                   <span className="text-muted-foreground/80 text-sm mb-0.5">/ story</span>
                 </div>
-                <p className="text-xs text-muted-foreground/80 leading-relaxed mt-3">
-                  Add more whenever you want — without changing your plan. Each one written,
-                  narrated, and private to you.
+                <p className="text-xs text-muted-foreground/70 leading-relaxed mt-3">
+                  Add more whenever you want — without changing your plan. Written, narrated, and private to you.
                 </p>
               </div>
               <Link
@@ -489,8 +641,7 @@ export default function HowItWorks() {
             </div>
           </div>
 
-          {/* Reassurance row */}
-          <div className="text-center space-y-2">
+          <div className="text-center">
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
               {[
                 "Private library included",
@@ -507,7 +658,7 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* ── Trust section ── */}
+      {/* ── Privacy trust row ── */}
       <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TRUST_POINTS.map((t) => (
@@ -522,14 +673,35 @@ export default function HowItWorks() {
             </div>
           ))}
         </div>
-
-        <div className="mt-10 flex flex-col items-center gap-4">
-          <MiniDoorCTA />
-          <p className="text-xs text-muted-foreground/80">
-            No commitment needed to start. Cancel monthly, any time.
-          </p>
-        </div>
       </section>
+
+      {/* ── Final conversion CTA ── */}
+      <motion.section {...fade(0.1)} className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <div
+          className="rounded-3xl border border-border/20 bg-card/15 px-8 py-14 text-center flex flex-col items-center gap-8"
+          style={{ background: "linear-gradient(180deg, rgba(201,162,39,0.04) 0%, rgba(0,0,0,0) 100%)" }}
+        >
+          <div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
+              Your story is waiting to be written.
+            </h2>
+            <p className="text-base text-muted-foreground/80 max-w-sm mx-auto">
+              Choose where it begins.
+            </p>
+          </div>
+
+          <MiniDoorCTA />
+
+          <Link
+            href="/listen"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            <Headphones className="w-3.5 h-3.5" />
+            Or hear a sample story first — free
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </motion.section>
 
     </div>
   );

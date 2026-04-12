@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon, MessageCircle } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon, MessageCircle, Info } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -121,6 +121,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     ),
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
     { label: "Listen to a sample", href: "/listen", icon: <Sparkles className="w-4 h-4" /> },
+    { label: "About", href: "/about", icon: <Info className="w-4 h-4" /> },
     { label: "Contact", href: "/contact", icon: <MessageCircle className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];

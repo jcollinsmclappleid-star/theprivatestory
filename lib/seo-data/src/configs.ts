@@ -746,8 +746,8 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
         body: "Something happened to you. The experience was shaped around you from the start, which means it landed specifically rather than generally. You feel met rather than exposed to. The difference is the difference between reading a letter addressed to everyone and receiving one addressed to you.",
       },
       {
-        heading: "When you create a personalised audio story at midnight",
-        body: "An audiobook was written two years ago for a general audience. The story playing in your ears right now was made right now, for the mood you described, for the version of you that is lying in the dark right now. It did not exist before you needed it. This distinction — small in description, enormous in experience — is what makes personalised audio storytelling a genuinely different category.",
+        heading: "When you create a personalised audio story right now",
+        body: "An audiobook was written two years ago for a general audience. The story playing in your ears right now was made right now, for the mood you described, for the version of you that is here right now. It did not exist before you needed it. This distinction — small in description, enormous in experience — is what makes personalised audio storytelling a genuinely different category.",
       },
     ],
     interstitial: "A story made for right now. For the version of you that showed up right now.",
@@ -2590,7 +2590,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
 
 export const personalisedAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Personalised Audio Stories | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
-  hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Some nights you don't want to browse. You want something that already knows what you need.` },
+  hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Sometimes you don't want to browse. You want something that already knows what you need.` },
   heroImage: "images/seo-hero-personalised.png",
   showCastingPreview: true,
   sections: [
@@ -2614,10 +2614,10 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
         "They work beautifully for:",
       ],
       bullets: [
-        "Winding down at night — when you need your thoughts to slow before sleep takes over",
+        "Winding down — when the day is done and you want a moment that's entirely yours",
         "Quiet time alone — a bath, a commute, an hour you've carved out for yourself",
         "Emotional decompression — when you need to feel something in a safe, private space",
-        "Late night listening — when the rest of the world has gone quiet and you finally have room to breathe",
+        "A moment of stillness — when the noise fades and you finally have room to breathe",
       ],
     },
     {
@@ -2641,7 +2641,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
         "But acceptable is a long way from made for you.",
         "Pre-written audio stories have fixed narratives. The tone is set before you arrive. The pacing was decided by someone who didn't know what kind of day you'd had. The emotional arc leads somewhere that may or may not be where you need to go right now.",
         "You adapt to the content. The content doesn't adapt to you.",
-        "This works when you have hours to browse and plenty of patience. It works less well when you're tired, when you know what you need but can't find it, when you're lying in the dark at midnight wanting something that meets you exactly where you are.",
+        "This works when you have hours to browse and plenty of patience. It works less well when you're tired, when you know what you need but can't find it, when you've run out of patience for settling and want something that meets you exactly where you are.",
         "Personalised audio stories solve the problem that libraries cannot solve: the specific, individual, moment-to-moment reality of what you actually need right now.",
       ],
     },
@@ -2653,7 +2653,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
         "You choose your mood. The atmosphere you want to inhabit for the next twenty minutes. The tone — slow and building, warm and connecting, charged and cinematic. The kind of voice you want in your ear right now. The kind of story that will do something specific for you rather than something general for everyone.",
         "Then your story is created. Not selected. Created.",
         "It exists because you needed it. It is shaped around your preferences. It sounds the way it sounds because of the choices you made. It goes where you directed it to go.",
-        "When you listen, you are not hearing something made for an imagined average listener. You are hearing something that was built for the exact version of you sitting in the dark right now.",
+        "When you listen, you are not hearing something made for an imagined average listener. You are hearing something that was built for the exact version of you right now.",
         "That specificity is the difference between content and experience.",
       ],
     },
@@ -2712,7 +2712,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       },
       {
         heading: "Created fresh every time",
-        body: "Every story is generated for this session, for this version of you. You can create something different tomorrow night because tomorrow night you might need something different.",
+        body: "Every story is generated for this session, for this version of you. You can create something different next time because next time you might need something different.",
       },
       {
         heading: "Designed for adult experience",
@@ -2754,7 +2754,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       { q: `Are my stories saved privately?`, a: `Completely. Your stories are saved to your account and are visible to no one else. There is no social feed, no sharing feature, and no public component to the platform. Everything you create and everything you listen to is entirely private.` },
       { q: `How long does it take to create a personalised audio story?`, a: `The creation process — choosing your mood and preferences — takes less than two minutes. Your story is then generated and ready to listen to shortly after. The stories themselves are typically around 10 minutes, depending on voice selection.` },
       { q: `Is this for adults only?`, a: `Yes. The Private Story is an adult platform. All content is created for listeners aged eighteen and over. Age verification is required to access the platform.` },
-      { q: `Can I create more than one story?`, a: `Yes. You can create a new personalised story whenever you want one. Your mood right now is different from your mood tomorrow night — your story should be too. Each creation begins fresh, shaped around wherever you are when you start.` },
+      { q: `Can I create more than one story?`, a: `Yes. You can create a new personalised story whenever you want one. Your mood right now is different from your mood next time — your story should be too. Each creation begins fresh, shaped around wherever you are when you start.` },
     ],
 };
 

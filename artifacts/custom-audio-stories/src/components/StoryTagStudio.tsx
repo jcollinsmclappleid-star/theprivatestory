@@ -592,13 +592,13 @@ export function StoryTagStudio({
     return (
       <div
         key={cat.heading}
-        className={`transition-opacity ${locked || categoryExcluded ? "opacity-50" : ""}`}
+        className={`transition-opacity ${locked ? "opacity-45" : categoryExcluded ? "opacity-80" : ""}`}
       >
         <div className="flex items-baseline justify-between mb-1">
           <p className="text-base font-semibold text-foreground">{cat.heading}</p>
           <div className="flex items-center gap-3">
             {categoryExcluded && (
-              <span className="text-xs text-foreground/55 font-medium">
+              <span className="text-xs text-foreground/80 font-medium">
                 Unlocks when "{excludedBy}" is cleared
               </span>
             )}

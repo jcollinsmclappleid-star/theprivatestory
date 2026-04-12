@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Play, Pause, RotateCcw, RotateCw } from "lucide-react";
+import { Play, Pause, RotateCcw, RotateCw, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 
@@ -262,10 +262,12 @@ export default function ListenPrivate() {
 
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 py-5">
-          <Link href="/listen" className="opacity-50 hover:opacity-90 transition-opacity">
-            <svg className="w-5 h-5 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
+          <Link
+            href="/listen"
+            className="flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
           </Link>
           <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.22em]">Sample story</span>
           <Link
@@ -423,7 +425,12 @@ export default function ListenPrivate() {
                   max={AMBIENT_VOL_MAX}
                   step={0.005}
                   value={ambientVol}
-                  onChange={e => setAmbientVol(Number(e.target.value))}
+                  onChange={e => {
+                    const v = Number(e.target.value);
+                    setAmbientVol(v);
+                    ambientVolRef.current = v;
+                    if (ambientRef.current) ambientRef.current.volume = v;
+                  }}
                   disabled={!ambientOn}
                   className="flex-1 h-1 accent-[#c9a227] rounded-full cursor-pointer disabled:opacity-30"
                 />

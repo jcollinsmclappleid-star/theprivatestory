@@ -165,7 +165,8 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         currentTime: state.currentTime,
         ambientMode: state.ambientMode,
         narrationVolume: state.narrationVolume,
-        ambientVolume: state.ambientVolume,
+        // ambientVolume intentionally not persisted — always starts at a
+        // safe audible default (0.1) rather than potentially a stale 0
       }),
     }
   )

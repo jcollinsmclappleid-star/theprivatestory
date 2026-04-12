@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -20,8 +21,12 @@ export default function Listen() {
     >
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-5">
-        <Link href="/" className="opacity-50 hover:opacity-90 transition-opacity">
-          <img src={`${API_BASE}/images/logo.png`} alt="The Private Story" className="w-8 h-8" />
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
         </Link>
         <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.22em]">Sample stories</span>
         <Link

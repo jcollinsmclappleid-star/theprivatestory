@@ -1157,7 +1157,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-muted-foreground text-sm mb-6">Choose the pairing — this shapes everything that follows.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {PAIRINGS.map(p => (
-                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => update("pairing", p.id)}>
+                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => { update("pairing", p.id); setTimeout(next, 350); }}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
                   <p className="text-white/75 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>
@@ -1184,7 +1184,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   const restricted = isChemistryRestricted(c.id);
                   return (
                     <div key={c.id} className={restricted ? "opacity-35 cursor-not-allowed pointer-events-none" : ""} title={restricted ? "Not compatible with your chosen scenario" : undefined}>
-                      <ArtTile gradient={c.gradient} accent={c.accent} image={c.image} selected={!restricted && data.chemistry === c.id} onClick={restricted ? () => {} : () => update("chemistry", c.id)}>
+                      <ArtTile gradient={c.gradient} accent={c.accent} image={c.image} selected={!restricted && data.chemistry === c.id} onClick={restricted ? () => {} : () => { update("chemistry", c.id); setTimeout(next, 350); }}>
                         <p className="font-semibold text-white text-base">{c.label}</p>
                         <p className="text-white/75 text-sm mt-0.5">{c.sub}</p>
                         {restricted && <p className="text-white/50 text-xs mt-1.5 italic">Not available with your scenario</p>}
@@ -1208,7 +1208,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             )}
             <div className="grid gap-3">
               {PERSPECTIVES.filter(p => getValidPerspectiveIds(data.pairing).includes(p.id)).map(p => (
-                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.perspective === p.id} onClick={() => update("perspective", p.id)}>
+                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.perspective === p.id} onClick={() => { update("perspective", p.id); setTimeout(next, 350); }}>
                   <p className="font-semibold text-white text-base">{p.label}</p>
                   <p className="text-white/75 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>

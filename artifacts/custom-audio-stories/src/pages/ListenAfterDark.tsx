@@ -18,7 +18,7 @@ const CHOICES = [
   { label: "Setting",    value: "Moving Elevator" },
   { label: "World",      value: "Sun-Soaked · Late Night · Montego Bay" },
   { label: "Archetype",  value: "The Adventurer" },
-  { label: "Narrator",   value: "Clara · Soothing" },
+  { label: "Narrator",   value: "Kayla · Expressive" },
   { label: "Intensity",  value: "Intense · After Dark" },
 ];
 
@@ -235,7 +235,7 @@ export default function ListenAfterDark() {
             className="text-center mb-7 w-full"
           >
             <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: `${ROSE}99` }}>
-              Intense · After Dark · Narrated by Clara
+              Intense · After Dark · Narrated by Kayla
             </p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
               Gold Light, Cold Metal

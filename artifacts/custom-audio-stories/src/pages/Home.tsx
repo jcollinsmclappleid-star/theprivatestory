@@ -763,105 +763,21 @@ function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean 
 }
 
 // ---------------------------------------------------------------------------
-// Sample story inline player (home page demo)
+// Sample story — navigates to /listen
 // ---------------------------------------------------------------------------
 
-const SAMPLE_ID    = "b46f97f830345edb4687ed19b7a28ad1";
-const SAMPLE_COVER = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
-const SAMPLE_AUDIO = `${API_BASE}/api/audio/audio-${SAMPLE_ID}.mp3`;
-const SAMPLE_START = 0;   // 0:00 — opening of Scene 1, elevator doors close
-const SAMPLE_END   = 195; // 3:15 — Scene 2 peak: "his hand drifts toward yours, then stops"
-
-function formatSampleTime(s: number) {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${sec.toString().padStart(2, "0")}`;
-}
-
 function SampleStoryPlayer() {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(SAMPLE_START);
-
-  const stopSample = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = SAMPLE_START;
-    setPlaying(false);
-    setCurrentTime(SAMPLE_START);
-  }, []);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const onTime = () => {
-      const t = audio.currentTime;
-      setCurrentTime(t);
-      if (t >= SAMPLE_END) {
-        audio.pause();
-        audio.currentTime = SAMPLE_START;
-        setPlaying(false);
-        setCurrentTime(SAMPLE_START);
-      }
-    };
-    const onEnd = () => {
-      audio.currentTime = SAMPLE_START;
-      setPlaying(false);
-      setCurrentTime(SAMPLE_START);
-    };
-    audio.addEventListener("timeupdate", onTime);
-    audio.addEventListener("ended", onEnd);
-    return () => {
-      audio.removeEventListener("timeupdate", onTime);
-      audio.removeEventListener("ended", onEnd);
-    };
-  }, [stopSample]);
-
-  const togglePlay = useCallback(async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (playing) {
-      audio.pause();
-      setPlaying(false);
-    } else {
-      if (!audio.src) audio.src = SAMPLE_AUDIO;
-      audio.currentTime = SAMPLE_START;
-      await audio.play();
-      setPlaying(true);
-    }
-  }, [playing]);
-
-  // Progress fills 0→100% across the SAMPLE_START→SAMPLE_END window
-  const progress = Math.min(
-    ((currentTime - SAMPLE_START) / (SAMPLE_END - SAMPLE_START)) * 100,
-    100
-  );
-
   return (
-    <>
-      <audio ref={audioRef} preload="none" />
-      <div className="flex items-center gap-4 mb-3">
-        <button
-          onClick={togglePlay}
-          className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)]"
-        >
-          {playing
-            ? <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            : <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          }
-          {playing ? "Pause" : "Play sample"}
-        </button>
-        <span className="text-[10px] text-white/45 italic">Scenes 1–2 · 3 min preview</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="text-[10px] text-white/80 font-mono w-8">{formatSampleTime(currentTime)}</span>
-        <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
-          <div className="h-full rounded-full bg-primary/70 transition-all duration-300" style={{ width: `${progress}%` }} />
-        </div>
-        <span className="text-[10px] text-white/80 font-mono w-8 text-right">{formatSampleTime(SAMPLE_END)}</span>
-      </div>
-    </>
+    <div className="flex items-center gap-4">
+      <Link
+        href="/listen"
+        className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)]"
+      >
+        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Listen to a sample
+      </Link>
+      <span className="text-[10px] text-white/45 italic">Two stories · Choose your intensity</span>
+    </div>
   );
 }
 

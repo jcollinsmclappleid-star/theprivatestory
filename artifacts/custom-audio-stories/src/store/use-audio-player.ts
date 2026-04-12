@@ -16,12 +16,12 @@ const syncProgress = (storyId: string, currentTime: number, sceneIndex: number) 
 };
 
 export const AMBIENT_OPTIONS = [
-  { id: "rain", label: "Rain", url: "https://cdn.pixabay.com/audio/2022/05/17/audio_d9090b2f7e.mp3" },
-  { id: "city_night", label: "City at Night", url: "https://cdn.pixabay.com/audio/2022/03/09/audio_c8c8a73467.mp3" },
-  { id: "train", label: "Train", url: "https://cdn.pixabay.com/audio/2021/08/09/audio_ea0e95f1f3.mp3" },
-  { id: "firelight", label: "Firelight", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0c6ff1bab.mp3" },
-  { id: "ocean", label: "Ocean", url: "https://cdn.pixabay.com/audio/2021/09/06/audio_27512d05ea.mp3" },
-  { id: "quiet_room", label: "Quiet Room", url: "https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" },
+  { id: "rain",       label: "Rain",          url: `${API_BASE}/api/ambient/rain.mp3` },
+  { id: "city_night", label: "City at Night", url: `${API_BASE}/api/ambient/city_night.mp3` },
+  { id: "train",      label: "Train",         url: `${API_BASE}/api/ambient/train.mp3` },
+  { id: "firelight",  label: "Firelight",     url: `${API_BASE}/api/ambient/firelight.mp3` },
+  { id: "ocean",      label: "Ocean",         url: `${API_BASE}/api/ambient/ocean.mp3` },
+  { id: "quiet_room", label: "Quiet Room",    url: `${API_BASE}/api/ambient/quiet_room.mp3` },
 ] as const;
 
 export type AmbientId = (typeof AMBIENT_OPTIONS)[number]["id"];

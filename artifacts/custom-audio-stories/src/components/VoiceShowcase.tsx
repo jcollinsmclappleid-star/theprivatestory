@@ -7,6 +7,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const SAMPLE_VOICE_IDS = [
   "FA6HhUjVbervLw2rNl8M", // Clara — female first
   "tQ4MEZFJOzsahSEEZtHK", // Maya
+  "aTxZrSrp47xsP6Ot4Kgd", // Kayla
   "AeRdCCKzvd23BpJoofzx", // James
   "n1PvBOwxb8X6m7tahp2h", // Ethan
   "jfIS2w2yJi0grJZPyEsk", // Theo

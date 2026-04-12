@@ -113,6 +113,27 @@ async function checkOwnership(
 }
 
 // ---------------------------------------------------------------------------
+// GET /ambient/:filename — serve local ambient sound loops (no auth required)
+// ---------------------------------------------------------------------------
+const VALID_AMBIENT = new Set([
+  "rain", "city_night", "train", "firelight", "ocean", "quiet_room",
+]);
+
+router.get("/ambient/:filename", (req: Request, res: Response) => {
+  const raw = req.params.filename.replace(/\.mp3$/i, "");
+  if (!VALID_AMBIENT.has(raw)) {
+    return res.status(400).json({ error: "Invalid ambient ID" });
+  }
+  const filePath = path.join(publicDir, "ambient", `${raw}.mp3`);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: "Ambient file not found" });
+  }
+  res.setHeader("Cache-Control", "public, max-age=2592000"); // 30 days
+  res.setHeader("Content-Type", "audio/mpeg");
+  return res.sendFile(filePath);
+});
+
+// ---------------------------------------------------------------------------
 // GET /voice-samples/:voiceId — serve fixed voice samples (no auth required)
 // ---------------------------------------------------------------------------
 router.get("/voice-samples/:voiceId", (req: Request, res: Response) => {

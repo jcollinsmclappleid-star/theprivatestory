@@ -111,9 +111,8 @@ function Navbar({ streakDays }: { streakDays: number }) {
   const isAdmin = !!user && !!adminEmail && user.email?.toLowerCase() === adminEmail.toLowerCase();
 
   const desktopNavItems = [
-    { label: "Home", href: "/" },
     { label: "How It Works", href: "/how-it-works" },
-    { label: "Three Doors", href: "/the-three-doors" },
+    { label: "The Three Fantasy Doors", href: "/the-three-doors" },
     { label: "Pricing", href: "/pricing" },
     { label: "Listen", href: "/listen" },
     ...(isAuthenticated ? [{ label: "My Stories", href: "/library" }] : []),
@@ -122,7 +121,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "How It Works", href: "/how-it-works", icon: <Sparkles className="w-4 h-4" /> },
-    { label: "The Three Doors", href: "/the-three-doors", icon: <Sparkles className="w-4 h-4" /> },
+    { label: "The Three Fantasy Doors", href: "/the-three-doors", icon: <Sparkles className="w-4 h-4" /> },
     { label: "Browse", href: "/browse", icon: <BookOpen className="w-4 h-4" /> },
     { label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAuthenticated
@@ -391,7 +390,7 @@ function Footer() {
           <FooterColumn heading="Navigate" links={[
             { label: "Home", href: "/" },
             { label: "How It Works", href: "/how-it-works" },
-            { label: "The Three Doors", href: "/the-three-doors" },
+            { label: "The Three Fantasy Doors", href: "/the-three-doors" },
             { label: "Browse stories", href: "/browse" },
             { label: "Create your story", href: "/create" },
             { label: "Pricing", href: "/pricing" },

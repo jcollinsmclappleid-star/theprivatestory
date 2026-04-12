@@ -370,7 +370,13 @@ title = "after dark door woman"
 id = "__HnNhlX54y_k0eAfkQGN"
 uri = "file://artifacts/custom-audio-stories/public/images/three-doors-hero-woman.png"
 type = "image"
-title = "woman reaching for door cinematic dark"
+title = "woman reaching door dramatic amber light cinematic"
+
+[[generated]]
+id = "1hL8sulpP2hBvjknHYhJ-"
+uri = "file://artifacts/custom-audio-stories/public/images/home-hero-woman.png"
+type = "image"
+title = "side profile woman headphones euphoria cinematic dark"
 
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"

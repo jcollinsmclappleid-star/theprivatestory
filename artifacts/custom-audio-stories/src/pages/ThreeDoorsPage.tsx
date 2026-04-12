@@ -297,9 +297,9 @@ export default function ThreeDoorsPage() {
           alt=""
           className="hidden lg:block absolute right-0 top-0 h-full w-[40%] object-cover object-top pointer-events-none select-none"
           style={{
-            opacity: 0.22,
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 38%, black 100%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 38%, black 100%)",
+            opacity: 0.50,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 30%, black 60%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 30%, black 60%)",
           }}
         />
 

@@ -838,13 +838,13 @@ export default function Home() {
         {/* ── Woman portrait ── */}
         <img
           aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/seo-hero-women.webp`}
+          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png`}
           alt=""
-          className="hidden sm:block absolute right-0 top-0 h-full w-[44%] object-cover object-top pointer-events-none select-none"
+          className="hidden sm:block absolute right-0 top-0 h-full w-[46%] object-cover object-top pointer-events-none select-none"
           style={{
-            opacity: 0.20,
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 35%, black 100%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 35%, black 100%)",
+            opacity: 0.55,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 28%, black 55%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 28%, black 55%)",
           }}
         />
 

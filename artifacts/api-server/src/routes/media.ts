@@ -82,6 +82,7 @@ async function checkOwnership(
     const SAMPLE_AUDIO_FILENAMES = [
       "audio-lib-dd2_02-1775048422711.mp3",
       "audio-b46f97f830345edb4687ed19b7a28ad1.mp3",
+      "audio-fc49bea83789fbfdf8b98e5042316d77.mp3", // Gold Light, Cold Metal (After Dark sample)
     ];
     if (story.isLibraryStory && mediaType === "audio" && SAMPLE_AUDIO_FILENAMES.includes(filename)) return true;
 
@@ -174,7 +175,7 @@ router.get("/audio/:filename", async (req: Request, res: Response, next: NextFun
   const allowed = await checkOwnership(req, res, "audio", filename);
   if (!allowed) return;
 
-  const found = await streamAudioFile(filename, res);
+  const found = await streamAudioFile(filename, res, req);
   if (!found) return res.status(404).json({ error: "File not found." });
 });
 

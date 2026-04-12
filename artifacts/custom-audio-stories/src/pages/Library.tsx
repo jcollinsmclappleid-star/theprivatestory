@@ -644,7 +644,7 @@ export default function Library() {
                     mood: story.mood,
                     tags: story.recommendation_tags ?? [story.mood],
                     duration: story.duration,
-                    coverImage: story.images?.cover ?? "",
+                    coverImage: (story.coverImage as string) ?? (story.images as any)?.cover ?? "",
                     audioUrl: story.audioUrl,
                     isPremium: false,
                     isNew: false,

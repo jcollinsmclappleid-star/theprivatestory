@@ -99,6 +99,16 @@ export default function StoryDetail() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Parse "9 min 59 sec" / "10 min" strings to seconds for the total-duration display.
+  // Used as a fallback before the <audio> element reports its actual loaded duration.
+  const parseDurationToSeconds = (str: string): number => {
+    if (!str) return 0;
+    const min = str.match(/(\d+)\s*min/);
+    const sec = str.match(/(\d+)\s*sec/);
+    return (min ? parseInt(min[1], 10) : 0) * 60 + (sec ? parseInt(sec[1], 10) : 0);
+  };
+  const storyDurationSeconds = parseDurationToSeconds(story.duration ?? "");
+
   const handleScrub = (val: number[]) => {
     setProgress(val[0] / 100);
     // In a real app with audio ref, updating state triggers onTimeUpdate which handles this,
@@ -186,7 +196,7 @@ export default function StoryDetail() {
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-2 font-mono">
               <span>{isCurrent ? formatTime(currentTime) : "0:00"}</span>
-              <span>{isCurrent && duration > 0 ? formatTime(duration) : (story.duration || '–:––')}</span>
+              <span>{isCurrent && duration > 0 ? formatTime(duration) : storyDurationSeconds > 0 ? formatTime(storyDurationSeconds) : '–:––'}</span>
             </div>
           </div>
 

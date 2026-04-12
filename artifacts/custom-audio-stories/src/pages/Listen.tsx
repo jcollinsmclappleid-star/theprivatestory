@@ -175,7 +175,7 @@ export default function Listen() {
                     className="w-10 h-10 rounded-lg object-cover opacity-70 group-hover:opacity-100 transition-opacity"
                   />
                   <span className="text-[10px] text-[#e879a0]/40 group-hover:text-[#e879a0]/70 transition-colors">
-                    Intense · 10 min · Clara · Soothing
+                    Intense · 10 min · Kayla · Expressive
                   </span>
                 </div>
               </div>

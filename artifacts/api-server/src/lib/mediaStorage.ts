@@ -15,12 +15,14 @@
  *     files), then falls back to GCS streaming.
  *   - Filenames are the same as before (e.g. "audio-xxx.mp3", "cover-xxx.png")
  *     so DB paths like "/api/audio/..." remain unchanged.
+ *   - GCS audio streaming implements HTTP range requests (206 Partial Content)
+ *     so the browser <audio> element can determine duration and seek correctly.
  */
 
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { objectStorageClient } from "./objectStorage.js";
 import { logger } from "./logger.js";
 
@@ -58,13 +60,20 @@ export async function uploadImageFile(filename: string, buffer: Buffer): Promise
 /**
  * Stream an audio file to an HTTP response.
  * Checks local disk first (covers committed static files), then GCS.
- * Sets appropriate Content-Type and cache headers.
+ * Implements HTTP range requests (206 Partial Content) for GCS files so the
+ * browser <audio> element can read duration metadata and seek correctly.
  */
-export async function streamAudioFile(filename: string, res: Response): Promise<boolean> {
+export async function streamAudioFile(
+  filename: string,
+  res: Response,
+  req: Request,
+): Promise<boolean> {
   const localPath = path.resolve(__dirname, "../public/audio", filename);
   if (fs.existsSync(localPath)) {
+    // Express sendFile handles range requests automatically.
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Cache-Control", "private, max-age=3600");
+    res.setHeader("Accept-Ranges", "bytes");
     res.sendFile(localPath);
     return true;
   }
@@ -75,10 +84,32 @@ export async function streamAudioFile(filename: string, res: Response): Promise<
     if (!exists) return false;
 
     const [metadata] = await file.getMetadata();
-    const size = metadata.size;
+    const totalSize = Number(metadata.size ?? 0);
+
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Cache-Control", "private, max-age=3600");
-    if (size) res.setHeader("Content-Length", String(size));
+    res.setHeader("Accept-Ranges", "bytes");
+
+    const rangeHeader = req.headers.range;
+
+    if (rangeHeader && totalSize > 0) {
+      // Parse "bytes=start-end" (end is optional, defaults to last byte)
+      const match = rangeHeader.match(/^bytes=(\d+)-(\d*)$/);
+      if (match) {
+        const start = parseInt(match[1], 10);
+        const end = match[2] ? parseInt(match[2], 10) : totalSize - 1;
+        const chunkSize = end - start + 1;
+
+        res.status(206);
+        res.setHeader("Content-Range", `bytes ${start}-${end}/${totalSize}`);
+        res.setHeader("Content-Length", String(chunkSize));
+        file.createReadStream({ start, end }).pipe(res);
+        return true;
+      }
+    }
+
+    // No Range header — serve the full file.
+    if (totalSize > 0) res.setHeader("Content-Length", String(totalSize));
     file.createReadStream().pipe(res);
     return true;
   } catch (err) {

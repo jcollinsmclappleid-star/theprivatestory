@@ -16,6 +16,7 @@ const STRIPE_ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID;
 const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
 const STRIPE_IMMERSIVE_PRICE_ID = process.env.STRIPE_IMMERSIVE_PRICE_ID;
 const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
+const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@theprivatestory.com";
 
 function getStripe(): Stripe | null {
   if (!STRIPE_SECRET_KEY) return null;
@@ -589,6 +590,36 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             });
           }
         }
+
+        // Send purchase notification to support inbox (fire-and-forget)
+        {
+          const planLabel =
+            plan === "immersive" ? "Single Story — £7.99" :
+            plan === "addon"     ? "Add-on Story — £3.99" :
+            plan === "monthly"   ? "Monthly Subscription — £29/month" :
+            plan === "annual"    ? "Annual Subscription — £179/year" :
+            plan;
+          const who = session.metadata?.userId ?? session.metadata?.guestToken ?? "unknown";
+          const guestEmail = session.customer_details?.email ?? session.customer_email ?? null;
+          const text = [
+            `New purchase on My Private Story`,
+            ``,
+            `Plan:     ${planLabel}`,
+            `User ID:  ${who}${!session.metadata?.userId ? " (guest — awaiting account claim)" : ""}`,
+            ...(guestEmail ? [`Email:    ${guestEmail}`] : []),
+            `Time:     ${new Date().toISOString()}`,
+            ``,
+            `Review: ${SITE_URL}/admin`,
+          ].join("\n");
+          sendEmail({
+            to: SUPPORT_EMAIL,
+            subject: `[New Order] ${planLabel} — My Private Story`,
+            text,
+          }).catch((err) => {
+            logger.warn({ err }, "[stripe-webhook] Failed to send purchase notification to support");
+          });
+        }
+
         break;
       }
 

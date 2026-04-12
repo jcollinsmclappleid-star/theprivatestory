@@ -5,7 +5,7 @@ import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, ChevronRight, Check, Moon,
   EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame, Gift, Trash2,
+  Users, Sliders, Flame, Gift, Trash2, Timer, ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
@@ -323,45 +323,64 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Voice narrator showcase                                              */}
+      {/* Creation Room slide — 3-min emphasis                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <VoiceShowcase />
-      </section>
+      <section className="py-12 px-4 md:px-8 max-w-4xl mx-auto w-full">
+        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/20 backdrop-blur-sm p-8 md:p-12">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/6 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+              <div className="flex-1 max-w-lg">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-4 h-4 text-primary/70" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-primary/70">The Creation Room</span>
+                </div>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-snug mb-3">
+                  Your story is built by you,<br className="hidden md:block" /> ready in under 3 minutes.
+                </h2>
+                <p className="text-sm text-muted-foreground/80 leading-relaxed mb-6">
+                  Before a word is written, you decide everything — who's in it, the dynamic between you, how far it goes. The creation process takes about three minutes. Your story takes about ten to listen to.
+                </p>
+                <Link
+                  href="/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
+                >
+                  Begin your story
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Country trust strip                                                  */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="pb-4 pt-2 px-4 md:px-8 max-w-3xl mx-auto w-full">
-        <CountryStrip />
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Personalisation depth — what you set before it's written            */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-3xl mx-auto w-full text-center">
-        <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
-          What you decide before a word is written
-        </p>
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-snug mb-4">
-          No two stories are alike — because no two people are.
-        </h2>
-        <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-xl mx-auto">
-          Before the story exists, you build it. Every element — who he is, what's between you, where it happens, how it feels — is yours to define. The story is then written, narrated, and saved privately, exactly as you designed it.
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {[
-            "His name", "His heritage", "His archetype", "Chemistry between you",
-            "The dynamic", "Your name", "The setting", "Historical era",
-            "Mood & atmosphere", "Intensity", "His voice", "How far it goes",
-          ].map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1.5 rounded-full text-[11px] font-medium border border-primary/20 bg-primary/6 text-primary"
-            >
-              {tag}
-            </span>
-          ))}
+              <div className="flex-shrink-0 w-full md:w-64">
+                <div className="flex items-center gap-2 mb-4">
+                  <Timer className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-semibold text-primary/80 uppercase tracking-widest">From click to listening</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { step: "01", label: "Choose your mood & tone", time: "~30s" },
+                    { step: "02", label: "Name & cast your character", time: "~45s" },
+                    { step: "03", label: "Set the dynamic", time: "~30s" },
+                    { step: "04", label: "Choose your narrator", time: "~15s" },
+                    { step: "05", label: "Your story is created", time: "~60s", highlight: true },
+                  ].map(({ step, label, time, highlight }) => (
+                    <div
+                      key={step}
+                      className={`flex items-center gap-3 rounded-xl px-4 py-2.5 ${highlight ? "bg-primary/12 border border-primary/25" : "bg-white/[0.02] border border-border/15"}`}
+                    >
+                      <span className={`text-[10px] font-bold tabular-nums ${highlight ? "text-primary" : "text-muted-foreground/40"}`}>{step}</span>
+                      <span className={`text-xs flex-1 ${highlight ? "text-primary font-semibold" : "text-muted-foreground/70"}`}>{label}</span>
+                      <span className={`text-[10px] font-medium tabular-nums ${highlight ? "text-primary/80" : "text-muted-foreground/40"}`}>{time}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-xs font-bold text-primary">Total: under 3 minutes</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -535,6 +554,17 @@ export default function Pricing() {
           </div>
 
         </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Voice narrator showcase — placed after pricing                      */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <VoiceShowcase />
+      </section>
+
+      <section className="pb-4 pt-2 px-4 md:px-8 max-w-3xl mx-auto w-full">
+        <CountryStrip />
       </section>
 
       {/* ------------------------------------------------------------------ */}

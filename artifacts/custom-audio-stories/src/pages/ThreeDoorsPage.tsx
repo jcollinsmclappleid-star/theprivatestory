@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ChevronLeft, Sparkles, Moon, ArrowRight, Lock } from "lucide-react";
+import { ChevronLeft, Sparkles, Moon, ArrowRight } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -37,7 +37,7 @@ const DOORS = [
       { src: `${BASE}images/category-slow_burn.png`,          x: 10, y: 40, rot: -6, w: 48 },
       { src: `${BASE}images/category-second_chance.png`,      x: 50, y: 43, rot:  5, w: 50 },
     ],
-    description: "Every story is built around the specific pull you're after — forbidden, slow, sharp, or deeply felt. You decide who he is, what he's called, and exactly how far things go. The words are written for you and no one else. A story that sounds like a secret.",
+    description: "Every story is built around the specific pull you're after — forbidden, slow, sharp, or deeply felt. You decide who they are, what they're called, and exactly how far things go. The words are written for you and no one else. A story that sounds like a secret.",
     tags: [
       "Forbidden pull",
       "Historical desire",
@@ -47,7 +47,7 @@ const DOORS = [
       "Dark romance",
       "Quiet intensity",
     ],
-    details: ["Cast it yourself", "~10 min per story", "Entirely private", "Saved to your account"],
+    details: ["Cast it yourself", "Around 10 mins per story (varies)", "Entirely private", "Saved to your account"],
     ageGate: false,
     comparisonTone: "Romantic & emotionally charged",
     comparisonIntensity: 3,
@@ -57,7 +57,7 @@ const DOORS = [
     id: "dark",
     name: "After Dark",
     room: "The Story Room",
-    tagline: "Further. Unrestrained. Entirely yours.",
+    tagline: "You build it. They narrate it. You hear it alone.",
     href: "/after-dark",
     cta: "Enter After Dark",
     ctaIcon: Moon,
@@ -85,7 +85,7 @@ const DOORS = [
       { src: `${BASE}images/category-late_night.png`,           x: 10, y: 41, rot: -6, w: 48 },
       { src: `${BASE}images/category-explicit_collection.png`,  x: 48, y: 44, rot:  5, w: 50 },
     ],
-    description: "This is where the story goes further than you'd say out loud. Every fantasy built around you, heard only by you. Nothing implied where it can be named. Nothing held back. An age gate applies — this space is designed for one thing: giving you exactly what you want.",
+    description: "You don't pick from a list. You build it from scratch. Name your character, choose the dynamic — power exchange, tender intensity, something darker. Shape the scene. Then a narrator brings it to life, directly in your ears. Spicy, unrestrained, and built to your exact specification. Nothing template, nothing generic. Every detail yours, every time.",
     tags: [
       "Power Exchange",
       "The Forbidden",
@@ -98,11 +98,11 @@ const DOORS = [
       "Dark Territory",
       "Her Power",
     ],
-    details: ["Explicit adult content", "18+ — age gate required", "Fully personalised", "Nothing held back"],
+    details: ["Spicy adult content", "18+ adults only", "Name & cast your character", "Every detail built by you"],
     ageGate: true,
-    comparisonTone: "Explicit & unrestrained",
+    comparisonTone: "Spicy & unrestrained",
     comparisonIntensity: 4,
-    comparisonNote: "Adult fantasy, written without apology.",
+    comparisonNote: "Adult fiction built to your exact specification.",
   },
   {
     id: "quiet",
@@ -145,7 +145,7 @@ const DOORS = [
       "Rain on a window",
       "Almost asleep",
     ],
-    details: ["Softly sensual", "Written for the quiet hour", "Emotionally close", "~10 min per story"],
+    details: ["Softly sensual", "Written for the quiet hour", "Emotionally close", "Around 10 mins per story (varies)"],
     ageGate: false,
     comparisonTone: "Warm & intimately close",
     comparisonIntensity: 2,
@@ -291,7 +291,7 @@ export default function ThreeDoorsPage() {
         </h1>
         <p className="text-muted-foreground/70 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
           All three are private. All three are built around you. The question is
-          which kind of story you're ready for tonight.
+          which kind of story is calling right now.
         </p>
       </motion.div>
 
@@ -334,9 +334,8 @@ export default function ThreeDoorsPage() {
                     {door.room}
                   </span>
                   {door.ageGate && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-red-400/80 bg-red-500/8 border border-red-500/20">
-                      <Lock className="w-2.5 h-2.5" />
-                      18+ · Age gate
+                    <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-red-400/70 bg-red-500/8 border border-red-500/18">
+                      18+ Adults only
                     </span>
                   )}
                 </div>
@@ -449,7 +448,7 @@ export default function ThreeDoorsPage() {
 
                 <div>
                   <p className="text-[10px] uppercase tracking-widest font-bold text-white/25 mb-1.5">Story length</p>
-                  <p className="text-xs font-medium" style={{ color: `rgba(${door.rgb},0.80)` }}>~10 minutes per story</p>
+                  <p className="text-xs font-medium" style={{ color: `rgba(${door.rgb},0.80)` }}>Around 10 mins per story (varies)</p>
                 </div>
 
                 <div>
@@ -458,9 +457,8 @@ export default function ThreeDoorsPage() {
                 </div>
 
                 {door.ageGate && (
-                  <div className="flex items-center gap-1.5 pt-1">
-                    <Lock className="w-3 h-3 text-red-400/70" />
-                    <p className="text-[11px] text-red-400/70 font-medium">Adult content — 18+ age gate</p>
+                  <div className="pt-1">
+                    <p className="text-[11px] text-red-400/60 font-medium">18+ adults only</p>
                   </div>
                 )}
               </div>

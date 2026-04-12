@@ -827,36 +827,52 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-3 pb-10 md:pt-4 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center">
+      <section className="relative z-30 w-full pt-3 pb-10 md:pt-4 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center overflow-hidden">
+        {/* ── Atmospheric glow ── */}
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0" style={{
+            background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.13) 0%, rgba(123,143,255,0.06) 48%, transparent 72%)",
+          }} />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.75 }}
-          className="flex flex-col items-start sm:items-center gap-7 max-w-2xl"
+          className="relative flex flex-col items-start sm:items-center gap-7 max-w-2xl"
         >
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
-            <Headphones className="w-3.5 h-3.5 text-primary/70" />
-            <span className="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Personalised audio story</span>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
+            <span className="text-[11px] font-bold text-white/85 uppercase tracking-widest">Private adult fantasy · Narrated audio</span>
           </div>
 
           <h1 className="text-[2.6rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
-            Your story —{" "}
-            <span className="text-primary">built around the desire you choose.</span>
+            Your private fantasy —{" "}
+            <span className="text-primary">written to your desire. Narrated. Yours.</span>
           </h1>
 
-          <div className="flex flex-col items-start sm:items-center gap-1.5">
-            <p className="text-sm md:text-base text-white/45 tracking-wide sm:text-center">
-              Literary. Private. Entirely yours.
+          <div className="flex flex-col items-start sm:items-center gap-2">
+            <p className="text-sm md:text-base text-white/55 tracking-wide sm:text-center font-medium">
+              Intimate. Unrestrained. Entirely private.
             </p>
-            <p className="text-xs text-white/30 tracking-wide sm:text-center">
-              Built from 2.6M+ combinations — no two stories the same.
+            <p className="text-xs text-white/32 tracking-wide sm:text-center leading-relaxed">
+              Not a catalogue. Created fresh in the Creation Room — private to you, never shared with anyone.
             </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+            <Link href="/create">
+              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
+                <Sparkles className="w-4 h-4" />
+                Begin your fantasy
+              </button>
+            </Link>
             <Link
               href="/listen"
-              className="mt-1 flex items-center gap-1.5 text-xs text-primary/75 hover:text-primary transition-colors tracking-wide"
+              className="flex items-center gap-1.5 text-xs text-primary/65 hover:text-primary transition-colors tracking-wide"
             >
               <Headphones className="w-3 h-3" />
-              Hear a sample story first →
+              Hear a sample first →
             </Link>
           </div>
 
@@ -875,7 +891,7 @@ export default function Home() {
                 <path d="M10 12v.01" stroke="url(#door-grad)" />
                 <path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z" stroke="url(#door-grad)" />
               </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Enter a room</span>
+              <span className="text-[11px] tracking-wide text-white/55">Choose your fantasy</span>
             </div>
             <span className="text-white/20 text-xs">→</span>
             <div className="flex items-center gap-2">
@@ -889,7 +905,7 @@ export default function Home() {
                 </defs>
                 <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" stroke="url(#flame-grad)" />
               </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Shape your desire</span>
+              <span className="text-[11px] tracking-wide text-white/55">Build your desire</span>
             </div>
             <span className="text-white/20 text-xs">→</span>
             <div className="flex items-center gap-2">
@@ -903,7 +919,7 @@ export default function Home() {
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="url(#volume-grad)" />
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="url(#volume-grad)" />
               </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Hear it privately</span>
+              <span className="text-[11px] tracking-wide text-white/55">Hear it alone</span>
             </div>
             <span className="text-white/15 text-xs">·</span>
             <div className="flex items-center gap-1.5">

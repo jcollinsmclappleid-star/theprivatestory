@@ -293,6 +293,15 @@ export default function ThreeDoorsPage() {
           All three are private. All three are built around you. The question is
           which kind of story is calling right now.
         </p>
+
+        <div className="mt-8 max-w-lg mx-auto border-t border-white/8 pt-7">
+          <p className="font-display text-lg md:text-xl font-semibold text-foreground/90 mb-3">
+            Adult fantasy, built to your specification.
+          </p>
+          <p className="text-sm text-muted-foreground/55 leading-relaxed">
+            This isn't a catalogue. Nothing here is pre-made or shared with anyone. Step into the Creation Room — shape the cast, the mood, the world — and the story is written and narrated privately for you.
+          </p>
+        </div>
       </motion.div>
 
       {/* ── Three doors hero ───────────────────────────────────── */}

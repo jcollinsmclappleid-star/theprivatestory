@@ -1125,7 +1125,7 @@ export default function Home() {
               {/* Cover art — real image */}
               <div className="relative h-56 md:h-72 overflow-hidden">
                 <img
-                  src={SAMPLE_COVER}
+                  src={`${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`}
                   alt="The Ring in the Mirror"
                   className="absolute inset-0 w-full h-full object-cover object-top"
                 />

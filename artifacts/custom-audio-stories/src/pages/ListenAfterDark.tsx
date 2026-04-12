@@ -9,7 +9,8 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const AUDIO_URL        = `${API_BASE}/api/audio/audio-fc49bea83789fbfdf8b98e5042316d77.mp3`;
 const COVER_URL        = `${API_BASE}/api/images/cover-fc49bea83789fbfdf8b98e5042316d77.png`;
 const SCENE3_START     = 253;
-const TOTAL_DURATION_S = 599; // 9 min 59 sec — shown before audio metadata loads
+const TOTAL_DURATION_S = 599; // initial fallback — overridden by actual file-size fetch on mount
+const BYTES_PER_SECOND = 16_000; // 128 kbps CBR MP3 → 16 000 bytes/sec
 
 const AGE_GATE_KEY = "tps_age_confirmed";
 
@@ -106,6 +107,20 @@ export default function ListenAfterDark() {
   const [currentTime, setCurrentTime] = useState(SCENE3_START);
   const [duration, setDuration]       = useState(TOTAL_DURATION_S);
   const [seeked, setSeeked]           = useState(false);
+
+  // Fetch actual audio duration from file size (reliable on all browsers incl. iOS Safari,
+  // which can return Infinity for audio.duration on streaming range-served MP3).
+  useEffect(() => {
+    fetch(AUDIO_URL, { method: "GET", headers: { Range: "bytes=0-0" } })
+      .then(r => {
+        const cr = r.headers.get("content-range"); // "bytes 0-0/9591833"
+        if (cr) {
+          const total = Number(cr.split("/")[1] ?? "0");
+          if (total > 1_000_000) setDuration(Math.round(total / BYTES_PER_SECOND));
+        }
+      })
+      .catch(() => { /* keep TOTAL_DURATION_S fallback */ });
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;

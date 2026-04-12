@@ -835,6 +835,19 @@ export default function Home() {
           }} />
         </div>
 
+        {/* ── Woman portrait ── */}
+        <img
+          aria-hidden="true"
+          src={`${import.meta.env.BASE_URL}images/seo-hero-women.webp`}
+          alt=""
+          className="hidden sm:block absolute right-0 top-0 h-full w-[44%] object-cover object-top pointer-events-none select-none"
+          style={{
+            opacity: 0.20,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 35%, black 100%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 35%, black 100%)",
+          }}
+        />
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

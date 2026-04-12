@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ChevronLeft, Sparkles, Moon, ArrowRight } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -250,6 +251,11 @@ function IntensityDots({ level }: { level: number }) {
 }
 
 export default function ThreeDoorsPage() {
+  useSEO({
+    title: "Three Worlds, One Choice — Romance, After Dark & Drift | The Private Story",
+    description: "Three private worlds of personalised audio stories. Romance: intimate and desire-led. After Dark: spicy adult fiction, fully unrestrained. Drift: warm, intimate bedtime stories. All built around you.",
+  });
+
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -276,33 +282,55 @@ export default function ThreeDoorsPage() {
       </div>
 
       {/* ── Hero copy ──────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
-        className="text-center px-4 pt-6 pb-10"
-      >
-        <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-5">
-          Three worlds. One private.
-        </p>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-foreground leading-tight mb-5">
-          Behind each door,<br className="hidden sm:block" />
-          <span className="text-white/50 font-normal"> something different waits.</span>
-        </h1>
-        <p className="text-muted-foreground/70 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
-          All three are private. All three are built around you. The question is
-          which kind of story is calling right now.
-        </p>
-
-        <div className="mt-8 max-w-lg mx-auto border-t border-white/8 pt-7">
-          <p className="font-display text-lg md:text-xl font-semibold text-foreground/90 mb-3">
-            Adult fantasy, built to your specification.
-          </p>
-          <p className="text-sm text-muted-foreground/55 leading-relaxed">
-            This isn't a catalogue. Nothing here is pre-made or shared with anyone. Step into the Creation Room — shape the cast, the mood, the world — and the story is written and narrated privately for you.
-          </p>
+      <div className="relative overflow-hidden">
+        {/* Atmospheric glow */}
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0" style={{
+            background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.13) 0%, rgba(123,143,255,0.06) 48%, transparent 72%)",
+          }} />
         </div>
-      </motion.div>
+
+        {/* Woman portrait */}
+        <img
+          aria-hidden="true"
+          src={`${BASE}images/three-doors-hero-woman.png`}
+          alt=""
+          className="hidden lg:block absolute right-0 top-0 h-full w-[40%] object-cover object-top pointer-events-none select-none"
+          style={{
+            opacity: 0.22,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 38%, black 100%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 38%, black 100%)",
+          }}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="relative text-center px-4 pt-6 pb-10"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-5">
+            Three doors. All private.
+          </p>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-foreground leading-tight mb-5">
+            Behind each door,<br className="hidden sm:block" />
+            <span className="text-white/50 font-normal"> something different waits.</span>
+          </h1>
+          <p className="text-muted-foreground/70 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+            All three are private. All three are built around you. The question is
+            which kind of fantasy is calling right now.
+          </p>
+
+          <div className="mt-8 max-w-lg mx-auto border-t border-white/8 pt-7">
+            <p className="font-display text-lg md:text-xl font-semibold text-foreground/90 mb-3">
+              Adult fantasy, built to your specification.
+            </p>
+            <p className="text-sm text-muted-foreground/55 leading-relaxed">
+              This isn't a catalogue. Nothing here is pre-made or shared with anyone. Step into the Creation Room — shape the cast, the mood, the world — and the story is written and narrated privately for you.
+            </p>
+          </div>
+        </motion.div>
+      </div>
 
       {/* ── Three doors hero ───────────────────────────────────── */}
       <motion.div

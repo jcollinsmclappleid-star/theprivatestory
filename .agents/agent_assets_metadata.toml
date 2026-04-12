@@ -366,6 +366,12 @@ uri = "file://artifacts/api-server/public/images/door-afterdark.png"
 type = "image"
 title = "after dark door woman"
 
+[[generated]]
+id = "__HnNhlX54y_k0eAfkQGN"
+uri = "file://artifacts/custom-audio-stories/public/images/three-doors-hero-woman.png"
+type = "image"
+title = "woman reaching for door cinematic dark"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

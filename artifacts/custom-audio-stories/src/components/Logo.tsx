@@ -23,6 +23,7 @@ export function Logo({ height = 80, className = "" }: LogoProps) {
           width: "auto",
           display: "block",
           mixBlendMode: "screen",
+          filter: "brightness(1.3) drop-shadow(0 0 8px rgba(201,162,39,0.28))",
         }}
       />
     </span>

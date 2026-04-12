@@ -110,6 +110,14 @@ function Navbar({ streakDays }: { streakDays: number }) {
   const adminEmail = import.meta.env.VITE_ADMIN_EMAIL ?? "";
   const isAdmin = !!user && !!adminEmail && user.email?.toLowerCase() === adminEmail.toLowerCase();
 
+  const desktopNavItems = [
+    { label: "How It Works", href: "/how-it-works" },
+    { label: "Browse", href: "/browse" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Listen", href: "/listen" },
+    ...(isAuthenticated ? [{ label: "My Stories", href: "/library" }] : []),
+  ];
+
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "How It Works", href: "/how-it-works", icon: <Sparkles className="w-4 h-4" /> },
@@ -132,14 +140,14 @@ function Navbar({ streakDays }: { streakDays: number }) {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
-          <div className="flex items-center gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
-              <Logo height={60} />
+              <Logo height={48} />
             </Link>
 
-            <div className="hidden md:flex items-center gap-6">
-              {navItems.map(item => (
+            <div className="hidden md:flex items-center gap-5">
+              {desktopNavItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -153,20 +161,20 @@ function Navbar({ streakDays }: { streakDays: number }) {
                 className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isAfterDark ? "text-[#c0392b]" : "text-muted-foreground/70 hover:text-[#c0392b]"}`}
               >
                 <Moon className="w-3.5 h-3.5" />
-                The Story Room — 'After Dark'
+                After Dark
               </Link>
               <Link
                 href="/drift"
                 className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isDrift ? "text-[#6366f1]" : "text-muted-foreground/70 hover:text-[#6366f1]"}`}
               >
                 <Moon className="w-3.5 h-3.5 opacity-60" />
-                Drift - Bedtime Stories
+                Drift
               </Link>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <p className="hidden lg:block text-[10px] text-muted-foreground/30 tracking-widest">
+            <p className="hidden xl:block text-[10px] text-muted-foreground/30 tracking-widest">
               Private · No social · No history shared
             </p>
             <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors p-2">
@@ -239,7 +247,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
 
       {/* Mobile menu drawer */}
       <div
-        className={`fixed top-32 left-0 right-0 z-[48] md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed top-20 left-0 right-0 z-[48] md:hidden transition-all duration-300 ease-in-out ${
           menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
@@ -470,7 +478,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-32 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-20 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

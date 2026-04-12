@@ -10,6 +10,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
+import { ThreeDoors } from "@/components/ThreeDoors";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -342,13 +343,15 @@ export default function Pricing() {
                 <p className="text-sm text-muted-foreground/80 leading-relaxed mb-6">
                   Before a word is written, you decide everything — who's in it, the dynamic between you, how far it goes. The creation process takes about three minutes. Your story takes about ten to listen to.
                 </p>
-                <Link
-                  href="/create"
+                <button
+                  onClick={() => {
+                    document.getElementById("pricing-cards")?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
                 >
-                  Begin your story
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                  See pricing below
+                  <ChevronDown className="w-4 h-4" />
+                </button>
               </div>
 
               <div className="flex-shrink-0 w-full md:w-64">
@@ -387,7 +390,7 @@ export default function Pricing() {
       {/* ------------------------------------------------------------------ */}
       {/* Pricing cards                                                        */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
+      <section id="pricing-cards" className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
 
         {/* Single story / trial card */}
         <div className="mb-5 relative overflow-hidden rounded-3xl border border-white/10 bg-card/20 backdrop-blur-sm p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -862,60 +865,17 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Final CTA                                                            */}
+      {/* Final CTA — ThreeDoors                                              */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-20 px-4 md:px-8 max-w-4xl mx-auto w-full">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-card/60 to-background p-12 md:p-16 text-center">
-          <div className="absolute inset-0 pointer-events-none">
-            <div
-              className="absolute inset-0 opacity-[0.05]"
-              style={{
-                backgroundImage: `url(${BASE}images/home-visual-1.webp)`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/30 to-background/90" />
-          </div>
-          <div className="relative z-10">
-            <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-6 h-6 text-primary" />
-            </div>
-            <p className="text-xs font-medium text-primary uppercase tracking-widest mb-4">Your story. Your world.</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-              Begin the moment
-              <br className="hidden md:block" />
-              <span className="text-muted-foreground font-normal"> you're ready.</span>
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-8 leading-relaxed">
-              Private from the first word. Cast by you. Heard only by you. A collection that grows alongside them.
-            </p>
-            <p className="text-xs text-primary/50 uppercase tracking-widest font-medium mb-8 -mt-4">Under 3 minutes from first choice to listening</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/create"
-                className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-base hover:bg-primary/90 transition-all hover:scale-105 shadow-[0_0_48px_-12px_rgba(201,162,39,0.4)]"
-              >
-                <Sparkles className="w-5 h-5" />
-                Begin your story
-              </Link>
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-border/30 text-muted-foreground/80 hover:text-foreground hover:border-border/60 transition-all text-sm"
-              >
-                Learn more first
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <p className="text-xs text-primary/50 hover:text-primary/70 transition-colors mt-6">
-              <Link href="/listen">Not sure yet? Listen to a sample story first →</Link>
-            </p>
-            <p className="text-xs text-muted-foreground/80 mt-3">
-              Private from the first word. Monthly plans cancel any time.{" "}
-              <Link href="/privacy" className="hover:text-primary transition-colors">How we protect it →</Link>
-            </p>
-          </div>
+      <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div className="text-center mb-8">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Ready to begin?</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+            Choose where to start.
+          </h2>
+          <p className="text-muted-foreground/70 text-sm mt-3">Under 3 minutes from first choice to listening.</p>
         </div>
+        <ThreeDoors />
       </section>
 
     </motion.div>

@@ -15,24 +15,6 @@ const syncProgress = (storyId: string, currentTime: number, sceneIndex: number) 
   }).catch(() => {});
 };
 
-export const AMBIENT_OPTIONS = [
-  { id: "rain",       label: "Rain",       url: `${API_BASE}/api/ambient/rain.mp3` },
-  { id: "train",      label: "Train",      url: `${API_BASE}/api/ambient/train.mp3` },
-  { id: "ocean",      label: "Ocean",      url: `${API_BASE}/api/ambient/ocean.mp3` },
-  { id: "quiet_room", label: "Quiet Room", url: `${API_BASE}/api/ambient/quiet_room.mp3` },
-] as const;
-
-export type AmbientId = (typeof AMBIENT_OPTIONS)[number]["id"];
-
-export const MOOD_TO_AMBIENT: Record<string, AmbientId> = {
-  "Late Night":      "rain",
-  "Slow Burn":       "rain",
-  "Emotional":       "rain",
-  "Tender":          "quiet_room",
-  "Forbidden":       "ocean",
-  "First Encounter": "ocean",
-};
-
 interface AudioPlayerState {
   currentStory: Story | null;
   isPlaying: boolean;
@@ -40,9 +22,7 @@ interface AudioPlayerState {
   currentTime: number;
   duration: number;
   pendingSeek: number | null;
-  ambientMode: AmbientId | null;
   narrationVolume: number;
-  ambientVolume: number;
   play: (story?: Story) => void;
   pause: () => void;
   togglePlay: () => void;
@@ -52,9 +32,7 @@ interface AudioPlayerState {
   seekTo: (t: number) => void;
   clearPendingSeek: () => void;
   close: () => void;
-  setAmbientMode: (id: AmbientId | null) => void;
   setNarrationVolume: (v: number) => void;
-  setAmbientVolume: (v: number) => void;
 }
 
 export const useAudioPlayer = create<AudioPlayerState>()(
@@ -66,9 +44,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       currentTime: 0,
       duration: 0,
       pendingSeek: null,
-      ambientMode: null,
       narrationVolume: 1,
-      ambientVolume: 0.1,
 
       play: (story) => {
         if (story) {
@@ -89,11 +65,6 @@ export const useAudioPlayer = create<AudioPlayerState>()(
                 }
               })
               .catch(() => {});
-
-            const suggestedAmbient = story.mood ? MOOD_TO_AMBIENT[story.mood] ?? null : null;
-            if (suggestedAmbient && !get().ambientMode) {
-              set({ ambientMode: suggestedAmbient });
-            }
           } else {
             set({ isPlaying: true });
           }
@@ -153,9 +124,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         set({ currentStory: null, isPlaying: false, progress: 0, currentTime: 0 });
       },
 
-      setAmbientMode: (id) => set({ ambientMode: id }),
       setNarrationVolume: (v) => set({ narrationVolume: v }),
-      setAmbientVolume: (v) => set({ ambientVolume: v }),
     }),
     {
       name: 'cas-audio-storage',
@@ -163,10 +132,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
         currentStory: state.currentStory,
         progress: state.progress,
         currentTime: state.currentTime,
-        ambientMode: state.ambientMode,
         narrationVolume: state.narrationVolume,
-        // ambientVolume intentionally not persisted — always starts at a
-        // safe audible default (0.1) rather than potentially a stale 0
       }),
     }
   )

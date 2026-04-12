@@ -11,8 +11,6 @@ const COVER_URL        = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc5476
 const SCENE3_START     = 253;
 const TOTAL_DURATION_S = 600; // initial fallback — overridden by actual file-size fetch on mount
 const BYTES_PER_SECOND = 16_000; // 128 kbps CBR MP3 → 16 000 bytes/sec
-const AMBIENT_VOL_MAX  = 1.0;
-
 const AGE_GATE_KEY = "tps_age_confirmed";
 
 const CHOICES = [
@@ -25,14 +23,6 @@ const CHOICES = [
 ];
 
 const SITUATION = "He's engaged. The announcement was three weeks ago.";
-
-const AMBIENT_OPTS = [
-  { id: "rain",       label: "Rain",       url: `${API_BASE}/api/ambient/rain.mp3` },
-  { id: "train",      label: "Train",      url: `${API_BASE}/api/ambient/train.mp3` },
-  { id: "ocean",      label: "Ocean",      url: `${API_BASE}/api/ambient/ocean.mp3` },
-  { id: "quiet_room", label: "Quiet Room", url: `${API_BASE}/api/ambient/quiet_room.mp3` },
-] as const;
-type AmbientKey = (typeof AMBIENT_OPTS)[number]["id"];
 
 function AgeGate({ onConfirm }: { onConfirm: () => void }) {
   return (
@@ -100,19 +90,11 @@ export default function ListenPrivate() {
   }, []);
 
   const audioRef      = useRef<HTMLAudioElement>(null);
-  const ambientRef    = useRef<HTMLAudioElement>(null);
   const hasPlayedRef  = useRef(false);
   const [playing, setPlaying]         = useState(false);
   const [currentTime, setCurrentTime] = useState(SCENE3_START);
   const [duration, setDuration]       = useState(TOTAL_DURATION_S);
   const [seeked, setSeeked]           = useState(false);
-
-  // Ambient state — off by default, quiet_room pre-selected, low volume
-  const [ambientOn, setAmbientOn]         = useState(false);
-  const [ambientKey, setAmbientKey]       = useState<AmbientKey>("quiet_room");
-  const [ambientVol, setAmbientVol]       = useState(0.1);
-  // Ref so effects always read the latest volume without being in every dep array
-  const ambientVolRef = useRef(0.1);
 
   // Fetch actual audio duration from file size
   useEffect(() => {
@@ -164,54 +146,6 @@ export default function ListenPrivate() {
     };
   }, [seeked]);
 
-  // Ambient effect 1: play/pause + track switching.
-  // ambientVolRef (not ambientVol state) is read so volume changes don't re-trigger this.
-  useEffect(() => {
-    const el = ambientRef.current;
-    if (!el) return;
-
-    if (!ambientOn || !playing) {
-      el.pause();
-      return;
-    }
-
-    const opt = AMBIENT_OPTS.find(o => o.id === ambientKey);
-    if (!opt) return;
-
-    // Detect track change by checking whether the current src includes the track id
-    const currentSrc = el.currentSrc || el.src || "";
-    const needsLoad  = !currentSrc.includes(`${ambientKey}.mp3`);
-
-    let onCanPlay: (() => void) | null = null;
-
-    if (needsLoad) {
-      el.pause();
-      el.src  = opt.url;
-      el.loop = true;
-      el.load();
-      // Play once the browser has buffered enough — avoids silent failure after load()
-      onCanPlay = () => {
-        el.volume = ambientVolRef.current;
-        el.play().catch(() => {});
-      };
-      el.addEventListener("canplay", onCanPlay, { once: true });
-    } else {
-      el.volume = ambientVolRef.current;
-      el.play().catch(() => {});
-    }
-
-    return () => {
-      if (onCanPlay) el.removeEventListener("canplay", onCanPlay);
-    };
-  }, [ambientOn, playing, ambientKey]);
-
-  // Ambient effect 2: volume only — updates the ref AND the live element immediately.
-  // Kept separate so moving the slider never restarts the track.
-  useEffect(() => {
-    ambientVolRef.current = ambientVol;
-    if (ambientRef.current) ambientRef.current.volume = ambientVol;
-  }, [ambientVol]);
-
   const togglePlay = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -258,7 +192,6 @@ export default function ListenPrivate() {
         className="min-h-screen bg-background flex flex-col"
       >
         <audio ref={audioRef} src={AUDIO_URL} preload="metadata" />
-        <audio ref={ambientRef} loop />
 
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 py-5">
@@ -384,59 +317,6 @@ export default function ListenPrivate() {
               <span className="text-xs text-white/55 font-mono tabular-nums w-9 text-right shrink-0">{formatTime(duration)}</span>
             </div>
 
-            {/* Ambient controls */}
-            <div className="rounded-2xl border border-white/8 bg-white/3 px-4 py-3">
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-white/35">Ambient layer</span>
-                <button
-                  onClick={() => setAmbientOn(v => !v)}
-                  className={`relative w-8 h-4 rounded-full transition-colors ${ambientOn ? "bg-primary/70" : "bg-white/15"}`}
-                  aria-label={ambientOn ? "Turn off ambient" : "Turn on ambient"}
-                >
-                  <span
-                    className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-transform ${ambientOn ? "translate-x-4" : "translate-x-0.5"}`}
-                  />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-4 gap-1.5 mb-3">
-                {AMBIENT_OPTS.map(opt => (
-                  <button
-                    key={opt.id}
-                    onClick={() => { setAmbientKey(opt.id); if (!ambientOn) setAmbientOn(true); }}
-                    className={`py-1.5 rounded-xl text-[10px] font-medium transition-all border ${
-                      ambientKey === opt.id && ambientOn
-                        ? "bg-primary/20 border-primary/50 text-primary"
-                        : ambientKey === opt.id
-                          ? "bg-white/8 border-white/20 text-white/60"
-                          : "bg-transparent border-white/8 text-white/30 hover:text-white/60 hover:border-white/20"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] text-white/30 w-10 shrink-0">Volume</span>
-                <input
-                  type="range"
-                  min={0}
-                  max={AMBIENT_VOL_MAX}
-                  step={0.005}
-                  value={ambientVol}
-                  onChange={e => {
-                    const v = Number(e.target.value);
-                    setAmbientVol(v);
-                    ambientVolRef.current = v;
-                    if (ambientRef.current) ambientRef.current.volume = v;
-                  }}
-                  disabled={!ambientOn}
-                  className="flex-1 h-1 accent-[#c9a227] rounded-full cursor-pointer disabled:opacity-30"
-                />
-                <span className="text-[9px] text-white/30 w-6 text-right">{Math.round((ambientVol / AMBIENT_VOL_MAX) * 100)}%</span>
-              </div>
-            </div>
           </motion.div>
 
           <motion.p

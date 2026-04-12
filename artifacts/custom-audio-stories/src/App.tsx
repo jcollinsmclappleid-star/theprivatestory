@@ -76,6 +76,7 @@ import SteamyAudioStories from "@/pages/seo/SteamyAudioStories";
 import AIErotica from "@/pages/seo/AIErotica";
 import Discover from "@/pages/Discover";
 import HowItWorks from "@/pages/HowItWorks";
+import ThreeDoorsPage from "@/pages/ThreeDoorsPage";
 import PurchaseConfirmed from "@/pages/PurchaseConfirmed";
 import Listen from "@/pages/Listen";
 import ListenPrivate from "@/pages/ListenPrivate";
@@ -114,6 +115,7 @@ function Router() {
             <Route path="/refund-policy" component={RefundPolicy} />
             <Route path="/contact" component={Contact} />
             <Route path="/pricing" component={Pricing} />
+            <Route path="/the-three-doors" component={ThreeDoorsPage} />
             <Route path="/checkout/success" component={CheckoutSuccess} />
             <Route path="/personalised-audio-stories" component={PersonalisedAudioStories} />
             <Route path="/private-audio-stories" component={PrivateAudioStories} />

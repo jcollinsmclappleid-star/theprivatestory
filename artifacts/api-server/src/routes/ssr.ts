@@ -491,6 +491,80 @@ const STATIC_PAGES: StaticPage[] = [
     </section>`,
   },
   {
+    path: "/the-three-doors",
+    slug: "the-three-doors",
+    title: "Three Worlds, One Choice — Romance, After Dark & Drift | The Private Story",
+    description:
+      "Three private worlds of personalised audio stories. Romance: intimate and desire-led. After Dark: explicit adult fiction, fully unrestrained. Drift: warm, intimate bedtime stories. All built around you.",
+    h1: "Behind Each Door, Something Different Waits",
+    tagline: "Three worlds. All private. All personalised to you.",
+    extraSchemas: [
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "The Three Doors — The Private Story",
+        description:
+          "An overview of the three private worlds available on The Private Story: personalised romance audio stories, explicit adult audio fiction (After Dark), and intimate bedtime audio stories (Drift).",
+        url: `${SITE_URL}/the-three-doors`,
+        datePublished: DATE_PUBLISHED,
+        dateModified: DATE_MODIFIED,
+        publisher: {
+          "@type": "Organization",
+          name: SITE_NAME,
+          url: SITE_URL,
+        },
+        hasPart: [
+          {
+            "@type": "WebPage",
+            name: "Romance — The Story Room",
+            description: "Personalised romantic audio stories — forbidden, slow burn, historical, enemies to lovers. Cast it yourself. Private and saved to your account.",
+            url: `${SITE_URL}/create`,
+          },
+          {
+            "@type": "WebPage",
+            name: "After Dark — Explicit Adult Audio Fiction",
+            description: "Explicit adult audio stories, fully unrestrained. Power Exchange, The Forbidden, Slow Burn, In Character and more. 18+ age gate required.",
+            url: `${SITE_URL}/after-dark`,
+          },
+          {
+            "@type": "WebPage",
+            name: "Drift — Intimate Bedtime Audio Stories",
+            description: "Warm, intimate bedtime audio stories for the quiet hour. Softly sensual, emotionally close, written to hold you as the night settles.",
+            url: `${SITE_URL}/drift`,
+          },
+        ],
+      },
+      makeBreadcrumb(`${SITE_URL}/the-three-doors`, [
+        { name: "Home", item: SITE_URL },
+        { name: "The Three Doors", item: `${SITE_URL}/the-three-doors` },
+      ]),
+    ],
+    body: `
+    <section>
+      <h2>Romance — The Story Room</h2>
+      <p>Personalised romantic audio stories built around your exact desires. Choose your mood — Forbidden, Slow Burn, Historical, Second Chance, Enemies to Lovers. Cast the character yourself: his name, his dynamic, how far it goes. Every story is written exclusively for you and saved privately to your account.</p>
+      <p>~10 minutes per story. Fully private. No library, no catalogue — written fresh for you every time.</p>
+      <a href="/create">Create your romance story</a>
+    </section>
+    <section>
+      <h2>After Dark — Explicit Adult Audio Fiction</h2>
+      <p>After Dark is where the story goes further. Explicit, unrestrained adult audio fiction personalised entirely to you. Choose from fantasy rooms including Power Exchange, The Forbidden, Slow Burn, In Character, Eyes On Us, Sweet &amp; Savage, More Than Two, The Edge, and Dark Territory.</p>
+      <p>Adult content — 18+ age gate required. Nothing implied where it can be named. Nothing held back.</p>
+      <a href="/after-dark">Enter After Dark</a>
+    </section>
+    <section>
+      <h2>Drift — Intimate Bedtime Audio Stories</h2>
+      <p>Drift is written for the hour when everything else has gone quiet. Warm, intimate, softly sensual audio stories designed for the late-night hour. Rooms include The Late Night, Come Home, Warm Weight, and The Long Week.</p>
+      <p>Emotionally close, sleep-adjacent, the kind of presence that holds you as the night settles.</p>
+      <a href="/drift">Explore Drift</a>
+    </section>
+    <section>
+      <h2>All Plans Include All Three Worlds</h2>
+      <p>One subscription gives you access to Romance, After Dark, and Drift. Every story is personalised to you, privately saved, and heard only by you.</p>
+      <a href="/pricing">See pricing</a>
+    </section>`,
+  },
+  {
     path: "/contact",
     slug: "contact",
     title: "Contact — The Private Story",
@@ -737,7 +811,8 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/",               lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "1.0" },
   { loc: "/how-it-works",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
   { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.7"  },
-  { loc: "/pricing",        lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
+  { loc: "/pricing",           lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
+  { loc: "/the-three-doors",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.85" },
   // { loc: "/browse",      ... }  // noindex — age-gated, excluded from sitemap
   // { loc: "/search",      ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/discover",       lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.9" },

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useSearch, useLocation } from "wouter";
-import { CheckCircle2, Loader2, AlertCircle, Sparkles, Lock } from "lucide-react";
+import { CheckCircle2, Loader2, AlertCircle, Sparkles, Lock, BookOpen, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
+import { Logo } from "@/components/Logo";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -34,7 +35,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-6 py-5 flex items-center justify-between border-b border-border/20">
         <Link href="/">
-          <img src="/logo.png" alt="The Private Story" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+          <Logo height={60} />
         </Link>
         <span className="text-xs text-muted-foreground/40 tracking-widest uppercase">Private · Secure</span>
       </header>
@@ -79,9 +80,9 @@ function SubscriptionConfirmed() {
 
       <div className="glass-panel rounded-2xl p-5 mb-8 border-primary/20 bg-primary/5 text-left space-y-3">
         {[
-          "Create your first personalised story now",
           "Your stories are saved privately to your account",
           "After Dark is unlocked — stories that go further",
+          "Every story is written from scratch, just for you",
         ].map((line) => (
           <div key={line} className="flex items-start gap-3">
             <CheckCircle2 className="w-4 h-4 text-primary/60 flex-shrink-0 mt-0.5" />
@@ -90,13 +91,42 @@ function SubscriptionConfirmed() {
         ))}
       </div>
 
-      <Link
-        href="/create"
-        className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105 shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
-      >
-        <Sparkles className="w-4 h-4" />
-        Create your first story
-      </Link>
+      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/40 mb-4">Where would you like to start?</p>
+
+      <div className="w-full space-y-3">
+        <Link
+          href="/create"
+          className="flex items-center gap-3 w-full bg-primary text-primary-foreground px-6 py-4 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-[1.02] shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
+        >
+          <Sparkles className="w-5 h-5 flex-shrink-0" />
+          <div className="text-left">
+            <p className="font-semibold leading-tight">Create your story</p>
+            <p className="text-xs font-normal opacity-75 mt-0.5">Personalised from scratch — your cast, your world</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/after-dark"
+          className="flex items-center gap-3 w-full bg-[#e879a0]/10 border border-[#e879a0]/30 text-[#e879a0] px-6 py-4 rounded-2xl font-semibold text-sm hover:bg-[#e879a0]/18 hover:border-[#e879a0]/50 transition-all hover:scale-[1.02]"
+        >
+          <Moon className="w-5 h-5 flex-shrink-0" />
+          <div className="text-left">
+            <p className="font-semibold leading-tight">After Dark</p>
+            <p className="text-xs font-normal opacity-75 mt-0.5">Stories that go further — now unlocked for you</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/library"
+          className="flex items-center gap-3 w-full bg-card/40 border border-border/40 text-foreground/80 px-6 py-4 rounded-2xl font-semibold text-sm hover:bg-card/60 hover:border-border/60 hover:text-foreground transition-all hover:scale-[1.02]"
+        >
+          <BookOpen className="w-5 h-5 flex-shrink-0" />
+          <div className="text-left">
+            <p className="font-semibold leading-tight">Browse the library</p>
+            <p className="text-xs font-normal opacity-60 mt-0.5">Explore all available stories in your collection</p>
+          </div>
+        </Link>
+      </div>
 
       <p className="mt-6 text-xs text-muted-foreground/40">
         A confirmation has been sent to your email. You can manage your subscription from your{" "}

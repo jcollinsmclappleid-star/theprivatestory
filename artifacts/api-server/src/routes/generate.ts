@@ -1917,6 +1917,7 @@ function classifyExperienceTag(
     t.includes("wanted something around") || t.includes("wanted to be undressed") ||
     t.includes("wanted to be kept completely still") ||
     t.includes("wanted to feel completely enclosed") ||
+    t.includes("surrendered to them") ||
     t.includes("wanted to be spanked") || t.includes("wanted to be edged")
   ) return "physical";
 
@@ -2012,6 +2013,7 @@ function buildExperienceTagInstruction(
                                           return `  • "${tag}" → Write the specific sensation: the weight and warmth of the hand, the muffled quality of ${prot.poss} own breath, the arousal that comes from being silenced mid-response.`;
       if (t.includes("kneel"))            return `  • "${tag}" → Write the physical act and its psychological weight — the sensation of lowering, what ${subLc === "they" ? "they feel" : `${subLc} feels`} from that position, the chosen quality of the surrender.`;
       if (t.includes("powerless"))        return `  • "${tag}" → Write a state of genuine physical powerlessness — how ${prot.poss} own body becomes not entirely ${prot.poss} to control, and how that is exactly what ${subLc === "they" ? "they" : subLc} wanted.`;
+      if (t.includes("surrendered to them")) return `  • "${tag}" → Write complete, willing surrender as a full physical state — the release of holding anything back, the specific sensation of letting the body do exactly what it wants without restraint or apology. The surrender is chosen, total, and felt in every detail.`;
       if (t.includes("wrists"))           return `  • "${tag}" → The sensation must be specific: the pressure around the wrists, the awareness of restriction, how the limitation of movement translates into heightened sensation everywhere else.`;
       if (t.includes("undressed slowly")) return `  • "${tag}" → Write each moment of undressing as a separate sensation — the pause before each gesture, the deliberate quality of the partner's hands, ${prot.poss} body becoming more exposed incrementally.`;
       if (t.includes("completely still")) return `  • "${tag}" → Write the active effort of staying still — and what happens in ${prot.poss} body while doing so: every touch amplified by the inability to respond with movement.`;

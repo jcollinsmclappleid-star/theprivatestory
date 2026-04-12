@@ -2717,5 +2717,79 @@ router.post("/users/:userId/add-credits", async (req, res) => {
   }
 });
 
+/**
+ * POST /api/admin/fix-sample-audio
+ * One-time migration: regenerate audio for the two hardcoded sample stories
+ * if their audio files are missing from GCS.  Safe to call repeatedly.
+ */
+router.post("/fix-sample-audio", requireAdmin, async (req: Request, res: Response) => {
+  const SAMPLES: Array<{
+    storyId: string;
+    audioCacheKey: string;
+    voiceFeel: string;
+    pairing: string;
+    label: string;
+  }> = [
+    {
+      storyId: "b46f97f830345edb4687ed19b7a28ad1",
+      audioCacheKey: "b46f97f830345edb4687ed19b7a28ad1",
+      voiceFeel: "Soothing",
+      pairing: "Her & Him",
+      label: "Story A – The Ring in the Mirror (Clara)",
+    },
+    {
+      storyId: "0adf3133018146a8d7f7fa5bde57d752",
+      audioCacheKey: "fc49bea83789fbfdf8b98e5042316d77",
+      voiceFeel: "Expressive",
+      pairing: "Her & Him",
+      label: "Story B – Gold Light, Cold Metal (Kayla)",
+    },
+  ];
+
+  const results: Array<{ label: string; status: string; url?: string; durationSeconds?: number }> = [];
+
+  for (const sample of SAMPLES) {
+    const filename = `audio-${sample.audioCacheKey}.mp3`;
+    try {
+      // Check if file already in GCS
+      const { objectStorageClient } = await import("../lib/objectStorage.js");
+      const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+      if (!bucketId) { results.push({ label: sample.label, status: "error: bucket not set" }); continue; }
+      const file = objectStorageClient.bucket(bucketId).file(`media/audio/${filename}`);
+      const [exists] = await file.exists();
+      if (exists) { results.push({ label: sample.label, status: "already_in_gcs", url: `/api/audio/${filename}` }); continue; }
+
+      // Fetch scene text from DB
+      const rows = await db
+        .select({ scenes: generatedStories.scenes })
+        .from(generatedStories)
+        .where(eq(generatedStories.id, sample.storyId))
+        .limit(1);
+
+      if (!rows[0] || !rows[0].scenes) {
+        results.push({ label: sample.label, status: "error: story not found in DB" });
+        continue;
+      }
+
+      type Scene = { text: string; [k: string]: unknown };
+      const scenes = rows[0].scenes as Scene[];
+      logger.info({ label: sample.label, sceneCount: scenes.length }, "[admin] Regenerating sample audio");
+
+      const { url, durationSeconds } = await generateAudioFile(
+        scenes as Parameters<typeof generateAudioFile>[0],
+        sample.voiceFeel,
+        sample.audioCacheKey,
+        sample.pairing,
+      );
+      results.push({ label: sample.label, status: "generated", url, durationSeconds });
+    } catch (err) {
+      logger.error({ err, label: sample.label }, "[admin] fix-sample-audio failed for story");
+      results.push({ label: sample.label, status: `error: ${(err as Error).message}` });
+    }
+  }
+
+  res.json({ ok: true, results });
+});
+
 export default router;
 

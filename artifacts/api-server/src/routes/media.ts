@@ -165,11 +165,30 @@ router.get("/voice-samples/:voiceId", (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /audio/:filename
 // ---------------------------------------------------------------------------
+
+/**
+ * Hardcoded sample story audio — always public, no auth or DB check.
+ * These filenames are committed to the list explicitly so any addition requires
+ * a deliberate code change (no wildcard bypass).
+ */
+const SAMPLE_AUDIO_FILENAMES = new Set([
+  "audio-b46f97f830345edb4687ed19b7a28ad1.mp3", // Story A – The Ring in the Mirror (Clara)
+  "audio-fc49bea83789fbfdf8b98e5042316d77.mp3", // Story B – Gold Light, Cold Metal (Kayla)
+  "audio-lib-dd2_02-1775048422711.mp3",          // homepage ambient sample
+]);
+
 router.get("/audio/:filename", async (req: Request, res: Response, next: NextFunction) => {
   const { filename } = req.params;
 
   if (!AUDIO_FILENAME_RE.test(filename)) {
     return res.status(400).json({ error: "Invalid filename." });
+  }
+
+  // Sample audio is publicly accessible for preview — bypass DB ownership check.
+  if (SAMPLE_AUDIO_FILENAMES.has(filename)) {
+    const found = await streamAudioFile(filename, res, req);
+    if (!found) return res.status(404).json({ error: "File not found." });
+    return;
   }
 
   const allowed = await checkOwnership(req, res, "audio", filename);
@@ -182,6 +201,13 @@ router.get("/audio/:filename", async (req: Request, res: Response, next: NextFun
 // ---------------------------------------------------------------------------
 // GET /images/:filename
 // ---------------------------------------------------------------------------
+
+/** Hardcoded sample story cover images — always public, no auth or DB check. */
+const SAMPLE_COVER_FILENAMES = new Set([
+  "cover-daa5ffac36e215afb98fc54761355b53.png", // Story A – The Ring in the Mirror
+  "cover-fc49bea83789fbfdf8b98e5042316d77.png", // Story B – Gold Light, Cold Metal
+]);
+
 router.get("/images/:filename", async (req: Request, res: Response, next: NextFunction) => {
   const { filename } = req.params;
 
@@ -189,8 +215,12 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
     return res.status(400).json({ error: "Invalid filename." });
   }
 
-  // Category images are public assets — serve without auth or story ownership check.
-  if (/^category-[a-z0-9_]+-[a-z0-9_]+\.png$/.test(filename) || /^category-[a-z0-9_]+\.png$/.test(filename)) {
+  // Category images and hardcoded sample covers are public assets — serve without auth.
+  if (
+    /^category-[a-z0-9_]+-[a-z0-9_]+\.png$/.test(filename) ||
+    /^category-[a-z0-9_]+\.png$/.test(filename) ||
+    SAMPLE_COVER_FILENAMES.has(filename)
+  ) {
     const found = await streamImageFile(filename, res);
     if (!found) return res.status(404).json({ error: "File not found." });
     return;

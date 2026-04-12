@@ -6,9 +6,10 @@ import { useSEO } from "@/hooks/useSEO";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const AUDIO_URL   = `${API_BASE}/api/audio/audio-b46f97f830345edb4687ed19b7a28ad1.mp3`;
-const COVER_URL   = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
-const SCENE3_START = 253;
+const AUDIO_URL        = `${API_BASE}/api/audio/audio-b46f97f830345edb4687ed19b7a28ad1.mp3`;
+const COVER_URL        = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc54761355b53.png`;
+const SCENE3_START     = 253;
+const TOTAL_DURATION_S = 600; // 10 min — shown before audio metadata loads
 
 const AGE_GATE_KEY = "tps_age_confirmed";
 
@@ -91,7 +92,7 @@ export default function ListenPrivate() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying]         = useState(false);
   const [currentTime, setCurrentTime] = useState(SCENE3_START);
-  const [duration, setDuration]       = useState(0);
+  const [duration, setDuration]       = useState(TOTAL_DURATION_S);
   const [seeked, setSeeked]           = useState(false);
 
   useEffect(() => {
@@ -136,7 +137,7 @@ export default function ListenPrivate() {
     const audio = audioRef.current;
     if (!audio) return;
     if (playing) { audio.pause(); setPlaying(false); }
-    else { await audio.play(); setPlaying(true); }
+    else { try { await audio.play(); setPlaying(true); } catch { /* audio may not be ready */ } }
   }, [playing]);
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {

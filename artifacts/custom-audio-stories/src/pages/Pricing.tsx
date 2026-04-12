@@ -5,7 +5,7 @@ import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, ChevronRight, Check, Moon,
   EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame, Gift,
+  Users, Sliders, Flame, Gift, Trash2,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
@@ -241,18 +241,48 @@ export default function Pricing() {
             <br className="hidden md:block" />
             <span className="text-primary"> for you alone.</span>
           </h1>
+
+          {/* Conversion badges */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+            {[
+              { icon: <Sparkles className="w-3 h-3" />, label: "Ready in under 3 minutes" },
+              { icon: <Lock className="w-3 h-3" />, label: "Private from the first word" },
+              { icon: <BookOpen className="w-3 h-3" />, label: "2.6M+ story combinations" },
+            ].map(({ icon, label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-[11px] font-medium"
+              >
+                {icon}
+                {label}
+              </span>
+            ))}
+          </div>
+
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
             Each plan also includes After Dark — a space for stories that go further, and a curated story added to your library each month as a members extra.
           </p>
-          <p className="text-xs text-primary/80 tracking-wide mb-4 font-medium">
+          <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — typically around 10 minutes, though each story is different.
           </p>
-          <p className="text-xs text-muted-foreground/80 tracking-wide">
-            Billed discreetly. No subscription name appears on your statement.
-          </p>
+
+          {/* Compact privacy trust strip */}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            {[
+              { icon: <EyeOff className="w-3 h-3" />, text: "Visible to no one else" },
+              { icon: <Shield className="w-3 h-3" />, text: "Billed discreetly" },
+              { icon: <Trash2 className="w-3 h-3" />, text: "Delete any time" },
+            ].map(({ icon, text }, i) => (
+              <span key={text} className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/55">
+                {i > 0 && <span className="w-px h-3 bg-border/30 mr-2" />}
+                {icon}
+                {text}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -269,6 +299,24 @@ export default function Pricing() {
               <span className="text-primary/80">{r.icon}</span>
               <p className="text-xs font-semibold text-foreground">{r.label}</p>
               <p className="text-[11px] text-muted-foreground/80 leading-snug">{r.sub}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Stats strip                                                          */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="py-6 px-4 md:px-8 max-w-3xl mx-auto w-full">
+        <div className="flex flex-wrap items-center justify-center gap-0 divide-x divide-border/20">
+          {[
+            { stat: "2.6M+", label: "Unique story combinations" },
+            { stat: "< 3 mins", label: "From first choice to listening" },
+            { stat: "100% private", label: "Visible to no one else" },
+          ].map(({ stat, label }) => (
+            <div key={stat} className="flex flex-col items-center px-8 py-2 gap-0.5">
+              <span className="text-lg font-bold text-foreground tracking-tight">{stat}</span>
+              <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-widest text-center">{label}</span>
             </div>
           ))}
         </div>

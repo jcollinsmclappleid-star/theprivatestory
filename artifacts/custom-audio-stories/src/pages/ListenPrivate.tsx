@@ -115,14 +115,13 @@ export default function ListenPrivate() {
     if (!audio) return;
 
     const onMeta = () => {
-      const d = audio.duration;
-      if (d && isFinite(d) && d > 0) {
-        setDuration(d);
-        if (!seeked) {
-          audio.currentTime = SCENE3_START;
-          setCurrentTime(SCENE3_START);
-          setSeeked(true);
-        }
+      // Duration display is owned by the file-size fetch above (more reliable than
+      // audio.duration which can be wrong on iOS Safari / from a bad LAME/Xing header).
+      // onMeta only handles seeking to the scene-3 start position.
+      if (!seeked && audio.readyState >= 1) {
+        audio.currentTime = SCENE3_START;
+        setCurrentTime(SCENE3_START);
+        setSeeked(true);
       }
     };
     const onTime = () => setCurrentTime(audio.currentTime);
@@ -137,7 +136,6 @@ export default function ListenPrivate() {
       audio.currentTime = SCENE3_START;
       setCurrentTime(SCENE3_START);
       setSeeked(true);
-      if (audio.duration && isFinite(audio.duration)) setDuration(audio.duration);
     }
 
     return () => {
@@ -162,7 +160,7 @@ export default function ListenPrivate() {
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * duration;
   };
 
-  const progress  = duration ? (currentTime / duration) * 100 : 0;
+  const progress  = duration ? Math.min(100, (currentTime / duration) * 100) : 0;
   const scene3Pct = duration ? (SCENE3_START / duration) * 100 : 0;
 
   return (

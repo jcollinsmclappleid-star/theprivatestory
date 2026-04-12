@@ -98,7 +98,7 @@ const DOORS = [
       "Dark Territory",
       "Her Power",
     ],
-    details: ["Spicy adult content", "18+ adults only", "Name & cast your character", "Every detail built by you"],
+    details: ["Spicy adult content", "Name & cast your character", "Every detail built by you", "Around 10 mins per story (varies)"],
     ageGate: true,
     comparisonTone: "Spicy & unrestrained",
     comparisonIntensity: 4,
@@ -333,11 +333,6 @@ export default function ThreeDoorsPage() {
                   >
                     {door.room}
                   </span>
-                  {door.ageGate && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-red-400/70 bg-red-500/8 border border-red-500/18">
-                      18+ Adults only
-                    </span>
-                  )}
                 </div>
 
                 <h2
@@ -456,11 +451,6 @@ export default function ThreeDoorsPage() {
                   <p className="text-xs font-medium" style={{ color: `rgba(${door.rgb},0.80)` }}>Full casting — your name, your dynamic</p>
                 </div>
 
-                {door.ageGate && (
-                  <div className="pt-1">
-                    <p className="text-[11px] text-red-400/60 font-medium">18+ adults only</p>
-                  </div>
-                )}
               </div>
 
               <Link href={door.href}>

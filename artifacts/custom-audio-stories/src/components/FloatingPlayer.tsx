@@ -5,7 +5,7 @@ import { Play, Pause, X, RotateCcw, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
 
-const AMBIENT_VOL_MAX = 0.2;
+const AMBIENT_VOL_MAX = 1.0;
 
 export function FloatingPlayer() {
   const [location] = useLocation();

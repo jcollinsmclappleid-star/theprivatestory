@@ -47,7 +47,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const ambientRef = useRef<HTMLAudioElement>(null);
   const simulationIntervalRef = useRef<number | null>(null);
   const playCountRef = useRef<Record<string, number>>({});
-  const ambientStartedRef = useRef(false);
+  // Always-current volume ref so effects don't need ambientVolume in their dep arrays
+  const ambientVolRef = useRef(ambientVolume);
 
   const handlePlay = (storyId: string, mood: string) => {
     const count = (playCountRef.current[storyId] ?? 0) + 1;
@@ -122,25 +123,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     clearPendingSeek();
   }, [pendingSeek, clearPendingSeek]);
 
-  // Attempt to start ambient audio — only when narration is actively playing
-  const tryStartAmbient = () => {
-    const el = ambientRef.current;
-    if (!el || ambientStartedRef.current) return;
-    // Never auto-start ambient without active narration (prevents music on page load)
-    if (!useAudioPlayer.getState().isPlaying) return;
-    const src = el.getAttribute("data-src");
-    if (!src) return;
-    if (!el.src || !el.src.endsWith(src)) {
-      el.src = src;
-      el.loop = true;
-      el.volume = useAudioPlayer.getState().ambientVolume;
-    }
-    el.play()
-      .then(() => { ambientStartedRef.current = true; })
-      .catch(() => { ambientStartedRef.current = false; });
-  };
-
-  // Ambient audio control — only follows narration state
+  // Ambient: track switching.
+  // When ambientMode changes, load the new track. If narration is playing,
+  // wait for canplay before playing (avoids silent failure immediately after load()).
   useEffect(() => {
     const el = ambientRef.current;
     if (!el) return;
@@ -149,47 +134,63 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (!option) {
       el.pause();
-      el.removeAttribute("src");
-      el.removeAttribute("data-src");
+      el.src = "";
       el.load();
-      ambientStartedRef.current = false;
       return;
     }
 
     const newUrl = option.url;
-    el.setAttribute("data-src", newUrl);
+    const currentSrc = el.currentSrc || el.src || "";
+    const needsLoad  = !currentSrc.includes(`${option.id}.mp3`);
 
-    if (!el.src || !el.src.endsWith(newUrl)) {
-      el.src = newUrl;
+    let onCanPlay: (() => void) | null = null;
+
+    if (needsLoad) {
+      el.pause();
+      el.src  = newUrl;
       el.loop = true;
-      el.volume = ambientVolume;
       el.load();
-      ambientStartedRef.current = false;
+      // Only start playing if narration is already running
+      if (useAudioPlayer.getState().isPlaying) {
+        onCanPlay = () => {
+          el.volume = ambientVolRef.current;
+          el.play().catch(() => {});
+        };
+        el.addEventListener("canplay", onCanPlay, { once: true });
+      }
+    } else if (isPlaying) {
+      // Same track, narration is running — resume ambient
+      el.volume = ambientVolRef.current;
+      el.play().catch(() => {});
     }
 
-    tryStartAmbient();
+    return () => {
+      if (onCanPlay) el.removeEventListener("canplay", onCanPlay);
+    };
   }, [ambientMode]);
 
-  // Retry ambient start on narration play/pause (user gesture unblocks autoplay)
+  // Ambient: play/pause in sync with narration and story state.
   useEffect(() => {
-    if (isPlaying && !ambientStartedRef.current) {
-      tryStartAmbient();
-    }
-    // When narration stops or player is closed, stop ambient too
-    if (!isPlaying || !currentStory) {
-      const el = ambientRef.current;
-      if (el) {
-        el.pause();
-        ambientStartedRef.current = false;
-      }
-    }
-  }, [isPlaying, currentStory]);
+    const el = ambientRef.current;
+    if (!el) return;
 
-  // Ambient volume sync (independent effect so it doesn't restart the track)
-  useEffect(() => {
-    if (ambientRef.current) {
-      ambientRef.current.volume = ambientVolume;
+    if (!isPlaying || !currentStory || !ambientMode) {
+      el.pause();
+      return;
     }
+
+    // Narration started (or unpaused) — start ambient if it has a src
+    if (el.src) {
+      el.volume = ambientVolRef.current;
+      el.play().catch(() => {});
+    }
+  }, [isPlaying, currentStory, ambientMode]);
+
+  // Ambient volume sync — updates the ref AND the live element.
+  // Kept separate so slider changes never restart the track.
+  useEffect(() => {
+    ambientVolRef.current = ambientVolume;
+    if (ambientRef.current) ambientRef.current.volume = ambientVolume;
   }, [ambientVolume]);
 
   return (

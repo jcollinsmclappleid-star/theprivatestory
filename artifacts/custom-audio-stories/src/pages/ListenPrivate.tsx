@@ -11,7 +11,7 @@ const COVER_URL        = `${API_BASE}/api/images/cover-daa5ffac36e215afb98fc5476
 const SCENE3_START     = 253;
 const TOTAL_DURATION_S = 600; // initial fallback — overridden by actual file-size fetch on mount
 const BYTES_PER_SECOND = 16_000; // 128 kbps CBR MP3 → 16 000 bytes/sec
-const AMBIENT_VOL_MAX  = 0.2;
+const AMBIENT_VOL_MAX  = 1.0;
 
 const AGE_GATE_KEY = "tps_age_confirmed";
 
@@ -110,7 +110,9 @@ export default function ListenPrivate() {
   // Ambient state — off by default, quiet_room pre-selected, low volume
   const [ambientOn, setAmbientOn]         = useState(false);
   const [ambientKey, setAmbientKey]       = useState<AmbientKey>("quiet_room");
-  const [ambientVol, setAmbientVol]       = useState(0.04);
+  const [ambientVol, setAmbientVol]       = useState(0.1);
+  // Ref so effects always read the latest volume without being in every dep array
+  const ambientVolRef = useRef(0.1);
 
   // Fetch actual audio duration from file size
   useEffect(() => {
@@ -162,34 +164,51 @@ export default function ListenPrivate() {
     };
   }, [seeked]);
 
-  // Ambient: load correct track when selection changes or ambient is turned on
+  // Ambient effect 1: play/pause + track switching.
+  // ambientVolRef (not ambientVol state) is read so volume changes don't re-trigger this.
   useEffect(() => {
     const el = ambientRef.current;
     if (!el) return;
+
+    if (!ambientOn || !playing) {
+      el.pause();
+      return;
+    }
+
     const opt = AMBIENT_OPTS.find(o => o.id === ambientKey);
     if (!opt) return;
-    if (!el.src || !el.src.endsWith(opt.url.split("?")[0])) {
-      el.src = opt.url;
-      el.loop = true;
-      el.volume = ambientVol;
-      el.load();
-    }
-  }, [ambientKey]);
 
-  // Ambient: play/pause in sync with narration and ambientOn toggle
-  useEffect(() => {
-    const el = ambientRef.current;
-    if (!el) return;
-    if (ambientOn && playing) {
-      el.volume = ambientVol;
-      el.play().catch(() => {});
-    } else {
+    // Detect track change by checking whether the current src includes the track id
+    const currentSrc = el.currentSrc || el.src || "";
+    const needsLoad  = !currentSrc.includes(`${ambientKey}.mp3`);
+
+    let onCanPlay: (() => void) | null = null;
+
+    if (needsLoad) {
       el.pause();
+      el.src  = opt.url;
+      el.loop = true;
+      el.load();
+      // Play once the browser has buffered enough — avoids silent failure after load()
+      onCanPlay = () => {
+        el.volume = ambientVolRef.current;
+        el.play().catch(() => {});
+      };
+      el.addEventListener("canplay", onCanPlay, { once: true });
+    } else {
+      el.volume = ambientVolRef.current;
+      el.play().catch(() => {});
     }
-  }, [ambientOn, playing]);
 
-  // Ambient: volume sync
+    return () => {
+      if (onCanPlay) el.removeEventListener("canplay", onCanPlay);
+    };
+  }, [ambientOn, playing, ambientKey]);
+
+  // Ambient effect 2: volume only — updates the ref AND the live element immediately.
+  // Kept separate so moving the slider never restarts the track.
   useEffect(() => {
+    ambientVolRef.current = ambientVol;
     if (ambientRef.current) ambientRef.current.volume = ambientVol;
   }, [ambientVol]);
 

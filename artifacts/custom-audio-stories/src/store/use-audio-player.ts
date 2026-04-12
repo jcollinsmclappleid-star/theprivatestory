@@ -68,7 +68,7 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       pendingSeek: null,
       ambientMode: null,
       narrationVolume: 1,
-      ambientVolume: 0.04,
+      ambientVolume: 0.1,
 
       play: (story) => {
         if (story) {

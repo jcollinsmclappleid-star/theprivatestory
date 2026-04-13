@@ -295,11 +295,10 @@ export default function ThreeDoorsPage() {
           aria-hidden="true"
           src={`${BASE}images/three-doors-hero-woman.png?v=2`}
           alt=""
-          className="hidden lg:block absolute right-0 top-0 h-full w-[40%] object-cover object-top pointer-events-none select-none"
+          className="block absolute right-0 top-0 h-full w-full lg:w-[40%] object-cover object-top pointer-events-none select-none opacity-[0.20] lg:opacity-[0.50]"
           style={{
-            opacity: 0.50,
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 30%, black 60%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 30%, black 60%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 20%, black 55%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 20%, black 55%)",
           }}
         />
 

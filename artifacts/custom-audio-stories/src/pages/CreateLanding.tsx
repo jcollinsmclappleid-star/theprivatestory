@@ -237,7 +237,7 @@ export default function CreateLanding({ onEnter }: Props) {
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.82, objectPosition: "50% 18%" }}
+          style={{ opacity: 0.88, objectPosition: "50% 8%" }}
         />
         <div
           className="absolute inset-0"
@@ -260,7 +260,7 @@ export default function CreateLanding({ onEnter }: Props) {
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.82, objectPosition: "50% 18%" }}
+          style={{ opacity: 0.88, objectPosition: "50% 8%" }}
         />
         {/* Left-edge fade so text stays readable */}
         <div

@@ -53,7 +53,7 @@ function DriftDoor({ onEnter }: Props) {
           transition={{ type: "spring", damping: 22, stiffness: 90 }}
         >
           <img
-            src={`${BASE}images/door-drift.png?v=4`}
+            src={`${BASE}images/door-drift.png?v=5`}
             alt=""
             aria-hidden="true"
             className="relative z-10 block select-none"

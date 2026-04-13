@@ -91,7 +91,7 @@ const DOORS = [
     cta: "Explore Drift",
     href: "/drift",
     Icon: Moon,
-    image: `${BASE}images/door-drift.png?v=4`,
+    image: `${BASE}images/door-drift.png?v=5`,
     accent: "#56b4e0",
     rgb: "86,180,224",
     labelColor: "rgba(86,180,224,0.68)",

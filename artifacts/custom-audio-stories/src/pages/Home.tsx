@@ -859,13 +859,13 @@ export default function Home() {
           </div>
 
           <h1 className="text-[2.6rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
-            Your private fantasy —{" "}
-            <span className="text-primary">written to your desire. Narrated. Yours.</span>
+            Private stories that go further —{" "}
+            <span className="text-primary">written around your choices. More intense, more immersive, still entirely private.</span>
           </h1>
 
           <div className="flex flex-col items-start sm:items-center gap-2">
             <p className="text-sm md:text-base text-white/55 tracking-wide sm:text-center font-medium">
-              Intimate. Unrestrained. Entirely private.
+              Private. Intense. Entirely yours.
             </p>
             <p className="text-xs text-white/32 tracking-wide sm:text-center leading-relaxed">
               Not a catalogue. Created fresh in the Creation Room — private to you, never shared with anyone.

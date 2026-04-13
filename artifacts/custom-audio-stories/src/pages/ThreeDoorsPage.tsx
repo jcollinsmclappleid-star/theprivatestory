@@ -317,7 +317,7 @@ export default function ThreeDoorsPage() {
           </h1>
           <p className="text-muted-foreground/70 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
             All three are private. All three are built around you. The question is
-            which kind of fantasy is calling right now.
+            which desire is calling right now.
           </p>
 
           <div className="mt-8 max-w-lg mx-auto border-t border-white/8 pt-7">

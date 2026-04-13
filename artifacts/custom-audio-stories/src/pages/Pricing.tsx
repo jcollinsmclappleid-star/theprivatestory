@@ -200,18 +200,25 @@ export default function Pricing() {
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
       <section className="relative py-28 md:py-40 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div
-            className="absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage: `url(${BASE}images/hero-bg.webp)`,
-              backgroundSize: "cover",
-              backgroundPosition: "center 30%",
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/8 rounded-full blur-3xl" />
+        {/* Atmospheric glow */}
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0" style={{
+            background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.14) 0%, rgba(123,143,255,0.07) 48%, transparent 72%)",
+          }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
         </div>
+
+        {/* Hero portrait — woman commanding, two men */}
+        <img
+          aria-hidden="true"
+          src={`${BASE}images/pricing-hero-woman.png?v=1`}
+          alt=""
+          className="block absolute right-0 top-0 h-full w-full sm:w-[44%] object-cover object-top pointer-events-none select-none opacity-[0.18] sm:opacity-[0.52]"
+          style={{
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 22%, black 52%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 22%, black 52%)",
+          }}
+        />
 
         <div className="relative z-10 max-w-2xl mx-auto">
           {checkoutResult === "success" && (

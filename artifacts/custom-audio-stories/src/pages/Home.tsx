@@ -209,7 +209,7 @@ function WorldIntroCard() {
 
   return (
     <div className="flex-shrink-0 w-80 snap-start">
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 flex flex-col h-full" style={{ background: "linear-gradient(135deg, #04100a 0%, #060a14 50%, #0a0614 100%)", boxShadow: "0 0 28px #34d39920, 0 4px 16px rgba(0,0,0,0.6)" }}>
+      <div className="relative overflow-hidden rounded-2xl border flex flex-col h-full" style={{ background: "linear-gradient(135deg, #04100a 0%, #060a14 50%, #0a0614 100%)", borderColor: "#34d39935", boxShadow: "inset 0 0 50px #34d39914, 0 0 22px #34d39930, 0 4px 16px rgba(0,0,0,0.6)" }}>
         <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 20%, #34d39922 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, #6b8cce18 0%, transparent 50%)" }} />
 
         <div className="relative z-10 p-5 pb-3">
@@ -272,7 +272,7 @@ function WorldIntroCard() {
 function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
   const cats = s.settingCategories;
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -336,7 +336,7 @@ function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
 function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
   const subs = (s as { optionSubs?: string[] }).optionSubs ?? [];
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -402,7 +402,7 @@ const SITUATION_EXAMPLES = [
 
 function SituationCard({ s }: { s: StepCard }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border flex flex-col border-white/10" style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
+    <div className="relative overflow-hidden rounded-2xl border flex flex-col" style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -459,7 +459,7 @@ function SituationCard({ s }: { s: StepCard }) {
 
 function FinalOutputCard({ s }: { s: StepCard }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-primary/40 flex flex-col" style={{ boxShadow: "0 0 32px #c9a22728, 0 4px 16px rgba(0,0,0,0.6)" }}>
+    <div className="relative overflow-hidden rounded-2xl border flex flex-col" style={{ borderColor: "#c9a22740", boxShadow: "inset 0 0 50px #c9a2270e, 0 0 28px #c9a22732, 0 4px 16px rgba(0,0,0,0.6)" }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/20" />
       <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 70% 25%, #c9a22728 0%, transparent 60%)" }} />
@@ -517,7 +517,7 @@ function FinalOutputCard({ s }: { s: StepCard }) {
 
 function StandardCard({ s }: { s: StepCard }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -603,25 +603,9 @@ function CastingPreview() {
         }
       `}</style>
 
-      <div className="mb-8 relative overflow-hidden rounded-2xl">
-        {/* Portrait — right-side atmospheric, all screen sizes */}
-        <img
-          aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=1`}
-          alt=""
-          className="block absolute inset-y-0 right-0 w-[38%] md:w-[28%] object-cover object-top pointer-events-none select-none opacity-45 md:opacity-60"
-          style={{
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 60%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 60%)",
-          }}
-        />
-        {/* "Whose story is it?" caption over image */}
-        <div className="absolute right-3 bottom-3 z-10 text-right">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70">Whose story is it?</p>
-          <p className="text-xs italic font-serif text-foreground/55">Yours.</p>
-        </div>
-
-        <div className="flex items-end justify-between gap-4 relative z-10 pr-[40%] md:pr-[32%]">
+      <div className="mb-8 flex items-stretch gap-4">
+        {/* Left: text + stats */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between gap-3">
           <div>
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
               The Creation Room
@@ -653,7 +637,7 @@ function CastingPreview() {
               </Link>
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => scrollBy(-1)}
               disabled={!canScrollLeft}
@@ -672,12 +656,30 @@ function CastingPreview() {
             </button>
           </div>
         </div>
+
+        {/* Right: "Whose story is it?" portrait — flex child, own overflow-hidden container */}
+        <div className="relative flex-shrink-0 w-[38%] sm:w-[32%] md:w-[26%] rounded-2xl overflow-hidden min-h-[200px]">
+          <img
+            aria-hidden="true"
+            src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=1`}
+            alt=""
+            className="w-full h-full object-cover object-top pointer-events-none select-none opacity-75"
+            style={{
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, black 50%)",
+              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, black 50%)",
+            }}
+          />
+          <div className="absolute bottom-3 right-3 z-10 text-right">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/80">Whose story is it?</p>
+            <p className="text-xs italic font-serif text-foreground/65">Yours.</p>
+          </div>
+        </div>
       </div>
 
       <div
         ref={scrollRef}
         onScroll={updateScroll}
-        className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+        className="flex gap-4 overflow-x-auto py-4 scrollbar-hide snap-x snap-mandatory"
       >
         {/* World intro card — shown first */}
         <motion.div

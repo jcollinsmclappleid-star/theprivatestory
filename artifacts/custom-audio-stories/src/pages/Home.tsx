@@ -838,7 +838,7 @@ export default function Home() {
         {/* ── Woman portrait ── */}
         <img
           aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=6`}
+          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=7`}
           alt=""
           className="block absolute right-0 top-0 h-full w-full sm:w-[48%] object-cover object-top pointer-events-none select-none opacity-[0.38] sm:opacity-[0.82]"
           style={{

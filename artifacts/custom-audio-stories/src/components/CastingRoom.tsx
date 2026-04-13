@@ -1693,7 +1693,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">After Dark Exclusive</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
                   {AFTER_DARK_SETTINGS.map(s => (
-                    <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                    <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => { update("setting", s.id); next(); }}>
                       <p className="font-semibold text-white text-base">{s.label}</p>
                       <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                     </ArtTile>
@@ -1705,7 +1705,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Contemporary</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {CONTEMPORARY_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => { update("setting", s.id); next(); }}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
                   <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
@@ -1715,7 +1715,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Historical Eras</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
               {HISTORICAL_SETTINGS.map(s => (
-                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => update("setting", s.id)}>
+                <ArtTile key={s.id} gradient={s.gradient} accent={s.accent} image={(s as {image?: string}).image} selected={data.setting === s.id} onClick={() => { update("setting", s.id); next(); }}>
                   <p className="font-semibold text-white text-base">{s.label}</p>
                   <p className="text-white/75 text-sm mt-0.5 leading-snug">{s.sub}</p>
                 </ArtTile>
@@ -1821,7 +1821,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <div>
                       <p className="text-sm font-semibold mb-1" style={{ color: "#c8d4ff" }}>After Dark — where your deepest fantasies live</p>
                       <p className="text-xs leading-relaxed mb-3" style={{ color: "rgba(155,174,255,0.75)" }}>
-                        After Dark is a separate world: unrestrained intensity, explicit scenarios, and every casting option fully unlocked. Nothing held back, nothing left unwritten.
+                        After Dark is a separate world: unrestrained intensity, fully written scenarios, and every casting option fully unlocked. Nothing held back, nothing left unwritten.
                       </p>
                       <button
                         type="button"
@@ -2114,7 +2114,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     <Moon className="w-2.5 h-2.5" style={{ color: "#9baeff" }} />
                     <p className="text-xs font-bold" style={{ color: "#c8d4ff" }}>After Dark</p>
                   </div>
-                  <p className="text-[11px] leading-snug" style={{ color: "rgba(155,174,255,0.70)" }}>Explicit, unrestrained — nothing held back</p>
+                  <p className="text-[11px] leading-snug" style={{ color: "rgba(155,174,255,0.70)" }}>Unrestrained — nothing held back</p>
                 </a>
               </div>
             )}

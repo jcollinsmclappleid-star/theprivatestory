@@ -1656,7 +1656,7 @@ export default function AfterDark() {
                   chemistry: selectedScenario?.tags[0] ?? "He Takes Charge",
                   setting: "",
                   atmosphere: "",
-                  intensity: "Explicit",
+                  intensity: "Unrestrained",
                   mood: "Raw",
                   whoIsHe: "",
                   dynamic: selectedScenario?.tags[0] ?? "",
@@ -1686,13 +1686,13 @@ export default function AfterDark() {
                 src={`${import.meta.env.BASE_URL}images/afterdark-hero-woman.png?v=1`}
                 alt=""
                 aria-hidden="true"
-                className="w-full h-full object-cover object-top opacity-50"
+                className="w-full h-full object-cover object-top opacity-30"
                 style={{ objectPosition: "center top" }}
               />
             </div>
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050555 0%, #0a020266 55%, #000e 100%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050580 0%, #0a020288 55%, #000 100%)" }}
             />
             <div className="absolute inset-0" style={{
               background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",
@@ -1770,7 +1770,7 @@ export default function AfterDark() {
               {/* Value bullets */}
               <div className="w-full flex flex-col gap-2 text-left">
                 {[
-                  "Explicit, unrestrained stories",
+                  "Unrestrained stories — nothing held back",
                   "Full casting unlocked — every option",
                   "Complete privacy — nothing stored, nothing shared",
                 ].map(benefit => (

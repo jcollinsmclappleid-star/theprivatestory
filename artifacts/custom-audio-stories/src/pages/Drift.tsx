@@ -739,12 +739,12 @@ export default function Drift() {
                 src={`${import.meta.env.BASE_URL}images/paywall-drift-bg.png?v=1`}
                 alt=""
                 aria-hidden="true"
-                className="w-full h-full object-cover object-center opacity-50"
+                className="w-full h-full object-cover object-center opacity-25"
               />
             </div>
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #08051450 0%, #03021060 55%, #000e 100%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #08051480 0%, #03021088 55%, #000 100%)" }}
             />
             <div className="absolute inset-0" style={{
               background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",

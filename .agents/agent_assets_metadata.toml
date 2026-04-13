@@ -498,6 +498,12 @@ uri = "file://attached_assets/generated_images/home-hero-woman-v6.png"
 type = "image"
 title = "editorial chiaroscuro woman blindfold apartment"
 
+[[generated]]
+id = "8600NJ-eAHo6sJ60A7jgj"
+uri = "file://attached_assets/home-hero-woman-v7.png"
+type = "image"
+title = "woman bare face scarf man seated"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

@@ -51,7 +51,7 @@ function AgeGate({ onConfirm }: { onConfirm: () => void }) {
           After Dark · Adults only
         </p>
         <h1 className="font-display text-3xl font-bold text-foreground leading-tight mb-4">
-          This story contains<br />explicit content.
+          This story contains<br />adult content.
         </h1>
         <p className="text-sm text-white/55 leading-relaxed mb-8">
           You must be 18 years of age or older to enter.<br />

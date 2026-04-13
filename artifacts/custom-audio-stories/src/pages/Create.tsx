@@ -229,7 +229,7 @@ const PATH_EXPERIENCE_TAGS: Record<string, string[]> = {
 const INTENSITIES = [
   { id: "Tender", label: "Tender", desc: "Emotional, slow burn, almost-touch" },
   { id: "Heated", label: "Heated", desc: "Desire building, physical presence" },
-  { id: "Explicit", label: "Explicit", desc: "Fully rendered, nothing held back" },
+  { id: "Explicit", label: "Unrestrained", desc: "Fully rendered, nothing held back" },
   { id: "Scorching", label: "Scorching", desc: "Maximum intensity, no restraint" },
 ];
 
@@ -1895,13 +1895,13 @@ export default function Create() {
                   src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.png?v=1`}
                   alt=""
                   aria-hidden="true"
-                  className="w-full h-full object-cover object-center opacity-45"
+                  className="w-full h-full object-cover object-center opacity-20"
                 />
               </div>
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "radial-gradient(ellipse at 60% 20%, #2a1a0a55 0%, #0d0a0860 55%, #000e 100%)",
+                  background: "radial-gradient(ellipse at 60% 20%, #2a1a0a80 0%, #0d0a0888 55%, #000 100%)",
                 }}
               />
               <div className="absolute inset-0" style={{

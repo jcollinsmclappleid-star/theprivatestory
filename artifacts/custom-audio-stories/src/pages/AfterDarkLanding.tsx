@@ -229,7 +229,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ height: "45vw", minHeight: 200, maxHeight: 340 }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=1`}
+          src={`${BASE}images/creation-room-hero.png?v=2`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-top"
@@ -252,7 +252,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=1`}
+          src={`${BASE}images/creation-room-hero.png?v=2`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-top"

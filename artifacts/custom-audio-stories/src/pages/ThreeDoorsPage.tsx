@@ -293,7 +293,7 @@ export default function ThreeDoorsPage() {
         {/* Woman portrait */}
         <img
           aria-hidden="true"
-          src={`${BASE}images/three-doors-hero-woman.png`}
+          src={`${BASE}images/three-doors-hero-woman.png?v=2`}
           alt=""
           className="hidden lg:block absolute right-0 top-0 h-full w-[40%] object-cover object-top pointer-events-none select-none"
           style={{

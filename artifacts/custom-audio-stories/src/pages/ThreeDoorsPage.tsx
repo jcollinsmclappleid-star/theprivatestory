@@ -15,7 +15,7 @@ const DOORS = [
     href: "/create",
     cta: "Create My Story",
     ctaIcon: Sparkles,
-    image: `${BASE}images/door-romance.png?v=4`,
+    image: `${BASE}images/door-romance.png?v=5`,
     accent: "#c9a227",
     rgb: "201,162,39",
     nameColor: "#e8d5a0",

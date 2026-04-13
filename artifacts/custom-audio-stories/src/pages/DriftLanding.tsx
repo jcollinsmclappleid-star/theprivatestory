@@ -67,7 +67,7 @@ function DriftDoor({ onEnter }: Props) {
             }}
             draggable={false}
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = `${BASE}images/door-romance.png?v=4`;
+              (e.currentTarget as HTMLImageElement).src = `${BASE}images/door-romance.png?v=5`;
             }}
           />
         </motion.div>
@@ -230,19 +230,19 @@ export default function DriftLanding({ onEnter }: Props) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.9 }}
         className="block md:hidden relative w-full overflow-hidden order-first"
-        style={{ height: "45vw", minHeight: 200, maxHeight: 340 }}
+        style={{ height: "60vw", minHeight: 220, maxHeight: 420 }}
       >
         <img
-          src={`${BASE}images/drift-hero-woman.png?v=1`}
+          src={`${BASE}images/drift-hero-woman.png?v=2`}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.82 }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.82, objectPosition: "50% 25%" }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${BG} 0%, transparent 25%, transparent 70%, ${BG} 100%)`,
+            background: `linear-gradient(180deg, ${BG} 0%, transparent 10%, transparent 72%, ${BG} 100%)`,
           }}
         />
       </motion.div>
@@ -256,11 +256,11 @@ export default function DriftLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/drift-hero-woman.png?v=1`}
+          src={`${BASE}images/drift-hero-woman.png?v=2`}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.82 }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.82, objectPosition: "50% 25%" }}
         />
         {/* Left-edge fade so text stays readable */}
         <div

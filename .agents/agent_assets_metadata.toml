@@ -382,7 +382,7 @@ title = "dark animation man woman headphones chiaroscuro painted"
 id = "eVQXjOPVA_rhbpfQmm_Cj"
 uri = "file://artifacts/custom-audio-stories/public/images/door-romance.png"
 type = "image"
-title = "romance door — dark animation woman headphones amber gold Arcane style"
+title = "romance-door-white-woman-headphones"
 
 [[generated]]
 id = "Jtrq6bsUImTHsPEsLu5nG"
@@ -503,6 +503,24 @@ id = "8600NJ-eAHo6sJ60A7jgj"
 uri = "file://attached_assets/home-hero-woman-v7.png"
 type = "image"
 title = "side angle woman silk ribbon man chair editorial"
+
+[[generated]]
+id = "qiJgKbrQ2YIB4HtRhl1Sr"
+uri = "file://artifacts/custom-audio-stories/public/images/creation-room-hero.png"
+type = "image"
+title = "after-dark-landing-woman-indigo"
+
+[[generated]]
+id = "6siQ1pVqYIgEtsWjpN28L"
+uri = "file://artifacts/custom-audio-stories/public/images/afterdark-hero-woman.png"
+type = "image"
+title = "romance-landing-white-woman-colour-men-bw"
+
+[[generated]]
+id = "7Wn96HeeROEDZ5DlOwocS"
+uri = "file://artifacts/custom-audio-stories/public/images/drift-hero-woman.png"
+type = "image"
+title = "drift-bedtime-woman-candlelight-editorial"
 
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"

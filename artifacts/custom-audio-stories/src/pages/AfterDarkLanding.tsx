@@ -226,19 +226,19 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.9 }}
         className="block md:hidden relative w-full overflow-hidden order-first"
-        style={{ height: "45vw", minHeight: 200, maxHeight: 340 }}
+        style={{ height: "60vw", minHeight: 220, maxHeight: 420 }}
       >
         <img
-          src={`${BASE}images/creation-room-hero.png?v=2`}
+          src={`${BASE}images/creation-room-hero.png?v=3`}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.82 }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.82, objectPosition: "50% 18%" }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${BG} 0%, transparent 25%, transparent 70%, ${BG} 100%)`,
+            background: `linear-gradient(180deg, ${BG} 0%, transparent 10%, transparent 72%, ${BG} 100%)`,
           }}
         />
       </motion.div>
@@ -252,11 +252,11 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/creation-room-hero.png?v=2`}
+          src={`${BASE}images/creation-room-hero.png?v=3`}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.82 }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.82, objectPosition: "50% 18%" }}
         />
         {/* Left-edge gradient so text stays readable */}
         <div

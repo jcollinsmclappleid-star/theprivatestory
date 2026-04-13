@@ -474,6 +474,24 @@ uri = "file://artifacts/api-server/public/images/afterdark-hero-woman.png"
 type = "image"
 title = "after dark hero woman"
 
+[[generated]]
+id = "TzbHoZgE1IRuPZOf2v67g"
+uri = "file://artifacts/api-server/public/images/drift-hero-woman.png"
+type = "image"
+title = "drift hero woman"
+
+[[generated]]
+id = "jJatFsHlBBZ1C-6sAy-V8"
+uri = "file://artifacts/api-server/public/images/paywall-drift-bg.png"
+type = "image"
+title = "paywall drift background"
+
+[[generated]]
+id = "dxVWilehqQeOj6RzNQLIB"
+uri = "file://artifacts/api-server/public/images/paywall-romance-bg.png"
+type = "image"
+title = "paywall romance background"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

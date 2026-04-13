@@ -1703,12 +1703,21 @@ export default function AfterDark() {
             className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
           >
             {/* Cinematic dark-crimson background */}
+            <div className="absolute inset-0">
+              <img
+                src={`${import.meta.env.BASE_URL}images/afterdark-hero-woman.png?v=1`}
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover object-top opacity-30"
+                style={{ objectPosition: "center top" }}
+              />
+            </div>
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a0505 0%, #0a0202 55%, #000 100%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050580 0%, #0a020288 55%, #000 100%)" }}
             />
-            <div className="absolute inset-0 opacity-30" style={{
-              background: "radial-gradient(ellipse at 50% 0%, rgba(192,57,43,0.25) 0%, transparent 55%)",
+            <div className="absolute inset-0" style={{
+              background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",
             }} />
 
             {/* Content */}
@@ -1728,7 +1737,7 @@ export default function AfterDark() {
                   {selectedScenario?.label ?? "After Dark"} — your story is ready.
                 </h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Subscribe to write it now.
+                  One step. Then your story writes itself.
                 </p>
                 {/* Casting detail pill */}
                 {lastCastingData && (lastCastingData.archetype as string || lastCastingData.dynamic as string) && (
@@ -1762,8 +1771,9 @@ export default function AfterDark() {
                         <h3 className="font-display text-base font-bold text-foreground leading-tight">{titleLine}</h3>
                       </div>
                     </div>
-                    <div className="px-4 py-3" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
-                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-3">"{excerpt}"</p>
+                    <div className="px-4 py-3 relative" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
+                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-4">"{excerpt}"</p>
+                      <div className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none" style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)" }} />
                     </div>
                     {(voiceName) && (
                       <div className="px-4 pb-3 flex flex-wrap gap-1.5 mt-1">
@@ -1808,7 +1818,7 @@ export default function AfterDark() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    Annual — £14.99/month
+                    Write my story — £14.99/mo
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-[11px] text-white/80 font-normal">billed annually · cancel renewal anytime</span>
@@ -1828,15 +1838,25 @@ export default function AfterDark() {
                 </button>
               </div>
 
+              {/* Single story escape hatch */}
+              <button
+                disabled={!!paywallLoadingPlan}
+                onClick={() => void startAfterDarkCheckout("immersive")}
+                className="text-sm text-muted-foreground/70 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40"
+              >
+                {paywallLoadingPlan === "immersive" ? <span className="w-3 h-3 rounded-full border border-current animate-spin inline-block mr-1" /> : null}
+                Just this one story, right now — £7.99
+              </button>
+
               {/* Privacy signal + start over */}
               <div className="flex flex-col items-center gap-2">
                 <p className="text-[11px] text-muted-foreground/80">
-                  Nothing stored. No history. Heard only by you.
+                  Billed discreetly · Nothing stored · Heard only by you.
                 </p>
                 <button
                   type="button"
                   onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
-                  className="text-xs text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2"
                 >
                   Start over
                 </button>

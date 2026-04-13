@@ -207,10 +207,10 @@ export default function Listen() {
           className="mt-8"
         >
           <Link
-            href="/pricing"
+            href="/the-three-doors"
             className="block text-center text-xs text-primary/60 hover:text-primary transition-colors"
           >
-            Build my private story →
+            Create my story →
           </Link>
         </motion.div>
       </div>

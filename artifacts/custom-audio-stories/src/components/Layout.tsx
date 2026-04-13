@@ -183,11 +183,11 @@ function Navbar({ streakDays }: { streakDays: number }) {
             </Link>
 
             <Link
-              href="/create"
+              href="/the-three-doors"
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4" />
-              Begin your story
+              Create my story
             </Link>
 
             {!isLoading && (
@@ -296,11 +296,11 @@ function Navbar({ streakDays }: { streakDays: number }) {
           {/* Create CTA */}
           <div className="px-4 pb-3">
             <Link
-              href="/create"
+              href="/the-three-doors"
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-3 rounded-xl font-semibold text-sm"
             >
               <Sparkles className="w-4 h-4" />
-              Begin your story
+              Create my story
             </Link>
           </div>
 

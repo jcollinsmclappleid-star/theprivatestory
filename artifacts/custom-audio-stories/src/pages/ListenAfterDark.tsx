@@ -442,11 +442,11 @@ export default function ListenAfterDark() {
             </div>
 
             <Link
-              href="/pricing"
+              href="/the-three-doors"
               className="block w-full text-center font-bold text-sm py-4 rounded-2xl active:scale-[0.98] transition-all"
               style={{ background: ROSE, color: "#000", boxShadow: `0 0 40px -8px ${ROSE}80` }}
             >
-              Build my private story →
+              Create my story →
             </Link>
 
             <div className="flex items-center justify-center gap-4 mt-4">

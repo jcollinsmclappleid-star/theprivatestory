@@ -694,7 +694,7 @@ function CastingPreview() {
 
         {/* CTA card */}
         <div className="flex-shrink-0 w-72 snap-start flex items-center justify-center px-4">
-          <Link href="/create" className="flex flex-col items-center gap-4 text-center group w-full">
+          <Link href="/the-three-doors" className="flex flex-col items-center gap-4 text-center group w-full">
             <div className="w-16 h-16 rounded-full bg-primary/12 border border-primary/25 flex items-center justify-center group-hover:bg-primary/22 group-hover:scale-105 transition-all group-hover:shadow-[0_0_32px_rgba(201,162,39,0.2)]">
               <Sparkles className="w-6 h-6 text-primary" />
             </div>
@@ -868,10 +868,10 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-            <Link href="/create">
+            <Link href="/the-three-doors">
               <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
                 <Sparkles className="w-4 h-4" />
-                Begin your story
+                Create my story
               </button>
             </Link>
             <Link
@@ -1192,10 +1192,10 @@ export default function Home() {
                 </div>
               </div>
               <Link
-                href="/pricing"
+                href="/the-three-doors"
                 className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-8 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
               >
-                Build my private story →
+                Create my story →
               </Link>
               <p className="text-[10px] text-white/30 mt-3">Under 3 minutes to create · Private to your account · Never shared</p>
             </div>

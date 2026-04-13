@@ -199,28 +199,6 @@ export default function HowItWorks() {
               Written, narrated, and saved privately to your account — ready to play in minutes.
             </p>
 
-            <MiniDoorCTA />
-
-            <Link
-              href="/listen"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-white/80 hover:text-white/70 hover:border-white/25 hover:bg-white/5 transition-all font-medium cursor-pointer text-sm mt-4"
-            >
-              <Headphones className="w-4 h-4" />
-              Hear a sample story — free
-            </Link>
-
-            <div className="flex items-center gap-5 mt-8">
-              {[
-                { n: "50+", label: "Countries & settings" },
-                { n: "14", label: "Character archetypes" },
-                { n: "200+", label: "Story situations" },
-              ].map(({ n, label }) => (
-                <div key={label} className="text-center">
-                  <p className="text-sm font-bold text-primary">{n}</p>
-                  <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
-                </div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </section>

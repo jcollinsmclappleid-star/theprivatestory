@@ -9,6 +9,7 @@ import { TermsGate } from "@/components/TermsGate";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES } from "@/lib/voices";
+import DriftLanding from "@/pages/DriftLanding";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -327,6 +328,7 @@ type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
   const { isLoading: authLoading } = useAuth();
+  const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<Phase>("scenario");
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
@@ -465,6 +467,14 @@ export default function Drift() {
     },
     [selectedScenario, generateMutation, startLoadingPhase, stopLoadingPhase]
   );
+
+  if (showLanding) {
+    return (
+      <AnimatePresence mode="wait">
+        <DriftLanding key="drift-landing" onEnter={() => setShowLanding(false)} />
+      </AnimatePresence>
+    );
+  }
 
   if (authLoading) {
     return (
@@ -724,12 +734,20 @@ export default function Drift() {
             className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
           >
             {/* Cinematic deep-indigo background */}
+            <div className="absolute inset-0">
+              <img
+                src={`${import.meta.env.BASE_URL}images/paywall-drift-bg.png?v=1`}
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover object-center opacity-25"
+              />
+            </div>
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #080514 0%, #030210 55%, #000 100%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #08051480 0%, #03021088 55%, #000 100%)" }}
             />
             <div className="absolute inset-0" style={{
-              background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.18) 0%, transparent 55%)",
+              background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",
             }} />
 
             {/* Content */}
@@ -749,7 +767,7 @@ export default function Drift() {
                   {paywallCapture?.scenarioLabel ?? "Drift"} — your story is ready.
                 </h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Subscribe to hear it now.
+                  One step. Then it's written and playing.
                 </p>
                 {/* Casting detail pill */}
                 {paywallCapture && (paywallCapture.archetype || paywallCapture.dynamic) && (
@@ -784,8 +802,9 @@ export default function Drift() {
                         <h3 className="font-display text-base font-bold text-foreground leading-tight">{titleLine}</h3>
                       </div>
                     </div>
-                    <div className="px-4 py-3" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
-                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-3">"{excerpt}"</p>
+                    <div className="px-4 py-3 relative" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
+                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-4">"{excerpt}"</p>
+                      <div className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none" style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)" }} />
                     </div>
                     {(voiceName) && (
                       <div className="px-4 pb-3 flex flex-wrap gap-1.5 mt-1">
@@ -835,7 +854,7 @@ export default function Drift() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    <span>Annual — £14.99/month</span>
+                    <span>Hear my story — £14.99/mo</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-xs text-white/80">billed annually</span>
@@ -862,7 +881,7 @@ export default function Drift() {
                 className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
               >
                 {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                Not ready to commit? Get just this story — £7.99
+                Just this one story, right now — £7.99
               </button>
 
               {/* Privacy signal + start over */}

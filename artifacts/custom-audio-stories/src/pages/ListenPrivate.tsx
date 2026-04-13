@@ -387,12 +387,12 @@ export default function ListenPrivate() {
             </div>
 
             <Link
-              href="/pricing"
+              href="/the-three-doors"
               className="block w-full text-center bg-primary text-primary-foreground font-bold text-sm
                          py-4 rounded-2xl hover:bg-primary/90 active:scale-[0.98] transition-all
                          shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]"
             >
-              Build my private story →
+              Create my story →
             </Link>
 
             <div className="flex items-center justify-center gap-4 mt-4">

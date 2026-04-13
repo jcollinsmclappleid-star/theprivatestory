@@ -1,24 +1,25 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Moon } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL;
-const BG = "#03030e";
+const GOLD = "#c9a227";
+const BG = "#080604";
 
 const ROOMS = [
-  "Power Exchange",
-  "The Forbidden",
   "Slow Burn",
-  "Eyes On Us",
-  "Dark Territory",
-  "No Limits",
+  "The First Night",
+  "Long Distance",
+  "The Weekend Away",
+  "Reunited",
+  "Something Real",
 ];
 
 interface Props {
   onEnter: () => void;
 }
 
-function PartiallyOpenDoor({ onEnter }: Props) {
+function RomanceDoor({ onEnter }: Props) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -29,30 +30,32 @@ function PartiallyOpenDoor({ onEnter }: Props) {
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        aria-label="Enter After Dark"
+        aria-label="Enter the Romance Room"
         className="relative focus:outline-none"
         style={{ perspective: "900px", perspectiveOrigin: "30% center" }}
       >
+        {/* Light crack behind door */}
         <motion.div
           className="absolute inset-y-0 left-0 w-6 rounded-l-sm pointer-events-none z-0"
           animate={{
-            opacity: hovered ? 1 : 0.55,
+            opacity: hovered ? 1 : 0.5,
             background: hovered
-              ? "linear-gradient(90deg, rgba(123,143,255,0.75) 0%, rgba(123,143,255,0.18) 60%, transparent 100%)"
-              : "linear-gradient(90deg, rgba(123,143,255,0.35) 0%, rgba(123,143,255,0.08) 60%, transparent 100%)",
+              ? "linear-gradient(90deg, rgba(201,162,39,0.65) 0%, rgba(201,162,39,0.14) 60%, transparent 100%)"
+              : "linear-gradient(90deg, rgba(201,162,39,0.28) 0%, rgba(201,162,39,0.06) 60%, transparent 100%)",
             boxShadow: hovered
-              ? "-8px 0 32px 4px rgba(123,143,255,0.55)"
-              : "-4px 0 18px 2px rgba(123,143,255,0.22)",
+              ? "-8px 0 32px 4px rgba(201,162,39,0.45)"
+              : "-4px 0 16px 2px rgba(201,162,39,0.18)",
           }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         />
+
         <motion.div
           style={{ transformOrigin: "left center", transformStyle: "preserve-3d" }}
-          animate={{ rotateY: hovered ? -32 : -18 }}
+          animate={{ rotateY: hovered ? -30 : -15 }}
           transition={{ type: "spring", damping: 22, stiffness: 90 }}
         >
           <img
-            src={`${BASE}images/door-afterdark.png?v=4`}
+            src={`${BASE}images/door-romance.png?v=4`}
             alt=""
             aria-hidden="true"
             className="relative z-10 block select-none"
@@ -60,22 +63,23 @@ function PartiallyOpenDoor({ onEnter }: Props) {
               width: "clamp(110px, 16vw, 165px)",
               height: "auto",
               filter: hovered
-                ? "brightness(1.12) drop-shadow(0 0 32px rgba(123,143,255,0.5))"
-                : "brightness(0.95) drop-shadow(0 0 18px rgba(123,143,255,0.22))",
+                ? "brightness(1.12) drop-shadow(0 0 28px rgba(201,162,39,0.5))"
+                : "brightness(0.9) drop-shadow(0 0 14px rgba(201,162,39,0.2))",
               transition: "filter 0.5s ease",
             }}
             draggable={false}
           />
         </motion.div>
+
         <motion.div
           className="absolute -bottom-4 left-1/2 -translate-x-1/2 pointer-events-none"
           style={{
             width: "110%",
             height: 28,
             borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(123,143,255,0.28) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(201,162,39,0.22) 0%, transparent 70%)",
           }}
-          animate={{ opacity: hovered ? 0.9 : 0.4 }}
+          animate={{ opacity: hovered ? 0.9 : 0.35 }}
           transition={{ duration: 0.4 }}
         />
       </button>
@@ -84,27 +88,27 @@ function PartiallyOpenDoor({ onEnter }: Props) {
         onClick={onEnter}
         className="flex items-center gap-2.5 px-7 py-3 rounded-full font-semibold text-sm tracking-wide"
         style={{
-          background: "linear-gradient(135deg, rgba(123,143,255,0.18) 0%, rgba(90,105,200,0.22) 100%)",
-          border: "1px solid rgba(123,143,255,0.40)",
-          color: "#a8b8ff",
-          boxShadow: "0 0 20px rgba(123,143,255,0.15)",
+          background: "linear-gradient(135deg, rgba(201,162,39,0.16) 0%, rgba(160,120,20,0.22) 100%)",
+          border: "1px solid rgba(201,162,39,0.38)",
+          color: "#e8c96a",
+          boxShadow: "0 0 20px rgba(201,162,39,0.12)",
         }}
         whileHover={{
           scale: 1.04,
-          boxShadow: "0 0 36px rgba(123,143,255,0.35)",
-          borderColor: "rgba(123,143,255,0.70)",
+          boxShadow: "0 0 36px rgba(201,162,39,0.32)",
+          borderColor: "rgba(201,162,39,0.65)",
         }}
         whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", damping: 18, stiffness: 120 }}
       >
-        <Moon className="w-4 h-4" style={{ color: "#7b8fff" }} />
-        Enter After Dark
+        <Sparkles className="w-4 h-4" style={{ color: GOLD }} />
+        Begin my story
       </motion.button>
     </div>
   );
 }
 
-export default function AfterDarkLanding({ onEnter }: Props) {
+export default function CreateLanding({ onEnter }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -129,17 +133,17 @@ export default function AfterDarkLanding({ onEnter }: Props) {
             transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
-              background: "rgba(123,143,255,0.12)",
-              border: "1px solid rgba(123,143,255,0.35)",
+              background: "rgba(201,162,39,0.10)",
+              border: "1px solid rgba(201,162,39,0.32)",
             }}
           >
-            <Moon className="w-2.5 h-2.5" style={{ color: "#7b8fff" }} />
+            <Sparkles className="w-2.5 h-2.5" style={{ color: GOLD }} />
           </motion.div>
           <span
             className="text-xs font-semibold uppercase tracking-[0.22em]"
-            style={{ color: "rgba(123,143,255,0.75)" }}
+            style={{ color: "rgba(201,162,39,0.72)" }}
           >
-            After Dark · Private · Unrestrained
+            The Romance Room · Private · Entirely Yours
           </span>
         </motion.div>
 
@@ -151,9 +155,9 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           className="font-display font-bold leading-[1.08] text-white mb-3"
           style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)" }}
         >
-          Nothing held back.
+          Written around you.
           <br />
-          <span style={{ color: "#9baeff" }}>Heard only by you.</span>
+          <span style={{ color: "#e8c96a" }}>Heard only by you.</span>
         </motion.h1>
 
         {/* Copy */}
@@ -162,9 +166,9 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.65 }}
           className="text-sm sm:text-base leading-relaxed mb-5 max-w-sm"
-          style={{ color: "rgba(255,255,255,0.52)" }}
+          style={{ color: "rgba(255,255,255,0.50)" }}
         >
-          You don't pick from a list. You describe exactly what you want — the character, the dynamic, how far it goes. Written from scratch and narrated privately for you.
+          You cast the characters. You set the scene. Your story is written from scratch and narrated privately — no template, no catalogue, nothing left over from someone else's night.
         </motion.p>
 
         {/* Room chips */}
@@ -182,9 +186,9 @@ export default function AfterDarkLanding({ onEnter }: Props) {
               transition={{ delay: 0.85 + i * 0.06, duration: 0.4 }}
               className="text-[10px] sm:text-xs font-medium px-3 py-1.5 rounded-full"
               style={{
-                color: "rgba(123,143,255,0.75)",
-                background: "rgba(123,143,255,0.07)",
-                border: "1px solid rgba(123,143,255,0.16)",
+                color: "rgba(201,162,39,0.72)",
+                background: "rgba(201,162,39,0.07)",
+                border: "1px solid rgba(201,162,39,0.16)",
                 letterSpacing: "0.06em",
               }}
             >
@@ -200,7 +204,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           transition={{ delay: 0.9, duration: 0.7, ease: "easeOut" }}
           className="flex justify-center md:justify-start mb-5"
         >
-          <PartiallyOpenDoor onEnter={onEnter} />
+          <RomanceDoor onEnter={onEnter} />
         </motion.div>
 
         {/* Reassurance */}
@@ -210,17 +214,17 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           transition={{ delay: 1.1, duration: 0.6 }}
           className="flex items-center gap-3"
         >
-          <div className="w-14 h-px" style={{ background: "rgba(123,143,255,0.18)" }} />
+          <div className="w-14 h-px" style={{ background: "rgba(201,162,39,0.16)" }} />
           <p
             className="text-xs tracking-wide"
-            style={{ color: "rgba(255,255,255,0.25)", letterSpacing: "0.07em" }}
+            style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "0.07em" }}
           >
-            Private · Written fresh each time · Nothing leaves this room
+            Private · Written fresh each time · Nothing stored
           </p>
         </motion.div>
       </div>
 
-      {/* ── Mobile hero image (stacked, shows between content and door on small screens) */}
+      {/* ── Mobile hero image (shows above content on small screens) */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -229,7 +233,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ height: "45vw", minHeight: 200, maxHeight: 340 }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=1`}
+          src={`${BASE}images/creation-room-hero.png?v=1`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-top"
@@ -252,24 +256,24 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=1`}
+          src={`${BASE}images/creation-room-hero.png?v=1`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-top"
           style={{ opacity: 0.82 }}
         />
-        {/* Left-edge gradient so text stays readable */}
+        {/* Left-edge fade so text stays readable */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, ${BG} 0%, rgba(3,3,14,0.55) 30%, rgba(3,3,14,0.1) 65%, transparent 100%)`,
+            background: `linear-gradient(90deg, ${BG} 0%, rgba(8,6,4,0.55) 30%, rgba(8,6,4,0.08) 65%, transparent 100%)`,
           }}
         />
-        {/* Subtle indigo tint */}
+        {/* Warm gold ambient glow */}
         <div
           className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse at 60% 40%, rgba(80,90,200,0.18) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse at 60% 40%, rgba(180,130,20,0.14) 0%, transparent 70%)",
           }}
         />
       </motion.div>

@@ -17,6 +17,7 @@ import type { CastingRoomResult } from "@/components/CastingRoom";
 import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { TermsGate } from "@/components/TermsGate";
+import CreateLanding from "@/pages/CreateLanding";
 import { CountryStrip } from "@/components/TrustBar";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -670,6 +671,7 @@ function OptionCard({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn, user } = useAuth();
+  const [showLanding, setShowLanding] = useState(true);
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result" | "paywall">("casting");
   const [castingResetKey, setCastingResetKey] = useState(0);
@@ -1597,6 +1599,14 @@ export default function Create() {
     { label: "Intensity", filled: !!watchedIntensity },
     { label: "Ending", filled: !!form.watch("ending") },
   ];
+
+  if (showLanding) {
+    return (
+      <AnimatePresence mode="wait">
+        <CreateLanding key="create-landing" onEnter={() => setShowLanding(false)} />
+      </AnimatePresence>
+    );
+  }
 
   if (!ageConfirmed) {
     return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;

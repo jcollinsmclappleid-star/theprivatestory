@@ -133,7 +133,13 @@ const globalLimiter = rateLimit({
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Too many requests. Please try again shortly." },
-  skip: (req) => req.path.startsWith("/api/auth"),
+  skip: (req) =>
+    req.path.startsWith("/api/auth") ||
+    req.path.startsWith("/images/") ||
+    req.path.startsWith("/fonts/") ||
+    req.path.startsWith("/audio/") ||
+    req.path.startsWith("/client/") ||
+    /\.(webp|png|jpg|jpeg|svg|ico|gif|woff2?|ttf|otf|css|js|map)$/.test(req.path),
 });
 
 /** Report limiter — 10 submissions per hour per IP (abuse prevention) */

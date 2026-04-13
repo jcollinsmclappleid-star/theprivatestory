@@ -1880,14 +1880,22 @@ export default function Create() {
               className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
             >
               {/* Cinematic background */}
+              <div className="absolute inset-0">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.png?v=1`}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover object-center opacity-20"
+                />
+              </div>
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "radial-gradient(ellipse at 60% 20%, #2a1a0a 0%, #0d0a08 55%, #000 100%)",
+                  background: "radial-gradient(ellipse at 60% 20%, #2a1a0a80 0%, #0d0a0888 55%, #000 100%)",
                 }}
               />
-              <div className="absolute inset-0 opacity-20" style={{
-                backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(201,162,39,0.04) 80px, rgba(201,162,39,0.04) 81px)",
+              <div className="absolute inset-0" style={{
+                background: "linear-gradient(0deg, #000 0%, #0009 28%, transparent 65%)",
               }} />
 
               {/* Content */}
@@ -1972,7 +1980,7 @@ export default function Create() {
 
                 {/* Personalised bridge copy */}
                 <p className="text-center text-xs text-muted-foreground/80 leading-relaxed">
-                  Your casting is saved. Begin your story now — written, narrated, and ready to play in minutes.
+                  Your casting is saved. Subscribe and it writes itself — narrated privately, ready in minutes.
                 </p>
 
                 {/* Primary subscription CTAs */}
@@ -1986,7 +1994,7 @@ export default function Create() {
                   >
                     <span className="flex items-center gap-2">
                       {paywallLoadingPlan === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      <span>Annual — £14.99/month</span>
+                      <span>Write my story — £14.99/mo</span>
                       <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-primary-foreground/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                     </span>
                     <span className="text-xs text-primary-foreground/50">billed annually</span>
@@ -2035,7 +2043,7 @@ export default function Create() {
                   className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
                 >
                   {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                  Not ready to commit? Get just this story — £7.99
+                  Just this one story, right now — £7.99
                 </button>
 
                 {/* Privacy + start over */}

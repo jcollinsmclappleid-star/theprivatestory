@@ -209,7 +209,7 @@ function WorldIntroCard() {
 
   return (
     <div className="flex-shrink-0 w-80 snap-start">
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 flex flex-col h-full" style={{ background: "linear-gradient(135deg, #04100a 0%, #060a14 50%, #0a0614 100%)" }}>
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 flex flex-col h-full" style={{ background: "linear-gradient(135deg, #04100a 0%, #060a14 50%, #0a0614 100%)", boxShadow: "0 0 28px #34d39920, 0 4px 16px rgba(0,0,0,0.6)" }}>
         <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 20%, #34d39922 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, #6b8cce18 0%, transparent 50%)" }} />
 
         <div className="relative z-10 p-5 pb-3">
@@ -272,7 +272,7 @@ function WorldIntroCard() {
 function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
   const cats = s.settingCategories;
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -336,7 +336,7 @@ function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
 function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
   const subs = (s as { optionSubs?: string[] }).optionSubs ?? [];
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -402,7 +402,7 @@ const SITUATION_EXAMPLES = [
 
 function SituationCard({ s }: { s: StepCard }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border flex flex-col border-white/10">
+    <div className="relative overflow-hidden rounded-2xl border flex flex-col border-white/10" style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -459,7 +459,7 @@ function SituationCard({ s }: { s: StepCard }) {
 
 function FinalOutputCard({ s }: { s: StepCard }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-primary/40 flex flex-col">
+    <div className="relative overflow-hidden rounded-2xl border border-primary/40 flex flex-col" style={{ boxShadow: "0 0 32px #c9a22728, 0 4px 16px rgba(0,0,0,0.6)" }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/20" />
       <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 70% 25%, #c9a22728 0%, transparent 60%)" }} />
@@ -517,7 +517,7 @@ function FinalOutputCard({ s }: { s: StepCard }) {
 
 function StandardCard({ s }: { s: StepCard }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`}>
+    <div className={`relative overflow-hidden rounded-2xl border flex flex-col border-white/10`} style={{ boxShadow: `0 0 28px ${s.accent}20, 0 4px 16px rgba(0,0,0,0.6)` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
       <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
 
@@ -604,24 +604,24 @@ function CastingPreview() {
       `}</style>
 
       <div className="mb-8 relative overflow-hidden rounded-2xl">
-        {/* Portrait — desktop only, right-side atmospheric */}
+        {/* Portrait — right-side atmospheric, all screen sizes */}
         <img
           aria-hidden="true"
           src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=1`}
           alt=""
-          className="hidden md:block absolute right-0 top-0 h-full w-[30%] object-cover object-top pointer-events-none select-none opacity-60"
+          className="block absolute inset-y-0 right-0 w-[38%] md:w-[28%] object-cover object-top pointer-events-none select-none opacity-45 md:opacity-60"
           style={{
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 58%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 58%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 60%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 28%, black 60%)",
           }}
         />
         {/* "Whose story is it?" caption over image */}
-        <div className="hidden md:block absolute right-4 bottom-4 z-10 text-right">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Whose story is it?</p>
-          <p className="text-sm italic font-serif text-foreground/60">Yours.</p>
+        <div className="absolute right-3 bottom-3 z-10 text-right">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70">Whose story is it?</p>
+          <p className="text-xs italic font-serif text-foreground/55">Yours.</p>
         </div>
 
-        <div className="flex items-end justify-between gap-4 relative z-10 md:pr-[32%]">
+        <div className="flex items-end justify-between gap-4 relative z-10 pr-[40%] md:pr-[32%]">
           <div>
             <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
               The Creation Room
@@ -857,7 +857,7 @@ export default function Home() {
         {/* ── Woman portrait ── */}
         <img
           aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=4`}
+          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=5`}
           alt=""
           className="block absolute right-0 top-0 h-full w-full sm:w-[46%] object-cover object-top pointer-events-none select-none opacity-[0.22] sm:opacity-[0.55]"
           style={{

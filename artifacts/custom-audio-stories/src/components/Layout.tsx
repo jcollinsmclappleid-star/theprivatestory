@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon, MessageCircle, Info } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
-import { Logo } from "./Logo";
+import { Logo, LogoFull } from "./Logo";
 import { AuthModal } from "./AuthModal";
 import { useAuth } from "../hooks/useAuth";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -144,7 +144,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
-              <Logo height={62} />
+              <Logo height={46} />
             </Link>
 
             <div className="hidden md:flex items-center gap-5">
@@ -445,7 +445,7 @@ function Footer() {
 
         <div className="border-t border-border/20 pt-8 flex flex-col items-center text-center">
           <div className="mb-3">
-            <Logo height={60} />
+            <LogoFull height={110} className="mx-auto" />
           </div>
           <p className="text-muted-foreground text-xs max-w-sm mb-5">
             Stories written for the parts of you that nobody else gets to know.

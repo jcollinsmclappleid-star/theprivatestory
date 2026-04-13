@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { authClient } from "@/lib/authClient";
-import { Logo } from "@/components/Logo";
+import { LogoFull } from "@/components/Logo";
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -62,7 +62,7 @@ export default function ResetPassword() {
 
         <div className="p-8">
           <div className="flex flex-col items-center mb-8 gap-1.5">
-            <Logo height={56} />
+            <LogoFull height={100} className="mx-auto" />
             <p className="text-xs text-muted-foreground/40 tracking-widest">
               Private · No social · No history shared
             </p>

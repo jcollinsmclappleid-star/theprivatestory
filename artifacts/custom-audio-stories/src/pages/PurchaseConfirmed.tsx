@@ -35,7 +35,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="px-6 py-5 flex items-center justify-between border-b border-border/20">
         <Link href="/">
-          <Logo height={60} />
+          <Logo height={44} />
         </Link>
         <span className="text-xs text-muted-foreground/40 tracking-widest uppercase">Private · Secure</span>
       </header>

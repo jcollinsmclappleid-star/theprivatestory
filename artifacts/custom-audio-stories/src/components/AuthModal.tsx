@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { authClient } from "../lib/authClient";
 import { registerAuthModalOpener } from "../hooks/useAuth";
-import { Logo } from "./Logo";
+import { LogoFull } from "./Logo";
 import { X, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft, CheckCircle, Shield } from "lucide-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -170,7 +170,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         <div className="p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-6 gap-1.5">
-            <Logo height={60} />
+            <LogoFull height={100} className="mx-auto" />
             <p className="text-xs text-muted-foreground/40 tracking-widest">
               Private · No social · No history shared
             </p>

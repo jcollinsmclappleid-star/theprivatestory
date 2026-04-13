@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Logo } from "./Logo";
+import { LogoFull } from "./Logo";
 
 const STORAGE_KEY = "tps_age_confirmed";
 
@@ -41,7 +41,7 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
         transition={{ delay: 0.05, type: "spring", stiffness: 260, damping: 22 }}
         className="max-w-sm w-full rounded-3xl bg-background border border-border/40 p-8 shadow-2xl text-center"
       >
-        <Logo height={52} className="mx-auto mb-5" />
+        <LogoFull height={100} className="mx-auto mb-5" />
         <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-4">The Private Story</p>
 
         <h1 className="font-display text-2xl font-bold text-foreground mb-3">

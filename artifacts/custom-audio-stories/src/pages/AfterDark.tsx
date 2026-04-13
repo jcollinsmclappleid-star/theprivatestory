@@ -9,6 +9,7 @@ import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { VOICES } from "@/lib/voices";
+import AfterDarkLanding from "@/pages/AfterDarkLanding";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -1217,6 +1218,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
+  const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
@@ -1447,6 +1449,14 @@ export default function AfterDark() {
           style={{ borderColor: "#c0392b", borderTopColor: "transparent" }}
         />
       </div>
+    );
+  }
+
+  if (showLanding) {
+    return (
+      <AnimatePresence mode="wait">
+        <AfterDarkLanding key="after-dark-landing" onEnter={() => setShowLanding(false)} />
+      </AnimatePresence>
     );
   }
 

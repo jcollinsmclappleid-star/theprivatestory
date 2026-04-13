@@ -468,6 +468,12 @@ uri = "file://artifacts/api-server/public/images/pricing-hero-woman.png"
 type = "image"
 title = "pricing hero — woman commanding two men flanking her, charged anticipation, dark editorial painterly"
 
+[[generated]]
+id = "GaZwF0CsP5cgWJGx44Tm-"
+uri = "file://artifacts/api-server/public/images/afterdark-hero-woman.png"
+type = "image"
+title = "after dark hero woman"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

@@ -250,10 +250,19 @@ function IntensityDots({ level }: { level: number }) {
   );
 }
 
-export default function ThreeDoorsPage() {
+export function CreateMyStoryPage() {
+  return (
+    <ThreeDoorsPage
+      seoTitle="Create My Story — Private Adult Stories, Personalised | The Private Story"
+      seoDescription="Create your own private adult story — personalised around your choices. Choose Romance, After Dark, or Drift. Written for you, narrated for you, saved privately."
+    />
+  );
+}
+
+export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?: string; seoDescription?: string } = {}) {
   useSEO({
-    title: "Three Worlds, One Choice — Romance, After Dark & Drift | The Private Story",
-    description: "Three private worlds of personalised audio stories. Romance: intimate and desire-led. After Dark: spicy adult fiction, fully unrestrained. Drift: warm, intimate bedtime stories. All built around you.",
+    title: seoTitle ?? "Three Worlds, One Choice — Romance, After Dark & Drift | The Private Story",
+    description: seoDescription ?? "Three private worlds of personalised audio stories. Romance: intimate and desire-led. After Dark: spicy adult fiction, fully unrestrained. Drift: warm, intimate bedtime stories. All built around you.",
   });
 
   const [scrolled, setScrolled] = useState(false);

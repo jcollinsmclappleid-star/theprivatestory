@@ -565,6 +565,42 @@ const STATIC_PAGES: StaticPage[] = [
     </section>`,
   },
   {
+    path: "/create-my-story",
+    slug: "create-my-story",
+    title: "Create My Story — Private Adult Stories, Personalised | The Private Story",
+    description:
+      "Create your own private adult story — personalised around your choices. Choose Romance, After Dark, or Drift. Written for you, narrated for you, saved privately. No catalogue, no sharing.",
+    h1: "Create My Story",
+    tagline: "Choose your world. Your story is written and narrated privately for you.",
+    extraSchemas: [
+      makeBreadcrumb(`${SITE_URL}/create-my-story`, [
+        { name: "Home", item: SITE_URL },
+        { name: "Create My Story", item: `${SITE_URL}/create-my-story` },
+      ]),
+    ],
+    body: `
+    <section>
+      <h2>Choose Your Story</h2>
+      <p>The Private Story is not a catalogue. Every story is created from scratch around the choices you make — the mood, the character, the dynamic, how far it goes. You describe what you want; the story is written and narrated privately for you.</p>
+      <a class="cta-primary" href="/create">Begin your story</a>
+    </section>
+    <section>
+      <h2>Romance</h2>
+      <p>Intimate, desire-led personalised audio stories. Forbidden, slow burn, historical, enemies to lovers — cast it yourself and hear it alone.</p>
+      <a href="/create">Create a romance story</a>
+    </section>
+    <section>
+      <h2>After Dark</h2>
+      <p>Stories that go further — explicit, unrestrained, personalised entirely to you. Nothing held back.</p>
+      <a href="/after-dark">Enter After Dark</a>
+    </section>
+    <section>
+      <h2>Drift</h2>
+      <p>Warm, intimate bedtime audio stories for the quiet hour. Written to hold you as the night settles.</p>
+      <a href="/drift">Explore Drift</a>
+    </section>`,
+  },
+  {
     path: "/contact",
     slug: "contact",
     title: "Contact — The Private Story",
@@ -813,6 +849,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/create",         lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.7"  },
   { loc: "/pricing",           lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
   { loc: "/the-three-doors",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.85" },
+  { loc: "/create-my-story",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9"  },
   // { loc: "/browse",      ... }  // noindex — age-gated, excluded from sitemap
   // { loc: "/search",      ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/discover",       lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.9" },

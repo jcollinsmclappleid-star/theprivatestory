@@ -1887,10 +1887,10 @@ export default function Create() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
+              className="fixed inset-0 z-[60] overflow-y-auto"
             >
               {/* Cinematic background */}
-              <div className="absolute inset-0">
+              <div className="fixed inset-0">
                 <img
                   src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.png?v=1`}
                   alt=""
@@ -1899,17 +1899,27 @@ export default function Create() {
                 />
               </div>
               <div
-                className="absolute inset-0"
+                className="fixed inset-0"
                 style={{
                   background: "radial-gradient(ellipse at 60% 20%, #2a1a0a80 0%, #0d0a0888 55%, #000 100%)",
                 }}
               />
-              <div className="absolute inset-0" style={{
+              <div className="fixed inset-0" style={{
                 background: "linear-gradient(0deg, #000 0%, #0009 28%, transparent 65%)",
               }} />
 
+              {/* Back button */}
+              <button
+                type="button"
+                onClick={() => setStep("form")}
+                className="relative z-10 flex items-center gap-1.5 mt-4 ml-4 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Back
+              </button>
+
               {/* Content */}
-              <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 overflow-y-auto max-h-screen">
+              <div className="relative z-10 w-full max-w-md mx-auto px-4 pb-10 pt-4 flex flex-col items-center gap-5">
                 {/* Badge */}
                 <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest">
                   <Lock className="w-3 h-3" />

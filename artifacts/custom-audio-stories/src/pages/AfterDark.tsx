@@ -1699,7 +1699,7 @@ export default function AfterDark() {
             }} />
 
             {/* Content */}
-            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 overflow-y-auto max-h-screen text-center">
+            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 text-center">
 
               {/* Moon icon */}
               <div

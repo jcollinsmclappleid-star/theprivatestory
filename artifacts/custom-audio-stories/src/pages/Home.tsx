@@ -603,76 +603,55 @@ function CastingPreview() {
         }
       `}</style>
 
-      <div className="mb-8 flex items-stretch gap-4">
-        {/* Left: text + stats */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between gap-3">
-          <div>
-            <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-              The Creation Room
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              The version of them<br className="hidden md:block" /> that's been in your head.
-            </h2>
-            <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
-              Choose who they are, how they make you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
-            </p>
-            <div className="flex items-center gap-3 mt-3">
-              {[
-                { n: "50+", label: "Countries" },
-                { n: "12", label: "Historical eras" },
-                { n: "14", label: "Archetypes" },
-                { n: "9", label: "Chemistries" },
-                { n: "200+", label: "Situations" },
-              ].map(({ n, label }) => (
-                <div key={label} className="text-center">
-                  <p className="text-sm font-bold text-primary">{n}</p>
-                  <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-[10px] text-muted-foreground/80 mt-2.5">
-              Your name not listed?{" "}
-              <Link href="/name-club" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
-                Submit it to the Name Club →
-              </Link>
-            </p>
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
+            The Creation Room
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+            The version of them<br className="hidden md:block" /> that's been in your head.
+          </h2>
+          <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
+            Choose who they are, how they make you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
+          </p>
+          <div className="flex items-center gap-3 mt-3">
+            {[
+              { n: "50+", label: "Countries" },
+              { n: "12", label: "Historical eras" },
+              { n: "14", label: "Archetypes" },
+              { n: "9", label: "Chemistries" },
+              { n: "200+", label: "Situations" },
+            ].map(({ n, label }) => (
+              <div key={label} className="text-center">
+                <p className="text-sm font-bold text-primary">{n}</p>
+                <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
+              </div>
+            ))}
           </div>
-          <div className="hidden md:flex items-center gap-2">
-            <button
-              onClick={() => scrollBy(-1)}
-              disabled={!canScrollLeft}
-              className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => scrollBy(1)}
-              disabled={!canScrollRight}
-              className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+          <p className="text-[10px] text-muted-foreground/80 mt-2.5">
+            Your name not listed?{" "}
+            <Link href="/name-club" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
+              Submit it to the Name Club →
+            </Link>
+          </p>
         </div>
-
-        {/* Right: "Whose story is it?" portrait — flex child, own overflow-hidden container */}
-        <div className="relative flex-shrink-0 w-[38%] sm:w-[32%] md:w-[26%] rounded-2xl overflow-hidden min-h-[200px]">
-          <img
-            aria-hidden="true"
-            src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=1`}
-            alt=""
-            className="w-full h-full object-cover object-top pointer-events-none select-none opacity-75"
-            style={{
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, black 50%)",
-              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, black 50%)",
-            }}
-          />
-          <div className="absolute bottom-3 right-3 z-10 text-right">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/80">Whose story is it?</p>
-            <p className="text-xs italic font-serif text-foreground/65">Yours.</p>
-          </div>
+        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={() => scrollBy(-1)}
+            disabled={!canScrollLeft}
+            className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scrollBy(1)}
+            disabled={!canScrollRight}
+            className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

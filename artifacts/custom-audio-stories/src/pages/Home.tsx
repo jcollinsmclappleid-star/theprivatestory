@@ -851,93 +851,36 @@ export default function Home() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.75 }}
-          className="relative flex flex-col items-start sm:items-center gap-7 max-w-2xl"
+          className="relative flex flex-col items-start sm:items-center gap-10 max-w-2xl"
         >
           <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
             <span className="text-[11px] font-bold text-white/85 uppercase tracking-widest">Personalised adult immersion · Narrated audio</span>
           </div>
 
-          <h1 className="text-[2.6rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
+          <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
             Private Adult Stories that go further —{" "}
-            <span className="text-primary">personalised around your choices. Full immersion, entirely private.</span>
+            <span className="text-primary">personalised around your choices.</span>
           </h1>
 
-          <div className="flex flex-col items-start sm:items-center gap-2">
-            <p className="text-sm md:text-base text-white/55 tracking-wide sm:text-center font-medium">
-              Private. Intense. Entirely yours.
-            </p>
-            <p className="text-xs text-white/32 tracking-wide sm:text-center leading-relaxed">
-              Not a catalogue. Created fresh in the Creation Room — private to you, never shared with anyone.
-            </p>
-          </div>
+          <p className="text-sm md:text-base text-white/40 tracking-[0.2em] sm:text-center uppercase font-light">
+            Private &nbsp;·&nbsp; Intense &nbsp;·&nbsp; Entirely yours
+          </p>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
             <Link href="/create">
-              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
+              <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
                 <Sparkles className="w-4 h-4" />
-                Begin your fantasy
+                Begin your story
               </button>
             </Link>
             <Link
               href="/listen"
-              className="flex items-center gap-1.5 text-xs text-primary/65 hover:text-primary transition-colors tracking-wide"
+              className="flex items-center gap-1.5 text-xs text-primary/55 hover:text-primary transition-colors tracking-widest uppercase"
             >
               <Headphones className="w-3 h-3" />
               Hear a sample first →
             </Link>
-          </div>
-
-          <div className="flex items-center justify-start sm:justify-center gap-3 sm:gap-5 flex-wrap w-full">
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="door-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#e8c45a" />
-                    <stop offset="100%" stopColor="#c9a227" />
-                  </linearGradient>
-                </defs>
-                <path d="M13 4h3a2 2 0 0 1 2 2v14" stroke="url(#door-grad)" />
-                <path d="M2 20h3" stroke="url(#door-grad)" />
-                <path d="M13 20h9" stroke="url(#door-grad)" />
-                <path d="M10 12v.01" stroke="url(#door-grad)" />
-                <path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z" stroke="url(#door-grad)" />
-              </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Choose your fantasy</span>
-            </div>
-            <span className="text-white/20 text-xs">→</span>
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="flame-grad" x1="0" y1="1" x2="0" y2="0">
-                    <stop offset="0%" stopColor="#dc2626" />
-                    <stop offset="45%" stopColor="#f97316" />
-                    <stop offset="100%" stopColor="#fbbf24" />
-                  </linearGradient>
-                </defs>
-                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" stroke="url(#flame-grad)" />
-              </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Build your desire</span>
-            </div>
-            <span className="text-white/20 text-xs">→</span>
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="volume-grad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#7b8fff" />
-                    <stop offset="100%" stopColor="#56b4e0" />
-                  </linearGradient>
-                </defs>
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="url(#volume-grad)" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="url(#volume-grad)" />
-              </svg>
-              <span className="text-[11px] tracking-wide text-white/55">Hear it alone</span>
-            </div>
-            <span className="text-white/15 text-xs">·</span>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-primary/60" />
-              <span className="text-[10px] tracking-wide text-primary/60 font-semibold uppercase tracking-widest">Under 3 min</span>
-            </div>
           </div>
         </motion.div>
       </section>

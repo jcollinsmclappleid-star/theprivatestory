@@ -736,11 +736,11 @@ const STATIC_PAGES: StaticPage[] = [
   {
     path: "/after-dark",
     slug: "after-dark",
-    title: "After Dark — The Private Story",
+    title: "Enter After Dark — Create Yours | The Private Story",
     description:
-      "After Dark: premium literary audio fiction at The Private Story. For subscribers. Private, narrated, generated for you.",
-    h1: "After Dark",
-    tagline: "Premium literary audio. Private, narrated, yours alone.",
+      "After Dark: premium literary audio fiction at The Private Story. Explicit, unrestrained, personalised entirely to you. For subscribers. Private, narrated, yours alone.",
+    h1: "Enter After Dark — Create Yours",
+    tagline: "Explicit, unrestrained, personalised entirely to you.",
     cacheHeader: CACHE_1H,
     robots: "noindex, nofollow",
     body: `

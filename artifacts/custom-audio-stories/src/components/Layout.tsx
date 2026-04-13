@@ -162,7 +162,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
                 className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isAfterDark ? "text-[#c0392b]" : "text-muted-foreground/70 hover:text-[#c0392b]"}`}
               >
                 <Moon className="w-3.5 h-3.5" />
-                After Dark
+                Enter After Dark
               </Link>
               <Link
                 href="/drift"

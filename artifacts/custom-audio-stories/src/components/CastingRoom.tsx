@@ -1736,25 +1736,6 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </div>
             )}
 
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">
-              Atmosphere <span className="font-normal text-muted-foreground normal-case tracking-normal">(optional)</span>
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {ATMOSPHERES.map(atm => (
-                <button
-                  key={atm}
-                  type="button"
-                  onClick={() => update("atmosphere", data.atmosphere === atm ? "" : atm)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                    data.atmosphere === atm
-                      ? "bg-primary text-primary-foreground border-primary shadow-glow"
-                      : "border-border/40 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  {atm}
-                </button>
-              ))}
-            </div>
           </motion.div>
         )}
 

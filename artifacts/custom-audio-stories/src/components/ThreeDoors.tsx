@@ -48,7 +48,7 @@ const DOORS = [
     room: "The Story Room",
     name: "After Dark",
     shortName: "After Dark",
-    tagline: "Further. Unrestrained. Entirely yours.",
+    tagline: "Explicit. Nothing implied. Nothing held back.",
     cta: "Enter After Dark",
     href: "/after-dark",
     Icon: Moon,
@@ -70,8 +70,8 @@ const DOORS = [
     knobHover: "rgba(123,143,255,0.58)",
     underLight: "rgba(123,143,255,0.09)",
     teasers: [
-      { text: "Further than the others.", blur: false },
-      { text: "Only you will know what's behind this door.", blur: false },
+      { text: "Every detail written. Nothing implied.", blur: false },
+      { text: "This room has no limits.", blur: false },
       { text: "Nothing held back.", blur: true },
     ],
     moodImages: [

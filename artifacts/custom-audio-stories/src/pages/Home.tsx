@@ -838,12 +838,12 @@ export default function Home() {
         {/* ── Woman portrait ── */}
         <img
           aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=5`}
+          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=6`}
           alt=""
-          className="block absolute right-0 top-0 h-full w-full sm:w-[46%] object-cover object-top pointer-events-none select-none opacity-[0.22] sm:opacity-[0.55]"
+          className="block absolute right-0 top-0 h-full w-full sm:w-[48%] object-cover object-top pointer-events-none select-none opacity-[0.38] sm:opacity-[0.82]"
           style={{
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 20%, black 50%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 20%, black 50%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
           }}
         />
 
@@ -1309,21 +1309,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Add-on — active subscribers only */}
-              {isPaid && (
-                <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
-                  <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Additional stories</p>
-                    <div className="flex items-end gap-1.5 mb-1">
-                      <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
-                      <span className="text-muted-foreground/80 text-sm mb-0.5">/ story</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground/80 leading-relaxed mt-3">
-                      Top up whenever you want — without changing your plan. Each story generated, narrated, and private to you.
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
             {checkoutError && (

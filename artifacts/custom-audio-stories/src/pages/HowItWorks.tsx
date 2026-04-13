@@ -596,27 +596,6 @@ export default function HowItWorks() {
               </Link>
             </div>
 
-            {/* Add-on */}
-            <div className="rounded-2xl border border-border/20 bg-background/20 p-6 flex flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
-                  Additional stories
-                </p>
-                <div className="flex items-end gap-1.5 mb-1">
-                  <span className="font-display text-3xl font-bold text-foreground">£3.99</span>
-                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ story</span>
-                </div>
-                <p className="text-xs text-muted-foreground/70 leading-relaxed mt-3">
-                  Add more whenever you want — without changing your plan. Written, narrated, and private to you.
-                </p>
-              </div>
-              <Link
-                href="/pricing"
-                className="mt-6 flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
-              >
-                See all options
-              </Link>
-            </div>
           </div>
 
           <div className="text-center">

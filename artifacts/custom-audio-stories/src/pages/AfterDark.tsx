@@ -1598,11 +1598,15 @@ export default function AfterDark() {
                               scenario={scenario}
                               selected={selectedScenario?.id === scenario.id}
                               locked={isLockedByPairing}
-                              onClick={() =>
-                                setSelectedScenario(
-                                  selectedScenario?.id === scenario.id ? null : scenario
-                                )
-                              }
+                              onClick={() => {
+                                if (isLockedByPairing) return;
+                                const next = selectedScenario?.id === scenario.id ? null : scenario;
+                                setSelectedScenario(next);
+                                if (next) {
+                                  window.scrollTo({ top: 0 });
+                                  setPhase("casting");
+                                }
+                              }}
                             />
                           );
                         })}
@@ -1613,32 +1617,6 @@ export default function AfterDark() {
               })}
             </div>
 
-            {/* Continue CTA */}
-            <div className="sticky bottom-6">
-              <button
-                onClick={() => {
-                  if (selectedScenario) {
-                    window.scrollTo({ top: 0 });
-                    setPhase("casting");
-                  }
-                }}
-                disabled={!selectedScenario}
-                className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all text-white ${
-                  selectedScenario ? "hover:-translate-y-0.5" : "opacity-35 cursor-not-allowed"
-                }`}
-                style={
-                  selectedScenario
-                    ? {
-                        background: "linear-gradient(135deg, #c0392b, #7f1d1d)",
-                        boxShadow: "0 0 32px rgba(192,57,43,0.28)",
-                      }
-                    : { background: "#1a1a1a" }
-                }
-              >
-                <Sparkles className="w-5 h-5" />
-                {selectedScenario ? `Continue with "${selectedScenario.label}"` : "Choose a fantasy above"}
-              </button>
-            </div>
           </motion.div>
         )}
 
@@ -1708,13 +1686,13 @@ export default function AfterDark() {
                 src={`${import.meta.env.BASE_URL}images/afterdark-hero-woman.png?v=1`}
                 alt=""
                 aria-hidden="true"
-                className="w-full h-full object-cover object-top opacity-30"
+                className="w-full h-full object-cover object-top opacity-50"
                 style={{ objectPosition: "center top" }}
               />
             </div>
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050580 0%, #0a020288 55%, #000 100%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050555 0%, #0a020266 55%, #000e 100%)" }}
             />
             <div className="absolute inset-0" style={{
               background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",

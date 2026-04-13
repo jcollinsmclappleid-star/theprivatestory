@@ -803,55 +803,6 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Add-on stories                                                       */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-4xl mx-auto w-full">
-        <div className="rounded-3xl border border-border/20 bg-card/20 p-10 md:p-12 flex flex-col md:flex-row gap-10 items-center md:items-start">
-          <div className="flex-shrink-0 w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-            <Plus className="w-6 h-6 text-primary/70" />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">Additional stories</p>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3 leading-tight">
-              Continue your experience,
-              <br className="hidden md:block" /> whenever you want.
-            </h2>
-            <p className="text-muted-foreground/80 leading-relaxed mb-4 max-w-md mx-auto md:mx-0">
-              Additional personalised stories are available for £3.99 each — whenever the moment calls for it, without changing your plan.
-            </p>
-            <p className="text-sm text-muted-foreground/80 italic">
-              "Add another story without any compromise."
-            </p>
-          </div>
-          <div className="flex-shrink-0 text-center">
-            <div className="rounded-2xl border border-primary/20 bg-primary/8 px-8 py-6 flex flex-col items-center gap-4">
-              <div>
-                <p className="font-display text-4xl font-bold text-primary mb-0.5">£3.99</p>
-                <p className="text-xs text-muted-foreground/80">per additional story</p>
-              </div>
-              {isActiveSub ? (
-                <button
-                  onClick={() => startCheckout("addon")}
-                  disabled={loadingPlan !== null}
-                  className="w-full py-2.5 px-5 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/20 hover:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {loadingPlan === "addon" ? (
-                    <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting…</span>
-                  ) : (
-                    "Add a story"
-                  )}
-                </button>
-              ) : (
-                <p className="text-xs text-muted-foreground/80 text-center max-w-[140px] leading-relaxed">
-                  Available to active subscribers only
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
       {/* Trust bar                                                            */}
       {/* ------------------------------------------------------------------ */}
       <TrustBar />

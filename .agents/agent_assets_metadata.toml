@@ -492,6 +492,12 @@ uri = "file://artifacts/api-server/public/images/paywall-romance-bg.png"
 type = "image"
 title = "paywall romance background"
 
+[[generated]]
+id = "nIW3pvW8Ai5nyV6NhAGm2"
+uri = "file://attached_assets/generated_images/home-hero-woman-v6.png"
+type = "image"
+title = "editorial chiaroscuro woman blindfold apartment"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

@@ -37,6 +37,23 @@ export default function Listen() {
         </Link>
       </div>
 
+      {/* Hero image */}
+      <div className="relative w-full overflow-hidden" style={{ height: "clamp(200px, 44vw, 360px)" }}>
+        <img
+          src={`${API_BASE}/images/listen-hero-woman.png?v=1`}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover object-top select-none pointer-events-none"
+          style={{ opacity: 0.82 }}
+        />
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(0deg, var(--background) 0%, transparent 40%)",
+        }} />
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(180deg, var(--background) 0%, transparent 28%)",
+        }} />
+      </div>
+
       <div className="flex-1 flex flex-col items-center px-6 pb-12 max-w-lg mx-auto w-full">
 
         {/* Intro */}

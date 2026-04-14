@@ -55,7 +55,7 @@ function RomanceDoor({ onEnter }: Props) {
           transition={{ type: "spring", damping: 22, stiffness: 90 }}
         >
           <img
-            src={`${BASE}images/door-romance.png?v=5`}
+            src={`${BASE}images/door-romance.png?v=6`}
             alt=""
             aria-hidden="true"
             className="relative z-10 block select-none"

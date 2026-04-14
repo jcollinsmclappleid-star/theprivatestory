@@ -680,13 +680,12 @@ const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: st
 ];
 
 const MOODS = [
-  "Romantic", "Emotional", "Raw", "Playful", "Slow Burn",
-  "Nostalgic", "Urgent", "Magnetic", "Electric", "Bittersweet",
-  "Forbidden", "Vulnerable", "Healing", "Complicated", "Quiet Intensity",
-  "Restless", "Charged", "Decadent", "Aching", "Burning",
-  "Breathless", "Reckless", "Yearning", "Unravelling", "Certain",
-  "Surrender", "Luminous", "Quiet", "Late Night", "Lingering",
-  "Unspoken", "Emotional Tension",
+  "Forbidden", "Raw", "Burning", "Reckless", "Charged", "Decadent",
+  "Surrender", "Breathless", "Urgent", "Aching", "Yearning", "Electric",
+  "Magnetic", "Unravelling", "Slow Burn", "Restless", "Late Night",
+  "Playful", "Bittersweet", "Complicated", "Romantic", "Emotional",
+  "Nostalgic", "Quiet Intensity", "Vulnerable", "Healing", "Luminous",
+  "Quiet", "Certain", "Lingering", "Unspoken", "Emotional Tension",
 ];
 
 /* ── Appearance options (pronoun-aware) ───────────────────────────── */

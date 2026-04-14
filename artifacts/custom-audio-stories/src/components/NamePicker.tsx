@@ -114,7 +114,7 @@ export function NamePicker({ value, onChange, placeholder = "Search names…", c
 
           {/* Can't find a name? Users can submit custom names via their profile page. */}
           <div className="border-t border-border/40 px-4 py-2 text-center">
-            <p className="text-xs text-muted-foreground/60">Can't find your name? Submit it via your <a href="/profile" className="text-primary/70 hover:text-primary underline underline-offset-2 transition-colors">profile page</a>.</p>
+            <p className="text-xs text-muted-foreground/60">Can't find your name? Submit it via your <a href="/me" className="text-primary/70 hover:text-primary underline underline-offset-2 transition-colors">profile page</a>.</p>
           </div>
         </div>
       )}

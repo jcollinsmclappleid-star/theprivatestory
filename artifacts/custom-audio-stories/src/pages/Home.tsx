@@ -630,7 +630,7 @@ function CastingPreview() {
           </div>
           <p className="text-[10px] text-muted-foreground/80 mt-2.5">
             Your name not listed?{" "}
-            <Link href="/name-club" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
+            <Link href="/me" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
               Submit it to the Name Club →
             </Link>
           </p>

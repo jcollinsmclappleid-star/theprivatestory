@@ -1232,6 +1232,17 @@ export default function AfterDark() {
     return () => window.removeEventListener("pageshow", handler);
   }, []);
 
+  const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
+  // confirmedPairing: the most recently known pairing — set from handoff on load,
+  // then updated after each casting completion so locking is always current.
+  const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
+
+  // Always start fresh — no handoff from regular casting room
+
+  const [loadingPhase, setLoadingPhase] = useState(0);
+  const [result, setResult] = useState<FullGeneratedStory | null>(null);
+  const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
+
   useEffect(() => {
     if (phase !== "paywall" || !lastCastingData) {
       setPaywallCoverUrl(null);
@@ -1253,16 +1264,6 @@ export default function AfterDark() {
       .catch(() => {});
   }, [phase, lastCastingData]);
 
-  const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
-  // confirmedPairing: the most recently known pairing — set from handoff on load,
-  // then updated after each casting completion so locking is always current.
-  const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
-
-  // Always start fresh — no handoff from regular casting room
-
-  const [loadingPhase, setLoadingPhase] = useState(0);
-  const [result, setResult] = useState<FullGeneratedStory | null>(null);
-  const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
   const [presetSaved, setPresetSaved] = useState(false);
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
     casting: CastingRoomResult;

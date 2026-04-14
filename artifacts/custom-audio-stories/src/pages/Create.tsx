@@ -911,7 +911,7 @@ export default function Create() {
       setPaywallCoverUrl(null);
       return;
     }
-    fetch(`${API_BASE}/api/generate/preview-cover`, {
+    fetch(`${API_BASE}/api/preview-cover`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -1844,16 +1844,8 @@ export default function Create() {
           const excerpt = MOOD_TEASERS[paywallCapture.storyMode] ?? MOOD_TEASERS.romance;
           const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
 
-          const MOOD_COVER_IMAGES: Record<string, string> = {
-            romance: `${API_BASE}/cover-romance.png`,
-            slow_burn: `${API_BASE}/cover-slow-burn.png`,
-            passionate: `${API_BASE}/cover-passionate.png`,
-            playful: `${API_BASE}/cover-playful.png`,
-            nostalgic: `${API_BASE}/cover-nostalgic.png`,
-            forbidden: `${API_BASE}/cover-forbidden.png`,
-            unrestrained: `${API_BASE}/cover-forbidden.png`,
-          };
-          const doorImage = MOOD_COVER_IMAGES[paywallCapture.storyMode] ?? `${API_BASE}/cover-romance.png`;
+          const ROOM_LANDING_IMAGE = `${API_BASE}/images/afterdark-hero-woman.png`;
+          const doorImage = ROOM_LANDING_IMAGE;
           const heroImage = paywallCoverUrl || doorImage;
           const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";

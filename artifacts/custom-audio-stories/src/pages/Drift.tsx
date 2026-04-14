@@ -333,8 +333,9 @@ export default function Drift() {
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(0);
-  const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; roomId?: string; accent?: string; archetype?: string; dynamic?: string; voiceId?: string } | null>(null);
+  const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; roomId?: string; accent?: string; archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
+  const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = (e: PageTransitionEvent) => {
@@ -344,7 +345,28 @@ export default function Drift() {
     return () => window.removeEventListener("pageshow", handler);
   }, []);
 
-  const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string } | null>(null);
+  useEffect(() => {
+    if (phase !== "paywall" || !paywallCapture) {
+      setPaywallCoverUrl(null);
+      return;
+    }
+    fetch(`${API_BASE}/api/preview-cover`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mood: "Late Night",
+        intensity: "Sensual",
+        pairing: paywallCapture.pairing,
+        heritage: paywallCapture.heritage,
+      }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d: { url?: string } | null) => { if (d?.url) setPaywallCoverUrl(d.url); })
+      .catch(() => {});
+  }, [phase, paywallCapture]);
+
+  const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
   const lastScenarioRef = useRef<DriftScenario | null>(null);
 
   const play = useAudioPlayer((s) => s.play);
@@ -369,6 +391,8 @@ export default function Drift() {
             archetype: lastCastingRef.current?.archetype,
             dynamic: lastCastingRef.current?.dynamic,
             voiceId: lastCastingRef.current?.voiceId,
+            pairing: lastCastingRef.current?.pairing,
+            heritage: lastCastingRef.current?.heritage,
           });
           setPhase("paywall");
         } else {
@@ -417,7 +441,7 @@ export default function Drift() {
   const handleCastingComplete = useCallback(
     async (casting: CastingRoomResult) => {
       if (!selectedScenario) return;
-      lastCastingRef.current = { archetype: casting.archetype, dynamic: casting.dynamic, voiceId: casting.voiceId };
+      lastCastingRef.current = { archetype: casting.archetype, dynamic: casting.dynamic, voiceId: casting.voiceId, pairing: casting.pairing, heritage: casting.heritage };
       lastScenarioRef.current = selectedScenario;
       setPhase("generating");
       const timer = startLoadingPhase();
@@ -736,7 +760,7 @@ export default function Drift() {
             {/* Cinematic deep-indigo background */}
             <div className="absolute inset-0">
               <img
-                src={`${import.meta.env.BASE_URL}images/paywall-drift-bg.png?v=1`}
+                src={`${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
                 alt=""
                 aria-hidden="true"
                 className="w-full h-full object-cover object-center opacity-25"
@@ -791,10 +815,18 @@ export default function Drift() {
                 const voiceName = voice?.displayName ?? voice?.label ?? null;
                 return (
                   <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "transparent" }}>
-                    <div className="relative h-32 flex items-end p-4 overflow-hidden"
+                    <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
+                      <img
+                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`; }}
+                      />
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
-                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="relative z-10 text-left">
                         <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: accentHex }}>
                           {roomId.replace(/_/g, " ")}

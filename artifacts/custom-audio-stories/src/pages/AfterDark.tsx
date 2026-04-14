@@ -1221,6 +1221,7 @@ export default function AfterDark() {
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
+  const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
 
   useEffect(() => {
@@ -1230,6 +1231,27 @@ export default function AfterDark() {
     window.addEventListener("pageshow", handler);
     return () => window.removeEventListener("pageshow", handler);
   }, []);
+
+  useEffect(() => {
+    if (phase !== "paywall" || !lastCastingData) {
+      setPaywallCoverUrl(null);
+      return;
+    }
+    fetch(`${API_BASE}/api/preview-cover`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mood: "After Dark",
+        intensity: "Unrestrained",
+        pairing: lastCastingData.pairing as string | undefined,
+        heritage: lastCastingData.heritage as string | undefined,
+      }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d: { url?: string } | null) => { if (d?.url) setPaywallCoverUrl(d.url); })
+      .catch(() => {});
+  }, [phase, lastCastingData]);
 
   const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
   // confirmedPairing: the most recently known pairing — set from handoff on load,
@@ -1683,7 +1705,7 @@ export default function AfterDark() {
             {/* Cinematic dark-crimson background */}
             <div className="absolute inset-0">
               <img
-                src={`${import.meta.env.BASE_URL}images/afterdark-hero-woman.png?v=1`}
+                src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
                 alt=""
                 aria-hidden="true"
                 className="w-full h-full object-cover object-top opacity-30"
@@ -1738,10 +1760,18 @@ export default function AfterDark() {
                 const voiceName = voice?.displayName ?? voice?.label ?? null;
                 return (
                   <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "#08010100" }}>
-                    <div className="relative h-32 flex items-end p-4 overflow-hidden"
+                    <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
+                      <img
+                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`; }}
+                      />
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
-                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="relative z-10 text-left">
                         <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: accentHex }}>
                           {selectedScenario?.room?.replace(/_/g, " ") ?? "After Dark"}

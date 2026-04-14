@@ -229,7 +229,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ zIndex: 0 }}
       >
         <img
-          src={`${BASE}images/creation-room-hero.png?v=3`}
+          src={`${BASE}images/creation-room-hero.png?v=4`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
@@ -252,7 +252,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/creation-room-hero.png?v=3`}
+          src={`${BASE}images/creation-room-hero.png?v=4`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"

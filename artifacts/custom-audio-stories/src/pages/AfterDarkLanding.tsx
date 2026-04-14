@@ -149,7 +149,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.7 }}
           className="font-display font-bold leading-[1.08] text-white mb-3"
-          style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)" }}
+          style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)", textShadow: "0 2px 24px rgba(3,3,14,0.95)" }}
         >
           Nothing held back.
           <br />
@@ -220,25 +220,25 @@ export default function AfterDarkLanding({ onEnter }: Props) {
         </motion.div>
       </div>
 
-      {/* ── Mobile hero image (stacked, shows between content and door on small screens) */}
+      {/* ── Mobile full-height background (image bleeds behind text) ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.9 }}
-        className="block md:hidden relative w-full overflow-hidden order-first"
-        style={{ height: "60vw", minHeight: 220, maxHeight: 420 }}
+        transition={{ delay: 0.3, duration: 1.1 }}
+        className="block md:hidden absolute inset-0 pointer-events-none select-none"
+        style={{ zIndex: 0 }}
       >
         <img
           src={`${BASE}images/creation-room-hero.png?v=3`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.88, objectPosition: "50% 8%" }}
+          style={{ opacity: 0.6, objectPosition: "50% 8%" }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${BG} 0%, transparent 10%, transparent 72%, ${BG} 100%)`,
+            background: `linear-gradient(180deg, ${BG} 0%, rgba(3,3,14,0.45) 22%, rgba(3,3,14,0.2) 42%, rgba(3,3,14,0.5) 72%, ${BG} 100%)`,
           }}
         />
       </motion.div>

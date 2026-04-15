@@ -528,6 +528,12 @@ uri = "file://attached_assets/generated_images/creation-room-hero-v7.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "Zg_gLWZsTpSmnLBrsjkWH"
+uri = "file://attached_assets/generated_images/listen-hero-woman.png"
+type = "image"
+title = "listen hero woman candlelit"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

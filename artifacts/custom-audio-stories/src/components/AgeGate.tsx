@@ -59,12 +59,9 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.18 }}
             >
-              <h1 className="font-display text-2xl font-bold text-foreground mb-3">
-                Are you 18 or older?
+              <h1 className="font-display text-2xl font-bold text-foreground mb-8">
+                Are you 18 or above?
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-                The Private Story is an adult service. You must be 18 or over to enter.
-              </p>
               <div className="flex gap-3">
                 <button
                   onClick={handleNo}
@@ -87,12 +84,9 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
             >
-              <h1 className="font-display text-xl font-bold text-foreground mb-3">
-                This page isn't for you
+              <h1 className="font-display text-xl font-bold text-foreground">
+                This content is for adults only.
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                The Private Story is for adults only. We hope to welcome you when you're older.
-              </p>
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,6 +1,6 @@
 # Overview
 
-This project is a pnpm workspace monorepo using TypeScript, designed to build and deploy a sophisticated AI-powered custom audio story generation platform. The core business vision is to provide personalized romantic audio stories, offering a unique blend of AI creativity and user customization. The platform aims to capture market share in the digital entertainment and personalized content sectors by offering a premium, Netflix-meets-Calm aesthetic experience.
+This project is a pnpm workspace monorepo using TypeScript, designed to build and deploy a sophisticated AI-powered custom intimate audio story generation platform. The core business vision is "My Private Story" by The Private Story (Ianson System Ltd t/a) — premium literary adult audio erotica, female-first, privacy-led. Three rooms: Romance (intimate, personalised), After Dark (explicit, unrestrained erotic fiction), and Drift (calm bedtime stories). The platform aims to capture market share in the adult digital entertainment and personalised content sectors by offering a premium, private, female-first experience.
 
 Key capabilities include:
 - Generating full, personalized audio stories based on user input.

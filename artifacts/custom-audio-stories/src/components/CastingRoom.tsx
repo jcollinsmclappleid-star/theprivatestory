@@ -223,8 +223,8 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
   return [
     {
       id: `${P.subject} Takes Charge`,
-      label: `${conjugateTakes(P.subject)} Charge`,
-      sub: `${P.subject} knows what ${P.possessive} wanting. Patient. Certain.`,
+      label: `${P.subject} Dominates`,
+      sub: `${P.subject} takes control. Certain of what ${P.possessive} want. Patient enough to take their time.`,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
       image: "images/chemistry/takes_charge.webp",
@@ -239,8 +239,8 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     },
     {
       id: `${ME.subject} Leads`,
-      label: `${conjugateLeads(ME.subject)}`,
-      sub: `${ME.subject} decides the pace. ${P.subject} follows ${ME.possessive} lead.`,
+      label: `${ME.subject} Dominates`,
+      sub: `${ME.subject} takes the lead. Sets the terms. ${P.subject} follows ${ME.possessive} pace entirely.`,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
       image: "images/chemistry/leads.webp",
@@ -263,8 +263,8 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
     },
     {
       id: "Charged Dynamic",
-      label: "Charged Dynamic",
-      sub: `${P.subject} holds the advantage. ${ME.subject} already decided. That's what made it possible.`,
+      label: "Dominance & Submission",
+      sub: `${P.subject} holds the power. ${ME.subject} chose to give it. That's what makes everything that follows possible.`,
       dynamic: "Leading and following",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
       image: "images/chemistry/power_play.webp",

@@ -224,8 +224,8 @@ function buildStandardCategories(p: PronounCtx, partner: PronounCtx): TagCategor
 function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
   return [
     {
-      heading: "Sensation & Restraint",
-      sub: "The things you rarely say out loud",
+      heading: "Restraint & BDSM",
+      sub: "Restraint, BDSM, and the things you rarely say out loud",
       maxSelect: 3,
       tags: [
         `${p.sub} wanted to be tied up`,
@@ -259,8 +259,8 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
       ],
     },
     {
-      heading: "Surrender & Power",
-      sub: "How deep the surrender goes",
+      heading: "Submission & Worship",
+      sub: "Submission, worship, and how deep the surrender goes",
       maxSelect: 2,
       tags: [
         `${p.sub} wanted to feel completely surrendered to them`,

@@ -141,7 +141,7 @@ const STEP_CARDS = [
     step: "05",
     category: "The Intensity",
     label: "You set the temperature",
-    sub: "From soft and slow to more charged. We shape the atmosphere to the level you choose.",
+    sub: "From tender and romantic to deeply intimate and unrestrained. You set exactly how far it goes.",
     accent: "#f97316",
     gradient: "from-[#1a0800] via-[#250f00] to-[#100500]",
     options: ["Tender", "Warm", "Elevated", "Deep"],
@@ -944,7 +944,7 @@ export default function Home() {
               {[
                 "Not browsed. Not compromised. Yours from the first line.",
                 "Choose the feeling. Choose how far it goes.",
-                "Written for you. Narrated for you. Saved privately for you.",
+                "Written for women. Narrated for you. Saved privately for you.",
               ].map((line) => (
                 <p
                   key={line}
@@ -1024,8 +1024,8 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2 mb-8">
                     {[
                       "Power Exchange",
-                      "The Forbidden",
-                      "A more charged atmosphere",
+                      "BDSM & Dominance",
+                      "Explicit, unrestrained",
                       "Your story, your terms",
                     ].map((tag) => (
                       <span

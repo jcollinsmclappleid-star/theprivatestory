@@ -21,7 +21,7 @@ const HOW_IT_WORKS_STEPS = [
     icon: <Globe className="w-4 h-4" />,
     accent: "#c9a227",
     heading: "Shape your story in the Creation Room",
-    body: "Choose who's in your story, the energy between them, where it's set, and the mood you want to be left with. Every choice is yours — nothing defaults to someone else's idea of what you want.",
+    body: "Choose who's in your story, the energy between them, where it's set, the mood — and how far it goes. Every choice is yours, including the intensity.",
   },
   {
     step: "02",
@@ -101,7 +101,7 @@ const DOOR_EXPLANATIONS = [
     accent: "#7b8fff",
     rgb: "123,143,255",
     name: "After Dark",
-    desc: "Everything in Romance, unrestrained. Goes further. Completely private.",
+    desc: "Explicit, unrestrained erotic fiction. Everything in Romance — with the intensity turned all the way up and nothing held back.",
     cta: "Enter After Dark",
     href: "/after-dark",
   },
@@ -122,12 +122,12 @@ const LIBRARY_VS = {
     "Choose from what already exists",
     "Hope something fits your mood",
     "Someone else's cast, their world",
-    "Read what everyone else reads",
+    "Content made for everyone, not for you",
   ],
   us: [
     "Built from your choices, every time",
-    "Your cast. Your chemistry. Your world.",
-    "No two stories are ever the same",
+    "Your cast. Your chemistry. Your desire.",
+    "Intimate — exactly as far as you want",
     "Visible to no one but you",
   ],
 };
@@ -178,7 +178,7 @@ export default function HowItWorks() {
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
                 <Sparkles className="w-3.5 h-3.5 text-primary/70" />
                 <span className="text-[11px] font-semibold text-primary/70 uppercase tracking-widest">
-                  Personalised audio story
+                  Personalised adult audio
                 </span>
               </div>
             </div>
@@ -325,7 +325,7 @@ export default function HowItWorks() {
             </div>
             <div>
               <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-1">
-                Hear what a personalised story sounds like.
+                Hear what a personalised intimate story sounds like.
               </h3>
               <p className="text-sm text-muted-foreground/80">
                 Two sample stories — free to listen, no account needed.

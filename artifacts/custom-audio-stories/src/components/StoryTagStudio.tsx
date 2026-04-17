@@ -534,15 +534,23 @@ export function StoryTagStudio({
         const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories() : [];
         const ad = buildAfterDarkCategories(p);
         const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories() : [];
-        const darkFantasy = ad.filter(c => c.heading === "Dark Fantasy");
-        const adWithout = ad.filter(c => c.heading !== "Dark Fantasy");
+        const adRestraint  = ad.filter(c => c.heading === "Restraint & BDSM");
+        const adSubmission = ad.filter(c => c.heading === "Submission & Worship");
+        const adWords      = ad.filter(c => c.heading === "Words & Praise");
+        const darkFantasy  = ad.filter(c => c.heading === "Dark Fantasy");
+        const adEnd        = ad.filter(c => c.heading === "Just the Scene" || c.heading === "How does it end?");
         return [
-          ...std.slice(0, 6),  // How do you want to feel? → Pure Romance
-          ...sheAD,            // Her Command — raised above Praise & Devotion
-          ...darkFantasy,      // Dark Fantasy — raised above Praise & Devotion
-          std[6], std[7],      // Praise & Devotion, Story Arc & Plot
-          ...sheStd,           // Her Lead
-          ...adWithout,        // Sensation & Restraint, Words & Praise, Surrender & Power, Just the Scene, How does it end?
+          ...adRestraint,               // Restraint & BDSM — top
+          ...adSubmission,              // Submission & Worship
+          ...sheAD,                     // Her Dominance (She only)
+          ...sheStd,                    // Her Lead (She only)
+          std[4],                       // What does she really want?
+          std[0],                       // How do you want to feel?
+          ...adWords,                   // Words & Praise
+          ...darkFantasy,               // Dark Fantasy
+          std[1], std[2], std[3],       // What's between them?, How do you want it written?, What makes this yours?
+          std[5], std[6], std[7],       // Pure Romance, Praise & Devotion, Story Arc & Plot
+          ...adEnd,                     // Just the Scene, How does it end?
         ];
       })()
     : bedtime

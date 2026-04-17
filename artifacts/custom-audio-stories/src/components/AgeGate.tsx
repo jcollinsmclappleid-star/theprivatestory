@@ -45,22 +45,22 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
         <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-4">The Private Story</p>
 
         <h1 className="font-display text-2xl font-bold text-foreground mb-3">
-          Age confirmation
+          This is a private space.
         </h1>
 
         <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-          You must be 18 or older to use this service.
+          The Private Story is an adult service. Step inside only if you're of legal age in your country.
         </p>
 
         <button
           onClick={handleConfirm}
           className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all mb-3"
         >
-          I'm 18 or older
+          I'm an adult — enter
         </button>
 
         <p className="text-xs text-muted-foreground/40">
-          By continuing you confirm you are of legal age in your jurisdiction.
+          By entering, you confirm you are of legal age in your jurisdiction and consent to adult content.
         </p>
       </motion.div>
     </motion.div>

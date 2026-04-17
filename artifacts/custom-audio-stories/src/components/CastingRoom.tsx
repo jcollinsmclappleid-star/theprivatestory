@@ -2184,7 +2184,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Your name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
-              Search from 6,000+ names — the narrator will use it throughout your story.
+              The narrator will call you by it. Choose from 6,000+ names — or skip and you'll be addressed as "you."
             </p>
             {!afterDark && onAfterDark && (
               <button
@@ -2285,7 +2285,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               {isSameGender ? "Your love interest's name." : "Their name."}
             </h2>
             <p className="text-muted-foreground text-sm mb-2">
-              Search from 6,000+ names — or skip and the narrator will choose one that fits.
+              Give them a name, or leave it — the narrator will choose one that suits them.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-5">
               {isSameGender

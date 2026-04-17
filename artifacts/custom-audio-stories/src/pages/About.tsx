@@ -21,7 +21,7 @@ export default function About() {
           >
             <p className="text-primary text-sm uppercase tracking-widest font-semibold mb-4">Our story</p>
             <h1 className="font-display text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              Built for women who want a story written for them
+              Built with the female imagination at its centre
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
               Not a catalogue. Not a stream. The Private Story was built for the female imagination: intimate audio stories — personalised, private, and exactly as far as you want to go.
@@ -48,7 +48,7 @@ export default function About() {
               We wanted to build something different. Something that actually responds to female desire rather than assuming it.
             </p>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              The Private Story was built for women who want storytelling that responds to them. <strong className="text-foreground">When you choose the mood, the chemistry, the cast, the intensity — and how far it goes — the story stops being content and becomes something genuinely yours.</strong>
+              The Private Story was built for anyone who wants storytelling that responds to them — with the female imagination explicitly at its centre. <strong className="text-foreground">When you choose the mood, the chemistry, the cast, the intensity — and how far it goes — the story stops being content and becomes something genuinely yours.</strong>
             </p>
           </div>
 
@@ -79,7 +79,7 @@ export default function About() {
               {
                 icon: <Sparkles className="w-6 h-6 text-primary" />,
                 title: "Female-first by design",
-                desc: "Built for the female imagination — not adapted from it. Every choice in the experience, from the chemistry options to the intensity dial, is designed around what women actually want from a story.",
+                desc: "Built for the female imagination — not adapted from it. Every choice in the experience, from the chemistry options to the intensity dial, is designed around the female imagination and what it actually wants from a story.",
               },
               {
                 icon: <Lock className="w-6 h-6 text-primary" />,
@@ -131,20 +131,20 @@ export default function About() {
               We believe intimacy is not about volume. It is about <strong className="text-foreground">atmosphere — and the freedom to choose exactly what you want.</strong>
             </p>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              The comfort of complete privacy. The pleasure of choosing exactly who, exactly how, and exactly how far. The difference between consuming something made for everyone and stepping into something intimate — written for women, built around female desire.
+              The comfort of complete privacy. The pleasure of choosing exactly who, exactly how, and exactly how far. The difference between consuming something made for everyone and stepping into something intimate — built around female desire, shaped by the female imagination.
             </p>
           </div>
 
           <div className="glass-panel rounded-2xl p-8 border-primary/20 bg-primary/5">
             <p className="text-center text-foreground text-xl leading-relaxed italic">
-              That is what The Private Story is here to offer: a more private, more personal, more beautifully considered kind of intimate listening experience — made for women.
+              That is what The Private Story is here to offer: a more private, more personal, more beautifully considered kind of intimate listening experience — built around female desire, open to anyone who wants it.
             </p>
           </div>
 
           <div>
-            <h3 className="font-display text-2xl font-bold text-foreground mb-4">For women who want desire, privacy, and control</h3>
+            <h3 className="font-display text-2xl font-bold text-foreground mb-4">For those who want desire, privacy, and control</h3>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              The Private Story is designed for women who want storytelling that feels:
+              The Private Story is for anyone who wants storytelling that feels:
             </p>
             <ul className="space-y-3">
               {[
@@ -193,7 +193,7 @@ export default function About() {
               ))}
             </div>
             <p className="text-muted-foreground text-lg leading-relaxed mt-8">
-              We know a product like this only works if it feels safe, considered, and built specifically for the women who use it. That is the standard we hold ourselves to in every part of the experience.
+              We know a product like this only works if it feels safe, considered, and built around the audience that uses it — with the female imagination genuinely at its centre. That is the standard we hold ourselves to in every part of the experience.
             </p>
           </motion.div>
         </div>
@@ -209,7 +209,7 @@ export default function About() {
         >
           <h2 className="font-display text-3xl font-bold text-foreground mb-4">Begin privately</h2>
           <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-            If you have been looking for intimate audio stories made for women — personalised around your desire, your cast, and your level of intensity — this is where to start. In under three minutes. Kept entirely private.
+            If you have been looking for intimate audio stories built with the female imagination at their centre — personalised around your desire, your cast, and your level of intensity — this is where to start. In under three minutes. Kept entirely private.
           </p>
           <div className="flex flex-col items-center gap-6">
             <MiniDoorCTA />

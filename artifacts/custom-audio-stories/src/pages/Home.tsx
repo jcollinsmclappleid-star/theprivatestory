@@ -944,7 +944,7 @@ export default function Home() {
               {[
                 "Not browsed. Not compromised. Yours from the first line.",
                 "Choose the feeling. Choose how far it goes.",
-                "Written for women. Narrated for you. Saved privately for you.",
+                "The female imagination at its centre. Narrated for you. Saved privately for you.",
               ].map((line) => (
                 <p
                   key={line}

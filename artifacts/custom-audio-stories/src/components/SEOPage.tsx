@@ -19,7 +19,7 @@ const TRUST_ITEMS = [
   { icon: <Headphones className="w-4 h-4" />, label: "Premium narration", sub: "Professional voices. Ready the moment you create." },
   { icon: <Lock className="w-4 h-4" />, label: "Yours alone", sub: "Only you can ever access your stories" },
   { icon: <Clock className="w-4 h-4" />, label: "Story in minutes", sub: "From first choice to listening — under three minutes" },
-  { icon: <Heart className="w-4 h-4" />, label: "Female-first storytelling", sub: "Built for female desire, emotional pacing, and private pleasure", colSpan: true },
+  { icon: <Heart className="w-4 h-4" />, label: "The female imagination at its centre", sub: "Designed around female desire, emotional pacing, and private pleasure", colSpan: true },
 ];
 
 export default function SEOPage({
@@ -146,7 +146,7 @@ export default function SEOPage({
           </p>
           <p>
             <strong className="text-foreground font-semibold">Who it's for:</strong>{" "}
-            Designed for the female imagination — adults who want private, emotionally intelligent audio storytelling personalised around their mood and tone, not retrieved from a fixed library.
+            Built with the female imagination at its centre — for anyone who wants private, emotionally intelligent audio storytelling personalised around their mood and tone, not retrieved from a fixed library.
           </p>
           <p>
             <strong className="text-foreground font-semibold">How it works:</strong>{" "}

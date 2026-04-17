@@ -10,7 +10,7 @@ const DOORS = [
     room: "The Story Room",
     name: "Romance",
     shortName: "Romance",
-    tagline: "Written for women. Intimate, personal — exactly where you want it to go.",
+    tagline: "The female imagination at its centre. Intimate, personal — exactly where you want it to go.",
     cta: "Create My Story",
     href: "/create",
     Icon: Sparkles,

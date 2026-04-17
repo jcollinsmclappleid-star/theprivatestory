@@ -11,8 +11,6 @@ const router = Router();
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
-const STRIPE_MONTHLY_PRICE_ID = process.env.STRIPE_MONTHLY_PRICE_ID;
-const STRIPE_ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID;
 const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
 const STRIPE_IMMERSIVE_PRICE_ID = process.env.STRIPE_IMMERSIVE_PRICE_ID;
 const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
@@ -21,6 +19,23 @@ const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@theprivatestory.com"
 function getStripe(): Stripe | null {
   if (!STRIPE_SECRET_KEY) return null;
   return new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
+}
+
+// Look up a subscription price by metadata key tps_plan, falling back to env var.
+async function resolvePriceId(stripe: Stripe, plan: "monthly" | "annual"): Promise<string | null> {
+  try {
+    const results = await stripe.prices.search({
+      query: `metadata["tps_plan"]:"${plan}" AND active:"true"`,
+      limit: 1,
+    });
+    if (results.data.length > 0) return results.data[0].id;
+  } catch {
+    // fall through to env var
+  }
+  // Fallback to env vars
+  return plan === "monthly"
+    ? (process.env.STRIPE_MONTHLY_PRICE_ID ?? null)
+    : (process.env.STRIPE_ANNUAL_PRICE_ID ?? null);
 }
 
 function requireAuth(req: Request, res: Response): string | null {
@@ -71,10 +86,14 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
   }
 
-  const priceId = plan === "monthly" ? STRIPE_MONTHLY_PRICE_ID
-    : plan === "annual" ? STRIPE_ANNUAL_PRICE_ID
-    : plan === "immersive" ? STRIPE_IMMERSIVE_PRICE_ID
-    : STRIPE_ADDON_PRICE_ID;
+  let priceId: string | null | undefined;
+  if (plan === "monthly" || plan === "annual") {
+    priceId = await resolvePriceId(stripe, plan);
+  } else if (plan === "immersive") {
+    priceId = STRIPE_IMMERSIVE_PRICE_ID;
+  } else {
+    priceId = STRIPE_ADDON_PRICE_ID;
+  }
 
   if (!priceId) {
     res.status(503).json({ error: "This plan is not yet available. Please contact support@theprivatestory.com." });

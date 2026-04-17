@@ -336,6 +336,17 @@ export default function PrivacyPolicy() {
         <SubHeading>7.4 Consent</SubHeading>
         <P>Where required, we rely on consent — for example, for any non-essential cookies. Where we rely on consent, you may withdraw it at any time without affecting the lawfulness of prior processing.</P>
 
+        <SubHeading>7.5 Special category data — story preferences</SubHeading>
+        <P>
+          Under UK GDPR Article 9, data that reveals sexual preferences or sexual life is classified as special category data and attracts additional protections. Some of the structured selections you make during story creation — such as intensity level, dynamic type, or thematic content — may constitute, or be capable of revealing, data about your sexual preferences.
+        </P>
+        <P>
+          Where we process such data, we rely on your <strong className="text-foreground/80">explicit consent</strong>, given when you accept our Terms of Service, Privacy Policy, and Content Policy before accessing story creation features. You may withdraw this consent at any time by deleting your account, which will result in the deletion of your story preference data in accordance with Section 13.
+        </P>
+        <P>
+          We treat all story preference data with the heightened care appropriate to its sensitivity: it is stored only within your private account, is not shared with other users, and is not used for any purpose other than delivering and improving your personal service experience.
+        </P>
+
         {/* 8 */}
         <SectionHeading number="8" title="Your private library" />
         <P>Stories generated through your account are saved to your private library. Our intention is that these stories are visible only to you within your authenticated account.</P>
@@ -379,6 +390,7 @@ export default function PrivacyPolicy() {
             { name: "Mistral AI (via OpenRouter)", role: "AI language model used to generate story text from your structured inputs.", location: "EU" },
             { name: "OpenAI", role: "AI image generation for story cover art. Under our API agreement, inputs are not used to train OpenAI models.", location: "USA (Standard Contractual Clauses)" },
             { name: "ElevenLabs", role: "Text-to-speech audio narration. Audio is generated for delivery only and is not retained by ElevenLabs beyond generation.", location: "USA (Standard Contractual Clauses)" },
+            { name: "Resend", role: "Transactional email delivery (account confirmation, password reset, and account notifications). Email addresses are shared only as necessary to deliver these communications.", location: "USA (Standard Contractual Clauses)" },
             { name: "Replit / hosting infrastructure", role: "The cloud platform on which the service runs. Personal data is stored on servers operated within this infrastructure.", location: "USA (Standard Contractual Clauses)" },
             { name: "Google Analytics 4", role: "Aggregate usage analytics, loaded in cookie-less consent mode (analytics_storage: denied). No cookies are set and no personal data is transmitted to Google in this configuration.", location: "USA (Standard Contractual Clauses)" },
           ].map((p) => (

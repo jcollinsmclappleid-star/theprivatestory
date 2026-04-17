@@ -448,6 +448,9 @@ export default function Pricing() {
               )}
             </button>
             <p className="text-center text-[10px] text-muted-foreground/80 mt-2">Subscribe later to unlock the full experience</p>
+            <p className="text-center text-[10px] text-muted-foreground/40 mt-1.5 leading-snug">
+              By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+            </p>
           </div>
         </div>
 
@@ -496,8 +499,12 @@ export default function Pricing() {
                 )}
               </button>
 
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
+                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+              </p>
+
               {/* Prominent cancel anytime */}
-              <div className="mt-4 flex items-center justify-center gap-2">
+              <div className="mt-3 flex items-center justify-center gap-2">
                 <div className="flex-1 h-px bg-border/20" />
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/70 font-medium tracking-wide whitespace-nowrap">
                   Cancel any time — stories stay yours
@@ -559,6 +566,9 @@ export default function Pricing() {
               </button>
               <p className="text-center text-[10px] text-muted-foreground/80 mt-3">
                 The most complete experience, at the best rate. Not sure yet? Start monthly and switch any time.
+              </p>
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-2 leading-snug px-2">
+                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
               </p>
             </div>
           </div>

@@ -402,11 +402,11 @@ export default function Pricing() {
         {/* Single story / trial card */}
         <div className="mb-5 relative overflow-hidden rounded-3xl border border-white/10 bg-card/20 backdrop-blur-sm p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute inset-0 bg-gradient-to-r from-card/60 to-background/30 pointer-events-none" />
-          <div className="relative z-10 flex-1">
+          <div className="relative z-10 flex-1 min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-2">Try it first · No subscription</p>
             <div className="flex items-end gap-2 mb-1">
               <span className="font-display text-4xl font-bold text-foreground">£7.99</span>
-              <span className="text-muted-foreground/80 mb-1">one-time</span>
+              <span className="text-muted-foreground/80 mb-1 whitespace-nowrap">one-time</span>
             </div>
             <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-sm mb-4">
               One fully personalised story — cast by you, narrated and illustrated, yours to keep. A free account is created at checkout so you can access and replay it any time.
@@ -435,11 +435,11 @@ export default function Pricing() {
               ))}
             </div>
           </div>
-          <div className="relative z-10 flex-shrink-0 w-full md:w-auto">
+          <div className="relative z-10 flex-shrink-0 w-full md:w-56">
             <button
               onClick={() => startCheckout("immersive")}
               disabled={loadingPlan !== null}
-              className="block w-full md:w-auto text-center px-8 py-3.5 rounded-full border border-white/20 text-foreground font-semibold text-sm hover:bg-white/5 hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
+              className="block w-full text-center px-8 py-3.5 rounded-full border border-white/20 text-foreground font-semibold text-sm hover:bg-white/5 hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loadingPlan === "immersive" ? (
                 <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>

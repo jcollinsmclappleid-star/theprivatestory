@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, EyeOff, Lock, Headphones, Sparkles } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
-import { MiniDoorCTA } from "@/components/ThreeDoors";
+import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
 
 export interface CompetitorPageConfig {
   slug: string;
@@ -34,27 +34,62 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-2xl mx-auto px-4 py-16">
-
-        <div className="mb-14">
+      {/* Hero */}
+      <div className="max-w-2xl mx-auto px-4 pt-16 pb-0">
+        <div className="mb-10">
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-5">
             {config.badge}
           </span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
             {config.h1}
           </h1>
-          <p className="text-muted-foreground text-xl leading-relaxed mb-8">
+          <p className="text-muted-foreground text-xl leading-relaxed">
             {config.tagline}
           </p>
-          <MiniDoorCTA />
         </div>
+      </div>
 
+      {/* After Dark — featured door */}
+      <ThreeDoors filter={["dark"]} />
+
+      {/* Stats block */}
+      <div className="py-8 px-4 border-b border-border/20">
+        <div className="max-w-2xl mx-auto flex flex-col items-center gap-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60">
+            Nothing else goes this deep
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-3xl font-display font-bold text-primary leading-none">2.6M+</span>
+            <span className="text-xs text-muted-foreground/70 leading-snug text-left max-w-[140px]">unique personalised story combinations</span>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-1">
+            {[
+              { n: "50+",  label: "Countries" },
+              { n: "12",   label: "Historical eras" },
+              { n: "14",   label: "Archetypes" },
+              { n: "9",    label: "Chemistries" },
+              { n: "200+", label: "Situations" },
+            ].map(({ n, label }) => (
+              <div key={label} className="text-center">
+                <p className="text-sm font-bold text-primary/80 leading-none">{n}</p>
+                <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest mt-0.5">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-2xl mx-auto px-4 py-16">
+
+        {/* Editorial note */}
         <div className="mb-12 p-5 rounded-xl border border-border/30 bg-white/[0.02]">
           <p className="text-sm text-muted-foreground/80 italic leading-relaxed">
             {config.intro}
           </p>
         </div>
 
+        {/* Trust items */}
         <div className="grid grid-cols-2 gap-3 mb-16">
           {TRUST_ITEMS.map((t, i) => (
             <div key={i} className="flex items-start gap-3 rounded-xl border border-border/30 bg-white/[0.02] p-4">
@@ -67,6 +102,7 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           ))}
         </div>
 
+        {/* Comparison sections */}
         <div className="space-y-10 mb-16">
           {config.sections.map((section, i) => (
             <div key={i}>
@@ -81,6 +117,7 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           ))}
         </div>
 
+        {/* FAQs */}
         {config.faqs.length > 0 && (
           <div className="mb-16">
             <h2 className="font-display text-2xl font-semibold text-foreground mb-6">
@@ -122,15 +159,18 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           </div>
         )}
 
+        {/* Creation room CTA */}
         <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-3">The Creation Room</p>
           <h2 className="font-display text-2xl font-bold text-foreground mb-3">
-            Ready to try something different?
+            Choose every detail.
           </h2>
           <p className="text-muted-foreground mb-6 text-sm leading-relaxed max-w-md mx-auto">
-            Your story, written from scratch, around exactly what you want. Private. Personal. Yours.
+            The mood, the chemistry, the setting, the intensity — all yours. The story is written around exactly what you choose.
           </p>
-          <MiniDoorCTA />
+          <MiniDoorCTA filter={["dark"]} />
         </div>
+
       </div>
     </motion.div>
   );

@@ -86,7 +86,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do I get with each plan?",
-    a: "Both plans include personalised story credits — 5 per month or 50 per year — full access to the curated collection, monthly releases, private library storage, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £14.91 per month.",
+    a: "Both plans include personalised story credits — 5 per month or 50 per year — full access to the curated collection, monthly releases, private library storage, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £12.42 per month.",
   },
   {
     q: "What is included in the curated collection?",
@@ -456,85 +456,25 @@ export default function Pricing() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
 
-          {/* Monthly */}
-          <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/30 backdrop-blur-sm p-8">
-            <div className="absolute inset-0 bg-gradient-to-br from-card/60 to-background/40 pointer-events-none" />
+          {/* Monthly — Recommended */}
+          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-8 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-4">Monthly</p>
+              <div className="flex items-center gap-2 mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Monthly</p>
+                <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
+                  Recommended
+                </span>
+              </div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£29</span>
+                <span className="font-display text-5xl font-bold text-foreground">£19.99</span>
                 <span className="text-muted-foreground/80 mb-1.5">/ month</span>
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
 
               <div className="space-y-3 mb-3">
                 {MONTHLY_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-3">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/60 bg-primary/10" : "border-primary/40"}`}>
-                      {f.special
-                        ? <Moon className="w-2 h-2 text-primary" />
-                        : <Check className="w-2.5 h-2.5 text-primary" />
-                      }
-                    </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>
-                      {f.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
-                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
-                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
-              </div>
-
-              <button
-                onClick={() => startCheckout("monthly")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/10 hover:border-primary/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "monthly" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : (
-                  isAuthenticated ? "Subscribe monthly" : "Get started"
-                )}
-              </button>
-
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-              </p>
-
-              {/* Prominent cancel anytime */}
-              <div className="mt-3 flex items-center justify-center gap-2">
-                <div className="flex-1 h-px bg-border/20" />
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/70 font-medium tracking-wide whitespace-nowrap">
-                  Cancel any time — stories stay yours
-                </span>
-                <div className="flex-1 h-px bg-border/20" />
-              </div>
-            </div>
-          </div>
-
-          {/* Annual — Best Value */}
-          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-8 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
-                <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
-                  Best value
-                </span>
-              </div>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£179</span>
-                <span className="text-muted-foreground/80 mb-1.5">/ year</span>
-              </div>
-              <p className="text-xs text-muted-foreground/80 mb-8">
-                Equivalent to £14.91 per month — less than half the monthly price.
-              </p>
-
-              <div className="space-y-3 mb-3">
-                {ANNUAL_FEATURES.map((f) => (
                   <div key={f.text} className="flex items-start gap-3">
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
                       {f.special
@@ -554,9 +494,73 @@ export default function Pricing() {
               </div>
 
               <button
-                onClick={() => startCheckout("annual")}
+                onClick={() => startCheckout("monthly")}
                 disabled={loadingPlan !== null}
                 className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "monthly" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : (
+                  isAuthenticated ? "Subscribe monthly" : "Get started"
+                )}
+              </button>
+
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
+                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+              </p>
+
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <div className="flex-1 h-px bg-border/20" />
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/70 font-medium tracking-wide whitespace-nowrap">
+                  Cancel any time — stories stay yours
+                </span>
+                <div className="flex-1 h-px bg-border/20" />
+              </div>
+            </div>
+          </div>
+
+          {/* Annual — Top savings */}
+          <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/30 backdrop-blur-sm p-8">
+            <div className="absolute inset-0 bg-gradient-to-br from-card/60 to-background/40 pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
+                <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
+                  Top savings
+                </span>
+              </div>
+              <div className="flex items-end gap-2 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground">£149</span>
+                <span className="text-muted-foreground/80 mb-1.5">/ year</span>
+              </div>
+              <p className="text-xs text-muted-foreground/80 mb-8">
+                Equivalent to £12.42 per month — save over £90 versus monthly.
+              </p>
+
+              <div className="space-y-3 mb-3">
+                {ANNUAL_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-3">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/60 bg-primary/10" : "border-primary/40"}`}>
+                      {f.special
+                        ? <Moon className="w-2 h-2 text-primary" />
+                        : <Check className="w-2.5 h-2.5 text-primary" />
+                      }
+                    </div>
+                    <span className={`text-sm leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>
+                      {f.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
+                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
+                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
+              </div>
+
+              <button
+                onClick={() => startCheckout("annual")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/10 hover:border-primary/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loadingPlan === "annual" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
@@ -565,7 +569,7 @@ export default function Pricing() {
                 )}
               </button>
               <p className="text-center text-[10px] text-muted-foreground/80 mt-3">
-                The most complete experience, at the best rate. Not sure yet? Start monthly and switch any time.
+                The best rate for the full experience. Not sure yet? Start monthly and switch any time.
               </p>
               <p className="text-center text-[10px] text-muted-foreground/40 mt-2 leading-snug px-2">
                 By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>

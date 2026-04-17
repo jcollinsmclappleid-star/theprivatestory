@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { LogoFull } from "./Logo";
 
 const STORAGE_KEY = "tps_age_confirmed";
@@ -24,9 +25,15 @@ interface AgeGateProps {
 }
 
 export function AgeGate({ onConfirmed }: AgeGateProps) {
-  const handleConfirm = () => {
+  const [declined, setDeclined] = useState(false);
+
+  const handleYes = () => {
     confirmAge();
     onConfirmed();
+  };
+
+  const handleNo = () => {
+    setDeclined(true);
   };
 
   return (
@@ -42,26 +49,53 @@ export function AgeGate({ onConfirmed }: AgeGateProps) {
         className="max-w-sm w-full rounded-3xl bg-background border border-border/40 p-8 shadow-2xl text-center"
       >
         <LogoFull height={120} className="mx-auto mb-5" />
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-4">The Private Story</p>
 
-        <h1 className="font-display text-2xl font-bold text-foreground mb-3">
-          This is a private space.
-        </h1>
-
-        <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-          The Private Story is an adult service. Step inside only if you're of legal age in your country.
-        </p>
-
-        <button
-          onClick={handleConfirm}
-          className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all mb-3"
-        >
-          I'm an adult — enter
-        </button>
-
-        <p className="text-xs text-muted-foreground/40">
-          By entering, you confirm you are of legal age in your jurisdiction and consent to adult content.
-        </p>
+        <AnimatePresence mode="wait">
+          {!declined ? (
+            <motion.div
+              key="question"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18 }}
+            >
+              <h1 className="font-display text-2xl font-bold text-foreground mb-3">
+                Are you 18 or older?
+              </h1>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-8">
+                The Private Story is an adult service. You must be 18 or over to enter.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleNo}
+                  className="flex-1 py-3.5 rounded-xl border border-border/40 text-muted-foreground font-semibold hover:bg-white/5 transition-all"
+                >
+                  No
+                </button>
+                <button
+                  onClick={handleYes}
+                  className="flex-1 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all"
+                >
+                  Yes
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="declined"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.18 }}
+            >
+              <h1 className="font-display text-xl font-bold text-foreground mb-3">
+                This page isn't for you
+              </h1>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                The Private Story is for adults only. We hope to welcome you when you're older.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );

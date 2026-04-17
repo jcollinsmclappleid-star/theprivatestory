@@ -1855,7 +1855,7 @@ export default function AfterDark() {
                   {paywallLoadingPlan === "monthly" ? (
                     <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
                   ) : null}
-                  Monthly — £29/month
+                  Monthly — £19.99/month
                 </button>
               </div>
 

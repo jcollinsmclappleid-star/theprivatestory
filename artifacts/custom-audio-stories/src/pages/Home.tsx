@@ -1230,7 +1230,7 @@ export default function Home() {
               <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Monthly</p>
                 <div className="flex items-end gap-1.5 mb-1">
-                  <span className="font-display text-3xl font-bold text-foreground">£29</span>
+                  <span className="font-display text-3xl font-bold text-foreground">£19.99</span>
                   <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
                 </div>
                 <p className="text-xs text-muted-foreground/80 mb-4">Billed monthly. Stories yours to keep.</p>
@@ -1276,7 +1276,7 @@ export default function Home() {
                   <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">Best value</span>
                 </div>
                 <div className="flex items-end gap-1.5 mb-1">
-                  <span className="font-display text-3xl font-bold text-foreground">£179</span>
+                  <span className="font-display text-3xl font-bold text-foreground">£149</span>
                   <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
                 </div>
                 <p className="text-xs text-muted-foreground/80 mb-4">£14.91/month — less than half the monthly price.</p>

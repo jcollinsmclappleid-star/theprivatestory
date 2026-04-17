@@ -35,7 +35,7 @@ const config: CompetitorPageConfig = {
     },
     {
       h2: "Pricing and what you get",
-      body: `The Private Story offers two subscription tiers — Monthly at £29/month (5 story generations) and Annual at £179/year (50 story generations) — with additional stories available for subscribers beyond their plan allocation. Every story includes the full creation flow: your brief, the written narrative, professional narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a library. You are paying for the creation of something that has never existed before — written for you, and for no one else. See the <a href="/pricing">pricing page</a> for full details and any current offers.`,
+      body: `The Private Story offers two subscription tiers — Monthly at £19.99/month (5 story generations) and Annual at £149/year (50 story generations) — with additional stories available for subscribers beyond their plan allocation. Every story includes the full creation flow: your brief, the written narrative, professional narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a library. You are paying for the creation of something that has never existed before — written for you, and for no one else. See the <a href="/pricing">pricing page</a> for full details and any current offers.`,
     },
   ],
   faqs: [

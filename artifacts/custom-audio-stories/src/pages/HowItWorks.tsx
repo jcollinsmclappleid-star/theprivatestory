@@ -556,7 +556,7 @@ export default function HowItWorks() {
                 Monthly
               </p>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground">£29</span>
+                <span className="font-display text-3xl font-bold text-foreground">£19.99</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
               </div>
               <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
@@ -582,7 +582,7 @@ export default function HowItWorks() {
                 </span>
               </div>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground">£179</span>
+                <span className="font-display text-3xl font-bold text-foreground">£149</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
               </div>
               <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">

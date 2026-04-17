@@ -2019,7 +2019,7 @@ export default function Create() {
                     className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all disabled:opacity-60 flex items-center justify-center gap-2 px-4"
                   >
                     {paywallLoadingPlan === "monthly" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                    Monthly — £29/month
+                    Monthly — £19.99/month
                   </button>
                 </div>
 

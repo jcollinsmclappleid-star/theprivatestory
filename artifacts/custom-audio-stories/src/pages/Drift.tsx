@@ -902,7 +902,7 @@ export default function Drift() {
                   {paywallLoadingPlan === "monthly" ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : null}
-                  Monthly — £29/month
+                  Monthly — £19.99/month
                 </button>
               </div>
 

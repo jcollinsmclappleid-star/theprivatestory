@@ -4,6 +4,87 @@ import { useAuth } from "../hooks/useAuth.js";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+const TAG_DISPLAY_MAP: Record<string, string> = {
+  // Restraint & BDSM — She
+  "She wanted to be tied up": "Tied up",
+  "She wanted to be blindfolded": "Blindfolded",
+  "She wanted to be held down": "Held down",
+  "She wanted to be told not to move": "Commanded not to move",
+  "She wanted a hand pressed over her mouth": "Hand over the mouth",
+  "She wanted to kneel for them": "On her knees for them",
+  "She wanted to be completely powerless": "Completely powerless",
+  "She wanted something around her wrists": "Restrained at the wrists",
+  "She wanted to be kept completely still": "Kept completely still",
+  "She wanted to feel completely enclosed": "Fully enclosed, no escape",
+  // Restraint & BDSM — He
+  "He wanted to be tied up": "Tied up",
+  "He wanted to be blindfolded": "Blindfolded",
+  "He wanted to be held down": "Held down",
+  "He wanted to be told not to move": "Commanded not to move",
+  "He wanted a hand pressed over his mouth": "Hand over the mouth",
+  "He wanted to kneel for them": "On his knees for them",
+  "He wanted to be completely powerless": "Completely powerless",
+  "He wanted something around his wrists": "Restrained at the wrists",
+  "He wanted to be kept completely still": "Kept completely still",
+  "He wanted to feel completely enclosed": "Fully enclosed, no escape",
+  // Restraint & BDSM — They
+  "They wanted to be tied up": "Tied up",
+  "They wanted to be blindfolded": "Blindfolded",
+  "They wanted to be held down": "Held down",
+  "They wanted to be told not to move": "Commanded not to move",
+  "They wanted a hand pressed over their mouth": "Hand over the mouth",
+  "They wanted to kneel for them": "On their knees for them",
+  "They wanted to be completely powerless": "Completely powerless",
+  "They wanted something around their wrists": "Restrained at the wrists",
+  "They wanted to be kept completely still": "Kept completely still",
+  "They wanted to feel completely enclosed": "Fully enclosed, no escape",
+  // Submission & Worship — She
+  "She wanted to feel completely surrendered to them": "Complete submission",
+  "She wanted to be spanked": "Spanked",
+  "She wanted to be edged": "Edged",
+  "She wanted to be worshipped": "Worshipped",
+  "She wanted to be taken completely — and adored for it": "Taken completely — and adored for it",
+  "She wanted to beg for it": "Made to beg",
+  // Submission & Worship — He
+  "He wanted to feel completely surrendered to them": "Complete submission",
+  "He wanted to be spanked": "Spanked",
+  "He wanted to be edged": "Edged",
+  "He wanted to be worshipped": "Worshipped",
+  "He wanted to be taken completely — and adored for it": "Taken completely — and adored for it",
+  "He wanted to beg for it": "Made to beg",
+  // Submission & Worship — They
+  "They wanted to feel completely surrendered to them": "Complete submission",
+  "They wanted to be spanked": "Spanked",
+  "They wanted to be edged": "Edged",
+  "They wanted to be worshipped": "Worshipped",
+  "They wanted to be taken completely — and adored for it": "Taken completely — and adored for it",
+  "They wanted to beg for it": "Made to beg",
+  // What does she/he/they really want? — control side
+  "She leads": "She dominates",
+  "He leads": "He dominates",
+  "They lead": "They dominate",
+  "She stays in control": "She holds total control",
+  "He stays in control": "He holds total control",
+  "They stay in control": "They hold total control",
+  "She chooses how far it goes": "She decides every limit",
+  "He chooses how far it goes": "He decides every limit",
+  "They choose how far it goes": "They decide every limit",
+  "She gives control over completely": "She submits completely",
+  "He gives control over completely": "He submits completely",
+  "They give control over completely": "They submit completely",
+  "She doesn't have to think": "She surrenders control",
+  "He doesn't have to think": "He surrenders control",
+  "They don't have to think": "They surrender control",
+  "She lets herself be taken care of": "She lets herself be taken",
+  "He lets himself be taken care of": "He lets himself be taken",
+  "They let themselves be taken care of": "They let themselves be taken",
+  // Her Command / Her Dominance
+  "She asked for it and he obliged completely": "She asked — he obeyed completely",
+  "He does exactly what she says": "He follows her every instruction",
+  "He is on his knees — that is where she wants him and he wants to be": "He's on his knees — exactly where they both want him",
+  "She tells him what good behaviour earns — he earns it": "She rewards good behaviour — he earns it",
+};
+
 interface TagCategory {
   heading: string;
   sub?: string;
@@ -342,8 +423,8 @@ function buildSheOnlyStandardCategories(): TagCategory[] {
 function buildSheOnlyAfterDarkCategories(): TagCategory[] {
   return [
     {
-      heading: "Her Command",
-      sub: "When she directs everything",
+      heading: "Her Dominance",
+      sub: "When she controls everything",
       maxSelect: 5,
       tags: [
         "She asked for it and he obliged completely",
@@ -387,9 +468,9 @@ function buildNocturneCategory(): TagCategory {
 const CATEGORY_EXCLUSION_PAIRS: [string, string][] = [
   ["Just the Scene",            "Story Arc & Plot"],
   ["Fantasy & The Impossible",  "Dark Fantasy"],
-  ["Pure Romance",              "Surrender & Power"],
-  ["Pure Romance",              "Sensation & Restraint"],
-  ["Praise & Devotion",         "Surrender & Power"],
+  ["Pure Romance",              "Submission & Worship"],
+  ["Pure Romance",              "Restraint & BDSM"],
+  ["Praise & Devotion",         "Submission & Worship"],
 ];
 
 interface Props {
@@ -562,7 +643,7 @@ export function StoryTagStudio({
               : undefined
           }
         >
-          {tag}
+          {TAG_DISPLAY_MAP[tag] ?? tag}
         </button>
         {isUsual && !isDisabled && (
           <span

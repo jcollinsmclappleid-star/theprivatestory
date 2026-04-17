@@ -155,9 +155,9 @@ export default function DriftLanding({ onEnter }: Props) {
           className="font-display font-bold leading-[1.08] text-white mb-3"
           style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)", textShadow: "0 2px 24px rgba(3,2,16,0.95)" }}
         >
-          Soft. Intimate.
+          Close. Unhurried.
           <br />
-          <span style={{ color: "#a5b4fc" }}>Made to settle you.</span>
+          <span style={{ color: "#a5b4fc" }}>Made for tonight.</span>
         </motion.h1>
 
         {/* Copy */}
@@ -168,7 +168,7 @@ export default function DriftLanding({ onEnter }: Props) {
           className="text-sm sm:text-base leading-relaxed mb-5 max-w-sm"
           style={{ color: "rgba(255,255,255,0.48)" }}
         >
-          Not fantasy — closeness. Stories written around who you cast, narrated at the pace your body needs. Private, warm, and entirely yours.
+          Intimate, unhurried stories written for the hours before sleep. You cast who's there — the voice, the warmth, the closeness. Private, slow, and shaped around exactly how you want to feel.
         </motion.p>
 
         {/* Room chips */}

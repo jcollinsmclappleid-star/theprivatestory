@@ -40,74 +40,74 @@ const ROOMS: Room[] = [
   {
     id: "dark_territory",
     name: "Dark Territory",
-    sub: "Past the edge. Written without restraint or apology.",
+    sub: "Fully explicit. Every detail written. Nothing implied, softened, or left out.",
     accent: "#c0392b",
     image: "images/rooms/dark_territory.webp",
   },
   {
     id: "the_edge",
     name: "The Edge",
-    sub: "Psychological intensity. Obsession. The kind of wanting that unsettles.",
+    sub: "Psychological intensity. Obsession. The wanting that unsettles and won't let go.",
     accent: "#7c3aed",
     image: "images/rooms/the_edge.webp",
   },
   {
     id: "power_exchange",
     name: "Power Exchange",
-    sub: "Control given. Or taken. Either way, everything changes.",
+    sub: "Dominance and submission. BDSM on your terms — you write the rules, the depth, and how far.",
     accent: "#c0392b",
     image: "images/rooms/power_exchange.webp",
   },
   {
     id: "the_forbidden",
     name: "The Forbidden",
-    sub: "The reason it's wrong is the reason it's everything.",
+    sub: "The reason it's wrong is exactly the reason you're here.",
     accent: "#8b5cf6",
     image: "images/rooms/the_forbidden.webp",
   },
   {
     id: "more_than_two",
     name: "More Than Two",
-    sub: "Desire doesn't always arrive in pairs.",
+    sub: "Threesome, group, or more. Desire multiplies — this room holds all of it.",
     accent: "#6366f1",
     image: "images/rooms/more_than_two.webp",
   },
   {
     id: "sweet_and_savage",
     name: "Sweet & Savage",
-    sub: "Tenderness that turns feral. Softness that breaks into something wilder.",
+    sub: "Tenderness that turns. Softness that breaks into something unmistakably wilder.",
     accent: "#db2777",
     image: "images/rooms/sweet_and_savage.webp",
   },
   {
     id: "eyes_on_us",
     name: "Eyes On Us",
-    sub: "Watched. Watching. Every motion deliberate and felt.",
+    sub: "Exhibitionism or voyeurism. The specific electricity of watching — or being watched.",
     accent: "#14b8a6",
     image: "images/rooms/eyes_on_us.webp",
   },
   {
     id: "her_power",
     name: "Her Power",
-    sub: "She leads. She chooses. He is there because she wants him to be — and he knows it.",
+    sub: "She dominates. Every detail, every decision, every moment — entirely on her terms.",
     accent: "#e879a0",
   },
   {
     id: "dark_fantasy",
     name: "Dark Fantasy",
-    sub: "Rules suspended. Reality bent. The kind of wanting that doesn't need explanation.",
+    sub: "Fantasy scenarios, fetish elements, the kind of wanting that doesn't need justification.",
     accent: "#7c3aed",
   },
   {
     id: "just_the_scene",
     name: "Just the Scene",
-    sub: "No backstory. No buildup. Straight to the moment that matters.",
+    sub: "No backstory. No buildup. Start in the moment that matters.",
     accent: "#db2777",
   },
   {
     id: "in_character",
     name: "In Character",
-    sub: "A role, a premise, a fiction that becomes completely real.",
+    sub: "Roleplay. A power dynamic, a character, a fiction that becomes completely real.",
     accent: "#d97706",
     image: "images/rooms/in_character.webp",
   },
@@ -121,13 +121,13 @@ const ROOMS: Room[] = [
   {
     id: "all_of_them",
     name: "All of Them",
-    sub: "Power, presence, and the specific wanting that comes from more than one of them.",
+    sub: "Power, presence, desire. The specific wanting that comes from more than one of them.",
     accent: "#d4a017",
   },
   {
     id: "the_praise_room",
     name: "The Praise Room",
-    sub: "Every word calibrated to the exact kind of undone you are.",
+    sub: "Praise kink. Every word chosen to make you feel exactly what you came here to feel.",
     accent: "#d97706",
   },
   {
@@ -138,13 +138,25 @@ const ROOMS: Room[] = [
   },
 ];
 
+/* ── Scenario tag display labels ────────────────────────────────────── */
+const SCENARIO_TAG_DISPLAY: Record<string, string> = {
+  "He's completely in control": "He's dominant",
+  "Total surrender": "Full submission",
+  "Control held, then released": "D/s power exchange",
+  "Nothing off limits": "No limits — fully explicit",
+  "Power fully exchanged": "BDSM power exchange",
+  "Nothing implied where it can be named": "Explicitly written throughout",
+  "Being the only thing he is thinking about": "Obsession — she's all he sees",
+  "A line that keeps moving": "Escalating intensity",
+};
+
 /* ── Scenarios ──────────────────────────────────────────────────────── */
 const SCENARIOS: Scenario[] = [
   /* Power Exchange ─── */
   {
     id: "he_decides",
     label: "He Decides Everything",
-    sub: "She wanted to feel everything. She gave him that permission. He made it worth every second.",
+    sub: "She surrendered control completely. He made every second of it count — and she felt every one.",
     room: "power_exchange",
     darkness: "Deep Night",
     gradient: "from-[#140000] via-[#220000] to-[#0a0000]",

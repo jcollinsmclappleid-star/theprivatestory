@@ -14,12 +14,12 @@ type DoorId = "story" | "dark" | "quiet";
 const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const TRUST_ITEMS = [
-  { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social, no history shared" },
-  { icon: <Sparkles className="w-4 h-4" />, label: "Made for you", sub: "Generated around your choices" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Narrated audio", sub: "Ready to listen instantly" },
-  { icon: <Lock className="w-4 h-4" />, label: "Yours alone", sub: "Only you can access your stories" },
-  { icon: <Clock className="w-4 h-4" />, label: "Under 3 minutes", sub: "From first choice to listening" },
-  { icon: <Heart className="w-4 h-4" />, label: "Designed for the female imagination", sub: "Emotionally intelligent, agency-first, privacy-led", colSpan: true },
+  { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social features. No shared history." },
+  { icon: <Sparkles className="w-4 h-4" />, label: "Written around you", sub: "Generated from scratch around your choices" },
+  { icon: <Headphones className="w-4 h-4" />, label: "Premium narration", sub: "Professional voices. Ready the moment you create." },
+  { icon: <Lock className="w-4 h-4" />, label: "Yours alone", sub: "Only you can ever access your stories" },
+  { icon: <Clock className="w-4 h-4" />, label: "Story in minutes", sub: "From first choice to listening — under three minutes" },
+  { icon: <Heart className="w-4 h-4" />, label: "Female-first storytelling", sub: "Built for female desire, emotional pacing, and private pleasure", colSpan: true },
 ];
 
 export default function SEOPage({

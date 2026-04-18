@@ -520,10 +520,13 @@ export default function Profile() {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Current plan</p>
               <p className="font-semibold text-foreground capitalize">
-                {usageData.plan === "free" ? "Free" : usageData.plan === "monthly" ? "Monthly" : "Annual"}
+                {usageData.plan === "free" ? "Free"
+                  : usageData.plan === "monthly" ? "Monthly"
+                  : usageData.plan === "annual" ? "Annual"
+                  : "Immersive Story"}
               </p>
             </div>
-            {usageData.plan !== "free" && (
+            {usageData.plan !== "free" && usageData.plan !== "immersive" && (
               <div className="text-right">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Stories used</p>
                 <p className="font-semibold text-foreground">
@@ -532,7 +535,9 @@ export default function Profile() {
               </div>
             )}
           </div>
-          {usageData.plan !== "free" && (
+
+          {/* Monthly/annual progress bar */}
+          {usageData.plan !== "free" && usageData.plan !== "immersive" && (
             <div className="mt-4">
               <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <div
@@ -548,6 +553,54 @@ export default function Profile() {
               </p>
             </div>
           )}
+
+          {/* Immersive plan state */}
+          {usageData.plan === "immersive" && (
+            <div className="mt-4">
+              {usageData.addonStoriesRemaining > 0 ? (
+                <div className="flex items-center justify-between p-3 rounded-xl bg-primary/8 border border-primary/20">
+                  <p className="text-xs text-primary font-medium">You have a story ready — start creating</p>
+                  <Link href="/after-dark" className="text-xs px-3 py-1.5 rounded-full bg-primary/15 text-primary hover:bg-primary/25 transition-all font-medium">
+                    Create story →
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground">Your story is yours forever. Ready for another?</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      disabled={addonLoading}
+                      onClick={async () => {
+                        setAddonLoading(true);
+                        try {
+                          const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+                            method: "POST",
+                            credentials: "include",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ plan: "addon" }),
+                          });
+                          const data = await res.json();
+                          if (data.url) window.location.href = data.url;
+                        } finally {
+                          setAddonLoading(false);
+                        }
+                      }}
+                      className="flex-1 text-xs px-4 py-2.5 rounded-full bg-primary/10 border border-primary/25 text-primary hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed font-medium"
+                    >
+                      {addonLoading ? <span className="flex items-center justify-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> Starting…</span> : "Buy another story — £3.99"}
+                    </button>
+                    <Link
+                      href="/pricing"
+                      className="flex-1 text-center text-xs px-4 py-2.5 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+                    >
+                      Unlimited — from £19.99/month
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {usageData.plan === "free" && (
             <p className="mt-3 text-xs text-muted-foreground">
               Upgrade to generate stories. <Link href="/pricing" className="text-primary hover:underline underline-offset-2">See plans →</Link>

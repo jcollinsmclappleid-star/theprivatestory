@@ -911,20 +911,28 @@ export default function Create() {
       setPaywallCoverUrl(null);
       return;
     }
-    fetch(`${API_BASE}/api/preview-cover`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    (async () => {
+      const body = JSON.stringify({
         mood: paywallCapture.mood,
         intensity: paywallCapture.intensity,
         pairing: paywallCapture.pairing,
         heritage: paywallCapture.heritage,
-      }),
-    })
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => { if (d?.url) setPaywallCoverUrl(d.url); })
-      .catch(() => {});
+      });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const r = await fetch(`${API_BASE}/api/preview-cover`, {
+            method: "POST", credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body,
+          });
+          if (r.ok) {
+            const d = await r.json();
+            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+          }
+        } catch {}
+        if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
+      }
+    })();
   }, [step, paywallCapture]);
 
   const generateMutation = useGenerateFullStory({
@@ -2006,7 +2014,7 @@ export default function Create() {
                   >
                     <span className="flex items-center gap-2">
                       {paywallLoadingPlan === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      <span>Write my story — £14.99/mo</span>
+                      <span>Write my story — £12.42/mo</span>
                       <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-primary-foreground/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                     </span>
                     <span className="text-xs text-primary-foreground/50">billed annually</span>

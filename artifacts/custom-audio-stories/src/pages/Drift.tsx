@@ -350,20 +350,28 @@ export default function Drift() {
       setPaywallCoverUrl(null);
       return;
     }
-    fetch(`${API_BASE}/api/preview-cover`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    (async () => {
+      const body = JSON.stringify({
         mood: "Late Night",
         intensity: "Sensual",
         pairing: paywallCapture.pairing,
         heritage: paywallCapture.heritage,
-      }),
-    })
-      .then((r) => r.ok ? r.json() : null)
-      .then((d: { url?: string } | null) => { if (d?.url) setPaywallCoverUrl(d.url); })
-      .catch(() => {});
+      });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const r = await fetch(`${API_BASE}/api/preview-cover`, {
+            method: "POST", credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body,
+          });
+          if (r.ok) {
+            const d: { url?: string } | null = await r.json();
+            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+          }
+        } catch {}
+        if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
+      }
+    })();
   }, [phase, paywallCapture]);
 
   const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
@@ -886,7 +894,7 @@ export default function Drift() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    <span>Hear my story — £14.99/mo</span>
+                    <span>Hear my story — £12.42/mo</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-xs text-white/80">billed annually</span>

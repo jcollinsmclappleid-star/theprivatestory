@@ -5010,13 +5010,20 @@ router.post("/preview-cover", async (req: Request, res: Response) => {
 
     const prompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Heated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
 
-    const imageUrl = await generateImageBuffer(prompt);
-    if (!imageUrl) {
+    const response = await openai.images.generate({
+      model: "gpt-image-1",
+      prompt,
+      size: "1024x1024",
+      quality: "low",
+    });
+    const base64 = response.data[0]?.b64_json;
+    if (!base64) {
       res.status(500).json({ error: "Cover generation failed" });
       return;
     }
 
-    res.json({ url: imageUrl });
+    const dataUrl = `data:image/png;base64,${base64}`;
+    res.json({ url: dataUrl });
   } catch (err) {
     logger.error({ err }, "[preview-cover] Generation failed");
     res.status(500).json({ error: "Cover generation failed" });

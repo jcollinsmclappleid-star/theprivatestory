@@ -1260,20 +1260,28 @@ export default function AfterDark() {
       setPaywallCoverUrl(null);
       return;
     }
-    fetch(`${API_BASE}/api/preview-cover`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    (async () => {
+      const body = JSON.stringify({
         mood: "After Dark",
         intensity: "Unrestrained",
         pairing: lastCastingData.pairing as string | undefined,
         heritage: lastCastingData.heritage as string | undefined,
-      }),
-    })
-      .then((r) => r.ok ? r.json() : null)
-      .then((d: { url?: string } | null) => { if (d?.url) setPaywallCoverUrl(d.url); })
-      .catch(() => {});
+      });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const r = await fetch(`${API_BASE}/api/preview-cover`, {
+            method: "POST", credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body,
+          });
+          if (r.ok) {
+            const d: { url?: string } | null = await r.json();
+            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+          }
+        } catch {}
+        if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
+      }
+    })();
   }, [phase, lastCastingData]);
 
   const [presetSaved, setPresetSaved] = useState(false);
@@ -1839,7 +1847,7 @@ export default function AfterDark() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    Write my story — £14.99/mo
+                    Write my story — £12.42/mo
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-[11px] text-white/80 font-normal">billed annually · cancel renewal anytime</span>

@@ -336,6 +336,7 @@ export default function Drift() {
   const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; roomId?: string; accent?: string; archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
+  const [paywallImageLoading, setPaywallImageLoading] = useState(false);
 
   useEffect(() => {
     const handler = (e: PageTransitionEvent) => {
@@ -350,6 +351,7 @@ export default function Drift() {
       setPaywallCoverUrl(null);
       return;
     }
+    setPaywallImageLoading(true);
     (async () => {
       const body = JSON.stringify({
         mood: "Late Night",
@@ -366,11 +368,12 @@ export default function Drift() {
           });
           if (r.ok) {
             const d: { url?: string } | null = await r.json();
-            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+            if (d?.url) { setPaywallCoverUrl(d.url); setPaywallImageLoading(false); return; }
           }
         } catch {}
         if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
       }
+      setPaywallImageLoading(false);
     })();
   }, [phase, paywallCapture]);
 
@@ -825,14 +828,20 @@ export default function Drift() {
                   <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "transparent" }}>
                     <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
-                      <img
-                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover object-center"
-                        style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
-                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`; }}
-                      />
+                      {paywallImageLoading && !paywallCoverUrl ? (
+                        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/40">
+                          <div className="w-6 h-6 rounded-full border-2 border-white/20 border-t-white/70 animate-spin" />
+                        </div>
+                      ) : (
+                        <img
+                          src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover object-center"
+                          style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
+                          onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`; }}
+                        />
+                      )}
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
                       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="relative z-10 text-left">

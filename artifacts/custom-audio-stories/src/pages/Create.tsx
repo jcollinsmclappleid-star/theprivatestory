@@ -757,6 +757,7 @@ export default function Create() {
   const [continueAfterDark, setContinueAfterDark] = useState(false);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
+  const [paywallImageLoading, setPaywallImageLoading] = useState(false);
 
   const [variationModalOpen, setVariationModalOpen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>("softer");
@@ -909,8 +910,10 @@ export default function Create() {
   useEffect(() => {
     if (step !== "paywall" || !paywallCapture) {
       setPaywallCoverUrl(null);
+      setPaywallImageLoading(false);
       return;
     }
+    setPaywallImageLoading(true);
     (async () => {
       const body = JSON.stringify({
         mood: paywallCapture.mood,
@@ -927,11 +930,12 @@ export default function Create() {
           });
           if (r.ok) {
             const d = await r.json();
-            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+            if (d?.url) { setPaywallCoverUrl(d.url); setPaywallImageLoading(false); return; }
           }
         } catch {}
         if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
       }
+      setPaywallImageLoading(false);
     })();
   }, [step, paywallCapture]);
 
@@ -1852,9 +1856,7 @@ export default function Create() {
           const excerpt = MOOD_TEASERS[paywallCapture.storyMode] ?? MOOD_TEASERS.romance;
           const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
 
-          const ROOM_LANDING_IMAGE = `${API_BASE}/images/afterdark-hero-woman.png`;
-          const doorImage = ROOM_LANDING_IMAGE;
-          const heroImage = paywallCoverUrl || doorImage;
+          const doorImage = `${API_BASE}/images/afterdark-hero-woman.png`;
           const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
@@ -1941,12 +1943,18 @@ export default function Create() {
 
                   {/* Door / mood image */}
                   <div className="relative h-52 overflow-hidden">
-                    <img
-                      src={heroImage}
-                      alt=""
-                      className="w-full h-full object-cover object-center"
-                      onError={(e) => { (e.target as HTMLImageElement).src = `${API_BASE}/cover-romance.png`; }}
-                    />
+                    {paywallImageLoading && !paywallCoverUrl ? (
+                      <div className="w-full h-full bg-[#1a1008] flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+                      </div>
+                    ) : (
+                      <img
+                        src={paywallCoverUrl || doorImage}
+                        alt=""
+                        className="w-full h-full object-cover object-center"
+                        onError={(e) => { (e.target as HTMLImageElement).src = `${API_BASE}/cover-romance.png`; }}
+                      />
+                    )}
                     {/* top fade — blends into card bg above */}
                     <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#1e1208] to-transparent pointer-events-none" />
                     {/* bottom fade — bleeds into excerpt below */}

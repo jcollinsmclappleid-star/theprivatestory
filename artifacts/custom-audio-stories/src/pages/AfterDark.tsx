@@ -1234,6 +1234,7 @@ export default function AfterDark() {
   const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
+  const [paywallImageLoading, setPaywallImageLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
 
   useEffect(() => {
@@ -1260,6 +1261,7 @@ export default function AfterDark() {
       setPaywallCoverUrl(null);
       return;
     }
+    setPaywallImageLoading(true);
     (async () => {
       const body = JSON.stringify({
         mood: "After Dark",
@@ -1276,11 +1278,12 @@ export default function AfterDark() {
           });
           if (r.ok) {
             const d: { url?: string } | null = await r.json();
-            if (d?.url) { setPaywallCoverUrl(d.url); return; }
+            if (d?.url) { setPaywallCoverUrl(d.url); setPaywallImageLoading(false); return; }
           }
         } catch {}
         if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
       }
+      setPaywallImageLoading(false);
     })();
   }, [phase, lastCastingData]);
 
@@ -1783,6 +1786,11 @@ export default function AfterDark() {
                   <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "#08010100" }}>
                     <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
+                      {paywallImageLoading && !paywallCoverUrl ? (
+                        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/40">
+                          <div className="w-6 h-6 rounded-full border-2 border-white/20 border-t-white/70 animate-spin" />
+                        </div>
+                      ) : (
                       <img
                         src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
                         alt=""
@@ -1791,6 +1799,7 @@ export default function AfterDark() {
                         style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
                         onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`; }}
                       />
+                      )}
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
                       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="relative z-10 text-left">

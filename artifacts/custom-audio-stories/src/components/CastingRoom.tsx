@@ -162,7 +162,7 @@ const PERSPECTIVES = [
   { id: "their" as const, label: "Their Story", sub: "Follow them. Feel everything.", gradient: "from-[#0a0a0a] via-[#141414] to-[#060606]",  accent: "#9ca3af" },
 ];
 
-interface PairingOption {
+export interface PairingOption {
   id: string;
   label: string;
   sub: string;
@@ -172,7 +172,7 @@ interface PairingOption {
   partnerPronouns: string;
 }
 
-const PAIRINGS: PairingOption[] = [
+export const PAIRINGS: PairingOption[] = [
   { id: "Her & Him",   label: "Her & Him",   sub: "Woman + man",              gradient: "from-[#1a0810] via-[#0a0818] to-[#060310]", accent: "#e879a0",  protagonistPronouns: "she/her",   partnerPronouns: "he/him"   },
   { id: "Her & Her",   label: "Her & Her",   sub: "Woman + woman",            gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",  protagonistPronouns: "she/her",   partnerPronouns: "she/her"  },
   { id: "Him & Him",   label: "Him & Him",   sub: "Man + man",                gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce",  protagonistPronouns: "he/him",    partnerPronouns: "he/him"   },

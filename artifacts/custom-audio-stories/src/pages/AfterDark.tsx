@@ -5,11 +5,29 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
-import { CastingRoom } from "@/components/CastingRoom";
+import { CastingRoom, PAIRINGS } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { VOICES } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
+
+/* ── Pronoun adaptation for scenario text ────────────────────────── */
+function adaptTextToPartner(text: string, partnerPronouns: string): string {
+  if (!partnerPronouns || partnerPronouns === "he/him") return text;
+  const isThey = partnerPronouns === "they/them";
+  const sub  = isThey ? "They" : "She";
+  const obj  = isThey ? "them" : "her";
+  const poss = isThey ? "their" : "her";
+  const refl = isThey ? "themselves" : "herself";
+  return text
+    .replace(/\bHe\b/g, sub)
+    .replace(/\bhe\b/g, sub.toLowerCase())
+    .replace(/\bHim\b/g, isThey ? "Them" : "Her")
+    .replace(/\bhim\b/g, obj)
+    .replace(/\bHis\b/g, isThey ? "Their" : "Her")
+    .replace(/\bhis\b/g, poss)
+    .replace(/\bhimself\b/g, refl);
+}
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 type DarknessLevel = "After Dark" | "Deep Night" | "No Limits";
@@ -1231,7 +1249,8 @@ export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [showLanding, setShowLanding] = useState(true);
-  const [phase, setPhase] = useState<"scenario" | "casting" | "generating" | "result" | "paywall">("scenario");
+  const [phase, setPhase] = useState<"pairing" | "scenario" | "casting" | "generating" | "result" | "paywall">("pairing");
+  const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
@@ -1245,7 +1264,8 @@ export default function AfterDark() {
     return () => window.removeEventListener("pageshow", handler);
   }, []);
 
-  const [castingHandoff] = useState<CastingRoomHandoff | null>(null);
+  // castingHandoff is built when the user selects a scenario, pre-loading the pairing
+  const [castingHandoff, setCastingHandoff] = useState<CastingRoomHandoff | null>(null);
   // confirmedPairing: the most recently known pairing — set from handoff on load,
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
@@ -1469,6 +1489,7 @@ export default function AfterDark() {
         intensity: casting.intensity,
         storyMode,
         voiceId: casting.voiceId,
+        pairing: casting.pairing || selectedPairing || undefined,
       };
 
       setLastCastingData(castingSnapshot);
@@ -1550,8 +1571,73 @@ export default function AfterDark() {
     >
       <AnimatePresence mode="wait">
 
+        {/* ── Pairing Selection (first step in After Dark) ───────────────── */}
+        {phase === "pairing" && (
+          <motion.div
+            key="pairing"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className="max-w-xl mx-auto px-4 py-12"
+          >
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <motion.div
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.35)" }}
+                >
+                  <Moon className="w-4 h-4" style={{ color: "#c0392b" }} />
+                </motion.div>
+                <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "#c0392b" }}>
+                  After Dark
+                </span>
+              </div>
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-3">
+                Who's in your story?
+              </h1>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
+                This shapes everything — the pronouns, the energy, the writing. Choose the pairing.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {PAIRINGS.map(p => {
+                const selected = selectedPairing === p.id;
+                return (
+                  <motion.button
+                    key={p.id}
+                    type="button"
+                    whileHover={{ scale: selected ? 1 : 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => {
+                      setSelectedPairing(p.id);
+                      setTimeout(() => setPhase("scenario"), 280);
+                    }}
+                    className={`relative overflow-hidden rounded-2xl border text-left p-5 transition-colors ${
+                      selected
+                        ? "border-white/30 shadow-[0_0_20px_rgba(192,57,43,0.2)]"
+                        : "border-white/8 hover:border-white/20"
+                    }`}
+                    style={{
+                      background: `linear-gradient(135deg, ${p.accent}18 0%, transparent 70%)`,
+                    }}
+                  >
+                    <div className="absolute top-3 right-3 w-2 h-2 rounded-full" style={{ background: p.accent, opacity: selected ? 1 : 0.3 }} />
+                    <p className="font-bold text-white text-base mb-0.5">{p.label}</p>
+                    <p className="text-white/65 text-sm">{p.sub}</p>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
         {/* ── Scenario Selection ────────────────────────────────────────── */}
-        {phase === "scenario" && (
+        {phase === "scenario" && (() => {
+          const activePairingCfg = PAIRINGS.find(p => p.id === selectedPairing);
+          const partnerPronouns = activePairingCfg?.partnerPronouns ?? "he/him";
+          return (
           <motion.div
             key="scenario"
             initial={{ opacity: 0, y: 16 }}
@@ -1561,6 +1647,22 @@ export default function AfterDark() {
           >
             {/* Header */}
             <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <button
+                  onClick={() => setPhase("pairing")}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Change pairing
+                </button>
+                {selectedPairing && (
+                  <span className="text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    style={{ background: `${activePairingCfg?.accent ?? "#c0392b"}18`, color: activePairingCfg?.accent ?? "#e8a09a", border: `1px solid ${activePairingCfg?.accent ?? "#c0392b"}30` }}
+                  >
+                    {selectedPairing}
+                  </span>
+                )}
+              </div>
               <div className="flex items-center gap-3 mb-6">
                 <motion.div
                   animate={{ opacity: [0.5, 1, 0.5] }}
@@ -1638,10 +1740,15 @@ export default function AfterDark() {
                             confirmedPairing &&
                             !scenario.allowedPairings.includes(confirmedPairing)
                           );
+                          const adaptedScenario = {
+                            ...scenario,
+                            label: adaptTextToPartner(scenario.label, partnerPronouns),
+                            sub: adaptTextToPartner(scenario.sub, partnerPronouns),
+                          };
                           return (
                             <ScenarioCard
                               key={scenario.id}
-                              scenario={scenario}
+                              scenario={adaptedScenario}
                               selected={selectedScenario?.id === scenario.id}
                               locked={isLockedByPairing}
                               onClick={() => {
@@ -1649,6 +1756,11 @@ export default function AfterDark() {
                                 const next = selectedScenario?.id === scenario.id ? null : scenario;
                                 setSelectedScenario(next);
                                 if (next) {
+                                  // Pre-load pairing into CastingRoom so step 0 is skipped
+                                  if (selectedPairing) {
+                                    setCastingHandoff({ pairing: selectedPairing, handoffStep: 1 });
+                                    setConfirmedPairing(selectedPairing);
+                                  }
                                   window.scrollTo({ top: 0 });
                                   setPhase("casting");
                                 }
@@ -1664,7 +1776,8 @@ export default function AfterDark() {
             </div>
 
           </motion.div>
-        )}
+          );
+        })()}
 
 
         {/* ── Casting Room ──────────────────────────────────────────────── */}
@@ -1677,7 +1790,7 @@ export default function AfterDark() {
           >
             <div className="max-w-2xl mx-auto px-4 pt-6">
               <button
-                onClick={() => setPhase("seed")}
+                onClick={() => setPhase("scenario")}
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -1707,11 +1820,12 @@ export default function AfterDark() {
                   whoIsHe: "",
                   dynamic: selectedScenario?.tags[0] ?? "",
                   storyMode: selectedScenario?.storyMode ?? "unrestrained",
+                  pairing: selectedPairing || "Her & Him",
                 })
               }
               afterDark={true}
               handoff={castingHandoff ?? undefined}
-              handoffStep={castingHandoff ? (castingHandoff.handoffStep ?? 5) : undefined}
+              handoffStep={castingHandoff?.handoffStep}
               scenarioTags={selectedScenario?.tags}
             />
           </motion.div>
@@ -1786,19 +1900,18 @@ export default function AfterDark() {
                   <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "#08010100" }}>
                     <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
-                      {paywallImageLoading && !paywallCoverUrl ? (
-                        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/40">
-                          <div className="w-6 h-6 rounded-full border-2 border-white/20 border-t-white/70 animate-spin" />
-                        </div>
-                      ) : (
                       <img
                         src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
                         alt=""
                         aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover object-center"
-                        style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
+                        className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700"
+                        style={{ opacity: paywallCoverUrl ? 0.55 : (paywallImageLoading ? 0.18 : 0.35) }}
                         onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`; }}
                       />
+                      {paywallImageLoading && !paywallCoverUrl && (
+                        <div className="absolute top-3 right-3">
+                          <div className="w-4 h-4 rounded-full border border-white/20 border-t-white/60 animate-spin" />
+                        </div>
                       )}
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
                       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />

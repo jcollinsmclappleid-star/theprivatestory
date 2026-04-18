@@ -2306,9 +2306,17 @@ ${STORY_BIBLE}${opts?.seriesLayer ? `\n\n${opts.seriesLayer}` : ""}`;
     : "(none specified — infer from path and scenario)";
   const planSituationAnchor = intake.situationId ? (() => {
     const sit = getSituationById(intake.situationId);
-    return sit
-      ? `\n\nSITUATION ANCHOR — IMMERSIVE GROUNDING:\nThe story's opening circumstance is grounded in this specific situation. Use it as the structural foundation for why these two people are in the same space. Do not state it literally — the listener must feel they ARE in this situation, inhabiting it from the inside:\n${sit.internalInject}\nThe protagonist's physical awareness of this situation — what ${planProtFull.sub === "They" ? "they notice" : `${planProtFull.sub.toLowerCase()} notices`} in the space, how it makes ${planProtFull.poss} body feel, the specific tension it creates — must be present in at least two scenes, not just the opening.`
-      : "";
+    if (!sit) return "";
+    // Add a pronoun correction note when the love interest isn't a man — situation
+    // labels/descriptions default to He/him for the love interest, which must be
+    // overridden for Her & Her, Them & Them, and Them-paired stories.
+    const pronounNote =
+      loveInterestNoun === "woman"
+        ? "\n[Pairing note: the love interest is a woman. Where the above description uses male pronouns (he/him/his/he's), read them as she/her/hers/she's instead.]"
+        : loveInterestNoun === "person"
+        ? "\n[Pairing note: the love interest is non-binary. Where the above description uses gendered pronouns, use they/them/their instead.]"
+        : "";
+    return `\n\nSITUATION ANCHOR — IMMERSIVE GROUNDING:\nThe story's opening circumstance is grounded in this specific situation. Use it as the structural foundation for why these two people are in the same space. Do not state it literally — the listener must feel they ARE in this situation, inhabiting it from the inside:\n${sit.internalInject}${pronounNote}\nThe protagonist's physical awareness of this situation — what ${planProtFull.sub === "They" ? "they notice" : `${planProtFull.sub.toLowerCase()} notices`} in the space, how it makes ${planProtFull.poss} body feel, the specific tension it creates — must be present in at least two scenes, not just the opening.`;
   })() : "";
 
   const userPrompt = `Take this user input and turn it into a hidden internal story brief.

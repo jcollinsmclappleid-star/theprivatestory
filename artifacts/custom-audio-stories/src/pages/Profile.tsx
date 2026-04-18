@@ -689,7 +689,7 @@ export default function Profile() {
                   {addonLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : "Add more stories — £3.99"}
                 </button>
               )}
-              {usageData.subscriptionStatus !== "canceling" && (
+              {(usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus !== "canceling" && (
                 <button
                   onClick={() => setCancelConfirmOpen(true)}
                   className="text-xs px-4 py-2 rounded-full border border-red-500/20 text-red-400/70 hover:text-red-400 hover:border-red-400/30 transition-all"

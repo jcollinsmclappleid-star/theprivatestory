@@ -1298,6 +1298,15 @@ export default function AfterDark() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
 
+  // Guard: if the user somehow reaches the scenario screen without a pairing selected
+  // (e.g. state preserved across HMR, or navigating via browser history), send them
+  // back to pairing so they always choose their pairing first.
+  useEffect(() => {
+    if (phase === "scenario" && !selectedPairing) {
+      setPhase("pairing");
+    }
+  }, [phase, selectedPairing]);
+
   useEffect(() => {
     if (phase !== "paywall") {
       if (phase === "pairing") {
@@ -2193,10 +2202,14 @@ export default function AfterDark() {
 
             <button
               onClick={() => {
-                setPhase("scenario");
+                setPhase("pairing");
+                setSelectedPairing(null);
                 setSelectedScenario(null);
                 setResult(null);
                 setCastingHandoff(null);
+                preGenCoverPromise.current = null;
+                setPaywallCoverUrl(null);
+                window.scrollTo({ top: 0 });
               }}
               className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/50"
               style={{ background: "rgba(192,57,43,0.07)", border: "1px solid rgba(192,57,43,0.25)" }}

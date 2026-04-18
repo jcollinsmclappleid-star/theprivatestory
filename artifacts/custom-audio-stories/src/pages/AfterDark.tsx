@@ -1270,6 +1270,28 @@ export default function AfterDark() {
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
 
+  // Pre-generate the paywall cover image as soon as the scenario is selected,
+  // so by the time the paywall appears it's already fetched.
+  const preGenCoverPromise = useRef<Promise<string | null> | null>(null);
+
+  const fetchPreviewCover = useCallback(async (pairing?: string): Promise<string | null> => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const r = await fetch(`${API_BASE}/api/preview-cover`, {
+          method: "POST", credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mood: "After Dark", intensity: "Unrestrained", pairing }),
+        });
+        if (r.ok) {
+          const d = await r.json() as { url?: string };
+          if (d?.url) return d.url;
+        }
+      } catch { /* ignore — will retry or fallback */ }
+      if (attempt < 1) await new Promise(res => setTimeout(res, 2000));
+    }
+    return null;
+  }, []);
+
   // Always start fresh — no handoff from regular casting room
 
   const [loadingPhase, setLoadingPhase] = useState(0);
@@ -1277,27 +1299,32 @@ export default function AfterDark() {
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    if (phase !== "paywall" || !lastCastingData) {
-      setPaywallCoverUrl(null);
+    if (phase !== "paywall") {
+      if (phase === "pairing") {
+        // Full reset — user navigated all the way back
+        preGenCoverPromise.current = null;
+        setPaywallCoverUrl(null);
+      }
       return;
     }
     setPaywallImageLoading(true);
     (async () => {
-      const body = JSON.stringify({
-        mood: "After Dark",
-        intensity: "Unrestrained",
-        pairing: lastCastingData.pairing as string | undefined,
-        heritage: lastCastingData.heritage as string | undefined,
-      });
+      // Use pre-generated image if available (started when scenario was selected)
+      if (preGenCoverPromise.current) {
+        const url = await preGenCoverPromise.current;
+        if (url) { setPaywallCoverUrl(url); setPaywallImageLoading(false); return; }
+      }
+      // Fallback: generate now (no pre-gen started, or it failed)
+      const pairing = (lastCastingData?.pairing as string | undefined) ?? selectedPairing ?? undefined;
       for (let attempt = 0; attempt < 2; attempt++) {
         try {
           const r = await fetch(`${API_BASE}/api/preview-cover`, {
             method: "POST", credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body,
+            body: JSON.stringify({ mood: "After Dark", intensity: "Unrestrained", pairing }),
           });
           if (r.ok) {
-            const d: { url?: string } | null = await r.json();
+            const d = await r.json() as { url?: string };
             if (d?.url) { setPaywallCoverUrl(d.url); setPaywallImageLoading(false); return; }
           }
         } catch {}
@@ -1305,7 +1332,8 @@ export default function AfterDark() {
       }
       setPaywallImageLoading(false);
     })();
-  }, [phase, lastCastingData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   const [presetSaved, setPresetSaved] = useState(false);
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
@@ -1756,6 +1784,8 @@ export default function AfterDark() {
                                 const next = selectedScenario?.id === scenario.id ? null : scenario;
                                 setSelectedScenario(next);
                                 if (next) {
+                                  // Start generating the cover image immediately — it'll be ready by the time the paywall appears
+                                  preGenCoverPromise.current = fetchPreviewCover(selectedPairing ?? undefined);
                                   // Pre-load pairing into CastingRoom so step 0 is skipped
                                   if (selectedPairing) {
                                     setCastingHandoff({ pairing: selectedPairing, handoffStep: 1 });

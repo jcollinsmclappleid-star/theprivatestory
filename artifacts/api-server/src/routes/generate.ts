@@ -5008,15 +5008,36 @@ router.post("/preview-cover", async (req: Request, res: Response) => {
       heritage?: string;
     };
 
-    const prompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Heated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
+    const pairingDesc = pairing ? `, featuring ${pairing}` : "";
+    const heritageDesc = heritage ? `, ${heritage} characters` : "";
 
-    const response = await openai.images.generate({
-      model: "gpt-image-1",
-      prompt,
-      size: "1024x1024",
-      quality: "low",
-    });
-    const base64 = response.data[0]?.b64_json;
+    // Try DALL-E 3 standard first — ~5s vs ~15s for gpt-image-1 low
+    const d3Prompt = `Premium adult romance literary fiction cover. ${mood || "Intimate"} atmosphere, ${intensity || "passionate"} mood${pairingDesc}${heritageDesc}. Luxury aesthetic, warm golden candlelight, deep charcoal shadows. Cinematic composition. No text, no words. Editorial photography style.`;
+    let base64: string | undefined;
+    try {
+      const r3 = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: d3Prompt,
+        size: "1024x1024",
+        quality: "standard",
+        response_format: "b64_json",
+      } as Parameters<typeof openai.images.generate>[0]);
+      base64 = r3.data[0]?.b64_json;
+    } catch {
+      // DALL-E 3 unavailable or refused — fall back to gpt-image-1
+    }
+
+    if (!base64) {
+      const fallbackPrompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Heated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
+      const response = await openai.images.generate({
+        model: "gpt-image-1",
+        prompt: fallbackPrompt,
+        size: "1024x1024",
+        quality: "low",
+      });
+      base64 = response.data[0]?.b64_json;
+    }
+
     if (!base64) {
       res.status(500).json({ error: "Cover generation failed" });
       return;

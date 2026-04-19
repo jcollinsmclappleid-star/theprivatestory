@@ -1994,8 +1994,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             <div className="space-y-2">
               {SITUATION_CATEGORIES.map(cat => {
                 const situations = getSituationsByCategory(cat);
+                // Skip categories where every situation is locked for this pairing
+                const anyUnlocked = situations.some(s => !s.allowedPairings || !data.pairing || s.allowedPairings.includes(data.pairing));
+                if (!anyUnlocked) return null;
                 const isOpen = expandedCategories.has(cat);
                 const hasSelected = situations.some(s => s.id === situationId);
+                // Adapt category label to protagonist pronouns (e.g. "Her Desire" → "His Desire")
+                const catLabel = cat === "Her Desire"
+                  ? (rawProtagonistPronouns === "he/him" ? "His Desire" : rawProtagonistPronouns === "they/them" ? "Their Desire" : "Her Desire")
+                  : cat;
+                // Count only unlocked situations for display
+                const unlockedCount = situations.filter(s => !s.allowedPairings || !data.pairing || s.allowedPairings.includes(data.pairing)).length;
                 return (
                   <div
                     key={cat}
@@ -2021,11 +2030,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                         )}
                         <span className={`text-sm font-semibold ${hasSelected ? "text-primary" : "text-foreground"}`}>
-                          {cat}
+                          {catLabel}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground/60">{situations.length}</span>
+                        <span className="text-xs text-muted-foreground/60">{unlockedCount}</span>
                         <ChevronDown
                           className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                         />
@@ -2051,7 +2060,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                                   setSituationCategory("");
                                   setCfmMode("none");
                                 } else {
-                                  setSituationLabel(sit.label);
+                                  setSituationLabel(interpSit(sit));
                                   setSituationId(sit.id);
                                   setSituationCategory(sit.category);
                                   setCfmMode("none");

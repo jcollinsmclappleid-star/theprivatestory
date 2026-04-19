@@ -13,21 +13,61 @@ import { VOICES } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
 
 /* ── Pronoun adaptation for scenario text ────────────────────────── */
-function adaptTextToPartner(text: string, partnerPronouns: string): string {
-  if (!partnerPronouns || partnerPronouns === "he/him") return text;
-  const isThey = partnerPronouns === "they/them";
-  const sub  = isThey ? "They" : "She";
-  const obj  = isThey ? "them" : "her";
-  const poss = isThey ? "their" : "her";
-  const refl = isThey ? "themselves" : "herself";
-  return text
-    .replace(/\bHe\b/g, sub)
-    .replace(/\bhe\b/g, sub.toLowerCase())
-    .replace(/\bHim\b/g, isThey ? "Them" : "Her")
-    .replace(/\bhim\b/g, obj)
-    .replace(/\bHis\b/g, isThey ? "Their" : "Her")
-    .replace(/\bhis\b/g, poss)
-    .replace(/\bhimself\b/g, refl);
+type PCtxFull = {
+  sub: string; subL: string; objCap: string; obj: string;
+  possCap: string; poss: string; refl: string;
+  contr: string; contrL: string; dep: string; depL: string;
+};
+function getPCtxFull(pronouns: string): PCtxFull {
+  switch (pronouns) {
+    case "he/him":    return { sub:"He",   subL:"he",   objCap:"Him",  obj:"him",  possCap:"His",   poss:"his",   refl:"himself",    contr:"He's",    contrL:"he's",    dep:"He'd",    depL:"he'd"   };
+    case "they/them": return { sub:"They", subL:"they", objCap:"Them", obj:"them", possCap:"Their", poss:"their", refl:"themselves", contr:"They're", contrL:"they're", dep:"They'd",  depL:"they'd" };
+    default:          return { sub:"She",  subL:"she",  objCap:"Her",  obj:"her",  possCap:"Her",   poss:"her",   refl:"herself",    contr:"She's",   contrL:"she's",   dep:"She'd",   depL:"she'd"  };
+  }
+}
+/**
+ * Adapt scenario sub/label/tag text written for the default She(prot)+He(partner) pairing
+ * to any other pairing. Uses a three-phase placeholder approach so partner and protagonist
+ * replacements never collide.
+ */
+function adaptScenarioText(
+  text: string,
+  protagonistPronouns: string,
+  partnerPronouns: string,
+): string {
+  if (protagonistPronouns === "she/her" && partnerPronouns === "he/him") return text;
+  const P = getPCtxFull(protagonistPronouns);
+  const A = getPCtxFull(partnerPronouns);
+
+  // Phase 1 — mask the original partner (He/him/his) as placeholders
+  let t = text
+    .replace(/\bHe's\b/g, "%%AC%%").replace(/\bhe's\b/g, "%%ac%%")
+    .replace(/\bHe'd\b/g, "%%AD%%").replace(/\bhe'd\b/g, "%%ad%%")
+    .replace(/\bHe\b/g,   "%%AS%%").replace(/\bhe\b/g,   "%%as%%")
+    .replace(/\bhimself\b/g,"%%AR%%")
+    .replace(/\bHim\b/g,  "%%AO%%").replace(/\bhim\b/g,  "%%ao%%")
+    .replace(/\bHis\b/g,  "%%AP%%").replace(/\bhis\b/g,  "%%ap%%");
+
+  // Phase 2 — replace the original protagonist (She/her) with target protagonist pronouns
+  t = t
+    .replace(/\bShe's\b/g, P.contr).replace(/\bshe's\b/g, P.contrL)
+    .replace(/\bShe'd\b/g, P.dep  ).replace(/\bshe'd\b/g, P.depL  )
+    .replace(/\bShe\b/g,   P.sub  ).replace(/\bshe\b/g,   P.subL  )
+    .replace(/\bherself\b/g, P.refl)
+    // "Her/her" before a word → possessive; otherwise → object
+    .replace(/\bHer(?= \w)/g, P.possCap).replace(/\bher(?= \w)/g, P.poss)
+    .replace(/\bHer\b/g, P.objCap       ).replace(/\bher\b/g, P.obj      );
+
+  // Phase 3 — restore partner placeholders as correct partner pronouns
+  t = t
+    .replace(/%%AC%%/g, A.contr).replace(/%%ac%%/g, A.contrL)
+    .replace(/%%AD%%/g, A.dep  ).replace(/%%ad%%/g, A.depL  )
+    .replace(/%%AS%%/g, A.sub  ).replace(/%%as%%/g, A.subL  )
+    .replace(/%%AR%%/g, A.refl )
+    .replace(/%%AO%%/g, A.objCap).replace(/%%ao%%/g, A.obj  )
+    .replace(/%%AP%%/g, A.possCap).replace(/%%ap%%/g, A.poss );
+
+  return t;
 }
 
 /* ── Types ──────────────────────────────────────────────────────────── */
@@ -1675,6 +1715,7 @@ export default function AfterDark() {
         {phase === "scenario" && (() => {
           const activePairingCfg = PAIRINGS.find(p => p.id === selectedPairing);
           const partnerPronouns = activePairingCfg?.partnerPronouns ?? "he/him";
+          const protagonistPronouns = activePairingCfg?.protagonistPronouns ?? "she/her";
           return (
           <motion.div
             key="scenario"
@@ -1780,8 +1821,9 @@ export default function AfterDark() {
                           );
                           const adaptedScenario = {
                             ...scenario,
-                            label: adaptTextToPartner(scenario.label, partnerPronouns),
-                            sub: adaptTextToPartner(scenario.sub, partnerPronouns),
+                            label: adaptScenarioText(scenario.label, protagonistPronouns, partnerPronouns),
+                            sub:   adaptScenarioText(scenario.sub,   protagonistPronouns, partnerPronouns),
+                            tags:  scenario.tags.map(t => adaptScenarioText(t, protagonistPronouns, partnerPronouns)),
                           };
                           return (
                             <ScenarioCard

@@ -360,28 +360,54 @@ const SCENARIO_PRESET_TAGS: string[] = [
   "Warmth interrupted slowly",
   "He knows without asking",
 
-  // Her Lead standard tags (she/her protagonist only — buildSheOnlyStandardCategories)
+  // Her Lead — he/him partner
   "He gives her what she asks for",
   "Her pleasure is the whole story",
   "He would wait as long as she needed",
   "She feels beautiful and powerful at once",
   "He notices everything about her",
   "She is the centre of everything in this room",
+  "She leads and he follows",
+  // Her Lead — she/her partner (Her & Her)
+  "She gives her what she asks for",
+  "She would wait as long as she needed",
+  "She notices everything about her",
+  "She leads and she follows",
+  // Her Lead — they/them partner
+  "They give her what she asks for",
+  "They would wait as long as she needed",
+  "They notice everything about her",
+  "She leads and they follow",
 
-  // Her Power room scenario preset tags
+  // Her Dominance — he/him partner
   "She asked for it and he obliged completely",
   "He does exactly what she says",
-  "She directed them both — they were there for exactly that",
   "He watches because she wanted him to",
-  "She swings on her terms — her choice, her lead, her exit",
   "Two men, both completely focused on her",
   "She tells him what good behaviour earns — he earns it",
   "He is on his knees — that is where she wants him and he wants to be",
+  // Her Dominance — she/her partner (Her & Her)
+  "She asked for it and she obliged completely",
+  "She does exactly what she says",
+  "She watches because she wanted her to",
+  "Two women, both completely focused on her",
+  "She tells her what good behaviour earns — she earns it",
+  "She is on her knees — that is where she wants her and she wants to be",
+  // Her Dominance — they/them partner
+  "She asked for it and they obliged completely",
+  "They do exactly what she says",
+  "They watch because she wanted them to",
+  "Two people, both completely focused on her",
+  "She tells them what good behaviour earns — they earn it",
+  "They are on their knees — that is where she wants them and they want to be",
+
+  // Her Power room scenario preset tags (pairing-neutral)
+  "She directed them both — they were there for exactly that",
+  "She swings on her terms — her choice, her lead, her exit",
   "She told them the rules — they followed them",
   "She is worshipped before anything else",
   "She chooses who touches her",
   "She decides when it ends",
-  "She leads and he follows",
 ];
 
 // ---------------------------------------------------------------------------

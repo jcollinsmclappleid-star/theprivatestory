@@ -78,11 +78,29 @@ const TAG_DISPLAY_MAP: Record<string, string> = {
   "She lets herself be taken care of": "She lets herself be taken",
   "He lets himself be taken care of": "He lets himself be taken",
   "They let themselves be taken care of": "They let themselves be taken",
-  // Her Command / Her Dominance
+  // Her Command / Her Dominance — he/him partner
   "She asked for it and he obliged completely": "She asked — he obeyed completely",
   "He does exactly what she says": "He follows her every instruction",
   "He is on his knees — that is where she wants him and he wants to be": "He's on his knees — exactly where they both want him",
   "She tells him what good behaviour earns — he earns it": "She rewards good behaviour — he earns it",
+  // Her Command / Her Dominance — she/her partner (Her & Her)
+  "She asked for it and she obliged completely": "She asked — she obeyed completely",
+  "She does exactly what she says": "She follows her every instruction",
+  "She is on her knees — that is where she wants her and she wants to be": "She's on her knees — exactly where they both want her",
+  "She tells her what good behaviour earns — she earns it": "She rewards good behaviour — she earns it",
+  "Two women, both completely focused on her": "Two women, both completely focused on her",
+  "She watches because she wanted her to": "She watches because she wanted her to",
+  // Her Command / Her Dominance — they/them partner
+  "She asked for it and they obliged completely": "She asked — they obeyed completely",
+  "They do exactly what she says": "They follow her every instruction",
+  "They are on their knees — that is where she wants them and they want to be": "On their knees — exactly where they both want to be",
+  "She tells them what good behaviour earns — they earn it": "She rewards good behaviour — they earn it",
+  "Two people, both completely focused on her": "Two people, both completely focused on her",
+  "They watch because she wanted them to": "They watch because she wanted them to",
+  // Her Lead — she/her partner (Her & Her)
+  "She leads and she follows": "She leads, she follows",
+  // Her Lead — they/them partner
+  "She leads and they follow": "She leads, they follow",
 };
 
 interface TagCategory {
@@ -398,43 +416,50 @@ function buildAfterDarkCategories(p: PronounCtx): TagCategory[] {
   ];
 }
 
-function buildSheOnlyStandardCategories(): TagCategory[] {
+function buildSheOnlyStandardCategories(partner: PronounCtx): TagCategory[] {
+  const A = partner.sub;
+  const a = A.toLowerCase();
   return [
     {
       heading: "Her Lead",
       sub: "How she moves through this story",
       maxSelect: 5,
       tags: [
-        "She leads and he follows",
+        `She leads and ${a} follows`,
         "She chooses who touches her",
         "She decides when it ends",
-        "He gives her what she asks for",
+        `${A} gives her what she asks for`,
         "Her pleasure is the whole story",
         "She is worshipped before anything else",
-        "He would wait as long as she needed",
+        `${A} would wait as long as she needed`,
         "She feels beautiful and powerful at once",
-        "He notices everything about her",
+        `${A} notices everything about her`,
         "She is the centre of everything in this room",
       ],
     },
   ];
 }
 
-function buildSheOnlyAfterDarkCategories(): TagCategory[] {
+function buildSheOnlyAfterDarkCategories(partner: PronounCtx): TagCategory[] {
+  const A = partner.sub;
+  const a = A.toLowerCase();
+  const ao = partner.obj;
+  const ap = partner.poss;
+  const twoPartners = A === "She" ? "Two women" : A === "They" ? "Two people" : "Two men";
   return [
     {
       heading: "Her Dominance",
       sub: "When she controls everything",
       maxSelect: 5,
       tags: [
-        "She asked for it and he obliged completely",
-        "He does exactly what she says",
+        `She asked for it and ${a} obliged completely`,
+        `${A} does exactly what she says`,
         "She directed them both — they were there for exactly that",
-        "He watches because she wanted him to",
+        `${A} watches because she wanted ${ao} to`,
         "She swings on her terms — her choice, her lead, her exit",
-        "Two men, both completely focused on her",
-        "She tells him what good behaviour earns — he earns it",
-        "He is on his knees — that is where she wants him and he wants to be",
+        `${twoPartners}, both completely focused on her`,
+        `She tells ${ao} what good behaviour earns — ${a} earns it`,
+        `${A} is on ${ap} knees — that is where she wants ${ao} and ${a} wants to be`,
         "She told them the rules — they followed them",
       ],
     },
@@ -531,9 +556,9 @@ export function StoryTagStudio({
   const activeCategories: TagCategory[] = afterDark
     ? (() => {
         const std = buildStandardCategories(p, partner);
-        const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories() : [];
+        const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories(partner) : [];
         const ad = buildAfterDarkCategories(p);
-        const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories() : [];
+        const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories(partner) : [];
         const adRestraint  = ad.filter(c => c.heading === "Restraint & BDSM");
         const adSubmission = ad.filter(c => c.heading === "Submission & Worship");
         const adWords      = ad.filter(c => c.heading === "Words & Praise");
@@ -557,7 +582,7 @@ export function StoryTagStudio({
     ? [buildNocturneCategory()]
     : [
         ...buildStandardCategories(p, partner),
-        ...(isSheProtagonist ? buildSheOnlyStandardCategories() : []),
+        ...(isSheProtagonist ? buildSheOnlyStandardCategories(partner) : []),
       ];
 
   const lockedCategories: TagCategory[] = bedtime ? buildStandardCategories(p, partner) : [];

@@ -16,13 +16,13 @@ interface PurchaseInfo {
 function planLabel(plan: string): string {
   if (plan === "monthly") return "Monthly plan — 5 stories / month";
   if (plan === "annual") return "Annual plan — 50 stories / year";
-  return "Single Immersive Story";
+  return "Subscription";
 }
 
 function planEmoji(plan: string): string {
   if (plan === "monthly") return "Monthly";
   if (plan === "annual") return "Annual";
-  return "Immersive Story";
+  return "Subscription";
 }
 
 export default function CheckoutSuccess() {
@@ -224,7 +224,7 @@ export default function CheckoutSuccess() {
             Create your account
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-            Your purchase is waiting. Create your account to access your {purchase.plan === "immersive" ? "story" : "subscription"} and start listening.
+            Your purchase is waiting. Create your account to access your subscription and start listening.
           </p>
 
           {claimState === "claiming" || authLoading ? (

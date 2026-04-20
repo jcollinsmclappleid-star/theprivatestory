@@ -63,9 +63,9 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
   const isAuthenticated = !!(req.isAuthenticated && req.isAuthenticated());
   const userId = isAuthenticated ? (req.user?.id ?? null) : null;
 
-  const { plan, returnPath } = req.body as { plan: "monthly" | "annual" | "addon" | "immersive"; returnPath?: string };
-  if (!plan || !["monthly", "annual", "addon", "immersive"].includes(plan)) {
-    res.status(400).json({ error: "Invalid plan. Choose monthly, annual, addon, or immersive." });
+  const { plan, returnPath } = req.body as { plan: "monthly" | "annual" | "addon"; returnPath?: string };
+  if (!plan || !["monthly", "annual", "addon"].includes(plan)) {
+    res.status(400).json({ error: "Invalid plan. Choose monthly, annual, or addon." });
     return;
   }
 
@@ -89,8 +89,6 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
   let priceId: string | null | undefined;
   if (plan === "monthly" || plan === "annual") {
     priceId = await resolvePriceId(stripe, plan);
-  } else if (plan === "immersive") {
-    priceId = STRIPE_IMMERSIVE_PRICE_ID;
   } else {
     priceId = STRIPE_ADDON_PRICE_ID;
   }
@@ -136,7 +134,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       const sessionParams: Stripe.Checkout.SessionCreateParams = {
         customer: customerId,
         line_items: [{ price: priceId, quantity: 1 }],
-        mode: (plan === "addon" || plan === "immersive") ? "payment" : "subscription",
+        mode: plan === "addon" ? "payment" : "subscription",
         success_url: `${SITE_URL}/purchase/confirmed`,
         cancel_url: cancelUrl,
         allow_promotion_codes: true,

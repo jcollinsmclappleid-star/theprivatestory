@@ -293,7 +293,7 @@ function GuestTokenFlow({ token }: { token: string }) {
         </div>
         <h1 className="font-display text-2xl font-bold text-foreground mb-2">Create your account</h1>
         <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-          Your purchase is waiting. Create your account to access your {purchase.plan === "immersive" ? "story" : "subscription"} and start listening.
+          Your purchase is waiting. Create your account to access your subscription and start listening.
         </p>
 
         {claimState === "claiming" || authLoading ? (

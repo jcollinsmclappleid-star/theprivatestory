@@ -755,7 +755,7 @@ export default function Create() {
   const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; addonStoriesRemaining: number; renewDate: string | null } | null>(null);
   const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string; pairing?: string; heritage?: string } | null>(null);
   const [continueAfterDark, setContinueAfterDark] = useState(false);
-  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
+  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
 
@@ -1861,7 +1861,7 @@ export default function Create() {
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
 
-          const startCheckoutFromPaywall = async (plan: "monthly" | "annual" | "immersive") => {
+          const startCheckoutFromPaywall = async (plan: "monthly" | "annual") => {
             try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
             if (continueAfterDark) {
               try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }
@@ -2055,24 +2055,6 @@ export default function Create() {
 
                 {/* Country trust signal */}
                 <CountryStrip className="w-full" />
-
-                {/* Divider */}
-                <div className="w-full flex items-center gap-3">
-                  <div className="flex-1 h-px bg-white/8" />
-                  <p className="text-[10px] text-muted-foreground/80 uppercase tracking-widest whitespace-nowrap">or try just one story</p>
-                  <div className="flex-1 h-px bg-white/8" />
-                </div>
-
-                {/* Single story escape hatch */}
-                <button
-                  type="button"
-                  disabled={!!paywallLoadingPlan}
-                  onClick={() => startCheckoutFromPaywall("immersive")}
-                  className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
-                >
-                  {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                  Just this one story, right now — £7.99
-                </button>
 
                 {/* Privacy + start over */}
                 <div className="flex flex-col items-center gap-2">

@@ -334,7 +334,7 @@ export default function Drift() {
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [paywallCapture, setPaywallCapture] = useState<{ scenarioLabel: string; roomId?: string; accent?: string; archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
-  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | "immersive" | null>(null);
+  const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
 
@@ -413,7 +413,7 @@ export default function Drift() {
     },
   });
 
-  const startDriftCheckout = async (plan: "monthly" | "annual" | "immersive") => {
+  const startDriftCheckout = async (plan: "monthly" | "annual") => {
     setPaywallLoadingPlan(plan);
     try {
       const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
@@ -922,16 +922,6 @@ export default function Drift() {
                   Monthly — £19.99/month
                 </button>
               </div>
-
-              {/* Single story escape hatch */}
-              <button
-                disabled={!!paywallLoadingPlan}
-                onClick={() => void startDriftCheckout("immersive")}
-                className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40 flex items-center gap-1.5"
-              >
-                {paywallLoadingPlan === "immersive" ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                Just this one story, right now — £7.99
-              </button>
 
               {/* Privacy signal + start over */}
               <div className="flex flex-col items-center gap-2">

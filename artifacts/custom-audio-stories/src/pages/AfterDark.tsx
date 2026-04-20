@@ -1476,7 +1476,7 @@ export default function AfterDark() {
   }, [lastCastingData, isAuthenticated]);
 
   // Launches Stripe checkout from the paywall phase
-  const startAfterDarkCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
+  const startAfterDarkCheckout = useCallback(async (plan: "monthly" | "annual") => {
     setPaywallLoadingPlan(plan);
     try {
       const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
@@ -2070,16 +2070,6 @@ export default function AfterDark() {
                   Monthly — £19.99/month
                 </button>
               </div>
-
-              {/* Single story escape hatch */}
-              <button
-                disabled={!!paywallLoadingPlan}
-                onClick={() => void startAfterDarkCheckout("immersive")}
-                className="text-sm text-muted-foreground/70 hover:text-muted-foreground transition-colors underline underline-offset-2 disabled:opacity-40"
-              >
-                {paywallLoadingPlan === "immersive" ? <span className="w-3 h-3 rounded-full border border-current animate-spin inline-block mr-1" /> : null}
-                Just this one story, right now — £7.99
-              </button>
 
               {/* Privacy signal + start over */}
               <div className="flex flex-col items-center gap-2">

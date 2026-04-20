@@ -93,10 +93,6 @@ const FAQS: { q: string; a: string }[] = [
     a: "A carefully selected library of pre-written stories, available to all members. A new release is added each month — giving you something immediate to return to between your own creations.",
   },
   {
-    q: "Can I try it without subscribing?",
-    a: "Yes. A single personalised story is available for £7.99 — one story, created around your choices, yours to keep. You'll create a free account to access it. Subscribe later if you want more.",
-  },
-  {
     q: "Can I buy more personalised stories?",
     a: "Yes. Additional personalised stories are available for £3.99 each — for active subscribers only, without changing your plan. They appear alongside your monthly allowance the moment you purchase.",
   },
@@ -134,14 +130,14 @@ export default function Pricing() {
   const { isAuthenticated, openSignIn } = useAuth();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
-  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | "immersive" | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [usageData, setUsageData] = useState<{ plan: string; subscriptionStatus: string | null } | null>(null);
   const pendingCheckoutRef = useRef<string | null>(null);
 
   const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
 
-  const doCheckout = async (plan: "monthly" | "annual" | "addon" | "immersive") => {
+  const doCheckout = async (plan: "monthly" | "annual" | "addon") => {
     setLoadingPlan(plan);
     setCheckoutError(null);
     try {
@@ -174,14 +170,14 @@ export default function Pricing() {
     const pending = pendingCheckoutRef.current ?? (() => {
       try { return sessionStorage.getItem("pendingPricingCheckout"); } catch { return null; }
     })();
-    if (pending && ["monthly", "annual", "immersive"].includes(pending)) {
+    if (pending && ["monthly", "annual", "addon"].includes(pending)) {
       pendingCheckoutRef.current = null;
       try { sessionStorage.removeItem("pendingPricingCheckout"); } catch { /* ignore */ }
-      doCheckout(pending as "monthly" | "annual" | "immersive");
+      doCheckout(pending as "monthly" | "annual" | "addon");
     }
   }, [isAuthenticated]);
 
-  const startCheckout = (plan: "monthly" | "annual" | "addon" | "immersive") => {
+  const startCheckout = (plan: "monthly" | "annual" | "addon") => {
     if (!isAuthenticated && plan === "addon") {
       openSignIn();
       return;
@@ -398,61 +394,6 @@ export default function Pricing() {
       {/* Pricing cards                                                        */}
       {/* ------------------------------------------------------------------ */}
       <section id="pricing-cards" className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
-
-        {/* Single story / trial card */}
-        <div className="mb-5 relative overflow-hidden rounded-3xl border border-white/10 bg-card/20 backdrop-blur-sm p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="absolute inset-0 bg-gradient-to-r from-card/60 to-background/30 pointer-events-none" />
-          <div className="relative z-10 flex-1 min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-2">Try it first · No subscription</p>
-            <div className="flex items-end gap-2 mb-1">
-              <span className="font-display text-4xl font-bold text-foreground">£7.99</span>
-              <span className="text-muted-foreground/80 mb-1 whitespace-nowrap">one-time</span>
-            </div>
-            <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-sm mb-4">
-              One fully personalised story — cast by you, narrated and illustrated, yours to keep. A free account is created at checkout so you can access and replay it any time.
-            </p>
-            <div className="flex flex-col gap-1.5">
-              {[
-                "1 personalised story, created around your choices",
-                "Premium voice narration — ready to play",
-                "Original cover art generated for your story",
-                "Free account included — access any time",
-              ].map((f) => (
-                <div key={f} className="flex items-center gap-2">
-                  <div className="w-3.5 h-3.5 rounded-full border border-primary/30 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-2 h-2 text-primary/80" />
-                  </div>
-                  <span className="text-xs text-muted-foreground/80">{f}</span>
-                </div>
-              ))}
-              {["Private library storage", "Curated collection access", "Monthly rollover credits", "After Dark"].map((f) => (
-                <div key={f} className="flex items-center gap-2">
-                  <div className="w-3.5 h-3.5 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[8px] text-muted-foreground/80 font-bold">–</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground/80 line-through">{f}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="relative z-10 flex-shrink-0 w-full md:w-56">
-            <button
-              onClick={() => startCheckout("immersive")}
-              disabled={loadingPlan !== null}
-              className="block w-full text-center px-8 py-3.5 rounded-full border border-white/20 text-foreground font-semibold text-sm hover:bg-white/5 hover:border-white/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loadingPlan === "immersive" ? (
-                <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-              ) : (
-                "Get a single story — £7.99"
-              )}
-            </button>
-            <p className="text-center text-[10px] text-muted-foreground/80 mt-2">Subscribe later to unlock the full experience</p>
-            <p className="text-center text-[10px] text-muted-foreground/40 mt-1.5 leading-snug">
-              By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-            </p>
-          </div>
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
 

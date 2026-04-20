@@ -391,7 +391,7 @@ export default function Profile() {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
   const [addonLoading, setAddonLoading] = useState(false);
-  const [upsellLoading, setUpsellLoading] = useState<"monthly" | "annual" | "immersive" | null>(null);
+  const [upsellLoading, setUpsellLoading] = useState<"monthly" | "annual" | null>(null);
   const [deleteSubLoading, setDeleteSubLoading] = useState(false);
 
   useEffect(() => {
@@ -569,11 +569,10 @@ export default function Profile() {
                 <div className="space-y-3">
                   <p className="text-xs text-muted-foreground">Your story is yours forever. Ready for another?</p>
                   <div className="flex flex-col gap-2">
-                    {(["monthly", "annual", "immersive"] as const).map((plan) => {
+                    {(["monthly", "annual"] as const).map((plan) => {
                       const labels: Record<string, string> = {
                         monthly: "Subscribe — 5 stories/month · £19.99",
                         annual:  "Annual — 50 stories/year · £149",
-                        immersive: "Another single story — £7.99",
                       };
                       const isLoading = upsellLoading === plan;
                       return (
@@ -598,9 +597,7 @@ export default function Profile() {
                           className={`text-xs px-4 py-2.5 rounded-full transition-all disabled:opacity-60 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-1.5 ${
                             plan === "annual"
                               ? "bg-primary/12 border border-primary/25 text-primary hover:bg-primary/20"
-                              : plan === "monthly"
-                              ? "border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30"
-                              : "border border-border/20 text-muted-foreground/70 hover:text-foreground hover:border-border/40 text-[11px]"
+                              : "border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30"
                           }`}
                         >
                           {isLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : labels[plan]}

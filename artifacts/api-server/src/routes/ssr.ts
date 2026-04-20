@@ -241,7 +241,7 @@ const STATIC_PAGES: StaticPage[] = [
     slug: "pricing",
     title: "Pricing — The Private Story",
     description:
-      "Choose a plan. £19.99/month for 5 stories, £149/year for 50 stories, or try a single story for £3.99.",
+      "Choose a plan. £19.99/month for 5 stories, £149/year for 50 stories. Extra stories £3.99 each for subscribers.",
     h1: "Simple, Private Pricing",
     tagline: "No algorithm. No history shared. Just your stories.",
     cacheHeader: CACHE_1H,
@@ -397,43 +397,6 @@ const STATIC_PAGES: StaticPage[] = [
               },
             },
           },
-          {
-            "@type": "Offer",
-            name: "Immersive entry",
-            price: "7.99",
-            priceCurrency: "GBP",
-            priceValidUntil: "2026-12-31",
-            availability: "https://schema.org/InStock",
-            url: `${SITE_URL}/pricing`,
-            hasMerchantReturnPolicy: { "@id": `${SITE_URL}/pricing#return-policy` },
-            shippingDetails: {
-              "@type": "OfferShippingDetails",
-              shippingRate: {
-                "@type": "MonetaryAmount",
-                value: "0",
-                currency: "GBP",
-              },
-              shippingDestination: {
-                "@type": "DefinedRegion",
-                addressCountry: "GB",
-              },
-              deliveryTime: {
-                "@type": "ShippingDeliveryTime",
-                handlingTime: {
-                  "@type": "QuantitativeValue",
-                  minValue: 0,
-                  maxValue: 0,
-                  unitCode: "DAY",
-                },
-                transitTime: {
-                  "@type": "QuantitativeValue",
-                  minValue: 0,
-                  maxValue: 0,
-                  unitCode: "DAY",
-                },
-              },
-            },
-          },
         ],
       },
     ],
@@ -443,7 +406,6 @@ const STATIC_PAGES: StaticPage[] = [
       <p><strong>Monthly — £19.99/month</strong> · 5 personalised audio stories per month. Cancel any time.</p>
       <p><strong>Annual — £149/year</strong> · 50 stories per year (save 49%). Best value for regular listeners.</p>
       <p><strong>Add-on — £3.99/story</strong> · Extra stories beyond your plan allowance.</p>
-      <p><strong>Immersive entry — £7.99 once</strong> · One complete immersive story. No subscription needed.</p>
     </section>
     <section>
       <h2>What's Included</h2>

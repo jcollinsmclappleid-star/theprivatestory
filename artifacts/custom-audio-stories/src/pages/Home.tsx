@@ -797,7 +797,7 @@ export default function Home() {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const startCheckout = useCallback(async (plan: "monthly" | "annual" | "immersive") => {
+  const startCheckout = useCallback(async (plan: "monthly" | "annual") => {
     setCheckoutLoading(plan);
     setCheckoutError(null);
     try {

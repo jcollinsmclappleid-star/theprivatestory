@@ -327,7 +327,7 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
-  const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<Phase>("scenario");
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
@@ -379,8 +379,6 @@ export default function Drift() {
 
   const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
   const lastScenarioRef = useRef<DriftScenario | null>(null);
-  // Stores generation params when a 401 is returned, so we can auto-retry after sign-in
-  const [pendingRetryParams, setPendingRetryParams] = useState<Record<string, unknown> | null>(null);
   const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
 
   const play = useAudioPlayer((s) => s.play);
@@ -396,12 +394,7 @@ export default function Drift() {
       onError: (err: unknown) => {
         stopLoadingPhase();
         const status = (err as { status?: number }).status;
-        if (status === 401) {
-          // Guest hit generate — save params and prompt sign-in; auto-retry after auth
-          if (lastGenDataRef.current) setPendingRetryParams(lastGenDataRef.current);
-          openSignIn();
-          setPhase("casting");
-        } else if (status === 402) {
+        if (status === 401 || status === 402) {
           setPaywallCapture({
             scenarioLabel: lastScenarioRef.current?.label ?? "Drift",
             roomId: lastScenarioRef.current?.room,
@@ -420,16 +413,6 @@ export default function Drift() {
     },
   });
 
-  // Auto-retry generation after sign-in when a previous attempt returned 401
-  useEffect(() => {
-    if (!isAuthenticated || !pendingRetryParams) return;
-    const params = pendingRetryParams;
-    setPendingRetryParams(null);
-    setPhase("generating");
-    startLoadingPhase();
-    generateMutation.mutateAsync({ data: params as never }).finally(() => stopLoadingPhase());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, pendingRetryParams]);
 
   const startDriftCheckout = async (plan: "monthly" | "annual") => {
     setPaywallLoadingPlan(plan);

@@ -1311,8 +1311,6 @@ export default function AfterDark() {
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
 
-  // Stores generation params when a 401 is returned, so we can auto-retry after sign-in
-  const [pendingRetryParams, setPendingRetryParams] = useState<Record<string, unknown> | null>(null);
   const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
 
   // Pre-generate the paywall cover image as soon as the scenario is selected,
@@ -1453,12 +1451,7 @@ export default function AfterDark() {
       onError: (err: unknown) => {
         stopLoadingPhase();
         const status = (err as { status?: number }).status;
-        if (status === 401) {
-          // Guest hit generate — save params and prompt sign-in; auto-retry after auth
-          if (lastGenDataRef.current) setPendingRetryParams(lastGenDataRef.current);
-          openSignIn();
-          setPhase("casting");
-        } else if (status === 402) {
+        if (status === 401 || status === 402) {
           setPhase("paywall");
         } else {
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1503,16 +1496,7 @@ export default function AfterDark() {
     setPaywallLoadingPlan(null);
   }, []);
 
-  // Auto-retry generation after sign-in when a previous attempt returned 401
-  useEffect(() => {
-    if (!isAuthenticated || !pendingRetryParams) return;
-    const params = pendingRetryParams;
-    setPendingRetryParams(null);
-    setPhase("generating");
-    startLoadingPhase();
-    generateMutation.mutateAsync({ data: params as never }).finally(() => stopLoadingPhase());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, pendingRetryParams]);
+
 
   // Generates immediately from casting data — avoids stale React state reads
   const handleAutoGenerateAfterDark = useCallback(

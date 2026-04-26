@@ -294,7 +294,7 @@ export default function Browse() {
                   {filteredStories.map((story: any) => (
                     <div key={story.id} className="relative">
                       <StoryCard story={story} />
-                      {!isPaid && (
+                      {!hasFullAccess && (
                         <button
                           className="absolute inset-0 z-10 flex items-end justify-center pb-3 bg-black/10 rounded-2xl group"
                           onClick={() => navigate("/pricing")}

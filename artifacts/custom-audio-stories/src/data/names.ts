@@ -86,7 +86,7 @@ const NAMES_RAW: string[] = [
   "Freya","Gabriela","Galilea","Gem","Georgia","Giovanna","Giuliana","Grayson",
   "Hadley","Hailey","Haley","Halo","Halston","Haven","Hayden","Hazel","Heidi",
   "Heidi","Henley","Hera","Holland","Hollis","Hope","Hunter","Indiana","Indie",
-  "Iris","Isa","Isadora","Ivory","Ivy","Izabella","Izabel","Izzy","Jade","Jaelyn",
+  "Iris","Isa","Isadora","Ivory","Ivy","Izabella","Izabel","Izzy","Jade","Jackie","Jaclyn","Jaelyn",
   "Jaelynn","Jaidyn","Jaimie","Jaliyah","Janessa","Janiyah","Jaslyn","Jasmine",
   "Jayla","Jaylani","Jaylee","Jaylen","Jaylynn","Jazlyn","Jazmine","Jemma","Jenna",
   "Jennie","Jenny","Jessie","Joanna","Jordyn","Journey","Joy","Juno","Justice",

@@ -165,14 +165,14 @@ export default function Browse() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const { isPaid } = useSubscription();
+  const { hasFullAccess } = useSubscription();
   const [, navigate] = useLocation();
 
   const { data: filteredStories = [], isLoading: filteredLoading } = useQuery({
     queryKey: ["stories-filtered", activeCategory ?? "all", search],
     queryFn: () => fetchStories(activeCategory ?? "all", search || undefined),
     staleTime: 30_000,
-    enabled: isPaid && !!(activeCategory || search),
+    enabled: hasFullAccess && !!(activeCategory || search),
   });
 
   const isFiltering = !!(activeCategory || search);
@@ -181,7 +181,7 @@ export default function Browse() {
     return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
   }
 
-  if (!isPaid) return <CollectionGate />;
+  if (!hasFullAccess) return <CollectionGate />;
 
   const activeCategoryLabel = activeCategory
     ? CATEGORIES.find(c => c.id === activeCategory)?.label ?? activeCategory
@@ -380,7 +380,7 @@ export default function Browse() {
                         const cat = CATEGORIES.find(c => c.id === catId);
                         if (!cat) return null;
                         return (
-                          <StoryRow key={catId} categoryId={catId} label={cat.label} isPaid={isPaid} onGated={() => navigate("/pricing")} />
+                          <StoryRow key={catId} categoryId={catId} label={cat.label} isPaid={hasFullAccess} onGated={() => navigate("/pricing")} />
                         );
                       })}
                     </motion.div>

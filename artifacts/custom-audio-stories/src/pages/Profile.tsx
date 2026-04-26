@@ -8,6 +8,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { authClient } from "@/lib/authClient";
+import { VOICES } from "@/lib/voices";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import type { Story } from "@workspace/api-client-react";
 
@@ -171,7 +172,8 @@ function TasteSummaryText({ taste }: { taste: TasteProfile }) {
   const topMood = topEntry(taste.tasteProfile);
   const topIntensity = topEntry(taste.preferredIntensity);
   const topDynamic = topEntry(taste.preferredRelationshipDynamics);
-  const topVoice = topEntry(taste.preferredVoiceFeel);
+  const topVoiceId = topEntry(taste.preferredVoiceFeel);
+  const topVoice = topVoiceId ? (VOICES.find(v => v.id === topVoiceId)?.name ?? null) : null;
 
   const parts: string[] = [];
   if (topMood) parts.push(topMood);

@@ -15,7 +15,7 @@ export default function StoryDetail() {
   const { id } = useParams();
   const { data: story } = useStoryFallback(id || "");
   const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress, seekTo } = useAudioPlayer();
-  const { isPaid, isLoading: subLoading } = useSubscription();
+  const { hasFullAccess, isLoading: subLoading } = useSubscription();
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -57,7 +57,7 @@ export default function StoryDetail() {
   if (!story) return null;
 
   // Gate access — only paid subscribers can listen
-  if (!subLoading && !isPaid) {
+  if (!subLoading && !hasFullAccess) {
     return (
       <motion.div
         initial={{ opacity: 0 }}

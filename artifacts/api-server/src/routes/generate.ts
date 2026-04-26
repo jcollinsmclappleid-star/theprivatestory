@@ -3821,8 +3821,10 @@ export async function generateAudioFile(
         throw new Error("Audio narration is temporarily unavailable due to high demand. Please try again in a few minutes.");
       }
       if (res.status === 401 || res.status === 403) {
+        console.error(`[tts] ElevenLabs auth failure status=${res.status} voiceId=${vid} body=${errText} — check ELEVENLABS_API_KEY`);
         throw new Error("Audio narration service authentication failed. Please contact support@theprivatestory.com.");
       }
+      console.error(`[tts] ElevenLabs error status=${res.status} voiceId=${vid} body=${errText}`);
       throw new Error(`ElevenLabs TTS error ${res.status}: ${errText}`);
     }
     return Buffer.from(await res.arrayBuffer());

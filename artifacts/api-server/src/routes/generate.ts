@@ -2304,6 +2304,15 @@ ${STORY_BIBLE}${opts?.seriesLayer ? `\n\n${opts.seriesLayer}` : ""}`;
   const planTagInstruction = intake.experienceTags?.length
     ? buildExperienceTagInstruction(intake.experienceTags, planProtFull)
     : "(none specified — infer from path and scenario)";
+  // Derive love-interest noun from pairing for the situation pronoun note below
+  const loveInterestNoun = (() => {
+    const p = (intake.pairing ?? "Her & Him").toLowerCase();
+    if (p.startsWith("her & him")) return "man";
+    if (p.startsWith("her & her")) return "woman";
+    if (p.startsWith("him & him")) return "man";
+    if (p.includes("them") || p.includes("they")) return "person";
+    return "man";
+  })();
   const planSituationAnchor = intake.situationId ? (() => {
     const sit = getSituationById(intake.situationId);
     if (!sit) return "";

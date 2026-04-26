@@ -104,6 +104,11 @@ function Router() {
             <Route path="/story/:id" component={StoryDetail} />
             <Route path="/create" component={Create} />
             <Route path="/gift"><Redirect to="/" /></Route>
+            <Route path="/signin"><Redirect to="/" /></Route>
+            <Route path="/sign-in"><Redirect to="/" /></Route>
+            <Route path="/login"><Redirect to="/" /></Route>
+            <Route path="/signup"><Redirect to="/" /></Route>
+            <Route path="/sign-up"><Redirect to="/" /></Route>
             <Route path="/library" component={Library} />
             <Route path="/after-dark" component={AfterDark} />
             <Route path="/drift" component={Drift} />

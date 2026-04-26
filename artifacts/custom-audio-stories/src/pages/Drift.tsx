@@ -327,7 +327,7 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
-  const { isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<Phase>("scenario");
   const [selectedScenario, setSelectedScenario] = useState<DriftScenario | null>(null);
@@ -379,6 +379,9 @@ export default function Drift() {
 
   const lastCastingRef = useRef<{ archetype?: string; dynamic?: string; voiceId?: string; pairing?: string; heritage?: string } | null>(null);
   const lastScenarioRef = useRef<DriftScenario | null>(null);
+  // Stores generation params when a 401 is returned, so we can auto-retry after sign-in
+  const [pendingRetryParams, setPendingRetryParams] = useState<Record<string, unknown> | null>(null);
+  const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
 
   const play = useAudioPlayer((s) => s.play);
 
@@ -393,8 +396,12 @@ export default function Drift() {
       onError: (err: unknown) => {
         stopLoadingPhase();
         const status = (err as { status?: number }).status;
-        const isSubscriptionLimit = status === 402 || status === 401;
-        if (isSubscriptionLimit) {
+        if (status === 401) {
+          // Guest hit generate — save params and prompt sign-in; auto-retry after auth
+          if (lastGenDataRef.current) setPendingRetryParams(lastGenDataRef.current);
+          openSignIn();
+          setPhase("casting");
+        } else if (status === 402) {
           setPaywallCapture({
             scenarioLabel: lastScenarioRef.current?.label ?? "Drift",
             roomId: lastScenarioRef.current?.room,
@@ -412,6 +419,17 @@ export default function Drift() {
       },
     },
   });
+
+  // Auto-retry generation after sign-in when a previous attempt returned 401
+  useEffect(() => {
+    if (!isAuthenticated || !pendingRetryParams) return;
+    const params = pendingRetryParams;
+    setPendingRetryParams(null);
+    setPhase("generating");
+    startLoadingPhase();
+    generateMutation.mutateAsync({ data: params as never }).finally(() => stopLoadingPhase());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, pendingRetryParams]);
 
   const startDriftCheckout = async (plan: "monthly" | "annual") => {
     setPaywallLoadingPlan(plan);
@@ -464,37 +482,38 @@ export default function Drift() {
 
       const allTags = [...selectedScenario.tags, ...(casting.customTags ?? [])];
 
+      const genData: Record<string, unknown> = {
+        mood: "Late Night",
+        intensity: "Sensual",
+        voiceFeel: "UK Voice",
+        storyLength: "10 min",
+        perspective: apiPerspective,
+        cinematicVisuals: true,
+        emotionalFocus: true,
+        whoIsHe: casting.archetype || undefined,
+        dynamic: casting.dynamic || undefined,
+        storyMode: "nocturne",
+        experienceTags: allTags,
+        pairing: casting.pairing || undefined,
+        heritage: casting.heritage || undefined,
+        atmosphere: casting.atmosphere || undefined,
+        chemistry: casting.chemistry || undefined,
+        setting: casting.setting || undefined,
+        appearBuild: casting.appearBuild || undefined,
+        appearHeight: casting.appearHeight || undefined,
+        appearColouring: casting.appearColouring || undefined,
+        appearEyes: casting.appearEyes || undefined,
+        appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+        listenerName: casting.listenerName || undefined,
+        partnerName: casting.partnerName || undefined,
+        country: casting.country || undefined,
+        city: casting.city || undefined,
+        scenarioRoom: selectedScenario.room,
+      };
+      lastGenDataRef.current = genData;
+
       try {
-        await generateMutation.mutateAsync({
-          data: {
-            mood: "Late Night",
-            intensity: "Sensual",
-            voiceFeel: "UK Voice",
-            storyLength: "10 min",
-            perspective: apiPerspective,
-            cinematicVisuals: true,
-            emotionalFocus: true,
-            whoIsHe: casting.archetype || undefined,
-            dynamic: casting.dynamic || undefined,
-            storyMode: "nocturne",
-            experienceTags: allTags,
-            pairing: casting.pairing || undefined,
-            heritage: casting.heritage || undefined,
-            atmosphere: casting.atmosphere || undefined,
-            chemistry: casting.chemistry || undefined,
-            setting: casting.setting || undefined,
-            appearBuild: casting.appearBuild || undefined,
-            appearHeight: casting.appearHeight || undefined,
-            appearColouring: casting.appearColouring || undefined,
-            appearEyes: casting.appearEyes || undefined,
-            appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
-            listenerName: casting.listenerName || undefined,
-            partnerName: casting.partnerName || undefined,
-            country: casting.country || undefined,
-            city: casting.city || undefined,
-            scenarioRoom: selectedScenario.room,
-          },
-        });
+        await generateMutation.mutateAsync({ data: genData as never });
       } finally {
         clearInterval(timer);
         stopLoadingPhase();

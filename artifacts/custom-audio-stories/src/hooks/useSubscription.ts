@@ -70,7 +70,7 @@ export function useSubscription(): SubscriptionState {
     isPaid,
     isImmersive: plan === "immersive",
     isAdmin,
-    hasFullAccess: isPaid || isAdmin,
+    hasFullAccess: isPaid || isAdmin || plan === "immersive",
     addonCredits,
     isLoading,
   };

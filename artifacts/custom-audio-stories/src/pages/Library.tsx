@@ -613,7 +613,7 @@ export default function Library() {
                       showProgress
                       progress={item.progress}
                     />
-                    {!isPaid && (
+                    {!hasFullAccess && (
                       <button
                         className="absolute inset-0 z-10 rounded-2xl group"
                         onClick={() => navigate("/pricing")}

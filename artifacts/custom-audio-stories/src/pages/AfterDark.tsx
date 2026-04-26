@@ -1311,6 +1311,10 @@ export default function AfterDark() {
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
 
+  // Stores generation params when a 401 is returned, so we can auto-retry after sign-in
+  const [pendingRetryParams, setPendingRetryParams] = useState<Record<string, unknown> | null>(null);
+  const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
+
   // Pre-generate the paywall cover image as soon as the scenario is selected,
   // so by the time the paywall appears it's already fetched.
   const preGenCoverPromise = useRef<Promise<string | null> | null>(null);
@@ -1449,7 +1453,12 @@ export default function AfterDark() {
       onError: (err: unknown) => {
         stopLoadingPhase();
         const status = (err as { status?: number }).status;
-        if (status === 401 || status === 402) {
+        if (status === 401) {
+          // Guest hit generate — save params and prompt sign-in; auto-retry after auth
+          if (lastGenDataRef.current) setPendingRetryParams(lastGenDataRef.current);
+          openSignIn();
+          setPhase("casting");
+        } else if (status === 402) {
           setPhase("paywall");
         } else {
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1494,6 +1503,17 @@ export default function AfterDark() {
     setPaywallLoadingPlan(null);
   }, []);
 
+  // Auto-retry generation after sign-in when a previous attempt returned 401
+  useEffect(() => {
+    if (!isAuthenticated || !pendingRetryParams) return;
+    const params = pendingRetryParams;
+    setPendingRetryParams(null);
+    setPhase("generating");
+    startLoadingPhase();
+    generateMutation.mutateAsync({ data: params as never }).finally(() => stopLoadingPhase());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, pendingRetryParams]);
+
   // Generates immediately from casting data — avoids stale React state reads
   const handleAutoGenerateAfterDark = useCallback(
     async (casting: CastingRoomResult, allTags: string[]) => {
@@ -1503,38 +1523,38 @@ export default function AfterDark() {
         casting.perspective === "your" ? "you"
         : casting.perspective === "their" ? "they"
         : casting.perspective;
+      const genData: Record<string, unknown> = {
+        mood: "Late Night",
+        intensity: casting.intensity,
+        voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
+        storyLength: "10 min",
+        perspective: apiPerspective,
+        cinematicVisuals: true,
+        emotionalFocus: false,
+        whoIsHe: casting.archetype || undefined,
+        dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
+        storyMode: selectedScenario?.storyMode ?? "unrestrained",
+        experienceTags: allTags,
+        pairing: casting.pairing || undefined,
+        heritage: casting.heritage || undefined,
+        atmosphere: casting.atmosphere || undefined,
+        chemistry: casting.chemistry || undefined,
+        setting: casting.setting || undefined,
+        appearBuild: casting.appearBuild || undefined,
+        appearHeight: casting.appearHeight || undefined,
+        appearColouring: casting.appearColouring || undefined,
+        appearEyes: casting.appearEyes || undefined,
+        appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
+        listenerName: casting.listenerName || undefined,
+        partnerName: casting.partnerName || undefined,
+        country: casting.country || undefined,
+        city: casting.city || undefined,
+        scenarioRoom: selectedScenario?.room,
+        situationId: casting.situationId || undefined,
+      };
+      lastGenDataRef.current = genData;
       try {
-        await generateMutation.mutateAsync({
-          data: {
-            mood: "Late Night",
-            intensity: casting.intensity,
-            voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
-            storyLength: "10 min",
-            perspective: apiPerspective,
-            cinematicVisuals: true,
-            emotionalFocus: false,
-            whoIsHe: casting.archetype || undefined,
-            dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
-            storyMode: selectedScenario?.storyMode ?? "unrestrained",
-            experienceTags: allTags,
-            pairing: casting.pairing || undefined,
-            heritage: casting.heritage || undefined,
-            atmosphere: casting.atmosphere || undefined,
-            chemistry: casting.chemistry || undefined,
-            setting: casting.setting || undefined,
-            appearBuild: casting.appearBuild || undefined,
-            appearHeight: casting.appearHeight || undefined,
-            appearColouring: casting.appearColouring || undefined,
-            appearEyes: casting.appearEyes || undefined,
-            appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
-            listenerName: casting.listenerName || undefined,
-            partnerName: casting.partnerName || undefined,
-            country: casting.country || undefined,
-            city: casting.city || undefined,
-            scenarioRoom: selectedScenario?.room,
-            situationId: casting.situationId || undefined,
-          },
-        });
+        await generateMutation.mutateAsync({ data: genData as never });
       } finally {
         stopLoadingPhase();
       }

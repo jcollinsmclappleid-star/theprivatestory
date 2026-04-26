@@ -1849,6 +1849,320 @@ export default function Create() {
         )}
 
 
+        {step === "generating" && (
+          <motion.div
+            key="generating"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-3xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[60vh] text-center"
+          >
+            <div className="relative mb-10">
+              <div className="w-20 h-20 rounded-full border border-primary/20 flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="w-8 h-8 text-primary" />
+                </motion.div>
+              </div>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 rounded-full border border-primary/10"
+              />
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={loadingPhase}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mb-6"
+              >
+                <h2 className="text-3xl font-display font-bold text-foreground mb-2">
+                  {LOADING_PHASES[loadingPhase].label}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  {LOADING_PHASES[loadingPhase].sub}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mt-6 flex gap-2 items-center">
+              {LOADING_PHASES.map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    width: i === loadingPhase ? 32 : i < loadingPhase ? 16 : 8,
+                    opacity: i <= loadingPhase ? 1 : 0.3,
+                  }}
+                  className={`h-1 rounded-full ${i <= loadingPhase ? "bg-primary" : "bg-border"}`}
+                  transition={{ duration: 0.4 }}
+                />
+              ))}
+            </div>
+
+            <p className="text-xs text-muted-foreground mt-8 max-w-xs">
+              Your story is being crafted — writing, imagery, and narration are running now.
+            </p>
+
+            <p className="text-xs text-muted-foreground/70 mt-4 max-w-xs">
+              Typical wait: 2–3 minutes
+            </p>
+          </motion.div>
+        )}
+
+        {step === "result" && result && (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-3xl mx-auto px-4 py-8 space-y-8"
+          >
+            <button
+              onClick={resetToFreshCasting}
+              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm"
+            >
+              <ChevronLeft className="w-4 h-4" /> Create another
+            </button>
+
+            {result.variant_type && (
+              <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                <Shuffle className="w-3.5 h-3.5" />
+                Variation: {VARIATION_OPTIONS.find(v => v.id === result.variant_type)?.label ?? result.variant_type}
+              </div>
+            )}
+            {result.parent_story_id && !result.variant_type && (
+              <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                <BookOpen className="w-3.5 h-3.5" />
+                Continued story
+              </div>
+            )}
+
+            <div className="glass-panel rounded-3xl overflow-hidden">
+              <div className="relative aspect-video">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeSceneIndex}
+                    src={activeSceneImage}
+                    alt={`Scene ${activeSceneIndex + 1}`}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.2, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+
+                <div className="absolute bottom-0 left-0 p-8 z-10">
+                  <p className="text-primary text-xs font-medium uppercase tracking-widest mb-2">
+                    {result.mood}
+                  </p>
+                  <h1 className="font-display text-4xl font-bold text-foreground mb-3">
+                    {result.title}
+                  </h1>
+                  <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
+                    {result.description}
+                  </p>
+                </div>
+
+                {isThisPlaying && (
+                  <div className="absolute top-4 right-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-primary text-xs font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    {result.scenes[activeSceneIndex]?.heading ?? `Scene ${activeSceneIndex + 1}`}
+                  </div>
+                )}
+              </div>
+
+              <div className="p-8">
+                <div className="flex items-center gap-4 mb-8 flex-wrap">
+                  {result.audioUrl ? (
+                    <button
+                      onClick={togglePlay}
+                      className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
+                    >
+                      {isThisPlaying ? (
+                        <Volume2 className="w-5 h-5" />
+                      ) : (
+                        <Play className="w-5 h-5" />
+                      )}
+                      {isThisPlaying ? "Playing…" : "Play Story"}
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-3 bg-muted/30 text-muted-foreground px-6 py-3 rounded-full border border-border/50 text-sm">
+                      <Headphones className="w-4 h-4" />
+                      Audio narration is being prepared
+                    </div>
+                  )}
+                  <button
+                    onClick={handleResultSave}
+                    disabled={savePending}
+                    className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
+                      resultSaved
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    }`}
+                    title={resultSaved ? "Saved to library" : "Save to library"}
+                  >
+                    <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
+                  </button>
+                  <span className="text-muted-foreground text-sm">
+                    {result.duration} · {result.scenes.length} scenes
+                  </span>
+                </div>
+
+                {/* Save casting combo as a preset */}
+                {isAuthenticated && lastCastingData && (
+                  <div className="flex items-center gap-2">
+                    {presetSaved ? (
+                      <p className="text-xs text-primary flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5" />
+                        Casting saved — find it in your profile
+                      </p>
+                    ) : (
+                      <button
+                        onClick={handleSavePreset}
+                        className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 underline-offset-2 hover:underline"
+                      >
+                        Save this casting combination
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {isThisPlaying && (
+                  <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+                    <p className="text-xs font-medium text-primary uppercase tracking-widest mb-3">
+                      Reading Along
+                    </p>
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-base leading-relaxed text-foreground whitespace-pre-wrap font-light">
+                        {result.scenes[activeSceneIndex]?.text ?? ""}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Scene {activeSceneIndex + 1} of {result.scenes.length} · {result.scenes[activeSceneIndex]?.heading}
+                    </p>
+                  </div>
+                )}
+
+                <div className="space-y-3">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
+                    Story Scenes
+                  </p>
+                  {result.scenes.map((scene, i) => {
+                    const isActiveScene = currentStory?.id === result.id && activeSceneIndex === i;
+                    return (
+                      <motion.div
+                        key={scene.id}
+                        animate={{
+                          borderColor: isActiveScene
+                            ? "hsl(var(--primary) / 0.5)"
+                            : "hsl(var(--border) / 0.3)",
+                          backgroundColor: isActiveScene
+                            ? "hsl(var(--primary) / 0.05)"
+                            : "transparent",
+                        }}
+                        className="flex gap-4 p-4 rounded-xl border transition-colors"
+                      >
+                        {result.images.scenes[i] && (
+                          <div className="relative flex-shrink-0">
+                            <img
+                              src={result.images.scenes[i]}
+                              alt={scene.heading ?? `Scene ${i + 1}`}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                            {isActiveScene && (
+                              <div className="absolute inset-0 rounded-lg border-2 border-primary/60 flex items-center justify-center bg-black/30">
+                                <Volume2 className="w-4 h-4 text-primary" />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs text-muted-foreground">
+                              {i + 1}.
+                            </span>
+                            <span className="text-sm font-medium text-foreground truncate">
+                              {scene.heading ?? `Scene ${i + 1}`}
+                            </span>
+                            {isActiveScene && (
+                              <span className="text-xs text-primary font-medium flex-shrink-0">
+                                · Now playing
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                            {scene.text}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Full Story Read-Along Section */}
+            {result.images?.cover && (
+              <div className="rounded-2xl overflow-hidden border border-border/30">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border/20 bg-card/60">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                    Full Story
+                  </p>
+                  <p className="text-xs text-muted-foreground">{result.scenes.length} scenes</p>
+                </div>
+                <div className="divide-y divide-border/20">
+                  {result.scenes.map((scene, i) => (
+                    <div key={scene.id ?? i} className="px-6 py-6">
+                      {scene.heading && (
+                        <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
+                          {scene.heading}
+                        </p>
+                      )}
+                      <p className="text-base leading-[1.9] text-white/90 font-light whitespace-pre-wrap">
+                        {scene.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Post-generation upsell for free/immersive users who have exhausted all credits */}
+            {usageData && (usageData.plan === "free" || usageData.plan === "immersive") && usageData.storiesRemaining <= 0 && (usageData.addonStoriesRemaining ?? 0) <= 0 && (
+              <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/8 to-primary/3 p-6 flex flex-col items-center gap-4 text-center">
+                <div className="space-y-1">
+                  <p className="font-display text-lg font-bold text-foreground">Want another story like this?</p>
+                  <p className="text-sm text-muted-foreground">Subscribe and get 5 stories a month — with unused ones rolling over.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { window.location.href = `${import.meta.env.BASE_URL}pricing`; }}
+                  className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-glow"
+                >
+                  See subscription plans
+                </button>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-4">
+              <button
+                onClick={() => setVariationModalOpen(true)}
+                disabled={isGeneratingVariation}
+                className="flex items-center justify-center gap-2 border border-border/50 text-foreground py-4 rounded-2xl hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Shuffle className="w-4 h-4" />
+                Regenerate Variation
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         {step === "paywall" && paywallCapture && (() => {
           const MOOD_TEASERS: Record<string, string> = {
             romance: "The distance between your hands felt deliberate — like he was choosing, slowly, not to touch you yet. His gaze moved across your face with the calm of someone with time. Something in the room had shifted before a single word was spoken. This is the beginning.",

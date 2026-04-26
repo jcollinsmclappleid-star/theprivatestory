@@ -9,6 +9,7 @@ import { db } from "@workspace/db";
 import { usersTable } from "@workspace/db/schema";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
+import { isAdmin as isAdminUser } from "../middlewares/requireAdmin.js";
 
 const router = Router();
 
@@ -62,7 +63,7 @@ const EDITORIAL_PICKS = ["story-1", "story-2", "story-3", "story-4", "story-5"];
 // ---------------------------------------------------------------------------
 router.post("/save-story", async (req, res) => {
   if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
-  if (!(await requireActiveSubscription(req, res))) return;
+  if (!isAdminUser(req) && !(await requireActiveSubscription(req, res))) return;
   const userId = req.user.id;
 
   const { storyId } = req.body as { storyId: string };
@@ -80,7 +81,7 @@ router.post("/save-story", async (req, res) => {
 // ---------------------------------------------------------------------------
 router.delete("/save-story", async (req, res) => {
   if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
-  if (!(await requireActiveSubscription(req, res))) return;
+  if (!isAdminUser(req) && !(await requireActiveSubscription(req, res))) return;
   const userId = req.user.id;
 
   const { storyId } = req.body as { storyId: string };
@@ -127,9 +128,11 @@ router.post("/update-progress", async (req, res) => {
 router.get("/library", async (req, res) => {
   if (!req.isAuthenticated()) { res.status(401).json({ error: "Authentication required" }); return; }
 
-  // Non-subscribers (free/immersive) have no library storage
-  const hasActiveSub = await requireActiveSubscription(req, res).catch(() => false);
-  if (!hasActiveSub) return;
+  // Admins have full library access regardless of subscription plan
+  if (!isAdminUser(req)) {
+    const hasActiveSub = await requireActiveSubscription(req, res).catch(() => false);
+    if (!hasActiveSub) return;
+  }
 
   const userId = req.user.id;
   const [savedIds, generatedRows] = await Promise.all([

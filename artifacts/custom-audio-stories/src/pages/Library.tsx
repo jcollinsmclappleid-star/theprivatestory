@@ -307,9 +307,9 @@ const TAB_CONFIG = [
 
 export default function Library() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
-  const { isPaid } = useSubscription();
+  const { hasFullAccess } = useSubscription();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<LibraryTab>(isPaid ? "saved" : "generated");
+  const [activeTab, setActiveTab] = useState<LibraryTab>(hasFullAccess ? "saved" : "generated");
   const [saved, setSaved] = useState<Story[]>([]);
   const [generated, setGenerated] = useState<Story[]>([]);
   const [variations, setVariations] = useState<FullGeneratedStory[]>([]);
@@ -419,7 +419,7 @@ export default function Library() {
   }
   */
 
-  if (isAuthenticated && !isPaid) {
+  if (isAuthenticated && !hasFullAccess) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 w-full">
         <div className="mb-8">
@@ -546,7 +546,7 @@ export default function Library() {
                       isSaved
                       onUnsave={() => handleUnsave(story.id)}
                     />
-                    {!isPaid && (
+                    {!hasFullAccess && (
                       <button
                         className="absolute inset-0 z-10 rounded-2xl group"
                         onClick={() => navigate("/pricing")}
@@ -587,7 +587,7 @@ export default function Library() {
                         isGenerated
                         onDeleted={() => setGenerated(prev => prev.filter(st => st.id !== s.id))}
                       />
-                      {!isPaid && (
+                      {!hasFullAccess && (
                         <button
                           className="absolute inset-0 z-20 rounded-2xl group"
                           onClick={() => navigate("/pricing")}
@@ -662,7 +662,7 @@ export default function Library() {
                         isGenerated
                         onDeleted={() => setVariations(prev => prev.filter(st => st.id !== story.id))}
                       />
-                      {!isPaid && (
+                      {!hasFullAccess && (
                         <button
                           className="absolute inset-0 z-20 rounded-2xl group"
                           onClick={() => navigate("/pricing")}

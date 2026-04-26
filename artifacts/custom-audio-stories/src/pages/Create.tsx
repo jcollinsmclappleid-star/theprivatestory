@@ -754,6 +754,7 @@ export default function Create() {
   const [generationError, setGenerationError] = useState<{ message: string; isSubscriptionLimit: boolean } | null>(null);
   const [usageData, setUsageData] = useState<{ plan: string; used: number; limit: number; storiesRemaining: number; addonStoriesRemaining: number; renewDate: string | null } | null>(null);
   const [paywallCapture, setPaywallCapture] = useState<{ storyMode: string; mood: string; intensity: string; voiceId: string; setting: string; pairing?: string; heritage?: string } | null>(null);
+  const [pendingRetryParams, setPendingRetryParams] = useState<FormData | null>(null);
   const [continueAfterDark, setContinueAfterDark] = useState(false);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<"monthly" | "annual" | null>(null);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
@@ -963,6 +964,10 @@ export default function Create() {
         const message = rawMessage.replace(/^HTTP \d{3} [^:]+:\s*/, "").trim();
         const isSubscriptionLimit = status === 402 || status === 401;
         setGenerationError({ message, isSubscriptionLimit });
+        if (status === 401) {
+          // Not authenticated — store params so we can auto-retry after sign-in
+          setPendingRetryParams(form.getValues());
+        }
         if (isSubscriptionLimit) {
           const vals = form.getValues();
           setPaywallCapture({
@@ -1036,6 +1041,18 @@ export default function Create() {
       })
       .catch(() => {});
   }, [isAuthenticated]);
+
+  // Auto-retry generation after sign-in when a previous attempt failed with 401
+  useEffect(() => {
+    if (!isAuthenticated || !pendingRetryParams) return;
+    const params = pendingRetryParams;
+    setPendingRetryParams(null);
+    setGenerationError(null);
+    setStep("generating");
+    startLoadingPhase();
+    generateMutation.mutateAsync({ data: params }).finally(() => stopLoadingPhase());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, pendingRetryParams]);
 
   const handleLoadMyUsual = useCallback(() => {
     if (!myUsualPreset) return;

@@ -17,7 +17,7 @@ import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
-import { db, contentBlocks, usersTable } from "@workspace/db";
+import { db, contentBlocks, usersTable, generationJobs } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
 import { isAdmin as isAdminUser } from "../middlewares/requireAdmin.js";
@@ -4834,29 +4834,72 @@ router.post("/generate-full-story", async (req, res) => {
     return result;
   };
 
+  // Create an async job and return immediately — avoids the 5-minute proxy timeout
+  const jobId = crypto.randomUUID();
+  const userId = String(req.user!.id);
+  const useAddon = _useAddonForThisGeneration;
+  const useRollover = _useRolloverForThisGeneration;
+  const jobLog = req.log;
+
+  await db.insert(generationJobs).values({ id: jobId, userId, status: "running" });
+  res.json({ jobId });
+
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Generation timed out after 300 seconds")), TIMEOUT_MS)
+    setTimeout(() => reject(new Error("Generation timed out after 10 minutes")), TIMEOUT_MS)
   );
 
-  try {
-    const result = await Promise.race([pipeline(), timeoutPromise]);
-    // Consume addon or rollover credit if this generation was permitted by one
-    if (req.isAuthenticated()) {
-      if (_useAddonForThisGeneration) consumeAddonCredit(String(req.user!.id)).catch(() => {});
-      if (_useRolloverForThisGeneration) consumeRolloverCredit(String(req.user!.id)).catch(() => {});
-    }
-    res.json(result);
-  } catch (err) {
-    const statusCode = (err instanceof Error && (err as Error & { statusCode?: number }).statusCode) ?? 500;
-    if (statusCode === 422) {
-      const message = err instanceof Error ? err.message : "Content policy violation";
-      res.status(422).json({ error: message });
-    } else {
-      req.log.error({ err }, "Full story generation failed");
-      const message = err instanceof Error ? err.message : "Full story generation failed";
-      res.status(500).json({ error: message });
-    }
+  Promise.race([pipeline(), timeoutPromise])
+    .then(async (result) => {
+      if (useAddon) consumeAddonCredit(userId).catch(() => {});
+      if (useRollover) consumeRolloverCredit(userId).catch(() => {});
+      await db.update(generationJobs)
+        .set({ status: "complete", result: result as Record<string, unknown>, updatedAt: new Date() })
+        .where(eq(generationJobs.id, jobId));
+    })
+    .catch(async (err) => {
+      const statusCode = (err instanceof Error && (err as Error & { statusCode?: number }).statusCode) ?? 500;
+      const message = err instanceof Error ? err.message : "Story generation failed";
+      jobLog.error({ err, jobId }, "Full story generation failed");
+      await db.update(generationJobs)
+        .set({
+          status: "error",
+          error: message,
+          errorCode: statusCode !== 500 ? String(statusCode) : null,
+          updatedAt: new Date(),
+        })
+        .where(eq(generationJobs.id, jobId));
+    });
+});
+
+// ---------------------------------------------------------------------------
+// GET /generate-job/:jobId — poll for async generation result
+// ---------------------------------------------------------------------------
+
+router.get("/generate-job/:jobId", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
   }
+  const { jobId } = req.params;
+  const rows = await db.select()
+    .from(generationJobs)
+    .where(eq(generationJobs.id, jobId))
+    .limit(1);
+  if (!rows.length) {
+    res.status(404).json({ error: "Job not found" });
+    return;
+  }
+  const job = rows[0];
+  if (job.userId !== String(req.user!.id)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  res.json({
+    status: job.status,
+    result: job.result ?? undefined,
+    error: job.error ?? undefined,
+    errorCode: job.errorCode ?? undefined,
+  });
 });
 
 // ---------------------------------------------------------------------------

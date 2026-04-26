@@ -1084,16 +1084,46 @@ export const getGenerateFullStoryUrl = () => {
   return `/api/generate-full-story`;
 };
 
+async function pollGenerationJob(jobId: string): Promise<FullGeneratedStory> {
+  const MAX_POLLS = 200;
+  for (let i = 0; i < MAX_POLLS; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const status = await customFetch<{
+      status: string;
+      result?: FullGeneratedStory;
+      error?: string;
+      errorCode?: string;
+    }>(`/api/generate-job/${jobId}`);
+    if (status.status === "complete" && status.result) {
+      return status.result;
+    }
+    if (status.status === "error") {
+      const message = status.error ?? "Story generation failed";
+      const code = status.errorCode ? Number(status.errorCode) : 500;
+      const err = Object.assign(new Error(message), { status: code, statusCode: code });
+      throw err;
+    }
+  }
+  throw new Error("Story generation timed out. Please try again.");
+}
+
 export const generateFullStory = async (
   generateStoryRequest: GenerateStoryRequest,
   options?: RequestInit,
 ): Promise<FullGeneratedStory> => {
-  return customFetch<FullGeneratedStory>(getGenerateFullStoryUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(generateStoryRequest),
-  });
+  const response = await customFetch<{ jobId?: string } & Record<string, unknown>>(
+    getGenerateFullStoryUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(generateStoryRequest),
+    },
+  );
+  if (response.jobId) {
+    return pollGenerationJob(response.jobId as string);
+  }
+  return response as unknown as FullGeneratedStory;
 };
 
 export const getGenerateFullStoryMutationOptions = <

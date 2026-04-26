@@ -138,6 +138,18 @@ export const nameSubmissions = pgTable("name_submissions", {
   submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const generationJobs = pgTable("generation_jobs", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("pending"),
+  result: jsonb("result"),
+  error: text("error"),
+  errorCode: text("error_code"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type GenerationJobRow = typeof generationJobs.$inferSelect;
 export type GeneratedStoryRow = typeof generatedStories.$inferSelect;
 export type UserLibraryRow = typeof userLibrary.$inferSelect;
 export type UserProgressRow = typeof userProgress.$inferSelect;

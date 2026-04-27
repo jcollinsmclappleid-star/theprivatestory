@@ -21,8 +21,15 @@ function getStripe(): Stripe | null {
   return new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
 }
 
-// Look up a subscription price by metadata key tps_plan, falling back to env var.
+// Look up a subscription price: env vars are authoritative, metadata search is fallback only.
 async function resolvePriceId(stripe: Stripe, plan: "monthly" | "annual"): Promise<string | null> {
+  // Env vars are the source of truth — always use them when set.
+  const fromEnv = plan === "monthly"
+    ? (process.env.STRIPE_MONTHLY_PRICE_ID ?? null)
+    : (process.env.STRIPE_ANNUAL_PRICE_ID ?? null);
+  if (fromEnv) return fromEnv;
+
+  // Fall back to Stripe metadata search only if env var is absent.
   try {
     const results = await stripe.prices.search({
       query: `metadata["tps_plan"]:"${plan}" AND active:"true"`,
@@ -30,12 +37,9 @@ async function resolvePriceId(stripe: Stripe, plan: "monthly" | "annual"): Promi
     });
     if (results.data.length > 0) return results.data[0].id;
   } catch {
-    // fall through to env var
+    // nothing
   }
-  // Fallback to env vars
-  return plan === "monthly"
-    ? (process.env.STRIPE_MONTHLY_PRICE_ID ?? null)
-    : (process.env.STRIPE_ANNUAL_PRICE_ID ?? null);
+  return null;
 }
 
 function requireAuth(req: Request, res: Response): string | null {

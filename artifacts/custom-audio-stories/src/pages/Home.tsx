@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock, BookOpen,
-  ChevronLeft, Globe, Gift, Shuffle, Check, Loader2, Clock,
+  ChevronLeft, Globe, Shuffle, Check, Loader2, Clock,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -719,48 +719,6 @@ function CastingPreview() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Library Promo — replaces Continue Listening
-// ---------------------------------------------------------------------------
-
-function LibraryPromo({ isPaid: _isPaid }: { stories?: Story[]; isPaid: boolean }) {
-  return (
-    <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/20">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-card/30 to-background pointer-events-none" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/4 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 p-8 md:p-10">
-          <div className="flex items-start justify-between gap-6 flex-col sm:flex-row">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Gift className="w-4 h-4 text-primary/40" />
-                <span className="inline-block px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary/60 text-xs font-medium uppercase tracking-widest">
-                  Members extra
-                </span>
-              </div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                Your story, your way —
-                <br className="hidden md:block" />
-                <span className="text-primary"> and something extra.</span>
-              </h2>
-              <p className="text-muted-foreground/80 mt-2 text-sm leading-relaxed max-w-md">
-                The Private Story is built entirely around you — your cast, your mood, your world. As a member you also get a curated story added each month — crafted and ready, for the moments between your own.
-              </p>
-            </div>
-            <Link
-              href="/browse"
-              className="flex-shrink-0 flex items-center gap-2 border border-border/40 text-muted-foreground/70 px-5 py-2.5 rounded-full font-medium text-sm hover:border-primary/30 hover:text-foreground transition-all whitespace-nowrap"
-            >
-              <BookOpen className="w-4 h-4" />
-              Browse the collection
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Sample story — navigates to /listen
@@ -1325,10 +1283,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* Library Promo — curated collection                               */}
-        {/* ---------------------------------------------------------------- */}
-        <LibraryPromo isPaid={isPaid} />
 
         {/* ---------------------------------------------------------------- */}
         {/* SEO page links                                                    */}

@@ -2470,7 +2470,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   { label: "Archetype",   value: data.archetype,                                                                                              goTo: 3,  fallback: "—" },
                   { label: "Setting",     value: data.setting,                                                                                                goTo: 5,  fallback: "—" },
                   { label: "Intensity",   value: data.intensity,                                                                                              goTo: 6,  fallback: "—" },
-                  { label: "Situation",   value: data.situation,                                                                                              goTo: 7,  fallback: "We'll choose for you" },
+                  { label: "Situation",   value: displayedSitLabel || undefined,                                                                              goTo: 7,  fallback: "We'll choose for you" },
                   { label: "Your name",   value: listenerName || undefined,                                                                                   goTo: 9,  fallback: "Addressed as 'you'" },
                   { label: "Their name",  value: partnerName || undefined,                                                                                    goTo: 10, fallback: "Narrator will choose" },
                   { label: "Voice",       value: (() => { const v = VOICES.find(v => v.id === voiceId); return v ? (v.displayName || v.label) : undefined; })(), goTo: 11, fallback: "—" },

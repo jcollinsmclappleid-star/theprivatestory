@@ -35,19 +35,21 @@ function getUserId(req: Request, res: Response): string | null {
   return req.user.id;
 }
 
-/** Returns true if the user has an active monthly/annual subscription. Sends 403 and returns false otherwise. */
+/** Returns true if the user has a paid subscription (active or canceling). Sends 403 and returns false otherwise. */
 async function requireActiveSubscription(req: Request, res: Response): Promise<boolean> {
   const userId = req.user?.id;
   if (!userId) { res.status(401).json({ error: "Authentication required" }); return false; }
   const user = await db
-    .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus })
+    .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus, isAdmin: usersTable.isAdmin })
     .from(usersTable)
     .where(eq(usersTable.id, userId))
     .then(r => r[0]);
-  const isActive = user?.subscriptionStatus === "active" &&
-    (user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual");
-  if (!isActive) {
-    res.status(403).json({ error: "An active subscription is required to access your story library." });
+  if (user?.isAdmin) return true;
+  const hasPaidPlan = user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual" || user?.subscriptionPlan === "immersive";
+  // Immersive is a one-time purchase with no ongoing subscription status — grant access unconditionally
+  const hasPaidStatus = user?.subscriptionPlan === "immersive" || user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
+  if (!(hasPaidPlan && hasPaidStatus)) {
+    res.status(403).json({ error: "A subscription is required to access your story library." });
     return false;
   }
   return true;

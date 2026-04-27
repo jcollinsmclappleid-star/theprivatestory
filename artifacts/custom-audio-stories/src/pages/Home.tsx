@@ -1250,10 +1250,6 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-1.5 py-2.5 border-t border-border/15 mb-3">
-                  <Gift className="w-2.5 h-2.5 text-primary/30 flex-shrink-0" />
-                  <span className="text-[10px] text-muted-foreground/40">Members extra — curated stories added monthly</span>
-                </div>
                 <button
                   onClick={() => startCheckout("monthly")}
                   disabled={checkoutLoading === "monthly"}
@@ -1295,10 +1291,6 @@ export default function Home() {
                       <span className={`text-xs leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
                     </div>
                   ))}
-                </div>
-                <div className="flex items-center gap-1.5 py-2.5 border-t border-border/15 mb-3">
-                  <Gift className="w-2.5 h-2.5 text-primary/30 flex-shrink-0" />
-                  <span className="text-[10px] text-muted-foreground/40">Members extra — curated stories added monthly</span>
                 </div>
                 <button
                   onClick={() => startCheckout("annual")}

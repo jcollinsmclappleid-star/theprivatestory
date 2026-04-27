@@ -130,7 +130,7 @@ function CollectionGate() {
         </div>
         <h2 className="font-display text-2xl font-bold text-foreground mb-3">Collection access</h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          The curated collection — original audio stories with new releases every month — is included with every subscription.
+          The curated collection — original audio stories across every mood — is included with every subscription.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
@@ -143,11 +143,10 @@ function CollectionGate() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
           {[
             { icon: <BookOpen className="w-4 h-4 text-primary" />, label: "Curated collection", desc: "Original stories across every mood and category." },
             { icon: <Headphones className="w-4 h-4 text-primary" />, label: "Premium narration", desc: "A curated selection of voices, chosen for intimacy and depth." },
-            { icon: <Sparkles className="w-4 h-4 text-primary" />, label: "Monthly releases", desc: "New stories added every month, automatically." },
           ].map(({ icon, label, desc }) => (
             <div key={label} className="bg-card/40 border border-border/40 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-1.5">{icon}<span className="text-sm font-semibold text-foreground">{label}</span></div>

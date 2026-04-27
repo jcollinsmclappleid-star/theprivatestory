@@ -28,9 +28,11 @@ async function requireActiveSubscription(req: Request, res: Response): Promise<b
   }).from(usersTable).where(eq(usersTable.id, userId));
 
   if (user?.isAdmin) return true;
-  const isActive = user?.subscriptionStatus === "active" && user?.subscriptionPlan && user.subscriptionPlan !== "free";
-  if (!isActive) {
-    res.status(403).json({ error: "The curated collection is available to active subscribers. Visit our pricing page to subscribe.", code: "SUBSCRIPTION_REQUIRED" });
+  const hasPaidPlan = user?.subscriptionPlan && user.subscriptionPlan !== "free";
+  // Immersive is a one-time purchase with no ongoing subscription status — grant access unconditionally
+  const hasPaidStatus = user?.subscriptionPlan === "immersive" || user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
+  if (!(hasPaidPlan && hasPaidStatus)) {
+    res.status(403).json({ error: "A subscription is required to access the collection. Visit our pricing page to subscribe.", code: "SUBSCRIPTION_REQUIRED" });
     return false;
   }
   return true;

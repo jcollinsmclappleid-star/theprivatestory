@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { Link, useSearch } from "wouter";
 import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
-  ChevronDown, ChevronRight, Check, Moon,
-  EyeOff, Bookmark, Calendar, Plus, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame, Gift, Trash2, Timer, ArrowRight,
+  ChevronDown, Check, Moon,
+  EyeOff, Bookmark, Loader2, CheckCircle2, AlertCircle,
+  Users, Sliders, Flame, Trash2, Timer,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
@@ -45,24 +45,6 @@ const CASTING_DETAILS = [
   { icon: <Flame className="w-5 h-5" />, heading: "Choose how far it goes", body: "From romantic to deeply intimate — you set the depth. The story goes exactly where you want it, and no further." },
 ];
 
-const LIBRARY_VS_PERSONAL = [
-  {
-    label: "The Collection",
-    accent: "#a78bfa",
-    badge: "Members extra",
-    heading: "Immediate. Beautifully crafted. Always there.",
-    body: "A curated library of original stories — available the moment you sign in. No waiting, no creating. Something to listen to tonight, chosen with care. A new release added each month.",
-    items: ["Ready immediately", "New story every month", "Across every mood and tone", "Beautifully narrated"],
-  },
-  {
-    label: "Personalised Stories",
-    accent: "#c9a227",
-    badge: "Your credit allowance",
-    heading: "Cast by you. Written for you. Heard only by you.",
-    body: "These aren't chosen from a shelf. They're created around your mood, your characters, the dynamic you want — and the exact feeling you want to be left with. No two are alike. None of them exist until you make them.",
-    items: ["Nobody else has this story", "Every character cast by you", "Every dynamic, your choice", "Saved privately to your library"],
-  },
-];
 
 const INCLUDED = [
   { icon: <Sparkles className="w-5 h-5" />, label: "Personalised story creation", desc: "Every story is written around your mood, your cast, and your world. Nothing pulled from a shelf." },
@@ -73,10 +55,6 @@ const INCLUDED = [
 
 const FAQS: { q: string; a: string }[] = [
   {
-    q: "What is the difference between My Stories and the Collection?",
-    a: "My Stories is your private archive — every story created specifically for you lives there, visible only to your account. The Collection is a curated library of pre-written stories, available to all members, with a new release added each month.",
-  },
-  {
     q: "What is After Dark?",
     a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with every plan, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
   },
@@ -86,15 +64,11 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do I get with each plan?",
-    a: "Both plans include personalised story credits — 5 per month or 50 per year — full access to the curated collection, monthly releases, private library storage, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £12.42 per month.",
-  },
-  {
-    q: "What is included in the curated collection?",
-    a: "A carefully selected library of pre-written stories, available to all members. A new release is added each month — giving you something immediate to return to between your own creations.",
+    a: "Both plans include personalised story credits — 5 per month or 50 per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £12.42 per month.",
   },
   {
     q: "Can I buy more personalised stories?",
-    a: "Yes. Additional personalised stories are available for £3.99 each — for active subscribers only, without changing your plan. They appear alongside your monthly allowance the moment you purchase.",
+    a: "Yes. Additional personalised stories are available for £3.99 each — for active subscribers only, without changing your plan. They appear alongside your allowance the moment you purchase.",
   },
   {
     q: "Do unused monthly stories roll over?",
@@ -267,7 +241,7 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Each plan also includes After Dark — a space for stories that go further, and a curated story added to your library each month as a members extra.
+            Each plan also includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — typically around 10 minutes, though each story is different.
@@ -429,11 +403,6 @@ export default function Pricing() {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
-                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
-                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
-              </div>
-
               <button
                 onClick={() => startCheckout("monthly")}
                 disabled={loadingPlan !== null}
@@ -493,11 +462,6 @@ export default function Pricing() {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-2 pt-3 pb-5 border-t border-border/15">
-                <Gift className="w-3 h-3 text-primary/30 flex-shrink-0" />
-                <span className="text-xs text-muted-foreground/40">Members extra — curated stories added monthly</span>
-              </div>
-
               <button
                 onClick={() => startCheckout("annual")}
                 disabled={loadingPlan !== null}
@@ -565,69 +529,6 @@ export default function Pricing() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Library vs Personalised — Why access feels different                */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Why access feels different here</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight mb-3">
-            Two kinds of stories.
-            <br className="hidden md:block" />
-            <span className="text-muted-foreground font-normal"> Both entirely yours.</span>
-          </h2>
-          <p className="text-muted-foreground/80 max-w-lg mx-auto text-sm leading-relaxed">
-            Every plan gives you access to both. They serve different moments — and together, they mean you always have something waiting.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {LIBRARY_VS_PERSONAL.map((col) => (
-            <div
-              key={col.label}
-              className="rounded-2xl border border-border/20 bg-card/20 p-8 relative overflow-hidden"
-            >
-              <div
-                className="absolute top-0 right-0 w-48 h-48 rounded-full blur-3xl pointer-events-none"
-                style={{ background: `${col.accent}14` }}
-              />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-4">
-                  <span
-                    className="text-xs font-bold uppercase tracking-widest"
-                    style={{ color: col.accent }}
-                  >
-                    {col.label}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-muted-foreground/80 font-medium">
-                    {col.badge}
-                  </span>
-                </div>
-                <h3
-                  className="font-display text-xl font-bold mb-3 leading-snug"
-                  style={{ color: col.accent }}
-                >
-                  {col.heading}
-                </h3>
-                <p className="text-sm text-muted-foreground/80 leading-relaxed mb-5">{col.body}</p>
-                <div className="space-y-2">
-                  {col.items.map((item) => (
-                    <div key={item} className="flex items-center gap-2">
-                      <div
-                        className="w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0"
-                        style={{ borderColor: `${col.accent}50` }}
-                      >
-                        <Check className="w-2 h-2" style={{ color: col.accent }} />
-                      </div>
-                      <span className="text-xs text-muted-foreground/80">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -741,19 +642,6 @@ export default function Pricing() {
               <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Members extra — curated monthly story                              */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="flex items-center gap-4 px-6 py-4 rounded-2xl border border-border/20 bg-card/20">
-          <Gift className="w-4 h-4 text-primary/40 flex-shrink-0" />
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mr-2">Members extra</span>
-            <span className="text-sm text-muted-foreground/60">A curated story added to your library each month — something crafted and ready, for the moments between your own.</span>
-          </div>
         </div>
       </section>
 

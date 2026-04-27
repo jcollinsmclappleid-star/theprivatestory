@@ -64,7 +64,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do I get with each plan?",
-    a: "Both plans include personalised story credits — 5 per month or 50 per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £12.42 per month.",
+    a: "Both plans include personalised story credits — 5 per month or 50 per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £19.92 per month.",
   },
   {
     q: "Can I buy more personalised stories?",
@@ -383,7 +383,7 @@ export default function Pricing() {
                 </span>
               </div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£19.99</span>
+                <span className="font-display text-5xl font-bold text-foreground">£29.99</span>
                 <span className="text-muted-foreground/80 mb-1.5">/ month</span>
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
@@ -440,11 +440,11 @@ export default function Pricing() {
                 </span>
               </div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£149</span>
+                <span className="font-display text-5xl font-bold text-foreground">£239</span>
                 <span className="text-muted-foreground/80 mb-1.5">/ year</span>
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">
-                Equivalent to £12.42 per month — save over £90 versus monthly.
+                Equivalent to £19.92 per month — save over £120 versus monthly.
               </p>
 
               <div className="space-y-3 mb-3">

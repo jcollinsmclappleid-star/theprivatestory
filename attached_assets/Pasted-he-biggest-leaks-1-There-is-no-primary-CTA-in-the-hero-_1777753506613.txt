@@ -1,0 +1,29 @@
+he biggest leaks
+1. There is no primary CTA in the hero. The hero has a badge, h1, and tagline — and that's it. To do anything, the visitor has to scroll past the hero into the Three Doors block. On mobile that's a full thumb-swipe before they see a single button. Adding a single "Create your [trope] story — under 3 minutes" button directly in the hero, with the trope pre-selected when they land in /create, would likely move the needle more than anything else.
+
+2. The Three Doors block sits between the hero and the page content. A visitor who searched "billionaire romance audio" and landed on the billionaire page is then asked "Romance, After Dark, or Drift?" — a generic decision they didn't come to make. This dilutes the trope-specific intent. On trope/audience landing pages, the Three Doors should drop below the page body (or be replaced by a single Create button that pre-selects the trope and sends them straight into the brief).
+
+3. No audio sample anywhere on the landing page. Adult audio is a "I need to hear it before I trust it" purchase. Right now the only way to hear what Mistral Large + the narration voices actually sound like is to sign up, age-verify, pay, and write a brief. A 30–60 second sample player in the hero — ideally one per top voice — would cut the trust gap dramatically. This is what Quinn, Dipsea, and Bloom all do.
+
+4. Price is invisible until they leave the page. Visitors have to click to /pricing to find out it's ~£24.99/month or ~£19.92/month annual. Premium pricing isn't the problem — hiding it is. Putting "From £19.92/mo • 5 stories included • cancel anytime" near the hero CTA filters out price-sensitive bouncers earlier and reassures the rest.
+
+5. No social proof. The trust block is all feature claims ("completely private", "premium narration"). There's no "X women listening", no testimonials, no review quotes, no press mention. The "2.6M+ combinations" number is a maths fact, not social proof. Even one or two short anonymous listener quotes per page (different ones per trope) would help the female-first / privacy-led story land.
+
+Mid-impact
+6. Generic CTA copy. "Create my story" appears everywhere. On the billionaire page it should be "Create your billionaire romance" — same on every trope page. This reinforces that the page they're on is the page they should buy from.
+
+7. No first-story incentive. A "Your first story is £1" or "Try one for £1, no subscription" tier would convert curious clickers who won't commit to a £24.99/mo subscription on first visit. This is the standard playbook for premium adult subscription products. (You already have a Stripe one-off addon at £3.99 for active subscribers — a non-subscriber single-purchase variant could be added.)
+
+8. Bundle weight. The Vite build warning showed a 2.73 MB JS bundle (730 KB gzipped). On mobile in the UK on a marginal connection, that's a 2–4 second delay before anything is interactive. Some of that is unavoidable (audio player, motion library), but a manualChunks split for the SEO landing route would help — these pages don't need the create-flow, gift-flow, or audio-player code in the initial load.
+
+9. The hero h1 is long and literary. "Billionaire Romance Audio Stories — The Man Whose Attention Is the Resource" is beautiful prose, but on mobile it wraps to ~5 lines and pushes the rest of the page below the fold. Consider keeping the literary hook as a sub-headline and using a tighter h1.
+
+Lower-impact but worth doing
+10. FAQ schema. Adding <script type="application/ld+json"> with the FAQ schema would get the FAQs into Google's expandable rich result. Doesn't change conversion directly, but improves CTR from search — and you have the FAQ data already structured.
+
+11. Sticky bottom-of-screen CTA on mobile. Once a visitor scrolls past the hero, the create button disappears. A small persistent "Create your billionaire romance →" bar at the bottom of the viewport on mobile keeps the conversion path one tap away through the whole page.
+
+12. Exit-intent offer on desktop / scroll-to-bottom offer on mobile. Capture the bouncer with "Get one free story for signing up" or similar.
+
+My order of operations if I were doing this
+If you want me to actually build these: I'd do 1, 2, 4, 6 in one pass — they're all small edits to SEOPage.tsx and the configs, and together they should be the biggest move. Then 3 (sample player) as the next focused piece, since it needs an audio asset decision and a small new component. Then 5, 7, 11 as a third pass. 8 is a separate optimisation pass.

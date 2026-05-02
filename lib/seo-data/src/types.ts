@@ -12,6 +12,7 @@ export interface SEOPageConfig {
     tagline: string;
   };
   heroCTALabel?: string;
+  heroCTAHref?: string;
   heroImage?: string;
   dateModified?: string;
   showCastingPreview?: boolean;

@@ -22,11 +22,11 @@ const TRUST_ITEMS = [
   { icon: <Heart className="w-4 h-4" />, label: "The female imagination at its centre", sub: "Designed around female desire, emotional pacing, and private pleasure", colSpan: true },
 ];
 
-function HeroCTA({ label }: { label?: string }) {
+function HeroCTA({ label, href }: { label?: string; href?: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
       <Link
-        href="/after-dark"
+        href={href ?? "/create"}
         className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
       >
         {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
@@ -84,7 +84,7 @@ export default function SEOPage({
             <p className="text-white/75 text-xl leading-relaxed max-w-xl mb-7">
               {config.hero.tagline}
             </p>
-            <HeroCTA label={config.heroCTALabel} />
+            <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
           </div>
         </div>
       ) : (
@@ -101,7 +101,7 @@ export default function SEOPage({
             <p className="text-muted-foreground text-xl leading-relaxed mb-7">
               {config.hero.tagline}
             </p>
-            <HeroCTA label={config.heroCTALabel} />
+            <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
           </div>
         </div>
       )}

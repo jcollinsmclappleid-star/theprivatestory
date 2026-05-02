@@ -41,8 +41,8 @@ const DOORS: DoorSample[] = [
     storyTitle: "The Fake-Dating One",
     blurb:
       "His sister's wedding was on Saturday — and the plus-one box had been empty for six months. A tiny favour, on paper. A weekend pretending. Until somewhere between the toast and the first dance, neither of them remembered to let go.",
-    voiceName: "Clara",
-    voiceMeta: "British · Warm · Soothing",
+    voiceName: "Kayla",
+    voiceMeta: "American · Warm · Expressive",
     ctaLabel: "Create your romance",
     ctaHref: "/create",
     audioUrl: `${API_BASE}/voice-samples/doors/romance.mp3`,
@@ -91,8 +91,8 @@ const DOORS: DoorSample[] = [
     storyTitle: "The House at the Edge of the Forest",
     blurb:
       "You arrive on foot. There is no road. Inside, a fire has been laid for you — a blanket folded over the chair, a pot of tea still warm. You don't remember who left it. You don't need to. Slow, sensory, written to let you settle.",
-    voiceName: "Theo",
-    voiceMeta: "British · Textured · Unhurried",
+    voiceName: "Clara",
+    voiceMeta: "British · Warm · Unhurried",
     ctaLabel: "Explore Drift",
     ctaHref: "/drift",
     audioUrl: `${API_BASE}/voice-samples/doors/drift.mp3`,

@@ -33,10 +33,10 @@ const SAMPLES = [
   {
     slug: "romance",
     door: "Romance",
-    voiceId: "FA6HhUjVbervLw2rNl8M",
-    voiceName: "Clara",
+    voiceId: "aTxZrSrp47xsP6Ot4Kgd",
+    voiceName: "Kayla",
     title: "The Fake-Dating One",
-    voice_settings: { stability: 0.55, similarity_boost: 0.78, style: 0.15 },
+    voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.25 },
     text:
 `His sister's wedding was on Saturday, and the plus-one box had been empty for six months.
 
@@ -83,10 +83,10 @@ And then, because he was still watching her, because he needed to hear it —
   {
     slug: "drift",
     door: "Drift",
-    voiceId: "jfIS2w2yJi0grJZPyEsk",
-    voiceName: "Theo",
+    voiceId: "FA6HhUjVbervLw2rNl8M",
+    voiceName: "Clara",
     title: "The House at the Edge of the Forest",
-    voice_settings: { stability: 0.7, similarity_boost: 0.75, style: 0.05 },
+    voice_settings: { stability: 0.72, similarity_boost: 0.78, style: 0.05 },
     text:
 `The house sits where the field ends and the forest begins.
 

@@ -5,6 +5,7 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { useSEO } from "@/hooks/useSEO";
 import { TermsGate } from "@/components/TermsGate";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
@@ -327,6 +328,12 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
+  useSEO({
+    title: "Drift — Calm bedtime audio stories — The Private Story",
+    description:
+      "Slow, sensory bedtime audio stories written to let you settle. Choose your scenario, listen with eyes closed. Premium narration, private to your account.",
+    ogImage: "https://theprivatestory.com/og/drift.jpg",
+  });
   const { isLoading: authLoading } = useAuth();
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<Phase>("scenario");

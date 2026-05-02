@@ -4,6 +4,18 @@ import { registerAuthModalOpener } from "../hooks/useAuth";
 import { LogoFull } from "./Logo";
 import { X, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft, CheckCircle, Shield } from "lucide-react";
 
+// Inline Google "G" mark — official multicolour logo for the sign-in button.
+function GoogleMark({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#FFC107" d="M43.61 20.08H42V20H24v8h11.3c-1.65 4.66-6.08 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4 12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20c0-1.34-.14-2.65-.39-3.92z"/>
+      <path fill="#FF3D00" d="M6.31 14.69l6.57 4.82C14.66 15.11 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4 16.32 4 9.66 8.34 6.31 14.69z"/>
+      <path fill="#4CAF50" d="M24 44c5.17 0 9.86-1.98 13.41-5.2l-6.19-5.24C29.21 35.09 26.71 36 24 36c-5.2 0-9.62-3.32-11.28-7.95l-6.52 5.02C9.5 39.55 16.22 44 24 44z"/>
+      <path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.24-2.23 4.16-4.09 5.57l.01-.01 6.19 5.24C36.96 39.21 44 34 44 24c0-1.34-.14-2.65-.39-3.92z"/>
+    </svg>
+  );
+}
+
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 interface AuthModalProps {
@@ -123,6 +135,19 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
       close();
       onSuccess?.();
       window.location.reload();
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Better-auth opens the Google OAuth flow in the same window and
+      // returns the user back to the callbackURL on success.
+      await authClient.signIn.social({ provider: "google", callbackURL: "/" });
+    } catch {
+      setLoading(false);
+      setError("Could not start Google sign-in. Please try again or use email.");
     }
   };
 
@@ -304,6 +329,25 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
                     {t === "signin" ? "Sign In" : "Create Account"}
                   </button>
                 ))}
+              </div>
+
+              {/* Google sign-in — one-click path */}
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-white text-[#1f1f1f] font-medium text-sm
+                           hover:bg-white/95 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 mb-3"
+              >
+                <GoogleMark className="w-4 h-4" />
+                {tab === "signin" ? "Sign in with Google" : "Continue with Google"}
+              </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground/50">or with email</span>
+                <div className="flex-1 h-px bg-white/10" />
               </div>
 
               {/* Form */}

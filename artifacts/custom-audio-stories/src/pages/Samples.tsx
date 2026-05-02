@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowLeft, Play, Pause, Sparkles, Moon } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
+import { TrustBar } from "@/components/TrustBar";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = BASE.replace(/\/$/, "");
@@ -439,7 +440,20 @@ export default function Samples() {
     title: "Hear a sample — Three doors, three voices — The Private Story",
     description:
       "Three short narrated excerpts — one from each door. Romance, After Dark, Drift. Hear what a personalised audio story sounds like before you create your own.",
+    ogImage: "https://theprivatestory.com/og/samples.jpg",
   });
+
+  // Sticky CTA appears once visitor scrolls past the cards.
+  const [stickyVisible, setStickyVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      // Show after ~60% of viewport scrolled.
+      setStickyVisible(window.scrollY > window.innerHeight * 0.6);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const [ageConfirmed, setAgeConfirmed] = useState(() => {
     try {
@@ -605,7 +619,41 @@ export default function Samples() {
             </Link>
           </motion.div>
         </div>
+
+        {/* Trust signals — privacy commitments, country reach, Stripe */}
+        <TrustBar />
+
+        {/* Padding for sticky CTA so it doesn't hide footer content */}
+        <div aria-hidden="true" className="h-20" />
       </motion.div>
+
+      {/* Sticky bottom CTA — appears after scroll, takes visitor straight to story creation */}
+      {ageConfirmed && (
+        <div
+          aria-hidden={!stickyVisible}
+          className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pt-3 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(10,9,8,0.96) 0%, rgba(10,9,8,0.85) 60%, transparent 100%)",
+            transform: stickyVisible ? "translateY(0)" : "translateY(110%)",
+            opacity: stickyVisible ? 1 : 0,
+            transition: "transform 0.35s ease, opacity 0.35s ease",
+          }}
+        >
+          <div className="max-w-md mx-auto pointer-events-auto">
+            <Link
+              href="/the-three-doors"
+              className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground font-bold text-sm py-4 rounded-2xl
+                         hover:bg-primary/90 active:scale-[0.98] transition-all
+                         shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]"
+            >
+              <Sparkles className="w-4 h-4" />
+              Create your story
+              <span className="ml-1">→</span>
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 }

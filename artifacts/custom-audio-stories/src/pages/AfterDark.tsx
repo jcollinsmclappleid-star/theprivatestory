@@ -6,6 +6,7 @@ import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { useSEO } from "@/hooks/useSEO";
 import { CastingRoom, PAIRINGS } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
@@ -1287,6 +1288,12 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
+  useSEO({
+    title: "After Dark — Unrestrained adult audio fiction — The Private Story",
+    description:
+      "Personalised, unrestrained adult audio fiction. Choose your pairing, your scenario, your intensity — narrated and entirely yours. Female-first, privacy-led, written for adult listeners.",
+    ogImage: "https://theprivatestory.com/og/after-dark.jpg",
+  });
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [showLanding, setShowLanding] = useState(true);

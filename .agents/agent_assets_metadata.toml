@@ -534,6 +534,30 @@ uri = "file://attached_assets/generated_images/listen-hero-woman.png"
 type = "image"
 title = "listen hero woman candlelit"
 
+[[generated]]
+id = "3VurmGvdoUFupdhBna1Z6"
+uri = "file://artifacts/api-server/public/og/samples.png"
+type = "image"
+title = "samples-og-three-doors"
+
+[[generated]]
+id = "PDo00LkWrEJjZgOz02VLn"
+uri = "file://artifacts/api-server/public/og/romance.png"
+type = "image"
+title = "romance-og-warm-gold"
+
+[[generated]]
+id = "h8jD0IsQbIxntxYJBtJoi"
+uri = "file://artifacts/api-server/public/og/after-dark.png"
+type = "image"
+title = "after-dark-og-blue-mist"
+
+[[generated]]
+id = "2KyXOF0jfGONb4pNZnsbt"
+uri = "file://artifacts/api-server/public/og/drift.png"
+type = "image"
+title = "drift-og-cyan-calm"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

@@ -221,13 +221,19 @@ export default function Listen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7, duration: 0.5 }}
-          className="mt-8"
+          className="mt-8 flex flex-col items-center gap-3"
         >
           <Link
             href="/the-three-doors"
             className="block text-center text-xs text-primary/60 hover:text-primary transition-colors"
           >
             Create my story →
+          </Link>
+          <Link
+            href="/samples"
+            className="block text-center text-[11px] tracking-[0.18em] uppercase text-white/35 hover:text-white/60 transition-colors"
+          >
+            Or hear all three doors →
           </Link>
         </motion.div>
       </div>

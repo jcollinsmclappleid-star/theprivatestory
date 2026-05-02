@@ -728,13 +728,13 @@ function SampleStoryPlayer() {
   return (
     <div className="flex items-center gap-4">
       <Link
-        href="/listen"
+        href="/samples"
         className="flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3 rounded-full font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.5)]"
       >
         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        Listen to a sample
+        Hear a sample
       </Link>
-      <span className="text-[10px] text-white/45 italic">Two stories · Choose your intensity</span>
+      <span className="text-[10px] text-white/45 italic">Three doors · Three voices</span>
     </div>
   );
 }
@@ -833,7 +833,7 @@ export default function Home() {
               </button>
             </Link>
             <Link
-              href="/listen"
+              href="/samples"
               className="flex items-center gap-1.5 text-xs text-primary/55 hover:text-primary transition-colors tracking-widest uppercase"
             >
               <Headphones className="w-3 h-3" />
@@ -1093,7 +1093,7 @@ export default function Home() {
                 {/* Hear more link */}
                 <div className="mb-6">
                   <Link
-                    href="/listen"
+                    href="/samples"
                     className="inline-flex items-center gap-1.5 text-xs text-primary/75 hover:text-primary transition-colors"
                   >
                     <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1399,10 +1399,10 @@ export default function Home() {
             </Link>
             <span className="text-white/15 text-xs">·</span>
             <Link
-              href="/listen"
+              href="/samples"
               className="text-xs text-white/40 hover:text-white/70 transition-colors tracking-widest uppercase"
             >
-              Listen to a sample →
+              Hear a sample →
             </Link>
           </div>
           <p className="text-[11px] text-muted-foreground/80">

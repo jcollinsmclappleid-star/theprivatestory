@@ -868,7 +868,38 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/office-romance-audio-stories",           lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/steamy-audio-stories",                   lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
   { loc: "/ai-erotica",                             lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.9" },
-  // SEO landing pages — Definition pages
+  // SEO landing pages — Tropes (May 2026 expansion)
+    { loc: "/billionaire-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/mafia-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/morally-grey-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/age-gap-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/fake-dating-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/second-chance-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/grumpy-sunshine-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/single-dad-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+    // SEO landing pages — BookTok / discovery (May 2026 expansion)
+    { loc: "/romantasy-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/dark-romantasy-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/booktok-romance-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/smut-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/spicy-reads-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+    // SEO landing pages — UK / regional (May 2026 expansion)
+    { loc: "/audio-erotica-uk", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/british-audio-erotica-for-women", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/best-audio-erotica-app-uk", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/audio-erotica-male-voice-british", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+    // SEO landing pages — Audience (May 2026 expansion)
+    { loc: "/audio-erotica-for-women-over-30", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/audio-erotica-for-couples", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/lesbian-audio-erotica", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/queer-audio-erotica", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+    // SEO landing pages — Format / discovery (May 2026 expansion)
+    { loc: "/short-erotic-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/audio-erotica-with-male-narrator", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/sensual-audio-stories", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/how-to-listen-to-audio-erotica", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+  { loc: "/audio-erotica-for-beginners", lastmod: DATE_MODIFIED, changefreq: "weekly", priority: "0.85" },
+    // SEO landing pages — Definition pages
   { loc: "/what-is-a-personalised-audio-story", lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
   { loc: "/what-is-slow-burn-romance",          lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },
   { loc: "/what-is-dark-romance",               lastmod: DATE_MODIFIED, changefreq: "yearly", priority: "0.75" },

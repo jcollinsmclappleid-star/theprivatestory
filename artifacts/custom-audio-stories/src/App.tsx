@@ -69,6 +69,32 @@ import AdultBedtimeStories from "@/pages/seo/AdultBedtimeStories";
 import AIRomanceStoriesForWomen from "@/pages/seo/AIRomanceStoriesForWomen";
 import SpicyAudioStories from "@/pages/seo/SpicyAudioStories";
 import ForcedProximityRomanceAudioStories from "@/pages/seo/ForcedProximityRomanceAudioStories";
+import BillionaireRomanceAudioStories from "@/pages/seo/BillionaireRomanceAudioStories";
+import MafiaRomanceAudioStories from "@/pages/seo/MafiaRomanceAudioStories";
+import MorallyGreyRomanceAudioStories from "@/pages/seo/MorallyGreyRomanceAudioStories";
+import AgeGapRomanceAudioStories from "@/pages/seo/AgeGapRomanceAudioStories";
+import FakeDatingRomanceAudioStories from "@/pages/seo/FakeDatingRomanceAudioStories";
+import SecondChanceRomanceAudioStories from "@/pages/seo/SecondChanceRomanceAudioStories";
+import GrumpySunshineRomanceAudioStories from "@/pages/seo/GrumpySunshineRomanceAudioStories";
+import SingleDadRomanceAudioStories from "@/pages/seo/SingleDadRomanceAudioStories";
+import RomantasyAudioStories from "@/pages/seo/RomantasyAudioStories";
+import DarkRomantasyAudioStories from "@/pages/seo/DarkRomantasyAudioStories";
+import BooktokRomanceAudioStories from "@/pages/seo/BooktokRomanceAudioStories";
+import SmutAudioStories from "@/pages/seo/SmutAudioStories";
+import SpicyReadsAudioStories from "@/pages/seo/SpicyReadsAudioStories";
+import AudioEroticaUk from "@/pages/seo/AudioEroticaUk";
+import BritishAudioEroticaForWomen from "@/pages/seo/BritishAudioEroticaForWomen";
+import BestAudioEroticaAppUk from "@/pages/seo/BestAudioEroticaAppUk";
+import AudioEroticaMaleVoiceBritish from "@/pages/seo/AudioEroticaMaleVoiceBritish";
+import AudioEroticaForWomenOver30 from "@/pages/seo/AudioEroticaForWomenOver30";
+import AudioEroticaForCouples from "@/pages/seo/AudioEroticaForCouples";
+import LesbianAudioErotica from "@/pages/seo/LesbianAudioErotica";
+import QueerAudioErotica from "@/pages/seo/QueerAudioErotica";
+import ShortEroticAudioStories from "@/pages/seo/ShortEroticAudioStories";
+import AudioEroticaWithMaleNarrator from "@/pages/seo/AudioEroticaWithMaleNarrator";
+import SensualAudioStories from "@/pages/seo/SensualAudioStories";
+import HowToListenToAudioErotica from "@/pages/seo/HowToListenToAudioErotica";
+import AudioEroticaForBeginners from "@/pages/seo/AudioEroticaForBeginners";
 import EroticAudiobooksForWomen from "@/pages/seo/EroticAudiobooksForWomen";
 import OfficeRomanceAudioStories from "@/pages/seo/OfficeRomanceAudioStories";
 import FerlyAlternative from "@/pages/seo/FerlyAlternative";
@@ -158,6 +184,32 @@ function Router() {
             <Route path="/ai-romance-stories-for-women" component={AIRomanceStoriesForWomen} />
             <Route path="/spicy-audio-stories" component={SpicyAudioStories} />
             <Route path="/forced-proximity-romance-audio-stories" component={ForcedProximityRomanceAudioStories} />
+            <Route path="/billionaire-romance-audio-stories" component={BillionaireRomanceAudioStories} />
+            <Route path="/mafia-romance-audio-stories" component={MafiaRomanceAudioStories} />
+            <Route path="/morally-grey-romance-audio-stories" component={MorallyGreyRomanceAudioStories} />
+            <Route path="/age-gap-romance-audio-stories" component={AgeGapRomanceAudioStories} />
+            <Route path="/fake-dating-romance-audio-stories" component={FakeDatingRomanceAudioStories} />
+            <Route path="/second-chance-romance-audio-stories" component={SecondChanceRomanceAudioStories} />
+            <Route path="/grumpy-sunshine-romance-audio-stories" component={GrumpySunshineRomanceAudioStories} />
+            <Route path="/single-dad-romance-audio-stories" component={SingleDadRomanceAudioStories} />
+            <Route path="/romantasy-audio-stories" component={RomantasyAudioStories} />
+            <Route path="/dark-romantasy-audio-stories" component={DarkRomantasyAudioStories} />
+            <Route path="/booktok-romance-audio-stories" component={BooktokRomanceAudioStories} />
+            <Route path="/smut-audio-stories" component={SmutAudioStories} />
+            <Route path="/spicy-reads-audio-stories" component={SpicyReadsAudioStories} />
+            <Route path="/audio-erotica-uk" component={AudioEroticaUk} />
+            <Route path="/british-audio-erotica-for-women" component={BritishAudioEroticaForWomen} />
+            <Route path="/best-audio-erotica-app-uk" component={BestAudioEroticaAppUk} />
+            <Route path="/audio-erotica-male-voice-british" component={AudioEroticaMaleVoiceBritish} />
+            <Route path="/audio-erotica-for-women-over-30" component={AudioEroticaForWomenOver30} />
+            <Route path="/audio-erotica-for-couples" component={AudioEroticaForCouples} />
+            <Route path="/lesbian-audio-erotica" component={LesbianAudioErotica} />
+            <Route path="/queer-audio-erotica" component={QueerAudioErotica} />
+            <Route path="/short-erotic-audio-stories" component={ShortEroticAudioStories} />
+            <Route path="/audio-erotica-with-male-narrator" component={AudioEroticaWithMaleNarrator} />
+            <Route path="/sensual-audio-stories" component={SensualAudioStories} />
+            <Route path="/how-to-listen-to-audio-erotica" component={HowToListenToAudioErotica} />
+            <Route path="/audio-erotica-for-beginners" component={AudioEroticaForBeginners} />
             <Route path="/erotic-audiobooks-for-women" component={EroticAudiobooksForWomen} />
             <Route path="/office-romance-audio-stories" component={OfficeRomanceAudioStories} />
             <Route path="/ferly-alternative" component={FerlyAlternative} />

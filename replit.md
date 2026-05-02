@@ -9,7 +9,7 @@ Key capabilities include:
 - Robust authentication using `better-auth` with email/password and Google OAuth.
 - Comprehensive content safety measures, including multi-layered moderation and rate limiting.
 - Admin functionalities for managing library content and user submissions.
-- SEO-optimized landing pages with Server-Side Rendering (SSR) for discoverability.
+- SEO-optimized landing pages with Server-Side Rendering (SSR) for discoverability — 63 pages across personalised/private, bedtime, romantic, intimate, dark romance, tropes (billionaire, mafia, morally-grey, age-gap, fake-dating, second-chance, grumpy-sunshine, single-dad, forced-proximity, enemies-to-lovers, etc.), BookTok/romantasy, UK regional, audience-specific (over-30, couples, lesbian, queer), and format/discovery clusters. Configs live in `lib/seo-data/src/configs.ts` and are rendered by `SEOPage.tsx` with thin `.tsx` wrappers under `artifacts/custom-audio-stories/src/pages/seo/`.
 
 The project emphasizes a modular architecture, leveraging pnpm workspaces for efficient dependency management and build processes.
 

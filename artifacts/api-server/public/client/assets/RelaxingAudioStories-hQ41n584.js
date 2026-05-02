@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CQhEFMB4.js";import{S as r,g as t}from"./configs-C7X6zpdw.js";import"./index-YuZ2AtIc.js";const e=t("relaxing-audio-stories");function n(){return o.jsx(r,{config:e,doorFilter:["quiet"],showSecondaryDoors:!0})}export{n as default};

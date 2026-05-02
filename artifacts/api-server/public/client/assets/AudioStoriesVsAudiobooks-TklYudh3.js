@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CQhEFMB4.js";import{S as s,g as i}from"./configs-C7X6zpdw.js";import"./index-YuZ2AtIc.js";const r=i("audio-stories-vs-audiobooks");function u(){return o.jsx(s,{config:r,doorFilter:["dark"]})}export{u as default};

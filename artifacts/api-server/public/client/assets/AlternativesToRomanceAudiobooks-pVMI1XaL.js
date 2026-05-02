@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CQhEFMB4.js";import{S as t,g as r}from"./configs-C7X6zpdw.js";import"./index-YuZ2AtIc.js";const a=r("alternatives-to-romance-audiobooks");function n(){return o.jsx(t,{config:a,doorFilter:["dark"]})}export{n as default};

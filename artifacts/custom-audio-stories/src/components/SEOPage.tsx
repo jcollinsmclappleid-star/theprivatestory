@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clock } from "lucide-react";
+import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clock, Play, Pause, X } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
@@ -12,6 +12,175 @@ export type { SEOPageConfig };
 type DoorId = "story" | "dark" | "quiet";
 
 const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const DOOR_SAMPLE: Record<DoorId, { file: string; voice: string }> = {
+  story: { file: "romance",    voice: "Romance · warm, considered" },
+  dark:  { file: "after-dark", voice: "After Dark · charged, unhurried" },
+  quiet: { file: "drift",      voice: "Drift · slow, calming" },
+};
+
+// Lazy-loaded inline sample player. The audio file isn't fetched until click,
+// so adding this to the page costs ~0 KB of initial weight.
+function InlineSampleButton({ door }: { door: DoorId }) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const sample = DOOR_SAMPLE[door] ?? DOOR_SAMPLE.story;
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const handle = () => {
+    if (!audioRef.current) {
+      const a = new Audio(`${BASE_URL}/voice-samples/doors/${sample.file}.mp3`);
+      a.preload = "none";
+      a.addEventListener("ended", () => setPlaying(false));
+      audioRef.current = a;
+    }
+    if (playing) {
+      audioRef.current.pause();
+      setPlaying(false);
+    } else {
+      audioRef.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handle}
+      className="inline-flex items-center gap-2 mt-4 text-xs text-primary/75 hover:text-primary transition-colors"
+      aria-label={playing ? "Pause sample" : `Play 30 second ${sample.voice} sample`}
+    >
+      <span className="w-7 h-7 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center group-hover:bg-primary/20">
+        {playing ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 translate-x-[1px]" />}
+      </span>
+      {playing ? "Pause sample" : "Hear a 30-second sample"}
+      <span className="text-muted-foreground/50">· {sample.voice}</span>
+    </button>
+  );
+}
+
+// Mobile-only sticky bottom CTA. Fades in once the visitor scrolls past the hero.
+function SEOStickyCTA({ label, href }: { label?: string; href?: string }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      aria-hidden={!visible}
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pb-3 pt-4 pointer-events-none"
+      style={{
+        background: "linear-gradient(0deg, rgba(10,9,8,0.96) 0%, rgba(10,9,8,0.85) 60%, transparent 100%)",
+        transform: visible ? "translateY(0)" : "translateY(110%)",
+        opacity: visible ? 1 : 0,
+        transition: "transform 0.3s ease, opacity 0.3s ease",
+      }}
+    >
+      <Link
+        href={href ?? "/create"}
+        className="pointer-events-auto flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-sm font-bold py-3.5 rounded-2xl shadow-[0_0_28px_-6px_rgba(201,162,39,0.5)] hover:bg-primary/90 active:scale-[0.99] transition-all"
+      >
+        {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
+      </Link>
+    </div>
+  );
+}
+
+// Soft exit-intent nudge — desktop: mouse leaves the viewport from the top;
+// mobile: visitor scrolls past 85% of the page. Once-per-session via sessionStorage.
+// Uses our existing /samples destination — no fake offers, no email capture.
+function ExitNudge() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("tps_exit_nudge_seen") === "1") return;
+    } catch { /* ignore */ }
+    let triggered = false;
+    const fire = () => {
+      if (triggered) return;
+      triggered = true;
+      try { sessionStorage.setItem("tps_exit_nudge_seen", "1"); } catch { /* ignore */ }
+      setOpen(true);
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      // Mouse left the viewport from the top edge.
+      if (e.clientY <= 0 && (e.relatedTarget === null || (e.relatedTarget as Node)?.nodeName === "HTML")) {
+        fire();
+      }
+    };
+    const onScroll = () => {
+      const scrolled = window.scrollY + window.innerHeight;
+      const total = document.documentElement.scrollHeight;
+      if (total > 0 && scrolled >= total * 0.85) fire();
+    };
+    // Wait a moment so we don't fire on first paint.
+    const t = setTimeout(() => {
+      document.addEventListener("mouseout", onMouseOut);
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }, 4000);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  if (!open) return null;
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="exit-nudge-title"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+      onClick={() => setOpen(false)}
+    >
+      <div
+        className="w-full max-w-sm rounded-2xl border border-primary/30 bg-background p-6 shadow-2xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          aria-label="Close"
+          className="absolute top-3 right-3 text-muted-foreground/60 hover:text-foreground"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        <p className="text-[10px] uppercase tracking-widest text-primary/70 mb-2">Before you go</p>
+        <h3 id="exit-nudge-title" className="font-display text-lg text-foreground mb-2">
+          Hear what your story would sound like
+        </h3>
+        <p className="text-sm text-muted-foreground mb-5">
+          A 30 second narrated sample from each of the three doors. No sign-up.
+        </p>
+        <Link
+          href="/samples"
+          onClick={() => setOpen(false)}
+          className="block text-center bg-primary text-primary-foreground py-3 rounded-full font-bold text-sm hover:bg-primary/90"
+        >
+          Hear a sample →
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="block mx-auto mt-3 text-[11px] uppercase tracking-widest text-muted-foreground/50 hover:text-muted-foreground"
+        >
+          No thanks
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const TRUST_ITEMS = [
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social features. No shared history." },
@@ -53,12 +222,37 @@ export default function SEOPage({
   useSEO({ title: config.meta.title, description: config.meta.description });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  // Door for the inline sample — first door in the filter, fallback to "story" (Romance).
+  const sampleDoor: DoorId = doorFilter?.[0] ?? "story";
+
+  // FAQPage JSON-LD — eligible for Google's expandable FAQ rich result.
+  // Memoised so we don't rebuild the JSON string on every render.
+  const faqJsonLd = useMemo(() => {
+    if (!config.faqs?.length) return null;
+    return JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: config.faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.q,
+        acceptedAnswer: { "@type": "Answer", text: faq.a },
+      })),
+    });
+  }, [config.faqs]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: faqJsonLd }}
+        />
+      )}
       {/* Hero — with optional background image */}
       {config.heroImage ? (
         <div className="relative w-full min-h-[340px] md:min-h-[440px] flex items-end overflow-hidden">
@@ -85,6 +279,7 @@ export default function SEOPage({
               {config.hero.tagline}
             </p>
             <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
+            <InlineSampleButton door={sampleDoor} />
           </div>
         </div>
       ) : (
@@ -102,6 +297,7 @@ export default function SEOPage({
               {config.hero.tagline}
             </p>
             <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
+            <InlineSampleButton door={sampleDoor} />
           </div>
         </div>
       )}
@@ -390,6 +586,12 @@ export default function SEOPage({
         </section>
 
       </div>
+
+      {/* Mobile-only sticky bottom CTA — keeps the create button one tap away */}
+      <SEOStickyCTA label={config.heroCTALabel} href={config.heroCTAHref} />
+
+      {/* Soft exit-intent / scroll-end nudge — once per session */}
+      <ExitNudge />
     </motion.div>
   );
 }

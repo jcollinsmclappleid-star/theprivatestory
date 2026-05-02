@@ -1,1 +1,0 @@
-import{j as i}from"./vendor-D2SChvVc.js";import{S as o,g as t}from"./configs-BZVLez1n.js";import"./index-haIXcfI2.js";const r=t("audio-erotica-male-voice-british");function c(){return i.jsx(o,{config:r})}export{c as default};

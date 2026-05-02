@@ -193,6 +193,49 @@ export default function Samples() {
   // keeps the page reading as a curated set rather than a search result.
   const visiblePicks = EDITORS_PICKS;
 
+  /** Keyboard navigation between StoryCards.
+   *  ArrowDown/Up (and J/K, Vim-style) move focus between cards.
+   *  Enter / Space on a card toggles play (cards have onClick wired to it).
+   *  Home/End jump to first/last card. */
+  const onCardsKeyDown = useCallback((e: KeyboardEvent<HTMLElement>) => {
+    const target = e.target as HTMLElement;
+    const card = target.closest<HTMLElement>("[data-pick-card]");
+    if (!card) return;
+    const list = Array.from(
+      e.currentTarget.querySelectorAll<HTMLElement>("[data-pick-card]"),
+    );
+    const idx = list.indexOf(card);
+    if (idx === -1) return;
+
+    let next = -1;
+    switch (e.key) {
+      case "ArrowDown":
+      case "j":
+      case "J":
+        next = Math.min(list.length - 1, idx + 1);
+        break;
+      case "ArrowUp":
+      case "k":
+      case "K":
+        next = Math.max(0, idx - 1);
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = list.length - 1;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    const dest = list[next];
+    if (dest) {
+      dest.focus();
+      dest.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }, []);
+
   if (!ageConfirmed) {
     return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
   }
@@ -227,8 +270,13 @@ export default function Samples() {
       {/* Hero */}
       <Hero onStart={() => playSlug(EDITORS_PICKS[0].slug)} />
 
-      {/* Editorial cards */}
-      <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-24 pt-6">
+      {/* Editorial cards — keyboard nav: ArrowUp/Down + Home/End move
+          focus between cards; Enter/Space on a focused card toggles play. */}
+      <section
+        className="max-w-3xl mx-auto px-5 sm:px-6 pb-24 pt-6"
+        onKeyDown={onCardsKeyDown}
+        aria-label="Editor's Picks"
+      >
         {visiblePicks.slice(0, 5).map((pick) => (
           <StoryCard
             key={pick.slug}
@@ -474,12 +522,25 @@ function StoryCard({
       transition={{ duration: 0.55 }}
       animate={{ opacity: dimmed ? 0.32 : 1 }}
       className={`mb-14 sm:mb-20 rounded-3xl overflow-hidden transition-all
+                  outline-none focus-visible:ring-2 focus-visible:ring-primary/55
                   ${isCurrent ? "ring-1 ring-primary/45 shadow-[0_0_60px_-18px_rgba(201,162,39,0.55)]" : "ring-1 ring-white/[0.06]"}`}
       style={{
         background:
           "linear-gradient(180deg, #16110a 0%, #110d08 60%, #0d0a07 100%)",
       }}
       data-testid={`pick-card-${pick.slug}`}
+      data-pick-card
+      tabIndex={0}
+      aria-label={`${pick.title} — narrated by ${pick.voiceName}`}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          // Only catch when the card itself is focused, not a button inside.
+          if (e.currentTarget === e.target) {
+            e.preventDefault();
+            onTogglePlay();
+          }
+        }
+      }}
     >
       {/* Cover */}
       <div className="relative aspect-[4/5] sm:aspect-[16/10] overflow-hidden">

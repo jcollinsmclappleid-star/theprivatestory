@@ -80,13 +80,28 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "../api-server/public/client"),
     emptyOutDir: true,
-    chunkSizeWarningLimit: 800,
+    // The `configs` chunk legitimately exceeds 800 kB: it holds the full
+    // `@workspace/seo-data` table (60+ SEO landing-page configs) which is
+    // shared by ~60 lazy route chunks. Vite correctly extracts it as ONE
+    // shared chunk — the alternative (duplicating ~18 kB of shared data
+    // into each of 60 chunks) would be ~1 MB of pure duplication.
+    // Real per-page split would require breaking configs.ts into per-slug
+    // files AND converting every SEO page from sync `getPageConfig()` to
+    // an async dynamic `import()` — tracked as a follow-up.
+    chunkSizeWarningLimit: 1200,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
             return "vendor";
           }
+          // Split very large static data tables into their own lazy chunks so
+          // they only load on the route that needs them (Casting Room, name
+          // picker, etc.) instead of being bundled into one giant `configs`
+          // chunk shared between routes.
+          if (id.includes("/src/data/names")) return "data-names";
+          if (id.includes("/src/data/situations")) return "data-situations";
+          if (id.includes("/src/data/editorsPicks")) return "data-editors-picks";
           return undefined;
         },
       },

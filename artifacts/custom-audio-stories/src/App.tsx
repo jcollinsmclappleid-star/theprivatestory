@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
+import { MotionConfig } from "framer-motion";
 import { AuthModal } from "@/components/AuthModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieBanner } from "@/components/CookieBanner";
@@ -269,15 +270,21 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <WouterRouter>
-            <ScrollToTop />
-            <AudioProvider>
-              <Router />
-              <AuthModal />
-              <CookieBanner />
-              <Toaster />
-            </AudioProvider>
-          </WouterRouter>
+          {/* Honour the OS-level `prefers-reduced-motion: reduce` setting
+              site-wide. With `reducedMotion="user"`, every Framer Motion
+              animation collapses to its end state for users who have asked
+              their system to limit motion (vestibular safety + a11y). */}
+          <MotionConfig reducedMotion="user">
+            <WouterRouter>
+              <ScrollToTop />
+              <AudioProvider>
+                <Router />
+                <AuthModal />
+                <CookieBanner />
+                <Toaster />
+              </AudioProvider>
+            </WouterRouter>
+          </MotionConfig>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>

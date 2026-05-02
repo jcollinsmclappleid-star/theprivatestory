@@ -416,7 +416,7 @@ export default function PrivacyPolicy() {
 
         <div className="glass-panel rounded-xl p-4 mb-4 space-y-3">
           {[
-            { category: "Account data (email, credentials, settings)", period: "Retained while your account is active. Deleted or anonymised within 30 days of account deletion, subject to exceptions below." },
+            { category: "Account data (email, credentials, settings)", period: "Retained while your account is active. Deleted or anonymised as soon as reasonably practicable after account deletion, and within 90 days at the latest, subject to the exceptions below." },
             { category: "Generated stories and library content", period: "Retained in your account until you delete them or your account is deleted. Subject to limited retention for security, moderation, and legal compliance." },
             { category: "Taste and preference data", period: "Retained while your account is active. Deleted on account deletion." },
             { category: "Safety event logs (blocked generation requests)", period: "90 days, then automatically deleted — unless a legal hold applies." },
@@ -466,8 +466,9 @@ export default function PrivacyPolicy() {
         <P>You may request account deletion at any time from your profile page. When an account is deleted:</P>
         <Ul items={[
           "your account access is immediately disabled;",
-          "your email address, stories, taste profile, and library data are permanently deleted within 30 days;",
-          "some records may be retained where reasonably necessary for legal, security, accounting, fraud-prevention, moderation, or compliance purposes (see Section 13).",
+          "your email address, stories, taste profile, and library data are permanently deleted as soon as reasonably practicable, and within 90 days at the latest;",
+          "billing and transaction records are retained for 7 years as required by UK HMRC tax regulations and cannot be deleted earlier;",
+          "some other records may be retained where reasonably necessary for legal, security, accounting, fraud-prevention, moderation, or compliance purposes (see Section 13).",
         ]} />
         <P>
           To request deletion of your data if you cannot access your account, email{" "}

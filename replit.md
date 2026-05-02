@@ -37,6 +37,12 @@ The project is structured as a pnpm workspace monorepo.
 - `lib/`: Houses shared libraries (`api-spec`, `api-client-react`, `api-zod`, `db`).
 - `scripts/`: Utility scripts.
 
+**GDPR Account Erasure (Article 17):**
+- "Delete account" sets `users.deletedAt` and cancels Stripe immediately. The auth middleware treats deletedAt-set users as unauthenticated.
+- A daily scheduled job, `runAccountPurge` (`artifacts/api-server/src/lib/accountPurge.ts`, wired in `app.ts`), anonymises soft-deleted users 30 days after deletedAt — well within the 90-day promise in the Privacy Policy.
+- The purge: (1) deletes GCS audio + image objects best-effort outside the DB transaction, (2) inside a transaction deletes 11 cascade-eligible tables (stories, library, progress, taste, presets, reactions, generation_jobs, ba_sessions/accounts/two_factor) and NULLs 5 set-null FKs (admin_audit_log, gift_orders, name_submissions, story_reports, moderation_events), then (3) anonymises the user row by clearing all PII and setting email to `purged-{userId}@deleted.local`. The user row itself is preserved because consent_log uses onDelete: "restrict" (legal hold).
+- Integration test: `artifacts/api-server/scripts/test-account-purge.ts` (run with `pnpm --filter @workspace/api-server exec tsx scripts/test-account-purge.ts`).
+
 **TypeScript & Composite Projects:**
 - All packages use `composite: true` and extend `tsconfig.base.json`.
 - Root `tsconfig.json` defines project references for correct cross-package type checking.

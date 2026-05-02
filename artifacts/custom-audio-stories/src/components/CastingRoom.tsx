@@ -932,7 +932,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       case 6: return !!data.intensity && !!data.mood;
       case 7: return true; // Situation — optional
       case 8: return true; // Tag Studio
-      case 9: return true; // Your Name
+      case 9: return true; // Your Character's Name
       case 10: return true; // Partner Name
       default: return true;
     }
@@ -2188,12 +2188,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           </motion.div>
         )}
 
-        {/* ── Step 9 — Your Name ───────────────────────────────────── */}
+        {/* ── Step 9 — Your Character's Name ──────────────────────── */}
         {step === 9 && (
           <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Your name.</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Your character's name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
-              The narrator will call you by it. Choose from 6,000+ names — or skip and you'll be addressed as "you."
+              This is what the narrator calls the lead in your story — pick any first name you like (it doesn't have to be yours). Choose from 6,000+ names — or skip and you'll be addressed as "you."
             </p>
             {!afterDark && onAfterDark && (
               <button
@@ -2207,7 +2207,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </button>
             )}
             <p className="text-xs text-muted-foreground/50 mb-5">
-              This is you — the character you inhabit.{isSameGender ? ` Not ${partnerRoleLabel} — you'll name them next.` : ""}
+              This is the character you inhabit — use any first name (a nickname, a pen name, anything you like).{isSameGender ? ` Not ${partnerRoleLabel} — you'll name them next.` : ""}
             </p>
 
             {listenerName ? (
@@ -2240,7 +2240,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     type="text"
                     value={listenerSearch}
                     onChange={e => setListenerSearch(e.target.value)}
-                    placeholder="Start typing your name…"
+                    placeholder="Search a name for your character…"
                     className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none"
                     autoComplete="off"
                     spellCheck={false}

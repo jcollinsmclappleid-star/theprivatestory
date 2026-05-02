@@ -951,14 +951,16 @@ router.delete("/", async (req, res) => {
       .where(eq(usersTable.id, userId));
 
     // Clear all personal storage data (non-blocking — failures are logged but don't block response)
-    // Erasure of AI-generated content and taste data happens within 30 days per Privacy Policy
+    // Hard purge of cascade-eligible data + anonymisation of the user row
+    // happens via the daily runAccountPurge job (lib/accountPurge.ts) — currently
+    // 30 days after deletedAt is set, well within the 90-day promise in the Privacy Policy.
     const cleanupTasks = [
       tasteStore.upsert(userId, { tasteProfile: {}, preferredIntensity: {}, preferredVoiceFeel: {}, preferredEndings: {}, preferredRelationshipDynamics: {}, streakDays: 0, lastActiveDate: null }),
     ];
     await Promise.allSettled(cleanupTasks);
 
     logger.info({ userId }, "[account-deletion] User account soft-deleted (GDPR Art.17)");
-    res.json({ ok: true, message: "Your account has been scheduled for deletion. All personal data will be removed within 30 days." });
+    res.json({ ok: true, message: "Your account has been scheduled for deletion. Your personal data will be removed as soon as reasonably practicable, and within 90 days at the latest. Billing and tax records are retained for 7 years as required by UK HMRC regulations." });
   } catch (err) {
     logger.error({ err, userId }, "[account-deletion] Failed to delete account");
     res.status(500).json({ error: "Failed to delete account. Please contact support@theprivatestory.com for assistance." });

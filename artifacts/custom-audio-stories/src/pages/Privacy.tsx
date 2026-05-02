@@ -82,7 +82,7 @@ export default function Privacy() {
           </div>
           <div className="pl-14 space-y-2">
             {[
-              { category: "Account and story data", period: "Deleted immediately on account deletion (see below)" },
+              { category: "Account and story data", period: "Removed as soon as reasonably practicable after account deletion, and within 90 days at the latest (see below)" },
               { category: "Safety event logs (blocked requests)", period: "90 days, then automatically deleted — unless legally preserved" },
               { category: "User-submitted reports", period: "Retained as long as necessary for moderation and legal compliance" },
               { category: "Payment records", period: "7 years, as required by UK financial regulations (HMRC)" },
@@ -144,7 +144,7 @@ export default function Privacy() {
               },
               {
                 right: "Right to erasure (Article 17)",
-                desc: "You can delete your account at any time. When you do, we permanently and irreversibly delete your stories, email address, and profile within 30 days. Safety event logs are retained for 90 days per our legal obligations, then deleted. Preserved safety evidence (if applicable) cannot be deleted.",
+                desc: "You can delete your account at any time. When you do, we permanently and irreversibly remove your stories, email address, and profile as soon as reasonably practicable, and within 90 days at the latest. Billing and tax records are retained for 7 years as required by UK HMRC regulations. Safety event logs are retained for 90 days per our legal obligations, then deleted. Preserved safety evidence (if applicable) cannot be deleted.",
               },
               {
                 right: "Right to data portability",
@@ -260,7 +260,7 @@ export default function Privacy() {
           </div>
           <div className="pl-14">
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-              You can delete your account and everything associated with it at any time from your profile page. When you do, we permanently remove your stories, your progress, and your email from our systems within 30 days.
+              You can delete your account and everything associated with it at any time from your profile page. When you do, we permanently remove your stories, your progress, and your email from our systems as soon as reasonably practicable, and within 90 days at the latest. Billing and tax records are retained separately for 7 years as required by UK HMRC regulations.
             </p>
             <p className="text-muted-foreground text-sm leading-relaxed mb-3">
               Deletion is not hidden behind a form or a support ticket. It is a single action, and it is irreversible.

@@ -102,9 +102,15 @@ export default function Contact() {
           <h2 className="font-display text-xl font-bold text-foreground">Request a name</h2>
         </div>
         <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-          Don't see your name — or your love interest's — in the Creation Room?
-          Submit a request below and we'll add it within 48 hours.
+          Don't see a name you'd like for your character — or your love interest — in the Creation Room?
+          Submit a request below and we'll review it within 48 hours.
         </p>
+        <div className="mb-6 px-4 py-3 rounded-xl bg-amber-500/8 border border-amber-500/25">
+          <p className="text-xs text-foreground/75 leading-relaxed">
+            <span className="font-semibold text-amber-300/90">Forenames only.</span>{" "}
+            We add common first names. We <strong>can't</strong> add surnames, public figures, celebrities, or names of real, identifiable people. These will be declined.
+          </p>
+        </div>
 
         {submitted ? (
           <motion.div

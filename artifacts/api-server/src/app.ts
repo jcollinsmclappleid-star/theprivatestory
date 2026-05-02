@@ -15,6 +15,7 @@ import { logger } from "./lib/logger.js";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { db, contentBlocks, csamReports } from "@workspace/db";
 import { lt, isNull, and, notExists, sql } from "drizzle-orm";
+import { runAccountPurge } from "./lib/accountPurge.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -355,6 +356,12 @@ async function runRetentionCleanup(): Promise<void> {
 // Run on startup (catches backlog) then every 24 hours
 runRetentionCleanup();
 setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000);
+
+// Account-purge sweep: anonymises soft-deleted users older than 30 days.
+// See lib/accountPurge.ts for the cascade list and anonymisation contract.
+// Runs once on startup (catches backlog) then daily.
+runAccountPurge();
+setInterval(runAccountPurge, 24 * 60 * 60 * 1000);
 
 // ---------------------------------------------------------------------------
 // Global error handler — must be registered last, after all routes.

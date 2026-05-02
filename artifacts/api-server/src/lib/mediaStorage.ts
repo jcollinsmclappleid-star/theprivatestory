@@ -58,6 +58,33 @@ export async function uploadImageFile(filename: string, buffer: Buffer): Promise
 }
 
 /**
+ * Delete an audio file from GCS. Best-effort — missing files are silently
+ * ignored (treated as already-deleted). Used by the account-purge job to
+ * remove orphan media when a user's stories are deleted.
+ */
+export async function deleteAudioFile(filename: string): Promise<void> {
+  try {
+    const file = getBucket().file(`${AUDIO_GCS_PREFIX}/${filename}`);
+    await file.delete({ ignoreNotFound: true });
+  } catch (err) {
+    logger.warn({ err, filename }, "[mediaStorage] failed to delete audio from GCS");
+  }
+}
+
+/**
+ * Delete an image file from GCS. Best-effort — missing files are silently
+ * ignored. Used by the account-purge job.
+ */
+export async function deleteImageFile(filename: string): Promise<void> {
+  try {
+    const file = getBucket().file(`${IMAGE_GCS_PREFIX}/${filename}`);
+    await file.delete({ ignoreNotFound: true });
+  } catch (err) {
+    logger.warn({ err, filename }, "[mediaStorage] failed to delete image from GCS");
+  }
+}
+
+/**
  * Stream an audio file to an HTTP response.
  * Checks local disk first (covers committed static files), then GCS.
  * Implements HTTP range requests (206 Partial Content) for GCS files so the

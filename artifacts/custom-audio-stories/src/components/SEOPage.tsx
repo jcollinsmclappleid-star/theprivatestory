@@ -22,6 +22,25 @@ const TRUST_ITEMS = [
   { icon: <Heart className="w-4 h-4" />, label: "The female imagination at its centre", sub: "Designed around female desire, emotional pacing, and private pleasure", colSpan: true },
 ];
 
+function HeroCTA({ label }: { label?: string }) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+      <Link
+        href="/after-dark"
+        className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
+      >
+        {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
+      </Link>
+      <Link
+        href="/pricing"
+        className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left"
+      >
+        From £19.92/mo · 5 stories included · cancel anytime
+      </Link>
+    </div>
+  );
+}
+
 export default function SEOPage({
   config,
   doorFilter,
@@ -62,9 +81,10 @@ export default function SEOPage({
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight drop-shadow-xl">
               {config.hero.h1}
             </h1>
-            <p className="text-white/75 text-xl leading-relaxed max-w-xl">
+            <p className="text-white/75 text-xl leading-relaxed max-w-xl mb-7">
               {config.hero.tagline}
             </p>
+            <HeroCTA label={config.heroCTALabel} />
           </div>
         </div>
       ) : (
@@ -78,15 +98,13 @@ export default function SEOPage({
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {config.hero.h1}
             </h1>
-            <p className="text-muted-foreground text-xl leading-relaxed">
+            <p className="text-muted-foreground text-xl leading-relaxed mb-7">
               {config.hero.tagline}
             </p>
+            <HeroCTA label={config.heroCTALabel} />
           </div>
         </div>
       )}
-
-      {/* Three Doors — choose your path */}
-      <ThreeDoors filter={doorFilter} />
 
       {/* USP stats block — propagates to all SEO pages */}
       <div className="py-8 px-4 border-b border-border/20">
@@ -312,7 +330,7 @@ export default function SEOPage({
         </section>
 
         {/* Discover more */}
-        <section className="mb-16">
+        <section className="mb-12">
           <div className="rounded-xl border border-border/20 bg-white/[0.01] px-6 py-5 flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-foreground mb-0.5">Explore all story types</p>
@@ -326,7 +344,22 @@ export default function SEOPage({
             </Link>
           </div>
         </section>
+      </div>
 
+      {/* Three Doors — moved below the body so trope-specific intent isn't gated by a generic choice */}
+      <div className="border-t border-border/20 py-12 px-4">
+        <div className="max-w-2xl mx-auto mb-8 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-2">
+            The Three Private Doors
+          </p>
+          <p className="text-sm text-muted-foreground/70">
+            Romance, After Dark, or Drift — every story is generated for you, privately, around the door you choose.
+          </p>
+        </div>
+        <ThreeDoors filter={doorFilter} />
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 pb-16">
         {/* FAQ */}
         <section>
           <h2 className="font-display text-2xl font-bold text-foreground mb-6">

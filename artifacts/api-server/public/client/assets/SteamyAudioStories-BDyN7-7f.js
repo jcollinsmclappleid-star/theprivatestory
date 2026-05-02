@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-D2SChvVc.js";import{S as t,g as r}from"./configs-BZVLez1n.js";import"./index-haIXcfI2.js";const e=r("steamy-audio-stories");function m(){return o.jsx(t,{config:e,doorFilter:["dark"]})}export{m as default};

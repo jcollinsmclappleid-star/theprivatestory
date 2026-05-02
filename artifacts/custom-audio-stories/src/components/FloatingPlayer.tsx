@@ -1,5 +1,6 @@
 import { useLocation } from "wouter";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { isSampleId } from "@/data/sampleId";
 import { Play, Pause, X, RotateCcw, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
@@ -17,7 +18,15 @@ export function FloatingPlayer() {
     seekTo,
   } = useAudioPlayer();
 
-  const isHidden = !currentStory || location.startsWith("/story/");
+  // Hide on the dedicated story page (its own player) and on /samples (the
+  // bespoke StickyPlayer takes over there). When the user navigates AWAY from
+  // /samples mid-listen, this floating player picks the session up.
+  const isSample = isSampleId(currentStory?.id);
+  const detailHref = isSample ? "/samples" : `/story/${currentStory?.id}`;
+  const isHidden =
+    !currentStory ||
+    location.startsWith("/story/") ||
+    location === "/samples";
 
   const skipBack    = () => seekTo(Math.max(0, currentTime - 30));
   const skipForward = () => seekTo(Math.min(duration || currentTime + 30, currentTime + 30));
@@ -42,7 +51,7 @@ export function FloatingPlayer() {
 
             {/* Main row */}
             <div className="flex items-center px-3 py-2.5 gap-2">
-              <Link href={`/story/${currentStory.id}`} className="flex items-center flex-1 min-w-0 cursor-pointer gap-2.5">
+              <Link href={detailHref} className="flex items-center flex-1 min-w-0 cursor-pointer gap-2.5">
                 <img
                   src={currentStory.coverImage || "/images/logo.png"}
                   alt={currentStory.title}

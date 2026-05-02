@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-D2SChvVc.js";import{S as r,g as t}from"./configs-BZVLez1n.js";import"./index-haIXcfI2.js";const i=t("erotic-audio-stories-for-women");function n(){return o.jsx(r,{config:i,doorFilter:["dark"]})}export{n as default};

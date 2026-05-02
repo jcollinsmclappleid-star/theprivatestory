@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, useMemo, type KeyboardEvent } from "react";
+import { useState, useCallback, useEffect, useMemo, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
 import {
@@ -19,6 +19,9 @@ import {
   type EditorsPick,
   type EditorsPickVoice,
 } from "@/data/editorsPicks";
+import { useAudioPlayer } from "@/store/use-audio-player";
+import { SAMPLE_ID_PREFIX, isSampleId } from "@/data/sampleId";
+import type { Story } from "@workspace/api-client-react";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = BASE.replace(/\/$/, "");
@@ -27,6 +30,22 @@ const audioUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
 const coverUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/covers/${slug}.png`;
+
+/** Adapt an EditorsPick into the Story shape the central audio store expects. */
+function pickToStory(pick: EditorsPick): Story {
+  return {
+    id: `${SAMPLE_ID_PREFIX}${pick.slug}`,
+    title: pick.title,
+    description: pick.tagline,
+    mood: pick.tags[0] ?? "sample",
+    tags: pick.tags,
+    duration: "2 min",
+    coverImage: coverUrl(pick.slug),
+    audioUrl: audioUrl(pick.slug),
+    isPremium: false,
+    isNew: false,
+  };
+}
 
 function fmtTime(s: number): string {
   if (!isFinite(s) || s < 0) return "0:00";
@@ -48,15 +67,30 @@ export default function Samples() {
   // SSR-safe: hasConfirmedAge() guards `localStorage` access internally.
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
 
-  // ---- Audio state -------------------------------------------------------
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentSlug, setCurrentSlug] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [endedSlug, setEndedSlug] = useState<string | null>(null);
+  // ---- Audio state — driven by the central useAudioPlayer store -----------
+  // The actual <audio> element lives in <AudioProvider> at the root, so a
+  // single playback session is preserved when users navigate between pages.
+  // We never spawn a parallel <audio> here.
+  const {
+    currentStory,
+    isPlaying,
+    currentTime,
+    duration,
+    progress,
+    play: playStore,
+    togglePlay: togglePlayStore,
+    seekTo,
+    close: closeStore,
+  } = useAudioPlayer();
+
   const [voiceFilter, setVoiceFilter] = useState<EditorsPickVoice | null>(null);
   const [openTranscript, setOpenTranscript] = useState<string | null>(null);
+
+  // Resolve the pick currently in the global audio session (if it's a sample).
+  const currentSlug = useMemo(() => {
+    if (!currentStory || !isSampleId(currentStory.id)) return null;
+    return currentStory.id.slice(SAMPLE_ID_PREFIX.length);
+  }, [currentStory]);
 
   const currentPick = useMemo(
     () => EDITORS_PICKS.find((p) => p.slug === currentSlug) ?? null,
@@ -68,87 +102,90 @@ export default function Samples() {
     return EDITORS_PICKS[idx + 1] ?? null;
   }, [currentPick]);
 
-  const playSlug = useCallback((slug: string) => {
+  // Track end-of-story locally — show the "create yours" CTA when the current
+  // sample reaches the end. We watch progress (not isPlaying) so a paused
+  // finish still triggers the CTA. Resets on slug change.
+  const [endedSlug, setEndedSlug] = useState<string | null>(null);
+  useEffect(() => {
     setEndedSlug(null);
-    setCurrentSlug(slug);
-    // The audio element src is bound via React; play after a tick so the
-    // src has updated before .play() is called.
-    requestAnimationFrame(() => {
-      const a = audioRef.current;
-      if (!a) return;
-      a.play().catch(() => {
-        setIsPlaying(false);
-      });
-    });
-  }, []);
+  }, [currentSlug]);
+  useEffect(() => {
+    if (!currentSlug) return;
+    if (duration > 0 && progress >= 0.995 && !isPlaying) {
+      setEndedSlug(currentSlug);
+    }
+  }, [progress, duration, isPlaying, currentSlug]);
+
+  const playSlug = useCallback(
+    (slug: string) => {
+      const pick = EDITORS_PICKS.find((p) => p.slug === slug);
+      if (!pick) return;
+      setEndedSlug(null);
+      playStore(pickToStory(pick));
+    },
+    [playStore],
+  );
 
   const togglePlay = useCallback(
     (slug: string) => {
-      const a = audioRef.current;
-      if (!a) return;
       if (currentSlug === slug) {
-        if (a.paused) {
-          a.play().catch(() => {});
-        } else {
-          a.pause();
-        }
+        togglePlayStore();
       } else {
         playSlug(slug);
       }
     },
-    [currentSlug, playSlug],
+    [currentSlug, togglePlayStore, playSlug],
   );
 
   const closePlayer = useCallback(() => {
-    const a = audioRef.current;
-    if (a) {
-      a.pause();
-      a.currentTime = 0;
-    }
-    setCurrentSlug(null);
-    setIsPlaying(false);
-    setCurrentTime(0);
-    setDuration(0);
+    closeStore();
     setEndedSlug(null);
-  }, []);
+  }, [closeStore]);
 
-  const skip = useCallback((delta: number) => {
-    const a = audioRef.current;
-    if (!a) return;
-    a.currentTime = Math.max(
-      0,
-      Math.min(a.duration || 0, a.currentTime + delta),
-    );
-  }, []);
+  const skip = useCallback(
+    (delta: number) => {
+      if (duration <= 0) return;
+      seekTo(Math.max(0, Math.min(duration, currentTime + delta)));
+    },
+    [currentTime, duration, seekTo],
+  );
 
-  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const a = audioRef.current;
-    if (!a || !a.duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
-    a.currentTime = Math.max(0, Math.min(a.duration, a.duration * pct));
-  }, []);
+  const seek = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (duration <= 0) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      seekTo(Math.max(0, Math.min(duration, duration * pct)));
+    },
+    [duration, seekTo],
+  );
 
-  // Keyboard seek — Arrow Left/Right ±5s, Home/End jump to start/end, PageUp/Down ±15s
-  const seekKey = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
-    const a = audioRef.current;
-    if (!a || !a.duration) return;
-    let delta = 0;
-    let absolute: number | null = null;
-    switch (e.key) {
-      case "ArrowLeft":  delta = -5; break;
-      case "ArrowRight": delta = 5; break;
-      case "PageDown":   delta = -15; break;
-      case "PageUp":     delta = 15; break;
-      case "Home":       absolute = 0; break;
-      case "End":        absolute = a.duration; break;
-      default: return;
-    }
-    e.preventDefault();
-    a.currentTime = absolute !== null
-      ? absolute
-      : Math.max(0, Math.min(a.duration, a.currentTime + delta));
-  }, []);
+  // Keyboard seek — Arrow ±5s, PageUp/Down ±15s, Home/End jump to start/end.
+  // Granularity is tuned for ~2-minute samples (FloatingPlayer uses ±30s for
+  // long-form stories; ±5/±15 fits short-form better).
+  const seekKey = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (duration <= 0) return;
+      let delta = 0;
+      let absolute: number | null = null;
+      switch (e.key) {
+        case "ArrowLeft":  delta = -5; break;
+        case "ArrowRight": delta = 5; break;
+        case "PageDown":   delta = -15; break;
+        case "PageUp":     delta = 15; break;
+        case "Home":       absolute = 0; break;
+        case "End":        absolute = duration; break;
+        default: return;
+      }
+      e.preventDefault();
+      seekTo(
+        absolute !== null
+          ? absolute
+          : Math.max(0, Math.min(duration, currentTime + delta)),
+      );
+    },
+    [currentTime, duration, seekTo],
+  );
 
   // Voice picker is intentionally highlight-only (not a filter) — every story
   // remains visible because each piece is its own editorial moment, but the
@@ -156,46 +193,14 @@ export default function Samples() {
   // keeps the page reading as a curated set rather than a search result.
   const visiblePicks = EDITORS_PICKS;
 
-  // Audio element event wiring
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-    const onTime = () => setCurrentTime(a.currentTime);
-    const onMeta = () => {
-      if (isFinite(a.duration)) setDuration(a.duration);
-    };
-    const onEnded = () => {
-      setIsPlaying(false);
-      setEndedSlug(currentSlug);
-    };
-    a.addEventListener("play", onPlay);
-    a.addEventListener("pause", onPause);
-    a.addEventListener("timeupdate", onTime);
-    a.addEventListener("loadedmetadata", onMeta);
-    a.addEventListener("ended", onEnded);
-    return () => {
-      a.removeEventListener("play", onPlay);
-      a.removeEventListener("pause", onPause);
-      a.removeEventListener("timeupdate", onTime);
-      a.removeEventListener("loadedmetadata", onMeta);
-      a.removeEventListener("ended", onEnded);
-    };
-  }, [currentSlug]);
-
   if (!ageConfirmed) {
     return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Single shared audio element */}
-      <audio
-        ref={audioRef}
-        src={currentSlug ? audioUrl(currentSlug) : undefined}
-        preload="none"
-      />
+      {/* No local <audio>: AudioProvider at the app root owns the single
+          element so audio survives navigation and never double-plays. */}
 
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-white/[0.06]">

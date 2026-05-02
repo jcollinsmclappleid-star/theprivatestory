@@ -80,6 +80,17 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "../api-server/public/client"),
     emptyOutDir: true,
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+          return undefined;
+        },
+      },
+    },
   },
   server: {
     port,

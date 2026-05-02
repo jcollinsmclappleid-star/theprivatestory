@@ -107,6 +107,7 @@ import PurchaseConfirmed from "@/pages/PurchaseConfirmed";
 import Listen from "@/pages/Listen";
 import ListenPrivate from "@/pages/ListenPrivate";
 import ListenAfterDark from "@/pages/ListenAfterDark";
+import Samples from "@/pages/Samples";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,7 @@ function Router() {
       <Route path="/listen/private" component={ListenPrivate} />
       <Route path="/listen/after-dark" component={ListenAfterDark} />
       <Route path="/listen" component={Listen} />
+      <Route path="/samples" component={Samples} />
       <Route>
         <Layout>
           <Switch>

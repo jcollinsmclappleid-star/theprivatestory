@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CQhEFMB4.js";import{S as r,g as e}from"./configs-C7X6zpdw.js";import"./index-YuZ2AtIc.js";const t=e("ai-romance-stories-for-women");function s(){return o.jsx(r,{config:t,doorFilter:["dark"]})}export{s as default};

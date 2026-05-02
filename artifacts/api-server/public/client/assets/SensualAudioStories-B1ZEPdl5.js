@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BhiF_jKA.js";import{S as s,g as t}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const e=t("sensual-audio-stories");function n(){return o.jsx(s,{config:e})}export{n as default};

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BhiF_jKA.js";import{S as t,g as r}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const i=r("romantic-audio-stories");function n(){return o.jsx(t,{config:i,doorFilter:["dark"]})}export{n as default};

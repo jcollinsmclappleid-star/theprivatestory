@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BhiF_jKA.js";import{S as t,g as s}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const a=s("romantasy-audio-stories");function n(){return o.jsx(t,{config:a})}export{n as default};

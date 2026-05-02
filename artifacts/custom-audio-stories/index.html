@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z50ZVNWXKL"></script>
+    <!--
+      Google Analytics 4 — GDPR-compliant Consent Mode v2.
+      Order matters: consent defaults MUST be set BEFORE gtag.js loads or any
+      `config` call is made, otherwise GA may set _ga / _gid cookies before
+      the deny is registered. Cookie banner promotes consent to 'granted'
+      via gtag('consent', 'update', ...) on user opt-in.
+    -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // 1. Read prior choice from localStorage (so returning users don't see banner again)
+      var __tps_consent = 'denied';
+      try {
+        var stored = localStorage.getItem('tps_cookie_consent');
+        if (stored === 'granted') __tps_consent = 'granted';
+      } catch (e) {}
+
+      // 2. Set consent defaults BEFORE any other gtag call
+      gtag('consent', 'default', {
+        analytics_storage: __tps_consent,
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
+
       gtag('js', new Date());
-      gtag('config', 'G-Z50ZVNWXKL');
+      gtag('config', 'G-Z50ZVNWXKL', { anonymize_ip: true, allow_google_signals: false });
     </script>
+    <!-- gtag.js loads AFTER consent defaults are set -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z50ZVNWXKL"></script>
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
@@ -93,23 +117,6 @@
       ]
     }
     </script>
-
-    <!-- Google Analytics 4 — cookie-less consent mode (no identifiers stored, GDPR compliant) -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('consent', 'default', {
-        analytics_storage: 'denied',
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        wait_for_update: 0
-      });
-      gtag('js', new Date());
-    </script>
-    <!-- Replace G-XXXXXXXXXX with your GA4 Measurement ID from Google Analytics -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script> -->
-    <!-- <script>gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true, allow_google_signals: false });</script> -->
 
     <link rel="icon" type="image/png" href="/images/logo-icon.png?v=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">

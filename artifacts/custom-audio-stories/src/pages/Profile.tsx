@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Heart, BookOpen, Flame, User, ChevronRight,
   Trash2, Wand2, Play, Library, ArrowRight, Star, Zap, LogIn,
-  CreditCard, AlertCircle, X, Loader2,
+  CreditCard, AlertCircle, X, Loader2, Download,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -1024,6 +1024,23 @@ export default function Profile() {
           <Sparkles className="w-4 h-4" />
           Create Story
         </Link>
+      </div>
+
+      {/* Your data — GDPR Art.15 / Art.20 (export) */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="border border-border/40 rounded-2xl p-5 mt-4">
+        <h3 className="font-display font-semibold text-sm text-foreground mb-1">Your data</h3>
+        <p className="text-xs text-muted-foreground mb-4">
+          Download a copy of everything we hold about you — your account, taste profile, stories, and reactions — in a machine-readable JSON file.
+        </p>
+        <a
+          href={`${API_BASE}/api/me/export`}
+          download
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-foreground/80 hover:bg-foreground/5 hover:text-foreground text-xs font-medium transition-all"
+        >
+          <Download className="w-3.5 h-3.5" />
+          Export my data (JSON)
+        </a>
       </div>
 
       {/* Danger zone — account deletion (GDPR Art.17 right to erasure) */}

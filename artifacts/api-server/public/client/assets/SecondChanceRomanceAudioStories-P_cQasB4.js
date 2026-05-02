@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CQhEFMB4.js";import{S as e,g as n}from"./configs-C7X6zpdw.js";import"./index-YuZ2AtIc.js";const t=n("second-chance-romance-audio-stories");function i(){return o.jsx(e,{config:t})}export{i as default};

@@ -8,6 +8,7 @@ import { Layout } from "@/components/Layout";
 import { AudioProvider } from "@/components/AudioProvider";
 import { AuthModal } from "@/components/AuthModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { CookieBanner } from "@/components/CookieBanner";
 
 import { ScrollToTop } from "@/components/ScrollToTop";
 
@@ -33,6 +34,7 @@ const Drift = lazy(() => import("@/pages/Drift"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const ContentPolicy = lazy(() => import("@/pages/ContentPolicy"));
 const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
@@ -163,6 +165,7 @@ function Router() {
               <Route path="/me" component={Profile} />
               <Route path="/privacy" component={Privacy} />
               <Route path="/privacy-policy" component={PrivacyPolicy} />
+              <Route path="/cookie-policy" component={CookiePolicy} />
               <Route path="/terms" component={Terms} />
               <Route path="/content-policy" component={ContentPolicy} />
               <Route path="/refund-policy" component={RefundPolicy} />
@@ -263,6 +266,7 @@ function App() {
             <AudioProvider>
               <Router />
               <AuthModal />
+              <CookieBanner />
               <Toaster />
             </AudioProvider>
           </WouterRouter>

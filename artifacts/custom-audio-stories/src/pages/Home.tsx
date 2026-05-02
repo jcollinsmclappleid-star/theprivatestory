@@ -793,17 +793,29 @@ export default function Home() {
           }} />
         </div>
 
-        {/* ── Woman portrait ── */}
-        <img
-          aria-hidden="true"
-          src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=7`}
-          alt=""
-          className="block absolute right-0 top-0 h-full w-full sm:w-[48%] object-cover object-top pointer-events-none select-none opacity-[0.38] sm:opacity-[0.82]"
-          style={{
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
-          }}
-        />
+        {/* ── Woman portrait (WebP w/ PNG fallback, eager + high priority — above the fold) ── */}
+        <picture>
+          <source
+            type="image/webp"
+            srcSet={`${import.meta.env.BASE_URL}images/home-hero-woman.webp?v=8`}
+          />
+          <img
+            aria-hidden="true"
+            src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=8`}
+            alt=""
+            width={1200}
+            height={1600}
+            loading="eager"
+            // @ts-expect-error -- fetchpriority is valid HTML, not yet in React types
+            fetchpriority="high"
+            decoding="async"
+            className="block absolute right-0 top-0 h-full w-full sm:w-[48%] object-cover object-top pointer-events-none select-none opacity-[0.38] sm:opacity-[0.82]"
+            style={{
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
+              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
+            }}
+          />
+        </picture>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

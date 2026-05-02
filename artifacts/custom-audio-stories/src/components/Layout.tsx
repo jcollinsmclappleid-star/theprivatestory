@@ -375,6 +375,8 @@ function FooterColumn({ heading, links }: { heading: string; links: { label: str
 function Footer() {
   const legalLinks = [
     { label: "Privacy", href: "/privacy" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Cookie Policy", href: "/cookie-policy" },
     { label: "Terms", href: "/terms" },
     { label: "Content Policy", href: "/content-policy" },
     { label: "Refund Policy", href: "/refund-policy" },

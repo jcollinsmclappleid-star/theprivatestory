@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BhiF_jKA.js";import{S as a,g as i}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const t=i("mafia-romance-audio-stories");function m(){return o.jsx(a,{config:t})}export{m as default};

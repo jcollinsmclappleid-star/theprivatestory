@@ -1,0 +1,1 @@
+import{j as t}from"./vendor-BhiF_jKA.js";import{S as o,g as i}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const r=i("intimate-audio-stories");function n(){return t.jsx(o,{config:r,doorFilter:["dark"]})}export{n as default};

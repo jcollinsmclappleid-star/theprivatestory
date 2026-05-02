@@ -114,7 +114,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
     { label: "How It Works", href: "/how-it-works" },
     { label: "The Three Private Doors", href: "/the-three-doors" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Listen", href: "/listen" },
+    { label: "Listen", href: "/samples" },
     ...(isAuthenticated ? [{ label: "My Stories", href: "/library" }] : []),
   ];
 
@@ -128,7 +128,7 @@ function Navbar({ streakDays }: { streakDays: number }) {
       : []
     ),
     { label: "Pricing", href: "/pricing", icon: <BookOpen className="w-4 h-4" /> },
-    { label: "Listen to a sample", href: "/listen", icon: <Sparkles className="w-4 h-4" /> },
+    { label: "Listen to a sample", href: "/samples", icon: <Sparkles className="w-4 h-4" /> },
     { label: "About", href: "/about", icon: <Info className="w-4 h-4" /> },
     { label: "Contact", href: "/contact", icon: <MessageCircle className="w-4 h-4" /> },
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
@@ -394,7 +394,7 @@ function Footer() {
             { label: "The Three Private Doors", href: "/the-three-doors" },
             { label: "Create your story", href: "/create" },
             { label: "Pricing", href: "/pricing" },
-            { label: "Listen to a sample", href: "/listen" },
+            { label: "Listen to a sample", href: "/samples" },
             { label: "After Dark", href: "/after-dark" },
             { label: "Drift — Bedtime", href: "/drift" },
             { label: "My Stories", href: "/library" },

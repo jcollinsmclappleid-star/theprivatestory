@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-D2SChvVc.js";import{S as r,g as t}from"./configs-DKE75qAh.js";import"./index-BfwypGFX.js";const i=t("audio-erotica-for-couples");function u(){return o.jsx(r,{config:i})}export{u as default};

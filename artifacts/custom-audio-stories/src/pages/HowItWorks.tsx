@@ -328,12 +328,12 @@ export default function HowItWorks() {
                 Hear what a personalised intimate story sounds like.
               </h3>
               <p className="text-sm text-muted-foreground/80">
-                Two sample stories — free to listen, no account needed.
+                Ten short stories — free to listen, no account needed.
               </p>
             </div>
           </div>
           <Link
-            href="/listen"
+            href="/samples"
             className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap"
             style={{
               background: "rgba(232,121,160,0.15)",
@@ -650,7 +650,7 @@ export default function HowItWorks() {
           <MiniDoorCTA />
 
           <Link
-            href="/listen"
+            href="/samples"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
           >
             <Headphones className="w-3.5 h-3.5" />

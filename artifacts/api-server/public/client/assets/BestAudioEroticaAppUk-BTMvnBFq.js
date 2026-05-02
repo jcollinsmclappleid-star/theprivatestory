@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BhiF_jKA.js";import{S as t,g as a}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const i=a("best-audio-erotica-app-uk");function p(){return o.jsx(t,{config:i})}export{p as default};

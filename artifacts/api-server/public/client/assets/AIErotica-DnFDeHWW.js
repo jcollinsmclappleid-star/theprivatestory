@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BhiF_jKA.js";import{S as r,g as t}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const a=t("ai-erotica");function n(){return o.jsx(r,{config:a,doorFilter:["dark"]})}export{n as default};

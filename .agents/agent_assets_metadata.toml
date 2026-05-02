@@ -558,6 +558,66 @@ uri = "file://artifacts/api-server/public/og/drift.png"
 type = "image"
 title = "drift-og-cyan-calm"
 
+[[generated]]
+id = "FUdO1zB2k_Irnh5V9MHlx"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/01-last-one.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "u6288Ic2xwVEv2yjS0GPv"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/02-adjoining-suites.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "VGqjuIfx9TjIsAuLfLB9-"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/03-spa-at-six.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "uH-t3m374EyQhjzjLCrWj"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/04-driver.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "WngIsDUILJU2XN-cFl_yh"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/05-cabin.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3nG2vC3VYoEgjYO9UNJkl"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/06-supervisor.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "O_ntfBleiTo1jt1H_Aivx"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/07-bodyguard.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "XdUbmZctk-HvA7j-PudrI"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/08-proposition.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "eXPEApvO7Ep-MABud_scn"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/09-neighbour.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "7jx9IkFpBQFWaeurZKTYC"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/covers/10-night-manager.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

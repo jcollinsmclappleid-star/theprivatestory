@@ -115,9 +115,9 @@ const CreateMyStoryPage = lazy(() =>
   import("@/pages/ThreeDoorsPage").then((m) => ({ default: m.CreateMyStoryPage })),
 );
 const PurchaseConfirmed = lazy(() => import("@/pages/PurchaseConfirmed"));
-const Listen = lazy(() => import("@/pages/Listen"));
-const ListenPrivate = lazy(() => import("@/pages/ListenPrivate"));
-const ListenAfterDark = lazy(() => import("@/pages/ListenAfterDark"));
+// Listen / ListenPrivate / ListenAfterDark are intentionally not lazy-imported
+// here — the routes redirect to /samples. The component files remain on disk
+// for git history and can be deleted once the redirect is verified in prod.
 const Samples = lazy(() => import("@/pages/Samples"));
 
 const queryClient = new QueryClient();
@@ -140,9 +140,17 @@ function Router() {
         <Route path="/admin/moderation" component={AdminModeration} />
         <Route path="/reset-password" component={ResetPassword} />
         <Route path="/purchase/confirmed" component={PurchaseConfirmed} />
-        <Route path="/listen/private" component={ListenPrivate} />
-        <Route path="/listen/after-dark" component={ListenAfterDark} />
-        <Route path="/listen" component={Listen} />
+        {/*
+         * Old long-form sample routes (`/listen`, `/listen/private`,
+         * `/listen/after-dark`) are retired in favour of the new central
+         * Editor's Picks landing at `/samples`. The two long-form pieces
+         * contained explicit Scene 4 content behind only a self-declaration
+         * AgeGate — out of scope for the public surface under our editorial
+         * standard. Components are kept in the codebase but no longer routed.
+         */}
+        <Route path="/listen/private"><Redirect to="/samples" /></Route>
+        <Route path="/listen/after-dark"><Redirect to="/samples" /></Route>
+        <Route path="/listen"><Redirect to="/samples" /></Route>
         <Route path="/samples" component={Samples} />
         <Route>
           <Layout>

@@ -1,659 +1,924 @@
-import { useState, useRef, useCallback, useEffect, useId } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useCallback, useEffect, useMemo, type KeyboardEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowLeft, Play, Pause, Sparkles, Moon } from "lucide-react";
+import {
+  ArrowLeft,
+  Play,
+  Pause,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  X,
+} from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { TrustBar } from "@/components/TrustBar";
+import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
+import {
+  EDITORS_PICKS,
+  VOICES_META,
+  type EditorsPick,
+  type EditorsPickVoice,
+} from "@/data/editorsPicks";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = BASE.replace(/\/$/, "");
-const AGE_GATE_KEY = "tps_age_confirmed";
 
-type DoorSample = {
-  id: "romance" | "after-dark" | "drift";
-  room: string;
-  doorName: string;
-  storyTitle: string;
-  blurb: string;
-  voiceName: string;
-  voiceMeta: string;
-  ctaLabel: string;
-  ctaHref: string;
-  audioUrl: string;
-  Icon: typeof Sparkles;
-  accent: string;
-  rgb: string;
-  bg: string;
-  border: string;
-  borderHover: string;
-  glow: string;
-  knob: string;
-  knobHover: string;
-  nameColor: string;
-  taglineColor: string;
-  labelColor: string;
-};
+const audioUrl = (slug: string) =>
+  `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
+const coverUrl = (slug: string) =>
+  `${API_BASE}/voice-samples/editors-picks/covers/${slug}.png`;
 
-const DOORS: DoorSample[] = [
-  {
-    id: "romance",
-    room: "The Story Room",
-    doorName: "Romance",
-    storyTitle: "The Fake-Dating One",
-    blurb:
-      "His sister's wedding was on Saturday — and the plus-one box had been empty for six months. A tiny favour, on paper. A weekend pretending. Until somewhere between the toast and the first dance, neither of them remembered to let go.",
-    voiceName: "Kayla",
-    voiceMeta: "American · Warm · Expressive",
-    ctaLabel: "Create your romance",
-    ctaHref: "/create",
-    audioUrl: `${API_BASE}/voice-samples/doors/romance.mp3`,
-    Icon: Sparkles,
-    accent: "#c9a227",
-    rgb: "201,162,39",
-    bg: "linear-gradient(180deg, #1d1105 0%, #130d07 55%, #0b0906 100%)",
-    border: "rgba(201,162,39,0.24)",
-    borderHover: "rgba(201,162,39,0.70)",
-    glow: "rgba(201,162,39,0.20)",
-    knob: "rgba(201,162,39,0.28)",
-    knobHover: "rgba(201,162,39,0.85)",
-    nameColor: "#e8d5a0",
-    taglineColor: "rgba(201,162,39,0.90)",
-    labelColor: "rgba(201,162,39,0.72)",
-  },
-  {
-    id: "after-dark",
-    room: "The Story Room",
-    doorName: "After Dark",
-    storyTitle: "The First Word",
-    blurb:
-      "He stopped at her door. She'd been waiting for him to ask — for weeks, maybe — long enough that the silence between them had started to feel like a held breath. A consent-led excerpt. Nothing happens until she says it does.",
-    voiceName: "Maya",
-    voiceMeta: "American · Intimate · Close",
-    ctaLabel: "Enter After Dark",
-    ctaHref: "/after-dark",
-    audioUrl: `${API_BASE}/voice-samples/doors/after-dark.mp3`,
-    Icon: Moon,
-    accent: "#7b8fff",
-    rgb: "123,143,255",
-    bg: "linear-gradient(180deg, #05050f 0%, #040409 55%, #060608 100%)",
-    border: "rgba(123,143,255,0.22)",
-    borderHover: "rgba(123,143,255,0.60)",
-    glow: "rgba(123,143,255,0.18)",
-    knob: "rgba(123,143,255,0.24)",
-    knobHover: "rgba(123,143,255,0.78)",
-    nameColor: "#9baeff",
-    taglineColor: "rgba(123,143,255,0.90)",
-    labelColor: "rgba(123,143,255,0.68)",
-  },
-  {
-    id: "drift",
-    room: "The Quiet Room",
-    doorName: "Drift",
-    storyTitle: "The House at the Edge of the Forest",
-    blurb:
-      "You arrive on foot. There is no road. Inside, a fire has been laid for you — a blanket folded over the chair, a pot of tea still warm. You don't remember who left it. You don't need to. Slow, sensory, written to let you settle.",
-    voiceName: "Clara",
-    voiceMeta: "British · Warm · Unhurried",
-    ctaLabel: "Explore Drift",
-    ctaHref: "/drift",
-    audioUrl: `${API_BASE}/voice-samples/doors/drift.mp3`,
-    Icon: Moon,
-    accent: "#56b4e0",
-    rgb: "86,180,224",
-    bg: "linear-gradient(180deg, #06121a 0%, #050d13 55%, #060a0e 100%)",
-    border: "rgba(86,180,224,0.22)",
-    borderHover: "rgba(86,180,224,0.60)",
-    glow: "rgba(86,180,224,0.18)",
-    knob: "rgba(86,180,224,0.26)",
-    knobHover: "rgba(86,180,224,0.80)",
-    nameColor: "#b8e4f5",
-    taglineColor: "rgba(86,180,224,0.90)",
-    labelColor: "rgba(86,180,224,0.68)",
-  },
-];
-
-function formatTime(seconds: number): string {
-  if (!seconds || isNaN(seconds) || !isFinite(seconds)) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-function AgeGate({ onConfirm }: { onConfirm: () => void }) {
-  const titleId = useId();
-  const descId = useId();
-  const confirmRef = useRef<HTMLButtonElement>(null);
-  const leaveRef = useRef<HTMLAnchorElement>(null);
-
-  // Focus the confirm button on mount and lock body scroll while gate is open.
-  useEffect(() => {
-    const previouslyFocused = document.activeElement as HTMLElement | null;
-    confirmRef.current?.focus();
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      previouslyFocused?.focus?.();
-    };
-  }, []);
-
-  // Trap Tab focus between the confirm button and the leave link.
-  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== "Tab") return;
-    const focusables = [confirmRef.current, leaveRef.current].filter(
-      (el): el is HTMLElement => el != null,
-    );
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    const active = document.activeElement;
-    if (e.shiftKey && active === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }, []);
-
-  return (
-    <motion.div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-      aria-describedby={descId}
-      onKeyDown={onKeyDown}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="fixed inset-0 z-[999] flex items-center justify-center px-6"
-      style={{
-        background:
-          "radial-gradient(ellipse at 50% 40%, #1a1209 0%, #0a0908 60%, #050403 100%)",
-      }}
-    >
-      <div className="w-full max-w-sm text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border border-primary/30 bg-primary/8 mb-7">
-          <svg
-            className="w-7 h-7"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            aria-hidden="true"
-            style={{ color: "#c9a227" }}
-          >
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-        </div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary/60 mb-3">
-          Adults only
-        </p>
-        <h1
-          id={titleId}
-          className="font-display text-3xl font-bold text-foreground leading-tight mb-4"
-        >
-          One of these samples<br />contains adult content.
-        </h1>
-        <p id={descId} className="text-sm text-white/55 leading-relaxed mb-8">
-          You must be 18 years of age or older to listen.<br />
-          By continuing you confirm this is true.
-        </p>
-        <button
-          ref={confirmRef}
-          onClick={onConfirm}
-          className="w-full bg-primary text-primary-foreground font-bold text-sm py-4 rounded-2xl
-                     hover:bg-primary/90 active:scale-[0.98] transition-all mb-3
-                     shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]
-                     focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-        >
-          I am 18 or older — enter
-        </button>
-        <Link
-          ref={leaveRef}
-          href="/"
-          className="block w-full text-center text-xs text-white/35 hover:text-white/60 transition-colors py-2
-                     focus:outline-none focus-visible:text-white/80"
-        >
-          Leave
-        </Link>
-      </div>
-    </motion.div>
-  );
-}
-
-function SampleCard({
-  door,
-  isPlaying,
-  onPlayToggle,
-  registerAudio,
-  onEnded,
-}: {
-  door: DoorSample;
-  isPlaying: boolean;
-  onPlayToggle: () => void;
-  registerAudio: (audio: HTMLAudioElement | null) => void;
-  onEnded: () => void;
-}) {
-  const [hovered, setHovered] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
-  // Callback ref so registration happens synchronously when the audio element
-  // mounts/unmounts. Listener binding lives in this same component so it is
-  // never racy with parent effects.
-  const audioCallbackRef = useCallback(
-    (el: HTMLAudioElement | null) => {
-      registerAudio(el);
-    },
-    [registerAudio],
-  );
-
-  const handleTimeUpdate = useCallback(
-    (e: React.SyntheticEvent<HTMLAudioElement>) => {
-      setCurrentTime(e.currentTarget.currentTime);
-    },
-    [],
-  );
-
-  const handleLoadedMetadata = useCallback(
-    (e: React.SyntheticEvent<HTMLAudioElement>) => {
-      const d = e.currentTarget.duration;
-      if (d && isFinite(d)) setDuration(d);
-    },
-    [],
-  );
-
-  const handleEnded = useCallback(() => {
-    setCurrentTime(0);
-    onEnded();
-  }, [onEnded]);
-
-  const progressPct = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
-  const Icon = door.Icon;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="rounded-2xl overflow-hidden"
-      style={{
-        background: door.bg,
-        border: `1px solid ${hovered || isPlaying ? door.borderHover : door.border}`,
-        transition: "border 0.35s ease, box-shadow 0.35s ease",
-        boxShadow:
-          hovered || isPlaying
-            ? `0 0 60px -16px ${door.glow}, 0 12px 32px -16px rgba(0,0,0,0.6)`
-            : `0 4px 18px -10px rgba(0,0,0,0.5)`,
-      }}
-    >
-      {/* Top accent glow */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: "3px",
-          background: `linear-gradient(90deg, transparent 0%, ${door.accent} 50%, transparent 100%)`,
-          opacity: hovered || isPlaying ? 0.85 : 0.45,
-          transition: "opacity 0.3s ease",
-        }}
-      />
-
-      <div className="p-5 sm:p-6">
-        {/* Header: room label + door name + icon */}
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <p
-              className="text-[9px] font-bold uppercase tracking-[0.22em] mb-1.5"
-              style={{ color: door.labelColor }}
-            >
-              {door.room}
-            </p>
-            <h2
-              className="font-display text-xl font-bold leading-none"
-              style={{ color: door.nameColor }}
-            >
-              {door.doorName}
-            </h2>
-          </div>
-          <div
-            className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{
-              border: `1px solid ${door.border}`,
-              background: `rgba(${door.rgb}, 0.06)`,
-            }}
-          >
-            <Icon className="w-4 h-4" style={{ color: door.accent, opacity: 0.85 }} />
-          </div>
-        </div>
-
-        {/* Story title */}
-        <h3 className="font-display text-2xl sm:text-[26px] font-bold text-foreground leading-tight mb-3">
-          {door.storyTitle}
-        </h3>
-
-        {/* Blurb */}
-        <p className="text-sm text-white/65 leading-relaxed mb-5">{door.blurb}</p>
-
-        {/* Player */}
-        <div
-          className="rounded-xl p-3.5 sm:p-4 mb-4"
-          style={{
-            background: `rgba(${door.rgb}, 0.05)`,
-            border: `1px solid rgba(${door.rgb}, 0.13)`,
-          }}
-        >
-          <div className="flex items-center gap-3.5">
-            {/* Play / pause */}
-            <button
-              onClick={onPlayToggle}
-              aria-label={isPlaying ? `Pause ${door.storyTitle}` : `Play ${door.storyTitle}`}
-              className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center
-                         transition-all duration-200 active:scale-95"
-              style={{
-                background: door.accent,
-                color: "#0a0a0a",
-                boxShadow: isPlaying
-                  ? `0 0 24px -4px ${door.glow}, 0 0 48px -8px ${door.glow}`
-                  : `0 4px 14px -4px rgba(0,0,0,0.4)`,
-              }}
-            >
-              {isPlaying ? (
-                <Pause className="w-5 h-5" fill="currentColor" />
-              ) : (
-                <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
-              )}
-            </button>
-
-            {/* Voice + progress */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                <p className="text-[11px] font-semibold truncate" style={{ color: door.taglineColor }}>
-                  Narrated by {door.voiceName}
-                </p>
-                <p className="text-[10px] tabular-nums text-white/45 flex-shrink-0">
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </p>
-              </div>
-              <p className="text-[10px] text-white/35 mb-2 truncate">{door.voiceMeta}</p>
-              <div
-                className="relative h-1 rounded-full overflow-hidden"
-                style={{ background: `rgba(${door.rgb}, 0.18)` }}
-              >
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-150"
-                  style={{
-                    width: `${progressPct}%`,
-                    background: door.accent,
-                    boxShadow: isPlaying ? `0 0 8px ${door.glow}` : "none",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <audio
-            ref={audioCallbackRef}
-            src={door.audioUrl}
-            preload="metadata"
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onDurationChange={handleLoadedMetadata}
-            onEnded={handleEnded}
-          />
-        </div>
-
-        {/* Door CTA */}
-        <Link
-          href={door.ctaHref}
-          className="group block w-full rounded-xl py-3.5 px-4 text-center
-                     text-sm font-bold transition-all duration-200 active:scale-[0.98]"
-          style={{
-            background: `rgba(${door.rgb}, 0.10)`,
-            border: `1px solid ${door.border}`,
-            color: door.nameColor,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = `rgba(${door.rgb}, 0.18)`;
-            e.currentTarget.style.borderColor = door.borderHover;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = `rgba(${door.rgb}, 0.10)`;
-            e.currentTarget.style.borderColor = door.border;
-          }}
-        >
-          {door.ctaLabel}
-          <span className="inline-block ml-1.5 transition-transform group-hover:translate-x-0.5">
-            →
-          </span>
-        </Link>
-      </div>
-    </motion.div>
-  );
+function fmtTime(s: number): string {
+  if (!isFinite(s) || s < 0) return "0:00";
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
 export default function Samples() {
   useSEO({
-    title: "Hear a sample — Three doors, three voices — The Private Story",
+    title:
+      "Editor's Picks — Ten short audio stories — The Private Story",
     description:
-      "Three short narrated excerpts — one from each door. Romance, After Dark, Drift. Hear what a personalised audio story sounds like before you create your own.",
-    ogImage: "https://theprivatestory.com/og/samples.jpg",
+      "Ten openings. Ten endings on a held breath. Short, intimate, narrated stories from our writers — each one stops where you'd want it to keep going. Yours, when you create one, can go further. 18+.",
   });
 
-  // Sticky CTA appears once visitor scrolls past the cards.
-  const [stickyVisible, setStickyVisible] = useState(false);
+  // Synchronous lazy init — read localStorage on first render so previously
+  // confirmed users never see a flash of the AgeGate during hydration.
+  // SSR-safe: hasConfirmedAge() guards `localStorage` access internally.
+  const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
+
+  // ---- Audio state -------------------------------------------------------
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [currentSlug, setCurrentSlug] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [endedSlug, setEndedSlug] = useState<string | null>(null);
+  const [voiceFilter, setVoiceFilter] = useState<EditorsPickVoice | null>(null);
+  const [openTranscript, setOpenTranscript] = useState<string | null>(null);
+
+  const currentPick = useMemo(
+    () => EDITORS_PICKS.find((p) => p.slug === currentSlug) ?? null,
+    [currentSlug],
+  );
+  const nextPick = useMemo(() => {
+    if (!currentPick) return null;
+    const idx = EDITORS_PICKS.findIndex((p) => p.slug === currentPick.slug);
+    return EDITORS_PICKS[idx + 1] ?? null;
+  }, [currentPick]);
+
+  const playSlug = useCallback((slug: string) => {
+    setEndedSlug(null);
+    setCurrentSlug(slug);
+    // The audio element src is bound via React; play after a tick so the
+    // src has updated before .play() is called.
+    requestAnimationFrame(() => {
+      const a = audioRef.current;
+      if (!a) return;
+      a.play().catch(() => {
+        setIsPlaying(false);
+      });
+    });
+  }, []);
+
+  const togglePlay = useCallback(
+    (slug: string) => {
+      const a = audioRef.current;
+      if (!a) return;
+      if (currentSlug === slug) {
+        if (a.paused) {
+          a.play().catch(() => {});
+        } else {
+          a.pause();
+        }
+      } else {
+        playSlug(slug);
+      }
+    },
+    [currentSlug, playSlug],
+  );
+
+  const closePlayer = useCallback(() => {
+    const a = audioRef.current;
+    if (a) {
+      a.pause();
+      a.currentTime = 0;
+    }
+    setCurrentSlug(null);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setEndedSlug(null);
+  }, []);
+
+  const skip = useCallback((delta: number) => {
+    const a = audioRef.current;
+    if (!a) return;
+    a.currentTime = Math.max(
+      0,
+      Math.min(a.duration || 0, a.currentTime + delta),
+    );
+  }, []);
+
+  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const a = audioRef.current;
+    if (!a || !a.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    a.currentTime = Math.max(0, Math.min(a.duration, a.duration * pct));
+  }, []);
+
+  // Keyboard seek — Arrow Left/Right ±5s, Home/End jump to start/end, PageUp/Down ±15s
+  const seekKey = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+    const a = audioRef.current;
+    if (!a || !a.duration) return;
+    let delta = 0;
+    let absolute: number | null = null;
+    switch (e.key) {
+      case "ArrowLeft":  delta = -5; break;
+      case "ArrowRight": delta = 5; break;
+      case "PageDown":   delta = -15; break;
+      case "PageUp":     delta = 15; break;
+      case "Home":       absolute = 0; break;
+      case "End":        absolute = a.duration; break;
+      default: return;
+    }
+    e.preventDefault();
+    a.currentTime = absolute !== null
+      ? absolute
+      : Math.max(0, Math.min(a.duration, a.currentTime + delta));
+  }, []);
+
+  // Voice picker is intentionally highlight-only (not a filter) — every story
+  // remains visible because each piece is its own editorial moment, but the
+  // selected voice's three (or two) stories pop while the rest dim back. This
+  // keeps the page reading as a curated set rather than a search result.
+  const visiblePicks = EDITORS_PICKS;
+
+  // Audio element event wiring
   useEffect(() => {
-    const onScroll = () => {
-      // Show after ~60% of viewport scrolled.
-      setStickyVisible(window.scrollY > window.innerHeight * 0.6);
+    const a = audioRef.current;
+    if (!a) return;
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onTime = () => setCurrentTime(a.currentTime);
+    const onMeta = () => {
+      if (isFinite(a.duration)) setDuration(a.duration);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const onEnded = () => {
+      setIsPlaying(false);
+      setEndedSlug(currentSlug);
+    };
+    a.addEventListener("play", onPlay);
+    a.addEventListener("pause", onPause);
+    a.addEventListener("timeupdate", onTime);
+    a.addEventListener("loadedmetadata", onMeta);
+    a.addEventListener("ended", onEnded);
+    return () => {
+      a.removeEventListener("play", onPlay);
+      a.removeEventListener("pause", onPause);
+      a.removeEventListener("timeupdate", onTime);
+      a.removeEventListener("loadedmetadata", onMeta);
+      a.removeEventListener("ended", onEnded);
+    };
+  }, [currentSlug]);
 
-  const [ageConfirmed, setAgeConfirmed] = useState(() => {
-    try {
-      return localStorage.getItem(AGE_GATE_KEY) === "1";
-    } catch {
-      return false;
-    }
-  });
-  const confirmAge = useCallback(() => {
-    try {
-      localStorage.setItem(AGE_GATE_KEY, "1");
-    } catch {
-      /* noop */
-    }
-    setAgeConfirmed(true);
-  }, []);
-
-  // One audio element plays at a time. We pause every other element on each
-  // play and use a request-id token so a stale play() promise that resolves
-  // after a newer request was issued cannot leave two audios playing at once.
-  const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
-  const playReqRef = useRef(0);
-  const [playingId, setPlayingId] = useState<string | null>(null);
-
-  const pauseAllExcept = useCallback((keepId: string | null) => {
-    for (const [id, el] of Object.entries(audioRefs.current)) {
-      if (id !== keepId && el && !el.paused) {
-        el.pause();
-      }
-    }
-  }, []);
-
-  const handlePlayToggle = useCallback(
-    async (id: string) => {
-      const target = audioRefs.current[id];
-      if (!target) return;
-
-      // Toggle off: pause the targeted element. Bump the token so any
-      // in-flight play() resolution for *this* element no-ops.
-      if (!target.paused) {
-        playReqRef.current += 1;
-        target.pause();
-        setPlayingId((cur) => (cur === id ? null : cur));
-        return;
-      }
-
-      // New play request. Take a token, pause everything else immediately,
-      // and only commit the playing state if our token is still current
-      // when play() resolves. Pausing an element whose play() is still
-      // pending is safe — it simply rejects with AbortError, which we swallow.
-      const reqId = ++playReqRef.current;
-      pauseAllExcept(id);
-      setPlayingId(id);
-
-      try {
-        await target.play();
-        if (reqId !== playReqRef.current) {
-          // A newer request superseded us before play() resolved.
-          target.pause();
-        }
-      } catch {
-        // play() rejected (autoplay block, AbortError after pause, etc.)
-        if (reqId === playReqRef.current) {
-          setPlayingId((cur) => (cur === id ? null : cur));
-        }
-      }
-    },
-    [pauseAllExcept],
-  );
-
-  const handleEnded = useCallback((id: string) => {
-    setPlayingId((cur) => (cur === id ? null : cur));
-  }, []);
-
-  const registerAudio = useCallback(
-    (id: string) => (audio: HTMLAudioElement | null) => {
-      audioRefs.current[id] = audio;
-    },
-    [],
-  );
+  if (!ageConfirmed) {
+    return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
+  }
 
   return (
-    <>
-      {!ageConfirmed && <AgeGate onConfirm={confirmAge} />}
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Single shared audio element */}
+      <audio
+        ref={audioRef}
+        src={currentSlug ? audioUrl(currentSlug) : undefined}
+        preload="none"
+      />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="min-h-screen bg-background flex flex-col"
-      >
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-6 py-5 max-w-3xl w-full mx-auto">
+      {/* Top bar */}
+      <header className="sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-white/[0.06]">
+        <div className="max-w-3xl mx-auto flex items-center justify-between px-5 py-3.5">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-sm font-medium text-white/65 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            <span className="hidden sm:inline">Back</span>
           </Link>
-          <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.22em]">
-            Samples
+          <span className="text-[10px] font-bold text-white/45 uppercase tracking-[0.22em]">
+            Editor's Picks · 18+
           </span>
           <Link
-            href="/pricing"
-            className="text-[11px] text-primary/80 hover:text-primary transition-colors tracking-widest uppercase"
+            href="/create"
+            className="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors tracking-widest uppercase"
           >
-            Pricing →
+            Create →
           </Link>
         </div>
+      </header>
 
-        <div className="flex-1 flex flex-col items-center px-5 sm:px-6 pb-16 max-w-3xl mx-auto w-full">
-          {/* Intro */}
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.5 }}
-            className="text-center mb-8 mt-2"
-          >
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary/60 mb-4">
-              Three doors · Three voices
-            </p>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground leading-tight mb-4">
-              Hear what your story<br />could sound like.
-            </h1>
-            <p className="text-sm text-white/60 leading-relaxed max-w-md mx-auto">
-              One short excerpt from each door. Different worlds, different
-              voices, different rules. Pick one and press play.
-            </p>
-          </motion.div>
+      {/* Hero */}
+      <Hero onStart={() => playSlug(EDITORS_PICKS[0].slug)} />
 
-          {/* Three door cards */}
-          <div className="w-full flex flex-col gap-5">
-            {DOORS.map((door) => (
-              <SampleCard
-                key={door.id}
-                door={door}
-                isPlaying={playingId === door.id}
-                onPlayToggle={() => handlePlayToggle(door.id)}
-                registerAudio={registerAudio(door.id)}
-                onEnded={() => handleEnded(door.id)}
-              />
-            ))}
-          </div>
+      {/* Editorial cards */}
+      <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-24 pt-6">
+        {visiblePicks.slice(0, 5).map((pick) => (
+          <StoryCard
+            key={pick.slug}
+            pick={pick}
+            isPlaying={isPlaying && currentSlug === pick.slug}
+            isCurrent={currentSlug === pick.slug}
+            transcriptOpen={openTranscript === pick.slug}
+            onTogglePlay={() => togglePlay(pick.slug)}
+            onToggleTranscript={() =>
+              setOpenTranscript((v) => (v === pick.slug ? null : pick.slug))
+            }
+            voiceFilter={voiceFilter}
+          />
+        ))}
 
-          {/* Quiet footer note */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="mt-10 text-center max-w-md"
-          >
-            <p className="text-xs text-white/40 leading-relaxed">
-              These are short excerpts narrated to demonstrate voice and tone.
-              Your own stories are written around your choices and stay private
-              to your account.
-            </p>
-            <Link
-              href="/listen"
-              className="inline-block mt-4 text-[11px] tracking-[0.18em] uppercase text-primary/70 hover:text-primary transition-colors"
-            >
-              Or compare two intensities of one story →
-            </Link>
-          </motion.div>
-        </div>
+        {/* Voice strip — woven mid-page */}
+        <VoiceStrip
+          activeVoice={voiceFilter}
+          onPick={(v) => setVoiceFilter((curr) => (curr === v ? null : v))}
+        />
 
-        {/* Trust signals — privacy commitments, country reach, Stripe */}
+        {visiblePicks.slice(5).map((pick) => (
+          <StoryCard
+            key={pick.slug}
+            pick={pick}
+            isPlaying={isPlaying && currentSlug === pick.slug}
+            isCurrent={currentSlug === pick.slug}
+            transcriptOpen={openTranscript === pick.slug}
+            onTogglePlay={() => togglePlay(pick.slug)}
+            onToggleTranscript={() =>
+              setOpenTranscript((v) => (v === pick.slug ? null : pick.slug))
+            }
+            voiceFilter={voiceFilter}
+          />
+        ))}
+      </section>
+
+      {/* Cliffhanger CTA */}
+      <FinalCTA />
+
+      {/* Trust footer */}
+      <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-24">
         <TrustBar />
+        <p className="mt-8 text-[12px] text-white/45 leading-relaxed text-center max-w-xl mx-auto">
+          About these editor's picks: ten short narrated openings, written by
+          our editorial team and narrated by four voices. Each one is built as
+          a complete short — it lands, deliberately, before any explicit
+          content.{" "}
+          <a
+            href="/safety"
+            className="text-primary/80 hover:text-primary underline underline-offset-2"
+          >
+            Read the safety report
+          </a>
+          .
+        </p>
+      </section>
 
-        {/* Padding for sticky CTA so it doesn't hide footer content */}
-        <div aria-hidden="true" className="h-20" />
-      </motion.div>
+      {/* Sticky bottom player */}
+      <AnimatePresence>
+        {currentPick && (
+          <StickyPlayer
+            pick={currentPick}
+            nextPick={nextPick}
+            isPlaying={isPlaying}
+            currentTime={currentTime}
+            duration={duration}
+            ended={endedSlug === currentPick.slug}
+            onTogglePlay={() => togglePlay(currentPick.slug)}
+            onSkip={skip}
+            onSeek={seek}
+            onSeekKey={seekKey}
+            onClose={closePlayer}
+            onPlayNext={() => nextPick && playSlug(nextPick.slug)}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Sticky bottom CTA — appears after scroll, takes visitor straight to story creation */}
-      {ageConfirmed && (
+      {/* Spacer so sticky player never overlaps last content */}
+      {currentPick && <div className="h-28" aria-hidden="true" />}
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------------- */
+/* Hero                                                                    */
+/* ----------------------------------------------------------------------- */
+
+function Hero({ onStart }: { onStart: () => void }) {
+  const [editorialOpen, setEditorialOpen] = useState(false);
+
+  return (
+    <section className="relative overflow-hidden">
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(circle at 30% 20%, rgba(201,162,39,0.10) 0%, transparent 55%), linear-gradient(180deg, #0a0806 0%, #0a0806 100%)",
+        }}
+      />
+      {/* Hero collage of three covers, blurred + masked into the dark */}
+      <div className="absolute inset-0 -z-10 pointer-events-none opacity-[0.32]">
+        <div className="absolute right-[-10%] top-[8%] w-[55%] aspect-square rounded-3xl overflow-hidden">
+          <img
+            src={coverUrl("07-bodyguard")}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            style={{ filter: "blur(2px) saturate(0.85)" }}
+          />
+        </div>
+        <div className="absolute left-[-5%] bottom-[-5%] w-[40%] aspect-square rounded-3xl overflow-hidden">
+          <img
+            src={coverUrl("05-cabin")}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            style={{ filter: "blur(3px) saturate(0.8)" }}
+          />
+        </div>
         <div
-          aria-hidden={!stickyVisible}
-          className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pt-3 pointer-events-none"
+          className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(10,9,8,0.96) 0%, rgba(10,9,8,0.85) 60%, transparent 100%)",
-            transform: stickyVisible ? "translateY(0)" : "translateY(110%)",
-            opacity: stickyVisible ? 1 : 0,
-            transition: "transform 0.35s ease, opacity 0.35s ease",
+              "linear-gradient(180deg, rgba(10,8,6,0.55) 0%, rgba(10,8,6,0.85) 60%, rgba(10,8,6,1) 100%)",
           }}
+        />
+      </div>
+
+      <div className="max-w-3xl mx-auto px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col items-start gap-7"
         >
-          <div className="max-w-md mx-auto pointer-events-auto">
-            <Link
-              href="/the-three-doors"
-              className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground font-bold text-sm py-4 rounded-2xl
-                         hover:bg-primary/90 active:scale-[0.98] transition-all
-                         shadow-[0_0_40px_-8px_rgba(201,162,39,0.5)]"
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/35 bg-primary/[0.07]">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[10px] font-bold text-white/85 uppercase tracking-[0.22em]">
+              Editor's Picks · Ten Stories · 18+
+            </span>
+          </div>
+
+          <h1 className="font-display text-[2rem] sm:text-5xl md:text-[3.4rem] font-bold leading-[1.05] text-foreground">
+            Ten openings.{" "}
+            <em className="text-primary not-italic font-bold">
+              Ten endings on a held breath.
+            </em>
+          </h1>
+
+          <p className="text-[15px] sm:text-base text-white/65 leading-relaxed max-w-xl">
+            Short, intimate stories from our writers — narrated end-to-end by
+            four voices. Each one stops where you'd want it to keep going.
+            Yours, when you create one, can go further.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
+            <button
+              onClick={onStart}
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm
+                         bg-primary text-primary-foreground transition-all
+                         hover:scale-[1.03] hover:brightness-110 active:scale-100
+                         shadow-[0_0_36px_-8px_rgba(201,162,39,0.55)]"
+              data-testid="hero-start-first"
             >
-              <Sparkles className="w-4 h-4" />
-              Create your story
-              <span className="ml-1">→</span>
-            </Link>
+              <Play className="w-4 h-4" fill="currentColor" />
+              Start with the first
+            </button>
+            <a
+              href="#stories"
+              className="text-[11px] text-primary/70 hover:text-primary transition-colors tracking-[0.18em] uppercase font-semibold"
+            >
+              Browse all ten ↓
+            </a>
+          </div>
+
+          {/* Editorial note — discreet, expandable */}
+          <div className="mt-4 max-w-xl w-full">
+            <button
+              onClick={() => setEditorialOpen((v) => !v)}
+              className="flex items-center gap-1.5 text-[11px] text-white/45 hover:text-white/70 transition-colors italic"
+              aria-expanded={editorialOpen}
+            >
+              {editorialOpen ? (
+                <ChevronUp className="w-3 h-3" />
+              ) : (
+                <ChevronDown className="w-3 h-3" />
+              )}
+              Editor's note — why these are softer by design
+            </button>
+            <AnimatePresence>
+              {editorialOpen && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="mt-3 text-[12px] text-white/55 leading-relaxed border-l border-primary/30 pl-4 italic overflow-hidden"
+                >
+                  Adult themes throughout. By design, these public samples fade
+                  before any explicit content — they're built as cliffhangers.
+                  Fully explicit, personalised stories live behind sign-up,
+                  age verification and a paid subscription, where they belong.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
+      <div id="stories" />
+    </section>
+  );
+}
+
+/* ----------------------------------------------------------------------- */
+/* StoryCard                                                               */
+/* ----------------------------------------------------------------------- */
+
+function StoryCard({
+  pick,
+  isPlaying,
+  isCurrent,
+  transcriptOpen,
+  onTogglePlay,
+  onToggleTranscript,
+  voiceFilter,
+}: {
+  pick: EditorsPick;
+  isPlaying: boolean;
+  isCurrent: boolean;
+  transcriptOpen: boolean;
+  onTogglePlay: () => void;
+  onToggleTranscript: () => void;
+  voiceFilter: EditorsPickVoice | null;
+}) {
+  const dimmed = voiceFilter !== null && pick.voice !== voiceFilter;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55 }}
+      animate={{ opacity: dimmed ? 0.32 : 1 }}
+      className={`mb-14 sm:mb-20 rounded-3xl overflow-hidden transition-all
+                  ${isCurrent ? "ring-1 ring-primary/45 shadow-[0_0_60px_-18px_rgba(201,162,39,0.55)]" : "ring-1 ring-white/[0.06]"}`}
+      style={{
+        background:
+          "linear-gradient(180deg, #16110a 0%, #110d08 60%, #0d0a07 100%)",
+      }}
+      data-testid={`pick-card-${pick.slug}`}
+    >
+      {/* Cover */}
+      <div className="relative aspect-[4/5] sm:aspect-[16/10] overflow-hidden">
+        <img
+          src={coverUrl(pick.slug)}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-full h-full object-cover"
+          style={{ filter: "saturate(0.95) brightness(0.92)" }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(13,10,7,0.95) 0%, rgba(13,10,7,0.45) 35%, rgba(13,10,7,0.05) 70%, transparent 100%)",
+          }}
+        />
+        {/* Now-playing dot */}
+        {isCurrent && (
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-sm border border-primary/35">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[9px] font-bold text-primary uppercase tracking-[0.18em]">
+              Now playing
+            </span>
+          </div>
+        )}
+        {/* Sequence label on cover */}
+        <div className="absolute bottom-4 left-5">
+          <p className="text-[10px] font-bold text-primary/85 uppercase tracking-[0.28em]">
+            {String(pick.number).padStart(2, "0")} ·{" "}
+            <span className="text-white/65">Narrated by {pick.voiceName}</span>{" "}
+            ·{" "}
+            <span className="text-white/55">
+              {Math.round(pick.runtimeSec / 60)} min
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="px-5 sm:px-7 pt-5 pb-6">
+        <h2 className="font-display italic text-[1.6rem] sm:text-3xl font-bold leading-[1.15] text-foreground mb-2">
+          {pick.title}
+        </h2>
+        <p className="text-[14px] sm:text-[15px] text-primary/85 leading-snug mb-5">
+          {pick.tagline}
+        </p>
+
+        {/* Tag chips */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {pick.tags.map((t) => (
+            <span
+              key={t}
+              className="px-2.5 py-1 rounded-full text-[10px] font-semibold text-white/60 uppercase tracking-[0.12em]
+                         border border-white/[0.07] bg-white/[0.025]"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        {/* Excerpt */}
+        <p className="font-display italic text-[14px] text-white/45 leading-relaxed mb-6 border-l border-primary/25 pl-4">
+          {pick.excerpt}
+        </p>
+
+        {/* Player row */}
+        <div className="flex items-center justify-between gap-4">
+          <button
+            onClick={onTogglePlay}
+            aria-label={
+              isPlaying
+                ? `Pause ${pick.title}`
+                : `Play ${pick.title}`
+            }
+            className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center
+                       bg-primary text-primary-foreground transition-all
+                       hover:scale-105 active:scale-95
+                       shadow-[0_0_28px_-6px_rgba(201,162,39,0.55)]"
+            data-testid={`pick-play-${pick.slug}`}
+          >
+            {isPlaying ? (
+              <Pause className="w-5 h-5" fill="currentColor" />
+            ) : (
+              <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
+            )}
+          </button>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-semibold text-primary/55 uppercase tracking-[0.2em] mb-1">
+              Ends on
+            </p>
+            <p className="text-[12.5px] sm:text-[13px] italic text-white/65 leading-snug truncate">
+              {pick.endsOn}
+            </p>
           </div>
         </div>
+
+        {/* Transcript reveal */}
+        <button
+          onClick={onToggleTranscript}
+          aria-expanded={transcriptOpen}
+          className="mt-5 flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/65 transition-colors uppercase tracking-[0.18em] font-semibold"
+        >
+          {transcriptOpen ? (
+            <ChevronUp className="w-3 h-3" />
+          ) : (
+            <ChevronDown className="w-3 h-3" />
+          )}
+          {transcriptOpen ? "Hide transcript" : "Read transcript"}
+        </button>
+        <AnimatePresence>
+          {transcriptOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 pt-4 border-t border-white/[0.06] text-[14px] text-white/70 leading-[1.7] whitespace-pre-line">
+                {pick.transcript}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.article>
+  );
+}
+
+/* ----------------------------------------------------------------------- */
+/* VoiceStrip                                                              */
+/* ----------------------------------------------------------------------- */
+
+function VoiceStrip({
+  activeVoice,
+  onPick,
+}: {
+  activeVoice: EditorsPickVoice | null;
+  onPick: (v: EditorsPickVoice) => void;
+}) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55 }}
+      className="my-12 sm:my-16 py-10 sm:py-12 px-5 sm:px-8 rounded-2xl border border-white/[0.06] bg-white/[0.015]"
+    >
+      <p className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.22em] text-center mb-2">
+        Four Voices
+      </p>
+      <h3 className="font-display italic text-2xl sm:text-[1.7rem] font-bold text-center text-foreground mb-7 leading-tight">
+        Each chosen for the room they live in.
+      </h3>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {VOICES_META.map((v) => {
+          const active = activeVoice === v.key;
+          return (
+            <button
+              key={v.key}
+              onClick={() => onPick(v.key)}
+              className={`text-left p-4 rounded-xl border transition-all
+                          ${
+                            active
+                              ? "border-primary/55 bg-primary/[0.07] shadow-[0_0_22px_-8px_rgba(201,162,39,0.5)]"
+                              : "border-white/[0.06] bg-white/[0.02] hover:border-white/15"
+                          }`}
+              aria-pressed={active}
+              data-testid={`voice-pill-${v.key}`}
+            >
+              <p
+                className={`font-display text-lg font-bold leading-none mb-1.5
+                            ${active ? "text-primary" : "text-foreground"}`}
+              >
+                {v.name}
+              </p>
+              <p className="text-[11.5px] text-white/55 leading-snug">
+                {v.oneLine}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+      {activeVoice && (
+        <p className="text-[11px] text-white/40 text-center mt-4">
+          Highlighting{" "}
+          <span className="text-primary/70 font-semibold">
+            {VOICES_META.find((v) => v.key === activeVoice)?.name}
+          </span>
+          's stories. Tap again to clear.
+        </p>
       )}
-    </>
+    </motion.section>
+  );
+}
+
+/* ----------------------------------------------------------------------- */
+/* FinalCTA                                                                */
+/* ----------------------------------------------------------------------- */
+
+function FinalCTA() {
+  return (
+    <section
+      className="relative overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(circle at 50% 30%, rgba(201,162,39,0.13) 0%, transparent 55%), #0a0806",
+      }}
+    >
+      <div className="max-w-2xl mx-auto px-6 py-24 sm:py-32 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.28em] mb-5">
+            What if the door didn't close?
+          </p>
+          <h2 className="font-display text-4xl sm:text-5xl font-bold leading-[1.05] text-foreground mb-6">
+            <em className="not-italic text-primary font-bold">Yours</em>{" "}
+            doesn't have to stop.
+          </h2>
+          <p className="text-[15px] sm:text-base text-white/65 leading-relaxed max-w-lg mx-auto mb-10">
+            Editor's picks fade by design. The story you create — around your
+            cast, your scene, your situation — can go as far as you want it to.
+          </p>
+          <Link href="/create">
+            <button
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm
+                         bg-primary text-primary-foreground transition-all
+                         hover:scale-[1.03] hover:brightness-110 active:scale-100
+                         shadow-[0_0_44px_-10px_rgba(201,162,39,0.65)]"
+              data-testid="final-cta-create"
+            >
+              <Sparkles className="w-4 h-4" />
+              Start your private story
+            </button>
+          </Link>
+          <p className="text-[11px] text-white/35 italic mt-7 max-w-md mx-auto leading-relaxed">
+            All explicit content is private to you. Behind sign-up, age
+            verification and a paid subscription.
+          </p>
+          <Link
+            href="/how-it-works"
+            className="inline-block mt-4 text-[11px] text-primary/65 hover:text-primary tracking-[0.18em] uppercase font-semibold"
+          >
+            How it works →
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------------------------------------------- */
+/* StickyPlayer                                                            */
+/* ----------------------------------------------------------------------- */
+
+function StickyPlayer({
+  pick,
+  nextPick,
+  isPlaying,
+  currentTime,
+  duration,
+  ended,
+  onTogglePlay,
+  onSkip,
+  onSeek,
+  onSeekKey,
+  onClose,
+  onPlayNext,
+}: {
+  pick: EditorsPick;
+  nextPick: EditorsPick | null;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  ended: boolean;
+  onTogglePlay: () => void;
+  onSkip: (delta: number) => void;
+  onSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onSeekKey: (e: KeyboardEvent<HTMLDivElement>) => void;
+  onClose: () => void;
+  onPlayNext: () => void;
+}) {
+  const pct = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <motion.div
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 80, opacity: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-primary/20 bg-background/95 backdrop-blur-xl"
+      style={{
+        boxShadow: "0 -10px 40px -8px rgba(0,0,0,0.55)",
+      }}
+      data-testid="sticky-player"
+    >
+      {/* Hairline progress bar — keyboard-accessible scrubber.
+          Arrow keys ±5s, PageUp/Down ±15s, Home/End jump to start/end. */}
+      <div
+        role="slider"
+        tabIndex={0}
+        aria-label={`Audio progress for ${pick.title}`}
+        aria-valuemin={0}
+        aria-valuemax={Math.max(1, Math.round(duration))}
+        aria-valuenow={Math.round(currentTime)}
+        aria-valuetext={`${fmtTime(currentTime)} of ${fmtTime(duration)}`}
+        onClick={onSeek}
+        onKeyDown={onSeekKey}
+        className="absolute -top-px left-0 right-0 h-1 cursor-pointer group focus:outline-none focus-visible:h-1.5 focus-visible:bg-white/[0.06] focus-visible:ring-1 focus-visible:ring-primary/45"
+      >
+        <div className="absolute inset-0 bg-white/[0.04]" />
+        <div
+          className="absolute inset-y-0 left-0 bg-primary transition-[width] duration-150"
+          style={{ width: `${pct}%` }}
+        />
+        <div
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+          style={{ left: `${pct}%` }}
+        />
+      </div>
+
+      <AnimatePresence mode="wait">
+        {ended ? (
+          <motion.div
+            key="ended"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-3xl mx-auto px-5 sm:px-6 py-4 flex items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              <img
+                src={coverUrl(pick.slug)}
+                alt=""
+                aria-hidden="true"
+                className="flex-shrink-0 w-11 h-11 rounded-lg object-cover"
+              />
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold text-primary uppercase tracking-[0.18em] mb-0.5">
+                  Want yours to keep going?
+                </p>
+                <p className="text-[12px] text-white/55 italic truncate">
+                  Ends on: {pick.endsOn}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {nextPick && (
+                <button
+                  onClick={onPlayNext}
+                  className="px-3.5 py-2 rounded-full text-[11px] font-semibold text-primary/85 hover:text-primary border border-primary/30 hover:border-primary/55 transition-all uppercase tracking-[0.12em]"
+                  data-testid="player-play-next"
+                >
+                  Next →
+                </button>
+              )}
+              <Link href="/create">
+                <button
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-bold bg-primary text-primary-foreground hover:brightness-110 transition-all uppercase tracking-[0.1em]"
+                  data-testid="player-create-cta"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Create
+                </button>
+              </Link>
+              <button
+                onClick={onClose}
+                aria-label="Close player"
+                className="p-2 rounded-full text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="playing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-3xl mx-auto px-5 sm:px-6 py-3 flex items-center gap-3 sm:gap-4"
+          >
+            <img
+              src={coverUrl(pick.slug)}
+              alt=""
+              aria-hidden="true"
+              className="flex-shrink-0 w-11 h-11 rounded-lg object-cover"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="font-display italic text-[14px] sm:text-[15px] font-semibold text-foreground truncate leading-tight">
+                {pick.title}
+              </p>
+              <p className="text-[10.5px] text-white/45 uppercase tracking-[0.16em] mt-0.5">
+                {pick.voiceName} ·{" "}
+                <span className="text-white/35">
+                  {fmtTime(currentTime)} / {fmtTime(duration)}
+                </span>
+              </p>
+            </div>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <button
+                onClick={() => onSkip(-15)}
+                aria-label="Back 15 seconds"
+                className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-white/55 hover:text-white hover:bg-white/5 transition-colors text-[10px] font-bold"
+              >
+                -15
+              </button>
+              <button
+                onClick={onTogglePlay}
+                aria-label={isPlaying ? "Pause" : "Play"}
+                className="w-11 h-11 rounded-full flex items-center justify-center bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all"
+                data-testid="player-toggle"
+              >
+                {isPlaying ? (
+                  <Pause className="w-4.5 h-4.5" fill="currentColor" />
+                ) : (
+                  <Play className="w-4.5 h-4.5 ml-0.5" fill="currentColor" />
+                )}
+              </button>
+              <button
+                onClick={() => onSkip(15)}
+                aria-label="Forward 15 seconds"
+                className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-white/55 hover:text-white hover:bg-white/5 transition-colors text-[10px] font-bold"
+              >
+                +15
+              </button>
+              <button
+                onClick={onClose}
+                aria-label="Close player"
+                className="ml-1 p-2 rounded-full text-white/35 hover:text-white/65 hover:bg-white/5 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

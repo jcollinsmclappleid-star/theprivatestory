@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-D2SChvVc.js";import{S as s,g as t}from"./configs-DKE75qAh.js";import"./index-BfwypGFX.js";const r=t("audio-stories-vs-podcasts");function d(){return o.jsx(s,{config:r,doorFilter:["dark"]})}export{d as default};

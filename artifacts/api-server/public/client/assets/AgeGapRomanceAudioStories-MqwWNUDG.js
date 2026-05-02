@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BhiF_jKA.js";import{S as a,g as e}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const t=e("age-gap-romance-audio-stories");function g(){return o.jsx(a,{config:t})}export{g as default};

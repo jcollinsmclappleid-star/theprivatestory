@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BhiF_jKA.js";import{S as t,g as r}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const s=r("best-audio-story-app-for-adults");function p(){return o.jsx(t,{config:s,doorFilter:["dark"]})}export{p as default};

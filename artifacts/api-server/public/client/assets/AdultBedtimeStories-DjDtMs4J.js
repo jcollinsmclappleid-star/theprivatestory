@@ -1,1 +1,0 @@
-import{j as t}from"./vendor-BhiF_jKA.js";import{S as o,g as e}from"./configs-BNS1rvNs.js";import"./index-BN_54Hf6.js";const r=e("adult-bedtime-stories");function m(){return t.jsx(o,{config:r,doorFilter:["quiet"],showSecondaryDoors:!0})}export{m as default};

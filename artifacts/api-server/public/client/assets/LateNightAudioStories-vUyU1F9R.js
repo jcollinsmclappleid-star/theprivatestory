@@ -1,0 +1,1 @@
+import{j as t}from"./vendor-D2SChvVc.js";import{S as o,g as i}from"./configs-DKE75qAh.js";import"./index-BfwypGFX.js";const r=i("late-night-audio-stories");function g(){return t.jsx(o,{config:r,doorFilter:["dark"]})}export{g as default};

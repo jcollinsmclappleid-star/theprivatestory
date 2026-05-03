@@ -1,13 +1,111 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, Fragment, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clock, Play, Pause, X } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
-import type { SEOPageConfig } from "@workspace/seo-data";
+import type { SEOPageConfig, ParagraphContent } from "@workspace/seo-data";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
 import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
 
 export type { SEOPageConfig };
+
+/**
+ * Brand-compliant body-image pool. Every asset listed here is non-human,
+ * non-figurative, dark editorial illustration in the amber/burgundy/gold
+ * brand palette. NO seo-hero-* images here — they contain figures and break
+ * the body-image criteria. Order is preserved so the deterministic rotation
+ * is stable.
+ */
+const BODY_IMAGE_POOL: string[] = [
+  "images/seo-body-candlelit-doorway.png",
+  "images/seo-body-four-poster-bed.png",
+  "images/seo-body-library-at-night.png",
+  "images/seo-body-silk-on-velvet.png",
+  "images/seo-body-rain-on-window.png",
+  "images/seo-body-fireplace-and-wine.png",
+  "images/door-romance.png",
+  "images/door-afterdark.png",
+  "images/door-drift.png",
+  "cover-abstract-fallback.png",
+];
+
+// Cheap deterministic hash so each page gets a stable rotation seed.
+function pageHash(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function pickBodyImages(config: SEOPageConfig, count: number): string[] {
+  const pool = config.bodyImages?.length ? config.bodyImages : BODY_IMAGE_POOL;
+  if (!pool.length) return [];
+  const start = pageHash(config.meta.title) % pool.length;
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) out.push(pool[(start + i) % pool.length]);
+  return out;
+}
+
+/**
+ * Parses inline `<a href="...">text</a>` substrings and replaces them with
+ * wouter <Link> elements. This is the safety net for the ~140 legacy strings
+ * in seo-data/configs.ts that still embed raw HTML — without this, those
+ * strings render as visible markup because React escapes them. NEW content
+ * should prefer the typed { text, links } paragraph form instead.
+ *
+ * Safe by construction: we only extract `href` (string) and inner text
+ * (string) and feed them to <Link>. No HTML is ever set via dangerouslySetInnerHTML.
+ */
+const INLINE_LINK_RE = /<a\s+href="([^"]+)">([^<]+)<\/a>/g;
+
+function parseInlineLinks(text: string): ReactNode {
+  if (!text.includes("<a ")) return text;
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  INLINE_LINK_RE.lastIndex = 0;
+  while ((match = INLINE_LINK_RE.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    parts.push(
+      <Link
+        key={`il-${match.index}`}
+        href={match[1]}
+        className="text-primary hover:text-primary/80 underline-offset-2 hover:underline transition-colors"
+      >
+        {match[2]}
+      </Link>
+    );
+    lastIndex = INLINE_LINK_RE.lastIndex;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return <>{parts.map((p, i) => <Fragment key={i}>{p}</Fragment>)}</>;
+}
+
+/** Render a paragraph that may be a plain string or a structured {text, links} object. */
+function renderParagraphContent(p: ParagraphContent): ReactNode {
+  if (typeof p === "string") return parseInlineLinks(p);
+  if (!p.links?.length) return parseInlineLinks(p.text);
+  // Structured form: split on each `match` substring (in order) and weave in <Link> elements.
+  let remaining = p.text;
+  const out: ReactNode[] = [];
+  for (let i = 0; i < p.links.length; i++) {
+    const { match, href } = p.links[i];
+    const idx = remaining.indexOf(match);
+    if (idx === -1) continue; // copy drift — fall back to plain text
+    if (idx > 0) out.push(remaining.slice(0, idx));
+    out.push(
+      <Link
+        key={`sl-${i}`}
+        href={href}
+        className="text-primary hover:text-primary/80 underline-offset-2 hover:underline transition-colors"
+      >
+        {match}
+      </Link>
+    );
+    remaining = remaining.slice(idx + match.length);
+  }
+  if (remaining) out.push(remaining);
+  return <>{out.map((n, i) => <Fragment key={i}>{n}</Fragment>)}</>;
+}
 
 type DoorId = "story" | "dark" | "quiet";
 
@@ -231,6 +329,10 @@ export default function SEOPage({
   // Door for the inline sample — first door in the filter, fallback to "story" (Romance).
   const sampleDoor: DoorId = doorFilter?.[0] ?? "story";
 
+  // Three deterministic body images for inline interleave (after sections,
+  // after scenarios, after fullPicture). Stable per page via title-hash seed.
+  const bodyImgs = useMemo(() => pickBodyImages(config, 3), [config]);
+
   // FAQPage JSON-LD — eligible for Google's expandable FAQ rich result.
   // Memoised so we don't rebuild the JSON string on every render.
   const faqJsonLd = useMemo(() => {
@@ -335,6 +437,19 @@ export default function SEOPage({
         </div>
       </div>
 
+      {/* Hoisted mini doors — surface the three doors high on the page so
+          skimmers see the choice without scrolling past the trust grid.
+          Suppressed on bedtime pages (showSecondaryDoors) which already have
+          their own filtered "Also in The Private Story" placement below. */}
+      {!showSecondaryDoors && (
+        <div className="flex flex-col items-center gap-3 py-6 px-4 border-b border-border/20">
+          <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
+            Choose your door
+          </p>
+          <MiniDoorCTA />
+        </div>
+      )}
+
       {/* Secondary doors — for bedtime pages: "Also in The Private Story" */}
       {showSecondaryDoors && doorFilter && (() => {
         const secondaryIds = (["story", "dark", "quiet"] as DoorId[]).filter(id => !doorFilter.includes(id));
@@ -427,7 +542,7 @@ export default function SEOPage({
               <div className="space-y-4">
                 {section.paragraphs.map((p, j) => (
                   <p key={j} className="text-muted-foreground text-lg leading-relaxed">
-                    {p}
+                    {renderParagraphContent(p)}
                   </p>
                 ))}
               </div>
@@ -436,7 +551,7 @@ export default function SEOPage({
                   {section.bullets.map((b, j) => (
                     <li key={j} className="flex items-start gap-3 text-muted-foreground">
                       <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
-                      <span className="leading-relaxed">{b}</span>
+                      <span className="leading-relaxed">{parseInlineLinks(b)}</span>
                     </li>
                   ))}
                 </ul>
@@ -444,6 +559,19 @@ export default function SEOPage({
             </section>
           ))}
         </div>
+
+        {/* Inline body image #1 — between sections and How It Works */}
+        {bodyImgs[0] && (
+          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+            <img
+              src={`${BASE_URL}/${bodyImgs[0]}`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="w-full h-auto block"
+            />
+          </figure>
+        )}
 
         {/* How it works */}
         <section className="mb-16">
@@ -458,7 +586,7 @@ export default function SEOPage({
                 </div>
                 <div className="pt-1.5">
                   <h3 className="font-semibold text-foreground mb-2">{step.heading}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{step.body}</p>
+                  <p className="text-muted-foreground leading-relaxed">{parseInlineLinks(step.body)}</p>
                 </div>
               </div>
             ))}
@@ -471,21 +599,46 @@ export default function SEOPage({
             {config.scenarios.h2 ?? "What This Can Sound Like"}
           </h2>
           {config.scenarios.intro && (
-            <p className="text-muted-foreground mb-8 leading-relaxed">{config.scenarios.intro}</p>
+            <p className="text-muted-foreground mb-8 leading-relaxed">{parseInlineLinks(config.scenarios.intro)}</p>
           )}
           <div className="space-y-4">
             {config.scenarios.items.map((s, i) => (
               <div key={i} className="rounded-2xl border border-border/40 bg-white/[0.02] p-6">
                 <h3 className="font-display text-lg font-semibold text-foreground mb-3">{s.heading}</h3>
-                <p className="text-muted-foreground leading-relaxed">{s.body}</p>
+                <p className="text-muted-foreground leading-relaxed">{parseInlineLinks(s.body)}</p>
               </div>
             ))}
           </div>
           {config.scenarios.interstitial && (
             <div className="mt-8">
-              <p className="text-muted-foreground italic">{config.scenarios.interstitial}</p>
+              <p className="text-muted-foreground italic">{parseInlineLinks(config.scenarios.interstitial)}</p>
             </div>
           )}
+        </section>
+
+        {/* Inline body image #2 — between scenarios and the mid-page CTA */}
+        {bodyImgs[1] && (
+          <figure className="mb-12 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+            <img
+              src={`${BASE_URL}/${bodyImgs[1]}`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="w-full h-auto block"
+            />
+          </figure>
+        )}
+
+        {/* Mid-page CTA — restrained re-engagement nudge between Scenarios
+            and Benefits. Uses the hero CTA copy/href for continuity. */}
+        <section className="mb-16 rounded-2xl border border-primary/30 bg-primary/[0.04] px-6 py-7 md:px-8 md:py-8 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">
+            Ready when you are
+          </p>
+          <p className="text-base md:text-lg text-foreground/90 mb-5 leading-snug max-w-md mx-auto">
+            A story made for you, in about a minute. Heard only by you.
+          </p>
+          <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
         </section>
 
         {/* Benefits */}
@@ -497,7 +650,7 @@ export default function SEOPage({
             {config.benefits.items.map((b, i) => (
               <div key={i} className="rounded-xl border border-border/30 bg-white/[0.01] p-5">
                 <h3 className="font-semibold text-foreground mb-2">{b.heading}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{b.body}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{parseInlineLinks(b.body)}</p>
               </div>
             ))}
           </div>
@@ -511,11 +664,24 @@ export default function SEOPage({
           <div className="space-y-4">
             {config.fullPicture.paragraphs.map((p, i) => (
               <p key={i} className="text-muted-foreground leading-relaxed">
-                {p}
+                {renderParagraphContent(p)}
               </p>
             ))}
           </div>
         </section>
+
+        {/* Inline body image #3 — between fullPicture and the final CTA */}
+        {bodyImgs[2] && (
+          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+            <img
+              src={`${BASE_URL}/${bodyImgs[2]}`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="w-full h-auto block"
+            />
+          </figure>
+        )}
 
         {/* Final CTA */}
         <section className="mb-16 rounded-2xl border border-border/40 bg-white/[0.02] p-8 md:p-10">
@@ -525,7 +691,7 @@ export default function SEOPage({
           <div className="space-y-4 mb-8">
             {config.finalCTA.paragraphs.map((p, i) => (
               <p key={i} className="text-muted-foreground leading-relaxed">
-                {p}
+                {parseInlineLinks(p)}
               </p>
             ))}
           </div>
@@ -631,7 +797,7 @@ export default function SEOPage({
                 </button>
                 {openFaq === i && (
                   <div className="pb-5 text-muted-foreground text-sm leading-relaxed -mt-1">
-                    {faq.a}
+                    {parseInlineLinks(faq.a)}
                   </div>
                 )}
               </div>

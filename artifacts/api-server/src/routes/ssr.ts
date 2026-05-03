@@ -1,6 +1,44 @@
 import { Router, type IRouter, type Request, type Response } from "express";
+import type { ParagraphContent } from "@workspace/seo-data";
 import { allPageConfigs } from "../seoPageData.js";
 import { ssrHtmlShell, escHtml } from "../ssrShared.js";
+
+/**
+ * Brand-compliant body-image pool for SEO pages — non-human, dark editorial
+ * illustration. Mirrors the React renderer's pool so bots see the same visual
+ * surface (image SEO + Discover/Image-pack eligibility).
+ */
+const SEO_BODY_IMAGE_POOL: string[] = [
+  "images/seo-body-candlelit-doorway.png",
+  "images/seo-body-four-poster-bed.png",
+  "images/seo-body-library-at-night.png",
+  "images/seo-body-silk-on-velvet.png",
+  "images/seo-body-rain-on-window.png",
+  "images/seo-body-fireplace-and-wine.png",
+  "images/door-romance.png",
+  "images/door-afterdark.png",
+  "images/door-drift.png",
+  "cover-abstract-fallback.png",
+];
+
+function ssrPageHash(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function pickSsrBodyImages(seed: string, count: number, override?: string[]): string[] {
+  const pool = override?.length ? override : SEO_BODY_IMAGE_POOL;
+  if (!pool.length) return [];
+  const start = ssrPageHash(seed) % pool.length;
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) out.push(pool[(start + i) % pool.length]);
+  return out;
+}
+
+function bodyImgHtml(src: string): string {
+  return `<figure class="seo-body-img"><img src="/${src}" alt="" aria-hidden="true" loading="lazy" /></figure>`;
+}
 
 const SITE_URL = "https://theprivatestory.com";
 const SITE_NAME = "The Private Story";
@@ -17,6 +55,27 @@ function esc(str: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+/**
+ * Render a paragraph (string OR structured {text, links}) as safe HTML.
+ *
+ * - Structured form: escapes `text`, then re-injects each link as a real
+ *   <a href> by replacing the matched substring inside the escaped text.
+ * - String form: trusted internal content from configs.ts which may contain
+ *   inline `<a href="X">Y</a>` HTML — passed through as-is so the links
+ *   render. (Audit confirms no raw `&` or `<` outside `<a>` tags in copy.)
+ */
+function renderParagraph(p: ParagraphContent): string {
+  if (typeof p === "string") return p;
+  let html = esc(p.text);
+  if (p.links?.length) {
+    for (const { match, href } of p.links) {
+      const escMatch = esc(match);
+      html = html.replace(escMatch, `<a href="${esc(href)}">${escMatch}</a>`);
+    }
+  }
+  return html;
 }
 
 function makeBreadcrumb(url: string, items: Array<{ name: string; item: string }>) {
@@ -1321,15 +1380,19 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     })),
   };
 
+  // Three deterministic body images — interleaved between long-copy sections
+  // (image SEO surface for Google Images / Discover, plus visual relief).
+  const bodyImgs = pickSsrBodyImages(page.meta.title, 3, page.bodyImages);
+
   const sectionsHtml = page.sections
     .map(
       (s) => `
     <section>
       <h2>${esc(s.h2)}</h2>
-      ${s.paragraphs.map((p) => `<p>${p}</p>`).join("\n      ")}
+      ${s.paragraphs.map((p) => `<p>${renderParagraph(p)}</p>`).join("\n      ")}
       ${
         s.bullets?.length
-          ? `<ul>${s.bullets.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`
+          ? `<ul>${s.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>`
           : ""
       }
     </section>`,
@@ -1341,19 +1404,29 @@ router.get("/:slug", (req: Request, res: Response, next) => {
       ? `
     <section>
       ${page.scenarios.h2 ? `<h2>${esc(page.scenarios.h2)}</h2>` : ""}
-      ${page.scenarios.intro ? `<p>${esc(page.scenarios.intro)}</p>` : ""}
+      ${page.scenarios.intro ? `<p>${page.scenarios.intro}</p>` : ""}
       ${page.scenarios.items
         .map(
           (it) => `
       <div class="scenario-item">
         <strong>${esc(it.heading)}</strong>
-        <p>${esc(it.body)}</p>
+        <p>${it.body}</p>
       </div>`,
         )
         .join("")}
-      ${page.scenarios.interstitial ? `<p>${esc(page.scenarios.interstitial)}</p>` : ""}
+      ${page.scenarios.interstitial ? `<p>${page.scenarios.interstitial}</p>` : ""}
     </section>`
       : "";
+
+  // Mid-page CTA — restrained re-engagement nudge between Scenarios and Benefits.
+  const midCtaHtml = page.finalCTA?.primary
+    ? `
+    <section class="mid-cta">
+      <p class="mid-cta-eyebrow">Ready when you are</p>
+      <p class="mid-cta-line">A story made for you, in about a minute. Heard only by you.</p>
+      <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">${esc(page.finalCTA.primary.label)}</a>
+    </section>`
+    : "";
 
   const benefitsHtml =
     page.benefits?.items?.length
@@ -1365,7 +1438,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
           (it) => `
       <div class="benefit-item">
         <strong>${esc(it.heading)}</strong>
-        <p>${esc(it.body)}</p>
+        <p>${it.body}</p>
       </div>`,
         )
         .join("")}
@@ -1377,7 +1450,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
       ? `
     <section>
       <h2>${esc(page.fullPicture.h2)}</h2>
-      ${page.fullPicture.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("\n      ")}
+      ${page.fullPicture.paragraphs.map((p) => `<p>${renderParagraph(p)}</p>`).join("\n      ")}
     </section>`
       : "";
 
@@ -1385,7 +1458,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     ? `
     <section>
       <h2>${esc(page.finalCTA.h2)}</h2>
-      ${page.finalCTA.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("\n      ")}
+      ${page.finalCTA.paragraphs.map((p) => `<p>${p}</p>`).join("\n      ")}
       <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">${esc(page.finalCTA.primary.label)}</a>
       ${
         page.finalCTA.links?.length
@@ -1404,7 +1477,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
           (f) => `
       <div class="faq-item">
         <p class="faq-q">${esc(f.q)}</p>
-        <p class="faq-a">${esc(f.a)}</p>
+        <p class="faq-a">${f.a}</p>
       </div>`,
         )
         .join("")}
@@ -1419,7 +1492,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
           (step, idx) => `
       <div class="hiw-step">
         <strong>${idx + 1}. ${esc(step.heading)}</strong>
-        <p>${esc(step.body)}</p>
+        <p>${step.body}</p>
       </div>`,
         )
         .join("")}
@@ -1481,10 +1554,14 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">Create your story</a>
     ${TRUST_BAR_HTML}
     ${sectionsHtml}
+    ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0]) : ""}
     ${comparisonTableHtml}
     ${scenariosHtml}
+    ${bodyImgs[1] ? bodyImgHtml(bodyImgs[1]) : ""}
+    ${midCtaHtml}
     ${benefitsHtml}
     ${fullPictureHtml}
+    ${bodyImgs[2] ? bodyImgHtml(bodyImgs[2]) : ""}
     ${howItWorksHtml}
     ${faqsHtml}
     ${finalCtaHtml}

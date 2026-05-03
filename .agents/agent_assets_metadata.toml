@@ -618,6 +618,42 @@ uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/cov
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "zqMcKoO2OS5z6PJbGYZ5Y"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-candlelit-doorway.png"
+type = "image"
+title = "seo body candlelit-doorway"
+
+[[generated]]
+id = "tG6Wt9TQTaKdyNIJbjH46"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-four-poster-bed.png"
+type = "image"
+title = "seo body four-poster-bed"
+
+[[generated]]
+id = "ORhcf-iB0BMHVpwTGQDdO"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-library-at-night.png"
+type = "image"
+title = "seo body library-at-night"
+
+[[generated]]
+id = "HwNUemfN4gJhmVR8eo_ae"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-silk-on-velvet.png"
+type = "image"
+title = "seo body silk-on-velvet"
+
+[[generated]]
+id = "oB9zzUkUbKdGEDqiqUE0g"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-rain-on-window.png"
+type = "image"
+title = "seo body rain-on-window"
+
+[[generated]]
+id = "sSFztYhNBepA2QAi7GtME"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-fireplace-and-wine.png"
+type = "image"
+title = "seo body fireplace-and-wine"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

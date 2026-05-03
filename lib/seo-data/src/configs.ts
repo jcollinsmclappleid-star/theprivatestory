@@ -3711,7 +3711,13 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
         "The phrase has been used as a marketing label for the better part of two decades. Audio erotica 'for women' on most platforms means content produced for a general adult audience that has been filtered, tagged, or curated to include material assumed to skew toward female preference. The underlying content was produced for the broadest possible market. The 'for women' designation is a layer on top of it — not the design principle beneath it.",
         "What audio erotica actually built for women means is categorically different: content that begins from female desire rather than approximating it. The distinction matters because what women report wanting from erotic content is specific in ways the broadest-market model consistently fails to capture. Not softer or less explicit — more emotionally calibrated. Not less intense — more specifically intense. The character quality, the register of the attention, the texture of the dynamic, the quality of the wanting — these are the variables that determine whether audio erotica lands or misses for female listeners.",
         "This is not a recent discovery. Erotic audio has had a female audience from its earliest forms — from the intimacy of voice acting in radio drama to the widespread use of audio cassette erotica in the 1980s, to the first wave of podcast-format erotic fiction. Women have always used audio for erotic imagination; the industry was slow to produce content that reflected this. The assumption that female desire was niche, modest, or categorically different from male desire in its intensity delayed the development of a category that was always latently there.",
-        "At The Private Story, audio erotica for women starts from what the research and the listening behaviour both show: female desire is specific, contextual, and emotionally grounded. The creation process is built to capture the specific quality of what you want to feel — not as a filter over pre-existing content, but as the brief for content that does not exist until you describe it. See how <a href=\"/personalised-audio-stories\">personalised audio stories</a> work, or explore <a href=\"/how-it-works\">the full creation flow</a>.",
+        {
+          text: "At The Private Story, audio erotica for women starts from what the research and the listening behaviour both show: female desire is specific, contextual, and emotionally grounded. The creation process is built to capture the specific quality of what you want to feel — not as a filter over pre-existing content, but as the brief for content that does not exist until you describe it. See how personalised audio stories work, or explore the full creation flow.",
+          links: [
+            { match: "personalised audio stories", href: "/personalised-audio-stories" },
+            { match: "the full creation flow", href: "/how-it-works" },
+          ],
+        },
       ],
     },
     {
@@ -3721,7 +3727,13 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
         "This matters specifically for female arousal patterns. Research into how women process emotional content consistently finds higher sensitivity to vocal emotional cues — women are measurably more accurate at decoding emotion from voice alone, more responsive to prosodic signals of care, attention, and desire, more affected by the specific quality of how something is said rather than just what was said. The same words spoken with different prosodic qualities produce different affective responses. In erotic content, this is not a peripheral feature. It is a primary mechanism through which the content works.",
         "The headphone effect deepens this. Listening on headphones is a phenomenologically distinctive experience: the voice is not projected into the room but located inside your head, inside your experience. The sound is inside you rather than external to you. This creates a quality of interiority that no screen-based medium can replicate — the voice is something you are inhabiting, not observing. For erotic content specifically, this interiority matters: the experience is not observable, the content is not external, and what is happening is genuinely private in a way that watching a screen never is.",
         "The imagination-activation advantage compounds both. Audio describes rather than shows. Your imagination does the work of building what the voice describes — which means the scene that plays for you is built by the combination of the narration and your own imaginative version of the character, the room, the moment. No fixed visual medium can produce this specificity because it provides the scene rather than the description of it. The version your imagination makes is yours in a way that a recorded image cannot be.",
-        "Add personalisation — a story shaped specifically around the emotional register, dynamic, and atmosphere you chose — and these effects converge. The voice has the emotional specificity of something made for you. The headphone environment makes the experience genuinely interior. Your imagination builds from a description calibrated to your preferences. This convergence is why audio erotica for women, when built around female desire and delivered through this combination, produces experiences that no other format approaches. Explore the story-craft angle on <a href=\"/erotic-audio-stories-for-women\">erotic audio stories for women</a>, or read about <a href=\"/intimate-audio-stories\">intimate audio stories</a> across all intensity registers.",
+        {
+          text: "Add personalisation — a story shaped specifically around the emotional register, dynamic, and atmosphere you chose — and these effects converge. The voice has the emotional specificity of something made for you. The headphone environment makes the experience genuinely interior. Your imagination builds from a description calibrated to your preferences. This convergence is why audio erotica for women, when built around female desire and delivered through this combination, produces experiences that no other format approaches. Explore the story-craft angle on erotic audio stories for women, or read about intimate audio stories across all intensity registers.",
+          links: [
+            { match: "erotic audio stories for women", href: "/erotic-audio-stories-for-women" },
+            { match: "intimate audio stories", href: "/intimate-audio-stories" },
+          ],
+        },
       ],
     },
     {
@@ -3731,7 +3743,10 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
         "What women consistently report is not less intensity — it is more specificity. The same physical scenario produces very different responses depending on the emotional context, the quality of the characters, the register of the power dynamic, and the framing of what is happening. Context-dependency is the consistent finding, not content-modesty.",
         "Nancy Friday spent two decades collecting erotic fantasy submissions from women, published first in My Secret Garden (1973) and Women on Top (1991). The material she received was strikingly at odds with the cultural assumption about female fantasy: it was varied, explicit, dark, and complex — and consistently narrative in structure, with characters who had qualities, dynamics with history, and emotional logic that shaped what was erotic about each scenario. The findings were controversial precisely because they contradicted the assumption that female desire was fundamentally tamer or simpler than male desire.",
         "Contemporary sexuality research has confirmed the pattern. Work by Meredith Chivers on physiological arousal and by Emily Nagoski on the contextual nature of female desire both point in the same direction: female arousal is context-dependent, not content-constrained. The same scenario can be powerfully erotic or entirely unappealing depending on variables that have nothing to do with the scenario's explicitness — variables like character quality, power dynamic framing, and emotional setup.",
-        "For audio erotica, this means the market's answer to female demand — more romance, softer content, slower pacing — was answering the wrong question. The actual need is specificity: content calibrated to the exact emotional register, character quality, and dynamic texture the listener arrived with. This is the premise The Private Story is built on — not restraint, but specificity. Not a better guess at what women want, but a story that begins from what you, right now, described wanting. Read more on <a href=\"/personalised-erotica\">personalised erotica</a> and how this principle shapes the creation model.",
+        {
+          text: "For audio erotica, this means the market's answer to female demand — more romance, softer content, slower pacing — was answering the wrong question. The actual need is specificity: content calibrated to the exact emotional register, character quality, and dynamic texture the listener arrived with. This is the premise The Private Story is built on — not restraint, but specificity. Not a better guess at what women want, but a story that begins from what you, right now, described wanting. Read more on personalised erotica and how this principle shapes the creation model.",
+          links: [{ match: "personalised erotica", href: "/personalised-erotica" }],
+        },
       ],
     },
     {
@@ -3856,7 +3871,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
     },
     {
       q: "What creation choices most shape how the story feels?",
-      a: "The dynamic and emotional register choices are the most influential — they determine the character of the wanting, the texture of the attention, and the register in which the story resolves. Pacing and intensity are secondary variables that calibrate how quickly the story moves and how explicit it becomes. Setting shapes atmosphere rather than the emotional core. If you want to understand how the story-specific creation choices work — character, narrative arc, how your brief shapes the fiction — the page on <a href=\"/erotic-audio-stories-for-women\">erotic audio stories for women</a> covers the craft and narrative angle in full.",
+      a: "The dynamic and emotional register choices are the most influential — they determine the character of the wanting, the texture of the attention, and the register in which the story resolves. Pacing and intensity are secondary variables that calibrate how quickly the story moves and how explicit it becomes. Setting shapes atmosphere rather than the emotional core. If you want to understand how the story-specific creation choices work — character, narrative arc, how your brief shapes the fiction — the page on erotic audio stories for women covers the craft and narrative angle in full.",
     },
   ],
 };
@@ -4043,7 +4058,10 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "Adult bedtime stories are not children's bedtime stories with the language adjusted. They are stories written for the specific experience of being a grown adult at the end of a complex day — with a mind that has been active for sixteen hours, that carries the emotional residue of whatever happened today, and that needs somewhere to go that is not still solving problems or processing obligations.",
         "The things that make a bedtime story work for an adult are different from what works for a child. A child needs narrative and completion. An adult at bedtime needs something that meets them where they are — a register that acknowledges the emotional texture of adult experience, that gives the mind somewhere to settle rather than something to follow, that doesn't require the active engagement of tracking a complex plot.",
-        "Adult bedtime stories at The Private Story are created around this understanding. The mood you specify shapes not just the content but the pacing, the emotional register, and the quality of the narrative attention. Whether you want something quietly intimate, gently escapist, or softly romantic as you settle into sleep, the story is created around what you need tonight rather than a generic night-time fiction template. For context on how personalisation works across all types of story, see <a href=\"/personalised-audio-stories\">personalised audio stories</a>.",
+        {
+          text: "Adult bedtime stories at The Private Story are created around this understanding. The mood you specify shapes not just the content but the pacing, the emotional register, and the quality of the narrative attention. Whether you want something quietly intimate, gently escapist, or softly romantic as you settle into sleep, the story is created around what you need tonight rather than a generic night-time fiction template. For context on how personalisation works across all types of story, see personalised audio stories.",
+          links: [{ match: "personalised audio stories", href: "/personalised-audio-stories" }],
+        },
       ],
     },
     {
@@ -4051,14 +4069,20 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
       paragraphs: [
         "The challenge with the pre-sleep window is cognitive. Your mind is tired but not quiet — it tends to replay the day, anticipate tomorrow, and resist the descent into sleep. The conventional advice (avoid screens, no stimulating content) addresses part of this, but leaves the question of what to do instead unanswered. The mind needs something to engage with, just not something that requires engagement.",
         "Personalised adult bedtime stories work for this window because they are toned for it. A story shaped around a calming or intimate emotional register gives the mind somewhere to go that is interesting without being demanding. The narrative provides gentle forward motion — something to follow loosely — without the cognitive load of tracking an active plot or an argument that requires resolution.",
-        "The personalisation matters because the quality of the story's register is what makes this work. A bedtime story that is slightly too exciting — that has the kind of tension that keeps you present — is as counterproductive as anything else. The creation flow lets you specify not just the content type but the emotional quality: how calming, how intimate, how gently resolved you want your story to be tonight. If you want something more intimate rather than calming, <a href=\"/intimate-audio-stories\">intimate audio stories</a> explore that register more fully.",
+        {
+          text: "The personalisation matters because the quality of the story's register is what makes this work. A bedtime story that is slightly too exciting — that has the kind of tension that keeps you present — is as counterproductive as anything else. The creation flow lets you specify not just the content type but the emotional quality: how calming, how intimate, how gently resolved you want your story to be tonight. If you want something more intimate rather than calming, intimate audio stories explore that register more fully.",
+          links: [{ match: "intimate audio stories", href: "/intimate-audio-stories" }],
+        },
       ],
     },
     {
       h2: "Privacy at Bedtime",
       paragraphs: [
         "The pre-sleep listening window is one of the most private parts of a person's day. The content you listen to to fall asleep is not something most people want on a social platform, logged against a public profile, or visible in any way outside their own device.",
-        "The Private Story's architecture reflects this. There is no social layer, no public listening history, no recommendation engine visible to others. Your adult bedtime stories are saved to your private account and exist nowhere else. The experience of settling into sleep with a story that was made for you — in a space that is genuinely private — is different from doing the same on a platform with any public-facing features. This is what <a href=\"/private-audio-stories\">private audio stories</a> means in practice.",
+        {
+          text: "The Private Story's architecture reflects this. There is no social layer, no public listening history, no recommendation engine visible to others. Your adult bedtime stories are saved to your private account and exist nowhere else. The experience of settling into sleep with a story that was made for you — in a space that is genuinely private — is different from doing the same on a platform with any public-facing features. This is what private audio stories means in practice.",
+          links: [{ match: "private audio stories", href: "/private-audio-stories" }],
+        },
       ],
     },
   ],

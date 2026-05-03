@@ -71,7 +71,7 @@ const CLUSTERS = [
     ],
   },
   {
-    heading: "After Dark — for adult listeners (18+)",
+    heading: "After Dark — explicit themes",
     description: "The erotica cluster. Literary, narrated, generated around your specific brief. Private to you alone.",
     pages: [
       { label: "Erotica for women", href: "/audio-erotica-for-women", tagline: "Audio erotica written with you at the centre" },

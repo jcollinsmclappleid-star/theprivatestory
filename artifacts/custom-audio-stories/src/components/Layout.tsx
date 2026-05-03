@@ -443,7 +443,7 @@ function Footer() {
             { label: "GoneWildAudio alternative", href: "/gonewildaudio-alternative" },
           ]} />
 
-          <FooterColumn heading="After Dark · 18+" links={[
+          <FooterColumn heading="After Dark" links={[
             { label: "After Dark — overview", href: "/after-dark" },
             { label: "Erotica for women", href: "/audio-erotica-for-women" },
             { label: "Erotica for couples", href: "/audio-erotica-for-couples" },

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CuRsFmYU.js";import{S as r,g as t}from"./configs-DIX0r5MS.js";import"./index-CFYfCAmM.js";import"./data-editors-picks-DoYWeP5W.js";const e=t("personalised-erotica");function m(){return o.jsx(r,{config:e,doorFilter:["dark"]})}export{m as default};

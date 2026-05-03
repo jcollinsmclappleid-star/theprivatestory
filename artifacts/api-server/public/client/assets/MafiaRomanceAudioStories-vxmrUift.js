@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-DfQurP19.js";import{S as a,g as i}from"./configs-D2NvndwX.js";import"./index-BYfEgi0D.js";import"./data-editors-picks-DoYWeP5W.js";const t=i("mafia-romance-audio-stories");function n(){return o.jsx(a,{config:t})}export{n as default};

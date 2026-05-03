@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CuRsFmYU.js";import{S as s,g as t}from"./configs-DIX0r5MS.js";import"./index-CFYfCAmM.js";import"./data-editors-picks-DoYWeP5W.js";const r=t("audio-stories-vs-podcasts");function m(){return o.jsx(s,{config:r,doorFilter:["dark"]})}export{m as default};

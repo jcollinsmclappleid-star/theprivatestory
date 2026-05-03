@@ -1,9 +1,9 @@
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock,
-  ChevronLeft, Check, Loader2, Clock,
+  Check, Loader2, Clock,
   Play, Pause,
 } from "lucide-react";
 import { Link } from "wouter";
@@ -93,337 +93,34 @@ function useQuickCreate(isAuthenticated: boolean) {
 }
 
 // ---------------------------------------------------------------------------
-// CastingRoom — rich world-building showcase
+// CastingPreview — single "Anatomy of Your Story" composition
+//   Communicates the depth of personalisation in one focused block instead
+//   of a 9-card horizontal rail. Left column carries the editorial frame and
+//   the conversion CTA; right column shows every axis of personalisation as
+//   one rendered story spec, with "1 of N" markers signalling the breadth.
 // ---------------------------------------------------------------------------
 
-const STEP_CARDS = [
-  {
-    step: "01",
-    category: "The Pairing",
-    label: "Who's in your story",
-    sub: "Five pairings. You choose the dynamic — and we write to it.",
-    accent: "#e879a0",
-    gradient: "from-[#1a0810] via-[#250f1a] to-[#100508]",
-    options: ["Her & Him", "Her & Her", "Him & Him", "Her & Them", "Him & Them"],
-    selected: "Her & Him",
-    example: null,
-    isSetting: false,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: false,
-  },
-  {
-    step: "02",
-    category: "The Chemistry",
-    label: "The energy between you",
-    sub: "Nine chemistries. The tension, the power, the pull — choose how it feels.",
-    accent: "#c9a227",
-    gradient: "from-[#1a0d00] via-[#251500] to-[#100800]",
-    options: ["Push & Pull", "Slow Surrender", "Charged Dynamic", "Forbidden Pull", "Pure Devotion", "Rivals", "Inevitable", "First & Last", "Equal Tension"],
-    selected: "Forbidden Pull",
-    example: "They shouldn't. They've been trying not to. They can't stop.",
-    isSetting: false,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: false,
-  },
-  {
-    step: "03",
-    category: "The Archetype",
-    label: "Cast him exactly as you want",
-    sub: "14 archetypes. Name him, describe him, make him entirely yours.",
-    accent: "#6b8cce",
-    gradient: "from-[#040a1a] via-[#081228] to-[#020610]",
-    options: ["The Executive", "The Stranger", "The Artist", "The Risk", "The Professor", "The Wanderer", "The Detective", "The Old Friend"],
-    selected: "The Executive",
-    example: "Measured control. Understated power. He never raises his voice — and never needs to.",
-    isSetting: false,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: false,
-  },
-  {
-    step: "04",
-    category: "The Setting",
-    label: "Set it anywhere in the world",
-    sub: "50+ countries, 12 historical eras, or an After Dark world entirely your own.",
-    accent: "#34d399",
-    gradient: "from-[#001008] via-[#001a12] to-[#000a06]",
-    options: null,
-    selected: "Victorian London",
-    example: "1880s — fog, corsets, and everything that cannot be said aloud. Only felt.",
-    isSetting: true,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: false,
-    settingCategories: {
-      contemporary: ["Luxury Hotel", "Private Yacht", "Rooftop Bar", "Mountain Retreat", "European Villa", "Private Estate"],
-      historical: ["Victorian London", "Roaring Twenties", "Belle Époque Paris", "Regency England", "Feudal Japan", "Wartime 1940s"],
-      afterDark: ["Private Club", "Rooftop, 3am", "Private Terrace", "The Glass House", "VIP Suite", "Penthouse Pool"],
-    },
-  },
-  {
-    step: "05",
-    category: "The Intensity",
-    label: "You set the temperature",
-    sub: "From tender and romantic to deeply intimate and unrestrained. You set exactly how far it goes.",
-    accent: "#f97316",
-    gradient: "from-[#1a0800] via-[#250f00] to-[#100500]",
-    options: ["Tender", "Warm", "Elevated", "Deep"],
-    optionSubs: ["Soft, emotional, slow burn", "More charged, desire building", "Richer, more immersive", "At its most intense"],
-    selected: "Warm",
-    example: null,
-    isSetting: false,
-    isFinal: false,
-    isIntensity: true,
-    isSituation: false,
-  },
-  {
-    step: "06",
-    category: "The Mood",
-    label: "The emotional tone",
-    sub: "Choose the emotional tone you want the story to carry.",
-    accent: "#a78bfa",
-    gradient: "from-[#0a0018] via-[#100025] to-[#060010]",
-    options: ["Slow Burn", "Magnetic", "Quiet Intensity", "Late Night", "Lingering", "Charged", "Unspoken", "Emotional Tension"],
-    selected: "Slow Burn",
-    example: null,
-    isSetting: false,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: false,
-  },
-  {
-    step: "07",
-    category: "The Situation",
-    label: "The story behind the story",
-    sub: "200+ starting points across 10 categories — or one chosen for you. The context that gives every story its own energy.",
-    accent: "#e11d48",
-    gradient: "from-[#1a0008] via-[#250010] to-[#100006]",
-    options: null,
-    selected: null,
-    example: null,
-    isSetting: false,
-    isFinal: false,
-    isIntensity: false,
-    isSituation: true,
-  },
-  {
-    step: "08",
-    category: "Your Story",
-    label: "Written. Narrated. Yours alone.",
-    sub: "Your story written, a voice selected, cover art created — private from the very first word.",
-    accent: "#c9a227",
-    gradient: "from-[#100c00] via-[#1a1500] to-[#0a0800]",
-    options: null,
-    selected: null,
-    example: null,
-    isSetting: false,
-    isFinal: true,
-    isIntensity: false,
-    isSituation: false,
-  },
-] as const;
-
-type StepCard = typeof STEP_CARDS[number];
-
-function WorldIntroCard() {
-  return (
-    <div className="flex-shrink-0 w-80 snap-start">
-      <div
-        className="relative overflow-hidden rounded-2xl border flex flex-col h-full"
-        style={{
-          background: "linear-gradient(160deg, #04100a 0%, #060a14 55%, #0a0614 100%)",
-          borderColor: "#34d39928",
-          boxShadow: "inset 0 0 80px #34d3990a, 0 16px 40px -20px #34d39930, 0 4px 16px rgba(0,0,0,0.6)",
-        }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{ background: "radial-gradient(ellipse at 30% 20%, #34d39920 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, #6b8cce14 0%, transparent 50%)" }}
-        />
-
-        <div className="relative z-10 p-7 flex flex-col h-full">
-          <div className="flex items-baseline justify-between mb-6">
-            <span className="font-display text-[10px] tracking-[0.4em] uppercase text-[#34d399]/85">
-              Your World
-            </span>
-            <span className="font-display text-2xl italic text-[#34d399]/45">00</span>
-          </div>
-
-          <p className="font-display text-xl md:text-[1.4rem] leading-tight text-white/95 mb-3">
-            Place your story anywhere on earth.
-          </p>
-          <p className="text-sm text-white/70 leading-relaxed mb-auto">
-            Fifty countries. Twelve historical eras. Or a private world entirely your own.
-          </p>
-
-          <div className="mt-6 pt-5 border-t border-[#34d399]/15">
-            <p className="text-[10px] tracking-[0.3em] uppercase mb-2 text-[#34d399]/70">
-              The scene you chose
-            </p>
-            <p className="font-display italic text-base text-white/85 leading-relaxed">
-              "The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EditorialStepCard({ s }: { s: StepCard }) {
-  const teaser =
-    s.example ??
-    (s.isSituation
-      ? "Nothing had been said yet, but the energy had already shifted."
-      : null);
-
-  return (
-    <div
-      className="relative overflow-hidden rounded-2xl border flex flex-col h-full"
-      style={{
-        borderColor: `${s.accent}28`,
-        boxShadow: `inset 0 0 80px ${s.accent}0a, 0 16px 40px -20px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)`,
-      }}
-    >
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div
-        className="absolute inset-0"
-        style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}1f 0%, transparent 65%)` }}
-      />
-
-      <div className="relative z-10 p-7 flex flex-col h-full">
-        <div className="flex items-baseline justify-between mb-6">
-          <span
-            className="font-display text-[10px] tracking-[0.4em] uppercase"
-            style={{ color: `${s.accent}b0` }}
-          >
-            {s.category}
-          </span>
-          <span
-            className="font-display text-2xl italic"
-            style={{ color: `${s.accent}55` }}
-          >
-            {s.step}
-          </span>
-        </div>
-
-        <p className="font-display text-xl md:text-[1.4rem] leading-tight text-white/95 mb-3">
-          {s.label}
-        </p>
-        <p className="text-sm text-white/70 leading-relaxed mb-auto">{s.sub}</p>
-
-        {teaser ? (
-          <div
-            className="mt-6 pt-5 border-t"
-            style={{ borderColor: `${s.accent}18` }}
-          >
-            <p
-              className="font-display italic text-base leading-relaxed"
-              style={{ color: `${s.accent}d8` }}
-            >
-              "{teaser}"
-            </p>
-          </div>
-        ) : s.selected ? (
-          <div
-            className="mt-6 pt-5 border-t"
-            style={{ borderColor: `${s.accent}18` }}
-          >
-            <p
-              className="text-[10px] tracking-[0.3em] uppercase mb-1"
-              style={{ color: `${s.accent}75` }}
-            >
-              For example
-            </p>
-            <p
-              className="font-display text-base italic"
-              style={{ color: `${s.accent}d8` }}
-            >
-              {s.selected}
-            </p>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function FinalOutputCard({ s }: { s: StepCard }) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl border flex flex-col" style={{ borderColor: "#c9a22740", boxShadow: "inset 0 0 50px #c9a2270e, 0 0 28px #c9a22732, 0 4px 16px rgba(0,0,0,0.6)" }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/20" />
-      <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 70% 25%, #c9a22728 0%, transparent 60%)" }} />
-
-      <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span
-            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
-            style={{ color: "#c9a227", borderColor: "#c9a22730", background: "#c9a2270d" }}
-          >
-            {s.category}
-          </span>
-          <span className="text-[9px] text-white/80 tracking-widest">✦ Your result</span>
-        </div>
-        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
-      </div>
-
-      {/* Mock story output card */}
-      <div className="relative z-10 mx-4 mb-3 rounded-2xl overflow-hidden border border-white/10">
-        <div className="h-28 relative" style={{ background: "linear-gradient(135deg, #1a0810 0%, #0a0514 50%, #060a18 100%)" }}>
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 40% 30%, #c9a22720 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, #6b8cce18 0%, transparent 50%)" }} />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/80 to-transparent" />
-          <div className="absolute bottom-3 left-3">
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold border border-[#e879a0]/40 bg-[#e879a0]/10 text-[#e879a0]">Forbidden</span>
-          </div>
-          <div className="absolute top-3 right-3">
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-medium border border-white/10 bg-white/5 text-white/80">Victorian London</span>
-          </div>
-        </div>
-        <div className="bg-[#0c0a08] px-3 py-2.5">
-          <p className="text-sm font-bold text-white/90 mb-0.5">The Fog Between Us</p>
-          <p className="text-[10px] text-white/80 italic leading-relaxed">"He shouldn't be in her study. She should have locked the door."</p>
-        </div>
-      </div>
-
-      <div className="relative z-10 mx-5 mb-5 space-y-1">
-        {[
-          "Narrated — ready to listen immediately.",
-          "Original cover art created for this story.",
-          "Saved privately. Visible only to you.",
-          "No record shared with anyone. Ever.",
-        ].map((item) => (
-          <p key={item} className="font-display italic text-xs text-white/75 leading-relaxed">
-            {item}
-          </p>
-        ))}
-      </div>
-    </div>
-  );
-}
+const ANATOMY_ROWS: ReadonlyArray<{
+  axis: string;
+  value: string;
+  scale: string;
+  accent: string;
+}> = [
+  { axis: "Pairing",   value: "Her & Him",            scale: "1 of 5",                          accent: "#e879a0" },
+  { axis: "Chemistry", value: "Forbidden Pull",       scale: "1 of 9",                          accent: "#c9a227" },
+  { axis: "Archetype", value: "The Executive",        scale: "1 of 14",                         accent: "#6b8cce" },
+  { axis: "Setting",   value: "Victorian London",     scale: "50+ countries · 12 eras",         accent: "#34d399" },
+  { axis: "Intensity", value: "Warm",                 scale: "1 of 4",                          accent: "#f97316" },
+  { axis: "Mood",      value: "Slow Burn",            scale: "1 of 8",                          accent: "#a78bfa" },
+  { axis: "Situation", value: "Unexpected Reunion",   scale: "1 of 200+",                       accent: "#e11d48" },
+  { axis: "Voice",     value: "Clara",                scale: "1 of 4 narrators",                accent: "#c9a227" },
+];
 
 function CastingPreview() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 8);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 8);
-  };
-
-  const scrollBy = (dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 340, behavior: "smooth" });
-  };
-
   return (
     <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <div className="mb-8 flex items-end justify-between gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
+        {/* ---------------- Left: editorial frame + CTA ---------------- */}
         <div>
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
             The Creation Room
@@ -431,93 +128,113 @@ function CastingPreview() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
             The version of them<br className="hidden md:block" /> that's been in your head.
           </h2>
-          <p className="text-muted-foreground mt-3 text-base max-w-xl leading-relaxed">
-            Choose who they are, how they make you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
+          <p className="text-muted-foreground mt-4 text-base max-w-xl leading-relaxed">
+            Eight choices. One story written end-to-end for you. Set the cast, the chemistry, the world, and how far it goes — before a single word is written.
           </p>
-          <p className="font-display italic text-base text-muted-foreground/75 mt-4 max-w-xl leading-relaxed">
-            Fifty countries. Twelve eras. Fourteen archetypes. Nine chemistries. Two hundred situations — every combination written for you alone.
+          <p className="font-display italic text-base text-muted-foreground/80 mt-4 max-w-xl leading-relaxed">
+            Five pairings. Nine chemistries. Fourteen archetypes. Fifty countries across twelve eras. Two hundred starting points. Four intensities. Four narrators.
           </p>
-          <p className="text-[11px] text-muted-foreground/65 mt-3 tracking-wide">
+          <p className="text-sm text-primary/85 mt-3 max-w-xl leading-relaxed">
+            <span className="font-semibold text-primary">2.6 million+ unique combinations</span> — only one written for you.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Link
+              href="/the-three-doors"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-7 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
+            >
+              Create my story
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              See how every choice works
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <p className="text-[11px] text-muted-foreground/65 mt-6 tracking-wide">
             Your name not listed?{" "}
             <Link href="/me" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
               Submit it to the Name Club →
             </Link>
           </p>
         </div>
-        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-          <button
-            onClick={() => scrollBy(-1)}
-            disabled={!canScrollLeft}
-            className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => scrollBy(1)}
-            disabled={!canScrollRight}
-            className="w-9 h-9 rounded-full border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border/80 transition-all disabled:opacity-20"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
 
-      <div
-        ref={scrollRef}
-        onScroll={updateScroll}
-        className="flex gap-4 overflow-x-auto py-4 scrollbar-hide snap-x snap-mandatory"
-      >
-        {/* World intro card — shown first */}
+        {/* ---------------- Right: Anatomy of Your Story exhibit ---------------- */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0, duration: 0.5 }}
-          className="flex-shrink-0 w-80 snap-start"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="relative"
         >
-          <WorldIntroCard />
-        </motion.div>
-
-        {STEP_CARDS.map((s, i) => (
-          <motion.div
-            key={s.step}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: (i + 1) * 0.06, duration: 0.5 }}
-            className="flex-shrink-0 w-80 snap-start"
+          <div
+            className="relative overflow-hidden rounded-2xl border"
+            style={{
+              background: "linear-gradient(160deg, #0c0a08 0%, #0a0814 55%, #100614 100%)",
+              borderColor: "#c9a22730",
+              boxShadow: "inset 0 0 80px #c9a2270c, 0 24px 60px -24px #c9a22735, 0 8px 24px rgba(0,0,0,0.65)",
+            }}
           >
-            {s.isFinal ? (
-              <FinalOutputCard s={s} />
-            ) : (
-              <EditorialStepCard s={s} />
-            )}
-          </motion.div>
-        ))}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at 30% 15%, #c9a22720 0%, transparent 60%), radial-gradient(ellipse at 80% 85%, #6b8cce14 0%, transparent 55%)" }}
+            />
 
-        {/* CTA card */}
-        <div className="flex-shrink-0 w-72 snap-start flex items-center justify-center px-4">
-          <Link href="/the-three-doors" className="flex flex-col items-center gap-4 text-center group w-full">
-            <div className="w-16 h-16 rounded-full bg-primary/12 border border-primary/25 flex items-center justify-center group-hover:bg-primary/22 group-hover:scale-105 transition-all group-hover:shadow-[0_0_32px_rgba(201,162,39,0.2)]">
-              <Sparkles className="w-6 h-6 text-primary" />
+            <div className="relative z-10 p-7 md:p-8">
+              {/* Spec sheet header */}
+              <div className="flex items-baseline justify-between mb-6 pb-5 border-b border-white/8">
+                <div>
+                  <p className="text-[10px] font-bold tracking-[0.32em] uppercase text-primary/80 mb-1.5">
+                    Anatomy of Your Story
+                  </p>
+                  <p className="font-display text-xl md:text-[1.35rem] text-white/95 leading-tight">
+                    The Fog Between Us
+                  </p>
+                </div>
+                <span className="font-display text-2xl italic text-primary/40 flex-shrink-0">
+                  ✦
+                </span>
+              </div>
+
+              {/* Eight axes — every dimension of personalisation, on one page */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                {ANATOMY_ROWS.map((row) => (
+                  <div key={row.axis} className="flex flex-col">
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className="text-[10px] font-bold tracking-[0.28em] uppercase"
+                        style={{ color: `${row.accent}c0` }}
+                      >
+                        {row.axis}
+                      </span>
+                      <span className="text-[10px] text-white/35 tracking-wide italic">
+                        · {row.scale}
+                      </span>
+                    </div>
+                    <p className="font-display text-base text-white/92 leading-snug mt-1">
+                      {row.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer — story voice + combinations math */}
+              <div className="mt-7 pt-5 border-t border-white/8">
+                <p className="font-display italic text-base text-white/82 leading-relaxed">
+                  "He shouldn't be in her study. She should have locked the door."
+                </p>
+                <p className="text-[11px] text-white/45 mt-3 tracking-wide">
+                  One of <span className="text-primary/75">2.6 million+</span>. Yours alone.
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
-                Begin your story
-              </p>
-              <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed max-w-[180px] mx-auto">
-                Written for you. Narrated. Private from the first word.
-              </p>
-            </div>
-            <span className="text-xs text-primary/70 group-hover:text-primary/80 transition-colors tracking-widest uppercase">
-              Create My Story →
-            </span>
-          </Link>
-        </div>
+          </div>
+        </motion.div>
       </div>
-
-      {/* Scroll hint — mobile */}
-      <p className="md:hidden text-center text-xs text-muted-foreground/80 mt-2 tracking-widest">Swipe to explore →</p>
     </section>
   );
 }

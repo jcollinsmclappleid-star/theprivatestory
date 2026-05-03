@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-C4hBkieQ.js";import{S as r,g as i}from"./configs-jgEFWzcP.js";import"./index-BK-z3XHV.js";const t=i("forced-proximity-romance-audio-stories");function m(){return o.jsx(r,{config:t})}export{m as default};

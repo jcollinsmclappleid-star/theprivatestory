@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-C4hBkieQ.js";import{S as e,g as i}from"./configs-jgEFWzcP.js";import"./index-BK-z3XHV.js";const t=i("single-dad-romance-audio-stories");function n(){return o.jsx(e,{config:t})}export{n as default};

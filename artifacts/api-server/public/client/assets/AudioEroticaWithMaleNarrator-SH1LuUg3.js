@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CuRsFmYU.js";import{S as r,g as t}from"./configs-mTktPoBp.js";import"./index-v7M_7PYe.js";import"./data-editors-picks-DoYWeP5W.js";const a=t("audio-erotica-with-male-narrator");function s(){return o.jsx(r,{config:a})}export{s as default};

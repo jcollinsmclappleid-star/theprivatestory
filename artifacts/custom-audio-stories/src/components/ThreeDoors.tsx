@@ -531,13 +531,6 @@ export function ThreeDoors({ filter }: { filter?: Array<"story" | "dark" | "quie
           );
         })}
       </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Mini door CTA — choose your path                                    */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="mt-14 pb-4">
-        <MiniDoorCTA />
-      </div>
     </section>
   );
 }

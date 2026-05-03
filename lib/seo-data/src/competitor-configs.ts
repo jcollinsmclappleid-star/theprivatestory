@@ -117,7 +117,7 @@ export const dipseaAlternativeConfig: SEOPageConfig = {
   faqs: [
     { q: "Is The Private Story a replacement for Dipsea?", a: "No — they serve different needs. Dipsea is a curated library of pre-produced audio. The Private Story generates a story from your brief at the moment you ask for it. Many listeners use both: one for browsing and discovery, one for sessions when they want something written specifically for tonight." },
     { q: "How do the voices compare?", a: "Both platforms use professional narrators. The Private Story includes six narrators — three female, three male — with British and American options. The voice is matched to the story's register and door choice." },
-    { q: "How long are stories on The Private Story?", a: "Stories are typically 10 to 25 minutes depending on the door and intensity. Drift stories are paced slower for bedtime. Romance and After Dark are paced for active listening." },
+    { q: "How long are stories on The Private Story?", a: "Stories are approximately 10 minutes of narrated audio. Drift stories are paced slower for bedtime; Romance and After Dark are paced for active listening — but the length is consistent across all three doors." },
     { q: "Can I keep my Dipsea subscription and try The Private Story?", a: "Of course. The two are independent services. The Private Story does not require you to cancel anything else; it is simply a different kind of audio practice you can use alongside whatever you already enjoy." },
   ],
 };

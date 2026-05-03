@@ -18,7 +18,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REASSURANCE = [
   { icon: <Sliders className="w-4 h-4" />, label: "Fully cast by you", sub: "Character, energy, chemistry, setting — every detail yours before a word is written" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — a fully immersive audio experience, typically around 10 minutes (length varies by story)" },
+  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — a fully immersive audio experience, approximately 10 minutes long" },
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library is visible only to you. Nothing shared, ever" },
   { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
 ];
@@ -227,6 +227,7 @@ export default function Pricing() {
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
             {[
               { icon: <Sparkles className="w-3 h-3" />, label: "Ready in under 3 minutes" },
+              { icon: <Timer className="w-3 h-3" />, label: "~10 mins of narrated audio" },
               { icon: <Lock className="w-3 h-3" />, label: "Private from the first word" },
               { icon: <BookOpen className="w-3 h-3" />, label: "1M+ story configurations" },
             ].map(({ icon, label }) => (
@@ -247,7 +248,7 @@ export default function Pricing() {
             Each plan also includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
-            Every personalised story is a fully narrated audio experience — typically around 10 minutes, though each story is different.
+            Every personalised story is a fully narrated audio experience — approximately 10 minutes long.
           </p>
 
           {/* Compact privacy trust strip */}

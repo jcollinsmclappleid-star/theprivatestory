@@ -162,7 +162,6 @@ function Router() {
               <Route path="/search" component={Search} />
               <Route path="/story/:id" component={StoryDetail} />
               <Route path="/create" component={Create} />
-              <Route path="/gift"><Redirect to="/" /></Route>
               <Route path="/signin"><Redirect to="/" /></Route>
               <Route path="/sign-in"><Redirect to="/" /></Route>
               <Route path="/login"><Redirect to="/" /></Route>

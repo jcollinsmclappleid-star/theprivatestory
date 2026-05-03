@@ -20,14 +20,14 @@ const ERAS = [
 export const CASTING_STEP_CARDS = [
   {
     step: "01", category: "The Pairing", label: "Who's in your story",
-    sub: "Five pairings. You choose the dynamic — and we write to it.",
+    sub: "Six pairings. You choose the dynamic — and we write to it.",
     accent: "#e879a0", gradient: "from-[#1a0810] via-[#250f1a] to-[#100508]",
     options: ["Her & Him", "Her & Her", "Him & Him", "Her & Them", "Him & Them"],
     selected: "Her & Him", example: null, isSetting: false, isFinal: false, isIntensity: false, isSituation: false,
   },
   {
     step: "02", category: "The Chemistry", label: "The energy between you",
-    sub: "Nine chemistries. The tension, the power, the pull — choose how it feels.",
+    sub: "Eight chemistries. The tension, the power, the pull — choose how it feels.",
     accent: "#c9a227", gradient: "from-[#1a0d00] via-[#251500] to-[#100800]",
     options: ["Push & Pull", "Slow Surrender", "Charged Dynamic", "Forbidden Pull", "Pure Devotion", "Rivals", "Inevitable", "First & Last", "Equal Tension"],
     selected: "Forbidden Pull", example: "They shouldn't. They've been trying not to. They can't stop.",

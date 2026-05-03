@@ -45,7 +45,7 @@ const CASTING_FEATURES = [
     icon: <Users className="w-4 h-4" />,
     accent: "#e879a0",
     label: "The Pairing",
-    desc: "Five pairings. Choose the dynamic and we write to it.",
+    desc: "Six pairings. Choose the dynamic and we write to it.",
     examples: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
   },
   {

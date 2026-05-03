@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CpJw2efz.js";import{S as r,g as t}from"./configs-BXv9mcQp.js";import"./index-CJItOhJX.js";import"./data-editors-picks-DoYWeP5W.js";const i=t("audio-erotica-for-women");function s(){return o.jsx(r,{config:i,doorFilter:["dark"]})}export{s as default};

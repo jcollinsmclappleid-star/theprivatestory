@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
   EyeOff, WifiOff, Lock,
-  ChevronLeft, Globe, Shuffle, Check, Loader2, Clock,
+  ChevronLeft, Check, Loader2, Clock,
   Play, Pause,
 } from "lucide-react";
 import { Link } from "wouter";
@@ -95,20 +95,6 @@ function useQuickCreate(isAuthenticated: boolean) {
 // ---------------------------------------------------------------------------
 // CastingRoom — rich world-building showcase
 // ---------------------------------------------------------------------------
-
-const CITIES_LEFT = [
-  "Paris", "Havana", "Tokyo", "Santorini", "New York", "Kyoto",
-  "Cape Town", "Florence", "Istanbul", "Marrakech", "Venice", "Buenos Aires",
-];
-const CITIES_RIGHT = [
-  "Bali", "Edinburgh", "Monaco", "Dubrovnik", "Bora Bora", "Nairobi",
-  "Lisbon", "Vienna", "Rio de Janeiro", "Seoul", "Amalfi Coast", "St Tropez",
-];
-const ERAS = [
-  "Contemporary", "Roaring Twenties", "Victorian London", "Belle Époque Paris",
-  "Feudal Japan", "Wartime 1940s", "Renaissance Italy", "Swinging Sixties",
-  "Georgian Scotland", "Ancient Mediterranean", "Neon Decade 1980s", "Regency England",
-];
 
 const STEP_CARDS = [
   {
@@ -242,255 +228,123 @@ const STEP_CARDS = [
 type StepCard = typeof STEP_CARDS[number];
 
 function WorldIntroCard() {
-  const allCities = [...CITIES_LEFT, ...CITIES_RIGHT];
-  const allCitiesDup = [...allCities, ...allCities];
-  const allEras = [...ERAS, ...ERAS];
-
   return (
     <div className="flex-shrink-0 w-80 snap-start">
-      <div className="relative overflow-hidden rounded-2xl border flex flex-col h-full" style={{ background: "linear-gradient(135deg, #04100a 0%, #060a14 50%, #0a0614 100%)", borderColor: "#34d39935", boxShadow: "inset 0 0 50px #34d39914, 0 0 22px #34d39930, 0 4px 16px rgba(0,0,0,0.6)" }}>
-        <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(ellipse at 30% 20%, #34d39922 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, #6b8cce18 0%, transparent 50%)" }} />
-
-        <div className="relative z-10 p-5 pb-3">
-          <div className="flex items-center gap-2 mb-3">
-            <Globe className="w-3.5 h-3.5 text-[#34d399]/70" />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#34d399]/70">Your World</span>
-          </div>
-          <p className="text-base font-bold text-white/90 mb-1 leading-snug">Place your story anywhere on earth.</p>
-          <p className="text-xs text-white/80 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
-
-          <div className="overflow-hidden mb-2 -mx-1">
-            <div
-              className="flex gap-2"
-              style={{ animation: "ticker-left 22s linear infinite", width: "max-content" }}
-            >
-              {allCitiesDup.map((city, i) => (
-                <span
-                  key={`city-${i}`}
-                  className="flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium border"
-                  style={{ borderColor: "#34d39928", color: "#34d39999", background: "#34d3990a" }}
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/80 mb-2">Or step into another era entirely</p>
-          <div className="overflow-hidden -mx-1">
-            <div
-              className="flex gap-2"
-              style={{ animation: "ticker-left 35s linear infinite", width: "max-content" }}
-            >
-              {allEras.map((era, i) => (
-                <span
-                  key={`era-${i}`}
-                  className="flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium border"
-                  style={{ borderColor: "#6b8cce28", color: "#6b8cce99", background: "#6b8cce0a" }}
-                >
-                  {era}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 mx-4 mb-4 mt-3 rounded-xl border p-3" style={{ borderColor: "#34d39920", background: "#34d3990a" }}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#34d39966" }}>The scene you chose</p>
-          <p className="text-xs text-white/80 leading-relaxed italic">"The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."</p>
-        </div>
-
-        <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: "#34d39915" }}>
-          <ChevronRight className="w-4 h-4 rotate-90" style={{ color: "#34d39950" }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SettingCard({ s }: { s: StepCard & { isSetting: true } }) {
-  const cats = s.settingCategories;
-  return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
-
-      <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span
-            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
-            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
-          >
-            {s.category}
-          </span>
-          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
-        </div>
-        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
-      </div>
-
-      <div className="relative z-10 px-5 pb-3 space-y-3">
-        {[
-          { label: "Contemporary", items: cats.contemporary, color: "#34d399" },
-          { label: "Historical", items: cats.historical, color: "#fcd34d" },
-          { label: "After Dark", items: cats.afterDark, color: "#fb7185" },
-        ].map(({ label, items, color }) => (
-          <div key={label}>
-            <p className="text-[9px] font-bold uppercase tracking-widest mb-1.5" style={{ color: `${color}70` }}>{label}</p>
-            <div className="flex flex-wrap gap-1.5">
-              {items.map((item) => {
-                const isSel = item === s.selected;
-                return (
-                  <span
-                    key={item}
-                    className="px-2 py-0.5 rounded-full text-[10px] font-medium border"
-                    style={isSel
-                      ? { borderColor: color, color: "#0a0a0a", background: color, fontWeight: 700 }
-                      : { borderColor: `${color}25`, color: `${color}85`, background: `${color}0a` }
-                    }
-                  >
-                    {item}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {s.example && (
-        <div className="relative z-10 mx-4 mb-3 mt-1 rounded-xl border p-3" style={{ borderColor: `${s.accent}22`, background: `${s.accent}0a` }}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: `${s.accent}70` }}>Selected · Victorian London</p>
-          <p className="text-xs italic leading-relaxed" style={{ color: `${s.accent}cc` }}>{s.example}</p>
-        </div>
-      )}
-
-      <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
-        <ChevronRight className="w-4 h-4 rotate-90" style={{ color: `${s.accent}50` }} />
-      </div>
-    </div>
-  );
-}
-
-function IntensityCard({ s }: { s: StepCard & { isIntensity: true } }) {
-  const subs = (s as { optionSubs?: string[] }).optionSubs ?? [];
-  return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
-
-      <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span
-            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
-            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
-          >
-            {s.category}
-          </span>
-          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
-        </div>
-        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/80 leading-relaxed mb-4">{s.sub}</p>
-
-        <div className="space-y-2">
-          {(s.options as readonly string[]).map((opt, idx) => {
-            const isSel = opt === s.selected;
-            return (
-              <div
-                key={opt}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl border"
-                style={isSel
-                  ? { borderColor: s.accent, background: `${s.accent}18` }
-                  : { borderColor: `${s.accent}18`, background: `${s.accent}06` }
-                }
-              >
-                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: isSel ? s.accent : `${s.accent}30` }} />
-                <div>
-                  <p className="text-xs font-semibold" style={{ color: isSel ? s.accent : `${s.accent}80` }}>{opt}</p>
-                  <p className="text-[10px]" style={{ color: `${s.accent}50` }}>{subs[idx]}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
-        <ChevronRight className="w-4 h-4 rotate-90" style={{ color: `${s.accent}50` }} />
-      </div>
-    </div>
-  );
-}
-
-const SITUATION_CATEGORIES = [
-  "Unexpected Reunion",
-  "First & Unknown",
-  "Close Quarters",
-  "Slow Burn & Patience",
-  "Secrets & Unspoken",
-  "Circumstance & Proximity",
-  "Complicated Timing",
-  "Emotional Distance",
-];
-
-const SITUATION_EXAMPLES = [
-  "They were never meant to meet again. Then he walked back into the room.",
-  "The night was supposed to be simple. It stopped feeling that way the moment he arrived.",
-  "Nothing had been said yet, but the energy had already shifted.",
-];
-
-function SituationCard({ s }: { s: StepCard }) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl border flex flex-col" style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
-
-      <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span
-            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
-            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
-          >
-            {s.category}
-          </span>
-          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
-        </div>
-        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/80 leading-relaxed mb-3">{s.sub}</p>
-
+      <div
+        className="relative overflow-hidden rounded-2xl border flex flex-col h-full"
+        style={{
+          background: "linear-gradient(160deg, #04100a 0%, #060a14 55%, #0a0614 100%)",
+          borderColor: "#34d39928",
+          boxShadow: "inset 0 0 80px #34d3990a, 0 16px 40px -20px #34d39930, 0 4px 16px rgba(0,0,0,0.6)",
+        }}
+      >
         <div
-          className="flex items-center gap-2 px-3 py-2 rounded-xl border mb-3"
-          style={{ borderColor: `${s.accent}30`, background: `${s.accent}10` }}
-        >
-          <Shuffle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.accent }} />
-          <span className="text-xs font-semibold" style={{ color: s.accent }}>Choose For Me</span>
-          <span className="text-[10px] text-white/80 ml-auto">or pick yours →</span>
-        </div>
+          className="absolute inset-0"
+          style={{ background: "radial-gradient(ellipse at 30% 20%, #34d39920 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, #6b8cce14 0%, transparent 50%)" }}
+        />
 
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {SITUATION_CATEGORIES.map((cat) => (
-            <span
-              key={cat}
-              className="px-2 py-0.5 rounded-full text-[10px] font-medium border"
-              style={{ borderColor: `${s.accent}25`, color: `${s.accent}80`, background: `${s.accent}0a` }}
-            >
-              {cat}
+        <div className="relative z-10 p-7 flex flex-col h-full">
+          <div className="flex items-baseline justify-between mb-6">
+            <span className="font-display text-[10px] tracking-[0.4em] uppercase text-[#34d399]/85">
+              Your World
             </span>
-          ))}
+            <span className="font-display text-2xl italic text-[#34d399]/45">00</span>
+          </div>
+
+          <p className="font-display text-xl md:text-[1.4rem] leading-tight text-white/95 mb-3">
+            Place your story anywhere on earth.
+          </p>
+          <p className="text-sm text-white/70 leading-relaxed mb-auto">
+            Fifty countries. Twelve historical eras. Or a private world entirely your own.
+          </p>
+
+          <div className="mt-6 pt-5 border-t border-[#34d399]/15">
+            <p className="text-[10px] tracking-[0.3em] uppercase mb-2 text-[#34d399]/70">
+              The scene you chose
+            </p>
+            <p className="font-display italic text-base text-white/85 leading-relaxed">
+              "The Amalfi Coast, August. Heat, a private terrace, and nothing to do until morning."
+            </p>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="relative z-10 mx-4 mb-4 rounded-xl border p-3" style={{ borderColor: `${s.accent}20`, background: `${s.accent}08` }}>
-        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: `${s.accent}60` }}>Example situations</p>
-        {SITUATION_EXAMPLES.map((ex) => (
-          <p key={ex} className="text-xs italic leading-relaxed mb-1 last:mb-0" style={{ color: `${s.accent}b0` }}>
-            "{ex}"
-          </p>
-        ))}
-      </div>
+function EditorialStepCard({ s }: { s: StepCard }) {
+  const teaser =
+    s.example ??
+    (s.isSituation
+      ? "Nothing had been said yet, but the energy had already shifted."
+      : null);
 
-      <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
-        <ChevronRight className="w-4 h-4 rotate-90" style={{ color: `${s.accent}50` }} />
+  return (
+    <div
+      className="relative overflow-hidden rounded-2xl border flex flex-col h-full"
+      style={{
+        borderColor: `${s.accent}28`,
+        boxShadow: `inset 0 0 80px ${s.accent}0a, 0 16px 40px -20px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)`,
+      }}
+    >
+      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
+      <div
+        className="absolute inset-0"
+        style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}1f 0%, transparent 65%)` }}
+      />
+
+      <div className="relative z-10 p-7 flex flex-col h-full">
+        <div className="flex items-baseline justify-between mb-6">
+          <span
+            className="font-display text-[10px] tracking-[0.4em] uppercase"
+            style={{ color: `${s.accent}b0` }}
+          >
+            {s.category}
+          </span>
+          <span
+            className="font-display text-2xl italic"
+            style={{ color: `${s.accent}55` }}
+          >
+            {s.step}
+          </span>
+        </div>
+
+        <p className="font-display text-xl md:text-[1.4rem] leading-tight text-white/95 mb-3">
+          {s.label}
+        </p>
+        <p className="text-sm text-white/70 leading-relaxed mb-auto">{s.sub}</p>
+
+        {teaser ? (
+          <div
+            className="mt-6 pt-5 border-t"
+            style={{ borderColor: `${s.accent}18` }}
+          >
+            <p
+              className="font-display italic text-base leading-relaxed"
+              style={{ color: `${s.accent}d8` }}
+            >
+              "{teaser}"
+            </p>
+          </div>
+        ) : s.selected ? (
+          <div
+            className="mt-6 pt-5 border-t"
+            style={{ borderColor: `${s.accent}18` }}
+          >
+            <p
+              className="text-[10px] tracking-[0.3em] uppercase mb-1"
+              style={{ color: `${s.accent}75` }}
+            >
+              For example
+            </p>
+            <p
+              className="font-display text-base italic"
+              style={{ color: `${s.accent}d8` }}
+            >
+              {s.selected}
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -535,83 +389,17 @@ function FinalOutputCard({ s }: { s: StepCard }) {
         </div>
       </div>
 
-      <div className="relative z-10 mx-4 mb-4 space-y-1.5">
+      <div className="relative z-10 mx-5 mb-5 space-y-1">
         {[
-          "Narrated — ready to listen immediately",
-          "Original cover art generated for this story",
-          "Saved privately — visible only to you",
-          "No record shared with anyone, ever",
+          "Narrated — ready to listen immediately.",
+          "Original cover art created for this story.",
+          "Saved privately. Visible only to you.",
+          "No record shared with anyone. Ever.",
         ].map((item) => (
-          <div key={item} className="flex items-center gap-2">
-            <div className="w-3.5 h-3.5 rounded-full border border-primary/60 flex items-center justify-center flex-shrink-0">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            </div>
-            <span className="text-xs text-white/80">{item}</span>
-          </div>
+          <p key={item} className="font-display italic text-xs text-white/75 leading-relaxed">
+            {item}
+          </p>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function StandardCard({ s }: { s: StepCard }) {
-  return (
-    <div className={`relative overflow-hidden rounded-2xl border flex flex-col`} style={{ borderColor: `${s.accent}35`, boxShadow: `inset 0 0 50px ${s.accent}0e, 0 0 22px ${s.accent}30, 0 4px 16px rgba(0,0,0,0.6)` }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient}`} />
-      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 70% 25%, ${s.accent}28 0%, transparent 60%)` }} />
-
-      <div className="relative z-10 p-5 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span
-            className="text-[9px] font-bold tracking-[0.25em] uppercase px-2 py-0.5 rounded-full border"
-            style={{ color: s.accent, borderColor: `${s.accent}30`, background: `${s.accent}0d` }}
-          >
-            {s.category}
-          </span>
-          <span className="text-[9px] text-white/80 tracking-widest">{s.step}</span>
-        </div>
-        <p className="text-base font-bold text-white/90 mb-1 leading-snug">{s.label}</p>
-        <p className="text-xs text-white/80 leading-relaxed">{s.sub}</p>
-      </div>
-
-      <div className="relative z-10 px-5 pb-2">
-        <div className="flex flex-wrap gap-1.5">
-          {(s.options as readonly string[]).map((chip) => {
-            const isSel = chip === s.selected;
-            return (
-              <span
-                key={chip}
-                className="px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all"
-                style={isSel
-                  ? { borderColor: s.accent, color: "#0a0a0a", background: s.accent, fontWeight: 700 }
-                  : { borderColor: `${s.accent}28`, color: `${s.accent}99`, background: `${s.accent}0a` }
-                }
-              >
-                {chip}
-              </span>
-            );
-          })}
-        </div>
-      </div>
-
-      {s.example && s.selected && (
-        <div className="relative z-10 mx-4 mb-3 mt-2 rounded-xl border p-3" style={{ borderColor: `${s.accent}25`, background: `${s.accent}0d` }}>
-          <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5 opacity-60" style={{ color: s.accent }}>{s.selected}</p>
-          <p className="text-xs italic leading-relaxed" style={{ color: `${s.accent}cc` }}>{s.example}</p>
-        </div>
-      )}
-
-      {!s.example && s.selected && (
-        <div className="relative z-10 mx-4 mb-3 mt-2 rounded-xl border p-3" style={{ borderColor: `${s.accent}25`, background: `${s.accent}0d` }}>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: s.accent }} />
-            <p className="text-sm font-semibold" style={{ color: s.accent }}>{s.selected}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="relative z-10 flex justify-center py-3 mt-auto border-t" style={{ borderColor: `${s.accent}15` }}>
-        <ChevronRight className="w-4 h-4 rotate-90" style={{ color: `${s.accent}50` }} />
       </div>
     </div>
   );
@@ -635,13 +423,6 @@ function CastingPreview() {
 
   return (
     <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <style>{`
-        @keyframes ticker-left {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
           <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
@@ -650,24 +431,13 @@ function CastingPreview() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
             The version of them<br className="hidden md:block" /> that's been in your head.
           </h2>
-          <p className="text-muted-foreground mt-2 text-base max-w-xl leading-relaxed">
+          <p className="text-muted-foreground mt-3 text-base max-w-xl leading-relaxed">
             Choose who they are, how they make you feel, the charge between you, and where it takes you. Every detail set before a word is written — so nothing has to be left to someone else's imagination.
           </p>
-          <div className="flex items-center gap-3 mt-3">
-            {[
-              { n: "50+", label: "Countries" },
-              { n: "12", label: "Historical eras" },
-              { n: "14", label: "Archetypes" },
-              { n: "9", label: "Chemistries" },
-              { n: "200+", label: "Situations" },
-            ].map(({ n, label }) => (
-              <div key={label} className="text-center">
-                <p className="text-sm font-bold text-primary">{n}</p>
-                <p className="text-[9px] text-muted-foreground/80 uppercase tracking-widest">{label}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-[10px] text-muted-foreground/80 mt-2.5">
+          <p className="font-display italic text-base text-muted-foreground/75 mt-4 max-w-xl leading-relaxed">
+            Fifty countries. Twelve eras. Fourteen archetypes. Nine chemistries. Two hundred situations — every combination written for you alone.
+          </p>
+          <p className="text-[11px] text-muted-foreground/65 mt-3 tracking-wide">
             Your name not listed?{" "}
             <Link href="/me" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
               Submit it to the Name Club →
@@ -719,14 +489,8 @@ function CastingPreview() {
           >
             {s.isFinal ? (
               <FinalOutputCard s={s} />
-            ) : s.isSetting ? (
-              <SettingCard s={s as StepCard & { isSetting: true }} />
-            ) : s.isIntensity ? (
-              <IntensityCard s={s as StepCard & { isIntensity: true }} />
-            ) : s.isSituation ? (
-              <SituationCard s={s} />
             ) : (
-              <StandardCard s={s} />
+              <EditorialStepCard s={s} />
             )}
           </motion.div>
         ))}

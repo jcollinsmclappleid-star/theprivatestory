@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CuRsFmYU.js";import{S as s,g as t}from"./configs-mTktPoBp.js";import"./index-v7M_7PYe.js";import"./data-editors-picks-DoYWeP5W.js";const i=t("sensual-audio-stories");function u(){return o.jsx(s,{config:i})}export{u as default};

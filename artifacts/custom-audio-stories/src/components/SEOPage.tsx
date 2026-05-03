@@ -4,7 +4,7 @@ import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clo
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import type { SEOPageConfig } from "@workspace/seo-data";
-import CastingPreview from "@/components/CastingPreview";
+import { StoryAnatomyCard } from "@/components/StoryAnatomy";
 import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
 
 export type { SEOPageConfig };
@@ -193,7 +193,7 @@ const TRUST_ITEMS = [
 
 function HeroCTA({ label, href }: { label?: string; href?: string }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
       <Link
         href={href ?? "/create"}
         className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
@@ -201,8 +201,14 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
         {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
       </Link>
       <Link
+        href="/samples"
+        className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-primary/40 text-primary text-sm font-medium hover:bg-primary/10 transition-colors w-full sm:w-auto"
+      >
+        <Headphones className="w-4 h-4" /> Hear a sample first
+      </Link>
+      <Link
         href="/pricing"
-        className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left"
+        className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left sm:ml-1"
       >
         From £19.92/mo · 5 stories included · cancel anytime
       </Link>
@@ -343,10 +349,40 @@ export default function SEOPage({
         );
       })()}
 
-      {/* Casting Preview — soft version */}
+      {/* Story anatomy — single spec-sheet exhibit showing every axis of
+          personalisation. Replaces the old 9-card casting carousel so depth
+          is communicated in one focused composition. */}
       {config.showCastingPreview && (
-        <div className="w-full border-t border-b border-border/20 bg-background/50 px-4 md:px-8 overflow-hidden">
-          <CastingPreview soft />
+        <div className="w-full border-t border-b border-border/20 bg-background/40 px-4 md:px-8 py-12">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-8">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">
+                Anatomy of one story
+              </p>
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
+                Every choice, on one page.
+              </h2>
+              <p className="text-sm text-muted-foreground/80 mt-3 max-w-xl mx-auto leading-relaxed">
+                A real example of one configured story. Eight axes — and one of 2.6 million+ combinations the system can produce for you.
+              </p>
+            </div>
+            <StoryAnatomyCard />
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+              <Link
+                href="/samples"
+                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                <Headphones className="w-4 h-4" /> Hear narrated samples →
+              </Link>
+              <span className="text-white/20 text-xs hidden sm:inline">·</span>
+              <Link
+                href="/how-it-works"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                See how every choice works →
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 
@@ -493,21 +529,39 @@ export default function SEOPage({
               </p>
             ))}
           </div>
-          {config.finalCTA.links.length > 0 && (
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
-              {config.finalCTA.links.map((l, i) => (
-                <Link key={i} href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {l.label} →
-                </Link>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-x-5 gap-y-3 items-center">
+            <Link
+              href="/samples"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              <Headphones className="w-4 h-4" /> Hear a 30-second sample →
+            </Link>
+            {config.finalCTA.links.length > 0 && (
+              <>
+                <span className="text-white/15 text-xs hidden sm:inline">·</span>
+                {config.finalCTA.links.map((l, i) => (
+                  <Link key={i} href={l.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {l.label} →
+                  </Link>
+                ))}
+              </>
+            )}
+          </div>
         </section>
 
         {/* USP bridge */}
         <section className="mb-8">
           <p className="text-[11px] text-muted-foreground/40 uppercase tracking-widest font-medium mb-3">How The Private Story works</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Link
+              href="/samples"
+              className="group rounded-xl border border-primary/30 bg-primary/[0.04] hover:border-primary/50 hover:bg-primary/[0.08] p-4 transition-all duration-200"
+            >
+              <p className="text-sm font-medium text-primary group-hover:text-primary mb-1 flex items-center gap-1.5">
+                <Headphones className="w-3.5 h-3.5" /> Hear samples
+              </p>
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">30-second narrated openings from each door — listen before you create.</p>
+            </Link>
             <Link
               href="/personalised-audio-stories"
               className="group rounded-xl border border-border/30 bg-white/[0.02] hover:border-primary/30 hover:bg-primary/[0.03] p-4 transition-all duration-200"

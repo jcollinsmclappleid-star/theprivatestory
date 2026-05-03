@@ -812,6 +812,7 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
   { loc: "/pricing",           lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9" },
   { loc: "/the-three-doors",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.85" },
   { loc: "/create-my-story",   lastmod: DATE_MODIFIED, changefreq: "monthly", priority: "0.9"  },
+  { loc: "/samples",           lastmod: DATE_MODIFIED, changefreq: "weekly",  priority: "0.85" },
   // { loc: "/browse",      ... }  // noindex — age-gated, excluded from sitemap
   // { loc: "/search",      ... }  // noindex — age-gated, excluded from sitemap
   { loc: "/discover",       lastmod: DATE_MODIFIED, changefreq: "daily",   priority: "0.9" },

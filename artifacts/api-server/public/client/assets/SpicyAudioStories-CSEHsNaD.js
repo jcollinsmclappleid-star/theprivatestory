@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CuRsFmYU.js";import{S as i,g as r}from"./configs-mTktPoBp.js";import"./index-v7M_7PYe.js";import"./data-editors-picks-DoYWeP5W.js";const t=r("spicy-audio-stories");function m(){return o.jsx(i,{config:t,doorFilter:["dark"]})}export{m as default};

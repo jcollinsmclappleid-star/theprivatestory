@@ -590,8 +590,14 @@ function StoryCard({
           {pick.tagline}
         </p>
 
-        {/* Tag chips */}
+        {/* Pairing chip + tag chips */}
         <div className="flex flex-wrap gap-1.5 mb-5">
+          <span
+            className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em]
+                       border border-rose-300/25 bg-rose-300/[0.06] text-rose-200/80"
+          >
+            ♥ {pick.pairing}
+          </span>
           {pick.tags.map((t) => (
             <span
               key={t}

@@ -96,55 +96,114 @@ He didn't move it.`,
   },
   {
     number: 2,
-    slug: "02-adjoining-suites",
-    title: "The Adjoining Suites",
-    tagline: "Six years of business partners. Tonight she won.",
-    excerpt: "\"You should know what we were talking about. Before you knocked.\"",
-    endsOn: "the door, not yet closed.",
-    tags: ["Two men, one room", "MFM", "British voice"],
-    voice: "clara",
-    voiceName: "Clara",
-    voiceMeta: "British · Soothing",
-    pairing: "Her & Him & Him",
+    slug: "04-driver",
+    title: "The Driver",
+    tagline: "Three years. She had never said his name.",
+    excerpt: "\"Then come up to make sure I don't open the door for anyone else.\"",
+    endsOn: "a step short of her.",
+    tags: ["Service-dom", "Forbidden", "American voice"],
+    voice: "kayla",
+    voiceName: "Kayla",
+    voiceMeta: "American · Expressive",
+    pairing: "Her & Him",
     runtimeSec: 135,
-    transcript: `The awards dinner had ended at midnight. She had won. The two of them had been her business partners for six years, the three of them at the same table for every dinner that had ever mattered, and tonight on the walk back through the marble lobby of the hotel, something had changed in the air between them, and she had felt it on her skin.
+    transcript: `He had driven her for three years. He opened the car door. He waited at events. He never spoke unless she spoke first. She had never, not once, said his first name out loud.
 
-They had taken adjoining suites because they always did. There was a door between them. There had always been a door between them.
+Tonight she had drunk too much champagne at a gallery opening, and he had carried her bag into the lobby of her building, and now they were standing at the lift, and she could not, suddenly, remember why she had ever bothered to be careful around him.
 
-She kicked her heels off in her room. She could hear them next door — the low murmur of two men talking, the clink of a bottle, a laugh that was lower than the laugh she usually heard from either of them.
+"Come up," she said.
 
-She went to the mirror and unpinned her hair. Her dress was still on. Her lipstick was still on. She looked at herself for a long moment.
+"Ma'am."
 
-She knocked on the connecting door.
+"Don't."
 
-It opened immediately. They had been standing on the other side of it.
+"Sorry."
 
-"We were going to come and ask if you wanted a nightcap," one of them said.
+"I mean don't call me that. Not tonight."
 
-"I know."
+He looked at her properly for the first time in three years. He looked at her the way she had always known he wanted to look at her, the way he had been holding himself back from looking at her every Tuesday and Friday at the school run and every Saturday night at the restaurant.
 
-"You don't drink whisky."
+"Come up," she said again. "Just to make sure I get in."
 
-"I do tonight."
+"You'll get in."
 
-The other one — the quieter one — set a glass down on the dresser without taking his eyes off her.
+"Then come up to make sure I don't open the door for anyone else."
 
-"You should know," he said, "what we were talking about. Before you knocked."
+The lift arrived. He held it. She walked in. He hesitated for half a second on the threshold, and then, slowly, followed her.
 
-"I know what you were talking about."
+In her hallway she set her bag down. She took off one earring. She put it on the small table by the door. She turned to him.
 
-A pause.
+"Marcus," she said.
 
-"And?"
+His name. The first time.
 
-She stepped through the doorway. She walked between them. She turned, slowly, so she could see them both. The door behind her was still open. The door behind them was not.
+He closed his eyes for a second. When he opened them, he was a different man — not her driver any more, not exactly anything any more.
 
-"Close it," she said.
+"Say it again," he said.
 
-Neither of them moved yet.`,
+"Marcus."
+
+He was already crossing the hallway when she reached for the second earring.
+
+He stopped a step short of her.`,
   },
   {
     number: 3,
+    slug: "09-neighbour",
+    title: "The Neighbour",
+    tagline: "Three weeks of crossing in the hall. Tonight, a knock.",
+    excerpt: "\"I have wine, and I have been hearing you walk around in there alone for three weeks.\"",
+    endsOn: "the threshold, before he steps in.",
+    tags: ["His POV", "Neighbours", "British voice"],
+    voice: "james",
+    voiceName: "James",
+    voiceMeta: "British · Assured",
+    pairing: "Her & Him",
+    runtimeSec: 140,
+    transcript: `She had moved in across the hall three weeks ago. He had seen her exactly four times — once in the lift, once on the stairs, twice in the lobby — and each time he had thought, don't, and each time, walking back into his own flat, he had thought it again.
+
+The knock came at half past ten.
+
+He opened the door. She was holding an empty wine glass and a small, embarrassed smile.
+
+"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow."
+
+"I have one."
+
+"Brilliant. Sorry. I'll bring it back."
+
+He went to the kitchen. He took longer than he needed to find it. When he came back to the door she was still there, leaning lightly against the frame, not — he noticed, with a precision that troubled him — wearing shoes.
+
+He held out the corkscrew. She did not take it.
+
+"Are you on your own tonight," she said.
+
+"My daughter is at her mother's."
+
+"Oh."
+
+A pause. He should have closed the door. He did not.
+
+"I have wine," she said, "and no one to drink it with, and I have been hearing you walk around in there alone for three weeks."
+
+"You've been listening."
+
+"Yes."
+
+He looked at her properly. He let himself, for the first time, look at her properly. She let him.
+
+"If I come over," he said, "I should be honest with you about what I have been thinking for three weeks."
+
+"That would save us both some time."
+
+He stepped out into the hallway. He pulled his door closed behind him.
+
+She turned and walked the four steps to her own door. She left it open behind her.
+
+He stood on the threshold.`,
+  },
+  {
+    number: 4,
     slug: "03-spa-at-six",
     title: "The Spa at Six",
     tagline: "A year of last appointments. Tonight, the question.",
@@ -205,59 +264,6 @@ The woman walked, slowly, around the table. She did not look away.
 The lock turned.`,
   },
   {
-    number: 4,
-    slug: "04-driver",
-    title: "The Driver",
-    tagline: "Three years. She had never said his name.",
-    excerpt: "\"Then come up to make sure I don't open the door for anyone else.\"",
-    endsOn: "a step short of her.",
-    tags: ["Service-dom", "Forbidden", "American voice"],
-    voice: "kayla",
-    voiceName: "Kayla",
-    voiceMeta: "American · Expressive",
-    pairing: "Her & Him",
-    runtimeSec: 135,
-    transcript: `He had driven her for three years. He opened the car door. He waited at events. He never spoke unless she spoke first. She had never, not once, said his first name out loud.
-
-Tonight she had drunk too much champagne at a gallery opening, and he had carried her bag into the lobby of her building, and now they were standing at the lift, and she could not, suddenly, remember why she had ever bothered to be careful around him.
-
-"Come up," she said.
-
-"Ma'am."
-
-"Don't."
-
-"Sorry."
-
-"I mean don't call me that. Not tonight."
-
-He looked at her properly for the first time in three years. He looked at her the way she had always known he wanted to look at her, the way he had been holding himself back from looking at her every Tuesday and Friday at the school run and every Saturday night at the restaurant.
-
-"Come up," she said again. "Just to make sure I get in."
-
-"You'll get in."
-
-"Then come up to make sure I don't open the door for anyone else."
-
-The lift arrived. He held it. She walked in. He hesitated for half a second on the threshold, and then, slowly, followed her.
-
-In her hallway she set her bag down. She took off one earring. She put it on the small table by the door. She turned to him.
-
-"Marcus," she said.
-
-His name. The first time.
-
-He closed his eyes for a second. When he opened them, he was a different man — not her driver any more, not exactly anything any more.
-
-"Say it again," he said.
-
-"Marcus."
-
-He was already crossing the hallway when she reached for the second earring.
-
-He stopped a step short of her.`,
-  },
-  {
     number: 5,
     slug: "05-cabin",
     title: "The Cabin",
@@ -312,6 +318,108 @@ Neither of them took it yet.`,
   },
   {
     number: 6,
+    slug: "02-adjoining-suites",
+    title: "The Adjoining Suites",
+    tagline: "Six years of business partners. Tonight she won.",
+    excerpt: "\"You should know what we were talking about. Before you knocked.\"",
+    endsOn: "the door, not yet closed.",
+    tags: ["Two men, one room", "MFM", "British voice"],
+    voice: "clara",
+    voiceName: "Clara",
+    voiceMeta: "British · Soothing",
+    pairing: "Her & Him & Him",
+    runtimeSec: 135,
+    transcript: `The awards dinner had ended at midnight. She had won. The two of them had been her business partners for six years, the three of them at the same table for every dinner that had ever mattered, and tonight on the walk back through the marble lobby of the hotel, something had changed in the air between them, and she had felt it on her skin.
+
+They had taken adjoining suites because they always did. There was a door between them. There had always been a door between them.
+
+She kicked her heels off in her room. She could hear them next door — the low murmur of two men talking, the clink of a bottle, a laugh that was lower than the laugh she usually heard from either of them.
+
+She went to the mirror and unpinned her hair. Her dress was still on. Her lipstick was still on. She looked at herself for a long moment.
+
+She knocked on the connecting door.
+
+It opened immediately. They had been standing on the other side of it.
+
+"We were going to come and ask if you wanted a nightcap," one of them said.
+
+"I know."
+
+"You don't drink whisky."
+
+"I do tonight."
+
+The other one — the quieter one — set a glass down on the dresser without taking his eyes off her.
+
+"You should know," he said, "what we were talking about. Before you knocked."
+
+"I know what you were talking about."
+
+A pause.
+
+"And?"
+
+She stepped through the doorway. She walked between them. She turned, slowly, so she could see them both. The door behind her was still open. The door behind them was not.
+
+"Close it," she said.
+
+Neither of them moved yet.`,
+  },
+  {
+    number: 7,
+    slug: "10-night-manager",
+    title: "The Night Manager",
+    tagline: "Nine years of noticing everything. Tonight, suite 412.",
+    excerpt: "\"Don't go yet,\" she said.",
+    endsOn: "the door, left open.",
+    tags: ["His POV", "Hotel", "British voice"],
+    voice: "james",
+    voiceName: "James",
+    voiceMeta: "British · Assured",
+    pairing: "Her & Him",
+    runtimeSec: 145,
+    transcript: `He was the night manager. He had been the night manager for nine years. He noticed everything because that was the job — who came in, who left, who had drunk too much, who needed help, who needed a taxi, who needed to be left alone.
+
+She had checked in three days ago. Suite four-twelve. She had been to a different event every night, and come back at a different hour each time, and tonight she came back at midnight, alone, in a midnight-blue dress that was — he could tell, because he noticed everything — too good for the event she had been to.
+
+She came to the desk. She had been crying, or about to cry, he wasn't sure which.
+
+"I think I locked my key in the room."
+
+"I'll walk you up."
+
+"You don't have to."
+
+"It's policy."
+
+It wasn't policy. He took the master, and they walked to the lift in a silence that he found, by the third floor, that he did not want to break.
+
+At her door he produced the key. He opened it. He stepped back.
+
+She did not go in.
+
+She turned around in the doorway. She looked at him for a long second. He had seen this look before, in nine years of nights — the look of a woman who was about to ask for something a stranger could give her that no one she knew could.
+
+"Don't go yet," she said.
+
+"Madam."
+
+"Please."
+
+"You've been drinking."
+
+"Two glasses. Three hours ago."
+
+He looked at her. He looked, for the first time in nine years, properly at a guest. She let him.
+
+"I'll come in for a moment," he said. "Until you're inside."
+
+She stepped back into her room.
+
+She left the door open behind her.`,
+  },
+  {
+    number: 8,
     slug: "06-supervisor",
     title: "The Supervisor's Office",
     tagline: "Three years of supervisions. Tonight, the rule lifts.",
@@ -364,7 +472,7 @@ She turned around.
 She did not move from the door.`,
   },
   {
-    number: 7,
+    number: 9,
     slug: "07-bodyguard",
     title: "The Bodyguard",
     tagline: "Six weeks of standing in corners. Tonight, a question.",
@@ -431,7 +539,7 @@ She let the silence sit. She let him stand in it.
 She watched him wait.`,
   },
   {
-    number: 8,
+    number: 10,
     slug: "08-proposition",
     title: "The Proposition",
     tagline: "A members' club. A stranger. One direct question.",
@@ -474,114 +582,6 @@ She picked up the new drink. She drank half of it. She set it down.
 She stood up.
 
 She did not say yes. She did not need to.`,
-  },
-  {
-    number: 9,
-    slug: "09-neighbour",
-    title: "The Neighbour",
-    tagline: "Three weeks of crossing in the hall. Tonight, a knock.",
-    excerpt: "\"I have wine, and I have been hearing you walk around in there alone for three weeks.\"",
-    endsOn: "the threshold, before he steps in.",
-    tags: ["His POV", "Neighbours", "British voice"],
-    voice: "james",
-    voiceName: "James",
-    voiceMeta: "British · Assured",
-    pairing: "Her & Him",
-    runtimeSec: 140,
-    transcript: `She had moved in across the hall three weeks ago. He had seen her exactly four times — once in the lift, once on the stairs, twice in the lobby — and each time he had thought, don't, and each time, walking back into his own flat, he had thought it again.
-
-The knock came at half past ten.
-
-He opened the door. She was holding an empty wine glass and a small, embarrassed smile.
-
-"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow."
-
-"I have one."
-
-"Brilliant. Sorry. I'll bring it back."
-
-He went to the kitchen. He took longer than he needed to find it. When he came back to the door she was still there, leaning lightly against the frame, not — he noticed, with a precision that troubled him — wearing shoes.
-
-He held out the corkscrew. She did not take it.
-
-"Are you on your own tonight," she said.
-
-"My daughter is at her mother's."
-
-"Oh."
-
-A pause. He should have closed the door. He did not.
-
-"I have wine," she said, "and no one to drink it with, and I have been hearing you walk around in there alone for three weeks."
-
-"You've been listening."
-
-"Yes."
-
-He looked at her properly. He let himself, for the first time, look at her properly. She let him.
-
-"If I come over," he said, "I should be honest with you about what I have been thinking for three weeks."
-
-"That would save us both some time."
-
-He stepped out into the hallway. He pulled his door closed behind him.
-
-She turned and walked the four steps to her own door. She left it open behind her.
-
-He stood on the threshold.`,
-  },
-  {
-    number: 10,
-    slug: "10-night-manager",
-    title: "The Night Manager",
-    tagline: "Nine years of noticing everything. Tonight, suite 412.",
-    excerpt: "\"Don't go yet,\" she said.",
-    endsOn: "the door, left open.",
-    tags: ["His POV", "Hotel", "British voice"],
-    voice: "james",
-    voiceName: "James",
-    voiceMeta: "British · Assured",
-    pairing: "Her & Him",
-    runtimeSec: 145,
-    transcript: `He was the night manager. He had been the night manager for nine years. He noticed everything because that was the job — who came in, who left, who had drunk too much, who needed help, who needed a taxi, who needed to be left alone.
-
-She had checked in three days ago. Suite four-twelve. She had been to a different event every night, and come back at a different hour each time, and tonight she came back at midnight, alone, in a midnight-blue dress that was — he could tell, because he noticed everything — too good for the event she had been to.
-
-She came to the desk. She had been crying, or about to cry, he wasn't sure which.
-
-"I think I locked my key in the room."
-
-"I'll walk you up."
-
-"You don't have to."
-
-"It's policy."
-
-It wasn't policy. He took the master, and they walked to the lift in a silence that he found, by the third floor, that he did not want to break.
-
-At her door he produced the key. He opened it. He stepped back.
-
-She did not go in.
-
-She turned around in the doorway. She looked at him for a long second. He had seen this look before, in nine years of nights — the look of a woman who was about to ask for something a stranger could give her that no one she knew could.
-
-"Don't go yet," she said.
-
-"Madam."
-
-"Please."
-
-"You've been drinking."
-
-"Two glasses. Three hours ago."
-
-He looked at her. He looked, for the first time in nine years, properly at a guest. She let him.
-
-"I'll come in for a moment," he said. "Until you're inside."
-
-She stepped back into her room.
-
-She left the door open behind her.`,
   },
 ];
 

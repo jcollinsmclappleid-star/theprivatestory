@@ -63,7 +63,7 @@ export default function Listen() {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="text-center mb-10 mt-4"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary/60 mb-4">
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-4">
             Editor's choice · Two stories
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground leading-tight mb-4">
@@ -207,15 +207,20 @@ export default function Listen() {
         </motion.div>
 
         {/* Bottom note */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="text-center text-[10px] text-white/25 mt-4 leading-relaxed"
+          className="mt-6 w-full rounded-xl border border-primary/20 bg-primary/[0.05] px-5 py-4 text-center"
         >
-          Both are editor's selections. Yours is written from scratch — around your cast,<br />
-          your scene, your desire, your intensity.
-        </motion.p>
+          <p className="text-[12px] text-white/70 leading-relaxed">
+            These are the editors' own picks — chosen to show range, not to show everything.
+            They stop where they do on purpose.
+          </p>
+          <p className="text-[12px] text-primary/80 font-medium mt-1.5 leading-relaxed">
+            Your story has no such restriction.
+          </p>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}

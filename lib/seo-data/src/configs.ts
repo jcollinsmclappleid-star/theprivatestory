@@ -2,9 +2,15 @@
 // Both the api-server SSR routes and the React SPA pages import from here.
 
 import type { SEOPageConfig } from "./types.js";
+import {
+  dipseaAlternativeConfig,
+  quinnAlternativeConfig,
+  ferlyAlternativeConfig,
+  gonewildaudioAlternativeConfig,
+} from "./competitor-configs.js";
 
 export const adultAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Adult Audio Stories | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
+  meta: { title: `Personalised Adult Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
   hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, right now, around exactly what you want to feel.` },
   heroCTALabel: "Create your adult story",
   heroImage: "images/seo-hero-intimate.png",
@@ -143,7 +149,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
-  meta: { title: `AI Audio Story Generator | The Private Story`, description: `An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.` },
+  meta: { title: `AI Audio Story Generator — Free Sample, Yours in Minutes | The Private Story`, description: `An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.` },
   hero: { badge: `AI-Generated · Emotionally Intelligent · Private`, h1: `AI Audio Story Generator — Stories Written Around Your Mood, Not the Algorithm's`, tagline: `Not a library. Not a playlist. An intelligence that writes your story from scratch.` },
   heroCTALabel: "Generate your audio story",
   heroImage: "images/seo-hero-ai.png",
@@ -500,7 +506,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
 };
 
 export const audioStoriesForWomenConfig: SEOPageConfig = {
-  meta: { title: `Personalised Audio Stories for Women | The Private Story`, description: `Audio stories for women, created around how you want to feel right now. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
+  meta: { title: `Personalised Audio Stories for Women — Free Sample, No Sign-Up | The Private Story`, description: `Audio stories for women, created around how you want to feel right now. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
   hero: { badge: `For Women · Private · Personalised`, h1: `Audio Stories for Women — Your Desires at the Centre`, tagline: `Built around what women actually want from audio fiction. Not what the market assumes. Not a best guess. What you said you wanted.` },
   heroCTALabel: "Create your audio story",
   heroImage: "images/seo-hero-women.png",
@@ -1020,7 +1026,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
 };
 
 export const bedtimeAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Bedtime Audio Stories for Adults | The Private Story`, description: `Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.` },
+  meta: { title: `Bedtime Audio Stories for Adults — Free Sample, Drift Door | The Private Story`, description: `Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.` },
   hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night`, tagline: `Not a children's story with the language updated. A story made for how you actually arrive at the end of your day.` },
   heroCTALabel: "Create your bedtime story",
   heroCTAHref: "/drift",
@@ -1343,7 +1349,7 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
 };
 
 export const confidentEnergyStoriesConfig: SEOPageConfig = {
-  meta: { title: `Confident Energy Audio Stories | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel right now.` },
+  meta: { title: `Confident Energy Audio Stories — Personalised & Narrated | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel right now.` },
   hero: { badge: `Confident · Charged · Private`, h1: `Confident Energy Audio Stories — At the Centre of Something Cinematic`, tagline: `You as the protagonist — not waiting to be noticed. Already the reason the room changed.` },
   heroCTALabel: "Create your confident-energy story",
   heroImage: "images/seo-hero-enemies.png",
@@ -1482,7 +1488,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
 };
 
 export const createYourOwnAudioStoryConfig: SEOPageConfig = {
-  meta: { title: `Create Your Own Audio Story | The Private Story`, description: `Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.` },
+  meta: { title: `Create Your Own Audio Story — Free Sample, Yours in 2 Min | The Private Story`, description: `Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.` },
   hero: { badge: `Create · Personalise · Listen Privately`, h1: `Create Your Own Audio Story in Minutes — Shaped Around You`, tagline: `You already know what you need to feel right now. The Private Story makes it.` },
   heroCTALabel: "Create your audio story",
   heroImage: "images/seo-hero-create.png",
@@ -1626,7 +1632,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
 };
 
 export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Dark Romance Audio Stories | The Private Story`, description: `Dark romance audio stories created for adults. Private, personalised, and written around morally complex desire — the shadow side of wanting. Create yours.` },
+  meta: { title: `Dark Romance Audio Stories — Personalised, Free Sample | The Private Story`, description: `Dark romance audio stories created for adults. Private, personalised, and written around morally complex desire — the shadow side of wanting. Create yours.` },
   hero: { badge: `Dark Romance · Private · Adults Only`, h1: `Dark Romance Audio Stories — Where Danger and Desire Are the Same Thing`, tagline: `The stories that don't look away. The characters who make you feel things you're not supposed to admit to.` },
   heroCTALabel: "Create your dark romance",
   heroCTAHref: "/after-dark",
@@ -1766,7 +1772,7 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const emotionalAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Emotional Audio Stories | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
+  meta: { title: `Emotional Audio Stories — Made for You, Heard Privately | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
   hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For whenever you need to feel something — but haven't quite found the words for what.` },
   heroCTALabel: "Create your emotional story",
   heroImage: "images/seo-hero-romantic.png",
@@ -1907,7 +1913,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Enemies to Lovers Audio Stories | The Private Story`, description: `Enemies to lovers audio stories created for adults. Private, personalised, and built around the specific tension of opposition turning into something else entirely. Create yours.` },
+  meta: { title: `Enemies to Lovers Audio Stories — Personalised, Free Sample | The Private Story`, description: `Enemies to lovers audio stories created for adults. Private, personalised, and built around the specific tension of opposition turning into something else entirely. Create yours.` },
   hero: { badge: `Enemies to Lovers · Rivals · Private`, h1: `Enemies to Lovers Audio Stories — The Best Tension Has History`, tagline: `The chemistry that started as opposition. The story that began somewhere before the wanting.` },
   heroCTALabel: "Create your enemies-to-lovers",
   heroImage: "images/seo-hero-enemies.png",
@@ -2045,7 +2051,7 @@ export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Forbidden Romance Audio Stories | The Private Story`, description: `Forbidden romance audio stories created for adults. Private, personalised, and built around the specific charge of wanting what you shouldn't. Create yours.` },
+  meta: { title: `Forbidden Romance Audio Stories — Personalised & Narrated | The Private Story`, description: `Forbidden romance audio stories created for adults. Private, personalised, and built around the specific charge of wanting what you shouldn't. Create yours.` },
   hero: { badge: `Forbidden · Private · Adults Only`, h1: `Forbidden Romance Audio Stories — The Pull You're Not Supposed to Feel`, tagline: `The most charged stories are always the ones where something is at stake. Where wanting costs something.` },
   heroCTALabel: "Create your forbidden romance",
   heroImage: "images/seo-hero-dark-romance.png",
@@ -2183,7 +2189,7 @@ export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const intimateAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Intimate Audio Stories | The Private Story`, description: `Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.` },
+  meta: { title: `Intimate Audio Stories — Personalised & Private | The Private Story`, description: `Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.` },
   hero: { badge: `Intimate · Private · Adults Only`, h1: `Intimate Audio Stories — Private, Personal, Created Around Your Desire`, tagline: `The story that knows what you need right now — because you told it.` },
   heroCTALabel: "Create your intimate story",
   heroImage: "images/seo-hero-intimate.png",
@@ -2331,7 +2337,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const lateNightAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Late Night Audio Stories | The Private Story`, description: `Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Your story, created for tonight.` },
+  meta: { title: `Late Night Audio Stories — Free Sample, Made for You | The Private Story`, description: `Late night audio stories created for adults. Private, atmospheric, and shaped around the specific energy of after midnight. Your story, created for tonight.` },
   hero: { badge: `After Dark · Private · Adults Only`, h1: `Late Night Audio Stories — After Midnight, the Rules Change`, tagline: `The particular quality of late night — its honesty, its atmosphere, its specific permission — captured in a story made for it.` },
   heroCTALabel: "Create your late-night story",
   heroCTAHref: "/drift",
@@ -2470,7 +2476,7 @@ export const lateNightAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const loveStoriesAudioConfig: SEOPageConfig = {
-  meta: { title: `Love Stories Audio | The Private Story`, description: `Audio love stories created for adults. Emotionally intelligent, private, and personalised around your mood and preferences. Not a library — your story.` },
+  meta: { title: `Love Stories Audio — Personalised & Narrated for You | The Private Story`, description: `Audio love stories created for adults. Emotionally intelligent, private, and personalised around your mood and preferences. Not a library — your story.` },
   hero: { badge: `Love · Emotional Depth · Private`, h1: `Love Stories Audio — Emotionally Intelligent Stories Created Around You`, tagline: `Love stories written for the emotional complexity of adult feeling — not simplified, not sanitised, not the same story retold.` },
   heroCTALabel: "Create your love story",
   heroImage: "images/seo-hero-romantic.png",
@@ -2609,7 +2615,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
 };
 
 export const personalisedAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Audio Stories | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
+  meta: { title: `Personalised Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
   hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Sometimes you don't want to browse. You want something that already knows what you need.` },
   heroCTALabel: "Create your personalised story",
   heroImage: "images/seo-hero-personalised.png",
@@ -2780,7 +2786,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const privateAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Private Audio Stories | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
+  meta: { title: `Private Audio Stories — No Sign-Up, Yours Tonight | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
   hero: { badge: `Private by Design · No Social · Yours Alone`, h1: `Private Audio Stories — Created for You, Heard Only by You`, tagline: `What you listen to in private should stay private. Here, it always does.` },
   heroCTALabel: "Create your private story",
   heroImage: "images/seo-hero-women.png",
@@ -2957,7 +2963,7 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const quietIntensityStoriesConfig: SEOPageConfig = {
-  meta: { title: `Quiet Intensity Audio Stories | The Private Story`, description: `Quiet intensity audio stories for adults. Restrained, psychological, and deeply charged. Private and personalised around the specific pleasure of what isn't said.` },
+  meta: { title: `Quiet Intensity Audio Stories — Free Sample, Made for You | The Private Story`, description: `Quiet intensity audio stories for adults. Restrained, psychological, and deeply charged. Private and personalised around the specific pleasure of what isn't said.` },
   hero: { badge: `Quiet · Psychological · Private`, h1: `Quiet Intensity Audio Stories — The Loudest Desire Is the Kind That Doesn't Speak`, tagline: `Everything implied. Nothing stated. The specific charge of two people in a room where both of them know.` },
   heroCTALabel: "Create your quiet-intensity story",
   heroImage: "images/seo-hero-intimate.png",
@@ -3096,7 +3102,7 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
 };
 
 export const relaxingAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Relaxing Audio Stories | The Private Story`, description: `Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.` },
+  meta: { title: `Relaxing Audio Stories — Free Sample, Made for You | The Private Story`, description: `Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.` },
   hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Relaxing Audio Stories for Adults — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what right now requires.` },
   heroCTALabel: "Create your relaxing story",
   heroCTAHref: "/drift",
@@ -3245,7 +3251,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const romanticAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Romantic Audio Stories | The Private Story`, description: `Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.` },
+  meta: { title: `Romantic Audio Stories — Personalised & Narrated | The Private Story`, description: `Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.` },
   hero: { badge: `Romantic · Private · Made for You`, h1: `Romantic Audio Stories — Intimate, Private, Made Around Your Mood`, tagline: `Choose how you want to feel right now. The story is made around that.` },
   heroCTALabel: "Create your romance",
   heroImage: "images/seo-hero-romantic.png",
@@ -3386,7 +3392,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const sleepAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Sleep Audio Stories for Adults | The Private Story`, description: `Sleep audio stories for adults, created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.` },
+  meta: { title: `Sleep Audio Stories for Adults — Free Sample, Drift Door | The Private Story`, description: `Sleep audio stories for adults, created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.` },
   hero: { badge: `Bedtime · Relaxation · Adults Only`, h1: `Sleep Audio Stories for Adults — Fall Asleep to a Story Made for Tonight`, tagline: `Your mind needs somewhere to go before it can let go. Give it somewhere worth going.` },
   heroCTALabel: "Create your sleep story",
   heroCTAHref: "/drift",
@@ -3545,7 +3551,7 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const slowBurnAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Slow Burn Audio Stories | The Private Story`, description: `Slow burn audio stories created for adults. Private, personalised, and built around tension, restraint, and the specific pleasure of delay. Create yours.` },
+  meta: { title: `Slow Burn Audio Stories — Free 30s Sample, Made for You | The Private Story`, description: `Slow burn audio stories created for adults. Private, personalised, and built around tension, restraint, and the specific pleasure of delay. Create yours.` },
   hero: { badge: `Slow Burn · Tension · Private`, h1: `Slow Burn Audio Stories — Every Almost-Touch. Every Loaded Glance. Worth the Wait.`, tagline: `The pleasure of delay. The specific satisfaction of something that takes its time because it knows exactly where it's going.` },
   heroCTALabel: "Create your slow-burn romance",
   heroImage: "images/seo-hero-romantic.png",
@@ -4529,7 +4535,7 @@ export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
 };
 
 export const forcedProximityRomanceAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Forced Proximity Romance Audio Stories | The Private Story`, description: `Forced proximity romance audio stories created for adults. Private, personalised, and built around the specific charge of shared space that removes the social permission to keep distance. Create yours.` },
+  meta: { title: `Forced Proximity Romance — Personalised, Free Sample | The Private Story`, description: `Forced proximity romance audio stories created for adults. Private, personalised, and built around the specific charge of shared space that removes the social permission to keep distance. Create yours.` },
   hero: { badge: `Forced Proximity · Slow Burn · Private`, h1: `Forced Proximity Romance Audio Stories — When Shared Space Decides Something`, tagline: `The snowstorm doesn't ask permission. Neither does the shared deadline, the borrowed apartment, or the assignment that sent both of you to the same place.` },
   heroCTALabel: "Create your forced-proximity romance",
   heroImage: "images/seo-hero-intimate.png",
@@ -4673,7 +4679,7 @@ export const forcedProximityRomanceAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
-  meta: { title: `Erotic Audiobooks for Women | The Private Story`, description: `Erotic audiobooks for women — and something the audiobook format never offered: a story written specifically for you, this session, around exactly what you want to feel. Private and narrated.` },
+  meta: { title: `Erotic Audiobooks for Women — Personalised, Free Sample | The Private Story`, description: `Erotic audiobooks for women — and something the audiobook format never offered: a story written specifically for you, this session, around exactly what you want to feel. Private and narrated.` },
   hero: { badge: `Erotic Audio · Personalised · Private`, h1: `Erotic Audiobooks for Women — And Something the Catalogue Never Had`, tagline: `The audiobook brought literary erotic fiction to a listening audience. What it couldn't do was write a story that was yours.` },
   heroCTALabel: "Create your erotic story",
   heroCTAHref: "/after-dark",
@@ -4817,7 +4823,7 @@ export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
 };
 
 export const officeRomanceAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Office Romance Audio Stories | The Private Story`, description: `Office romance audio stories created for adults. Private, personalised, and built around the specific charge of professional proximity — where you have to behave normally around someone who makes normal impossible.` },
+  meta: { title: `Office Romance Audio Stories — Personalised & Narrated | The Private Story`, description: `Office romance audio stories created for adults. Private, personalised, and built around the specific charge of professional proximity — where you have to behave normally around someone who makes normal impossible.` },
   hero: { badge: `Office Romance · Professional Tension · Private`, h1: `Office Romance Audio Stories — The Most Charged Stories Begin at Work`, tagline: `The professional world has its own rules. It also has a specific kind of tension that no other setting produces — the wanting that has nowhere to go during business hours.` },
   heroCTALabel: "Create your office romance",
   heroImage: "images/seo-hero-romantic.png",
@@ -4960,7 +4966,7 @@ export const officeRomanceAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const steamyAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Steamy Audio Stories | The Private Story`, description: `Steamy audio stories created for adults — the warm, charged register where desire is present in every sentence and the imagination completes what the prose gestures toward. Private and personalised.` },
+  meta: { title: `Steamy Audio Stories — Free 30s Sample, Made for You | The Private Story`, description: `Steamy audio stories created for adults — the warm, charged register where desire is present in every sentence and the imagination completes what the prose gestures toward. Private and personalised.` },
   hero: { badge: `Steamy · Charged · Private`, h1: `Steamy Audio Stories — Where Wanting Has Room to Build`, tagline: `Not cold. Not explicit. The warm, building register where desire is present in every sentence and the story trusts you to feel what it describes.` },
   heroCTALabel: "Create your steamy story",
   heroCTAHref: "/after-dark",
@@ -5105,7 +5111,7 @@ export const steamyAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const aiEroticaConfig: SEOPageConfig = {
-  meta: { title: `AI Erotica | The Private Story`, description: `AI erotica that is actually worth listening to — literary, narrated, and built around your specific choices before anything is created. Private, personalised, and genuinely good.` },
+  meta: { title: `AI Erotica — Personalised, Private, Made for You | The Private Story`, description: `AI erotica that is actually worth listening to — literary, narrated, and built around your specific choices before anything is created. Private, personalised, and genuinely good.` },
   hero: { badge: `AI Erotica · Personalised · Private`, h1: `AI Erotica — What It Is When It Is Built Properly`, tagline: `The category exists. The quality varies enormously. What changes everything is the brief — the specificity of your choices before the story is created.` },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
@@ -9794,6 +9800,11 @@ export const allPageConfigs = new Map<string, SEOPageConfig>([
   ["sensual-audio-stories", sensualAudioStoriesConfig],
   ["how-to-listen-to-audio-erotica", howToListenToAudioEroticaConfig],
   ["audio-erotica-for-beginners", audioEroticaForBeginnersConfig],
+  // Competitor "alternative" pages — positives-only, no comparison tables
+  ["dipsea-alternative", dipseaAlternativeConfig],
+  ["quinn-alternative", quinnAlternativeConfig],
+  ["ferly-alternative", ferlyAlternativeConfig],
+  ["gonewildaudio-alternative", gonewildaudioAlternativeConfig],
 ]);
 
 export function getPageConfig(slug: string): SEOPageConfig | undefined {

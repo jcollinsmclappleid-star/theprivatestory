@@ -301,7 +301,7 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
 </html>`;
 }
 
-function escHtml(str: string): string {
+export function escHtml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")

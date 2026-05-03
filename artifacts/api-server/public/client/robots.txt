@@ -51,3 +51,4 @@ User-agent: FacebookBot
 Disallow: /
 
 Sitemap: https://theprivatestory.com/sitemap.xml
+Sitemap: https://theprivatestory.com/sitemap-images.xml

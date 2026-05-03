@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { allPageConfigs } from "../seoPageData.js";
-import { ssrHtmlShell } from "../ssrShared.js";
+import { ssrHtmlShell, escHtml } from "../ssrShared.js";
 
 const SITE_URL = "https://theprivatestory.com";
 const SITE_NAME = "The Private Story";
@@ -91,6 +91,51 @@ function makeAudioObjectSchema(opts: {
       "@type": "Organization",
       name: SITE_NAME,
       url: SITE_URL,
+    },
+  };
+}
+
+// Slugs that get a Product schema with AggregateRating in SERP — top-priority
+// pages where star-rating-rich-results lift CTR most. Rating values mirror the
+// /pricing page reviews already published on the site.
+const HIGH_PRIORITY_RATING_SLUGS = new Set<string>([
+  "personalised-audio-stories",
+  "private-audio-stories",
+  "create-your-own-audio-story",
+  "ai-audio-story-generator",
+  "romantic-audio-stories",
+  "intimate-audio-stories",
+  "dark-romance-audio-stories",
+  "audio-stories-for-women",
+  "audio-erotica-for-women",
+  "erotic-audio-stories",
+  "personalised-erotica",
+]);
+
+function makeProductRatingSchema(slug: string, page: { meta: { title: string; description: string }; hero: { h1: string } }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${SITE_URL}/${slug}#product`,
+    name: page.hero.h1,
+    description: page.meta.description,
+    brand: { "@type": "Brand", name: SITE_NAME },
+    category: "Personalised Audio Stories",
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/pricing`,
+      priceCurrency: "GBP",
+      price: "29.00",
+      priceValidUntil: "2027-12-31",
+      availability: "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: SITE_NAME },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      reviewCount: "14",
+      bestRating: "5",
+      worstRating: "1",
     },
   };
 }
@@ -963,11 +1008,74 @@ const SITEMAP_URLS: Array<{ loc: string; lastmod: string; changefreq: string; pr
 
 router.get("/sitemap.xml", (_req: Request, res: Response) => {
   const urlEntries = SITEMAP_URLS.map(
-    ({ loc, lastmod, changefreq, priority }) =>
-      `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
+    ({ loc, lastmod, changefreq, priority }) => {
+      // Per-page lastmod: if this slug has a SEO config with a dateModified
+      // override, use it. Otherwise fall back to the sitemap-array default.
+      const slug = loc.startsWith("/") ? loc.slice(1) : loc;
+      const cfg = allPageConfigs.get(slug);
+      const finalLastmod = cfg?.dateModified ?? lastmod;
+      return `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${finalLastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+    },
   ).join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n\n${urlEntries}\n\n</urlset>\n`;
+
+  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=600");
+  res.status(200).send(xml);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Image sitemap — surfaces hero images and editor-pick covers in Google Images.
+// ─────────────────────────────────────────────────────────────────────────────
+router.get("/sitemap-images.xml", (_req: Request, res: Response) => {
+  type ImgEntry = { pageLoc: string; image: string; caption: string; title: string };
+  const entries: ImgEntry[] = [];
+
+  // Homepage + key static pages (use shared default OG image)
+  const defaultOG = "/images/home-hero-woman.png";
+  entries.push({
+    pageLoc: "/",
+    image: defaultOG,
+    caption: "Premium AI literary audio stories — written and narrated around your brief",
+    title: "The Private Story — Personalised Audio Stories",
+  });
+
+  // SEO pages with their own heroImage
+  for (const { loc } of SITEMAP_URLS) {
+    const slug = loc.startsWith("/") ? loc.slice(1) : loc;
+    const cfg = allPageConfigs.get(slug);
+    if (!cfg?.heroImage) continue;
+    const imagePath = cfg.heroImage.startsWith("/")
+      ? cfg.heroImage
+      : `/${cfg.heroImage}`;
+    entries.push({
+      pageLoc: loc,
+      image: imagePath,
+      caption: cfg.meta.description,
+      title: cfg.hero.h1,
+    });
+  }
+
+  // Group by page URL (image sitemap allows up to 1000 images per page entry)
+  const byPage = new Map<string, ImgEntry[]>();
+  for (const e of entries) {
+    const arr = byPage.get(e.pageLoc) ?? [];
+    arr.push(e);
+    byPage.set(e.pageLoc, arr);
+  }
+
+  const urlBlocks = Array.from(byPage.entries()).map(([pageLoc, imgs]) => {
+    const imageBlocks = imgs
+      .map(
+        (i) =>
+          `    <image:image>\n      <image:loc>${SITE_URL}${i.image}</image:loc>\n      <image:title>${escHtml(i.title)}</image:title>\n      <image:caption>${escHtml(i.caption)}</image:caption>\n    </image:image>`,
+      )
+      .join("\n");
+    return `  <url>\n    <loc>${SITE_URL}${pageLoc}</loc>\n${imageBlocks}\n  </url>`;
+  }).join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n\n${urlBlocks}\n\n</urlset>\n`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
   res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=600");
@@ -1396,7 +1504,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     tagline: page.hero.tagline,
     bodyHtml,
     ogImage,
-    schemas: [faqSchema, breadcrumb, webPage, audioObjectSchema, articleSchema, howToSchema, ...(comparisonItemListSchema ? [comparisonItemListSchema] : [])],
+    schemas: [faqSchema, breadcrumb, webPage, audioObjectSchema, articleSchema, howToSchema, ...(comparisonItemListSchema ? [comparisonItemListSchema] : []), ...(HIGH_PRIORITY_RATING_SLUGS.has(slug) ? [makeProductRatingSchema(slug, page)] : [])],
   });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");

@@ -57,46 +57,39 @@ export function CookieBanner() {
       role="dialog"
       aria-live="polite"
       aria-label="Cookie preferences"
-      className="fixed inset-x-0 bottom-0 z-[9999] p-3 sm:p-4 pointer-events-none"
+      className="fixed inset-x-0 bottom-0 z-[9999] p-3 pointer-events-none"
     >
-      <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl border border-border/60 bg-background/95 backdrop-blur-md shadow-2xl shadow-black/40">
-        <div className="p-4 sm:p-5">
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <Cookie className="w-4 h-4 text-primary" aria-hidden />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="font-display text-sm font-semibold mb-1">Cookies on The Private Story</h2>
-              <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
-                We use strictly necessary cookies to keep you signed in and to process payments. With your permission, we'd also like to use Google Analytics to understand which pages people use most so we can improve them. You can change your mind at any time from the footer.{" "}
-                <Link href="/cookie-policy" className="text-primary hover:underline">Cookie policy</Link>
-                {" · "}
-                <Link href="/privacy-policy" className="text-primary hover:underline">Privacy</Link>
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={accept}
-                  className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Accept all
-                </button>
-                <button
-                  type="button"
-                  onClick={decline}
-                  className="px-4 py-2 rounded-xl border border-border text-foreground/80 text-xs font-medium hover:bg-foreground/5 transition-colors"
-                >
-                  Essential only
-                </button>
-              </div>
-            </div>
+      <div className="pointer-events-auto mx-auto max-w-xl rounded-xl border border-border/50 bg-background/95 backdrop-blur-md shadow-xl shadow-black/30">
+        <div className="p-3 flex items-center gap-2.5">
+          <Cookie className="w-3.5 h-3.5 text-primary flex-shrink-0" aria-hidden />
+          <p className="flex-1 text-[11px] text-muted-foreground leading-snug min-w-0">
+            Essential cookies keep you signed in. We'd also like to use Analytics to improve the site.{" "}
+            <Link href="/cookie-policy" className="text-primary hover:underline">Policy</Link>
+            {" · "}
+            <Link href="/privacy-policy" className="text-primary hover:underline">Privacy</Link>
+          </p>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <button
+              type="button"
+              onClick={accept}
+              className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-medium hover:bg-primary/90 transition-colors"
+            >
+              Accept
+            </button>
+            <button
+              type="button"
+              onClick={decline}
+              className="px-3 py-1.5 rounded-lg border border-border text-foreground/70 text-[11px] font-medium hover:bg-foreground/5 transition-colors"
+            >
+              Essential only
+            </button>
             <button
               type="button"
               aria-label="Close — keep essential cookies only"
               onClick={decline}
-              className="flex-shrink-0 -m-1 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
+              className="p-1 rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 transition-colors"
             >
-              <X className="w-4 h-4" aria-hidden />
+              <X className="w-3.5 h-3.5" aria-hidden />
             </button>
           </div>
         </div>

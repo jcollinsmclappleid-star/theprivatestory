@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("late-night-audio-stories")!;
 
 export default function LateNightAudioStories() {
-  return <SEOPage config={config} doorFilter={["dark"]} />;
+  return <SEOPage config={config} slug="late-night-audio-stories" doorFilter={["dark"]} />;
 }

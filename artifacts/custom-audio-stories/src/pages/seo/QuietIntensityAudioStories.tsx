@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("quiet-intensity-stories")!;
 
 export default function QuietIntensityAudioStories() {
-  return <SEOPage config={config} doorFilter={["dark"]} />;
+  return <SEOPage config={config} slug="quiet-intensity-stories" doorFilter={["dark"]} />;
 }

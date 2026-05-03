@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("booktok-romance-audio-stories")!;
 
   export default function BooktokRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="booktok-romance-audio-stories" />;
   }
   

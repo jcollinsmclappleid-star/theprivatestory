@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("morally-grey-romance-audio-stories")!;
 
   export default function MorallyGreyRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="morally-grey-romance-audio-stories" />;
   }
   

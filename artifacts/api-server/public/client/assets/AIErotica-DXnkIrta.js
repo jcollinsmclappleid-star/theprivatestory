@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Ck7ahBVm.js";import{S as r,g as t}from"./configs-DL1rGbIQ.js";import"./index-vYGg45rt.js";import"./data-editors-picks-DoYWeP5W.js";const i=t("ai-erotica");function n(){return o.jsx(r,{config:i,doorFilter:["dark"]})}export{n as default};

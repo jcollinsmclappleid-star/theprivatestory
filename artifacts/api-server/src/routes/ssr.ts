@@ -1,25 +1,26 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import type { ParagraphContent } from "@workspace/seo-data";
+import { pickMidCtaTarget, type ParagraphContent } from "@workspace/seo-data";
 import { allPageConfigs } from "../seoPageData.js";
-import { ssrHtmlShell, escHtml } from "../ssrShared.js";
+import { ssrHtmlShell, escHtml, THREE_DOORS_HTML } from "../ssrShared.js";
 
 /**
  * Brand-compliant body-image pool for SEO pages — non-human, dark editorial
  * illustration. Mirrors the React renderer's pool so bots see the same visual
  * surface (image SEO + Discover/Image-pack eligibility).
+ *
+ * WebP versions: 1MB → ~50KB each (95% smaller, no perceptible quality loss).
  */
 const SEO_BODY_IMAGE_POOL: string[] = [
-  "images/seo-body-candlelit-doorway.png",
-  "images/seo-body-four-poster-bed.png",
-  "images/seo-body-library-at-night.png",
-  "images/seo-body-silk-on-velvet.png",
-  "images/seo-body-rain-on-window.png",
-  "images/seo-body-fireplace-and-wine.png",
-  "images/door-romance.png",
-  "images/door-afterdark.png",
-  "images/door-drift.png",
-  "cover-abstract-fallback.png",
+  "images/seo-body-candlelit-doorway.webp",
+  "images/seo-body-four-poster-bed.webp",
+  "images/seo-body-library-at-night.webp",
+  "images/seo-body-silk-on-velvet.webp",
+  "images/seo-body-rain-on-window.webp",
+  "images/seo-body-fireplace-and-wine.webp",
 ];
+
+const SEO_BODY_IMAGE_W = 1408;
+const SEO_BODY_IMAGE_H = 768;
 
 function ssrPageHash(seed: string): number {
   let h = 0;
@@ -36,8 +37,14 @@ function pickSsrBodyImages(seed: string, count: number, override?: string[]): st
   return out;
 }
 
-function bodyImgHtml(src: string): string {
-  return `<figure class="seo-body-img"><img src="/${src}" alt="" aria-hidden="true" loading="lazy" /></figure>`;
+/**
+ * Render a body image. `eager=true` for the first image (in scroll range,
+ * lazy-loading produces a visible pop-in). Width/height attrs lock layout
+ * so there's no shift while the WebP decodes.
+ */
+function bodyImgHtml(src: string, eager = false): string {
+  const loading = eager ? "eager" : "lazy";
+  return `<figure class="seo-body-img"><img src="/${src}" alt="" aria-hidden="true" loading="${loading}" decoding="async" width="${SEO_BODY_IMAGE_W}" height="${SEO_BODY_IMAGE_H}" /></figure>`;
 }
 
 const SITE_URL = "https://theprivatestory.com";
@@ -1418,15 +1425,16 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     </section>`
       : "";
 
-  // Mid-page CTA — restrained re-engagement nudge between Scenarios and Benefits.
-  const midCtaHtml = page.finalCTA?.primary
-    ? `
+  // Mid-page CTA — restrained re-engagement nudge between Scenarios and
+  // Benefits. Routes to the door that matches the page's tone. Shared
+  // helper from @workspace/seo-data so React + SSR always agree.
+  const midCta = pickMidCtaTarget(slug);
+  const midCtaHtml = `
     <section class="mid-cta">
       <p class="mid-cta-eyebrow">Ready when you are</p>
       <p class="mid-cta-line">A story made for you, in about a minute. Heard only by you.</p>
-      <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">${esc(page.finalCTA.primary.label)}</a>
-    </section>`
-    : "";
+      <a class="cta-primary" href="${midCta.href}">${midCta.label} &rarr;</a>
+    </section>`;
 
   const benefitsHtml =
     page.benefits?.items?.length
@@ -1554,7 +1562,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">Create your story</a>
     ${TRUST_BAR_HTML}
     ${sectionsHtml}
-    ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0]) : ""}
+    ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0], true) : ""}
     ${comparisonTableHtml}
     ${scenariosHtml}
     ${bodyImgs[1] ? bodyImgHtml(bodyImgs[1]) : ""}
@@ -1565,6 +1573,7 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     ${howItWorksHtml}
     ${faqsHtml}
     ${finalCtaHtml}
+    ${THREE_DOORS_HTML}
     ${crossLinksHtml}
     ${EXPLORE_HTML}`;
 

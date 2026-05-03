@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("mafia-romance-audio-stories")!;
 
   export default function MafiaRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="mafia-romance-audio-stories" />;
   }
   

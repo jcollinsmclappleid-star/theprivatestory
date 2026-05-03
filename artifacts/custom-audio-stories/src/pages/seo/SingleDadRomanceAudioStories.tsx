@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("single-dad-romance-audio-stories")!;
 
   export default function SingleDadRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="single-dad-romance-audio-stories" />;
   }
   

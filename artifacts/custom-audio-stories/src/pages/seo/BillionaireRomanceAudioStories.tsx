@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("billionaire-romance-audio-stories")!;
 
   export default function BillionaireRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="billionaire-romance-audio-stories" />;
   }
   

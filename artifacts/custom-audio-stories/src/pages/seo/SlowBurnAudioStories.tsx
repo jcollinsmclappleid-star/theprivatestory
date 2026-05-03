@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("slow-burn-audio-stories")!;
 
 export default function SlowBurnAudioStories() {
-  return <SEOPage config={config} doorFilter={["dark"]} />;
+  return <SEOPage config={config} slug="slow-burn-audio-stories" doorFilter={["dark"]} />;
 }

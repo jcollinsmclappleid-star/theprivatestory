@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("spicy-reads-audio-stories")!;
 
   export default function SpicyReadsAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="spicy-reads-audio-stories" />;
   }
   

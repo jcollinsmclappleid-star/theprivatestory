@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("audio-erotica-with-male-narrator")!;
 
   export default function AudioEroticaWithMaleNarrator() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="audio-erotica-with-male-narrator" />;
   }
   

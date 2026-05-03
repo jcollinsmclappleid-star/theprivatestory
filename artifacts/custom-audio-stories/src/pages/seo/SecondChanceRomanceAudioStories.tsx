@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("second-chance-romance-audio-stories")!;
 
   export default function SecondChanceRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="second-chance-romance-audio-stories" />;
   }
   

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as t,g as i}from"./SEOPage-zf523GHE.js";import"./index-B1EktZN7.js";import"./data-editors-picks-DoYWeP5W.js";const r=i("romantic-audio-stories");function n(){return o.jsx(t,{config:r,slug:"romantic-audio-stories",doorFilter:["dark"]})}export{n as default};

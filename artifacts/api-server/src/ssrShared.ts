@@ -39,8 +39,8 @@ h1{font-family:Georgia,serif;font-size:2.25rem;font-weight:bold;color:#e8e6e3;ma
 .trust-item strong{display:block;font-size:14px;color:#e8e6e3;margin-bottom:2px}
 .trust-item span{font-size:12px;color:#6b6055}
 section{margin-bottom:48px}
-.seo-body-img{margin:32px -24px;border-top:1px solid #1e1e1e;border-bottom:1px solid #1e1e1e;overflow:hidden}
-.seo-body-img img{display:block;width:100%;height:auto}
+.seo-body-img{margin:32px -24px;border-top:1px solid #1e1e1e;border-bottom:1px solid #1e1e1e;overflow:hidden;background:#0f0f10}
+.seo-body-img img{display:block;width:100%;height:auto;aspect-ratio:1408/768}
 @media(min-width:760px){.seo-body-img{margin:32px 0;border:1px solid #1e1e1e;border-radius:12px}}
 .mid-cta{margin:48px 0;padding:28px 24px;border:1px solid rgba(201,162,39,.35);background:rgba(201,162,39,.05);border-radius:14px;text-align:center}
 .mid-cta-eyebrow{font-size:11px;font-weight:bold;letter-spacing:.18em;text-transform:uppercase;color:#c9a227;margin-bottom:8px}
@@ -111,7 +111,7 @@ footer{border-top:1px solid #1a1a1a;background:#050506;padding:48px 24px 32px}
 @media(max-width:600px){h1{font-size:1.65rem}.trust-bar{grid-template-columns:1fr}}
 `;
 
-const THREE_DOORS_HTML = `
+export const THREE_DOORS_HTML = `
 <div class="three-doors-wrap">
   <p class="three-doors-heading">Where does your story begin?</p>
   <div class="three-doors">

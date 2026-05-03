@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("age-gap-romance-audio-stories")!;
 
   export default function AgeGapRomanceAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="age-gap-romance-audio-stories" />;
   }
   

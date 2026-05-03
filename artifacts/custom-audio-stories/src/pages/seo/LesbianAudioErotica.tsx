@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("lesbian-audio-erotica")!;
 
   export default function LesbianAudioErotica() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="lesbian-audio-erotica" />;
   }
   

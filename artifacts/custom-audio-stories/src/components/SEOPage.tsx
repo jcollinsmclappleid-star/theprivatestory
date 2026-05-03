@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, EyeOff, Lock, Headphones, ArrowRight, Heart, Clock, Play, Pause, X } from "lucide-react";
 import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
-import type { SEOPageConfig, ParagraphContent } from "@workspace/seo-data";
+import { pickMidCtaTarget as sharedPickMidCtaTarget, type SEOPageConfig, type ParagraphContent } from "@workspace/seo-data";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
 import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
 
@@ -17,17 +17,32 @@ export type { SEOPageConfig };
  * is stable.
  */
 const BODY_IMAGE_POOL: string[] = [
-  "images/seo-body-candlelit-doorway.png",
-  "images/seo-body-four-poster-bed.png",
-  "images/seo-body-library-at-night.png",
-  "images/seo-body-silk-on-velvet.png",
-  "images/seo-body-rain-on-window.png",
-  "images/seo-body-fireplace-and-wine.png",
-  "images/door-romance.png",
-  "images/door-afterdark.png",
-  "images/door-drift.png",
-  "cover-abstract-fallback.png",
+  "images/seo-body-candlelit-doorway.webp",
+  "images/seo-body-four-poster-bed.webp",
+  "images/seo-body-library-at-night.webp",
+  "images/seo-body-silk-on-velvet.webp",
+  "images/seo-body-rain-on-window.webp",
+  "images/seo-body-fireplace-and-wine.webp",
 ];
+
+/** Native dimensions of every body-image asset. Locked so the browser
+ *  reserves layout space and there's no jank when the WebP decodes. */
+const BODY_IMAGE_W = 1408;
+const BODY_IMAGE_H = 768;
+
+/**
+ * Mid-page CTA destination — slug-based, shared with the SSR renderer via
+ * `pickMidCtaTarget` from `@workspace/seo-data`. Wrappers pass `slug` so
+ * client-rendered and server-rendered pages always produce the same href
+ * (no hydration mismatch). When `slug` is absent we fall back to the
+ * `doorFilter` signal so legacy wrappers without a slug prop still work.
+ */
+type DoorIdLocal = "story" | "dark" | "quiet";
+function pickMidCtaFromDoorFilter(doorFilter?: DoorIdLocal[]): { label: string; href: string } {
+  if (doorFilter?.includes("quiet")) return { label: "Drift into a bedtime story", href: "/drift" };
+  if (doorFilter?.includes("dark")) return { label: "Enter After Dark", href: "/after-dark" };
+  return { label: "Create your story", href: "/create" };
+}
 
 // Cheap deterministic hash so each page gets a stable rotation seed.
 function pageHash(seed: string): number {
@@ -316,10 +331,17 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
 
 export default function SEOPage({
   config,
+  slug,
   doorFilter,
   showSecondaryDoors,
 }: {
   config: SEOPageConfig;
+  /**
+   * Page slug (matches the SSR route). When provided, the mid-page CTA is
+   * routed via the shared slug-based classifier so React and SSR agree —
+   * the recommended pattern for every wrapper.
+   */
+  slug?: string;
   doorFilter?: DoorId[];
   showSecondaryDoors?: boolean;
 }) {
@@ -560,14 +582,21 @@ export default function SEOPage({
           ))}
         </div>
 
-        {/* Inline body image #1 — between sections and How It Works */}
+        {/* Inline body image #1 — between sections and How It Works.
+            First body image is eager-loaded (it's the first one in scroll
+            range and lazy-loading caused a visible pop-in). WebP keeps it
+            tiny (~50KB) so eager is cheap. Width/height locked so the
+            box reserves space and there's no layout shift while decoding. */}
         {bodyImgs[0] && (
-          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
               src={`${BASE_URL}/${bodyImgs[0]}`}
               alt=""
               aria-hidden="true"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
+              width={BODY_IMAGE_W}
+              height={BODY_IMAGE_H}
               className="w-full h-auto block"
             />
           </figure>
@@ -618,28 +647,41 @@ export default function SEOPage({
 
         {/* Inline body image #2 — between scenarios and the mid-page CTA */}
         {bodyImgs[1] && (
-          <figure className="mb-12 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+          <figure className="mb-12 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
               src={`${BASE_URL}/${bodyImgs[1]}`}
               alt=""
               aria-hidden="true"
               loading="lazy"
+              decoding="async"
+              width={BODY_IMAGE_W}
+              height={BODY_IMAGE_H}
               className="w-full h-auto block"
             />
           </figure>
         )}
 
         {/* Mid-page CTA — restrained re-engagement nudge between Scenarios
-            and Benefits. Uses the hero CTA copy/href for continuity. */}
-        <section className="mb-16 rounded-2xl border border-primary/30 bg-primary/[0.04] px-6 py-7 md:px-8 md:py-8 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">
-            Ready when you are
-          </p>
-          <p className="text-base md:text-lg text-foreground/90 mb-5 leading-snug max-w-md mx-auto">
-            A story made for you, in about a minute. Heard only by you.
-          </p>
-          <HeroCTA label={config.heroCTALabel} href={config.heroCTAHref} />
-        </section>
+            and Benefits. Routes to the door that matches the page's tone
+            (bedtime → Drift, erotic → After Dark, otherwise → Romance/Create). */}
+        {(() => {
+          // Prefer slug-based routing (matches SSR exactly). Fall back to
+          // doorFilter for any wrapper that hasn't been updated to pass slug.
+          const midCta = slug
+            ? sharedPickMidCtaTarget(slug)
+            : pickMidCtaFromDoorFilter(doorFilter as DoorIdLocal[] | undefined);
+          return (
+            <section className="mb-16 rounded-2xl border border-primary/30 bg-primary/[0.04] px-6 py-7 md:px-8 md:py-8 text-center">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">
+                Ready when you are
+              </p>
+              <p className="text-base md:text-lg text-foreground/90 mb-5 leading-snug max-w-md mx-auto">
+                A story made for you, in about a minute. Heard only by you.
+              </p>
+              <HeroCTA label={midCta.label} href={midCta.href} />
+            </section>
+          );
+        })()}
 
         {/* Benefits */}
         <section className="mb-16">
@@ -672,12 +714,15 @@ export default function SEOPage({
 
         {/* Inline body image #3 — between fullPicture and the final CTA */}
         {bodyImgs[2] && (
-          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20">
+          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
               src={`${BASE_URL}/${bodyImgs[2]}`}
               alt=""
               aria-hidden="true"
               loading="lazy"
+              decoding="async"
+              width={BODY_IMAGE_W}
+              height={BODY_IMAGE_H}
               className="w-full h-auto block"
             />
           </figure>
@@ -772,7 +817,9 @@ export default function SEOPage({
             Romance, After Dark, or Drift — every story is generated for you, privately, around the door you choose.
           </p>
         </div>
-        <ThreeDoors filter={doorFilter} />
+        {/* Always render all three big doors at the end — every SEO page
+            offers the full choice as a final exit, regardless of doorFilter. */}
+        <ThreeDoors />
       </div>
 
       <div className="max-w-2xl mx-auto px-4 pb-16">

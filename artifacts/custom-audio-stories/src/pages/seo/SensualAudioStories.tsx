@@ -4,6 +4,6 @@ import SEOPage from "@/components/SEOPage";
   const config = getPageConfig("sensual-audio-stories")!;
 
   export default function SensualAudioStories() {
-    return <SEOPage config={config} />;
+    return <SEOPage config={config} slug="sensual-audio-stories" />;
   }
   

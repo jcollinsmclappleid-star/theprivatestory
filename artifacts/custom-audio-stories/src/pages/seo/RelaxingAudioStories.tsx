@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("relaxing-audio-stories")!;
 
 export default function RelaxingAudioStories() {
-  return <SEOPage config={config} doorFilter={["quiet"]} showSecondaryDoors />;
+  return <SEOPage config={config} slug="relaxing-audio-stories" doorFilter={["quiet"]} showSecondaryDoors />;
 }

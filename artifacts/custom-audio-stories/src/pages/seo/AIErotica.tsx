@@ -4,5 +4,5 @@ import { getPageConfig } from "@workspace/seo-data";
 const config = getPageConfig("ai-erotica")!;
 
 export default function AIErotica() {
-  return <SEOPage config={config} doorFilter={["dark"]} />;
+  return <SEOPage config={config} slug="ai-erotica" doorFilter={["dark"]} />;
 }

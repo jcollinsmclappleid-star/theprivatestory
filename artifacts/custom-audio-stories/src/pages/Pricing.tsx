@@ -228,7 +228,7 @@ export default function Pricing() {
             {[
               { icon: <Sparkles className="w-3 h-3" />, label: "Ready in under 3 minutes" },
               { icon: <Lock className="w-3 h-3" />, label: "Private from the first word" },
-              { icon: <BookOpen className="w-3 h-3" />, label: "2.6M+ story combinations" },
+              { icon: <BookOpen className="w-3 h-3" />, label: "1M+ story configurations" },
             ].map(({ icon, label }) => (
               <span
                 key={label}
@@ -291,7 +291,7 @@ export default function Pricing() {
       <section className="py-6 px-4 md:px-8 max-w-3xl mx-auto w-full">
         <div className="flex flex-wrap items-center justify-center gap-0 divide-x divide-border/20">
           {[
-            { stat: "2.6M+", label: "Unique story combinations" },
+            { stat: "1M+", label: "Story configurations" },
             { stat: "< 3 mins", label: "From first choice to listening" },
             { stat: "100% private", label: "Visible to no one else" },
           ].map(({ stat, label }) => (

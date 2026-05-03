@@ -436,18 +436,18 @@ export default function SEOPage({
       <div className="py-8 px-4 border-b border-border/20">
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-3 text-center">
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60">
-            Nothing else goes this deep
+            Yours by design, not by selection
           </p>
           <div className="flex items-center gap-2">
-            <span className="text-3xl font-display font-bold text-primary leading-none">2.6M+</span>
-            <span className="text-xs text-muted-foreground/70 leading-snug text-left max-w-[140px]">unique personalised story combinations</span>
+            <span className="text-3xl font-display font-bold text-primary leading-none">1M+</span>
+            <span className="text-xs text-muted-foreground/70 leading-snug text-left max-w-[140px]">story configurations built from your choices</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-1">
             {[
-              { n: "50+",  label: "Countries" },
-              { n: "12",   label: "Historical eras" },
-              { n: "14",   label: "Archetypes" },
-              { n: "9",    label: "Chemistries" },
+              { n: "6",    label: "Pairings" },
+              { n: "8",    label: "Chemistries" },
+              { n: "19",   label: "Archetypes" },
+              { n: "7",    label: "Endings" },
               { n: "200+", label: "Situations" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
@@ -500,7 +500,7 @@ export default function SEOPage({
                 Every choice, on one page.
               </h2>
               <p className="text-sm text-muted-foreground/80 mt-3 max-w-xl mx-auto leading-relaxed">
-                A real example of one configured story. Eight axes — and one of 2.6 million+ combinations the system can produce for you.
+                A real example of one configured story. Eight axes — and one of over a million configurations the system can build from your choices.
               </p>
             </div>
             <StoryAnatomyCard />

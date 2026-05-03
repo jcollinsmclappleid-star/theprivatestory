@@ -117,10 +117,10 @@ function CastingPreview() {
             Eight choices. One story written end-to-end for you. Set the cast, the chemistry, the world, and how far it goes — before a single word is written.
           </p>
           <p className="font-display italic text-base text-muted-foreground/80 mt-4 max-w-xl leading-relaxed">
-            Five pairings. Nine chemistries. Fourteen archetypes. Fifty countries across twelve eras. Two hundred starting points. Four intensities. Four narrators.
+            Six pairings. Eight chemistries. Nineteen archetypes. Two hundred situations. Seven endings. Four intensities. Six narrators.
           </p>
           <p className="text-sm text-primary/85 mt-3 max-w-xl leading-relaxed">
-            <span className="font-semibold text-primary">2.6 million+ unique combinations</span> — only one written for you.
+            <span className="font-semibold text-primary">Over 1 million story configurations</span> — only one built for you.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -402,7 +402,7 @@ export default function Home() {
         <ThreeDoors />
 
         <p className="text-center text-[10px] text-white/25 tracking-widest pt-3 pb-1 px-4">
-          2.6M+ unique story combinations possible
+          Over 1 million story configurations possible
         </p>
 
         {/* ---------------------------------------------------------------- */}

@@ -60,6 +60,30 @@ export default function About() {
         </motion.div>
       </section>
 
+      {/* How yours becomes yours */}
+      <section className="bg-background/50 border-y border-border/40 py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <h2 className="font-display text-3xl font-bold text-foreground mb-4">How yours becomes yours</h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Every story begins with a brief you build, not a story you choose from. You set who's in it. The chemistry between them. The kind of person at the centre. The intensity, from a tender almost-touch to fully unrestrained. The scenario it begins from. The way it ends. The voice that reads it.
+            </p>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Those choices give you over a million possible configurations. But the story itself is built fresh every time — the pacing, the power, the sensory palette, the rhythm of each scene chosen anew when the story is written, with rules that stop any two scenes from feeling the same.
+            </p>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              That is the difference between picking from a shelf and asking for something built for you.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* What Makes Us Different */}
       <section className="bg-background/50 border-y border-border/40 py-20 px-4">
         <div className="max-w-4xl mx-auto">

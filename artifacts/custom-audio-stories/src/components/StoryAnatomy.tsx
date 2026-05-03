@@ -6,14 +6,14 @@ export const ANATOMY_ROWS: ReadonlyArray<{
   scale: string;
   accent: string;
 }> = [
-  { axis: "Pairing",   value: "Her & Him",          scale: "1 of 5",                  accent: "#e879a0" },
-  { axis: "Chemistry", value: "Forbidden Pull",     scale: "1 of 9",                  accent: "#c9a227" },
-  { axis: "Archetype", value: "The Executive",      scale: "1 of 14",                 accent: "#6b8cce" },
-  { axis: "Setting",   value: "Victorian London",   scale: "50+ countries · 12 eras", accent: "#34d399" },
-  { axis: "Intensity", value: "Warm",               scale: "1 of 4",                  accent: "#f97316" },
-  { axis: "Mood",      value: "Slow Burn",          scale: "1 of 8",                  accent: "#a78bfa" },
-  { axis: "Situation", value: "Unexpected Reunion", scale: "1 of 200+",               accent: "#e11d48" },
-  { axis: "Voice",     value: "Clara",              scale: "1 of 4 narrators",        accent: "#c9a227" },
+  { axis: "Pairing",   value: "Her & Him",          scale: "1 of 6",            accent: "#e879a0" },
+  { axis: "Chemistry", value: "Forbidden Pull",     scale: "1 of 8",            accent: "#c9a227" },
+  { axis: "Archetype", value: "The Executive",      scale: "1 of 19",           accent: "#6b8cce" },
+  { axis: "Setting",   value: "Victorian London",   scale: "200+ places",       accent: "#34d399" },
+  { axis: "Intensity", value: "Warm",               scale: "1 of 4",            accent: "#f97316" },
+  { axis: "Ending",    value: "Left wanting more",  scale: "1 of 7",            accent: "#a78bfa" },
+  { axis: "Situation", value: "Unexpected Reunion", scale: "1 of 200+",         accent: "#e11d48" },
+  { axis: "Voice",     value: "Clara",              scale: "1 of 6 narrators",  accent: "#c9a227" },
 ];
 
 /**
@@ -83,7 +83,7 @@ export function StoryAnatomyCard() {
               "He shouldn't be in her study. She should have locked the door."
             </p>
             <p className="text-[11px] text-white/45 mt-3 tracking-wide">
-              One of <span className="text-primary/75">2.6 million+</span>. Yours alone.
+              One of <span className="text-primary/75">over a million</span>. Built for you.
             </p>
           </div>
         </div>

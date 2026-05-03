@@ -745,7 +745,7 @@ const STATIC_PAGES: StaticPage[] = [
     body: `
     <section>
       <h2>Listen Before You Create</h2>
-      <p>Every story on The Private Story is generated and narrated end-to-end around your choices. These free samples let you hear our four professional narrators and the tone of each of the three doors — before you create your own.</p>
+      <p>Every story on The Private Story is generated and narrated end-to-end around your choices. These free samples let you hear our professional narrators and the tone of each of the three doors — before you create your own.</p>
     </section>
     <section>
       <h2>Three Doors, Three Tones</h2>

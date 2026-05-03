@@ -114,7 +114,7 @@ function CastingPreview() {
             The version of them<br className="hidden md:block" /> that's been in your head.
           </h2>
           <p className="text-muted-foreground mt-4 text-base max-w-xl leading-relaxed">
-            Eight choices. One story written end-to-end for you. Set the cast, the chemistry, the world, and how far it goes — before a single word is written.
+            One story written end-to-end for you. Set the cast, the chemistry, the world, and how far it goes — before a single word is written.
           </p>
           <p className="font-display italic text-base text-muted-foreground/80 mt-4 max-w-xl leading-relaxed">
             Six pairings. Eight chemistries. Nineteen archetypes. Two hundred situations. Seven endings. Four intensities. Six narrators.

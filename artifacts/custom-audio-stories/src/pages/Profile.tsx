@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { authClient } from "@/lib/authClient";
 import { VOICES } from "@/lib/voices";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { usePricing } from "@/hooks/usePricing";
 import type { Story } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -369,6 +370,7 @@ function QuickCreateBanner({ taste }: { taste: TasteProfile }) {
 // Main Profile page
 // ---------------------------------------------------------------------------
 export default function Profile() {
+  const { monthly, annual, addon } = usePricing();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteProcessing, setDeleteProcessing] = useState(false);
   const [deleteDone, setDeleteDone] = useState(false);
@@ -552,8 +554,8 @@ export default function Profile() {
                   <div className="flex flex-col gap-2">
                     {(["monthly", "annual"] as const).map((plan) => {
                       const labels: Record<string, string> = {
-                        monthly: "Subscribe — 5 stories/month · £19.99",
-                        annual:  "Annual — 50 stories/year · £149",
+                        monthly: `Subscribe — ${monthly.storyAllowance} stories/month · ${monthly.display}`,
+                        annual:  `Annual — ${annual.storyAllowance} stories/year · ${annual.display}`,
                       };
                       const isLoading = upsellLoading === plan;
                       return (
@@ -729,7 +731,7 @@ export default function Profile() {
                   }}
                   className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
                 >
-                  {addonLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : "Add more stories — £3.99"}
+                  {addonLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : <>Add more stories — <span className="tabular-nums">{addon.display}</span></>}
                 </button>
               )}
               {(usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus !== "canceling" && (

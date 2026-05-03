@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { StoryCard } from "@/components/StoryCard";
 import { SkeletonGrid } from "@/components/SkeletonCard";
 import { CategoryTile } from "@/components/CategoryTile";
+import { usePricing } from "@/hooks/usePricing";
 import { useSubscription } from "@/hooks/useSubscription";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 
@@ -111,6 +112,7 @@ function StoryRow({ categoryId, label, isPaid, onGated }: { categoryId: string; 
 }
 
 function CollectionGate() {
+  const { monthly } = usePricing();
   const [, navigate] = useLocation();
   return (
     <motion.div
@@ -139,7 +141,7 @@ function CollectionGate() {
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-glow"
           >
             <Sparkles className="w-4 h-4" />
-            View plans — from £19.99/month
+            View plans — from <span className="tabular-nums">{monthly.display}</span>/month
           </button>
         </div>
 
@@ -160,6 +162,7 @@ function CollectionGate() {
 }
 
 export default function Browse() {
+  const { monthly } = usePricing();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");

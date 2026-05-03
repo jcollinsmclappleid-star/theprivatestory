@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { FileText, Shield, AlertTriangle, Scale, Mail } from "lucide-react";
+import { usePricing } from "@/hooks/usePricing";
 
 export default function Terms() {
+  const { monthly, annual, addon } = usePricing();
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -91,9 +93,9 @@ export default function Terms() {
         <Section icon={<FileText className="w-5 h-5 text-blue-400" />} iconBg="bg-blue-500/10 border-blue-500/20" title="7. Fees, subscriptions, and billing">
           <p className="text-sm"><strong>Subscription models:</strong></p>
           <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground text-sm">
-            <li>Monthly subscriptions (£19.99/month for 5 stories)</li>
-            <li>Annual subscriptions (£149/year for 50 stories)</li>
-            <li>Additional story purchases (£3.99 per story)</li>
+            <li>Monthly subscriptions ({monthly.display}/month for {monthly.storyAllowance} stories)</li>
+            <li>Annual subscriptions ({annual.display}/year for {annual.storyAllowance} stories)</li>
+            <li>Additional story purchases ({addon.display} per story)</li>
           </ul>
           <p className="mt-3 text-sm"><strong>Automatic renewal:</strong> Subscriptions renew automatically until cancelled. You are responsible for cancelling before renewal if you do not want the next charge.</p>
           <p className="mt-3 text-sm"><strong>Price changes:</strong> We may change subscription prices for future billing periods with reasonable notice.</p>

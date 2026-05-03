@@ -8,6 +8,7 @@ import {
   Users, Sliders, Flame, Trash2, Timer,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { usePricing, type PlansResponse } from "@/hooks/usePricing";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
 import { ThreeDoors } from "@/components/ThreeDoors";
@@ -53,7 +54,7 @@ const INCLUDED = [
   { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
 ];
 
-const FAQS: { q: string; a: string }[] = [
+const buildFaqs = (p: PlansResponse): { q: string; a: string }[] => [
   {
     q: "What is After Dark?",
     a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with every plan, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
@@ -64,11 +65,11 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do I get with each plan?",
-    a: "Both plans include personalised story credits — 5 per month or 50 per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to £19.92 per month.",
+    a: `Both plans include personalised story credits — ${p.monthly.storyAllowance} per month or ${p.annual.storyAllowance} per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to ${p.annual.equivalentMonthlyDisplay} per month.`,
   },
   {
     q: "Can I buy more personalised stories?",
-    a: "Yes. Additional personalised stories are available for £3.99 each — for active subscribers only, without changing your plan. They appear alongside your allowance the moment you purchase.",
+    a: `Yes. Additional personalised stories are available for ${p.addon.display} each — for active subscribers only, without changing your plan. They appear alongside your allowance the moment you purchase.`,
   },
   {
     q: "Do unused monthly stories roll over?",
@@ -102,6 +103,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Pricing() {
   const { isAuthenticated, openSignIn } = useAuth();
+  const { plans, monthly, annual } = usePricing();
+  const FAQS = buildFaqs(plans);
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
   const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | null>(null);
@@ -383,7 +386,7 @@ export default function Pricing() {
                 </span>
               </div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£29.99</span>
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{monthly.display}</span>
                 <span className="text-muted-foreground/80 mb-1.5">/ month</span>
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
@@ -440,11 +443,11 @@ export default function Pricing() {
                 </span>
               </div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground">£239</span>
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{annual.display}</span>
                 <span className="text-muted-foreground/80 mb-1.5">/ year</span>
               </div>
               <p className="text-xs text-muted-foreground/80 mb-8">
-                Equivalent to £19.92 per month — save over £120 versus monthly.
+                Equivalent to <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span> per month — save <span className="tabular-nums">{annual.savingsVsMonthlyDisplay}</span> versus monthly.
               </p>
 
               <div className="space-y-3 mb-3">

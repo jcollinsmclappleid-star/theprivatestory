@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGenerateFullStory } from "@workspace/api-client-react";
+import { usePricing } from "@/hooks/usePricing";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
@@ -671,6 +672,7 @@ function OptionCard({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn, user } = useAuth();
+  const { monthly, annual } = usePricing();
   const [showLanding, setShowLanding] = useState(true);
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result" | "paywall">("casting");
@@ -2353,7 +2355,7 @@ export default function Create() {
                   >
                     <span className="flex items-center gap-2">
                       {paywallLoadingPlan === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      <span>Write my story — £12.42/mo</span>
+                      <span>Write my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo</span>
                       <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-primary-foreground/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                     </span>
                     <span className="text-xs text-primary-foreground/50">billed annually</span>
@@ -2366,7 +2368,7 @@ export default function Create() {
                     className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all disabled:opacity-60 flex items-center justify-center gap-2 px-4"
                   >
                     {paywallLoadingPlan === "monthly" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                    Monthly — £19.99/month
+                    Monthly — <span className="tabular-nums">{monthly.display}</span>/month
                   </button>
                 </div>
 

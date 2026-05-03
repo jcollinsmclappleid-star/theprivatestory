@@ -6,6 +6,7 @@ import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { useSEO } from "@/hooks/useSEO";
+import { usePricing } from "@/hooks/usePricing";
 import { TermsGate } from "@/components/TermsGate";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
@@ -328,6 +329,7 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
+  const { monthly, annual } = usePricing();
   useSEO({
     title: "Drift — Calm bedtime audio stories — The Private Story",
     description:
@@ -912,7 +914,7 @@ export default function Drift() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    <span>Hear my story — £12.42/mo</span>
+                    <span>Hear my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-xs text-white/80">billed annually</span>
@@ -928,7 +930,7 @@ export default function Drift() {
                   {paywallLoadingPlan === "monthly" ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : null}
-                  Monthly — £19.99/month
+                  Monthly — <span className="tabular-nums">{monthly.display}</span>/month
                 </button>
               </div>
 

@@ -6,6 +6,7 @@ import {
   Users, Heart, MapPin, Zap, BookOpen, Layers, Moon,
 } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
+import { usePricing } from "@/hooks/usePricing";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
 import { MiniDoorCTA, ThreeDoors } from "@/components/ThreeDoors";
 
@@ -151,6 +152,7 @@ const TRUST_POINTS = [
 ];
 
 export default function HowItWorks() {
+  const { monthly, annual } = usePricing();
   useSEO({
     title: "How It Works — Create Your Personalised Audio Story | The Private Story",
     description:
@@ -556,7 +558,7 @@ export default function HowItWorks() {
                 Monthly
               </p>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground">£19.99</span>
+                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{monthly.display}</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
               </div>
               <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
@@ -582,11 +584,11 @@ export default function HowItWorks() {
                 </span>
               </div>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground">£149</span>
+                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{annual.display}</span>
                 <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
               </div>
               <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                50 custom stories · full collection · private library · narration · cover art · £14.91/month
+                {annual.storyAllowance} custom stories · full collection · private library · narration · cover art · <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/month
               </p>
               <Link
                 href="/pricing"

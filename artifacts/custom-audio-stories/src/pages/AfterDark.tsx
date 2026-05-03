@@ -7,6 +7,7 @@ import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { useSEO } from "@/hooks/useSEO";
+import { usePricing } from "@/hooks/usePricing";
 import { CastingRoom, PAIRINGS } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
@@ -1288,6 +1289,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
+  const { monthly, annual } = usePricing();
   useSEO({
     title: "After Dark — Unrestrained adult audio fiction — The Private Story",
     description:
@@ -2062,7 +2064,7 @@ export default function AfterDark() {
                     ) : (
                       <Sparkles className="w-4 h-4" />
                     )}
-                    Write my story — £12.42/mo
+                    Write my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
                   <span className="text-[11px] text-white/80 font-normal">billed annually · cancel renewal anytime</span>
@@ -2078,7 +2080,7 @@ export default function AfterDark() {
                   {paywallLoadingPlan === "monthly" ? (
                     <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
                   ) : null}
-                  Monthly — £19.99/month
+                  Monthly — <span className="tabular-nums">{monthly.display}</span>/month
                 </button>
               </div>
 

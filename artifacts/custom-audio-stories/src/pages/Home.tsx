@@ -757,7 +757,7 @@ export default function Home() {
         {/* SEO page links                                                    */}
         {/* ---------------------------------------------------------------- */}
         <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
             {/* Core */}
             <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
@@ -851,6 +851,39 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Compare & Alternatives */}
+            <div className="rounded-2xl border border-border/20 bg-card/20 p-5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">Compare &amp; Alternatives</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "Dipsea alternative", href: "/dipsea-alternative" },
+                  { label: "Quinn alternative", href: "/quinn-alternative" },
+                  { label: "Ferly alternative", href: "/ferly-alternative" },
+                  { label: "GoneWildAudio alternative", href: "/gonewildaudio-alternative" },
+                  { label: "Audio stories vs audiobooks", href: "/audio-stories-vs-audiobooks" },
+                  { label: "Best audio story app", href: "/best-audio-story-app-for-adults" },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm text-muted-foreground/80 hover:text-primary transition-colors leading-snug flex items-center gap-1.5 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-primary/70 group-hover:text-primary/60 transition-colors flex-shrink-0" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/discover"
+              className="text-xs text-primary/70 hover:text-primary transition-colors tracking-widest uppercase"
+            >
+              Browse all 60+ story types →
+            </Link>
           </div>
         </section>
 

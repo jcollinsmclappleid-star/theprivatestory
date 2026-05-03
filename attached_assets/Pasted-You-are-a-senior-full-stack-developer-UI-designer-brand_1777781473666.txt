@@ -1,0 +1,278 @@
+You are a senior full-stack developer, UI designer, brand designer, copywriter, privacy-aware product builder, and technical SEO specialist.
+
+Build a simple, sleek, monochrome one-page website for a UK technology-led operating company called:
+
+IANSON SYSTEMS LIMITED
+
+Purpose:
+This is not an SEO content site and not a public portfolio. It is a quiet corporate presence for a holding/operating company behind multiple digital products and selected service-led brands. The site should feel credible, minimal, premium and controlled. Do not expose individual trading names, product URLs, founder details, personal email address, or residential address in the main page content.
+
+Primary outcome:
+A visitor who searches the company should see a serious, understated company page with a contact form. The page should not invite deep investigation into every business line.
+
+Design direction:
+- Monochrome only.
+- White or off-white background.
+- Charcoal/near-black text.
+- Soft grey borders and dividers.
+- Minimal geometric styling.
+- Lots of whitespace.
+- Modern SaaS/holding-company aesthetic.
+- No bright colours.
+- No gradients unless extremely subtle.
+- No stock images.
+- No fake team imagery.
+- No animated gimmicks.
+- Should feel like Linear / Stripe / boutique venture studio / modern corporate tech.
+
+Logo:
+Use a simple monochrome logo/wordmark:
+- Main text: IANSON SYSTEMS
+- Smaller supporting text: LIMITED
+- Optional icon/monogram: simple geometric “IS” icon.
+- If no image asset exists, create a clean inline SVG logo using text and a minimal “IS” monogram.
+- Logo must look crisp in header and footer.
+- Provide favicon using the “IS” monogram.
+
+Page structure:
+
+1. Header
+- Left: logo/wordmark.
+- Right: minimal nav links:
+  - About
+  - Approach
+  - Contact
+- Keep header sticky or subtly fixed only if it stays elegant.
+- No “Our Brands” nav item.
+
+2. Hero section
+Headline:
+Building practical digital products and service-led brands.
+
+Subheadline:
+Ianson Systems Limited is a UK-based operating company creating simple, useful platforms and technology-led ventures across selected consumer and business markets.
+
+CTA:
+- Primary: Contact us
+- Secondary: Our approach
+
+The CTA should scroll to the contact section. Do not use a mailto link.
+
+3. About section
+Title:
+A technology-led operating company
+
+Body copy:
+We develop, test and operate practical digital products, AI-assisted workflows and selected service-led brands. Our work focuses on clear user experience, efficient systems and UK-specific use cases.
+
+Second short paragraph:
+The company is intentionally broad, but the operating principle is consistent: build useful tools, keep the experience simple, and apply technology where it creates real-world value.
+
+Important:
+Do not mention specific product names, trading names, domains, or project names.
+
+4. Focus areas section
+Use four minimal cards:
+- Digital products
+  Tools and platforms designed to help users complete practical tasks more clearly and efficiently.
+
+- AI-assisted workflows
+  Structured systems that use automation and AI to support drafting, organisation and decision-making.
+
+- Consumer services
+  Selected service-led brands built around trust, clarity and straightforward user experience.
+
+- Business systems
+  Lightweight internal tools, operating processes and digital infrastructure for repeatable execution.
+
+Keep copy generic, credible and not overclaiming.
+
+5. Approach section
+Title:
+Simple systems. Clear execution.
+
+Use 3 principles:
+- Useful before clever
+  Products should solve clear problems before adding complexity.
+
+- Responsible by design
+  Where AI or automation is used, it should support human judgement rather than replace it.
+
+- Built for clarity
+  Every product should be easy to understand, easy to use and direct about what it does.
+
+6. Contact section
+Title:
+Contact us
+
+Body:
+For company, partnership or general enquiries, use the form below.
+
+Form fields:
+- Name
+- Email
+- Company / organisation optional
+- Enquiry type dropdown:
+  - General enquiry
+  - Partnership
+  - Product enquiry
+  - Other
+- Message
+- Consent checkbox:
+  “I agree that Ianson Systems Limited may use the information submitted to respond to this enquiry.”
+- Submit button: Send enquiry
+
+Important privacy/contact requirements:
+- Do not display a direct email address anywhere on the site.
+- Do not use a mailto link.
+- Do not display a phone number.
+- Do not display the registered office address in the visible contact section.
+- Do not expose any private receiving email address in client-side code.
+- Use server-side environment variables for the recipient email.
+
+Contact form technical implementation:
+- Build a secure server-side API route for form submission.
+- Use environment variables:
+  CONTACT_RECIPIENT_EMAIL=
+  CONTACT_FROM_EMAIL=
+  RESEND_API_KEY=
+- Use Resend for email delivery if available.
+- If RESEND_API_KEY is missing, fail gracefully and show a clear development-only message in server logs, not to the user.
+- Add a honeypot field to reduce spam.
+- Add basic rate limiting if possible.
+- Validate inputs server-side.
+- Validate email format.
+- Limit message length.
+- Sanitize input.
+- Return friendly success and error states.
+- Do not store enquiries in a database unless necessary.
+- Do not leak environment variables to the browser.
+
+Contact form success message:
+Thank you. Your enquiry has been received.
+
+Contact form error message:
+Something went wrong. Please try again.
+
+7. Footer
+Footer should be minimal.
+
+Visible footer content:
+IANSON SYSTEMS LIMITED
+A UK-based digital product and operating company.
+
+Add small links:
+- Privacy
+- Terms
+
+Company disclosure:
+Create a small, low-prominence “Company information” area or separate /company-information page.
+
+Important:
+Because this is a UK limited company website, include placeholders for statutory company information, but keep them visually understated.
+
+Use placeholders:
+- Registered company name: Ianson Systems Limited
+- Company number: [ADD COMPANY NUMBER]
+- Registered in: England and Wales
+- Registered office: [ADD REGISTERED OFFICE ADDRESS]
+
+Do not invent the company number or address.
+Add a clear TODO comment in the code telling the site owner to replace placeholders before going live.
+
+If the owner does not want a home address public, add a code comment recommending use of an accountant, solicitor, or registered office service before publishing.
+
+Privacy page:
+Create a simple /privacy page.
+Include:
+- This site collects contact form submissions.
+- Data submitted is used only to respond to enquiries.
+- Data is not sold.
+- The user can request deletion by using the contact form.
+- Do not include a visible email address.
+- Keep it plain-English and minimal.
+
+Terms page:
+Create a simple /terms page.
+Include:
+- Website information is general only.
+- No warranties.
+- No professional advice.
+- Intellectual property statement.
+- Links back to home.
+- Keep it concise.
+
+Technical requirements:
+- Use Next.js App Router.
+- Use TypeScript.
+- Use Tailwind CSS.
+- Use server components where appropriate.
+- Ensure clean semantic HTML.
+- Ensure accessible labels for all form fields.
+- Ensure keyboard navigation works.
+- Ensure mobile responsive design.
+- Ensure excellent Lighthouse scores.
+- Use metadata API for title and description.
+- Add robots.txt and sitemap.xml.
+- Keep the homepage indexable.
+- No blog.
+- No portfolio pages.
+- No trading-name pages.
+- No unnecessary dependencies.
+
+SEO/meta:
+Homepage title:
+Ianson Systems Limited | Digital Products & Operating Company
+
+Homepage meta description:
+Ianson Systems Limited is a UK-based technology-led operating company building practical digital products, AI-assisted workflows and selected service-led brands.
+
+Robots:
+Allow indexing of the homepage, privacy page, terms page and company information page.
+Do not optimise for keyword-heavy SEO.
+
+Suggested file structure:
+- app/page.tsx
+- app/privacy/page.tsx
+- app/terms/page.tsx
+- app/company-information/page.tsx
+- app/api/contact/route.ts
+- app/layout.tsx
+- app/globals.css
+- components/Header.tsx
+- components/Footer.tsx
+- components/ContactForm.tsx
+- components/Logo.tsx
+- lib/validation.ts
+- lib/rate-limit.ts if needed
+
+Visual styling details:
+- Max width: around 1120px.
+- Main hero should be vertically spacious.
+- Use thin grey lines.
+- Use rounded cards but not too playful.
+- Buttons should be simple black fill and white text.
+- Secondary button should be outline.
+- Hover states should be subtle.
+- Use font similar to Inter, Geist or system sans-serif.
+- Letter spacing can be used for the logo only, not all body text.
+- Avoid heavy shadows.
+- Avoid bright accent colours.
+
+Tone of copy:
+- Understated.
+- Corporate.
+- Clear.
+- No hype.
+- No “disrupting”.
+- No “world-class”.
+- No “award-winning”.
+- No claims that imply regulated advice.
+
+Final output:
+Build the full working site.
+Then provide:
+1. A summary of what was built.
+2. The environment variables I need to add.
+3. Any TODOs before launch.
+4. Confirmation that email and address are not exposed in the contact section.

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as r,g as i}from"./configs-VAP9Sqah.js";import"./index-BOcz0H5L.js";import"./data-editors-picks-DoYWeP5W.js";const s=i("personalised-audio-stories");function d(){return o.jsx(r,{config:s,doorFilter:["dark"]})}export{d as default};

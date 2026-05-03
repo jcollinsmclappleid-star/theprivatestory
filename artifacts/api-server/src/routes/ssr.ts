@@ -600,6 +600,54 @@ const STATIC_PAGES: StaticPage[] = [
     </section>`,
   },
   {
+    path: "/privacy-policy",
+    slug: "privacy-policy",
+    title: "Privacy Policy — The Private Story",
+    description:
+      "How The Private Story handles your data. Your story choices, listening history, and generated stories are private to your account — never sold, never shared.",
+    h1: "Privacy Policy",
+    tagline: "What you listen to here stays here. Always.",
+    body: `
+    <section>
+      <h2>Data We Collect</h2>
+      <p>We collect your email address and payment information when you subscribe. We collect the story preferences you provide when creating a story. We do not sell or share this data.</p>
+    </section>
+    <section>
+      <h2>Your Story Privacy</h2>
+      <p>Your story choices, listening history, and generated stories are private to your account. They are never used for advertising, shared with third parties, or visible to other users.</p>
+    </section>
+    <section>
+      <h2>Contact</h2>
+      <p>Questions about your data? Email <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>.</p>
+      <p>Ianson System Ltd t/a The Private Story, registered in England and Wales.</p>
+    </section>`,
+  },
+  {
+    path: "/samples",
+    slug: "samples",
+    title: "Hear a Sample — 30-Second Narrated Audio Stories | The Private Story",
+    description:
+      "Listen before you create. Free 30-second narrated samples from each of the three doors — Romance, After Dark, and Drift. Premium voices, no sign-up required.",
+    h1: "Hear a Sample Before You Create",
+    tagline: "Free 30-second narrated openings — Romance, After Dark, and Drift. No sign-up.",
+    cacheHeader: CACHE_1H,
+    body: `
+    <section>
+      <h2>Listen Before You Create</h2>
+      <p>Every story on The Private Story is generated and narrated end-to-end around your choices. These free samples let you hear our four professional narrators and the tone of each of the three doors — before you create your own.</p>
+    </section>
+    <section>
+      <h2>Three Doors, Three Tones</h2>
+      <p><strong>Romance</strong> — warm, considered, emotionally intelligent. Slow-burn pull and tender intimacy.</p>
+      <p><strong>After Dark</strong> — charged, unhurried, adult. Confident desire and quiet heat.</p>
+      <p><strong>Drift</strong> — slow, calming, low-stimulation. Bedtime listening designed to settle, not arouse.</p>
+    </section>
+    <section>
+      <h2>Why Sample First</h2>
+      <p>Hearing the narration sells the experience faster than any description can. The samples below are real openings written and recorded the same way your personalised story will be — only yours will be written around the cast, chemistry, world, and intensity you choose.</p>
+    </section>`,
+  },
+  {
     path: "/terms",
     slug: "terms",
     title: "Terms of Service — The Private Story",

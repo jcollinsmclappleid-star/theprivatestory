@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as t,g as i}from"./configs-Bo27c5aH.js";import"./index-CkZzncy3.js";import"./data-editors-picks-DoYWeP5W.js";const r=i("audio-erotica-uk");function n(){return o.jsx(t,{config:r})}export{n as default};

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as t,g as i}from"./configs-Bo27c5aH.js";import"./index-CkZzncy3.js";import"./data-editors-picks-DoYWeP5W.js";const r=i("how-to-listen-to-audio-erotica");function m(){return o.jsx(t,{config:r})}export{m as default};

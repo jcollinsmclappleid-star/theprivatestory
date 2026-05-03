@@ -386,7 +386,7 @@ function Footer() {
     <footer className="border-t border-border/40 bg-background/50 pt-14 pb-10 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
 
           <FooterColumn heading="Navigate" links={[
             { label: "Home", href: "/" },
@@ -439,6 +439,19 @@ function Footer() {
             { label: "Alternatives to romance audiobooks", href: "/alternatives-to-romance-audiobooks" },
             { label: "Dipsea alternative", href: "/dipsea-alternative" },
             { label: "Quinn alternative", href: "/quinn-alternative" },
+            { label: "Ferly alternative", href: "/ferly-alternative" },
+            { label: "GoneWildAudio alternative", href: "/gonewildaudio-alternative" },
+          ]} />
+
+          <FooterColumn heading="After Dark · 18+" links={[
+            { label: "After Dark — overview", href: "/after-dark" },
+            { label: "Erotica for women", href: "/audio-erotica-for-women" },
+            { label: "Erotica for couples", href: "/audio-erotica-for-couples" },
+            { label: "British erotica", href: "/british-audio-erotica-for-women" },
+            { label: "Personalised erotica", href: "/personalised-erotica" },
+            { label: "Erotica with male narrator", href: "/audio-erotica-with-male-narrator" },
+            { label: "How to listen — a guide", href: "/how-to-listen-to-audio-erotica" },
+            { label: "For beginners", href: "/audio-erotica-for-beginners" },
           ]} />
 
         </div>

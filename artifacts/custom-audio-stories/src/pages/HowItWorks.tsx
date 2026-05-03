@@ -59,14 +59,14 @@ const CASTING_FEATURES = [
     icon: <BookOpen className="w-4 h-4" />,
     accent: "#6b8cce",
     label: "The Archetype",
-    desc: "Cast the other character from 14 distinct archetypes. Name them. Describe them.",
+    desc: "Cast the other character from 19 distinct archetypes. Name them. Describe them.",
     examples: ["The Executive", "The Stranger", "The Artist", "The Professor"],
   },
   {
     icon: <MapPin className="w-4 h-4" />,
     accent: "#34d399",
     label: "The Setting",
-    desc: "50+ countries, 12 historical eras, or an entirely your own world.",
+    desc: "200+ places across countries and eras — or an After Dark world entirely your own.",
     examples: ["Paris, 1920s", "Victorian London", "Luxury Hotel", "Mountain Retreat"],
   },
   {

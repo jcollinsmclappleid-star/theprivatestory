@@ -847,7 +847,7 @@ const STATIC_PAGES: StaticPage[] = [
     </section>
     <section>
       <h2>What You Can Create</h2>
-      <p>Slow burn romance. Dark tension. Tender and intimate. Late night. Historical. Forbidden. The combinations are effectively unlimited — over 220 situations across 11 dramatic categories and 50+ settings.</p>
+      <p>Slow burn romance. Dark tension. Tender and intimate. Late night. Historical. Forbidden. Over a million possible configurations — six pairings, eight chemistry types, 19 archetypes, four intensities, seven endings, and 200+ situations across countries, eras, and After Dark worlds.</p>
       <p>See also: <a href="/personalised-audio-stories">personalised audio stories</a> · <a href="/ai-audio-story-generator">AI audio story generator</a> · <a href="/how-it-works">how it works</a></p>
     </section>`,
   },
@@ -1685,7 +1685,7 @@ const DEFINITION_PAGES: DefinitionPageConfig[] = [
       },
       {
         q: "Can I request something very specific or unusual in my personalised audio story?",
-        a: "Yes. The Casting Room offers over 220 situations across 11 dramatic categories, 28 emotional moods, 14 character archetypes, nine chemistry types, and 50+ country settings. The combinations are effectively unlimited. If you want a slow burn story set in 1920s Paris between two rivals who are both hiding something, you can build exactly that brief.",
+        a: "Yes. The Casting Room lets you choose six pairings, eight chemistry types, 19 character archetypes, four intensity levels, seven endings, and 200+ situations across countries, eras, and After Dark worlds. Over a million possible configurations on the input side alone — and the story itself is then written fresh around your specific brief. If you want a slow burn story set in 1920s Paris between two rivals who are both hiding something, you can build exactly that brief.",
       },
       {
         q: "Is a personalised audio story better than an audiobook?",
@@ -2119,7 +2119,7 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
       },
       {
         h2: "World building and personalisation",
-        body: `The Casting Room gives you creative control across the full world of your story. Choose from over 220 dramatic situations across 11 categories, 28 emotional moods, 14 character archetypes, nine chemistry types, 50+ country settings, and 12 historical periods. The combination you select becomes the brief the story is written toward — a world built around your imagination for this session, not selected from a catalogue built around a general audience.<br><br>If you have ever found yourself wanting something very specific — a particular dynamic, a precise emotional register, a scenario that does not exist in any library — the Casting Room was built for exactly that. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or <a href="/create-your-own-audio-story">create your own story</a> to see the full creation flow.`,
+        body: `The Casting Room gives you creative control across the full world of your story. Choose from six pairings, eight chemistry types, 19 character archetypes, four intensity levels, seven endings, and 200+ situations across countries, eras, and After Dark worlds. The combination you select becomes the brief the story is written toward — a world built around your imagination for this session, not selected from a catalogue built around a general audience.<br><br>If you have ever found yourself wanting something very specific — a particular dynamic, a precise emotional register, a scenario that does not exist in any library — the Casting Room was built for exactly that. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or <a href="/create-your-own-audio-story">create your own story</a> to see the full creation flow.`,
       },
       {
         h2: "Privacy by design",
@@ -2179,7 +2179,7 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
       },
       {
         h2: "World building and personalisation",
-        body: `The Casting Room gives you choices across 220+ dramatic situations, 28 emotional moods, 14 character archetypes, nine chemistry types, 50+ country settings, and 12 historical periods. The combination you choose becomes the brief the story is written toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit, this generative model is what the platform was built to serve. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or try <a href="/create-your-own-audio-story">creating your own story</a> to see the full creation flow.`,
+        body: `The Casting Room gives you choices across six pairings, eight chemistry types, 19 character archetypes, four intensity levels, seven endings, and 200+ situations across countries, eras, and After Dark worlds. The combination you choose becomes the brief the story is written toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit, this generative model is what the platform was built to serve. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or try <a href="/create-your-own-audio-story">creating your own story</a> to see the full creation flow.`,
       },
       {
         h2: "Privacy by design",
@@ -2241,7 +2241,7 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
       },
       {
         h2: "World building and personalisation",
-        body: `The Casting Room gives you creative control across 220+ dramatic situations, 28 emotional moods, 14 character archetypes, nine chemistry types, 50+ country settings, and 12 historical periods. The combination you select becomes the brief the story is written toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit — a precise dynamic, a particular emotional register, a scenario that lives in their imagination — this generative model is what the platform was built for. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or try <a href="/create-your-own-audio-story">creating your own story</a> to see the full creation flow.`,
+        body: `The Casting Room gives you creative control across six pairings, eight chemistry types, 19 character archetypes, four intensity levels, seven endings, and 200+ situations across countries, eras, and After Dark worlds. The combination you select becomes the brief the story is written toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit — a precise dynamic, a particular emotional register, a scenario that lives in their imagination — this generative model is what the platform was built for. Explore <a href="/ai-audio-story-generator">how AI audio story generation works</a> or try <a href="/create-your-own-audio-story">creating your own story</a> to see the full creation flow.`,
       },
       {
         h2: "Privacy by design",
@@ -2311,7 +2311,7 @@ const COMPETITOR_PAGES: CompetitorPageConfig[] = [
       },
       {
         h2: "World building and personalisation",
-        body: `The Casting Room gives you choices across 220+ situations across 11 dramatic categories, 28 emotional moods, 14 character archetypes, nine chemistry types, 50+ country settings, and 12 historical periods. The combination you choose becomes the brief the story is built toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit — a particular character, a precise dynamic, an emotional register that curated content has never quite reached — this generative model is what the platform was built to serve. See also <a href="/ai-audio-story-generator">how audio story generation works</a>.`,
+        body: `The Casting Room gives you choices across six pairings, eight chemistry types, 19 character archetypes, four intensity levels, seven endings, and 200+ situations across countries, eras, and After Dark worlds. The combination you choose becomes the brief the story is built toward — a specific world, a specific scene, a specific dynamic, built around your imagination for this session.<br><br>The story is original — it did not exist before you described what you wanted, and it will not be written for anyone else. For listeners who have a very specific world they want to inhabit — a particular character, a precise dynamic, an emotional register that curated content has never quite reached — this generative model is what the platform was built to serve. See also <a href="/ai-audio-story-generator">how audio story generation works</a>.`,
       },
       {
         h2: "Privacy by design",

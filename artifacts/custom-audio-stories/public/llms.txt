@@ -92,7 +92,7 @@ Pricing: £29/month (5 stories), £179/year (50 stories), £3.99 per additional 
 
 ## About the product
 
-The Private Story uses a Casting Room model: the listener makes seven choices before the story is written. These are: the pairing (six options), the chemistry (nine options including slow burn, power play, forbidden pull), the character archetype (14 options), the setting (50+ countries, 12 historical eras, or After Dark worlds), the intensity level (tender to scorching), the emotional mood (28 options), and the situation (220 situations across 11 dramatic categories, or chosen automatically).
+The Private Story uses a Casting Room model: the listener makes seven choices before the story is written. These are: the pairing (six options), the chemistry (eight options including slow burn, power play, forbidden pull), the character archetype (19 options), the setting (200+ places across countries, eras, and After Dark worlds), the intensity level (four levels from tender to scorching), the ending (seven options), and the situation (200+ situations, or chosen automatically). The combination forms a creative brief; the story itself is then written fresh around that brief, with per-scene rules that prevent any two scenes from feeling the same.
 
 Stories are written by Mistral Large, narrated by ElevenLabs, and given original cover art by gpt-image-1. Each story is approximately 2,000–4,000 words and 15–30 minutes of audio. Stories are saved to the listener's private account and are not visible to anyone else — including the platform operators.
 

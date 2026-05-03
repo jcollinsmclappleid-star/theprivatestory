@@ -35,7 +35,7 @@ export const CASTING_STEP_CARDS = [
   },
   {
     step: "03", category: "The Archetype", label: "Cast him exactly as you want",
-    sub: "14 archetypes. Name him, describe him, make him entirely yours.",
+    sub: "19 archetypes. Name him, describe him, make him entirely yours.",
     accent: "#6b8cce", gradient: "from-[#040a1a] via-[#081228] to-[#020610]",
     options: ["The Executive", "The Stranger", "The Artist", "The Risk", "The Professor", "The Wanderer", "The Detective", "The Old Friend"],
     selected: "The Executive", example: "Measured control. Understated power. He never raises his voice — and never needs to.",
@@ -43,7 +43,7 @@ export const CASTING_STEP_CARDS = [
   },
   {
     step: "04", category: "The Setting", label: "Set it anywhere in the world",
-    sub: "50+ countries, 12 historical eras, or an After Dark world entirely your own.",
+    sub: "200+ places across countries and eras — or an After Dark world entirely your own.",
     accent: "#34d399", gradient: "from-[#001008] via-[#001a12] to-[#000a06]",
     options: null, selected: "Victorian London",
     example: "1880s — fog, corsets, and everything that cannot be said aloud. Only felt.",
@@ -114,7 +114,7 @@ function WorldIntroCard() {
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#34d399]/70">Your World</span>
           </div>
           <p className="text-base font-bold text-white/90 mb-1 leading-snug">Place your story anywhere on earth.</p>
-          <p className="text-xs text-white/80 leading-relaxed mb-4">50+ countries · 12 historical eras · or a world entirely your own</p>
+          <p className="text-xs text-white/80 leading-relaxed mb-4">200+ places · countries and eras · or a world entirely your own</p>
           <div className="overflow-hidden mb-2 -mx-1">
             <div className="flex gap-2" style={{ animation: "ticker-left 22s linear infinite", width: "max-content" }}>
               {allCitiesDup.map((city, i) => (
@@ -399,10 +399,10 @@ export default function CastingPreview({ soft = false }: CastingPreviewProps) {
           </p>
           <div className="flex items-center gap-3 mt-3 flex-wrap">
             {[
-              { n: "50+", label: "Countries" },
-              { n: "12", label: "Historical eras" },
-              { n: "14", label: "Archetypes" },
-              { n: "9", label: "Chemistries" },
+              { n: "6",    label: "Pairings" },
+              { n: "8",    label: "Chemistries" },
+              { n: "19",   label: "Archetypes" },
+              { n: "7",    label: "Endings" },
               { n: "200+", label: "Situations" },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">

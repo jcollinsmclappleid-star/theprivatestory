@@ -324,14 +324,7 @@ export default function Samples() {
           About these editor's picks: ten short narrated openings, written by
           our editorial team and narrated by four voices. Each one is built as
           a complete short — it lands, deliberately, before any explicit
-          content.{" "}
-          <a
-            href="/safety"
-            className="text-primary/80 hover:text-primary underline underline-offset-2"
-          >
-            Read the safety report
-          </a>
-          .
+          content.
         </p>
       </section>
 

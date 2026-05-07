@@ -1027,7 +1027,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
 
 export const bedtimeAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Bedtime Audio Stories for Adults — Free Sample, Drift Door | The Private Story`, description: `Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.` },
-  hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night`, tagline: `Not a children's story with the language updated. A story made for how you actually arrive at the end of your day.` },
+  hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night`, tagline: `Not a generic sleep meditation. A story made for how you actually arrive at the end of your day.` },
   heroCTALabel: "Create your bedtime story",
   heroCTAHref: "/drift",
   heroImage: "images/seo-hero-women.png",
@@ -1043,12 +1043,12 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
       ],
     },
     {
-      h2: "Why These Are Not Children's Bedtime Stories",
+      h2: "Why Adult Bedtime Stories Are Different",
       paragraphs: [
-        "Adult bedtime stories occupy a category that mainstream audio platforms have mostly ignored. Children's bedtime content is abundant. Content designed to actually work for adults — with adult emotional lives, adult exhaustion, adult sensibilities — is rare.",
-        "The distinction matters because the experience of needing to sleep is entirely different as an adult.",
-        "Children need distraction and comfort. Adults need decompression and redirection — from a specific kind of cognitive activity toward something the mind can inhabit lightly, without effort, and eventually release into sleep. The pacing of the story needs to accommodate the way adult attention moves when it's tired. The content needs to give the mind something interesting enough to follow and calm enough not to re-engage it.",
-        "At The Private Story, bedtime audio stories for adults are created for that specific experience. They are written and paced for grown-up listening. They are calibrated to the way adult minds wind down — which is not at all the same as the way children do.",
+        "Adult bedtime stories occupy a category that mainstream audio platforms have mostly ignored. General wellness audio is abundant. Content designed to actually work for adults — with adult emotional lives, adult exhaustion, adult sensibilities — is rare.",
+        "The distinction matters because the experience of needing to sleep is specific as an adult.",
+        "Adults need decompression and redirection — from a specific kind of cognitive activity toward something the mind can inhabit lightly, without effort, and eventually release into sleep. The pacing of the story needs to accommodate the way adult attention moves when it's tired. The content needs to give the mind something interesting enough to follow and calm enough not to re-engage it.",
+        "At The Private Story, bedtime audio stories for adults are created for that specific experience. They are written and paced for grown-up listening. They are calibrated to the way adult minds wind down.",
       ],
     },
     {
@@ -1134,7 +1134,7 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
   fullPicture: {
     h2: "Bedtime Audio Stories for Adults — The Full Picture",
     paragraphs: [
-      "Adult bedtime stories as a category have historically sat in a gap. Too sophisticated for children's bedtime content. Too gentle for the genre fiction and thriller audiobook market. Too personal for general wellness platforms that produce relaxation audio for the broadest possible audience.",
+      "Adult bedtime stories as a category have historically sat in a gap. Too sophisticated for general wellness platforms that produce relaxation audio for the broadest possible audience. Too gentle for the genre fiction and thriller audiobook market. Too personal for ambient sound apps that treat sleep as a background task.",
       "The Private Story exists in that gap by design.",
       "Bedtime stories to fall asleep to — created specifically for that purpose, calibrated for the pacing and tone that actually helps adults transition into sleep — require a different kind of content than any adjacent category provides. Not meditation. Not audiobooks. Not ambient sound. Stories.",
       "Relaxing bedtime audio for adults is most effective when it is created around the listener rather than for a statistical average of listeners. Calming bedtime stories for women who have spent the day carrying other people's needs and urgencies — and who arrive at night wanting something that is entirely theirs — work differently from content produced without that understanding.",
@@ -1156,7 +1156,7 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
     ],
   },
   faqs: [
-      { q: `What are adult bedtime audio stories?`, a: `Adult bedtime audio stories are narrated audio created specifically to help grown-up listeners wind down and transition into sleep. Unlike children's bedtime content, they are paced and toned for adult sensibilities — written for the emotional complexity of adult nights, calibrated to the way grown-up minds decompress, and created around the specific mood and preferences of the individual listener.` },
+      { q: `What are adult bedtime audio stories?`, a: `Adult bedtime audio stories are narrated audio created specifically to help grown-up listeners wind down and transition into sleep. They are paced and toned for adult sensibilities — written for the emotional complexity of adult nights, calibrated to the way grown-up minds decompress, and created around the specific mood and preferences of the individual listener.` },
       { q: `How long are the bedtime stories?`, a: `Stories typically run around 10 minutes, depending on voice selection — long enough for the mind to genuinely settle into the world of the story before you arrive at sleep. Your story is saved to your account, so if you fall asleep before it ends, you can return to it or create a new one the following night.` },
       { q: `Can I choose a calming tone for my story?`, a: `Yes — this is central to how The Private Story works. Before your story is generated, you choose the emotional register you want. A slow, calming pace. A quietly connecting voice. A gentle story that resolves warmly. Your choices shape every element of what is created — the tone, the pacing, the world of the story, the way it moves.` },
       { q: `Will these help me sleep?`, a: `For many adults, yes — particularly those whose sleep difficulty comes from a mind that won't stop rather than from a physical cause. The story provides the mind with somewhere to go rather than continuing to process the day, which reduces the mental activity that delays sleep. Results vary between individuals and nights, and The Private Story is not a medical device, but the mechanism — redirecting a restless mind — is well-established.` },
@@ -1207,7 +1207,7 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
       h2: "Criterion 3 — Adult Emotional Intelligence: Was This Built for Grown Women?",
       paragraphs: [
         "The adult audio content market contains a significant gap between what exists and what adult women actually want.",
-        "Most audio platforms treat adults as a demographic segment rather than a distinct audience with specific emotional needs. The content is adult in the sense that it is not for children. It is rarely adult in the sense of being emotionally sophisticated, female-centred, and calibrated for the specific texture of grown female experience.",
+        "Most audio platforms treat adults as a demographic segment rather than a distinct audience with specific emotional needs. The content is adult in label but rarely adult in substance — rarely emotionally sophisticated, female-centred, or calibrated for the specific texture of grown female experience.",
         "Audio story apps for women that are genuinely designed with women at the centre — not as an afterthought, not as a genre category, but as the primary intended audience — produce a qualitatively different experience. The emotional register is right. The dynamics within the stories reflect how women experience desire, connection, and intimacy rather than how those things have traditionally been written for a male gaze. The tone understands the specific exhaustion, overstimulation, and emotional complexity of modern female life.",
         "When evaluating an adult audio platform, ask: was this built for women, or was it built for adults and assumed to include women? The content produced by these two approaches is noticeably different in feel.",
       ],
@@ -2755,7 +2755,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       "If you're drawn to personalised romantic audio stories, the platform offers dynamics across the full emotional range — from tender and emotionally connecting to slow burn tension that builds across the full length of a story designed to make the delay as pleasurable as the arrival.",
       "For those looking for custom audio stories for women that prioritise emotional intelligence over spectacle — stories that understand the specific texture of female experience and desire — this is where that lives.",
       "Audio stories tailored to my mood is perhaps the most accurate description of the core experience. The mood selector isn't a genre filter. It's the first word of a conversation between you and a story that doesn't exist yet.",
-      "And for anyone who has looked for personalised bedtime stories for adults and found only content designed for children or content designed for a lowest-common-denominator adult audience — the personalised audio story fills that gap. Premium. Intelligent. Made for right now.",
+      "And for anyone who has looked for personalised bedtime stories for adults and found only lowest-common-denominator wellness audio — the personalised audio story fills that gap. Premium. Intelligent. Made for right now.",
     ],
   },
   finalCTA: {
@@ -3220,7 +3220,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
       "The category of relaxing audio stories for adults is genuinely broader than any single experience. Relaxation, for adults, is not one thing.",
       "For some listeners, relaxing audio stories for women means something warm and connecting — a voice that feels like company, a narrative with human presence. For others it means something purely atmospheric — a world described so carefully that the mind can rest inside it without doing any work. For others still, decompression audio stories work best when they carry a hint of emotional engagement — a feeling of something that could be more, held at the distance that makes it restful rather than activating.",
       "The Private Story accommodates all of these. Because the story is created around your choices — rather than pre-made and selected — it can be whatever version of calming story audio you actually need. Warm and connecting. Quiet and atmospheric. Slowly emotional. Gently somewhere-else.",
-      "Wind down stories for adults sit in a specific gap that most content platforms have left unfilled. Too sophisticated for children's bedtime content. Too restful for the narrative-driven audio drama category. Too personal for general wellness apps built around a population-level idea of what relaxation should sound like.",
+      "Wind down stories for adults sit in a specific gap that most content platforms have left unfilled. Too sophisticated for general wellness platforms. Too restful for the narrative-driven audio drama category. Too personal for ambient sound apps built around a population-level idea of what relaxation should sound like.",
       "Relaxation audio stories at their best are not background. They are foreground — a story your attention moves into willingly, and finds, somewhere inside, the quiet it was looking for.",
     ],
   },
@@ -3414,7 +3414,7 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
       h2: "What Sleep Audio Stories for Adults Actually Are",
       paragraphs: [
         "Sleep audio stories for adults are narrative audio experiences specifically designed to accompany the transition from wakefulness to sleep.",
-        "They are not children's bedtime stories. They are not sleep meditations asking you to breathe or visualise. They are not podcasts that will keep you cognitively engaged for an hour when you need to be unconscious in twenty minutes.",
+        "They are not sleep meditations asking you to breathe or visualise. They are not podcasts that will keep you cognitively engaged for an hour when you need to be unconscious in twenty minutes.",
         "They are stories — with character, atmosphere, and emotional weight — calibrated for the adult mind at the end of a day. They engage imagination enough to redirect anxious thought. They move at a pace designed to mirror the natural slowing of a mind approaching rest. They end — or continue — in ways that don't demand wakefulness to resolve.",
         "The best sleep audio story for any given night is the one that matches where you are when you lie down. Not where a general audience might be. Where you are. Tonight.",
         "This is why personalised sleep audio stories for adults work better than fixed library content. A story made for your mood tonight will land differently than a story made for everyone and selected hopefully.",
@@ -3517,10 +3517,10 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
   fullPicture: {
     h2: "Sleep Audio Stories for Adults — The Full Picture",
     paragraphs: [
-      "Sleep stories for adults represent a genuinely different category from children's bedtime content and from meditation apps. They are narrative experiences calibrated for the adult mind — emotionally intelligent, atmospherically rich, and designed to work with the natural process of falling asleep rather than against it.",
+      "Sleep stories for adults represent a genuinely different category from general wellness audio and meditation apps. They are narrative experiences calibrated for the adult mind — emotionally intelligent, atmospherically rich, and designed to work with the natural process of falling asleep rather than against it.",
       "Adult sleep audio at its best is not ambient noise with a story grafted on. It is genuine storytelling in service of rest — a voice, a world, a rhythm that your mind can follow all the way to the edge of sleep and beyond.",
       "Audio stories to fall asleep to work because they solve the core problem: they give an active mind somewhere to go. The story provides direction. The direction provides calm. The calm provides sleep.",
-      "Bedtime audio for grown ups acknowledges something that the sleep wellness industry has been slow to recognise: adults need stories too. Not simplified stories, not children's stories dressed up in adult language, but genuine narrative experiences that meet adult emotional complexity and guide it toward rest.",
+      "Bedtime audio for grown ups acknowledges something that the sleep wellness industry has been slow to recognise: adults need stories too. Not simplified wellness audio, not generic relaxation content, but genuine narrative experiences that meet adult emotional complexity and guide it toward rest.",
       "The sleep story generator for adults at The Private Story creates these experiences on demand — fresh for tonight, made for you, gone into private storage when you wake up. Available again tomorrow night if you need it. Different if you need something different.",
     ],
   },
@@ -4056,8 +4056,8 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
     {
       h2: "What Adult Bedtime Stories Are, and Aren't",
       paragraphs: [
-        "Adult bedtime stories are not children's bedtime stories with the language adjusted. They are stories written for the specific experience of being a grown adult at the end of a complex day — with a mind that has been active for sixteen hours, that carries the emotional residue of whatever happened today, and that needs somewhere to go that is not still solving problems or processing obligations.",
-        "The things that make a bedtime story work for an adult are different from what works for a child. A child needs narrative and completion. An adult at bedtime needs something that meets them where they are — a register that acknowledges the emotional texture of adult experience, that gives the mind somewhere to settle rather than something to follow, that doesn't require the active engagement of tracking a complex plot.",
+        "Adult bedtime stories are written for the specific experience of being a grown adult at the end of a complex day — with a mind that has been active for sixteen hours, that carries the emotional residue of whatever happened today, and that needs somewhere to go that is not still solving problems or processing obligations.",
+        "An adult at bedtime needs something that meets them where they are — a register that acknowledges the emotional texture of adult experience, that gives the mind somewhere to settle rather than something to follow, that doesn't require the active engagement of tracking a complex plot.",
         {
           text: "Adult bedtime stories at The Private Story are created around this understanding. The mood you specify shapes not just the content but the pacing, the emotional register, and the quality of the narrative attention. Whether you want something quietly intimate, gently escapist, or softly romantic as you settle into sleep, the story is created around what you need tonight rather than a generic night-time fiction template. For context on how personalisation works across all types of story, see personalised audio stories.",
           links: [{ match: "personalised audio stories", href: "/personalised-audio-stories" }],
@@ -4128,7 +4128,7 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
     ],
   },
   faqs: [
-    { q: "What makes adult bedtime stories different from regular bedtime stories?", a: "Adult bedtime stories are created for grown adult minds — acknowledging the emotional complexity of adult experience, the specific challenge of the pre-sleep window after a full day, and the kind of content register that actually helps an adult settle. They are not children's stories with adjusted language. They are stories specifically created for the experience of being an adult at the end of a real day." },
+    { q: "What makes adult bedtime stories different from general sleep audio?", a: "Adult bedtime stories are created for grown adult minds — acknowledging the emotional complexity of adult experience, the specific challenge of the pre-sleep window after a full day, and the kind of content register that actually helps an adult settle. They are stories specifically created for the experience of being an adult at the end of a real day, not generic wellness content produced for the broadest possible audience." },
     { q: "Can adult bedtime stories have romantic or intimate content?", a: "Yes. The intensity and register of the story are shaped by your creation choices. Adult bedtime stories can be quietly intimate, softly romantic, gently sensual, or calming and escapist — depending on what you specify. The Private Story creates content for adults 18+ across a range of emotional registers." },
     { q: "How is an adult bedtime story different from a sleep podcast?", a: "Sleep podcasts are optimised for a general audience and require enough engagement to hold attention — which is the opposite of what winding down requires. A personalised adult bedtime story is created around your specific mood tonight, paced for the pre-sleep window, and requires no active cognitive engagement. Your mind can follow loosely or drift — the story continues either way." },
     { q: "Will the story help me sleep?", a: "Adult bedtime stories created with a calming or intimate register are designed for the wind-down window — paced and toned to carry you toward rest rather than maintain alertness. Many listeners report falling asleep during or shortly after their story. The personalisation means the story's register matches your current state, which is the most important factor in whether audio content helps or hinders sleep." },
@@ -6516,7 +6516,7 @@ export const singleDadRomanceAudioStoriesConfig: SEOPageConfig = {
       h2: "The Specific Quality of Attention That Has Been Trained",
       paragraphs: [
         "What the single dad character offers, in any well-written version of the trope, is a quality of attention that has been earned by something other than the romance. The years of being responsible for a life other than his own have shaped how he listens. The discipline of presence — the daily practice of being where you are because someone else needs you to be — produces, over time, a specific kind of attention that is not common in adult men whose lives have allowed them to be elsewhere whenever they preferred to be.",
-        "This is the trope's central erotic premise, and it works at a register that has nothing to do with the children themselves. The character's domestic context provides the explanation for why he is the way he is, but the children are background — the scaffolding on which the character has been built, not the foreground of the story the romance is telling. The story is about the man, the attention, and the specific quality of presence that the years have trained into him. Adult fiction, with the children referenced as the cause and not as the subject.",
+        "This is the trope's central erotic premise, and it works at a register grounded entirely in adult dynamics. The character's prior responsibilities provide the explanation for why he is the way he is — they are the scaffolding on which the character has been built, not the foreground of the story the romance is telling. The story is about the man, the attention, and the specific quality of presence that the years have trained into him. Adult fiction, throughout.",
         "Audio fiction inhabits this register particularly well because the first-person voice can carry the texture of his attention as the narrator experiences it. The way he listens. The way he asks the second question after the first answer. The specific care he takes not to waste her time when his time is also limited. None of this needs to be commented on by the narrator; it is rendered in how she registers the conversation. The listener hears the quality of the attention through the way she receives it.",
         "The Private Story creates single dad romance audio stories that take this specific quality seriously. The man is rendered as someone whose attention has been trained by his life. The romance is rendered as the meeting of two adults — one of whom arrives carrying weight that has formed him into someone whose presence is unusually precise.",
       ],
@@ -6585,8 +6585,8 @@ export const singleDadRomanceAudioStoriesConfig: SEOPageConfig = {
         body: "Any meaningful relationship he enters has a cost he must consciously meet. The romance is not free for him — and that is what makes the choosing feel real.",
       },
       {
-        heading: "Adult focus, with domestic context as scaffolding",
-        body: "The character's domestic life provides the scaffolding on which he has been built. The romance is between two adults; the children are background, not foreground. Adult fiction, throughout.",
+        heading: "Adult focus, with prior life as scaffolding",
+        body: "The character's prior responsibilities provide the scaffolding on which he has been built. The romance is between two adults — his history as context, not as subject. Adult fiction, throughout.",
       },
       {
         heading: "Specific to your register",
@@ -6608,7 +6608,7 @@ export const singleDadRomanceAudioStoriesConfig: SEOPageConfig = {
       "Single dad romance has remained one of contemporary romance's strongest tropes because it places at the centre of the story a male character whose life already has stakes that exist outside the romance. He is not arriving unattached. He is the version of himself that responsibility has trained him into — and what he offers, when he offers it, has the weight of being given by someone whose attention has been earned by something other than the moment.",
       "Single dad romance audio stories at The Private Story are built around this principle. The creation flow allows you to specify the shape of his life — the rebuilding-after-loss register, the longer-divorced context, the school or community meeting, the slow visibility through practical structures — and the story is generated to render the specific quality of attention his life has trained, and the specific calibration between cost and choice that any meaningful relationship in his context requires.",
       "Audio is the right form for this trope because the first-person voice carries the awareness of what is being asked and being given on both sides. The texture of his attention is rendered through how the narrator receives it; the texture of her recognition is rendered through how she registers what she is being given. The dynamic plays in the voice as much as in the events.",
-      "What separates an accomplished single dad story from a weaker one is whether the trope is taken seriously enough to render the man as someone whose life has weight rather than as a sentimental device. The Private Story creates stories that keep the focus on the adult relationship — generated by Mistral Large around your brief, narrated in the voice you choose, with the children referenced as the scaffolding on which the character has been built, not as the foreground of the story.",
+      "What separates an accomplished single dad story from a weaker one is whether the trope is taken seriously enough to render the man as someone whose life has weight rather than as a sentimental device. The Private Story creates stories that keep the focus on the adult relationship — generated by Mistral Large around your brief, narrated in the voice you choose, with his prior life as the scaffolding on which the character has been built, not as the foreground of the story.",
       "Last updated: April 2026.",
     ],
   },
@@ -6629,11 +6629,11 @@ export const singleDadRomanceAudioStoriesConfig: SEOPageConfig = {
   faqs: [
     {
       q: "What is single dad romance, and what makes the trope distinctive?",
-      a: "Single dad romance places at the centre of the story a male character whose life already has stakes that exist outside the romance — typically because he has primary or significant responsibility for a child or children. The trope's distinctiveness lies in what this fact produces: a male character whose attention has been trained by responsibility, whose presence has been shaped by years of being needed, and whose romantic engagement comes with a real cost that he must consciously meet. The dynamic is adult and quietly intense by structure.",
+      a: "Single dad romance places at the centre of the story a male character whose life already has stakes that exist outside the romance — responsibilities that have trained him into someone whose attention and presence carry unusual weight. The trope's distinctiveness lies in what this produces: a man whose romantic engagement comes with a real cost he must consciously meet. The dynamic is adult and quietly intense by structure.",
     },
     {
-      q: "Are the stories about the children?",
-      a: "No. Children are referenced as the scaffolding on which the character has been built — the cause of why he is the way he is — but the focus of the story is the adult relationship between him and the female lead. Adult fiction, throughout. The domestic context provides the explanation for the texture of his attention; the romance itself is between the two adults.",
+      q: "Is the story about his responsibilities or the romance?",
+      a: "The romance. His prior responsibilities are the scaffolding on which the character has been built — the explanation for why he is the way he is — but the focus of the story is entirely the adult relationship. Adult fiction, throughout. The domestic context provides the texture of his attention; the story itself is the romance between the two adults.",
     },
     {
       q: "Why does the trope work in audio?",
@@ -8230,7 +8230,7 @@ export const audioEroticaForWomenOver30Config: SEOPageConfig = {
     {
       h2: "The Life Context That Most Platforms Pretend Does Not Exist",
       paragraphs: [
-        "By thirty, most listeners are running a working life that has structure and weight to it. Time is no longer freely available; energy is genuinely finite; the small windows when listening is possible are the ones at the end of long days, after children's bedtimes, on a quiet train, in the half hour before sleep. The content that fits this context is content that does not waste it — that arrives precisely calibrated to the mood it is meeting and that produces, in the ten minutes available, something that actually lands.",
+        "By thirty, most listeners are running a working life that has structure and weight to it. Time is no longer freely available; energy is genuinely finite; the small windows when listening is possible are the ones at the end of long days, on a quiet train, in the half hour before sleep. The content that fits this context is content that does not waste it — that arrives precisely calibrated to the mood it is meeting and that produces, in the ten minutes available, something that actually lands.",
         "The catalogue model assumes time. It assumes the listener will browse, sample, queue, and revisit. The reality is that the woman who has thirty minutes between the end of work and the start of evening domestic life does not have the time to browse, and the friction of choosing among hundreds of pre-made stories is itself the thing that means the listening does not happen. The platform that serves her well is the one that lets her describe what she wants in a minute and have a story shortly after.",
         "This is also true of partnered women whose private listening is its own protected space. The story that fits this context is one that does not announce itself — that arrives in headphones, that exists in a private account, that leaves no public trace, that is genuinely hers in the way that something witnessed by a recommendation engine is not. <a href=\"/private-audio-stories\">The privacy architecture</a> is not an add-on to this listener's experience; it is the precondition for it.",
         "And there is the woman, increasingly common, who has worked out that her private interior life is one of the most valuable things she has — and who refuses to outsource it to a platform that wants to mine her preferences for engagement metrics. The audio she chooses now is the audio that respects this. The story that gets made for her, ten minutes long and entirely hers, is the kind of small reliable pleasure that does not exist in the rest of her week.",

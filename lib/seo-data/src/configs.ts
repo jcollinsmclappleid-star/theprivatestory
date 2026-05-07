@@ -1026,8 +1026,8 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
 };
 
 export const bedtimeAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Bedtime Audio Stories for Adults — Free Sample, Drift Door | The Private Story`, description: `Bedtime audio stories created for adults. Calming, private, and personalised around your mood. Fall asleep to a story made specifically for tonight.` },
-  hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Bedtime Audio Stories for Adults — Calm, Private, Made for Your Night`, tagline: `Not a generic sleep meditation. A story made for how you actually arrive at the end of your day.` },
+  meta: { title: `Adult Bedtime Audio Stories — Free Sample, Drift Door | The Private Story`, description: `Adult bedtime audio stories created around your mood. Calming, private, and personalised for tonight. Fall asleep to a story made specifically for you.` },
+  hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Adult Bedtime Audio Stories — Calm, Private, Made for Your Night`, tagline: `Not a generic sleep meditation. A story made for how you actually arrive at the end of your day.` },
   heroCTALabel: "Create your bedtime story",
   heroCTAHref: "/drift",
   heroImage: "images/seo-hero-women.png",
@@ -1772,8 +1772,8 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const emotionalAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Emotional Audio Stories — Made for You, Heard Privately | The Private Story`, description: `Emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
-  hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For whenever you need to feel something — but haven't quite found the words for what.` },
+  meta: { title: `Adult Emotional Audio Stories — Made for You, Heard Privately | The Private Story`, description: `Adult emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
+  hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Adult Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For whenever you need to feel something — but haven't quite found the words for what.` },
   heroCTALabel: "Create your emotional story",
   heroImage: "images/seo-hero-romantic.png",
   showCastingPreview: true,
@@ -3102,8 +3102,8 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
 };
 
 export const relaxingAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Relaxing Audio Stories — Free Sample, Made for You | The Private Story`, description: `Relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. For adults who want more than a podcast.` },
-  hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Relaxing Audio Stories for Adults — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what right now requires.` },
+  meta: { title: `Adult Relaxing Audio Stories — Free Sample, Made for You | The Private Story`, description: `Adult relaxing audio stories created around your mood. Private, personalised, and designed to help you decompress. More than a podcast — a story made for right now.` },
+  hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Adult Relaxing Audio Stories — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what right now requires.` },
   heroCTALabel: "Create your relaxing story",
   heroCTAHref: "/drift",
   heroImage: "images/seo-hero-romantic.png",
@@ -3392,8 +3392,8 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const sleepAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Sleep Audio Stories for Adults — Free Sample, Drift Door | The Private Story`, description: `Sleep audio stories for adults, created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.` },
-  hero: { badge: `Bedtime · Relaxation · Adults Only`, h1: `Sleep Audio Stories for Adults — Fall Asleep to a Story Made for Tonight`, tagline: `Your mind needs somewhere to go before it can let go. Give it somewhere worth going.` },
+  meta: { title: `Adult Sleep Audio Stories — Free Sample, Drift Door | The Private Story`, description: `Adult sleep audio stories created around your mood tonight. Not a fixed library — generated for you privately. Fall asleep to a story made for this evening.` },
+  hero: { badge: `Bedtime · Relaxation · Adults Only`, h1: `Adult Sleep Audio Stories — Fall Asleep to a Story Made for Tonight`, tagline: `Your mind needs somewhere to go before it can let go. Give it somewhere worth going.` },
   heroCTALabel: "Create your sleep story",
   heroCTAHref: "/drift",
   heroImage: "images/seo-hero-women.png",

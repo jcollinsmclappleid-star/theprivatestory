@@ -29,7 +29,7 @@ const API_BASE = BASE.replace(/\/$/, "");
 const audioUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
 const coverUrl = (slug: string) =>
-  `${API_BASE}/voice-samples/editors-picks/covers/${slug}.png`;
+  `${API_BASE}/voice-samples/editors-picks/covers/${slug}.webp`;
 
 /** Adapt an EditorsPick into the Story shape the central audio store expects. */
 function pickToStory(pick: EditorsPick): Story {

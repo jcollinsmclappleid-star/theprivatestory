@@ -232,7 +232,7 @@ function makeArticleSchema(opts: {
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/logo.png`,
+        url: `${SITE_URL}/logo.webp`,
       },
     },
   };
@@ -363,7 +363,7 @@ const STATIC_PAGES: StaticPage[] = [
         name: "The Private Story — Monthly Subscription",
         description:
           "5 personalised AI-narrated audio stories per month. Completely private.",
-        image: `${SITE_URL}/images/logo.png`,
+        image: `${SITE_URL}/images/logo.webp`,
         brand: { "@type": "Brand", name: "The Private Story" },
         aggregateRating: {
           "@type": "AggregateRating",
@@ -1099,7 +1099,7 @@ router.get("/sitemap-images.xml", (_req: Request, res: Response) => {
   const entries: ImgEntry[] = [];
 
   // Homepage + key static pages (use shared default OG image)
-  const defaultOG = "/images/home-hero-woman.png";
+  const defaultOG = "/images/home-hero-woman.webp";
   entries.push({
     pageLoc: "/",
     image: defaultOG,

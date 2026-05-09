@@ -40,7 +40,7 @@ export default function Listen() {
       {/* Hero image */}
       <div className="relative w-full overflow-hidden" style={{ height: "clamp(200px, 44vw, 360px)" }}>
         <img
-          src={`${API_BASE}/images/listen-hero-woman.png?v=2`}
+          src={`${API_BASE}/images/listen-hero-woman.webp`}
           alt=""
           aria-hidden="true"
           className="w-full h-full object-cover object-top select-none pointer-events-none"

@@ -158,7 +158,7 @@ export function CategoryTile({ id, label, count, isActive, onClick, compact }: C
       {/* Category photo — fades in when loaded, hidden on error */}
       {!imgError && (
         <img
-          src={`${API_BASE}/api/images/category-${id}.png`}
+          src={`${API_BASE}/api/images/category-${id}.webp`}
           alt=""
           onLoad={() => setImgLoaded(true)}
           onError={() => setImgError(true)}

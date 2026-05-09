@@ -1938,7 +1938,7 @@ export default function AfterDark() {
             {/* Cinematic dark-crimson background */}
             <div className="absolute inset-0">
               <img
-                src={`${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
+                src={`${import.meta.env.BASE_URL}images/creation-room-hero.webp`}
                 alt=""
                 aria-hidden="true"
                 className="w-full h-full object-cover object-top opacity-30"
@@ -1996,12 +1996,12 @@ export default function AfterDark() {
                     <div className="relative h-44 flex items-end p-4 overflow-hidden"
                       style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
                       <img
-                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`}
+                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.webp`}
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700"
                         style={{ opacity: paywallCoverUrl ? 0.55 : (paywallImageLoading ? 0.18 : 0.35) }}
-                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.png?v=4`; }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.webp`; }}
                       />
                       {paywallImageLoading && !paywallCoverUrl && (
                         <div className="absolute top-3 right-3">

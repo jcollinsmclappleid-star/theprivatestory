@@ -53,7 +53,7 @@ function DriftDoor({ onEnter }: Props) {
           transition={{ type: "spring", damping: 22, stiffness: 90 }}
         >
           <img
-            src={`${BASE}images/door-drift.png?v=6`}
+            src={`${BASE}images/door-drift.webp`}
             alt=""
             aria-hidden="true"
             className="relative z-10 block select-none"
@@ -67,7 +67,7 @@ function DriftDoor({ onEnter }: Props) {
             }}
             draggable={false}
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = `${BASE}images/door-romance.png?v=5`;
+              (e.currentTarget as HTMLImageElement).src = `${BASE}images/door-romance.webp`;
             }}
           />
         </motion.div>
@@ -233,7 +233,7 @@ export default function DriftLanding({ onEnter }: Props) {
         style={{ zIndex: 0 }}
       >
         <img
-          src={`${BASE}images/drift-hero-woman.png?v=2`}
+          src={`${BASE}images/drift-hero-woman.webp`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
@@ -256,7 +256,7 @@ export default function DriftLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/drift-hero-woman.png?v=2`}
+          src={`${BASE}images/drift-hero-woman.webp`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"

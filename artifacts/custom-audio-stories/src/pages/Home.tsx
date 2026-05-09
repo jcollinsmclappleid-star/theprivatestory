@@ -28,7 +28,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const sampleAudioUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
 const sampleCoverUrl = (slug: string) =>
-  `${API_BASE}/voice-samples/editors-picks/covers/${slug}.png`;
+  `${API_BASE}/voice-samples/editors-picks/covers/${slug}.webp`;
 
 function pickToStory(pick: EditorsPick): Story {
   return {
@@ -340,7 +340,7 @@ export default function Home() {
           />
           <img
             aria-hidden="true"
-            src={`${import.meta.env.BASE_URL}images/home-hero-woman.png?v=8`}
+            src={`${import.meta.env.BASE_URL}images/home-hero-woman.webp`}
             alt=""
             width={1200}
             height={1600}

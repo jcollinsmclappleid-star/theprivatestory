@@ -53,10 +53,10 @@ export function FloatingPlayer() {
             <div className="flex items-center px-3 py-2.5 gap-2">
               <Link href={detailHref} className="flex items-center flex-1 min-w-0 cursor-pointer gap-2.5">
                 <img
-                  src={currentStory.coverImage || "/images/logo.png"}
+                  src={currentStory.coverImage || "/images/logo.webp"}
                   alt={currentStory.title}
                   className="w-10 h-10 rounded-xl object-cover shadow-md shrink-0"
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/logo.png"; }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/logo.webp"; }}
                 />
                 <div className="truncate">
                   <p className="text-sm font-semibold text-foreground truncate leading-tight">{currentStory.title}</p>

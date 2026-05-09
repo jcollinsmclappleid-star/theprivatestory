@@ -55,7 +55,7 @@ function RomanceDoor({ onEnter }: Props) {
           transition={{ type: "spring", damping: 22, stiffness: 90 }}
         >
           <img
-            src={`${BASE}images/door-romance.png?v=6`}
+            src={`${BASE}images/door-romance.webp`}
             alt=""
             aria-hidden="true"
             className="relative z-10 block select-none"
@@ -233,7 +233,7 @@ export default function CreateLanding({ onEnter }: Props) {
         style={{ zIndex: 0 }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=3`}
+          src={`${BASE}images/afterdark-hero-woman.webp`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
@@ -256,7 +256,7 @@ export default function CreateLanding({ onEnter }: Props) {
         style={{ width: "52%", left: "48%" }}
       >
         <img
-          src={`${BASE}images/afterdark-hero-woman.png?v=3`}
+          src={`${BASE}images/afterdark-hero-woman.webp`}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"

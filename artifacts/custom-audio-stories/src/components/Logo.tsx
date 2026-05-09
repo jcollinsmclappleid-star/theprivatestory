@@ -24,7 +24,7 @@ export function Logo({ height = 44, className = "" }: LogoProps) {
       className={className}
     >
       <img
-        src={`${BASE}images/logo-nav.png`}
+        src={`${BASE}images/logo-nav.webp`}
         alt="The Private Story"
         style={{ height: `${height}px`, width: "auto", ...SCREEN_STYLE }}
       />
@@ -46,7 +46,7 @@ export function LogoFull({ height = 120, className = "" }: { height?: number; cl
       className={className}
     >
       <img
-        src={`${BASE}images/logo-full.png`}
+        src={`${BASE}images/logo-full.webp`}
         alt="The Private Story"
         style={{ height: `${height}px`, width: "auto", ...SCREEN_STYLE }}
       />
@@ -72,7 +72,7 @@ export function LogoMark({ size = 40, className = "" }: { size?: number; classNa
       className={className}
     >
       <img
-        src={`${BASE}images/logo-icon.png`}
+        src={`${BASE}images/logo-icon.webp`}
         alt="The Private Story"
         style={{
           width: "100%",

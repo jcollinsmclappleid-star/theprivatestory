@@ -217,7 +217,7 @@ app.use("/api/rewrite-story", generationLimiter);
 // ---------------------------------------------------------------------------
 app.use(
   express.static(path.resolve(__dirname, "..", "public"), {
-    maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
+    maxAge: process.env.NODE_ENV === "production" ? "30d" : 0,
     immutable: false,
   }),
 );
@@ -282,8 +282,8 @@ const CLIENT_DIR = path.resolve(__dirname, "..", "public", "client");
 if (existsSync(CLIENT_DIR)) {
   app.use(
     express.static(CLIENT_DIR, {
-      maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
-      immutable: false,
+      maxAge: process.env.NODE_ENV === "production" ? "1y" : 0,
+      immutable: process.env.NODE_ENV === "production",
       index: false,
     }),
   );

@@ -217,8 +217,8 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
 
   // Category images and hardcoded sample covers are public assets — serve without auth.
   if (
-    /^category-[a-z0-9_]+-[a-z0-9_]+\.png$/.test(filename) ||
-    /^category-[a-z0-9_]+\.png$/.test(filename) ||
+    /^category-[a-z0-9_]+-[a-z0-9_]+\.(?:png|webp)$/.test(filename) ||
+    /^category-[a-z0-9_]+\.(?:png|webp)$/.test(filename) ||
     SAMPLE_COVER_FILENAMES.has(filename)
   ) {
     const found = await streamImageFile(filename, res);

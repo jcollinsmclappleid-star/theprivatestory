@@ -15,7 +15,7 @@ const DOORS = [
     href: "/create",
     cta: "Create My Story",
     ctaIcon: Sparkles,
-    image: `${BASE}images/door-romance.png?v=6`,
+    image: `${BASE}images/door-romance.webp`,
     accent: "#c9a227",
     rgb: "201,162,39",
     nameColor: "#e8d5a0",
@@ -33,10 +33,10 @@ const DOORS = [
     knobHover: "rgba(201,162,39,0.65)",
     underLight: "rgba(201,162,39,0.14)",
     moodImages: [
-      { src: `${BASE}images/category-historical_romance.png`, x: 8,  y: 7,  rot: -4, w: 52 },
-      { src: `${BASE}images/category-forbidden_desire.png`,   x: 52, y: 11, rot:  3, w: 50 },
-      { src: `${BASE}images/category-slow_burn.png`,          x: 10, y: 40, rot: -6, w: 48 },
-      { src: `${BASE}images/category-second_chance.png`,      x: 50, y: 43, rot:  5, w: 50 },
+      { src: `${BASE}images/category-historical_romance.webp`, x: 8,  y: 7,  rot: -4, w: 52 },
+      { src: `${BASE}images/category-forbidden_desire.webp`,   x: 52, y: 11, rot:  3, w: 50 },
+      { src: `${BASE}images/category-slow_burn.webp`,          x: 10, y: 40, rot: -6, w: 48 },
+      { src: `${BASE}images/category-second_chance.webp`,      x: 50, y: 43, rot:  5, w: 50 },
     ],
     description: "Every story is built around the specific pull you're after — forbidden, slow, sharp, or deeply felt. You decide who they are, what they're called, and exactly how far things go. The words are written for you and no one else. A story that sounds like a secret.",
     tags: [
@@ -62,7 +62,7 @@ const DOORS = [
     href: "/after-dark",
     cta: "Enter After Dark",
     ctaIcon: Moon,
-    image: `${BASE}images/door-afterdark.png?v=4`,
+    image: `${BASE}images/door-afterdark.webp`,
     accent: "#7b8fff",
     rgb: "123,143,255",
     nameColor: "#9baeff",
@@ -80,11 +80,11 @@ const DOORS = [
     knobHover: "rgba(123,143,255,0.58)",
     underLight: "rgba(123,143,255,0.09)",
     moodImages: [
-      { src: `${BASE}images/category-dark_romance.png`,         x:  9, y:  7, rot: -4, w: 52 },
-      { src: `${BASE}images/category-dominant_surrendered.png`, x: 50, y: 10, rot:  3, w: 50 },
-      { src: `${BASE}images/category-forbidden_desire.png`,     x: 28, y: 22, rot: -2, w: 46 },
-      { src: `${BASE}images/category-late_night.png`,           x: 10, y: 41, rot: -6, w: 48 },
-      { src: `${BASE}images/category-explicit_collection.png`,  x: 48, y: 44, rot:  5, w: 50 },
+      { src: `${BASE}images/category-dark_romance.webp`,         x:  9, y:  7, rot: -4, w: 52 },
+      { src: `${BASE}images/category-dominant_surrendered.webp`, x: 50, y: 10, rot:  3, w: 50 },
+      { src: `${BASE}images/category-forbidden_desire.webp`,     x: 28, y: 22, rot: -2, w: 46 },
+      { src: `${BASE}images/category-late_night.webp`,           x: 10, y: 41, rot: -6, w: 48 },
+      { src: `${BASE}images/category-explicit_collection.webp`,  x: 48, y: 44, rot:  5, w: 50 },
     ],
     description: "You don't pick from a list. You build it from scratch. Name your character, choose the dynamic — power exchange, tender intensity, something darker. Shape the scene. Then a narrator brings it to life, directly in your ears. Spicy, unrestrained, and built to your exact specification. Nothing template, nothing generic. Every detail yours, every time.",
     tags: [
@@ -113,7 +113,7 @@ const DOORS = [
     href: "/drift",
     cta: "Explore Drift",
     ctaIcon: Moon,
-    image: `${BASE}images/door-drift.png?v=6`,
+    image: `${BASE}images/door-drift.webp`,
     accent: "#56b4e0",
     rgb: "86,180,224",
     nameColor: "#b8e4f5",
@@ -131,10 +131,10 @@ const DOORS = [
     knobHover: "rgba(86,180,224,0.58)",
     underLight: "rgba(86,180,224,0.10)",
     moodImages: [
-      { src: `${BASE}images/category-slow_burn.png`,        x: 10, y:  7, rot: -3, w: 52 },
-      { src: `${BASE}images/category-late_night.png`,       x: 50, y: 11, rot:  4, w: 50 },
-      { src: `${BASE}images/category-emotional_desire.png`, x: 12, y: 41, rot: -5, w: 48 },
-      { src: `${BASE}images/category-second_chance.png`,    x: 49, y: 45, rot:  3, w: 50 },
+      { src: `${BASE}images/category-slow_burn.webp`,        x: 10, y:  7, rot: -3, w: 52 },
+      { src: `${BASE}images/category-late_night.webp`,       x: 50, y: 11, rot:  4, w: 50 },
+      { src: `${BASE}images/category-emotional_desire.webp`, x: 12, y: 41, rot: -5, w: 48 },
+      { src: `${BASE}images/category-second_chance.webp`,    x: 49, y: 45, rot:  3, w: 50 },
     ],
     description: "Written for the hour when everything else has gone quiet. Intimate and warm — the specific comfort of a voice that knows exactly what the late night feels like. Softly sensual, emotionally close. Close your eyes. This one starts slowly and holds you all the way through.",
     tags: [
@@ -302,7 +302,7 @@ export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?
         {/* Woman portrait */}
         <img
           aria-hidden="true"
-          src={`${BASE}images/three-doors-hero-woman.png?v=2`}
+          src={`${BASE}images/three-doors-hero-woman.webp`}
           alt=""
           className="block absolute right-0 top-0 h-full w-full lg:w-[40%] object-cover object-top pointer-events-none select-none opacity-[0.20] lg:opacity-[0.50]"
           style={{

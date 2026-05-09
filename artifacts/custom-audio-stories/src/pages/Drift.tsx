@@ -782,7 +782,7 @@ export default function Drift() {
             {/* Cinematic deep-indigo background */}
             <div className="absolute inset-0">
               <img
-                src={`${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
+                src={`${import.meta.env.BASE_URL}images/drift-hero-woman.webp`}
                 alt=""
                 aria-hidden="true"
                 className="w-full h-full object-cover object-center opacity-25"
@@ -845,12 +845,12 @@ export default function Drift() {
                         </div>
                       ) : (
                         <img
-                          src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`}
+                          src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/drift-hero-woman.webp`}
                           alt=""
                           aria-hidden="true"
                           className="absolute inset-0 w-full h-full object-cover object-center"
                           style={{ opacity: paywallCoverUrl ? 0.55 : 0.35 }}
-                          onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/drift-hero-woman.png?v=2`; }}
+                          onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/drift-hero-woman.webp`; }}
                         />
                       )}
                       <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />

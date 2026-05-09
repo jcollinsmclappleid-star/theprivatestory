@@ -278,11 +278,12 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-square.png" />
   <link rel="apple-touch-icon" href="/favicon-square.png" />
+  <link rel="preload" as="image" href="/logo.webp" fetchpriority="high" />
   <style>${CSS}</style>
 </head>
 <body>
   <nav aria-label="Site navigation">
-    <a class="logo" href="/"><img src="/logo.png" height="32" style="vertical-align:middle;width:auto;margin-right:8px" alt="The Private Story" />The Private Story</a>
+    <a class="logo" href="/"><img src="/logo.webp" height="32" style="vertical-align:middle;width:auto;margin-right:8px" alt="The Private Story" />The Private Story</a>
     <ul>
       <li><a href="/create">Create your story</a></li>
       <li><a href="/pricing">Pricing</a></li>

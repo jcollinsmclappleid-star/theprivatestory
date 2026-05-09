@@ -2189,7 +2189,7 @@ export default function Create() {
           const excerpt = MOOD_TEASERS[paywallCapture.storyMode] ?? MOOD_TEASERS.romance;
           const titleLine = MOOD_TITLES[paywallCapture.storyMode] ?? "Your private story";
 
-          const doorImage = `${API_BASE}/images/afterdark-hero-woman.png`;
+          const doorImage = `${API_BASE}/images/afterdark-hero-woman.webp`;
           const voice = VOICES.find(v => v.id === paywallCapture.voiceId);
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
@@ -2227,7 +2227,7 @@ export default function Create() {
               {/* Cinematic background */}
               <div className="fixed inset-0">
                 <img
-                  src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.png?v=1`}
+                  src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.webp`}
                   alt=""
                   aria-hidden="true"
                   className="w-full h-full object-cover object-center opacity-20"

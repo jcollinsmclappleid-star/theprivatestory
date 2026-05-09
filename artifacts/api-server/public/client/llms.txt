@@ -4,7 +4,7 @@
 
 The Private Story is a subscription platform for adults in the UK and globally. It creates original romantic and intimate audio fiction on demand, narrated by ElevenLabs voices. Stories are generated using Mistral Large, cover art by gpt-image-1. Every story is saved privately to the user's account — no social features, no shared history, no recommendations visible to others.
 
-Pricing: £29/month (5 stories), £179/year (50 stories), £3.99 per additional story.
+Pricing: £29.99/month (5 stories), £239/year (50 stories), £7.99 per additional story.
 
 ## Core pages
 

@@ -4229,9 +4229,9 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
       ? new Date(renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
       : "your renewal date";
     if (plan === "monthly") {
-      return { error: `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false, useRollover: false };
+      return { error: `You've used all 5 stories in your monthly plan. Your next story allowance renews on ${renewStr}. You can add more stories at £7.99 each from your profile.`, useAddon: false, useRollover: false };
     }
-    return { error: `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. You can add more stories at £3.99 each from your profile.`, useAddon: false, useRollover: false };
+    return { error: `You've used all 50 stories in your annual plan. Your allowance renews on ${renewStr}. You can add more stories at £7.99 each from your profile.`, useAddon: false, useRollover: false };
   }
 
   return { error: null, useAddon: false, useRollover: false, storiesCount }; // Within limits

@@ -1289,7 +1289,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
-  const { monthly, annual } = usePricing();
+  const { monthly, annual, currency } = usePricing();
   useSEO({
     title: "After Dark — Unrestrained adult audio fiction — The Private Story",
     description:
@@ -1494,7 +1494,7 @@ export default function AfterDark() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
       });
       const data = await res.json() as { url?: string };
       if (res.ok && data.url) {

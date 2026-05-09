@@ -12,6 +12,7 @@ const router = Router();
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
+const STRIPE_ADDON_PRICE_ID_USD = process.env.STRIPE_ADDON_PRICE_ID_USD;
 const STRIPE_IMMERSIVE_PRICE_ID = process.env.STRIPE_IMMERSIVE_PRICE_ID;
 const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@theprivatestory.com";
@@ -21,9 +22,27 @@ function getStripe(): Stripe | null {
   return new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
 }
 
+// Detect currency from the request body — frontend sends "gbp" or "usd".
+// Defaults to "gbp" so existing UK behaviour is unchanged.
+function getCurrency(req: Request): "gbp" | "usd" {
+  const c = (req.body?.currency as string ?? "").toLowerCase();
+  return c === "usd" ? "usd" : "gbp";
+}
+
 // Look up a subscription price: env vars are authoritative, metadata search is fallback only.
-async function resolvePriceId(stripe: Stripe, plan: "monthly" | "annual"): Promise<string | null> {
+async function resolvePriceId(
+  stripe: Stripe,
+  plan: "monthly" | "annual",
+  currency: "gbp" | "usd",
+): Promise<string | null> {
   // Env vars are the source of truth — always use them when set.
+  if (currency === "usd") {
+    const usdId =
+      plan === "monthly"
+        ? (process.env.STRIPE_MONTHLY_PRICE_ID_USD ?? null)
+        : (process.env.STRIPE_ANNUAL_PRICE_ID_USD ?? null);
+    if (usdId) return usdId;
+  }
   const fromEnv = plan === "monthly"
     ? (process.env.STRIPE_MONTHLY_PRICE_ID ?? null)
     : (process.env.STRIPE_ANNUAL_PRICE_ID ?? null);
@@ -67,7 +86,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
   const isAuthenticated = !!(req.isAuthenticated && req.isAuthenticated());
   const userId = isAuthenticated ? (req.user?.id ?? null) : null;
 
-  const { plan, returnPath } = req.body as { plan: "monthly" | "annual" | "addon"; returnPath?: string };
+  const { plan, returnPath, currency: rawCurrency } = req.body as { plan: "monthly" | "annual" | "addon"; returnPath?: string; currency?: string };
   if (!plan || !["monthly", "annual", "addon"].includes(plan)) {
     res.status(400).json({ error: "Invalid plan. Choose monthly, annual, or addon." });
     return;
@@ -90,11 +109,13 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
   }
 
+  const currency = (rawCurrency ?? "gbp").toLowerCase() === "usd" ? "usd" : "gbp";
+
   let priceId: string | null | undefined;
   if (plan === "monthly" || plan === "annual") {
-    priceId = await resolvePriceId(stripe, plan);
+    priceId = await resolvePriceId(stripe, plan, currency);
   } else {
-    priceId = STRIPE_ADDON_PRICE_ID;
+    priceId = currency === "usd" ? (STRIPE_ADDON_PRICE_ID_USD ?? STRIPE_ADDON_PRICE_ID) : STRIPE_ADDON_PRICE_ID;
   }
 
   if (!priceId) {

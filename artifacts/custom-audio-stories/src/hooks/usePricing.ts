@@ -25,10 +25,22 @@ export type PlansResponse = {
   fetchedAt: number;
 };
 
+// Detect whether this visitor is in the UK by checking their browser timezone.
+// UK timezones: Europe/London (also covers Guernsey, Jersey, Isle of Man).
+// This is reliable, requires no external service, and cannot misroute UK customers.
+export function detectCurrency(): "gbp" | "usd" {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
+    if (tz === "Europe/London" || tz.startsWith("GB")) return "gbp";
+  } catch {
+    // Intl not supported — default to GBP to be safe
+  }
+  return "usd";
+}
+
 // Sensible fallback values used only as placeholderData while the real fetch is in-flight,
-// or if the backend is unreachable. These match the current Stripe prices at time of writing
-// — but the live response always overrides.
-export const PRICING_FALLBACK: PlansResponse = {
+// or if the backend is unreachable.
+export const PRICING_FALLBACK_GBP: PlansResponse = {
   monthly: {
     amount: 2999,
     currency: "gbp",
@@ -48,33 +60,68 @@ export const PRICING_FALLBACK: PlansResponse = {
     savingsVsMonthlyDisplay: "£119.88",
   },
   addon: {
-    amount: 399,
+    amount: 799,
     currency: "gbp",
-    display: "£3.99",
+    display: "£7.99",
     interval: "one_time",
   },
   fetchedAt: 0,
 };
 
-async function fetchPlans(): Promise<PlansResponse> {
-  const res = await fetch(`${API_BASE}/api/billing/plans`);
+export const PRICING_FALLBACK_USD: PlansResponse = {
+  monthly: {
+    amount: 3999,
+    currency: "usd",
+    display: "$39.99",
+    interval: "month",
+    storyAllowance: 5,
+  },
+  annual: {
+    amount: 31900,
+    currency: "usd",
+    display: "$319",
+    interval: "year",
+    storyAllowance: 50,
+    equivalentMonthlyAmount: 2658,
+    equivalentMonthlyDisplay: "$26.58",
+    savingsVsMonthlyAmount: 15988,
+    savingsVsMonthlyDisplay: "$159.88",
+  },
+  addon: {
+    amount: 999,
+    currency: "usd",
+    display: "$9.99",
+    interval: "one_time",
+  },
+  fetchedAt: 0,
+};
+
+// Keep a single exported fallback alias so existing imports don't break.
+export const PRICING_FALLBACK = PRICING_FALLBACK_GBP;
+
+async function fetchPlans(currency: "gbp" | "usd"): Promise<PlansResponse> {
+  const res = await fetch(`${API_BASE}/api/billing/plans?currency=${currency}`);
   if (!res.ok) throw new Error(`billing/plans ${res.status}`);
   return (await res.json()) as PlansResponse;
 }
 
 export function usePricing() {
+  const currency = detectCurrency();
+  const fallback = currency === "usd" ? PRICING_FALLBACK_USD : PRICING_FALLBACK_GBP;
+
   const query = useQuery({
-    queryKey: ["billing", "plans"],
-    queryFn: fetchPlans,
+    queryKey: ["billing", "plans", currency],
+    queryFn: () => fetchPlans(currency),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
-    placeholderData: PRICING_FALLBACK,
+    placeholderData: fallback,
   });
-  // Always return real or fallback so callers never have to handle undefined
-  const plans = query.data ?? PRICING_FALLBACK;
+
+  const plans = query.data ?? fallback;
   return {
     plans,
+    currency,
     monthly: plans.monthly,
     annual: plans.annual,
     addon: plans.addon,

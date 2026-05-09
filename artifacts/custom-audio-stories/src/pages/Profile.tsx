@@ -370,7 +370,7 @@ function QuickCreateBanner({ taste }: { taste: TasteProfile }) {
 // Main Profile page
 // ---------------------------------------------------------------------------
 export default function Profile() {
-  const { monthly, annual, addon } = usePricing();
+  const { monthly, annual, addon, currency } = usePricing();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteProcessing, setDeleteProcessing] = useState(false);
   const [deleteDone, setDeleteDone] = useState(false);
@@ -569,7 +569,7 @@ export default function Profile() {
                                 method: "POST",
                                 credentials: "include",
                                 headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ plan }),
+                                body: JSON.stringify({ plan, currency }),
                               });
                               const d = await res.json();
                               if (d.url) window.location.href = d.url;
@@ -721,7 +721,7 @@ export default function Profile() {
                         method: "POST",
                         credentials: "include",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ plan: "addon" }),
+                        body: JSON.stringify({ plan: "addon", currency }),
                       });
                       const data = await res.json();
                       if (data.url) window.location.href = data.url;

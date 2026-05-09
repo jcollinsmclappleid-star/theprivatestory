@@ -284,7 +284,7 @@ function SamplePlayCard({ pick, tone, featured = false }: SamplePlayCardProps) {
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const { isPaid } = useSubscription();
-  const { monthly, annual } = usePricing();
+  const { monthly, annual, currency } = usePricing();
 
   useSEO({
     title: "The Private Story — Personalised Audio Stories",
@@ -302,7 +302,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         ...(isAuthenticated ? { credentials: "include" } : {}),
-        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
       });
       const data = await res.json() as { url?: string; error?: string };
       if (data.url) {

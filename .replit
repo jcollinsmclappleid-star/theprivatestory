@@ -37,8 +37,11 @@ ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 VITE_ADMIN_EMAIL = "Jcollinsmclappleid@gmail.com"
 STRIPE_ANNUAL_PRICE_ID = "price_1TQyeaDv8IzJrrwIhJT0SfL0"
 STRIPE_MONTHLY_PRICE_ID = "price_1THSrLDv8IzJrrwIlYgcIJ1C"
-STRIPE_ADDON_PRICE_ID = "price_1THSuyDv8IzJrrwIWL1kcMN1"
+STRIPE_ADDON_PRICE_ID = "price_1TV8O0Dv8IzJrrwIAUqcBVLP"
 STRIPE_IMMERSIVE_PRICE_ID = "price_1THYxXDv8IzJrrwIwzmLd5kJ"
+STRIPE_MONTHLY_PRICE_ID_USD = "price_1TV8IUDv8IzJrrwIKwv9XuiW"
+STRIPE_ANNUAL_PRICE_ID_USD = "price_1TV8H8Dv8IzJrrwIzoeSJj6l"
+STRIPE_ADDON_PRICE_ID_USD = "price_1THYxXDv8IzJrrwIwzmLd5kJ"
 
 [userenv.development]
 SITE_URL = "https://5e7606d7-ad46-420d-b8cd-9fb7055150fc-00-38xw9k6c4nxsw.riker.replit.dev/custom-audio-stories"

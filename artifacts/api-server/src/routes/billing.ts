@@ -8,6 +8,9 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_MONTHLY_PRICE_ID = process.env.STRIPE_MONTHLY_PRICE_ID;
 const STRIPE_ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID;
 const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
+const STRIPE_MONTHLY_PRICE_ID_USD = process.env.STRIPE_MONTHLY_PRICE_ID_USD;
+const STRIPE_ANNUAL_PRICE_ID_USD = process.env.STRIPE_ANNUAL_PRICE_ID_USD;
+const STRIPE_ADDON_PRICE_ID_USD = process.env.STRIPE_ADDON_PRICE_ID_USD;
 
 const MONTHLY_STORY_ALLOWANCE = 5;
 const ANNUAL_STORY_ALLOWANCE = 50;
@@ -35,16 +38,25 @@ type PlansResponse = {
   fetchedAt: number;
 };
 
-let cache: { data: PlansResponse; expiresAt: number } | null = null;
-let lastFailureAt = 0;
-let inflight: Promise<PlansResponse> | null = null;
+type RegionPlans = {
+  gbp: PlansResponse;
+  usd: PlansResponse;
+};
 
-function formatGBP(amount: number, currency: string): string {
-  if (currency.toLowerCase() !== "gbp") {
-    return `${(amount / 100).toFixed(2)} ${currency.toUpperCase()}`;
-  }
+let cache: { data: RegionPlans; expiresAt: number } | null = null;
+let lastFailureAt = 0;
+let inflight: Promise<RegionPlans> | null = null;
+
+function formatCurrency(amount: number, currency: string): string {
   const major = amount / 100;
-  return Number.isInteger(major) ? `£${major}` : `£${major.toFixed(2)}`;
+  switch (currency.toLowerCase()) {
+    case "gbp":
+      return Number.isInteger(major) ? `£${major}` : `£${major.toFixed(2)}`;
+    case "usd":
+      return Number.isInteger(major) ? `$${major}` : `$${major.toFixed(2)}`;
+    default:
+      return `${major.toFixed(2)} ${currency.toUpperCase()}`;
+  }
 }
 
 async function fetchPrice(stripe: Stripe, priceId: string): Promise<PlanShape> {
@@ -58,52 +70,64 @@ async function fetchPrice(stripe: Stripe, priceId: string): Promise<PlanShape> {
   return {
     amount: price.unit_amount,
     currency: price.currency,
-    display: formatGBP(price.unit_amount, price.currency),
+    display: formatCurrency(price.unit_amount, price.currency),
     interval,
   };
 }
 
-async function loadPlansFromStripe(): Promise<PlansResponse> {
-  if (!STRIPE_SECRET_KEY) {
-    throw new Error("STRIPE_SECRET_KEY not configured");
-  }
-  if (!STRIPE_MONTHLY_PRICE_ID || !STRIPE_ANNUAL_PRICE_ID || !STRIPE_ADDON_PRICE_ID) {
-    throw new Error("Stripe price IDs not configured");
-  }
-  const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
-
-  const [monthly, annual, addon] = await Promise.all([
-    fetchPrice(stripe, STRIPE_MONTHLY_PRICE_ID),
-    fetchPrice(stripe, STRIPE_ANNUAL_PRICE_ID),
-    fetchPrice(stripe, STRIPE_ADDON_PRICE_ID),
-  ]);
-
-  // Annual derived figures
+function buildPlansResponse(
+  monthly: PlanShape,
+  annual: PlanShape,
+  addon: PlanShape,
+): PlansResponse {
   const equivalentMonthlyAmount = Math.round(annual.amount / 12);
   const annualMonthlyEquivalentTotal = monthly.amount * 12;
   const savingsVsMonthlyAmount = Math.max(0, annualMonthlyEquivalentTotal - annual.amount);
-
   return {
     monthly: { ...monthly, storyAllowance: MONTHLY_STORY_ALLOWANCE },
     annual: {
       ...annual,
       storyAllowance: ANNUAL_STORY_ALLOWANCE,
       equivalentMonthlyAmount,
-      equivalentMonthlyDisplay: formatGBP(equivalentMonthlyAmount, annual.currency),
+      equivalentMonthlyDisplay: formatCurrency(equivalentMonthlyAmount, annual.currency),
       savingsVsMonthlyAmount,
-      savingsVsMonthlyDisplay: formatGBP(savingsVsMonthlyAmount, annual.currency),
+      savingsVsMonthlyDisplay: formatCurrency(savingsVsMonthlyAmount, annual.currency),
     },
     addon,
     fetchedAt: Date.now(),
   };
 }
 
-async function getPlans(): Promise<PlansResponse> {
+async function loadPlansFromStripe(): Promise<RegionPlans> {
+  if (!STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY not configured");
+  if (!STRIPE_MONTHLY_PRICE_ID || !STRIPE_ANNUAL_PRICE_ID || !STRIPE_ADDON_PRICE_ID) {
+    throw new Error("GBP Stripe price IDs not configured");
+  }
+  const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
+
+  const hasUsd = STRIPE_MONTHLY_PRICE_ID_USD && STRIPE_ANNUAL_PRICE_ID_USD && STRIPE_ADDON_PRICE_ID_USD;
+
+  const priceIds = [
+    STRIPE_MONTHLY_PRICE_ID,
+    STRIPE_ANNUAL_PRICE_ID,
+    STRIPE_ADDON_PRICE_ID,
+    ...(hasUsd ? [STRIPE_MONTHLY_PRICE_ID_USD!, STRIPE_ANNUAL_PRICE_ID_USD!, STRIPE_ADDON_PRICE_ID_USD!] : []),
+  ];
+
+  const prices = await Promise.all(priceIds.map((id) => fetchPrice(stripe, id)));
+
+  const gbp = buildPlansResponse(prices[0], prices[1], prices[2]);
+  const usd = hasUsd
+    ? buildPlansResponse(prices[3], prices[4], prices[5])
+    : gbp;
+
+  return { gbp, usd };
+}
+
+async function getPlans(): Promise<RegionPlans> {
   const now = Date.now();
   if (cache && cache.expiresAt > now) return cache.data;
-  // De-dupe concurrent refreshes
   if (inflight) return inflight;
-  // Avoid hammering Stripe on persistent failure — back off briefly
   if (!cache && now - lastFailureAt < FAILURE_RETRY_MS && lastFailureAt !== 0) {
     throw new Error("billing-temporarily-unavailable");
   }
@@ -115,10 +139,7 @@ async function getPlans(): Promise<PlansResponse> {
     } catch (err) {
       lastFailureAt = Date.now();
       logger.warn({ err }, "billing.getPlans failed");
-      if (cache) {
-        // serve last-good even if stale
-        return cache.data;
-      }
+      if (cache) return cache.data;
       throw err;
     } finally {
       inflight = null;
@@ -127,12 +148,15 @@ async function getPlans(): Promise<PlansResponse> {
   return inflight;
 }
 
-router.get("/plans", async (_req: Request, res: Response) => {
+// GET /api/billing/plans?currency=gbp|usd
+// Returns prices for the requested currency. Defaults to GBP.
+router.get("/plans", async (req: Request, res: Response) => {
   try {
     const data = await getPlans();
-    // 5 minute browser cache; serve stale up to 1 hour while we revalidate.
+    const currency = (req.query.currency as string ?? "gbp").toLowerCase();
+    const plans = currency === "usd" ? data.usd : data.gbp;
     res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
-    res.json(data);
+    res.json(plans);
   } catch (err) {
     logger.error({ err }, "GET /api/billing/plans failed");
     res.status(503).json({ error: "Pricing temporarily unavailable. Please try again shortly." });

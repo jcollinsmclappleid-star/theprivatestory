@@ -329,7 +329,7 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
-  const { monthly, annual } = usePricing();
+  const { monthly, annual, currency } = usePricing();
   useSEO({
     title: "Drift — Calm bedtime audio stories — The Private Story",
     description:
@@ -430,7 +430,7 @@ export default function Drift() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
       });
       const data = await res.json();
       if (res.ok && data.url) {

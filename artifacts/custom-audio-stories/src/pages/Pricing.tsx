@@ -103,7 +103,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Pricing() {
   const { isAuthenticated, openSignIn } = useAuth();
-  const { plans, monthly, annual } = usePricing();
+  const { plans, monthly, annual, currency } = usePricing();
   const FAQS = buildFaqs(plans);
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
@@ -122,7 +122,7 @@ export default function Pricing() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {

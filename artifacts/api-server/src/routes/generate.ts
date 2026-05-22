@@ -1248,14 +1248,6 @@ const VOICE_CATALOGUE: Record<string, { label: string; gender: "female" | "male"
   "jfIS2w2yJi0grJZPyEsk": { label: "Heavy", gender: "male" },
 };
 
-const MALE_VOICE_IDS = [
-  "AeRdCCKzvd23BpJoofzx",
-  "n1PvBOwxb8X6m7tahp2h",
-  "jfIS2w2yJi0grJZPyEsk",
-];
-
-const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
-
 // Legacy voice values → modern voice_id
 const LEGACY_VOICE_MAP: Record<string, string> = {
   "UK Voice": DEFAULT_VOICE_ID,
@@ -1266,14 +1258,11 @@ const LEGACY_VOICE_MAP: Record<string, string> = {
   "Confident Voice": DEFAULT_VOICE_ID,
 };
 
-function resolveVoiceId(voiceIdOrFeel: string, pairing?: string): string {
-  // If it's a modern voice_id, use it directly
+function resolveVoiceId(voiceIdOrFeel: string, _pairing?: string): string {
+  // If it's a modern voice_id, use it directly.
+  // Any voice (male or female) is allowed for any pairing — listeners may
+  // prefer a male narrator regardless of the in-story dynamic.
   if (VOICE_CATALOGUE[voiceIdOrFeel]) {
-    const voice = VOICE_CATALOGUE[voiceIdOrFeel];
-    // Male voices only allowed for specific pairings
-    if (voice.gender === "male" && !VALID_MALE_PAIRINGS.includes(pairing ?? "")) {
-      return DEFAULT_VOICE_ID;
-    }
     return voiceIdOrFeel;
   }
   // If it's a legacy value, map it

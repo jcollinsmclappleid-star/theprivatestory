@@ -15,7 +15,7 @@ import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
 import { VoiceAvatar } from "@/components/VoiceAvatar";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
-import { VOICES, FEMALE_VOICES, MALE_VOICES, VALID_MALE_PAIRINGS } from "@/lib/voices";
+import { VOICES, FEMALE_VOICES, MALE_VOICES } from "@/lib/voices";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { TermsGate } from "@/components/TermsGate";
 import CreateLanding from "@/pages/CreateLanding";
@@ -689,12 +689,10 @@ export default function Create() {
   useEffect(() => {
     if (step !== "voice") return;
 
-    // Restore saved voice preference, validating against current pairing
+    // Restore saved voice preference. Any voice is allowed for any pairing —
+    // a listener may prefer a male narrator regardless of the in-story dynamic.
     const applyVoicePreference = (voiceId: string) => {
       if (!VOICES.find(v => v.id === voiceId)) return false;
-      const isMale = MALE_VOICES.some(v => v.id === voiceId);
-      const pairingAllowsMale = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
-      if (isMale && !pairingAllowsMale) return false;
       form.setValue("voiceFeel", voiceId, { shouldDirty: false });
       return true;
     };
@@ -1721,7 +1719,6 @@ export default function Create() {
 
             {(() => {
               const selectedVoiceId = form.watch("voiceFeel");
-              const showMaleVoices = VALID_MALE_PAIRINGS.includes(castingPairing ?? "");
 
               const renderVoiceCard = (voice: typeof VOICES[0]) => {
                 const isSelected = selectedVoiceId === voice.id;
@@ -1807,16 +1804,15 @@ export default function Create() {
 
               return (
                 <div className="space-y-4">
+                  <p className="pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
+                    Female Voices
+                  </p>
                   {FEMALE_VOICES.map(renderVoiceCard)}
 
-                  {showMaleVoices && (
-                    <>
-                      <p className="pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
-                        Male Voices
-                      </p>
-                      {MALE_VOICES.map(renderVoiceCard)}
-                    </>
-                  )}
+                  <p className="pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
+                    Male Voices
+                  </p>
+                  {MALE_VOICES.map(renderVoiceCard)}
                 </div>
               );
             })()}
@@ -1832,13 +1828,6 @@ export default function Create() {
               <button
                 type="button"
                 onClick={() => {
-                  // Silently re-validate: if saved voice is male but pairing no longer allows it, reset to Jane
-                  const currentVoice = form.getValues("voiceFeel");
-                  const isMaleVoice = MALE_VOICES.some(v => v.id === currentVoice);
-                  if (isMaleVoice && !VALID_MALE_PAIRINGS.includes(castingPairing ?? "")) {
-                    form.setValue("voiceFeel", "RILOU7YmBhvwJGDGjNmP", { shouldDirty: false });
-                  }
-
                   void handleStartGenerating(false, "");
                 }}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow text-sm"

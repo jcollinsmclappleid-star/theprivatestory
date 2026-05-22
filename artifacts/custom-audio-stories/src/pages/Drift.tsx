@@ -477,7 +477,7 @@ export default function Drift() {
       const genData: Record<string, unknown> = {
         mood: "Late Night",
         intensity: "Sensual",
-        voiceFeel: "UK Voice",
+        voiceFeel: casting.voiceId || "FA6HhUjVbervLw2rNl8M",
         storyLength: "10 min",
         perspective: apiPerspective,
         cinematicVisuals: true,

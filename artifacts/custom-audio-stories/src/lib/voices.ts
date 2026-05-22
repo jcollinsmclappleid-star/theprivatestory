@@ -89,23 +89,19 @@ export const JAMES_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
 export const JOSHUA_VOICE_ID = JAMES_VOICE_ID;
 export const THEO_VOICE_ID   = "jfIS2w2yJi0grJZPyEsk";
 
-export const VALID_MALE_PAIRINGS = ["Her & Him", "Him & Him", "Him & Them", "Her & Them"];
-
 export const DEFAULT_FEMALE_VOICE_ID = "FA6HhUjVbervLw2rNl8M";
 export const DEFAULT_MALE_VOICE_ID   = "AeRdCCKzvd23BpJoofzx";
 
-const HER_HER = "Her & Her";
 const ALL_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
-const JAMES = VOICES.find(v => v.id === JAMES_VOICE_ID)!;
-const THEO  = VOICES.find(v => v.id === THEO_VOICE_ID)!;
-
 export function getVoicesForPairing(pairing: string | undefined): Voice[] {
-  if (!pairing) return FEMALE_VOICES;
-  if (pairing === HER_HER) return FEMALE_VOICES;
-  if (ALL_MALE_PAIRINGS.includes(pairing)) return MALE_VOICES;
-  // Her & Him, Her & Them — female voices then James and Theo last
-  return [...FEMALE_VOICES, JAMES, THEO];
+  // All-male pairings naturally lead with male voices, female options still available below.
+  if (pairing && ALL_MALE_PAIRINGS.includes(pairing)) {
+    return [...MALE_VOICES, ...FEMALE_VOICES];
+  }
+  // Everyone else (including no pairing, Her & Her, Her & Him, Her & Them):
+  // female voices first (product default), male voices offered as additional options.
+  return [...FEMALE_VOICES, ...MALE_VOICES];
 }
 
 export function getDefaultVoiceId(pairing?: string): string {

@@ -323,7 +323,7 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
         href="/pricing"
         className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left sm:ml-1"
       >
-        From £19.92/mo · 5 stories included · cancel anytime
+        From £14.92/mo · 5 stories included · cancel anytime
       </Link>
     </div>
   );

@@ -639,7 +639,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             plan === "immersive" ? "Single Story — £7.99" :
             plan === "addon"     ? "Add-on Story — £7.99" :
             plan === "monthly"   ? "Monthly Subscription — £29.99/month" :
-            plan === "annual"    ? "Annual Subscription — £239/year" :
+            plan === "annual"    ? "Annual Subscription — £179/year" :
             plan;
           const who = session.metadata?.userId ?? session.metadata?.guestToken ?? "unknown";
           const guestEmail = session.customer_details?.email ?? session.customer_email ?? null;

@@ -191,7 +191,7 @@ function makeProductRatingSchema(slug: string, page: { meta: { title: string; de
       "@type": "Offer",
       url: `${SITE_URL}/pricing`,
       priceCurrency: "GBP",
-      price: "29.00",
+      price: "29.99",
       priceValidUntil: "2027-12-31",
       availability: "https://schema.org/InStock",
       seller: { "@type": "Organization", name: SITE_NAME },
@@ -390,7 +390,7 @@ const STATIC_PAGES: StaticPage[] = [
           {
             "@type": "Offer",
             name: "Monthly plan",
-            price: "29.00",
+            price: "29.99",
             priceCurrency: "GBP",
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
@@ -474,7 +474,7 @@ const STATIC_PAGES: StaticPage[] = [
           {
             "@type": "Offer",
             name: "Story add-on",
-            price: "3.99",
+            price: "7.99",
             priceCurrency: "GBP",
             priceValidUntil: "2026-12-31",
             availability: "https://schema.org/InStock",
@@ -1197,7 +1197,7 @@ router.get("/", (_req: Request, res: Response) => {
           {
             "@type": "Offer",
             name: "Monthly subscription",
-            price: "29.00",
+            price: "29.99",
             priceCurrency: "GBP",
             availability: "https://schema.org/InStock",
           },

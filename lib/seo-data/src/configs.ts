@@ -13,7 +13,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Personalised Adult Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
   hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, right now, around exactly what you want to feel.` },
   heroCTALabel: "Create your adult story",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -142,7 +142,7 @@ export const adultAudioStoriesConfig: SEOPageConfig = {
       { q: `How is this different from other platforms?`, a: `The key distinction is generation versus retrieval. Other platforms offer a catalogue of pre-produced content — you browse, filter, and select from what already exists. The Private Story generates your story around your specific choices. Your story does not exist before you ask for it. This produces a significantly higher level of match between the story and your specific preferences than even the most carefully curated catalogue can achieve. The second distinction is privacy: the platform is architecturally private — no social features, no visible listening history, no recommendation feeds.` },
       { q: `Can I choose the intensity level of my story?`, a: `Yes. The intensity level is a genuine choice in the creation flow, not a fixed platform setting. Stories run from tender and emotionally charged to fully unrestricted, and different moods and sessions call for different registers. You set the intensity for each story you create. The story is then generated to that register — built specifically to the level you chose, not to a platform default.` },
       { q: `How long are the stories?`, a: `Stories are typically around 10 minutes, depending on voice selection — long enough to build properly, develop character and dynamic, and arrive at a satisfying resolution, without requiring a significant time investment. Subscribers can create new stories at any time within their monthly allowance.` },
-      { q: `What does a subscription include?`, a: `The standard monthly plan includes five stories per month at £29.99/month, with an annual plan available at £179/year (equivalent to fifty stories). Additional stories can be created at £7.99 each beyond the plan allowance. All stories are narrated, include a generated cover image, and are stored in your private library indefinitely.` },
+      { q: `What does a subscription include?`, a: `The standard monthly plan includes five stories per month at $29.99/month, with an annual plan available at $229/year (equivalent to fifty stories). Additional stories can be created at $7.99 each beyond the plan allowance. All stories are narrated, include a generated cover image, and are stored in your private library indefinitely.` },
       { q: `Are adult audio stories completely private?`, a: `Completely. Your account, your stories, and your listening history are private and visible only to you. The Private Story has no social features — no public profiles, no shared listening history, no recommendation feeds that expose what you listen to. Privacy is architectural to the platform: it was designed from the beginning with the requirement that adult listening should be genuinely private.` },
       { q: `Who is The Private Story designed for?`, a: `Adults who want adult audio fiction that is actually personalised — created around their specific preferences rather than retrieved from a catalogue — and who want the listening experience to be genuinely private. The platform is particularly focused on women, built around the recognition that the adult audio fiction market has historically been designed with assumptions that do not match what women actually want from the genre. The creation flow, the character types available, and the emotional registers the stories work in are all built with female listeners at the centre.` },
     ],
@@ -152,7 +152,14 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
   meta: { title: `AI Audio Story Generator — Free Sample, Yours in Minutes | The Private Story`, description: `An AI audio story generator that writes personalised stories around your mood and preferences. Private, adult, emotionally intelligent. Not a fixed library.` },
   hero: { badge: `AI-Generated · Emotionally Intelligent · Private`, h1: `AI Audio Story Generator — Stories Written Around Your Mood, Not the Algorithm's`, tagline: `Not a library. Not a playlist. An intelligence that writes your story from scratch.` },
   heroCTALabel: "Generate your audio story",
-  heroImage: "images/seo-hero-ai.png",
+  heroImage: "images/seo-hero-ai-audio-story-generator.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -309,7 +316,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
   meta: { title: `Alternatives to Romance Audiobooks — When You Want a Story Made for Right Now | The Private Story`, description: `Romance audiobooks are someone else's love story. Discover personalised audio stories — romantic experiences created around your mood, dynamic, and pacing right now.` },
   hero: { badge: `Romance Audio · Personalised Stories · For Adults`, h1: `Alternatives to Romance Audiobooks — When You Want a Story Made for Right Now, Not Everyone`, tagline: `Romance audiobooks are someone else's love story. Somewhere, there is one made entirely around yours.` },
   heroCTALabel: "Create your romance",
-  heroImage: "images/seo-hero-personalised.png",
+  heroImage: "images/seo-hero-personalised.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -500,7 +507,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       { feature: "Length", thePrivateStory: "around 10 minutes, depending on voice selection — sized for the listening window", other: "6–20+ hours — requires sustained commitment" },
       { feature: "Privacy", thePrivateStory: "Completely private — exists only in your account", other: "On a shared platform with public reviews and ratings" },
       { feature: "Discovery", thePrivateStory: "Choose how you want to feel; story is created to match", other: "Browse catalogue and hope something fits your mood" },
-      { feature: "Price", thePrivateStory: "From £29.99/month for 5 personalised stories", other: "£7.99–£14.99/month; popular titles cost extra credits" },
+      { feature: "Price", thePrivateStory: "From $29.99/month for 5 personalised stories", other: "$7.99–$14.99/month; popular titles cost extra credits" },
     ],
   },
 };
@@ -509,7 +516,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
   meta: { title: `Personalised Audio Stories for Women — Free Sample, No Sign-Up | The Private Story`, description: `Audio stories for women, created around how you want to feel right now. Private, personalised, and built with your desires at the centre. Not a library — yours.` },
   hero: { badge: `For Women · Private · Personalised`, h1: `Audio Stories for Women — Your Desires at the Centre`, tagline: `Built around what women actually want from audio fiction. Not what the market assumes. Not a best guess. What you said you wanted.` },
   heroCTALabel: "Create your audio story",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -640,8 +647,8 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
       { q: `Can I choose the kind of story — slow burn versus more direct?`, a: `Yes. The intensity and pacing of your story are genuine choices in the creation flow. The platform covers the full spectrum: slow burn and emotionally textured, confident and direct, deeply adult in tone, and the darker territory of morally complex romance. These are not fixed platform registers — they are choices you make for each story, because different moods require different kinds of fiction.` },
       { q: `Are the stories narrated by a real voice?`, a: `Stories are narrated using studio-quality digital voices selected to complement the specific tone and register of each story. The voice quality is indistinguishable from professional human narration in the ways that matter for the listening experience: warmth, pacing, texture. The narration is part of what is created — not an afterthought — and the voice selected is matched to the story's character and emotional register.` },
       { q: `How private is the platform, genuinely?`, a: `Genuinely private. There are no social features. There is no public profile. Your listening history is not visible to others, not shared with third parties for social purposes, and not used to build any public-facing recommendation or activity feed. Your stories are stored in your private account and are audible only to you. The platform was designed from the beginning with the requirement that adult fiction listening should be genuinely private — not a setting, but the fundamental premise.` },
-      { q: `What does a subscription cost?`, a: `The monthly plan is £29.99/month for five stories. The annual plan is £179/year, which covers fifty stories — equivalent to £3.58 per story. Additional stories beyond your plan allowance are £7.99 each. All plans include full narration, generated cover images, and permanent storage in your private library.` },
-      { q: `Is the platform UK-based?`, a: `The Private Story is a UK-based platform. Pricing is in GBP. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.` },
+      { q: `What does a subscription cost?`, a: `The monthly plan is $29.99/month for five stories. The annual plan is $229/year, which covers fifty stories — equivalent to $4.58 per story. Additional stories beyond your plan allowance are $7.99 each. All plans include full narration, generated cover images, and permanent storage in your private library.` },
+      { q: `Is the platform UK-based?`, a: `The Private Story is operated by a UK-registered company and priced in US dollars. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.` },
     ],
 };
 
@@ -649,7 +656,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
   meta: { title: `Audio Stories vs Audiobooks — Why One Feels Personal | The Private Story`, description: `Audiobooks are made for everyone. A personalised audio story is made for right now. Discover the real difference between audio stories and audiobooks — and why it matters more than the audio industry has acknowledged.` },
   hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Audiobooks — Why One Feels Personal and One Doesn't`, tagline: `You have been consuming stories. There is another option: inhabiting one.` },
   heroCTALabel: "Create your audio story",
-  heroImage: "images/seo-hero-personalised.png",
+  heroImage: "images/seo-hero-personalised.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -843,7 +850,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
   meta: { title: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You. | The Private Story`, description: `Podcasts are brilliant — but not at 11pm. Discover why personalised audio stories outperform podcasts for winding down, relaxation, and sleep, and when to reach for each format.` },
   hero: { badge: `Comparison · Personalised Audio · For Adults`, h1: `Audio Stories vs Podcasts — One Is Made for Everyone. One Is Made for You.`, tagline: `You reach for your phone. You open the podcast app. You scroll. Nothing feels right. This is not a coincidence.` },
   heroCTALabel: "Create your audio story",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -1030,7 +1037,7 @@ export const bedtimeAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Bedtime · Calm · Adults Only`, h1: `Adult Bedtime Audio Stories — Calm, Private, Made for Your Night`, tagline: `Not a generic sleep meditation. A story made for how you actually arrive at the end of your day.` },
   heroCTALabel: "Create your bedtime story",
   heroCTAHref: "/drift",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -1170,7 +1177,14 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
   meta: { title: `The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins | The Private Story`, description: `Most audio apps were built for everyone. The best one for you was built around you. Discover the five criteria that separate excellent adult audio platforms from disappointing ones.` },
   hero: { badge: `Best Audio Apps · Personalised Content · For Adults`, h1: `The Best Audio Story App for Adults — What to Look for and Why Personalisation Wins`, tagline: `Most audio apps were built for everyone. The best one for you was built around you.` },
   heroCTALabel: "Create your adult audio story",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-best-audio-story-app-for-adults.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -1352,7 +1366,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
   meta: { title: `Confident Energy Audio Stories — Personalised & Narrated | The Private Story`, description: `Audio stories built around confident, charged energy. You at the centre. Desired specifically. Private, personalised, and created for how you want to feel right now.` },
   hero: { badge: `Confident · Charged · Private`, h1: `Confident Energy Audio Stories — At the Centre of Something Cinematic`, tagline: `You as the protagonist — not waiting to be noticed. Already the reason the room changed.` },
   heroCTALabel: "Create your confident-energy story",
-  heroImage: "images/seo-hero-enemies.png",
+  heroImage: "images/seo-hero-enemies.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -1491,7 +1505,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
   meta: { title: `Create Your Own Audio Story — Free Sample, Yours in 2 Min | The Private Story`, description: `Create your own personalised audio story. Choose your mood, dynamic, and setting. Your story is generated and ready to listen to privately. Adults only.` },
   hero: { badge: `Create · Personalise · Listen Privately`, h1: `Create Your Own Audio Story in Minutes — Shaped Around You`, tagline: `You already know what you need to feel right now. The Private Story makes it.` },
   heroCTALabel: "Create your audio story",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-create.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -1626,7 +1640,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
       { q: `Can I create multiple stories?`, a: `Yes. You can create a new story whenever you want one. Your mood varies — your story can vary with it. Previous stories are saved privately to your account and remain there until you choose to remove them.` },
       { q: `How long is a created story?`, a: `Stories are typically around 10 minutes, depending on voice selection. Pacing affects length — a slower, more deliberate story will often be longer than a more immediate one.` },
       { q: `Can I edit my story after it's created?`, a: `Stories are not editable after creation — they are generated pieces of audio, not documents. If the result isn't quite what you wanted, you can create a new one with adjusted choices. Creation takes less than two minutes.` },
-      { q: `Is creation free or paid?`, a: `Creating personalised audio stories requires a subscription. Plans start at £29.99 per month for five creations, with an annual option at £179 per year for fifty creations. Individual stories can also be purchased for £7.99 each.` },
+      { q: `Is creation free or paid?`, a: `Creating personalised audio stories requires a subscription. Plans start at $29.99 per month for five creations, with an annual option at $229 per year for fifty creations. Individual stories can also be purchased for $7.99 each.` },
       { q: `How is this different from writing my own story?`, a: `Writing requires craft. Creating here requires only choices. You describe how you want to feel — the mood, the dynamic, the atmosphere. The story is written around those choices. You don't produce text, edit it, or solve the problems of storytelling. You direct. The story follows.` },
     ],
 };
@@ -1636,7 +1650,14 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Dark Romance · Private · Adults Only`, h1: `Dark Romance Audio Stories — Where Danger and Desire Are the Same Thing`, tagline: `The stories that don't look away. The characters who make you feel things you're not supposed to admit to.` },
   heroCTALabel: "Create your dark romance",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance-audio-stories.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -1775,7 +1796,14 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Adult Emotional Audio Stories — Made for You, Heard Privately | The Private Story`, description: `Adult emotional audio stories created around your mood. Private, personalised, and designed to meet you where you are. For adults who want to feel something real.` },
   hero: { badge: `Emotional · Private · Made for Right Now`, h1: `Adult Emotional Audio Stories — Stories That Know How You Feel Before You Do`, tagline: `For whenever you need to feel something — but haven't quite found the words for what.` },
   heroCTALabel: "Create your emotional story",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-emotional-audio-stories.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -1916,7 +1944,14 @@ export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Enemies to Lovers Audio Stories — Personalised, Free Sample | The Private Story`, description: `Enemies to lovers audio stories created for adults. Private, personalised, and built around the specific tension of opposition turning into something else entirely. Create yours.` },
   hero: { badge: `Enemies to Lovers · Rivals · Private`, h1: `Enemies to Lovers Audio Stories — The Best Tension Has History`, tagline: `The chemistry that started as opposition. The story that began somewhere before the wanting.` },
   heroCTALabel: "Create your enemies-to-lovers",
-  heroImage: "images/seo-hero-enemies.png",
+  heroImage: "images/seo-hero-enemies-to-lovers-audio-stories.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -2054,7 +2089,7 @@ export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Forbidden Romance Audio Stories — Personalised & Narrated | The Private Story`, description: `Forbidden romance audio stories created for adults. Private, personalised, and built around the specific charge of wanting what you shouldn't. Create yours.` },
   hero: { badge: `Forbidden · Private · Adults Only`, h1: `Forbidden Romance Audio Stories — The Pull You're Not Supposed to Feel`, tagline: `The most charged stories are always the ones where something is at stake. Where wanting costs something.` },
   heroCTALabel: "Create your forbidden romance",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -2192,7 +2227,14 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Intimate Audio Stories — Personalised & Private | The Private Story`, description: `Intimate audio stories created for adults. Private, personalised, and designed around your mood and preferences. Choose your tone — slow burn, charged, tender.` },
   hero: { badge: `Intimate · Private · Adults Only`, h1: `Intimate Audio Stories — Private, Personal, Created Around Your Desire`, tagline: `The story that knows what you need right now — because you told it.` },
   heroCTALabel: "Create your intimate story",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate-audio-stories.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -2341,7 +2383,7 @@ export const lateNightAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `After Dark · Private · Adults Only`, h1: `Late Night Audio Stories — After Midnight, the Rules Change`, tagline: `The particular quality of late night — its honesty, its atmosphere, its specific permission — captured in a story made for it.` },
   heroCTALabel: "Create your late-night story",
   heroCTAHref: "/drift",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -2479,7 +2521,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
   meta: { title: `Love Stories Audio — Personalised & Narrated for You | The Private Story`, description: `Audio love stories created for adults. Emotionally intelligent, private, and personalised around your mood and preferences. Not a library — your story.` },
   hero: { badge: `Love · Emotional Depth · Private`, h1: `Love Stories Audio — Emotionally Intelligent Stories Created Around You`, tagline: `Love stories written for the emotional complexity of adult feeling — not simplified, not sanitised, not the same story retold.` },
   heroCTALabel: "Create your love story",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -2618,7 +2660,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Personalised Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
   hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Sometimes you don't want to browse. You want something that already knows what you need.` },
   heroCTALabel: "Create your personalised story",
-  heroImage: "images/seo-hero-personalised.png",
+  heroImage: "images/seo-hero-personalised.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -2789,7 +2831,7 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Private Audio Stories — No Sign-Up, Yours Tonight | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
   hero: { badge: `Private by Design · No Social · Yours Alone`, h1: `Private Audio Stories — Created for You, Heard Only by You`, tagline: `What you listen to in private should stay private. Here, it always does.` },
   heroCTALabel: "Create your private story",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -2966,7 +3008,7 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
   meta: { title: `Quiet Intensity Audio Stories — Free Sample, Made for You | The Private Story`, description: `Quiet intensity audio stories for adults. Restrained, psychological, and deeply charged. Private and personalised around the specific pleasure of what isn't said.` },
   hero: { badge: `Quiet · Psychological · Private`, h1: `Quiet Intensity Audio Stories — The Loudest Desire Is the Kind That Doesn't Speak`, tagline: `Everything implied. Nothing stated. The specific charge of two people in a room where both of them know.` },
   heroCTALabel: "Create your quiet-intensity story",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3106,7 +3148,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Relaxation · Decompression · Adults Only`, h1: `Adult Relaxing Audio Stories — Wind Down With a Story Written for You`, tagline: `Not a meditation. Not a podcast. A story that understands what right now requires.` },
   heroCTALabel: "Create your relaxing story",
   heroCTAHref: "/drift",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3254,7 +3296,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Romantic Audio Stories — Personalised & Narrated | The Private Story`, description: `Romantic audio stories created for you. Choose your tone — slow burn, emotional, tender — and listen privately to a story shaped around how you want to feel.` },
   hero: { badge: `Romantic · Private · Made for You`, h1: `Romantic Audio Stories — Intimate, Private, Made Around Your Mood`, tagline: `Choose how you want to feel right now. The story is made around that.` },
   heroCTALabel: "Create your romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3396,7 +3438,7 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Bedtime · Relaxation · Adults Only`, h1: `Adult Sleep Audio Stories — Fall Asleep to a Story Made for Tonight`, tagline: `Your mind needs somewhere to go before it can let go. Give it somewhere worth going.` },
   heroCTALabel: "Create your sleep story",
   heroCTAHref: "/drift",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3554,7 +3596,7 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Slow Burn Audio Stories — Free 30s Sample, Made for You | The Private Story`, description: `Slow burn audio stories created for adults. Private, personalised, and built around tension, restraint, and the specific pleasure of delay. Create yours.` },
   hero: { badge: `Slow Burn · Tension · Private`, h1: `Slow Burn Audio Stories — Every Almost-Touch. Every Loaded Glance. Worth the Wait.`, tagline: `The pleasure of delay. The specific satisfaction of something that takes its time because it knows exactly where it's going.` },
   heroCTALabel: "Create your slow-burn romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3702,7 +3744,7 @@ export const audioEroticaForWomenConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3881,7 +3923,7 @@ export const personalisedEroticaConfig: SEOPageConfig = {
   hero: { badge: `Personalised · Adult · Private`, h1: `Personalised Erotica — Made Around Your Desires`, tagline: `Erotic fiction generated from your choices right now. Not retrieved from a library. Written for you, from the first sentence.` },
   heroCTALabel: "Create your personalised story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-create.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -3967,7 +4009,7 @@ export const eroticAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Adult · Audio · Personalised`, h1: `Erotic Audio Stories — Generated for You, Heard Only by You`, tagline: `Original adult fiction created from your choices, narrated, and private. A story that exists because of what you wanted right now.` },
   heroCTALabel: "Create your erotic story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -4050,7 +4092,7 @@ export const adultBedtimeStoriesConfig: SEOPageConfig = {
   hero: { badge: `Adults Only · Bedtime · Calming`, h1: `Adult Bedtime Stories — Calming, Private, Made for Tonight`, tagline: `The end of a grown-up day deserves a story that understands how you actually arrive at it.` },
   heroCTALabel: "Create your bedtime story",
   heroCTAHref: "/drift",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -4140,7 +4182,7 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
   meta: { title: `AI Romance Stories for Women — Personalised, Private, Made for You | The Private Story`, description: `AI-generated romance stories for women, personalised around your mood and choices. Private, narrated audio fiction created for you right now. Not a library — yours.` },
   hero: { badge: `Romance · AI-Generated · For Women`, h1: `AI Romance Stories for Women — Created Around How You Want to Feel`, tagline: `Romance fiction generated for you from your choices right now. Private, narrated, and made for the specific quality of connection you want to feel.` },
   heroCTALabel: "Create your romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -4231,7 +4273,7 @@ export const spicyAudioStoriesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your spicy story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   showCastingPreview: true,
   sections: [
     {
@@ -4403,7 +4445,14 @@ export const eroticAudioStoriesForWomenConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your erotic story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-erotic-audio-stories-for-women.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   showCastingPreview: true,
   sections: [
     {
@@ -4562,7 +4611,7 @@ export const forcedProximityRomanceAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Forced Proximity Romance — Personalised, Free Sample | The Private Story`, description: `Forced proximity romance audio stories created for adults. Private, personalised, and built around the specific charge of shared space that removes the social permission to keep distance. Create yours.` },
   hero: { badge: `Forced Proximity · Slow Burn · Private`, h1: `Forced Proximity Romance Audio Stories — When Shared Space Decides Something`, tagline: `The snowstorm doesn't ask permission. Neither does the shared deadline, the borrowed apartment, or the assignment that sent both of you to the same place.` },
   heroCTALabel: "Create your forced-proximity romance",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -4707,7 +4756,14 @@ export const eroticAudiobooksForWomenConfig: SEOPageConfig = {
   hero: { badge: `Erotic Audio · Personalised · Private`, h1: `Erotic Audiobooks for Women — And Something the Catalogue Never Had`, tagline: `The audiobook brought literary erotic fiction to a listening audience. What it couldn't do was write a story that was yours.` },
   heroCTALabel: "Create your erotic story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-erotic-audiobooks-for-women.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -4850,7 +4906,7 @@ export const officeRomanceAudioStoriesConfig: SEOPageConfig = {
   meta: { title: `Office Romance Audio Stories — Personalised & Narrated | The Private Story`, description: `Office romance audio stories created for adults. Private, personalised, and built around the specific charge of professional proximity — where you have to behave normally around someone who makes normal impossible.` },
   hero: { badge: `Office Romance · Professional Tension · Private`, h1: `Office Romance Audio Stories — The Most Charged Stories Begin at Work`, tagline: `The professional world has its own rules. It also has a specific kind of tension that no other setting produces — the wanting that has nowhere to go during business hours.` },
   heroCTALabel: "Create your office romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -4994,7 +5050,14 @@ export const steamyAudioStoriesConfig: SEOPageConfig = {
   hero: { badge: `Steamy · Charged · Private`, h1: `Steamy Audio Stories — Where Wanting Has Room to Build`, tagline: `Not cold. Not explicit. The warm, building register where desire is present in every sentence and the story trusts you to feel what it describes.` },
   heroCTALabel: "Create your steamy story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-steamy-audio-stories.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5139,7 +5202,14 @@ export const aiEroticaConfig: SEOPageConfig = {
   hero: { badge: `AI Erotica · Personalised · Private`, h1: `AI Erotica — What It Is When It Is Built Properly`, tagline: `The category exists. The quality varies enormously. What changes everything is the brief — the specificity of your choices before the story is created.` },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-ai.png",
+  heroImage: "images/seo-hero-ai-erotica.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5292,7 +5362,7 @@ export const billionaireRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `Wealth as character, not as scenery. The certainty that money makes possible — and the privacy that comes with it. A story built around the specific texture of a man whose resources are an extension of how he chooses to pay attention.`,
   },
   heroCTALabel: "Create your billionaire romance",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5464,7 +5534,7 @@ export const mafiaRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `Not the costume version. The trope as it actually works in the best contemporary romance — loyalty, family obligation, the danger as character rather than decoration. A story built around the dynamic, the woman who knows what he is, and the choice she makes anyway.`,
   },
   heroCTALabel: "Create your mafia romance",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5635,7 +5705,7 @@ export const morallyGreyRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `Romance fiction that takes moral complexity seriously without demanding a redemption arc. The cost-of-power lead, the compromised choice, the love story that does not simplify itself to make the reader comfortable.`,
   },
   heroCTALabel: "Create your morally-grey romance",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5807,7 +5877,7 @@ export const ageGapRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `What the gap actually does — the experience differential, the assured attention, the specific charge of being known by someone who has lived more. Adult characters, taken seriously. A story built around the dynamic the gap makes possible.`,
   },
   heroCTALabel: "Create your age-gap romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -5979,7 +6049,7 @@ export const fakeDatingRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `The arrangement was supposed to be a favour. The plus-one for the wedding, the date for the work event, the partner for the family lunch. The script was clear. What neither of you wrote down was what the script would license.`,
   },
   heroCTALabel: "Create your fake-dating romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -6153,7 +6223,7 @@ export const secondChanceRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `He walks back into the room a decade after the room last held him. Whatever has happened in the meantime, the way the air changes when he looks at her has not changed at all.`,
   },
   heroCTALabel: "Create your second-chance romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -6327,7 +6397,7 @@ export const grumpySunshineRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `He has built his life around the careful management of his own privacy. She is not trying to dismantle anything. She is simply, persistently, present — and the edges of him have started, without his consent, to soften.`,
   },
   heroCTALabel: "Create your grumpy-sunshine romance",
-  heroImage: "images/seo-hero-enemies.png",
+  heroImage: "images/seo-hero-enemies.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -6499,7 +6569,7 @@ export const singleDadRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `He is not arriving into the story unattached. The version of himself he brings to the table is the version that has been formed by responsibility he chose and learned to hold — and the attention he gives is shaped by what that learning required of him.`,
   },
   heroCTALabel: "Create your single-dad romance",
-  heroImage: "images/seo-hero-romantic.png",
+  heroImage: "images/seo-hero-romantic.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -6673,7 +6743,7 @@ export const romantasyAudioStoriesConfig: SEOPageConfig = {
     tagline: `Worlds where the magic system has consequence and the love story is what carries the weight. A romantasy story written from your brief, narrated, and entirely yours.`,
   },
   heroCTALabel: "Create your romantasy",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -6843,7 +6913,7 @@ export const darkRomantasyAudioStoriesConfig: SEOPageConfig = {
     tagline: `The court that does not pretend to be benign. The bond that came at a real price. A dark romantasy story written from your brief and heard only by you.`,
   },
   heroCTALabel: "Create your dark romantasy",
-  heroImage: "images/seo-hero-dark-romance.png",
+  heroImage: "images/seo-hero-dark-romance.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7012,7 +7082,7 @@ export const booktokRomanceAudioStoriesConfig: SEOPageConfig = {
     tagline: `Forced proximity. Morally grey. Dark romantasy. The dynamics BookTok has organised contemporary romance around — generated as audio for your specific brief.`,
   },
   heroCTALabel: "Create your BookTok romance",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7182,7 +7252,7 @@ export const smutAudioStoriesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your smut story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7352,7 +7422,7 @@ export const spicyReadsAudioStoriesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your spicy story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7518,11 +7588,11 @@ export const audioEroticaUkConfig: SEOPageConfig = {
   hero: {
     badge: `British · Private · Personalised`,
     h1: `Audio Erotica UK — A British Platform Built for British Listeners`,
-    tagline: `Made in the UK, narrated in British voices, billed in pounds, and built around the privacy expectations British women have always quietly insisted on.`,
+    tagline: `Made in the UK, narrated in British voices, billed in dollars, and built around the privacy expectations British women have always quietly insisted on.`,
   },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7530,7 +7600,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
       h2: "Why a British Platform Matters for This Category",
       paragraphs: [
         "Most of the audio erotica that British listeners encounter was produced for the American market and adapted, lightly, for an international audience. The voices are American. The cultural references are American. The consumer protection sits under American law. The billing is in dollars routed through subscription stacks that were designed for the largest possible market. None of this is hostile to British listeners — but none of it was built for them either.",
-        "What changes when a platform is built in the UK from the start is small in any one detail and substantial in aggregate. The narration registers — Received Pronunciation, contemporary London, the softer Northern voices — carry cultural meaning that an American voice cannot replicate, however accomplished the performance. The settings and references can be British without translation: the late-night taxi home, the country house weekend, the office in the City, the Edinburgh hotel in winter. The billing is straightforward — pounds, UK card processing, the consumer protections British listeners are entitled to under UK law.",
+        "What changes when a platform is built in the UK from the start is small in any one detail and substantial in aggregate. The narration registers — Received Pronunciation, contemporary London, the softer Northern voices — carry cultural meaning that an American voice cannot replicate, however accomplished the performance. The settings and references can be British without translation: the late-night taxi home, the country house weekend, the office in the City, the Edinburgh hotel in winter. The billing is straightforward — in dollars, secure card processing, the consumer protections British listeners are entitled to under UK law.",
         "The privacy expectation is also distinctly British in character. There is a long British literary tradition — gothic, Victorian, contemporary romance — of treating private interior life as something that belongs to the person who has it, not to a public conversation. The Private Story is built around that expectation: no public listening history, no review system, no recommendation feed shaped by what other listeners chose. Privacy is a structural feature, not a setting you have to find.",
         "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform is built, hosted, and run from the UK. <a href=\"/private-audio-stories\">Private audio stories</a> made by a British team for British listeners — and for anyone, anywhere, who recognises the difference.",
       ],
@@ -7547,8 +7617,8 @@ export const audioEroticaUkConfig: SEOPageConfig = {
       h2: "UK Consumer Protection and How Billing Works",
       paragraphs: [
         "British listeners have specific consumer rights — under the Consumer Rights Act 2015, the Consumer Contracts Regulations, and the GDPR as retained in UK law — that platforms registered overseas often satisfy in name rather than in practice. Cancelling an overseas subscription, exercising data rights against a US-based operator, or pursuing a billing dispute through a foreign card processor is technically possible and practically frustrating.",
-        "The Private Story is operated under UK company law, billed in pounds through UK card processing, and subject directly to UK consumer protection. Cancellation is a single action in your account. Refund requests within the cooling-off period are handled directly. Data subject requests under UK GDPR are answered by the people who run the platform, not routed through international support tiers.",
-        "Pricing is in pounds and stated plainly: a monthly plan, an annual plan, and an Immersive plan for higher-volume listeners. Prices are visible on the <a href=\"/pricing\">pricing page</a>. There are no hidden tiers, no add-on payments inside the listening experience, and no upsell prompts during a story. What you pay for is access; what you receive is access.",
+        "The Private Story is operated under UK company law, billed in dollars through secure card processing, and subject directly to UK consumer protection. Cancellation is a single action in your account. Refund requests within the cooling-off period are handled directly. Data subject requests under UK GDPR are answered by the people who run the platform, not routed through international support tiers.",
+        "Pricing is in dollars and stated plainly: a monthly plan, an annual plan, and an Immersive plan for higher-volume listeners. Prices are visible on the <a href=\"/pricing\">pricing page</a>. There are no hidden tiers, no add-on payments inside the listening experience, and no upsell prompts during a story. What you pay for is access; what you receive is access.",
       ],
     },
     {
@@ -7562,8 +7632,8 @@ export const audioEroticaUkConfig: SEOPageConfig = {
   ],
   howItWorks: [
     {
-      heading: "Choose your story in pounds, in plain English",
-      body: "Open the <a href=\"/create\">Creation Room</a>, choose your pairing, dynamic, setting, intensity, and narration voice. British voice options are first-class choices, not afterthoughts. The flow takes under two minutes; pricing and plans are in pounds.",
+      heading: "Choose your story in dollars, in plain English",
+      body: "Open the <a href=\"/create\">Creation Room</a>, choose your pairing, dynamic, setting, intensity, and narration voice. British voice options are first-class choices, not afterthoughts. The flow takes under two minutes; pricing and plans are in dollars.",
     },
     {
       heading: "The story is generated for you specifically",
@@ -7608,8 +7678,8 @@ export const audioEroticaUkConfig: SEOPageConfig = {
         body: "Operated by a UK-registered company, subject directly to UK consumer law. Billing, cancellation, and data subject requests are handled under UK rules by the people who run the platform.",
       },
       {
-        heading: "Pricing in pounds, plainly stated",
-        body: "Monthly, annual, and Immersive plans, priced in pounds, with no hidden tiers and no payment prompts inside a story. See the <a href=\"/pricing\">pricing page</a> for current plans.",
+        heading: "Pricing in dollars, plainly stated",
+        body: "Monthly, annual, and Immersive plans, priced in dollars, with no hidden tiers and no payment prompts inside a story. See the <a href=\"/pricing\">pricing page</a> for current plans.",
       },
       {
         heading: "Privacy as architecture, not a setting",
@@ -7625,7 +7695,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
     h2: "Audio Erotica UK — The Full Picture",
     paragraphs: [
       "British listeners have been an under-served audience in audio erotica from the form's earliest commercial years. The dominant platforms were built for the American mainstream and treat international audiences as a long tail. The voices, references, billing, and editorial sensibility have all been calibrated for somewhere else.",
-      "The Private Story was built differently from the start. Operated from the UK by Ianson System Ltd, narrated in British voices as primary options, written in UK English, billed in pounds, and structured around the privacy expectation that British listeners have always quietly insisted on. None of this is a marketing posture; it is what the platform actually is.",
+      "The Private Story was built differently from the start. Operated from the UK by Ianson System Ltd, narrated in British voices as primary options, written in UK English, billed in dollars, and structured around the privacy expectation that British listeners have always quietly insisted on. None of this is a marketing posture; it is what the platform actually is.",
       "What that produces, in practice, is audio erotica in which the cultural register sits where British listeners live — recognisable settings, recognisable voices, the literary inheritance available rather than translated away. Stories that begin from a specific brief and end as a private, narrated piece of fiction kept in your account.",
       "Last updated: April 2026.",
       "Open the <a href=\"/after-dark\">After Dark creation flow</a> and create a story in the register you actually want.",
@@ -7648,7 +7718,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
   faqs: [
     {
       q: "Is The Private Story actually a UK company?",
-      a: "Yes. The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The team and the operation are UK-based, the platform is hosted on UK infrastructure where applicable, and the company is subject directly to UK company law, UK consumer protection, and UK GDPR. Billing is processed in pounds. Cancellation, refund requests within the statutory cooling-off period, and data subject requests are all handled directly by the operating company rather than routed through overseas support layers.",
+      a: "Yes. The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The team and the operation are UK-based, the platform is hosted on UK infrastructure where applicable, and the company is subject directly to UK company law, UK consumer protection, and UK GDPR. Billing is processed in dollars. Cancellation, refund requests within the statutory cooling-off period, and data subject requests are all handled directly by the operating company rather than routed through overseas support layers.",
     },
     {
       q: "Are the narration voices actually British?",
@@ -7660,7 +7730,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
     },
     {
       q: "How does pricing work for UK listeners?",
-      a: "Pricing is in pounds. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Card processing is handled through UK-compatible payment infrastructure, and there are no hidden charges or in-story upsells. You can cancel at any time from your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service.",
+      a: "Pricing is in dollars. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Card processing is handled through UK-compatible payment infrastructure, and there are no hidden charges or in-story upsells. You can cancel at any time from your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service.",
     },
     {
       q: "What about my data and privacy under UK law?",
@@ -7693,7 +7763,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7724,7 +7794,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     {
       h2: "Home-Grown — Not a Translation",
       paragraphs: [
-        "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform was designed and built in the UK. Billing is in pounds. Consumer protection sits under UK law. Data subject requests are handled directly under UK GDPR. None of this is a posture for marketing purposes; it is what the platform structurally is.",
+        "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform was designed and built in the UK. Billing is in dollars. Consumer protection sits under UK law. Data subject requests are handled directly under UK GDPR. None of this is a posture for marketing purposes; it is what the platform structurally is.",
         "What this means for British women in particular is that the listening relationship is not mediated through a foreign company optimising for a different market. The voices are not adapted from elsewhere. The editorial register is not translated. The privacy architecture is not bolted on as a response to a different jurisdiction's rules. The whole thing was designed in the place where you live, by people who recognise what the listening is for.",
         "There is a wider point about the alternative this represents to US-based platforms. Catalogue services like Dipsea and Quinn are well-made within their model, but the model is built for the American mainstream and the cultural register reflects it. British women who want something closer to the literary register they actually inherit have not had a home-grown option. The Private Story is the home-grown option.",
       ],
@@ -7783,7 +7853,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
       },
       {
         heading: "UK company, UK consumer protection",
-        body: "Operated under UK company law, billed in pounds, subject to UK GDPR. Cancellation and data requests are handled directly.",
+        body: "Operated under UK company law, billed in dollars, subject to UK GDPR. Cancellation and data requests are handled directly.",
       },
       {
         heading: "Generative, not catalogue",
@@ -7818,7 +7888,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
   faqs: [
     {
       q: "What makes a platform 'British' rather than just available in the UK?",
-      a: "The distinction is structural. A platform that is available in the UK has been built for a larger market and made accessible to British listeners as part of a global rollout — the voices, references, billing, and editorial register reflect the primary market. A British platform was built in the UK from the start: operated by a UK company, subject to UK consumer protection and UK GDPR by default rather than by adaptation, billed in pounds, and produced by people whose cultural register is the same as the listener's. The Private Story is built in the second sense.",
+      a: "The distinction is structural. A platform that is available in the UK has been built for a larger market and made accessible to British listeners as part of a global rollout — the voices, references, billing, and editorial register reflect the primary market. A British platform was built in the UK from the start: operated by a UK company, subject to UK consumer protection and UK GDPR by default rather than by adaptation, billed in dollars, and produced by people whose cultural register is the same as the listener's. The Private Story is built in the second sense.",
     },
     {
       q: "Which British accents are available in narration?",
@@ -7846,7 +7916,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     },
     {
       q: "What does it cost?",
-      a: "Pricing is in pounds. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Cancellation is a single action in your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service. There are no hidden tiers and no payment prompts inside a story.",
+      a: "Pricing is in dollars. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Cancellation is a single action in your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service. There are no hidden tiers and no payment prompts inside a story.",
     },
   ],
 };
@@ -7863,7 +7933,14 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-personalised.png",
+  heroImage: "images/seo-hero-best-audio-erotica-app-uk.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -7900,7 +7977,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
       h2: "Where The Private Story Sits — Plainly",
       paragraphs: [
         "The Private Story is a generative platform built in the UK. The story is created from your brief at the moment you ask for it, by Mistral Large, narrated in production-grade voices including British registers, and saved to your private account. The form is around ten minutes; the creation flow takes under two minutes. There is no catalogue and no library; nothing pre-existed your brief.",
-        "The platform's strengths are specificity, privacy, and the UK structural footing — operated by Ianson System Ltd under UK company law, billed in pounds, subject to UK GDPR by default. Its limitations relative to catalogue platforms are production format (single-voice narration rather than multi-track production) and length (around ten minutes rather than thirty). Its limitations relative to audiobooks are the depth and character development that only a full-length novel can deliver.",
+        "The platform's strengths are specificity, privacy, and the UK structural footing — operated by Ianson System Ltd under UK company law, billed in dollars, subject to UK GDPR by default. Its limitations relative to catalogue platforms are production format (single-voice narration rather than multi-track production) and length (around ten minutes rather than thirty). Its limitations relative to audiobooks are the depth and character development that only a full-length novel can deliver.",
         "Whether it is the right app for you depends on which criteria matter most. If specificity and privacy are higher priorities than production polish and length, generative is likely the right category. If the catalogue immediacy is what you want, the catalogue platforms are likely the right category. Both can be true on different evenings.",
       ],
     },
@@ -7957,8 +8034,8 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
         body: "Operated by Ianson System Ltd, a UK-registered company subject to UK consumer law and UK GDPR. Cancellation and data requests handled directly.",
       },
       {
-        heading: "Pricing in pounds, plainly stated",
-        body: "Three plans — Monthly, Annual, Immersive — in pounds. No hidden tiers, no in-story upsells. See the <a href=\"/pricing\">pricing page</a>.",
+        heading: "Pricing in dollars, plainly stated",
+        body: "Three plans — Monthly, Annual, Immersive — in dollars. No hidden tiers, no in-story upsells. See the <a href=\"/pricing\">pricing page</a>.",
       },
       {
         heading: "Generative model, not catalogue",
@@ -7971,7 +8048,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
     paragraphs: [
       "There is no single 'best' app in audio erotica for UK listeners, because the category is not homogeneous. Catalogue platforms, audiobook romance, and generative platforms are doing different things. The right one for you depends on which criteria matter most: specificity, polish, depth, privacy, UK consumer footing.",
       "The Private Story is the generative option built in the UK. It is the right answer when specificity and privacy are higher priorities than multi-track production polish and full-novel length. It is not the right answer for every evening or every listener, and the comparative framing on this page is intended to be honest about that.",
-      "What the platform offers, plainly: a story written by Mistral Large from your specific brief, narrated in production-grade voices including British registers, saved privately to your account, with billing in pounds and consumer protection under UK law. The form is around ten minutes; the creation flow takes under two minutes.",
+      "What the platform offers, plainly: a story written by Mistral Large from your specific brief, narrated in production-grade voices including British registers, saved privately to your account, with billing in dollars and consumer protection under UK law. The form is around ten minutes; the creation flow takes under two minutes.",
       "Last updated: April 2026.",
       "Try the <a href=\"/after-dark\">After Dark creation flow</a> and see whether the generative model fits the listening practice you actually want.",
     ],
@@ -8017,7 +8094,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
     },
     {
       q: "What about pricing — how do the plans compare?",
-      a: "Pricing varies by category and platform. Catalogue subscriptions tend to sit in a similar monthly range to The Private Story's Monthly plan; audiobook services bundle their content into a wider library. The Private Story's plans are in pounds and shown on the <a href=\"/pricing\">pricing page</a> — Monthly, Annual, and Immersive — with no hidden tiers and no in-story upsells.",
+      a: "Pricing varies by category and platform. Catalogue subscriptions tend to sit in a similar monthly range to The Private Story's Monthly plan; audiobook services bundle their content into a wider library. The Private Story's plans are in dollars and shown on the <a href=\"/pricing\">pricing page</a> — Monthly, Annual, and Immersive — with no hidden tiers and no in-story upsells.",
     },
     {
       q: "Which one should I try first?",
@@ -8042,7 +8119,14 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create yours — British voice",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-audio-erotica-male-voice-british.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -8138,7 +8222,7 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
       },
       {
         heading: "UK-built, UK-billed",
-        body: "Operated by Ianson System Ltd under UK company law, billed in pounds, subject to UK GDPR. The voice is British and so is the consumer footing.",
+        body: "Operated by Ianson System Ltd under UK company law, billed in dollars, subject to UK GDPR. The voice is British and so is the consumer footing.",
       },
     ],
   },
@@ -8197,7 +8281,7 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
     },
     {
       q: "Where is The Private Story based?",
-      a: "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform is built and run from the UK, billed in pounds, and subject directly to UK consumer protection and UK GDPR. The British voice options reflect the platform's UK origins rather than being added as a marketing feature.",
+      a: "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform is built and run from the UK, billed in dollars, and subject directly to UK consumer protection and UK GDPR. The British voice options reflect the platform's UK origins rather than being added as a marketing feature.",
     },
   ],
 };
@@ -8214,7 +8298,7 @@ export const audioEroticaForWomenOver30Config: SEOPageConfig = {
   },
   heroCTALabel: "Create your audio erotica",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -8386,7 +8470,7 @@ export const audioEroticaForCouplesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your story for two",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -8557,7 +8641,7 @@ export const lesbianAudioEroticaConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your F/F story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-women.png",
+  heroImage: "images/seo-hero-women.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -8727,7 +8811,7 @@ export const queerAudioEroticaConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your queer story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-personalised.png",
+  heroImage: "images/seo-hero-personalised.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -8897,7 +8981,7 @@ export const shortEroticAudioStoriesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your 10-minute story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-create.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -9071,7 +9155,7 @@ export const audioEroticaWithMaleNarratorConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create yours — male narrator",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -9245,7 +9329,7 @@ export const sensualAudioStoriesConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your sensual story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -9419,7 +9503,7 @@ export const howToListenToAudioEroticaConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your first story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-create.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [
@@ -9599,7 +9683,7 @@ export const audioEroticaForBeginnersConfig: SEOPageConfig = {
   },
   heroCTALabel: "Create your first story",
   heroCTAHref: "/after-dark",
-  heroImage: "images/seo-hero-create.png",
+  heroImage: "images/seo-hero-create.webp",
   dateModified: "2026-04-05",
   showCastingPreview: true,
   sections: [

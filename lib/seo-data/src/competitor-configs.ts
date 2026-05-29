@@ -67,7 +67,14 @@ export const dipseaAlternativeConfig: SEOPageConfig = {
     tagline: "Two listening practices that work well together. Hear a free 30-second sample, then create one of your own.",
   },
   heroCTALabel: "Hear a sample, then create one",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-dipsea-alternative.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   sections: [
     {
       h2: "Why Dipsea Earned Its Place in Audio Erotica",
@@ -136,7 +143,14 @@ export const quinnAlternativeConfig: SEOPageConfig = {
     tagline: "Two listening practices that work well together. Hear a free 30-second sample, then create one of your own.",
   },
   heroCTALabel: "Hear a sample, then create one",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-quinn-alternative.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   sections: [
     {
       h2: "Why Quinn Has Become a Touchstone for the Community",
@@ -205,7 +219,7 @@ export const ferlyAlternativeConfig: SEOPageConfig = {
     tagline: "Two listening practices that work well together. Hear a free 30-second sample, then create one of your own.",
   },
   heroCTALabel: "Hear a sample, then create one",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-intimate.webp",
   sections: [
     {
       h2: "Why Ferly's Approach Resonates with So Many Women",
@@ -274,7 +288,14 @@ export const gonewildaudioAlternativeConfig: SEOPageConfig = {
     tagline: "Two listening practices that work well together. Hear a free 30-second sample, then create one of your own.",
   },
   heroCTALabel: "Hear a sample, then create one",
-  heroImage: "images/seo-hero-intimate.png",
+  heroImage: "images/seo-hero-gonewildaudio-alternative.webp",
+  bodyImages: [
+    "images/seo-body-listening-in-silk.webp",
+    "images/seo-body-whisper-close.webp",
+    "images/seo-body-lovers-embrace.webp",
+    "images/seo-body-bedroom-glow.webp",
+    "images/seo-body-candlelit-bath.webp",
+  ],
   sections: [
     {
       h2: "Why GoneWildAudio Has Such a Devoted Community",

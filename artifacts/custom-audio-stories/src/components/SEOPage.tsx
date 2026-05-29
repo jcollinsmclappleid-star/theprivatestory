@@ -23,6 +23,11 @@ const BODY_IMAGE_POOL: string[] = [
   "images/seo-body-silk-on-velvet.webp",
   "images/seo-body-rain-on-window.webp",
   "images/seo-body-fireplace-and-wine.webp",
+  "images/seo-body-listening-in-silk.webp",
+  "images/seo-body-lovers-embrace.webp",
+  "images/seo-body-whisper-close.webp",
+  "images/seo-body-bedroom-glow.webp",
+  "images/seo-body-candlelit-bath.webp",
 ];
 
 /** Native dimensions of every body-image asset. Locked so the browser
@@ -323,7 +328,7 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
         href="/pricing"
         className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left sm:ml-1"
       >
-        From £14.92/mo · 5 stories included · cancel anytime
+        From $19.08/mo · 5 stories included · cancel anytime
       </Link>
     </div>
   );

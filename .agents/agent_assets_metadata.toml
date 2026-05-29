@@ -930,6 +930,24 @@ uri = "file://attached_assets/generated_images/seo-body/seo-body-morning-sheets.
 type = "image"
 title = "seo-body-morning-sheets"
 
+[[generated]]
+id = "THJosbclxAcOsM7ajtEHS"
+uri = "file://attached_assets/generated_images/sample-hybrid-embrace-window.png"
+type = "image"
+title = "hybrid embrace window"
+
+[[generated]]
+id = "oj0itjv_EtVsSzdHr5ohO"
+uri = "file://attached_assets/generated_images/sample-hybrid-hands-entwined.png"
+type = "image"
+title = "hybrid hands entwined"
+
+[[generated]]
+id = "Rk55qLeDQLtRorjlS__F0"
+uri = "file://attached_assets/generated_images/sample-hybrid-listening.png"
+type = "image"
+title = "hybrid listening shoulder"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
@@ -953,3 +971,21 @@ id = "DFUmTNwQEfhIJ7TWcoKWd"
 uri = "file://artifacts/api-server/test-stories/plan-test-output.md"
 type = "text"
 title = "Story Plan Test Output + Grammar QC"
+
+[[outputs]]
+id = "kvbiX4hCRqPQT0iVuPO5J"
+uri = "file://attached_assets/generated_images/sample-hybrid-embrace-window.png"
+type = "image"
+title = "Sample 1 — Embrace at window (backlit, faces obscured)"
+
+[[outputs]]
+id = "hx0mhspaO6xzuTpk37Xri"
+uri = "file://attached_assets/generated_images/sample-hybrid-hands-entwined.png"
+type = "image"
+title = "Sample 2 — Hands entwined on silk (abstract, no faces)"
+
+[[outputs]]
+id = "BC7K6vtBKAaz_bVkRPdAj"
+uri = "file://attached_assets/generated_images/sample-hybrid-listening.png"
+type = "image"
+title = "Sample 3 — Listening (face turned away) — vs current cartoony version"

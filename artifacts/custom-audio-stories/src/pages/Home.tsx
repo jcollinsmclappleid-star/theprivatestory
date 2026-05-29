@@ -49,7 +49,7 @@ function pickToStory(pick: EditorsPick): Story {
  *  (Clara · Kayla · James) so visitors hear the breadth in 30 seconds.
  *  Maya is reserved for the After Dark teaser below to keep all four voices
  *  present on the home page without repeating any single narrator. */
-const LISTENING_ROOM_SLUGS = ["01-last-one", "04-driver", "09-neighbour"] as const;
+const LISTENING_ROOM_SLUGS = ["01-last-one", "08-proposition", "06-supervisor"] as const;
 
 /** The single pick that fronts the After Dark teaser — Maya's power-play
  *  bodyguard piece sits in the deeper register the section is selling. */

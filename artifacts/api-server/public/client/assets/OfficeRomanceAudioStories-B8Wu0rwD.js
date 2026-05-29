@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Ck7ahBVm.js";import{S as i,g as r}from"./SEOPage-DSgWTvPQ.js";import"./index-CyiZTOp3.js";import"./data-editors-picks-DtyV1KRW.js";const e=r("office-romance-audio-stories");function m(){return o.jsx(i,{config:e,slug:"office-romance-audio-stories",doorFilter:["dark"]})}export{m as default};

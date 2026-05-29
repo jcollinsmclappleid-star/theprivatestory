@@ -1,0 +1,1 @@
+import{j as s}from"./vendor-Ck7ahBVm.js";import{S as o,g as i}from"./SEOPage-BsooEgVc.js";import"./index-BdTxPu8K.js";import"./data-editors-picks-DtyV1KRW.js";const r=i("spicy-reads-audio-stories");function u(){return s.jsx(o,{config:r,slug:"spicy-reads-audio-stories"})}export{u as default};

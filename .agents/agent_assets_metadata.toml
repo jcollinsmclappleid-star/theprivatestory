@@ -1343,3 +1343,9 @@ id = "PkfW8RGaUjZ0U9-V3Klzj"
 uri = "file://attached_assets/generated_images/sample-dark-listening.png"
 type = "image"
 title = "Dark-fantasy painterly — Listening (face turned away)"
+
+[[outputs]]
+id = "rDF22tvQ2ZIw_r-2ZrpMG"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/01-last-one-multi.mp3"
+type = "audio"
+title = "The Last One in the Building — Multi-voice trial"

@@ -855,7 +855,7 @@ interface SceneVisual {
 }
 
 const BASE_STYLE =
-  "stylised digital illustration, painterly romantic art, cinematic composition, warm amber and deep shadow contrast, expressive character faces, elegant body language, tasteful sensuality implied through atmosphere and pose, non-explicit, rich colour palette, atmospheric environment detail, emotional depth, adult romance illustration style, dramatic lighting, soft painterly texture, sophisticated character art, intimate mood, fantasy romance aesthetic, NOT photographic, NOT photorealistic, NOT photography";
+  "hand-painted fine-art illustration, dark adult fantasy romance aesthetic, expressive visible brushstrokes and palette-knife texture, oil and gouache on canvas, painterly and atmospheric, dramatic chiaroscuro, moody candlelit darkness, rich jewel-toned shadows of deep burgundy and midnight with a single restrained warm gold accent, faces obscured cropped or turned away, suggestive and abstract, atmospheric soft edges, generous negative space, restrained and elegant, premium gallery fine art, tasteful and discreet, implied intimacy, non-explicit, fully clothed, clearly a painting not a photo, NOT photographic, NOT photorealistic, NOT photography, NOT cartoon, NOT anime, NOT webtoon, NOT cel-shading, NOT airbrushed plastic skin, NOT glossy lips";
 
 function buildFinalPrompt(visual: SceneVisual): string {
   return [
@@ -1063,7 +1063,7 @@ export function buildCoverPromptFromCasting(intake: GenerateStoryRequest): strin
 }
 
 export function buildCoverPromptFromBrief(brief: StoryBrief): string {
-  const style = brief.image_style_direction || "warm cinematic light, amber shadows";
+  const style = brief.image_style_direction || "hand-painted fine-art oil illustration, dark adult fantasy romance aesthetic, visible brushstrokes, dramatic chiaroscuro, moody candlelit tones, faces obscured or turned away, premium gallery fine art, clearly a painting not a photo";
   const palette = (brief.sensory_palette ?? []).slice(0, 2).join(", ");
   return [
     BASE_STYLE,
@@ -2470,7 +2470,7 @@ Return JSON in exactly this shape:
   ],
   "recurring_motif": "the feeling of almost saying too much",
   "title_direction": "poetic, emotionally charged, premium",
-  "image_style_direction": "stylised digital illustration, warm moody tones, dramatic painterly lighting, tasteful sensuality implied through pose and atmosphere, elegant romantic art",
+  "image_style_direction": "hand-painted fine-art oil illustration, dark adult fantasy romance aesthetic, visible brushstrokes, dramatic chiaroscuro, moody candlelit tones, faces obscured or turned away, tasteful sensuality implied through pose and atmosphere, premium gallery fine art, clearly a painting not a photo",
   "recommendation_tags": ["Late Night", "Reunion", "Longing"],
   "quality_target": "A story that lingers like the feeling after a conversation you didn't want to end."
 }`;

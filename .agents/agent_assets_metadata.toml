@@ -948,6 +948,24 @@ uri = "file://attached_assets/generated_images/sample-hybrid-listening.png"
 type = "image"
 title = "hybrid listening shoulder"
 
+[[generated]]
+id = "nSB3GLvI7oA1n-6UFeUiv"
+uri = "file://attached_assets/generated_images/sample-dark-embrace-window.png"
+type = "image"
+title = "dark fantasy embrace window"
+
+[[generated]]
+id = "HlOUooEwankFg_pHfG2vB"
+uri = "file://attached_assets/generated_images/sample-dark-hands-entwined.png"
+type = "image"
+title = "dark fantasy hands entwined"
+
+[[generated]]
+id = "vlXiCnEanJ-69HvULyWhm"
+uri = "file://attached_assets/generated_images/sample-dark-listening.png"
+type = "image"
+title = "dark fantasy listening shoulder"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"
@@ -989,3 +1007,21 @@ id = "BC7K6vtBKAaz_bVkRPdAj"
 uri = "file://attached_assets/generated_images/sample-hybrid-listening.png"
 type = "image"
 title = "Sample 3 — Listening (face turned away) — vs current cartoony version"
+
+[[outputs]]
+id = "GgGYqDydDvlv4NJf-KEAY"
+uri = "file://attached_assets/generated_images/sample-dark-embrace-window.png"
+type = "image"
+title = "Dark-fantasy painterly — Embrace at window"
+
+[[outputs]]
+id = "ATSfoKyN8MdEoKEtaDRRX"
+uri = "file://attached_assets/generated_images/sample-dark-hands-entwined.png"
+type = "image"
+title = "Dark-fantasy painterly — Hands entwined"
+
+[[outputs]]
+id = "PkfW8RGaUjZ0U9-V3Klzj"
+uri = "file://attached_assets/generated_images/sample-dark-listening.png"
+type = "image"
+title = "Dark-fantasy painterly — Listening (face turned away)"

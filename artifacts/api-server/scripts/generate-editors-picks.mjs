@@ -82,15 +82,27 @@ He set the coat down on the chair across from her.
 
 He walked across the office to her desk. Slowly. Not a man rushing toward something — a man closing the distance he had been keeping for two years.
 
-She did not stand up. She tilted her face up to look at him.
+She stood up.
 
-He reached past her shoulder. The cologne hit her — clean, expensive, close. He pressed a button on her keyboard. The screen went dark.
+She took his hands — both of them — and placed them at her waist. Felt him go completely still. Felt the change in his breathing.
 
-"Now you've finished," he said.
+"Two years," she said.
 
-His hand was still on the desk beside her shoulder. Her pulse was in her throat. She could feel the warmth of his arm a centimetre from her cheek.
+Then she tilted her face up and kissed him.
 
-He didn't move it.`,
+The sound he made against her mouth was not patient. His hands gripped her waist and pulled her in and kissed her back with everything two years of not doing this had built — her fingers in his hair, the edge of the desk pressing into the backs of her thighs. She felt how much he wanted her and it sent heat through her in a wave she did not try to manage.
+
+"I should have done this months ago," he said against her mouth.
+
+"Longer than that."
+
+He pulled back just far enough to look at her the way she had wanted him to look at her for two years. His hands found the zip at the back of her dress.
+
+"Tell me to stop."
+
+She reached back and found his hands. Guided them.
+
+"Don't."`,
   },
   {
     slug: "02-adjoining-suites",
@@ -131,7 +143,29 @@ She stepped through the doorway. She walked between them. She turned, slowly, so
 
 "Close it," she said.
 
-Neither of them moved yet.`,
+One of them crossed to the door. The click of the latch was the loudest thing in the room.
+
+The quieter one came to her first. He stopped in front of her and put one hand at the side of her face.
+
+"You're sure," he said.
+
+"Ask me again and I'll change my mind."
+
+She looked at him. Then past him, at the other one.
+
+"You," she said. "First."
+
+To the one still watching: "Not yet."
+
+He kissed her — slowly, carefully, the way a man kisses someone he has been wanting to kiss for six years. Behind her, the other one held himself absolutely still on her instruction alone. The specific charge of that — two men, both wanting her, one held back by a single word — moved through her like something low and deliberate.
+
+When she was ready she lifted her chin from the kiss and looked over her shoulder.
+
+The look was the instruction.
+
+He came forward. His hands at her hair, her jaw. She heard the first one's breath change behind her.
+
+Her gown had a zip at the side. She reached back, found a hand, and guided it there herself.`,
   },
   {
     slug: "03-spa-at-six",
@@ -272,9 +306,37 @@ The fire cracked. The first one — the louder one — stood up too. The quieter
 
 "I mean it."
 
-She walked into the middle of the room. She turned, so she could see them both. She held out a hand to each of them.
+She walked into the middle of the room. She turned so she could see them both.
 
-Neither of them took it yet.`,
+Neither of them moved.
+
+She looked at the louder one. Then at the quieter one.
+
+"Tell me," she said. "Both of you. What you want to do tonight. Out loud."
+
+A silence.
+
+The louder one told her first — directly, specifically, without apology. Her breath shortened.
+
+The quieter one told her differently — slower, more considered, and somehow more complete. She felt heat move through her before he had finished the sentence.
+
+She held out a hand to each of them.
+
+Both took it.
+
+The louder one pulled her toward him and kissed her — certain, one hand at the back of her head. Behind her the quieter one stepped close, his chest warm against her back, his hands at her waist, holding himself to just that while he waited.
+
+She was between them. The reality of it made her dizzy.
+
+"Ten years," she said, when the first one pulled back.
+
+"Don't think," said the quieter one at her ear. His hands beginning to move. "Just—"
+
+She turned and kissed him instead. He kissed her exactly as he had described. Behind her, the first one's hands slid lower.
+
+"Both of you," she said against his mouth. "Tonight. All of it."
+
+They didn't answer. They didn't need to.`,
   },
   {
     slug: "06-supervisor",
@@ -319,7 +381,35 @@ She stood up. Her supervisor walked past her — past her, not toward her — to
 
 She turned around.
 
-She did not move from the door.`,
+She did not move from the door.
+
+"Come here," she said.
+
+She crossed the room.
+
+Her supervisor took her face in both hands — this woman who had kept her at exactly the right distance for three years, always measured, always right on the edge — and kissed her slowly. Like she had been thinking about this since the second chapter.
+
+"Since your second chapter," her supervisor said against her mouth.
+
+"Your fourth session." She reached for her. "The Woolf one."
+
+Her supervisor pulled back one inch.
+
+"Be still."
+
+She went still. Hands dropped. Her supervisor looked at her — the specific look of someone deciding what to do with something they have been waiting for — and then returned to her mouth with considerably less patience than before.
+
+Her hands moved into her hair. Then less talking.
+
+Her supervisor's hands found the hem of her dress and she remembered she was supposed to be still and it cost her something real to stay that way.
+
+"You're certain," her supervisor said.
+
+"I wrote three thousand words about wanting this."
+
+"Then we have a great deal of ground to cover."
+
+Her mouth on her throat. She stopped being able to be still at all.`,
   },
   {
     slug: "07-bodyguard",
@@ -374,11 +464,37 @@ His jaw worked.
 
 "Yes."
 
-She did not, yet, tell him to.
+She told him to.
 
-She let the silence sit. She let him stand in it.
+His hands found her hips — large, careful, the restrained precision of a man trained to stand in corners. His palms were warm through the fabric of her dress and her breath went shallow.
 
-She watched him wait.`,
+"Don't move," she said.
+
+"No."
+
+"Now tell me what you want to do."
+
+A pause. Then he told her. Quietly. Specifically. She felt heat move through her from her chest down.
+
+"And if I said yes to that?"
+
+"Then I'd do exactly what I said."
+
+She reached up and took his face in her hands. Felt his whole body tighten under the restraint she had asked for.
+
+"Yes," she said.
+
+The six weeks of standing in corners broke. He pulled her flush against him and when he kissed her it was exactly what he had described — she felt it from her sternum down. She let it happen and then she stepped back one inch.
+
+He stopped immediately. Hands still on her.
+
+"Again," she said. "But slower."
+
+A pause. A look that bore no resemblance to anything professional.
+
+Then he kissed her again — slowly, precisely, nothing held back and nothing rushed — with the absolute deliberateness of a man who had been given an instruction and intended to follow it to the letter.
+
+She had six weeks of corners to work through. She intended to take her time.`,
   },
   {
     slug: "08-proposition",
@@ -415,7 +531,27 @@ She picked up the new drink. She drank half of it. She set it down.
 
 She stood up.
 
-She did not say yes. She did not need to.`,
+She did not say yes. She did not need to.
+
+He kept his word — did not touch her in the lift, did not press in the corridor. She found the restraint more effective than persuasion would have been.
+
+In the suite she stopped two steps inside the door. He turned.
+
+She said: "Sit down."
+
+He sat.
+
+She moved around the room once. Took off the earring she had been wearing. Set it on the desk. Stood at the window for a moment. She was thinking. She was also entirely aware of what it felt like to be watched by a man sitting very still and waiting because she had asked him to.
+
+When she was ready she crossed to him.
+
+She kissed him first. His hands stayed where they were until she brought them to her hips herself. Then they moved, certain and unhurried, and he kissed her back like a man who understood he had been given her complete attention and intended to deserve every second of it.
+
+She pulled back. Looked at him. He did not move.
+
+She reached for his tie.
+
+"Show me," she said. "Everything."`,
   },
   {
     slug: "09-neighbour",

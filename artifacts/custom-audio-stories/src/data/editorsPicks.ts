@@ -84,9 +84,13 @@ He reached past her and pressed a key. The screen went dark. His face was close 
 
 She stood up.
 
-Her hand found the open collar of his shirt, fingers against the warm skin of his throat, and she felt the moment something in him gave way — a low sound, barely a sound at all — before his hands closed around her waist and pulled her in hard.
+She took his hands — both of them — and placed them at her waist. Felt him go absolutely still. Felt the change in his breathing.
 
-The kiss wasn't patient. It had two years behind it and no interest in pretending otherwise — his mouth opening over hers, her fingers knotting into his hair, the edge of the desk pressing into the backs of her thighs as he walked her into it. She felt how much he wanted her and it sent heat through her in a wave she didn't try to manage.
+"Two years," she said.
+
+Then she tilted her face up and kissed him.
+
+The sound he made against her mouth was not patient. His hands gripped her waist and pulled her in and kissed her back with everything two years of not doing this had accumulated — her fingers knotting into his hair, the edge of the desk pressing into the backs of her thighs as he walked her into it. She felt how much he wanted her and it sent heat through her in a wave she didn't try to manage.
 
 "I should have done this months ago," he said against her mouth.
 
@@ -254,23 +258,35 @@ She stood up. She took off the cardigan she had been wearing over her dress and 
 
 "Both of you."
 
+Neither of them moved.
+
+She looked at the louder one. Then at the quieter one.
+
+"Tell me," she said. "Both of you. What you want to do tonight. Out loud."
+
+A silence.
+
+The louder one told her first — directly, specifically, without apology. Her breath shortened.
+
+The quieter one told her differently — slower, more considered, and somehow more complete. She felt heat move through her before he had finished the sentence.
+
 She held out a hand to each of them.
 
-A beat. Then one took it. Then the other.
+Both took it.
 
-The louder one pulled her toward him and kissed her — certain, no hesitation, one hand at the back of her head. She felt the quieter one step in behind her, close enough that she could feel the warmth of his chest, his hands finding her waist.
+The louder one pulled her toward him and kissed her first — certain, one hand at the back of her head. Behind her the quieter one stepped close, his chest warm against her back, his hands at her waist, holding himself to just that while he waited.
 
-She was between them. She had thought about this enough times that the reality of it made her dizzy.
+She was between them. The reality of it made her dizzy.
 
 "Ten years," she said, when the first one pulled back.
 
 "Don't think," said the quieter one, his mouth at her ear. His hands moving. "Just—"
 
-She turned to kiss him instead. He kissed her differently — slower, more deliberate, like a point being made. She felt the first one's hands slide down her back and she stopped thinking entirely.
+She turned and kissed him. He kissed her exactly as he'd described — she checked, and he had not exaggerated. Behind her the first one's hands slid lower.
 
-"Both of you," she said. "Tonight. Everything."
+"Both of you," she said against his mouth. "Tonight. All of it."
 
-Neither of them answered. They didn't need to.`,
+They didn't answer. They didn't need to.`,
   },
   {
     number: 6,
@@ -305,19 +321,27 @@ The quieter one came to her first. He stopped in front of her and looked at her 
 
 "Ask me again and I'll change my mind."
 
-He kissed her. The other one was behind her by then, his hands at her waist, her hair swept from her neck. She felt his mouth there — warm, deliberate — and the sensation of both of them at once made her exhale sharply.
+She looked at him. Then past him at the other one.
+
+"You," she said to him. "First."
+
+To the one behind her: "Not yet."
+
+He kissed her — slowly, carefully, the way a man kisses someone he has been wanting to kiss for six years. Behind her, she could feel the other one holding himself completely still on her instruction alone. The specific charge of that — two men, both wanting her, one held back by a single word — moved through her like something low and deliberate.
+
+When she was ready, she lifted her chin from the kiss and looked over her shoulder.
+
+The look was the instruction. He came forward — hands at her hair, her jaw — and when he kissed her she heard the first one's breath change behind her.
 
 "You were talking about me," she said. "Before I knocked."
 
 "Yes," said one.
 
-"Tell me."
+"I want to hear it."
 
 "Show you," said the other.
 
-Her gown had a zip at the side. One of them found it. She felt it give.
-
-She let it.`,
+Her gown had a zip at the side. She reached back, found a hand, and guided it there herself.`,
   },
   {
     number: 7,
@@ -409,17 +433,27 @@ Her supervisor took her face in both hands — this woman who had kept her at ex
 
 "I have thought about this," she said against her mouth, "since your second chapter."
 
-"Your fourth session." She pulled her closer. "The Woolf one."
+"Your fourth session." She reached for her. "The Woolf one."
 
-A breath of a laugh. Then her hands moving into her hair. Then less talking.
+Her supervisor pulled back one inch. Just one.
 
-Her supervisor's hands found the hem of her dress.
+"Be still," she said.
 
-"You're certain," she said. Not quite a question.
+She went still. Hands dropped. Her supervisor looked at her for a long moment — the specific look of someone deciding what to do with something they have been waiting for — and then returned to her mouth with considerably less patience than before.
+
+Her hands moved into her hair. Then less talking.
+
+Her supervisor's hands found the hem of her dress and she remembered she was supposed to be still and it cost her something real to stay that way.
+
+"You're certain," her supervisor said. Not quite a question.
 
 "I wrote three thousand words about wanting this."
 
-A pause. A look. Then her mouth on her throat and she couldn't say anything at all.`,
+A pause. A particular look.
+
+"Then we have a great deal of ground to cover."
+
+Her mouth on her throat. She stopped being able to be still at all.`,
   },
   {
     number: 9,
@@ -482,7 +516,17 @@ She reached up and took his face in her hands. Felt his whole body tighten under
 
 "Yes," she said.
 
-The six weeks of standing in corners broke. He pulled her flush against him and when he kissed her it was nothing like a corner — it was exactly, precisely, what he had described.`,
+The six weeks of standing in corners broke all at once. He pulled her flush against him and when he kissed her it was exactly what he had described — she felt it from her sternum down. She let it happen and then she stepped back one inch.
+
+He stopped immediately. Hands still on her. Eyes on her face.
+
+"Again," she said. "But slower."
+
+A pause. A look that bore no resemblance to anything professional.
+
+Then he kissed her again — slowly, with total precision, nothing held back and nothing rushed — with the absolute deliberateness of a man who had been given an instruction and intended to follow it exactly.
+
+She had six weeks of corners to work through. She intended to take her time.`,
   },
   {
     number: 10,
@@ -519,15 +563,21 @@ She didn't say yes. She didn't need to.
 
 He kept his word in the lift — didn't touch her, didn't press. She found that more effective than if he had. The restraint of a man who understood that the wanting was the point.
 
-In the suite he turned to look at her — still patient, still waiting. She thought: enough.
+In the suite she stopped two steps inside the door. He turned and she said: "Sit down."
 
-She crossed the two steps between them and kissed him. He kissed her back without surprise, his hands at her waist then her back, pulling her in with a certainty that made her breath go short. He kissed her like someone who had been told he had her full attention and intended to use every bit of it.
+He sat.
 
-When he walked her towards the window she went.
+She moved around the room once — took off the earring she had been wearing, set it on the desk, stood at the window for a moment. She was thinking. She was also entirely aware of what it felt like to be watched by a man sitting very still and waiting because she had asked him to.
 
-She turned around. Reached for his tie.
+When she was ready she crossed to him.
 
-"Show me," she said.`,
+She kissed him first. His hands stayed where they were until she brought them to her hips herself — then they moved, certain and unhurried, and he kissed her back like a man who understood that he had been given her complete attention and intended to deserve every second of it.
+
+She pulled back. Looked at him. He looked back and did not move.
+
+She reached for his tie.
+
+"Show me," she said. "Everything."`,
   },
 ];
 

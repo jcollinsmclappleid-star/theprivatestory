@@ -28,6 +28,12 @@ const BODY_IMAGE_POOL: string[] = [
   "images/seo-body-whisper-close.webp",
   "images/seo-body-bedroom-glow.webp",
   "images/seo-body-candlelit-bath.webp",
+  "images/seo-body-embrace-window.webp",
+  "images/seo-body-shoulder-whisper.webp",
+  "images/seo-body-hands-entwined.webp",
+  "images/seo-body-dancing-close.webp",
+  "images/seo-body-listening-headphones.webp",
+  "images/seo-body-morning-sheets.webp",
 ];
 
 /** Native dimensions of every body-image asset. Locked so the browser
@@ -356,9 +362,11 @@ export default function SEOPage({
   // Door for the inline sample — first door in the filter, fallback to "story" (Romance).
   const sampleDoor: DoorId = doorFilter?.[0] ?? "story";
 
-  // Three deterministic body images for inline interleave (after sections,
-  // after scenarios, after fullPicture). Stable per page via title-hash seed.
-  const bodyImgs = useMemo(() => pickBodyImages(config, 3), [config]);
+  // Five deterministic body images interleaved through the page — one high up
+  // (right after the intro, so readers see imagery early), then after sections,
+  // after How It Works, after scenarios, and after fullPicture. Stable per page
+  // via title-hash seed.
+  const bodyImgs = useMemo(() => pickBodyImages(config, 5), [config]);
 
   // FAQPage JSON-LD — eligible for Google's expandable FAQ rich result.
   // Memoised so we don't rebuild the JSON string on every render.
@@ -546,6 +554,23 @@ export default function SEOPage({
           </p>
         </div>
 
+        {/* Inline body image #0 — high up, right after the intro so readers
+            see imagery early. Eager-loaded (first in scroll range). */}
+        {bodyImgs[0] && (
+          <figure className="mb-12 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
+            <img
+              src={`${BASE_URL}/${bodyImgs[0]}`}
+              alt=""
+              aria-hidden="true"
+              loading="eager"
+              decoding="async"
+              width={BODY_IMAGE_W}
+              height={BODY_IMAGE_H}
+              className="w-full h-auto block"
+            />
+          </figure>
+        )}
+
         {/* Trust bar */}
         <div className="grid grid-cols-2 gap-3 mb-16">
           {TRUST_ITEMS.map((t, i) => (
@@ -588,17 +613,15 @@ export default function SEOPage({
         </div>
 
         {/* Inline body image #1 — between sections and How It Works.
-            First body image is eager-loaded (it's the first one in scroll
-            range and lazy-loading caused a visible pop-in). WebP keeps it
-            tiny (~50KB) so eager is cheap. Width/height locked so the
-            box reserves space and there's no layout shift while decoding. */}
-        {bodyImgs[0] && (
+            Width/height locked so the box reserves space and there's no
+            layout shift while the WebP decodes. */}
+        {bodyImgs[1] && (
           <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
-              src={`${BASE_URL}/${bodyImgs[0]}`}
+              src={`${BASE_URL}/${bodyImgs[1]}`}
               alt=""
               aria-hidden="true"
-              loading="eager"
+              loading="lazy"
               decoding="async"
               width={BODY_IMAGE_W}
               height={BODY_IMAGE_H}
@@ -627,6 +650,22 @@ export default function SEOPage({
           </div>
         </section>
 
+        {/* Inline body image #3 — between How It Works and Scenarios. */}
+        {bodyImgs[3] && (
+          <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
+            <img
+              src={`${BASE_URL}/${bodyImgs[3]}`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              width={BODY_IMAGE_W}
+              height={BODY_IMAGE_H}
+              className="w-full h-auto block"
+            />
+          </figure>
+        )}
+
         {/* Scenarios */}
         <section className="mb-16">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4 leading-snug">
@@ -651,10 +690,10 @@ export default function SEOPage({
         </section>
 
         {/* Inline body image #2 — between scenarios and the mid-page CTA */}
-        {bodyImgs[1] && (
+        {bodyImgs[2] && (
           <figure className="mb-12 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
-              src={`${BASE_URL}/${bodyImgs[1]}`}
+              src={`${BASE_URL}/${bodyImgs[2]}`}
               alt=""
               aria-hidden="true"
               loading="lazy"
@@ -717,11 +756,11 @@ export default function SEOPage({
           </div>
         </section>
 
-        {/* Inline body image #3 — between fullPicture and the final CTA */}
-        {bodyImgs[2] && (
+        {/* Inline body image #4 — between fullPicture and the final CTA */}
+        {bodyImgs[4] && (
           <figure className="mb-16 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
             <img
-              src={`${BASE_URL}/${bodyImgs[2]}`}
+              src={`${BASE_URL}/${bodyImgs[4]}`}
               alt=""
               aria-hidden="true"
               loading="lazy"

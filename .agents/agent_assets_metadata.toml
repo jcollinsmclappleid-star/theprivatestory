@@ -834,6 +834,102 @@ uri = "file://artifacts/api-server/public/voice-samples/editors-picks/covers/06-
 type = "image"
 title = "06-supervisor"
 
+[[generated]]
+id = "dJx_XmhfnKBfBg5bnN7iL"
+uri = "file://attached_assets/generated_images/covers/01-last-one.png"
+type = "image"
+title = "01-last-one"
+
+[[generated]]
+id = "RHozSwnXAoh4pQX-gOPuf"
+uri = "file://attached_assets/generated_images/covers/04-driver.png"
+type = "image"
+title = "04-driver"
+
+[[generated]]
+id = "bV92bf9fZDiCsv761r9Cn"
+uri = "file://attached_assets/generated_images/covers/09-neighbour.png"
+type = "image"
+title = "09-neighbour"
+
+[[generated]]
+id = "KSOLfGiho1GWE4eFFrDKX"
+uri = "file://attached_assets/generated_images/covers/03-spa-at-six.png"
+type = "image"
+title = "03-spa-at-six"
+
+[[generated]]
+id = "3JaoZRNIxxnymHE3b7mO8"
+uri = "file://attached_assets/generated_images/covers/05-cabin.png"
+type = "image"
+title = "05-cabin"
+
+[[generated]]
+id = "JO9PGADObewtmVunyM-t7"
+uri = "file://attached_assets/generated_images/covers/02-adjoining-suites.png"
+type = "image"
+title = "02-adjoining-suites"
+
+[[generated]]
+id = "nxDNtH5G5R2NOhzoJDrzr"
+uri = "file://attached_assets/generated_images/covers/10-night-manager.png"
+type = "image"
+title = "10-night-manager"
+
+[[generated]]
+id = "NqbVupigq2aPWcOzwQ0L-"
+uri = "file://attached_assets/generated_images/covers/07-bodyguard.png"
+type = "image"
+title = "07-bodyguard"
+
+[[generated]]
+id = "9d3PNrNKOUUWNUXqFQgT6"
+uri = "file://attached_assets/generated_images/covers/08-proposition.png"
+type = "image"
+title = "08-proposition"
+
+[[generated]]
+id = "Od-jag_FssDfTUD-zlnCi"
+uri = "file://attached_assets/generated_images/covers/06-supervisor.png"
+type = "image"
+title = "06-supervisor"
+
+[[generated]]
+id = "k8SW7KV5uDV49Kv2lS2_u"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-embrace-window.png"
+type = "image"
+title = "seo-body-embrace-window"
+
+[[generated]]
+id = "QwRfXSm1pERinTE2FJ4ii"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-shoulder-whisper.png"
+type = "image"
+title = "seo-body-shoulder-whisper"
+
+[[generated]]
+id = "ZwTR6O1vS5Kt17LRu8XPR"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-hands-entwined.png"
+type = "image"
+title = "seo-body-hands-entwined"
+
+[[generated]]
+id = "z93W45E2mWI3VJlBYQBLJ"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-dancing-close.png"
+type = "image"
+title = "seo-body-dancing-close"
+
+[[generated]]
+id = "gBoI5L0fuMmjl9aSxeJun"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-listening-headphones.png"
+type = "image"
+title = "seo-body-listening-headphones"
+
+[[generated]]
+id = "sA-W4Y5ORPHT83MTbVaHK"
+uri = "file://attached_assets/generated_images/seo-body/seo-body-morning-sheets.png"
+type = "image"
+title = "seo-body-morning-sheets"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

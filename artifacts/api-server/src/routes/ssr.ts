@@ -22,6 +22,12 @@ const SEO_BODY_IMAGE_POOL: string[] = [
   "images/seo-body-whisper-close.webp",
   "images/seo-body-bedroom-glow.webp",
   "images/seo-body-candlelit-bath.webp",
+  "images/seo-body-embrace-window.webp",
+  "images/seo-body-shoulder-whisper.webp",
+  "images/seo-body-hands-entwined.webp",
+  "images/seo-body-dancing-close.webp",
+  "images/seo-body-listening-headphones.webp",
+  "images/seo-body-morning-sheets.webp",
 ];
 
 const SEO_BODY_IMAGE_W = 1408;
@@ -1392,9 +1398,10 @@ router.get("/:slug", (req: Request, res: Response, next) => {
     })),
   };
 
-  // Three deterministic body images — interleaved between long-copy sections
-  // (image SEO surface for Google Images / Discover, plus visual relief).
-  const bodyImgs = pickSsrBodyImages(page.meta.title, 3, page.bodyImages);
+  // Five deterministic body images — one high up (right after the trust bar,
+  // so the imagery surfaces early) and the rest interleaved between long-copy
+  // sections (image SEO surface for Google Images / Discover, plus relief).
+  const bodyImgs = pickSsrBodyImages(page.meta.title, 5, page.bodyImages);
 
   const sectionsHtml = page.sections
     .map(
@@ -1566,15 +1573,17 @@ router.get("/:slug", (req: Request, res: Response, next) => {
   const bodyHtml = `
     <a class="cta-primary" href="${esc(page.finalCTA.primary.href)}">Create your story</a>
     ${TRUST_BAR_HTML}
-    ${sectionsHtml}
     ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0], true) : ""}
+    ${sectionsHtml}
+    ${bodyImgs[1] ? bodyImgHtml(bodyImgs[1]) : ""}
     ${comparisonTableHtml}
     ${scenariosHtml}
-    ${bodyImgs[1] ? bodyImgHtml(bodyImgs[1]) : ""}
+    ${bodyImgs[2] ? bodyImgHtml(bodyImgs[2]) : ""}
     ${midCtaHtml}
     ${benefitsHtml}
+    ${bodyImgs[3] ? bodyImgHtml(bodyImgs[3]) : ""}
     ${fullPictureHtml}
-    ${bodyImgs[2] ? bodyImgHtml(bodyImgs[2]) : ""}
+    ${bodyImgs[4] ? bodyImgHtml(bodyImgs[4]) : ""}
     ${howItWorksHtml}
     ${faqsHtml}
     ${finalCtaHtml}

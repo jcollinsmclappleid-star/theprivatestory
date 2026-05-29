@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as a,g as r}from"./SEOPage-DO1frjZT.js";import"./index-DC60R-5X.js";import"./data-editors-picks-DtyV1KRW.js";const t=r("dark-romantasy-audio-stories");function n(){return o.jsx(a,{config:t,slug:"dark-romantasy-audio-stories"})}export{n as default};

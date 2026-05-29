@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Ck7ahBVm.js";import{S as r,g as i}from"./SEOPage-bDBoQaub.js";import"./index-CqNZ6-mn.js";import"./data-editors-picks-DtyV1KRW.js";const e=i("forbidden-romance-audio-stories");function d(){return o.jsx(r,{config:e,slug:"forbidden-romance-audio-stories",doorFilter:["dark"]})}export{d as default};

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, EyeOff, Lock, Headphones, Sparkles } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
@@ -17,6 +17,65 @@ export interface CompetitorPageConfig {
   faqs: { q: string; a: string }[];
 }
 
+const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BODY_IMAGE_W = 1408;
+const BODY_IMAGE_H = 768;
+
+// Shared painterly, multicultural, non-explicit body-image pool — kept in sync
+// with SEOPage.tsx and the SSR renderer so every SEO surface carries imagery.
+const BODY_IMAGE_POOL: string[] = [
+  "images/seo-body-candlelit-doorway.webp",
+  "images/seo-body-four-poster-bed.webp",
+  "images/seo-body-library-at-night.webp",
+  "images/seo-body-silk-on-velvet.webp",
+  "images/seo-body-rain-on-window.webp",
+  "images/seo-body-fireplace-and-wine.webp",
+  "images/seo-body-listening-in-silk.webp",
+  "images/seo-body-lovers-embrace.webp",
+  "images/seo-body-whisper-close.webp",
+  "images/seo-body-bedroom-glow.webp",
+  "images/seo-body-candlelit-bath.webp",
+  "images/seo-body-embrace-window.webp",
+  "images/seo-body-shoulder-whisper.webp",
+  "images/seo-body-hands-entwined.webp",
+  "images/seo-body-dancing-close.webp",
+  "images/seo-body-listening-headphones.webp",
+  "images/seo-body-morning-sheets.webp",
+];
+
+// Cheap deterministic hash so each page gets a stable rotation seed.
+function pageHash(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function pickBodyImages(seed: string, count: number): string[] {
+  const pool = BODY_IMAGE_POOL;
+  if (!pool.length) return [];
+  const start = pageHash(seed) % pool.length;
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) out.push(pool[(start + i) % pool.length]);
+  return out;
+}
+
+function BodyFigure({ src, eager = false }: { src: string; eager?: boolean }) {
+  return (
+    <figure className="mb-10 -mx-4 md:mx-0 md:rounded-2xl overflow-hidden border-y md:border border-border/20 bg-white/[0.02]">
+      <img
+        src={`${BASE_URL}/${src}`}
+        alt=""
+        aria-hidden="true"
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        width={BODY_IMAGE_W}
+        height={BODY_IMAGE_H}
+        className="w-full h-auto block"
+      />
+    </figure>
+  );
+}
+
 const TRUST_ITEMS = [
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "No social, no history shared" },
   { icon: <Sparkles className="w-4 h-4" />, label: "Made for you", sub: "Generated around your choices" },
@@ -27,6 +86,7 @@ const TRUST_ITEMS = [
 export default function CompetitorPage({ config }: { config: CompetitorPageConfig }) {
   useSEO({ title: config.metaTitle, description: config.metaDescription });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const bodyImgs = useMemo(() => pickBodyImages(config.metaTitle, 5), [config.metaTitle]);
 
   return (
     <motion.div
@@ -89,6 +149,9 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
           </p>
         </div>
 
+        {/* High-up imagery so readers see a scene early */}
+        {bodyImgs[0] && <BodyFigure src={bodyImgs[0]} eager />}
+
         {/* Trust items */}
         <div className="grid grid-cols-2 gap-3 mb-16">
           {TRUST_ITEMS.map((t, i) => (
@@ -113,6 +176,7 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
                 className="text-muted-foreground leading-relaxed prose prose-invert prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none"
                 dangerouslySetInnerHTML={{ __html: section.body }}
               />
+              {bodyImgs[i + 1] && <div className="mt-10"><BodyFigure src={bodyImgs[i + 1]} /></div>}
             </div>
           ))}
         </div>

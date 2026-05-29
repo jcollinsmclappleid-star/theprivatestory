@@ -2045,13 +2045,16 @@ DEFINITION_PAGES.forEach((def) => {
         </div>
       </section>`;
 
+    const bodyImgs = pickSsrBodyImages(def.metaTitle, 5);
+
     const sectionsHtml = def.sections
       .map(
-        (s) => `
+        (s, i) => `
       <section>
         <h2>${esc(s.h2)}</h2>
         <p>${s.body}</p>
-      </section>`,
+      </section>
+      ${bodyImgs[i + 1] ? bodyImgHtml(bodyImgs[i + 1]) : ""}`,
       )
       .join("");
 
@@ -2061,6 +2064,7 @@ DEFINITION_PAGES.forEach((def) => {
         <p>${esc(def.definition)}</p>
       </div>
       ${TRUST_BAR_HTML}
+      ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0], true) : ""}
       ${sectionsHtml}
       ${faqsHtml}
       <section>
@@ -2437,13 +2441,16 @@ COMPETITOR_PAGES.forEach((comp) => {
       breadcrumb: { "@id": `${PAGE_URL}#breadcrumb` },
     };
 
+    const bodyImgs = pickSsrBodyImages(comp.metaTitle, 5);
+
     const sectionsHtml = comp.sections
       .map(
-        (s) => `
+        (s, i) => `
       <section>
         <h2>${esc(s.h2)}</h2>
         <p>${s.body}</p>
-      </section>`,
+      </section>
+      ${bodyImgs[i + 1] ? bodyImgHtml(bodyImgs[i + 1]) : ""}`,
       )
       .join("");
 
@@ -2466,6 +2473,7 @@ COMPETITOR_PAGES.forEach((comp) => {
     const bodyHtml = `
       <p style="color:#a09080;font-style:italic;font-size:14px;margin-bottom:24px">${esc(comp.intro)}</p>
       ${TRUST_BAR_HTML}
+      ${bodyImgs[0] ? bodyImgHtml(bodyImgs[0], true) : ""}
       ${comp.comparisonRows.length > 0 ? tableHtml : ""}
       ${sectionsHtml}
       ${faqsHtml}

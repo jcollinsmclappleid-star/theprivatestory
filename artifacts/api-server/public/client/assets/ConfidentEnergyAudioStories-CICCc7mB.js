@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as e,g as r}from"./SEOPage-LrOx3W6P.js";import"./index-BnZPH8vN.js";import"./data-editors-picks-j_bZ3Pkv.js";const t=r("confident-energy-stories");function f(){return o.jsx(e,{config:t,slug:"confident-energy-stories",doorFilter:["dark"]})}export{f as default};

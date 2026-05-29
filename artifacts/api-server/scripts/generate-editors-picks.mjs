@@ -218,7 +218,25 @@ The woman did not move yet.
 
 The woman walked, slowly, around the table. She did not look away.
 
-The lock turned.`,
+The lock turned.
+
+She came back to the head of the table.
+
+The woman on the table reached up.
+
+She took the masseuse's hands — both of them — and pulled her down. The woman came without resistance, her breath catching, and when she was close enough the woman on the table took her face in both hands and kissed her first.
+
+Not waiting. Not receiving. Deciding.
+
+The masseuse's mouth opened under hers. A year of last appointments folding into one moment they had both been careful not to name.
+
+"You should have said something," the masseuse said against her mouth.
+
+"So should you."
+
+A low sound between them. Then the woman's hands moving with the knowledge of a year of appointments turned toward something entirely else. Her mouth at her collarbone. Her throat. Moving lower.
+
+She wrapped one hand in the woman's hair and told her exactly what she wanted next.`,
   },
   {
     slug: "04-driver",
@@ -263,7 +281,25 @@ He closed his eyes for a second. When he opened them, he was a different man —
 
 He was already crossing the hallway when she reached for the second earring.
 
-He stopped a step short of her.`,
+He stopped a step short of her.
+
+She turned to face him. She did not step back. She looked at him the way she had been looking at him, she understood now, for three years — and then she stepped forward, closed the last of the distance herself, and put both her hands against his chest.
+
+He went still.
+
+"Tell me what you've been thinking about," she said. "All of it."
+
+He told her. Against her ear, his voice different from anything she had ever heard from him — not her driver's voice at all. Specific. Low. She felt heat move through her from her chest down.
+
+"Show me," she said.
+
+He kissed her. Not tentative — three years of not doing this in a single motion — and when he pressed her back against the wall of her own hallway she made a sound she hadn't planned to make.
+
+His hands moved into her hair. She grabbed the front of his shirt. His lips at her jaw. Her throat.
+
+"Show me," she said again.
+
+He found the zip at the side of her dress — certain, unhurried, the hands of a man who had been told yes — and she felt the cool air and then the warmth of his palms and stopped thinking about anything except this.`,
   },
   {
     slug: "05-cabin",
@@ -598,7 +634,33 @@ He stepped out into the hallway. He pulled his door closed behind him.
 
 She turned and walked the four steps to her own door. She left it open behind her.
 
-He stood on the threshold.`,
+He stood on the threshold.
+
+He stepped through.
+
+She was in the kitchen, her back to him, pouring the wine. The line of her shoulders. The way she wasn't quite steady with the bottle. She knew he was there. She was letting him come to her.
+
+He came to her.
+
+She turned when he was close enough. He took the glass out of her hand, set it on the counter, and took her face in both hands and finally looked at her the way he had been refusing to look at her for three weeks.
+
+The kiss was slow at first — learning her — and then less slow. Her hands at his chest, his shirt buttons. He walked her backwards until she was against the counter.
+
+He lifted her onto it. She wrapped her legs around him and then — immediately, deliberately — put both hands flat on his chest and held him there.
+
+Not stopping. Slowing.
+
+He went still.
+
+"Look at me," she said.
+
+He looked at her. Three weeks of choosing not to, resolved in three seconds.
+
+"Now," she said, and pulled him back in.
+
+"Three weeks," he said against her mouth.
+
+"Don't stop."`,
   },
   {
     slug: "10-night-manager",
@@ -643,7 +705,33 @@ He looked at her. He looked, for the first time in nine years, properly at a gue
 
 She stepped back into her room.
 
-She left the door open behind her.`,
+She left the door open behind her.
+
+He came in. He let the door stay open. He told himself it was policy. He followed her into the room.
+
+She turned when he was close. He touched her face — nine years of professional distance ending in one movement, his thumb along her jaw, tilting her face up. Her eyes closed.
+
+"I don't do this," he said.
+
+"I know."
+
+"You should know that."
+
+"I know." She opened her eyes. "I don't care."
+
+He kissed her.
+
+Nine years dissolved. Her hands gripped his lapels and she kissed him back — not desperate, deliberate — like a woman who knew exactly what she was choosing.
+
+When he walked her backwards she stopped him two steps from the bed and turned. She crossed to the door — still open, from when he had followed her in — and closed it herself.
+
+She turned the latch.
+
+She turned around.
+
+"Now," she said.
+
+He came to her.`,
   },
 ];
 

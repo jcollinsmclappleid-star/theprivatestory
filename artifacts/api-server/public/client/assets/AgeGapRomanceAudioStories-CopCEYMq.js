@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as a,g as e}from"./SEOPage-LrOx3W6P.js";import"./index-BnZPH8vN.js";import"./data-editors-picks-j_bZ3Pkv.js";const r=e("age-gap-romance-audio-stories");function m(){return o.jsx(a,{config:r,slug:"age-gap-romance-audio-stories"})}export{m as default};

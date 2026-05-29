@@ -1248,6 +1248,42 @@ uri = "file://attached_assets/generated_images/cover-10-night-manager.png"
 type = "image"
 title = "cover 10-night-manager"
 
+[[generated]]
+id = "gz1j9cv9yQowzaw3AfZCR"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-hotel-corridor-night.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OdPZewtjTUVIngqeqW9k3"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-close-faces-amber.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "K10ZEqeMYNnSaMLKhVvOW"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-window-rain-touch.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "knyTnG23ifxaHEh2GeW4j"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-spa-two-women.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "a2OGUgdxH5fibMLHhN9RU"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-slow-dance-amber.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "VRFfV8avpdUFgg2Hq9AAw"
+uri = "file://artifacts/custom-audio-stories/public/images/seo-body-sheets-intertwined.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

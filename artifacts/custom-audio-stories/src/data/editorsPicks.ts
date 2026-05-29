@@ -139,7 +139,15 @@ His hands moved into her hair. She grabbed the front of his jacket. When he pres
 
 "I know." His lips at her jaw. Her throat. "I know."
 
-She got his jacket off his shoulders. He found the zip at the side of her dress — certain, unhurried, the hands of a man who had decided — and she felt the cool air and then the warmth of his palms and she stopped thinking about anything except this.`,
+She got his jacket off his shoulders and pulled back one inch to look at him.
+
+"Tell me what you've been thinking about," she said. "All of it."
+
+He told her. Against her ear, his voice different from anything she had ever heard from him — not her driver's voice at all. Specific. Low. She felt heat move through her from her chest down.
+
+"Show me," she said.
+
+He found the zip at the side of her dress — certain, unhurried, the hands of a man who had been told yes — and she felt the cool air and then the warmth of his palms and stopped thinking about anything except this.`,
   },
   {
     number: 3,
@@ -176,11 +184,21 @@ She turned when he was close enough. He didn't wait — he took the glass out of
 
 He told her. Not with words.
 
-The kiss was slow at first — learning her — and then less slow. Her hands found his chest, his shirt buttons. He walked her backwards until she was against the counter, her mouth opening under his, her hands pulling him closer.
+The kiss was slow at first — learning her — and then less slow. Her hands found his chest, his shirt buttons. He walked her backwards until she was against the counter, her mouth opening under his.
 
-When he lifted her onto the counter she wrapped her legs around him and pulled him back in.
+He lifted her onto the counter. She wrapped her legs around him and then — immediately, deliberately — put both hands flat on his chest and held him there.
 
-"Three weeks," he said.
+Not stopping. Slowing.
+
+He went still.
+
+"Look at me," she said.
+
+He looked at her. Three weeks of choosing not to, resolved in three seconds.
+
+"Now," she said, and pulled him back in.
+
+"Three weeks," he said against her mouth.
 
 "Don't stop."`,
   },
@@ -217,15 +235,21 @@ Not the same way. Not professional. The masseuse's palms slid up from her waist 
 
 She said it.
 
-The hands moved. The towel shifted. She heard a soft sound — the masseuse's breath, catching — and then the woman's mouth was at her collarbone, her throat, and she was pulling her down by the back of the neck with both hands, the two of them finally in the same place after a year of last appointments and pretending.
+Then she reached up.
 
-"You should have said something," the woman said. Low, close, her mouth against her jaw.
+She took the woman's hands — both of them — and pulled her down. The masseuse came without resistance, her breath catching, and when she was close enough the woman on the table took her face in both hands and kissed her first.
+
+Not waiting. Not receiving. Deciding.
+
+The woman's mouth opened under hers. A year of last appointments collapsing into one moment they had both been careful not to name.
+
+"You should have said something," the masseuse said against her mouth.
 
 "So should you."
 
-A breath of a laugh. Then her mouth again, warm and deliberate and unhurried, moving lower.
+A low sound between them. Then the woman's hands moving deliberately — the knowledge of a year of appointments turned toward something entirely else. Her mouth at her collarbone. Her throat. Moving lower.
 
-She wrapped one hand in the woman's hair and forgot, completely, what day it was.`,
+She wrapped one hand in the woman's hair and told her exactly what she wanted next.`,
   },
   {
     number: 5,
@@ -384,9 +408,17 @@ She turned when he was close. He touched her face — nine years of professional
 
 He kissed her.
 
-Nine years dissolved. Her hands gripped his lapels and she kissed him back like she had also been waiting — not nine years, but at least since he had offered to walk her up. He walked her backwards toward the bed.
+Nine years dissolved. Her hands gripped his lapels and she kissed him back — not desperate, deliberate — like a woman who knew exactly what she was choosing.
 
-She didn't stop him. She helped him.`,
+When he walked her backwards she stopped him two steps from the bed and turned. She crossed to the door — still open, from when he had followed her in — and closed it herself.
+
+She turned the latch.
+
+She turned around.
+
+"Now," she said.
+
+He came to her.`,
   },
   {
     number: 8,

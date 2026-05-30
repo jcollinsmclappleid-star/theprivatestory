@@ -411,7 +411,7 @@ export default function Home() {
         <section className="flex flex-wrap items-center justify-center gap-3 px-4 py-4">
           {[
             { icon: <Sparkles className="w-3 h-3" />, label: "Cast entirely around your choices" },
-            { icon: <Headphones className="w-3 h-3" />, label: "Premium voice narration" },
+            { icon: <Headphones className="w-3 h-3" />, label: "Full cast audio — narrator and each character voiced separately" },
             { icon: <Clock className="w-3 h-3" />, label: "Immersive audio — typically ~10 min" },
           ].map(({ icon, label }) => (
             <span

@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as t,g as e}from"./SEOPage-Ck2KyWkE.js";import"./index-r-9B9id5.js";import"./data-editors-picks-j_bZ3Pkv.js";const i=e("bedtime-audio-stories");function u(){return o.jsx(t,{config:i,slug:"bedtime-audio-stories",doorFilter:["quiet"],showSecondaryDoors:!0})}export{u as default};

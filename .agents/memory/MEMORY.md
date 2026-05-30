@@ -1,0 +1,1 @@
+- [Active focus: Task #207 multi-voice](task-207-focus.md) — only build the multi-voice audio pipeline; SEO + cover-image work is DONE, do not touch it.

@@ -552,6 +552,10 @@ export default function SEOPage({
             <strong className="text-foreground font-semibold">How it works:</strong>{" "}
             {config.howItWorks[0].heading}. {config.howItWorks[1]?.heading}. {config.howItWorks[2]?.heading}.
           </p>
+          <p>
+            <strong className="text-foreground font-semibold">Full cast audio:</strong>{" "}
+            Every story is voiced by a full cast — your chosen narrator, plus a separate voice for the protagonist and the love interest — so dialogue feels like a real exchange, not a single reader.
+          </p>
         </div>
 
         {/* Inline body image #0 — high up, right after the intro so readers

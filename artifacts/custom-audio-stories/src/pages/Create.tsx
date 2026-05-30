@@ -15,7 +15,7 @@ import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
 import { VoiceAvatar } from "@/components/VoiceAvatar";
 import { CastingRoom } from "@/components/CastingRoom";
 import type { CastingRoomResult } from "@/components/CastingRoom";
-import { VOICES, FEMALE_VOICES, MALE_VOICES } from "@/lib/voices";
+import { VOICES, FEMALE_VOICES, MALE_VOICES, resolveCharacterVoices, getCastLabels } from "@/lib/voices";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { TermsGate } from "@/components/TermsGate";
 import CreateLanding from "@/pages/CreateLanding";
@@ -1706,9 +1706,14 @@ export default function Create() {
             className="max-w-2xl mx-auto px-4 py-12"
           >
             <div className="mb-10 text-center">
-              <h2 className="font-display text-2xl font-bold text-foreground mb-2">Voice</h2>
-              <p className="text-muted-foreground mb-1">Choose the voice you want to hear your story in.</p>
-              <p className="text-xs text-muted-foreground/80">Most people start with Eleanor for their first story.</p>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h2 className="font-display text-2xl font-bold text-foreground">Voice</h2>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-semibold tracking-wide uppercase">
+                  New
+                </span>
+              </div>
+              <p className="text-muted-foreground mb-1">Choose your narrator. Your story is voiced by a full cast — narrator, plus a separate voice for each character.</p>
+              <p className="text-xs text-muted-foreground/80">Most people start with Kayla for their first story.</p>
             </div>
 
             {generationError && !generationError.isSubscriptionLimit && (
@@ -1802,8 +1807,69 @@ export default function Create() {
                 );
               };
 
+              const castPreview = (() => {
+                if (!selectedVoiceId || !castingPairing) return null;
+                const { charA, charB } = resolveCharacterVoices(selectedVoiceId, castingPairing);
+                const { labelA, labelB } = getCastLabels(castingPairing);
+                const nameOf = (id: string) =>
+                  VOICES.find((v) => v.id === id)?.displayName ?? "Voice";
+                const chips = [
+                  { id: charA, label: labelA },
+                  { id: charB, label: labelB },
+                ];
+                const renderChipPlayer = (id: string) => (
+                  <VoiceSamplePlayer
+                    src={voiceSampleUrls[id] || `${API_BASE}/api/voice-samples/${id}`}
+                    onPlayStart={async () => {
+                      if (!loadingVoiceSamples.has(id)) {
+                        setLoadingVoiceSamples((prev) => new Set([...prev, id]));
+                        const apiUrl = `${API_BASE}/api/voice-samples/${id}`;
+                        try {
+                          await cacheSampleFromUrl(id, apiUrl);
+                          const cachedUrl = await getCachedSampleUrl(id, apiUrl);
+                          setVoiceSampleUrls((prev) => ({ ...prev, [id]: cachedUrl }));
+                        } catch (err) {
+                          console.warn(`Failed to cache sample ${id}:`, err);
+                        } finally {
+                          setLoadingVoiceSamples((prev) => {
+                            const next = new Set(prev);
+                            next.delete(id);
+                            return next;
+                          });
+                        }
+                      }
+                    }}
+                  />
+                );
+                return (
+                  <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/[0.04] p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70 mb-3">
+                      Your full cast
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {chips.map((chip) => (
+                        <div key={`${chip.label}-${chip.id}`} className="rounded-xl bg-card/40 border border-border/30 p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <VoiceAvatar voiceId={chip.id} size="sm" />
+                            <div className="min-w-0">
+                              <p className="text-[11px] text-muted-foreground/80 leading-tight">{chip.label}</p>
+                              <p className="text-sm font-semibold text-foreground leading-tight truncate">{nameOf(chip.id)}</p>
+                            </div>
+                          </div>
+                          {renderChipPlayer(chip.id)}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground/70 mt-3 leading-snug">
+                      Character voices are chosen automatically to complement your narrator. Tap to preview.
+                    </p>
+                  </div>
+                );
+              })();
+
               return (
                 <div className="space-y-4">
+                  {castPreview}
                   <p className="pb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                     Female Voices
                   </p>

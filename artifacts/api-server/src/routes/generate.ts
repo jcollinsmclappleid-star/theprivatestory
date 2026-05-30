@@ -7,6 +7,7 @@ import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { spawn } from "node:child_process";
 import { uploadAudioFile, uploadImageFile } from "../lib/mediaStorage.js";
 import { storiesStore, generatedCacheStore } from "../lib/storage.js";
 import { trackGeneratedStory } from "./library.js";
@@ -1271,6 +1272,292 @@ function resolveVoiceId(voiceIdOrFeel: string, _pairing?: string): string {
   }
   // Fallback
   return DEFAULT_VOICE_ID;
+}
+
+// ---------------------------------------------------------------------------
+// Multi-voice audio pipeline (#207)
+// ---------------------------------------------------------------------------
+// Server-side mirror of the voice catalogue in custom-audio-stories/src/lib/voices.ts.
+// Kept duplicated intentionally (no cross-artifact import).
+
+const MV_CLARA = "FA6HhUjVbervLw2rNl8M";
+const MV_MAYA  = "tQ4MEZFJOzsahSEEZtHK";
+const MV_KAYLA = "aTxZrSrp47xsP6Ot4Kgd";
+const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
+const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
+const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
+
+const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA] as const;
+const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO] as const;
+const MV_MALE_NARRATORS = new Set<string>([MV_JAMES, MV_ETHAN, MV_THEO]);
+
+// Casting intensity → ElevenLabs style. Mirror of INTENSITY_STYLE_MAP.
+const MV_INTENSITY_STYLE: Record<string, { narrator: number; char: number }> = {
+  "Subtle":    { narrator: 0.15, char: 0.35 },
+  "Tender":    { narrator: 0.15, char: 0.35 },
+  "Warm":      { narrator: 0.15, char: 0.35 },
+  "Heated":    { narrator: 0.25, char: 0.50 },
+  "Elevated":  { narrator: 0.25, char: 0.50 },
+  "Scorching": { narrator: 0.35, char: 0.70 },
+  "Intense":   { narrator: 0.35, char: 0.70 },
+};
+const MV_DEFAULT_STYLE = { narrator: 0.25, char: 0.50 };
+
+/**
+ * Resolve CHAR_A (protagonist dialogue) and CHAR_B (love-interest dialogue)
+ * voices for a narrator + pairing. Neither equals narratorId.
+ * Server mirror of resolveCharacterVoices in voices.ts.
+ */
+function resolveCharacterVoicesServer(
+  narratorId: string,
+  pairing: string,
+): { charA: string; charB: string } {
+  const p = (pairing ?? "").toLowerCase().trim();
+  const isMale = MV_MALE_NARRATORS.has(narratorId);
+  const her = () => MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
+  const him = () => MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
+  const twoHer = () => MV_HER_POOL.filter((v) => v !== narratorId);
+  const twoHim = () => MV_HIM_POOL.filter((v) => v !== narratorId);
+
+  switch (p) {
+    case "her & him":
+      return { charA: her(), charB: him() };
+    case "her & her": {
+      const [a, b] = twoHer();
+      return { charA: a ?? MV_MAYA, charB: b ?? MV_CLARA };
+    }
+    case "him & him": {
+      const [a, b] = twoHim();
+      return { charA: a ?? MV_JAMES, charB: b ?? MV_ETHAN };
+    }
+    case "her & them":
+      return { charA: her(), charB: him() };
+    case "him & them":
+      return { charA: him(), charB: her() };
+    case "them & them":
+      return isMale ? { charA: him(), charB: her() } : { charA: her(), charB: him() };
+    default:
+      return { charA: her(), charB: him() };
+  }
+}
+
+export type MultiVoiceRole = "NARRATOR" | "CHAR_A" | "CHAR_B";
+export interface TaggedSegment {
+  role: MultiVoiceRole;
+  text: string;
+  isFirst?: boolean;
+}
+export interface TaggedScript {
+  segments: TaggedSegment[];
+  /** Quotes resolved via an explicit attribution cue (not blind turn-taking). */
+  explicitAttributions: number;
+  /** Count of distinct character roles (CHAR_A/CHAR_B) present in segments. */
+  distinctCharRoles: number;
+}
+
+// Attribution verbs that signal a line of dialogue belongs to a speaker.
+const MV_ATTR_VERBS =
+  "said|asked|replied|answered|whispered|murmured|breathed|muttered|growled|" +
+  "demanded|told|added|sighed|gasped|moaned|hissed|laughed|warned|admitted|" +
+  "confessed|urged|pleaded|teased|promised|repeated|continued|insisted|" +
+  "called|shouted|snapped|purred|drawled|countered|offered|begged";
+
+/** Genders of protagonist (CHAR_A) and love interest (CHAR_B), or null when same/ambiguous. */
+function mvPairingGenders(pairing: string): { protag: "m" | "f"; li: "m" | "f" } | null {
+  const p = (pairing ?? "").toLowerCase().trim();
+  switch (p) {
+    case "her & him":  return { protag: "f", li: "m" };
+    case "her & them": return { protag: "f", li: "m" };
+    case "him & them": return { protag: "m", li: "f" };
+    // same-gender or ambiguous → fall back to turn-taking
+    default: return null;
+  }
+}
+
+/**
+ * Rule-based, zero-API-cost speaker tagging. Splits prose (NARRATOR) from
+ * attributed dialogue (CHAR_A protagonist / CHAR_B love interest). Merges short
+ * consecutive same-role segments, enforces a 4,500-char ceiling, and marks the
+ * first NARRATOR segment with isFirst for the opening hook.
+ */
+export function tagScriptForMultiVoice(
+  text: string,
+  pairing: string,
+  _narratorId: string,
+): TaggedScript {
+  // Normalise smart quotes to straight quotes for matching.
+  const normalised = text
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'");
+
+  const genders = mvPairingGenders(pairing);
+  const attrRe = new RegExp(`\\b(${MV_ATTR_VERBS})\\b`, "i");
+  const maleRe = /\b(he|him|his)\b/i;
+  const femaleRe = /\b(she|her|hers)\b/i;
+  const firstSecondRe = /\b(I|you|your|me|my)\b/i;
+
+  const raw: TaggedSegment[] = [];
+  let lastSpeaker: "CHAR_A" | "CHAR_B" = "CHAR_A";
+  let explicitAttributions = 0;
+
+  // Decide a speaker for a dialogue line given its surrounding (non-quoted) prose.
+  // Returns the role plus whether it came from an explicit attribution cue (vs.
+  // a blind turn-taking guess) so callers can gate multi-voice on real evidence.
+  const attribute = (context: string): { role: "CHAR_A" | "CHAR_B"; explicit: boolean } => {
+    const hasAttr = attrRe.test(context);
+    if (hasAttr) {
+      if (firstSecondRe.test(context)) {
+        lastSpeaker = "CHAR_A";
+        explicitAttributions++;
+        return { role: "CHAR_A", explicit: true };
+      }
+      if (genders) {
+        const male = maleRe.test(context);
+        const female = femaleRe.test(context);
+        if (male && !female) {
+          const role = genders.li === "m" ? "CHAR_B" : "CHAR_A";
+          lastSpeaker = role;
+          explicitAttributions++;
+          return { role, explicit: true };
+        }
+        if (female && !male) {
+          const role = genders.li === "f" ? "CHAR_B" : "CHAR_A";
+          lastSpeaker = role;
+          explicitAttributions++;
+          return { role, explicit: true };
+        }
+      }
+    }
+    // No usable attribution → conversational turn-taking (a guess, not explicit).
+    lastSpeaker = lastSpeaker === "CHAR_A" ? "CHAR_B" : "CHAR_A";
+    return { role: lastSpeaker, explicit: false };
+  };
+
+  const paragraphs = normalised.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  const quoteRe = /"([^"]+)"/g;
+
+  for (const para of paragraphs) {
+    if (!para.includes('"')) {
+      raw.push({ role: "NARRATOR", text: para });
+      continue;
+    }
+    // Collect all quote positions first so each quote can be attributed from its
+    // OWN local context (prose immediately before and after that quote) rather
+    // than a single paragraph-global context, which misroutes mixed-dialogue
+    // paragraphs where one cue ("he said") would otherwise capture every quote.
+    const quotes: { full: string; start: number; end: number }[] = [];
+    quoteRe.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = quoteRe.exec(para)) !== null) {
+      quotes.push({ full: m[0], start: m.index, end: quoteRe.lastIndex });
+    }
+    let lastIndex = 0;
+    for (let qi = 0; qi < quotes.length; qi++) {
+      const q = quotes[qi];
+      const before = para.slice(lastIndex, q.start).trim();
+      if (before) raw.push({ role: "NARRATOR", text: before });
+      // Quote-local context: prose since the previous quote + prose up to the
+      // next quote (or paragraph end).
+      const localBefore = para.slice(lastIndex, q.start);
+      const nextStart = qi + 1 < quotes.length ? quotes[qi + 1].start : para.length;
+      const localAfter = para.slice(q.end, nextStart);
+      const { role } = attribute(`${localBefore} ${localAfter}`.trim());
+      raw.push({ role, text: q.full.trim() });
+      lastIndex = q.end;
+    }
+    const after = para.slice(lastIndex).trim();
+    if (after) raw.push({ role: "NARRATOR", text: after });
+  }
+
+  // Merge consecutive same-role segments (collapses short fragments, esp. < 200 chars).
+  const merged: TaggedSegment[] = [];
+  for (const seg of raw) {
+    const prev = merged[merged.length - 1];
+    if (prev && prev.role === seg.role) {
+      prev.text = `${prev.text} ${seg.text}`.trim();
+    } else {
+      merged.push({ ...seg });
+    }
+  }
+
+  // Enforce the 4,500-char TTS ceiling, splitting at sentence boundaries.
+  const limited: TaggedSegment[] = [];
+  for (const seg of merged) {
+    for (const piece of splitTextToLimit(seg.text, 4500)) {
+      limited.push({ role: seg.role, text: piece });
+    }
+  }
+
+  // Mark the first NARRATOR segment for the opening hook.
+  const firstNarrator = limited.find((s) => s.role === "NARRATOR");
+  if (firstNarrator) firstNarrator.isFirst = true;
+
+  const distinctCharRoles = new Set(
+    limited.filter((s) => s.role !== "NARRATOR").map((s) => s.role),
+  ).size;
+
+  return { segments: limited, explicitAttributions, distinctCharRoles };
+}
+
+/** Split text into <= limit chunks at sentence boundaries, hard-splitting if needed. */
+function splitTextToLimit(text: string, limit: number): string[] {
+  const t = text.trim();
+  if (t.length <= limit) return t ? [t] : [];
+  const out: string[] = [];
+  const sentences = t.match(/[^.!?]+[.!?]+["']?\s*|[^.!?]+$/g) ?? [t];
+  let cur = "";
+  for (const s of sentences) {
+    if (cur.length + s.length > limit) {
+      if (cur.trim()) out.push(cur.trim());
+      if (s.length > limit) {
+        for (let i = 0; i < s.length; i += limit) out.push(s.slice(i, i + limit).trim());
+        cur = "";
+      } else {
+        cur = s;
+      }
+    } else {
+      cur += s;
+    }
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+
+/**
+ * Strip leading/trailing silence (< −40 dB, > ~80 ms) from an MP3 buffer via
+ * ffmpeg, so concatenated multi-voice segments don't stutter at each switch.
+ * Returns the original buffer on any failure (best-effort, never throws).
+ */
+function trimSilenceFromMp3(input: Buffer): Promise<Buffer> {
+  return new Promise((resolve) => {
+    try {
+      const filter =
+        "silenceremove=start_periods=1:start_silence=0.08:start_threshold=-40dB:detection=peak," +
+        "areverse," +
+        "silenceremove=start_periods=1:start_silence=0.08:start_threshold=-40dB:detection=peak," +
+        "areverse";
+      const ff = spawn("ffmpeg", [
+        "-hide_banner", "-loglevel", "error",
+        "-i", "pipe:0",
+        "-af", filter,
+        "-f", "mp3", "pipe:1",
+      ]);
+      const out: Buffer[] = [];
+      let settled = false;
+      const done = (buf: Buffer) => { if (!settled) { settled = true; resolve(buf); } };
+      ff.stdout.on("data", (d: Buffer) => out.push(d));
+      ff.on("error", () => done(input));
+      ff.stdin.on("error", () => {});
+      ff.on("close", (code) => {
+        if (code === 0 && out.length > 0) done(Buffer.concat(out));
+        else done(input);
+      });
+      ff.stdin.write(input);
+      ff.stdin.end();
+    } catch {
+      resolve(input);
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -3742,7 +4029,8 @@ export async function generateAudioFile(
   scenes: Scene[],
   voiceFeel: string,
   cacheKey: string,
-  pairing?: string
+  pairing?: string,
+  intensity?: string
 ): Promise<{ url: string; durationSeconds: number }> {
   // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
   if (process.env.DISABLE_AUDIO === "true") {
@@ -3750,39 +4038,16 @@ export async function generateAudioFile(
     return { url: "", durationSeconds: 0 };
   }
 
-  const voiceId = resolveVoiceId(voiceFeel, pairing);
+  const narratorId = resolveVoiceId(voiceFeel, pairing);
   // ElevenLabs max chars per request is 5,000 — use 4,500 to stay safe
   const TTS_CHAR_LIMIT = 4500;
 
-  // Build chunks that respect the TTS character limit, splitting at scene boundaries
-  const chunks: string[] = [];
-  let current = "";
-  for (const scene of scenes) {
-    const sceneText = scene.text.trim();
-    if (current.length + sceneText.length + 2 > TTS_CHAR_LIMIT) {
-      if (current.length > 0) {
-        chunks.push(current.trim());
-        current = "";
-      }
-      // If a single scene exceeds the limit, split it at sentence boundaries
-      if (sceneText.length > TTS_CHAR_LIMIT) {
-        for (let i = 0; i < sceneText.length; i += TTS_CHAR_LIMIT) {
-          chunks.push(sceneText.slice(i, i + TTS_CHAR_LIMIT));
-        }
-      } else {
-        current = sceneText;
-      }
-    } else {
-      current += (current.length > 0 ? "\n\n" : "") + sceneText;
-    }
-  }
-  if (current.length > 0) chunks.push(current.trim());
-
-  // Generate TTS for each chunk sequentially (ElevenLabs is stateful per voice session)
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
   if (!elevenLabsKey) throw new Error("ELEVENLABS_API_KEY is not set");
 
-  const callTTS = async (vid: string, chunk: string): Promise<Buffer> => {
+  const styleFor = MV_INTENSITY_STYLE[(intensity ?? "").trim()] ?? MV_DEFAULT_STYLE;
+
+  const callTTS = async (vid: string, chunk: string, style: number): Promise<Buffer> => {
     const res = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${vid}`,
       {
@@ -3798,7 +4063,7 @@ export async function generateAudioFile(
           voice_settings: {
             stability: 0.45,
             similarity_boost: 0.80,
-            style: 0.25,
+            style,
             use_speaker_boost: true,
           },
         }),
@@ -3819,25 +4084,87 @@ export async function generateAudioFile(
     return Buffer.from(await res.arrayBuffer());
   };
 
-  const buffers: Buffer[] = [];
-  let activeVoiceId = voiceId;
-  for (const chunk of chunks) {
+  // TTS one piece with a per-voice fallback to the default voice on failure.
+  const ttsWithFallback = async (vid: string, piece: string, style: number): Promise<Buffer> => {
     try {
-      buffers.push(await callTTS(activeVoiceId, chunk));
+      return await callTTS(vid, piece, style);
     } catch (err) {
-      // If the selected voice fails (e.g. invalid/unavailable), fall back to the default
-      // female voice for this chunk and all remaining chunks to keep the audio consistent
-      if (activeVoiceId !== DEFAULT_VOICE_ID) {
-        activeVoiceId = DEFAULT_VOICE_ID;
-        buffers.push(await callTTS(activeVoiceId, chunk));
+      if (vid !== DEFAULT_VOICE_ID) return await callTTS(DEFAULT_VOICE_ID, piece, style);
+      throw err;
+    }
+  };
+
+  const buffers: Buffer[] = [];
+
+  // ── Try multi-voice tagging (narrator + two characters) ───────────────────
+  const fullText = scenes.map((s) => s.text.trim()).filter(Boolean).join("\n\n");
+  const tagged = tagScriptForMultiVoice(fullText, pairing ?? "", narratorId);
+  const segments = tagged.segments;
+  // Only switch to multi-voice when there is real evidence of a two-person
+  // exchange: both character roles present AND at least one quote resolved via an
+  // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
+  // single-voice to avoid splitting one speaker across two voices.
+  const useMultiVoice = tagged.distinctCharRoles >= 2 && tagged.explicitAttributions >= 1;
+
+  if (useMultiVoice) {
+    // Multi-voice path: distinct voices for narrator / protagonist / love interest.
+    const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing ?? "");
+    console.info(`[audio] multi-voice: narrator=${narratorId} charA=${charA} charB=${charB} segments=${segments.length} intensity=${intensity ?? "?"}`);
+    for (const seg of segments) {
+      const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
+      const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
+      // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
+      const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
+      const buf = await ttsWithFallback(vid, seg.text, style);
+      buffers.push(await trimSilenceFromMp3(buf));
+    }
+  } else {
+    // ── Single-voice fallback: chunk at scene boundaries, narrator voice only ──
+    const chunks: string[] = [];
+    let current = "";
+    for (const scene of scenes) {
+      const sceneText = scene.text.trim();
+      if (current.length + sceneText.length + 2 > TTS_CHAR_LIMIT) {
+        if (current.length > 0) {
+          chunks.push(current.trim());
+          current = "";
+        }
+        if (sceneText.length > TTS_CHAR_LIMIT) {
+          for (const piece of splitTextToLimit(sceneText, TTS_CHAR_LIMIT)) chunks.push(piece);
+        } else {
+          current = sceneText;
+        }
       } else {
-        throw err;
+        current += (current.length > 0 ? "\n\n" : "") + sceneText;
+      }
+    }
+    if (current.length > 0) chunks.push(current.trim());
+
+    let activeVoiceId = narratorId;
+    for (let i = 0; i < chunks.length; i++) {
+      const style = i === 0 ? Math.min(0.80, styleFor.narrator + 0.15) : styleFor.narrator;
+      try {
+        buffers.push(await callTTS(activeVoiceId, chunks[i], style));
+      } catch (err) {
+        // If the selected voice fails, fall back to the default voice for this and all
+        // remaining chunks to keep the audio consistent.
+        if (activeVoiceId !== DEFAULT_VOICE_ID) {
+          activeVoiceId = DEFAULT_VOICE_ID;
+          buffers.push(await callTTS(activeVoiceId, chunks[i], style));
+        } else {
+          throw err;
+        }
       }
     }
   }
 
   const filename = `audio-${cacheKey}.mp3`;
   const finalBuffer = Buffer.concat(buffers);
+  // Fail fast rather than uploading a zero-byte MP3 while reporting a positive
+  // duration (e.g. if every scene was empty/whitespace).
+  if (finalBuffer.length === 0) {
+    throw new Error("Audio generation produced no output — story text was empty.");
+  }
   // Estimate duration from MP3 size: ElevenLabs turbo v2.5 outputs ~128 kbps = 16,000 bytes/sec
   const durationSeconds = Math.max(1, Math.round(finalBuffer.length / 16000));
   await uploadAudioFile(filename, finalBuffer);
@@ -4742,7 +5069,7 @@ router.post("/generate-full-story", async (req, res) => {
     const storyHash = getCacheKey({ brief, story });
     const [images, audioResult] = await Promise.all([
       generateAllImages(imagePrompts, storyHash),
-      generateAudioFile(story.scenes, intake.voiceFeel, storyHash, intake.pairing),
+      generateAudioFile(story.scenes, intake.voiceFeel, storyHash, intake.pairing, intake.intensity),
     ]);
     const audioUrl = audioResult.url;
     const audioDurationSeconds = audioResult.durationSeconds;

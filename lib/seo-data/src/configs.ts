@@ -8486,7 +8486,7 @@ export const audioEroticaForCouplesConfig: SEOPageConfig = {
     {
       h2: "The Choosing Itself Is Part of the Practice",
       paragraphs: [
-        "The conversation that happens when two people sit down to choose what story to make together is, for many couples, the most interesting part of the whole practice. Talking openly about register, dynamic, character, intensity — what you want this one to feel like, what you're in the mood for tonight — is itself a kind of intimacy that adult life does not always make room for. The Creation Room provides the structure for this conversation.",
+        "The conversation that happens when two people sit down to choose what story to make together is, for many couples, the most interesting part of the whole practice. Talking openly about register, dynamic, character, intensity — what you want this one to feel like, what you're in the mood for right now — is itself a kind of intimacy that adult life does not always make room for. The Creation Room provides the structure for this conversation.",
         "What is striking is how often couples report that the conversation surfaces things they had not previously articulated. The choices the platform asks about — the dynamic, the kind of attention, the quality of the closeness — are choices most couples have never explicitly described to each other. Doing so for a low-stakes shared listening practice turns out to be useful in itself, beyond the story it produces.",
         "The story that follows is the artefact of the conversation. It is not the point on its own. The point is the shared act — the choosing together, the listening together, the response afterwards. The story is what the practice produces; the practice is what the platform supports.",
       ],
@@ -8535,7 +8535,7 @@ export const audioEroticaForCouplesConfig: SEOPageConfig = {
       },
       {
         heading: "The date-night creation",
-        body: "Dinner is finished. The evening is yours. The Creation Room is open on a tablet, and the conversation about what to make tonight is itself the first part of the date. The story that follows is the artefact of the choices the two of you made together — calibrated to the mood you both arrived in, narrated in the voice you both chose, lasting just long enough to set the rest of the evening on its course.",
+        body: "Dinner is finished. The evening is yours. The Creation Room is open on a tablet, and the conversation about what to make this evening is itself the first part of the date. The story that follows is the artefact of the choices the two of you made together — calibrated to the mood you both arrived in, narrated in the voice you both chose, lasting just long enough to set the rest of the evening on its course.",
       },
     ],
     interstitial: "The shared practice is supported by every part of the platform's design — choosing together, listening together, keeping it private to the two of you.",

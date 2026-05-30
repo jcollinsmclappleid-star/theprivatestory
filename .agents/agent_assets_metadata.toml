@@ -1284,6 +1284,96 @@ uri = "file://artifacts/custom-audio-stories/public/images/seo-body-sheets-inter
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "U-AAQW5XkgD6AvQK2Euv2"
+uri = "file://attached_assets/covers/01-last-one.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ieOz2lqqtI4na8a37a2AS"
+uri = "file://attached_assets/covers/04-driver.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "kR4j4HugBVoBPqUFvtGQu"
+uri = "file://attached_assets/covers/09-neighbour.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TnajYjq1QZKaP2DXQbJgw"
+uri = "file://attached_assets/covers/03-spa-at-six.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "RhXVe67Ik1WU_hnv7WkHw"
+uri = "file://attached_assets/covers/05-cabin.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tglRiQp6Zh0d3NIzhfa6H"
+uri = "file://attached_assets/covers/02-adjoining-suites.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "QQr-1UW7YkkNfh4-3UHAW"
+uri = "file://attached_assets/covers/10-night-manager.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "NR2k0xDBTkTVWKAFZyJVq"
+uri = "file://attached_assets/covers/06-supervisor.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ZkytkadJuCSqt0qoOsTvL"
+uri = "file://attached_assets/covers/07-bodyguard.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sNNLR-aubVBRqEdd5V2QM"
+uri = "file://attached_assets/covers/08-proposition.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "nKxMhVe5WILy6u9ElQM_n"
+uri = "file://attached_assets/seo-images/seo-body-hotel-window-night.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EEgY5TxvafS_zkSqu_vkN"
+uri = "file://attached_assets/seo-images/seo-body-rooftop-golden-hour.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "npfNvyU-bvxc7Cflf4nVt"
+uri = "file://attached_assets/seo-images/seo-body-morning-kitchen.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "8BvQ99JlgT4zgPOiH0sXL"
+uri = "file://attached_assets/seo-images/seo-body-train-dusk.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ctu5gCB2AF0hrZAQZRMd1"
+uri = "file://attached_assets/seo-images/seo-body-library-intimate.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "oQoWkIVb84iSZh36-hxG1"
 uri = "file://artifacts/custom-audio-stories/public/images/hero-bg.png"

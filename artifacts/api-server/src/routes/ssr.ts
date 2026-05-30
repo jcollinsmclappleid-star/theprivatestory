@@ -28,11 +28,6 @@ const SEO_BODY_IMAGE_POOL: string[] = [
   "images/seo-body-dancing-close.webp",
   "images/seo-body-listening-headphones.webp",
   "images/seo-body-morning-sheets.webp",
-  "images/seo-body-hotel-window-night.webp",
-  "images/seo-body-rooftop-golden-hour.webp",
-  "images/seo-body-morning-kitchen.webp",
-  "images/seo-body-train-dusk.webp",
-  "images/seo-body-library-intimate.webp",
 ];
 
 const SEO_BODY_IMAGE_W = 1408;

@@ -18,4 +18,10 @@ Speaker attribution in `tagScriptForMultiVoice` must use **quote-local** context
 
 ## Deliberate deferrals (not missing work)
 - **Step 4 (progressive/streaming delivery): DEFERRED.** `generateAudioFile` keeps its synchronous `{ url, durationSeconds }` contract. Streaming would require rewriting the client audio player across 8+ pages — high risk, and in tension with the contract the rest of the task assumes. Revisit only as its own scoped task.
-- **Step 8 (Editor's Picks audio regen): PENDING USER GO/NO-GO.** Regenerating the 10 curated showcase samples with multi-voice costs real ElevenLabs credits and overwrites hand-tuned single-voice samples on the highest-visibility first-impression page; audio quality/attribution cannot be self-QA'd by the agent. Do not auto-run a paid bulk regen without explicit confirmation.
+- **Step 8 (Editor's Picks audio regen): DONE.** User approved after a 1-clip test, then "regenerate all per our matrix". All 10 `editors-picks/*.mp3` regenerated through the multi-voice pipeline (mirror helpers added to `generate-editors-picks.mjs`, model `eleven_turbo_v2_5`, intensity Elevated, pairing Her & Him) and copied into the served `public/voice-samples/editors-picks/`.
+
+## Regenerating Editor's Picks audio — operational notes
+- The `.mjs` script duplicates the server multi-voice helpers (cannot import the bundled server module) — keep `generate-editors-picks.mjs` in sync with `generate.ts` if the tagger/casting/intensity logic changes.
+- Output lands in `public-static/voice-samples/editors-picks/`; it is served from `public/` (mirrored by build.mjs). After a manual run, copy the new mp3s into `public/voice-samples/editors-picks/` (or rebuild) so the dev server serves them.
+- **Run it in small synchronous batches (2–3 slugs), not detached.** Background/nohup processes are killed between tool calls, and full 10-pick runs exceed a single command timeout. ~2 picks ≈ 50s. Filter by slug prefix: `node scripts/generate-editors-picks.mjs --force 05 06`.
+- The "matrix" = per-pick narrator already encoded in each pick's `voice`, plus `resolveCharacterVoicesServer` casting (HER Maya→Clara→Kayla / HIM James→Ethan→Theo, conflict-avoidance) — matches `.local/tasks/multi-voice-pipeline.md` "Full Voice Matrix".

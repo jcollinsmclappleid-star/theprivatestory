@@ -1439,3 +1439,9 @@ id = "rDF22tvQ2ZIw_r-2ZrpMG"
 uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/01-last-one-multi.mp3"
 type = "audio"
 title = "The Last One in the Building — Multi-voice trial"
+
+[[outputs]]
+id = "pCIZ62VjXANTncGkffJTy"
+uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/01-last-one.mp3"
+type = "audio"
+title = "Editor's Pick 01 — \"The Last One in the Building\" (multi-voice test)"

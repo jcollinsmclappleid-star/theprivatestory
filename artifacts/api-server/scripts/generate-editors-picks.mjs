@@ -25,6 +25,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawn } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(
@@ -49,6 +50,183 @@ const VOICE = {
   maya:  { id: "tQ4MEZFJOzsahSEEZtHK", name: "Maya",  settings: { stability: 0.45, similarity_boost: 0.82, style: 0.35 } },
   james: { id: "AeRdCCKzvd23BpJoofzx", name: "James", settings: { stability: 0.55, similarity_boost: 0.78, style: 0.18 } },
 };
+
+// ── Multi-voice (#207): faithful mirror of the server pipeline in ──────────────
+// src/routes/generate.ts (tagScriptForMultiVoice / resolveCharacterVoicesServer /
+// generateAudioFile). Kept duplicated intentionally — the .mjs script cannot
+// import the bundled server module. Keep in sync with that file.
+const MV_CLARA = "FA6HhUjVbervLw2rNl8M";
+const MV_MAYA  = "tQ4MEZFJOzsahSEEZtHK";
+const MV_KAYLA = "aTxZrSrp47xsP6Ot4Kgd";
+const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
+const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
+const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
+const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA];
+const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO];
+const MV_MALE_NARRATORS = new Set([MV_JAMES, MV_ETHAN, MV_THEO]);
+
+const MV_INTENSITY_STYLE = {
+  "Subtle":    { narrator: 0.15, char: 0.35 },
+  "Tender":    { narrator: 0.15, char: 0.35 },
+  "Warm":      { narrator: 0.15, char: 0.35 },
+  "Heated":    { narrator: 0.25, char: 0.50 },
+  "Elevated":  { narrator: 0.25, char: 0.50 },
+  "Scorching": { narrator: 0.35, char: 0.70 },
+  "Intense":   { narrator: 0.35, char: 0.70 },
+};
+const MV_DEFAULT_STYLE = { narrator: 0.25, char: 0.50 };
+
+// All Editor's Picks are female-protagonist / male love-interest romances.
+const MV_DEFAULT_PAIRING = "Her & Him";
+const MV_DEFAULT_INTENSITY = "Elevated";
+
+const MV_ATTR_VERBS =
+  "said|asked|replied|answered|whispered|murmured|breathed|muttered|growled|" +
+  "demanded|told|added|sighed|gasped|moaned|hissed|laughed|warned|admitted|" +
+  "confessed|urged|pleaded|teased|promised|repeated|continued|insisted|" +
+  "called|shouted|snapped|purred|drawled|countered|offered|begged";
+
+function mvPairingGenders(pairing) {
+  const p = (pairing ?? "").toLowerCase().trim();
+  switch (p) {
+    case "her & him":  return { protag: "f", li: "m" };
+    case "her & them": return { protag: "f", li: "m" };
+    case "him & them": return { protag: "m", li: "f" };
+    default: return null;
+  }
+}
+
+function resolveCharacterVoicesServer(narratorId, pairing) {
+  const p = (pairing ?? "").toLowerCase().trim();
+  const isMale = MV_MALE_NARRATORS.has(narratorId);
+  const her = () => MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
+  const him = () => MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
+  const twoHer = () => MV_HER_POOL.filter((v) => v !== narratorId);
+  const twoHim = () => MV_HIM_POOL.filter((v) => v !== narratorId);
+  switch (p) {
+    case "her & him":  return { charA: her(), charB: him() };
+    case "her & her":  { const [a, b] = twoHer(); return { charA: a ?? MV_MAYA, charB: b ?? MV_CLARA }; }
+    case "him & him":  { const [a, b] = twoHim(); return { charA: a ?? MV_JAMES, charB: b ?? MV_ETHAN }; }
+    case "her & them": return { charA: her(), charB: him() };
+    case "him & them": return { charA: him(), charB: her() };
+    case "them & them": return isMale ? { charA: him(), charB: her() } : { charA: her(), charB: him() };
+    default: return { charA: her(), charB: him() };
+  }
+}
+
+function splitTextToLimit(text, limit) {
+  const t = text.trim();
+  if (t.length <= limit) return t ? [t] : [];
+  const out = [];
+  const sentences = t.match(/[^.!?]+[.!?]+["']?\s*|[^.!?]+$/g) ?? [t];
+  let cur = "";
+  for (const s of sentences) {
+    if (cur.length + s.length > limit) {
+      if (cur.trim()) out.push(cur.trim());
+      if (s.length > limit) { for (let i = 0; i < s.length; i += limit) out.push(s.slice(i, i + limit).trim()); cur = ""; }
+      else cur = s;
+    } else cur += s;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+
+function tagScriptForMultiVoice(text, pairing) {
+  const normalised = text
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'");
+  const genders = mvPairingGenders(pairing);
+  const attrRe = new RegExp(`\\b(${MV_ATTR_VERBS})\\b`, "i");
+  const maleRe = /\b(he|him|his)\b/i;
+  const femaleRe = /\b(she|her|hers)\b/i;
+  const firstSecondRe = /\b(I|you|your|me|my)\b/i;
+  const raw = [];
+  let lastSpeaker = "CHAR_A";
+  let explicitAttributions = 0;
+  const attribute = (context) => {
+    if (attrRe.test(context)) {
+      if (firstSecondRe.test(context)) { lastSpeaker = "CHAR_A"; explicitAttributions++; return { role: "CHAR_A", explicit: true }; }
+      if (genders) {
+        const male = maleRe.test(context), female = femaleRe.test(context);
+        if (male && !female) { const role = genders.li === "m" ? "CHAR_B" : "CHAR_A"; lastSpeaker = role; explicitAttributions++; return { role, explicit: true }; }
+        if (female && !male) { const role = genders.li === "f" ? "CHAR_B" : "CHAR_A"; lastSpeaker = role; explicitAttributions++; return { role, explicit: true }; }
+      }
+    }
+    lastSpeaker = lastSpeaker === "CHAR_A" ? "CHAR_B" : "CHAR_A";
+    return { role: lastSpeaker, explicit: false };
+  };
+  const paragraphs = normalised.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  const quoteRe = /"([^"]+)"/g;
+  for (const para of paragraphs) {
+    if (!para.includes('"')) { raw.push({ role: "NARRATOR", text: para }); continue; }
+    const quotes = [];
+    quoteRe.lastIndex = 0;
+    let m;
+    while ((m = quoteRe.exec(para)) !== null) quotes.push({ full: m[0], start: m.index, end: quoteRe.lastIndex });
+    let lastIndex = 0;
+    for (let qi = 0; qi < quotes.length; qi++) {
+      const q = quotes[qi];
+      const before = para.slice(lastIndex, q.start).trim();
+      if (before) raw.push({ role: "NARRATOR", text: before });
+      const localBefore = para.slice(lastIndex, q.start);
+      const nextStart = qi + 1 < quotes.length ? quotes[qi + 1].start : para.length;
+      const localAfter = para.slice(q.end, nextStart);
+      const { role } = attribute(`${localBefore} ${localAfter}`.trim());
+      raw.push({ role, text: q.full.trim() });
+      lastIndex = q.end;
+    }
+    const after = para.slice(lastIndex).trim();
+    if (after) raw.push({ role: "NARRATOR", text: after });
+  }
+  const merged = [];
+  for (const seg of raw) {
+    const prev = merged[merged.length - 1];
+    if (prev && prev.role === seg.role) prev.text = `${prev.text} ${seg.text}`.trim();
+    else merged.push({ ...seg });
+  }
+  const limited = [];
+  for (const seg of merged) for (const piece of splitTextToLimit(seg.text, 4500)) limited.push({ role: seg.role, text: piece });
+  const firstNarrator = limited.find((s) => s.role === "NARRATOR");
+  if (firstNarrator) firstNarrator.isFirst = true;
+  const distinctCharRoles = new Set(limited.filter((s) => s.role !== "NARRATOR").map((s) => s.role)).size;
+  return { segments: limited, explicitAttributions, distinctCharRoles };
+}
+
+function trimSilenceFromMp3(input) {
+  return new Promise((resolve) => {
+    try {
+      const filter =
+        "silenceremove=start_periods=1:start_silence=0.08:start_threshold=-40dB:detection=peak," +
+        "areverse," +
+        "silenceremove=start_periods=1:start_silence=0.08:start_threshold=-40dB:detection=peak," +
+        "areverse";
+      const ff = spawn("ffmpeg", ["-hide_banner", "-loglevel", "error", "-i", "pipe:0", "-af", filter, "-f", "mp3", "pipe:1"]);
+      const out = [];
+      let settled = false;
+      const done = (buf) => { if (!settled) { settled = true; resolve(buf); } };
+      ff.stdout.on("data", (d) => out.push(d));
+      ff.on("error", () => done(input));
+      ff.stdin.on("error", () => {});
+      ff.on("close", (code) => { if (code === 0 && out.length > 0) done(Buffer.concat(out)); else done(input); });
+      ff.stdin.write(input);
+      ff.stdin.end();
+    } catch { resolve(input); }
+  });
+}
+
+async function mvTTS(vid, chunk, style) {
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vid}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "audio/mpeg", "xi-api-key": ELEVENLABS_API_KEY },
+    body: JSON.stringify({
+      text: chunk,
+      model_id: "eleven_turbo_v2_5",
+      voice_settings: { stability: 0.45, similarity_boost: 0.80, style, use_speaker_boost: true },
+    }),
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(`ElevenLabs API error (${res.status}): ${t}`); }
+  return Buffer.from(await res.arrayBuffer());
+}
 
 const PICKS = [
   {
@@ -741,35 +919,43 @@ async function generateOne(pick) {
     console.log(`  - skip ${pick.slug} (${pick.voice.name}) — already exists`);
     return;
   }
-  console.log(`  - gen  ${pick.slug} (${pick.voice.name}) "${pick.title}"`);
 
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${pick.voice.id}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "xi-api-key": ELEVENLABS_API_KEY,
-      },
-      body: JSON.stringify({
-        text: pick.text,
-        model_id: "eleven_multilingual_v2",
-        voice_settings: pick.voice.settings,
-      }),
-    },
-  );
+  const narratorId = pick.voice.id;
+  const pairing = pick.pairing ?? MV_DEFAULT_PAIRING;
+  const intensity = pick.intensity ?? MV_DEFAULT_INTENSITY;
+  const styleFor = MV_INTENSITY_STYLE[intensity] ?? MV_DEFAULT_STYLE;
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(
-      `ElevenLabs API error (${response.status}) for ${pick.slug}: ${error}`,
-    );
+  const tagged = tagScriptForMultiVoice(pick.text, pairing);
+  const useMultiVoice = tagged.distinctCharRoles >= 2 && tagged.explicitAttributions >= 1;
+
+  const buffers = [];
+  if (useMultiVoice) {
+    const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing);
+    console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${tagged.segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
+    for (const seg of tagged.segments) {
+      const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
+      const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
+      // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
+      const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
+      const buf = await mvTTS(vid, seg.text, style);
+      buffers.push(await trimSilenceFromMp3(buf));
+    }
+  } else {
+    console.log(`  - gen  ${pick.slug} single-voice (${pick.voice.name}) — no multi-voice evidence "${pick.title}"`);
+    const pieces = splitTextToLimit(pick.text, 4500);
+    for (let i = 0; i < pieces.length; i++) {
+      const style = i === 0 ? Math.min(0.80, styleFor.narrator + 0.15) : styleFor.narrator;
+      buffers.push(await mvTTS(narratorId, pieces[i], style));
+    }
   }
 
-  const buffer = await response.arrayBuffer();
+  const finalBuffer = Buffer.concat(buffers);
+  if (finalBuffer.length === 0) {
+    throw new Error(`Audio generation produced no output for ${pick.slug}`);
+  }
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  fs.writeFileSync(outputPath, Buffer.from(buffer));
-  console.log(`    -> ${outputPath} (${(buffer.byteLength / 1024).toFixed(0)} KB)`);
+  fs.writeFileSync(outputPath, finalBuffer);
+  console.log(`    -> ${outputPath} (${(finalBuffer.length / 1024).toFixed(0)} KB) ${useMultiVoice ? "[multi-voice]" : "[single]"}`);
 }
 
 async function main() {

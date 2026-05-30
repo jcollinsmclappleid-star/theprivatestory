@@ -10,7 +10,7 @@ import {
 } from "./competitor-configs.js";
 
 export const adultAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Adult Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
+  meta: { title: `Personalised Adult Audio Stories — Free Sample, Created for You | The Private Story`, description: `Personalised adult audio stories created around your mood, tone, and preferences. Private, narrated, and built entirely for you. Not a library — your story, right now.` },
   hero: { badge: `Personalised · Narrated · Private`, h1: `Adult Audio Stories — Personalised, Private, Made for You`, tagline: `Not a library of stories that might be for someone like you. A story created for you, right now, around exactly what you want to feel.` },
   heroCTALabel: "Create your adult story",
   heroImage: "images/seo-hero-intimate.webp",
@@ -2657,7 +2657,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
 };
 
 export const personalisedAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Personalised Audio Stories — Free Sample, Yours Tonight | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
+  meta: { title: `Personalised Audio Stories — Free Sample, Created for You | The Private Story`, description: `Personalised audio stories created around how you want to feel right now. Not selected from a library — generated around your choices and private to you alone.` },
   hero: { badge: `Personalised · Private · For Adults`, h1: `Personalised Audio Stories Created Around How You Want to Feel`, tagline: `Sometimes you don't want to browse. You want something that already knows what you need.` },
   heroCTALabel: "Create your personalised story",
   heroImage: "images/seo-hero-personalised.webp",
@@ -2828,7 +2828,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
 };
 
 export const privateAudioStoriesConfig: SEOPageConfig = {
-  meta: { title: `Private Audio Stories — No Sign-Up, Yours Tonight | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
+  meta: { title: `Private Audio Stories — No Sign-Up, Created for You | The Private Story`, description: `Private audio stories generated around your mood and preferences. No social feed, no sharing, no history visible to anyone. Everything stays in your account.` },
   hero: { badge: `Private by Design · No Social · Yours Alone`, h1: `Private Audio Stories — Created for You, Heard Only by You`, tagline: `What you listen to in private should stay private. Here, it always does.` },
   heroCTALabel: "Create your private story",
   heroImage: "images/seo-hero-women.webp",

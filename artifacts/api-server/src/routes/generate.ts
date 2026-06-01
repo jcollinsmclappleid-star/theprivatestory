@@ -5533,6 +5533,128 @@ router.get("/story-categories", (_req, res) => {
   res.json(payload);
 });
 
+// POST /api/generate/debug-tags
+// Admin-only: run tagScriptForMultiVoice on a story and return the full segment
+// breakdown without calling ElevenLabs. Accepts either:
+//   { storyId: "lib-..." }
+//   { text, pairing, voiceId, partnerName?, protagonistName? }
+// Responds with the tagger output and which voice name each segment would use.
+router.post("/debug-tags", async (req: Request, res: Response) => {
+  if (!isAdminUser(req)) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  // Friendly voice-ID → display name mapping.
+  const VOICE_NAMES: Record<string, string> = {
+    "FA6HhUjVbervLw2rNl8M": "Clara",
+    "tQ4MEZFJOzsahSEEZtHK": "Maya",
+    "aTxZrSrp47xsP6Ot4Kgd": "Kayla",
+    "AeRdCCKzvd23BpJoofzx": "James",
+    "n1PvBOwxb8X6m7tahp2h": "Ethan",
+    "jfIS2w2yJi0grJZPyEsk": "Theo",
+  };
+
+  try {
+    let text: string;
+    let pairing: string;
+    let narratorId: string;
+    let partnerName: string | undefined;
+    let protagonistName: string | undefined;
+    let storyTitle: string | undefined;
+
+    const { storyId } = req.body as { storyId?: string };
+
+    if (storyId) {
+      // Fetch from DB.
+      const result = await db.execute(
+        drizzleSql`SELECT title, scenes, casting_data FROM generated_stories WHERE id = ${storyId} LIMIT 1`,
+      );
+      if (!result.rows.length) {
+        res.status(404).json({ error: `Story not found: ${storyId}` });
+        return;
+      }
+      const row = result.rows[0] as {
+        title: string;
+        scenes: Array<{ text?: string }>;
+        casting_data: Record<string, string> | null;
+      };
+      storyTitle = row.title;
+      const cd = row.casting_data ?? {};
+      pairing = cd.pairing ?? "Her & Him";
+      narratorId = resolveVoiceId(cd.voiceId ?? cd.voiceFeel ?? DEFAULT_VOICE_ID);
+      partnerName = cd.partnerName;
+      protagonistName = cd.protagonistName;
+      text = (row.scenes ?? []).map((s) => (s.text ?? "").trim()).filter(Boolean).join("\n\n");
+    } else {
+      // Raw text supplied directly.
+      const body = req.body as {
+        text?: string;
+        pairing?: string;
+        voiceId?: string;
+        partnerName?: string;
+        protagonistName?: string;
+      };
+      if (!body.text) {
+        res.status(400).json({ error: "Provide either storyId or text" });
+        return;
+      }
+      text = body.text;
+      pairing = body.pairing ?? "Her & Him";
+      narratorId = resolveVoiceId(body.voiceId ?? DEFAULT_VOICE_ID);
+      partnerName = body.partnerName;
+      protagonistName = body.protagonistName;
+    }
+
+    // Run the same tagger the audio pipeline uses — no ElevenLabs involved.
+    const tagged = tagScriptForMultiVoice(text, pairing, narratorId, partnerName, protagonistName);
+    const segments = tagged.segments;
+
+    const charSegments = segments.filter((s) => s.role !== "NARRATOR").length;
+    const nullGenderPairing = !mvPairingGenders(pairing);
+    const wouldUseMultiVoice =
+      tagged.distinctCharRoles >= 2 &&
+      (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
+
+    const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing);
+
+    const voiceName = (id: string) => VOICE_NAMES[id] ?? id;
+
+    res.json({
+      storyId: storyId ?? null,
+      title: storyTitle ?? null,
+      pairing,
+      voices: {
+        narrator: { id: narratorId, name: voiceName(narratorId) },
+        charA:    { id: charA,      name: voiceName(charA),  role: "protagonist dialogue" },
+        charB:    { id: charB,      name: voiceName(charB),  role: "love interest dialogue" },
+      },
+      summary: {
+        totalSegments: segments.length,
+        narratorSegments: segments.filter((s) => s.role === "NARRATOR").length,
+        charASegments:    segments.filter((s) => s.role === "CHAR_A").length,
+        charBSegments:    segments.filter((s) => s.role === "CHAR_B").length,
+        explicitAttributions: tagged.explicitAttributions,
+        distinctCharRoles:    tagged.distinctCharRoles,
+        wouldUseMultiVoice,
+      },
+      segments: segments.map((seg, i) => ({
+        index: i,
+        role: seg.role,
+        voiceName: voiceName(
+          seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB,
+        ),
+        isFirst: seg.isFirst ?? false,
+        preview: seg.text.slice(0, 120) + (seg.text.length > 120 ? "…" : ""),
+        fullText: seg.text,
+      })),
+    });
+  } catch (err) {
+    logger.error({ err }, "[debug-tags] failed");
+    res.status(500).json({ error: String(err) });
+  }
+});
+
 // POST /api/generate/preview-cover
 // Generate a cover image for the paywall preview (quick, cheap, no audio)
 router.post("/preview-cover", async (req: Request, res: Response) => {

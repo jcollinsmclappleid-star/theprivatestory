@@ -334,7 +334,7 @@ She looked at him. Then past him, at the other one.
 
 "You," she said. "First."
 
-To the one still watching: "Not yet."
+To the one still watching, she said: "Not yet."
 
 He kissed her — slowly, carefully, the way a man kisses someone he has been wanting to kiss for six years. Behind her, the other one held himself absolutely still on her instruction alone. The specific charge of that — two men, both wanting her, one held back by a single word — moved through her like something low and deliberate.
 
@@ -772,7 +772,7 @@ The knock had come at half past ten. He had opened the door. She was holding an 
 
 "I have one," he said.
 
-"Brilliant. Sorry. I'll bring it back."
+"Brilliant. Sorry. I'll bring it back," she said.
 
 He went to the kitchen. He took longer than he needed to find it. When he came back to the door she was still there, leaning lightly against the frame, not — he noticed, with a precision that troubled him — wearing shoes.
 
@@ -782,21 +782,21 @@ He held out the corkscrew. She did not take it.
 
 "My daughter is at her mother's."
 
-"Oh."
+"Oh," she said.
 
 A pause. He should have closed the door. He did not.
 
 "I have wine," she said, "and no one to drink it with, and I have been hearing you walk around in there alone for three weeks."
 
-"You've been listening."
+"You've been listening," he said.
 
-"Yes."
+"Yes," she said.
 
 He looked at her properly. He let himself, for the first time, look at her properly. She let him.
 
 "If I come over," he said, "I should be honest with you about what I have been thinking for three weeks."
 
-"That would save us both some time."
+"That would save us both some time," she said.
 
 He stepped out into the hallway. He pulled his door closed behind him.
 
@@ -845,9 +845,9 @@ She had checked in three days ago. Suite four-twelve. She had been to a differen
 
 "I'll walk you up," he said.
 
-"You don't have to."
+"You don't have to," she said.
 
-"It's policy."
+"It's policy," he said.
 
 It wasn't policy. He took the master, and they walked to the lift in a silence that he found, by the third floor, that he did not want to break.
 
@@ -859,13 +859,13 @@ She turned around in the doorway. She looked at him for a long second. He had se
 
 "Don't go yet," she said.
 
-"Madam."
+"Madam," he said.
 
-"Please."
+"Please," she said.
 
-"You've been drinking."
+"You've been drinking," he said.
 
-"Two glasses. Three hours ago."
+"Two glasses. Three hours ago," she said.
 
 He looked at her. He looked, for the first time in nine years, properly at a guest. She let him.
 
@@ -881,11 +881,11 @@ She turned when he was close. He touched her face — nine years of professional
 
 "I don't do this," he said.
 
-"I know."
+"I know," she said.
 
-"You should know that."
+"You should know that," he said.
 
-"I know." She opened her eyes. "I don't care," she said.
+She opened her eyes. "I don't care," she said.
 
 He kissed her.
 

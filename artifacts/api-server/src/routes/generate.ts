@@ -1634,9 +1634,19 @@ export function tagScriptForMultiVoice(
   const firstNarrator = limited.find((s) => s.role === "NARRATOR");
   if (firstNarrator) firstNarrator.isFirst = true;
 
-  const distinctCharRoles = new Set(
+  // For mixed-gender pairings (Her & Him, Her & Them, etc.) the narrator IS a
+  // distinct voice — add +1 so a story where only CHAR_B speaks (love interest
+  // has dialogue, protagonist's lines are prose narration) still triggers
+  // multi-voice. Same logic as parseTaggedScript.
+  // For same-gender pairings (genders === null: Her & Her, Him & Him) we do NOT
+  // add +1 — if only one role appears in segments, CHAR_B would be silent;
+  // single-voice is better for those stories.
+  const uniqueCharRoleSet = new Set(
     limited.filter((s) => s.role !== "NARRATOR").map((s) => s.role),
-  ).size;
+  );
+  const distinctCharRoles = genders !== null && uniqueCharRoleSet.size > 0
+    ? uniqueCharRoleSet.size + 1
+    : uniqueCharRoleSet.size;
 
   return { segments: limited, explicitAttributions, distinctCharRoles };
 }
@@ -4251,10 +4261,12 @@ export async function generateAudioFile(
   // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
   // single-voice to avoid splitting one speaker across two voices.
   const charSegments = segments.filter(s => s.role !== "NARRATOR").length;
-  // nullGenderPairing = Her & Her / Him & Him only — where tagger has NO pronoun cues
-  // and relies entirely on toggle. Them pairings have explicit attribution via
-  // singularTheyAttrRe and name checks, so they use the explicitAttributions >= 1 path.
-  const nullGenderPairing = !mvPairingGenders(pairing ?? "");
+  // nullGenderPairing covers:
+  //   • Her & Her / Him & Him — genders === null, toggle-only attribution
+  //   • Them & Them — genders non-null but both characters use the same pronoun
+  //     set so gender can't disambiguate; fall back to turn-taking gate.
+  const pg = mvPairingGenders(pairing ?? "");
+  const nullGenderPairing = !pg || (pg.protag === "them" && pg.li === "them");
   const useMultiVoice = tagged.distinctCharRoles >= 2 &&
     (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
 
@@ -5615,7 +5627,8 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
     const segments = tagged.segments;
 
     const charSegments = segments.filter((s) => s.role !== "NARRATOR").length;
-    const nullGenderPairing = !mvPairingGenders(pairing);
+    const dpg = mvPairingGenders(pairing);
+    const nullGenderPairing = !dpg || (dpg.protag === "them" && dpg.li === "them");
     const wouldUseMultiVoice =
       tagged.distinctCharRoles >= 2 &&
       (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);

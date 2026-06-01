@@ -547,7 +547,7 @@ She was between them. The reality of it made her dizzy.
 
 She turned and kissed him instead. He kissed her exactly as he had described. Behind her, the first one's hands slid lower.
 
-"Both of you," she said against his mouth. "Tonight. All of it."
+"Both of you," she said. "Tonight. All of it."
 
 They didn't answer. They didn't need to.`,
   },

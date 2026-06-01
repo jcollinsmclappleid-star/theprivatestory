@@ -68,7 +68,9 @@ const pass = (s) => `${C.green}✓ ${s}${C.reset}`;
 const fail = (s) => `${C.red}✗ ${s}${C.reset}`;
 const warn = (s) => `${C.yellow}⚠ ${s}${C.reset}`;
 
-// ── HTTP helper ────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
 async function debugTags(body) {
   const res = await fetch(`${API_BASE}/api/debug-tags`, {
     method: "POST",
@@ -1409,13 +1411,20 @@ function fetchStories({ storyId = null, recentN = null, all = false } = {}) {
 async function main() {
   console.log(`${C.bold}${C.cyan}Multi-Voice Attribution QA Harness${C.reset}`);
   console.log(`API: ${API_BASE}  |  verbose: ${VERBOSE}`);
+
+  // Describe the story selection mode
+  const modeLabel = STORY_ID   ? `single story: ${STORY_ID}`
+    : RECENT_N != null         ? `${RECENT_N} most recent stories (all users)`
+    : ALL_STORIES              ? `all stories (library + user-created)`
+    :                            `library stories only`;
+  console.log(`Mode: ${modeLabel}`);
   if (PAIRING_FILTER) console.log(`Filter: pairing = "${PAIRING_FILTER}"`);
   console.log();
 
-  // 1. Fetch library stories
+  // 1. Fetch stories according to the active mode
   let stories;
   try {
-    stories = fetchStories();
+    stories = fetchStories({ storyId: STORY_ID, recentN: RECENT_N, all: ALL_STORIES });
   } catch (err) {
     console.error("DB fetch failed:", err.message);
     process.exit(1);
@@ -1425,7 +1434,8 @@ async function main() {
     stories = stories.filter(s => (s.pairing ?? "") === PAIRING_FILTER);
   }
 
-  console.log(`Found ${stories.length} library stories.\n`);
+  const modeDesc = STORY_ID ? "story" : RECENT_N != null ? "recent stories" : ALL_STORIES ? "stories" : "library stories";
+  console.log(`Found ${stories.length} ${modeDesc}.\n`);
 
   // 2. Run tests
   const results = { byPairing: {} };
@@ -1454,9 +1464,10 @@ async function main() {
     return entry;
   };
 
-  // Library stories
+  // DB stories
   for (const story of stories) {
-    process.stdout.write(`  Testing ${story.id.slice(-12)}  ${(story.title ?? "").padEnd(35)}  [${(story.pairing ?? "no pairing").padEnd(12)}] … `);
+    const tag = story.isLibrary ? `${C.gray}lib${C.reset}` : `${C.cyan}usr${C.reset}`;
+    process.stdout.write(`  [${tag}] ${story.id.slice(-12)}  ${(story.title ?? "").padEnd(35)}  [${(story.pairing ?? "no pairing").padEnd(12)}] … `);
     const entry = await runStory(story.id, story.title, story.pairing, { storyId: story.id });
     if (entry.pass) {
       process.stdout.write(pass("PASS") + "\n");
@@ -1470,10 +1481,12 @@ async function main() {
       const s = entry.summary;
       console.log(`      ${C.gray}total=${s.totalSegments} narr=${s.narratorSegments} A=${s.charASegments} B=${s.charBSegments} explicit=${s.explicitAttributions} mv=${s.wouldUseMultiVoice}${C.reset}`);
     }
+    await sleep(250);
   }
 
-  // Synthetic stress-test samples (10 per pairing)
-  const synthFilter = PAIRING_FILTER
+  // Synthetic stress-test samples — skipped in --story mode (testing one specific story)
+  const runSynthetics = !STORY_ID;
+  const synthFilter = !runSynthetics ? [] : PAIRING_FILTER
     ? SYNTHETIC_SAMPLES.filter(s => s.pairing === PAIRING_FILTER)
     : SYNTHETIC_SAMPLES;
 
@@ -1497,6 +1510,7 @@ async function main() {
         const s = entry.summary;
         console.log(`      ${C.gray}total=${s.totalSegments} narr=${s.narratorSegments} A=${s.charASegments} B=${s.charBSegments} explicit=${s.explicitAttributions} mv=${s.wouldUseMultiVoice}${C.reset}`);
       }
+      await sleep(250);
     }
   }
 

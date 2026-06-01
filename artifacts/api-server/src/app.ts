@@ -134,13 +134,24 @@ const globalLimiter = rateLimit({
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Too many requests. Please try again shortly." },
-  skip: (req) =>
-    req.path.startsWith("/api/auth") ||
-    req.path.startsWith("/images/") ||
-    req.path.startsWith("/fonts/") ||
-    req.path.startsWith("/audio/") ||
-    req.path.startsWith("/client/") ||
-    /\.(webp|png|jpg|jpeg|svg|ico|gif|woff2?|ttf|otf|css|js|map)$/.test(req.path),
+  skip: (req) => {
+    // Static / auth paths never need rate-limiting
+    if (
+      req.path.startsWith("/api/auth") ||
+      req.path.startsWith("/images/") ||
+      req.path.startsWith("/fonts/") ||
+      req.path.startsWith("/audio/") ||
+      req.path.startsWith("/client/") ||
+      /\.(webp|png|jpg|jpeg|svg|ico|gif|woff2?|ttf|otf|css|js|map)$/.test(req.path)
+    ) return true;
+    // Admin script requests (e.g. the QA harness) bypass the global bucket.
+    // The debug-tags endpoint is admin-only and enforces its own auth check,
+    // so skipping rate-limiting here is safe.
+    const scriptKey = process.env.ADMIN_SCRIPT_KEY ?? "";
+    const token = req.headers["x-admin-token"] as string | undefined;
+    if (scriptKey && token && token === scriptKey) return true;
+    return false;
+  },
 });
 
 /** Report limiter — 10 submissions per hour per IP (abuse prevention) */

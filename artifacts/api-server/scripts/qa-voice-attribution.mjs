@@ -4,14 +4,25 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * QA harness for the multi-voice speaker attribution pipeline.
  *
- * Tests every library story via POST /api/debug-tags (zero ElevenLabs calls)
- * and applies per-pairing pass criteria. Prints a full story-by-story report
- * plus a pairing-level summary table.
+ * Calls POST /api/debug-tags (zero ElevenLabs calls) for each story and
+ * applies per-pairing pass criteria. Prints a story-by-story report plus a
+ * pairing-level summary table.
+ *
+ * Story selection (pick one; default = library stories only):
+ *   --all              Test every story in the DB (library + user-created)
+ *   --recent N         Test the N most recently created stories (any type)
+ *   --story <id>       Test one specific story by ID (skips synthetic suite)
+ *
+ * Filtering & output:
+ *   --pairing "Her & Him"   Restrict to one pairing (applies to DB rows + synthetics)
+ *   --verbose               Show segment counts for every story
  *
  * Usage:
  *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs
- *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --verbose
- *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --pairing "Her & Him"
+ *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --all
+ *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --recent 20
+ *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --story abc123
+ *   ADMIN_SCRIPT_KEY=<key> node scripts/qa-voice-attribution.mjs --pairing "Her & Her"
  *
  * Final accuracy (last run): documented at bottom of file after each iteration.
  */
@@ -21,6 +32,18 @@ import { execSync } from "child_process";
 const API_BASE    = process.env.API_BASE    ?? "http://localhost:8080";
 const ADMIN_TOKEN = process.env.ADMIN_SCRIPT_KEY ?? "";
 const VERBOSE     = process.argv.includes("--verbose");
+const ALL_STORIES = process.argv.includes("--all");
+
+const STORY_ID = (() => {
+  const idx = process.argv.indexOf("--story");
+  return idx !== -1 ? process.argv[idx + 1] : null;
+})();
+const RECENT_N = (() => {
+  const idx = process.argv.indexOf("--recent");
+  if (idx === -1) return null;
+  const n = parseInt(process.argv[idx + 1], 10);
+  return isNaN(n) ? null : n;
+})();
 const PAIRING_FILTER = (() => {
   const idx = process.argv.indexOf("--pairing");
   return idx !== -1 ? process.argv[idx + 1] : null;
@@ -1349,20 +1372,36 @@ A pause.
 ];
 
 // ── DB fetch ───────────────────────────────────────────────────────────────
-function fetchStories() {
-  const sql = `
-    SELECT id, title, casting_data->>'pairing' as pairing
-    FROM generated_stories
-    WHERE is_library_story = true
-    ORDER BY casting_data->>'pairing' NULLS LAST, id;
-  `;
+function fetchStories({ storyId = null, recentN = null, all = false } = {}) {
+  let where, order, limit;
+
+  if (storyId) {
+    where = `WHERE id = '${storyId.replace(/'/g, "''")}'`;
+    order = "";
+    limit = "";
+  } else if (recentN != null) {
+    where = "";
+    order = "ORDER BY created_at DESC";
+    limit = `LIMIT ${recentN}`;
+  } else if (all) {
+    where = "";
+    order = "ORDER BY casting_data->>'pairing' NULLS LAST, created_at DESC";
+    limit = "";
+  } else {
+    // default: library stories only
+    where = "WHERE is_library_story = true";
+    order = "ORDER BY casting_data->>'pairing' NULLS LAST, id";
+    limit = "";
+  }
+
+  const sql = `SELECT id, title, casting_data->>'pairing' as pairing, is_library_story FROM generated_stories ${where} ${order} ${limit};`;
   const out = execSync(`psql "$DATABASE_URL" -t -A -F'|' -c "${sql.replace(/"/g, '\\"').replace(/\n/g, ' ')}"`, {
     env: process.env,
     timeout: 10000,
   }).toString().trim();
   return out.split("\n").filter(Boolean).map(line => {
-    const [id, title, pairing] = line.split("|");
-    return { id: id?.trim(), title: title?.trim(), pairing: pairing?.trim() || null };
+    const [id, title, pairing, isLib] = line.split("|");
+    return { id: id?.trim(), title: title?.trim(), pairing: pairing?.trim() || null, isLibrary: isLib?.trim() === "t" };
   });
 }
 

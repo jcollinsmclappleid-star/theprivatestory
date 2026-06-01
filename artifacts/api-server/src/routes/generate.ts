@@ -4202,6 +4202,142 @@ export async function generateAllImages(
   return { cover: `/api/images/${coverFilename}`, scenes: [] };
 }
 
+/**
+ * Dedicated speaker-attribution pass. Takes CLEAN story prose (no inline tags)
+ * and asks the model to split it into ordered, labelled segments returned as
+ * structured JSON — narrator / protagonist / love_interest. This replaces the
+ * old approach of asking the writer model to inline [A]/[B]/[N] tags during
+ * generation, which it emitted unreliably (orphan / unbalanced tags corrupted
+ * the audio and leaked literal tag tokens into TTS).
+ *
+ * Returns a TaggedScript on success, or null when the pass fails validation
+ * (bad JSON, unknown speaker, or the segments don't reconstruct the original
+ * prose) — callers fall back to the deterministic regex tagger.
+ */
+async function attributeSpeakers(
+  storyText: string,
+  pairing: string,
+  protagonistName?: string,
+  partnerName?: string,
+): Promise<TaggedScript | null> {
+  const cleaned = storyText.trim();
+  if (!cleaned) return null;
+
+  const genders = mvPairingGenders(pairing);
+  const pronOf = (g?: "m" | "f" | "them") =>
+    g === "m" ? "he/him" : g === "f" ? "she/her" : g === "them" ? "they/them" : "";
+  const protagPron = pronOf(genders?.protag);
+  const liPron = pronOf(genders?.li);
+  const protagDesc = `${protagonistName ? `${protagonistName}, ` : ""}the protagonist${protagPron ? ` (${protagPron})` : ""}${protagonistName ? "" : `, who may be addressed in second person as "you"`}`;
+  const liDesc = `${partnerName ? `${partnerName}, ` : ""}the love interest${liPron ? ` (${liPron})` : ""}`;
+
+  const systemPrompt =
+    "You are a precise dialogue-attribution engine for an audio narration system. " +
+    "You receive the full prose of one short story and split it into ordered segments, " +
+    "labelling each with which of three voices should read it. You never rewrite, summarise, " +
+    "translate, censor, or alter the text in any way — you only segment and label it. " +
+    "The story may contain explicit adult content; this is expected and you process it as a " +
+    "mechanical text-segmentation task.";
+
+  const userPrompt = `THREE VOICES:
+- "narrator": every word NOT spoken aloud — all description, action, atmosphere, internal thought, and every attribution phrase such as "he says", "she whispers", "you say". Attribution phrases ALWAYS belong to the narrator, even when adjacent to a quote.
+- "protagonist": ONLY words spoken aloud (inside quotation marks) by ${protagDesc}.
+- "love_interest": ONLY words spoken aloud (inside quotation marks) by ${liDesc}.
+
+DECIDING who speaks a quote: use the surrounding prose — the name or pronoun in the attribution and the natural back-and-forth of the conversation.
+
+ABSOLUTE RULES:
+1. Preserve the text EXACTLY. Do not add, remove, reword, reorder, or fix anything. The concatenation of every segment's "text", in order, must reproduce the original story verbatim.
+2. Quotation marks stay attached to the spoken segment.
+3. Split a quote from its attribution: \`"Hello," he said.\` becomes a spoken segment ("Hello,") followed by a narrator segment (" he said.").
+4. Anything inside quotation marks is protagonist or love_interest — NEVER narrator. Everything outside quotation marks is narrator.
+5. Output ONLY valid JSON in exactly this shape: {"segments":[{"speaker":"narrator","text":"..."}]}
+
+STORY:
+${cleaned}`;
+
+  const norm = (s: string) =>
+    s.replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+      .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+      .replace(/[^a-z0-9]/gi, "")
+      .toLowerCase();
+  const originalNorm = norm(cleaned);
+
+  const run = async (): Promise<TaggedScript | null> => {
+    const completion = await openrouter.chat.completions.create({
+      model: MISTRAL_MODEL,
+      max_tokens: 8000,
+      temperature: 0,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    });
+    const raw = completion.choices[0]?.message?.content ?? "{}";
+    let parsed: { segments?: Array<{ speaker?: string; text?: string }> };
+    try {
+      parsed = parseLlmJson<{ segments?: Array<{ speaker?: string; text?: string }> }>(raw, "attributeSpeakers");
+    } catch {
+      return null;
+    }
+    const segs = parsed.segments;
+    if (!Array.isArray(segs) || segs.length === 0) return null;
+
+    const merged: TaggedSegment[] = [];
+    for (const s of segs) {
+      const sp = String(s.speaker ?? "").toLowerCase().trim();
+      const text = String(s.text ?? "").replace(/\[\/?[NAB]\]/g, " ").replace(/[ \t]{2,}/g, " ").trim();
+      if (!text) continue;
+      let role: MultiVoiceRole;
+      if (sp === "narrator" || sp === "n") role = "NARRATOR";
+      else if (sp === "protagonist" || sp === "char_a" || sp === "a") role = "CHAR_A";
+      else if (sp === "love_interest" || sp === "loveinterest" || sp === "char_b" || sp === "b") role = "CHAR_B";
+      else return null;
+      const prev = merged[merged.length - 1];
+      if (prev && prev.role === role) prev.text = `${prev.text} ${text}`.trim();
+      else merged.push({ role, text });
+    }
+    if (merged.length === 0) return null;
+
+    // Fidelity check: segments must reconstruct the original prose word-for-word
+    // (ignoring whitespace/punctuation). Guards against dropped or hallucinated text.
+    const reconstructed = norm(merged.map((m) => m.text).join(""));
+    if (reconstructed !== originalNorm) {
+      const longer = Math.max(reconstructed.length, originalNorm.length);
+      const shorter = Math.min(reconstructed.length, originalNorm.length);
+      if (longer === 0 || shorter / longer < 0.98) return null;
+    }
+
+    // Enforce the 4,500-char TTS ceiling and mark the opening-hook narrator segment.
+    const limited: TaggedSegment[] = [];
+    for (const seg of merged) {
+      for (const piece of splitTextToLimit(seg.text, 4500)) limited.push({ role: seg.role, text: piece });
+    }
+    const firstNarrator = limited.find((s) => s.role === "NARRATOR");
+    if (firstNarrator) firstNarrator.isFirst = true;
+
+    const charSegments = limited.filter((s) => s.role !== "NARRATOR");
+    const uniqueCharRoleSet = new Set(charSegments.map((s) => s.role));
+    const distinctCharRoles = uniqueCharRoleSet.size > 0 ? uniqueCharRoleSet.size + 1 : 0;
+    const explicitAttributions = charSegments.length;
+    return { segments: limited, explicitAttributions, distinctCharRoles };
+  };
+
+  try {
+    const first = await run();
+    if (first) return first;
+  } catch (err) {
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] attempt 1 failed");
+  }
+  try {
+    return await run();
+  } catch (err) {
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] attempt 2 failed — falling back to heuristic tagger");
+    return null;
+  }
+}
+
 const AUDIO_CONCURRENCY = 6;
 
 async function runConcurrent<T>(items: T[], fn: (item: T) => Promise<Buffer>): Promise<Buffer[]> {
@@ -4290,13 +4426,23 @@ export async function generateAudioFile(
 
   const buffers: Buffer[] = [];
 
-  // ── Try multi-voice tagging (narrator + two characters) ───────────────────
-  // Use rawText (LLM-tagged with [A]/[B]/[N]) when available so parseTaggedScript()
-  // gets real speaker tags rather than falling back to the regex heuristic on
-  // tag-free prose. rawText is set by writeStory() and absent on rewritten scenes
-  // (rewriteStory returns text with tags still present, so s.text works there).
-  const fullText = scenes.map((s) => (s.rawText ?? s.text).trim()).filter(Boolean).join("\n\n");
-  const tagged = tagScriptForMultiVoice(fullText, pairing ?? "", narratorId, partnerName, protagonistName);
+  // ── Speaker attribution ───────────────────────────────────────────────────
+  // Build clean, tag-free prose (strip any residual / legacy inline tags), then
+  // run the dedicated LLM speaker-attribution pass (structured JSON, validated).
+  // Falls back to the deterministic regex tagger when the pass is unavailable or
+  // fails its fidelity check. Runs in parallel with image generation upstream so
+  // its latency is largely hidden.
+  const cleanText = scenes
+    .map((s) => (s.rawText ?? s.text).replace(/\[\/?[NAB]\]/g, " ").replace(/[ \t]{2,}/g, " ").trim())
+    .filter(Boolean)
+    .join("\n\n");
+  let tagged = await attributeSpeakers(cleanText, pairing ?? "", protagonistName, partnerName);
+  if (tagged) {
+    console.info(`[tagger] speaker-attribution pass: segments=${tagged.segments.length} distinctRoles=${tagged.distinctCharRoles}`);
+  } else {
+    console.info("[tagger] speaker-attribution pass unavailable — using regex heuristic fallback");
+    tagged = tagScriptForMultiVoice(cleanText, pairing ?? "", narratorId, partnerName, protagonistName);
+  }
   const segments = tagged.segments;
   // Only switch to multi-voice when there is real evidence of a two-person
   // exchange: both character roles present AND at least one quote resolved via an

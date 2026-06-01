@@ -26,6 +26,20 @@ Speaker attribution in `tagScriptForMultiVoice` must use **quote-local** context
 - **Run it in small synchronous batches (2–3 slugs), not detached.** Background/nohup processes are killed between tool calls, and full 10-pick runs exceed a single command timeout. ~2 picks ≈ 50s. Filter by slug prefix: `node scripts/generate-editors-picks.mjs --force 05 06`.
 - The "matrix" = per-pick narrator already encoded in each pick's `voice`, plus `resolveCharacterVoicesServer` casting (HER Maya→Clara→Kayla / HIM James→Ethan→Theo, conflict-avoidance) — matches `.local/tasks/multi-voice-pipeline.md` "Full Voice Matrix".
 
+## Editor's Picks script (generate-editors-picks.mjs) — FULLY COMPLETE
+The T001–T004 session plan (Phase 1 voice bug + Phase 2 dialogue-first openings) is **done and should not be re-done**:
+- VOICE.theo, --dry-run flag, pairing fields (Her & Her on 03/06, Her & Him & Him on 02/05) ✓
+- Picks 09/10 narrator is VOICE.theo ✓
+- All 10 openings lead with dialogue ✓
+- Attribution anchors on picks 09/10 ✓
+- Pick 10 "I don't care" cascade fixed ✓
+Follow-up task refs #211 and #212 were cancelled (already done).
+
+## LLM inline speaker tags — ADDED (not yet live-tested)
+`getMasterEroticLayer()` in `masterEroticLayer.ts` now injects a mandatory AUDIO SPEAKER TAGGING block.
+`parseTaggedScript()` added to `generate.ts`; `tagScriptForMultiVoice()` dispatches to it when `[N]`/`[A]`/`[B]` tags are detected in the stored text.
+Next step: generate one new story and verify tags appear in stored text + correct voice assignment in audio.
+
 ## Post-#207 reverts (user directive: "should have stopped at 207")
 After #207, two post-#207 SEO copy tasks were merged/assigned and then reverted on explicit user instruction ("revert these changes should of stopped at 207", "task should of stopped after the 10 stories were regenerated"):
 - **#112** (SEO copy: replace "tonight"→"Created for You" titles + couples "tonight"; SEOPage "Designed for the female imagination") — REVERTED. Working tree restored to commit `b57b9ed` (Task #207) for `lib/seo-data/src/configs.ts` (3 meta titles back to "Yours Tonight"/"No Sign-Up… Yours Tonight"; couples body back to "tonight") and `SEOPage.tsx` (TRUST_ITEMS Heart + "Who it's for" back to "…female imagination at its centre").

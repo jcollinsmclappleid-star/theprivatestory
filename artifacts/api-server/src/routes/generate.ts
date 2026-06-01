@@ -1388,10 +1388,60 @@ function mvPairingGenders(pairing: string): { protag: "m" | "f" | "them"; li: "m
 }
 
 /**
+ * Parse LLM-annotated inline speaker tags [N]...[/N], [A]...[/A], [B]...[/B]
+ * that are injected at story-write time by the system prompt.  This is the
+ * primary path for all new stories; the regex tagger below is the fallback for
+ * legacy stories that pre-date the tagging instruction.
+ */
+function parseTaggedScript(text: string): TaggedScript {
+  const tagRe = /\[([NAB])\]([\s\S]*?)\[\/\1\]/g;
+  const raw: TaggedSegment[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = tagRe.exec(text)) !== null) {
+    const role: "NARRATOR" | "CHAR_A" | "CHAR_B" =
+      m[1] === "N" ? "NARRATOR" : m[1] === "A" ? "CHAR_A" : "CHAR_B";
+    const content = m[2].trim();
+    if (!content) continue;
+    const prev = raw[raw.length - 1];
+    if (prev?.role === role) {
+      prev.text += " " + content;
+    } else {
+      raw.push({ role, text: content });
+    }
+  }
+
+  // Enforce 4,500-char TTS ceiling (same as the regex tagger path).
+  const limited: TaggedSegment[] = [];
+  for (const seg of raw) {
+    for (const piece of splitTextToLimit(seg.text, 4500)) {
+      limited.push({ role: seg.role, text: piece });
+    }
+  }
+
+  // Mark the very first NARRATOR segment for the opening-hook style boost.
+  const firstNarrator = limited.find((s) => s.role === "NARRATOR");
+  if (firstNarrator) firstNarrator.isFirst = true;
+
+  const charSegments = limited.filter((s) => s.role !== "NARRATOR");
+  const distinctCharRoles = new Set(charSegments.map((s) => s.role)).size;
+  // Every character segment in a tagged story is explicitly attributed by
+  // the LLM — set explicitAttributions to the full count so the multi-voice
+  // gate (explicitAttributions >= 1) always passes when tags are present.
+  const explicitAttributions = charSegments.length;
+
+  return { segments: limited, explicitAttributions, distinctCharRoles };
+}
+
+/**
  * Rule-based, zero-API-cost speaker tagging. Splits prose (NARRATOR) from
  * attributed dialogue (CHAR_A protagonist / CHAR_B love interest). Merges short
  * consecutive same-role segments, enforces a 4,500-char ceiling, and marks the
  * first NARRATOR segment with isFirst for the opening hook.
+ *
+ * For new stories: if the text contains [N]/[A]/[B] inline tags (injected by
+ * getMasterEroticLayer), this function dispatches to parseTaggedScript() which
+ * is the authoritative primary path.  The regex tagger below is the fallback
+ * for legacy/editors-picks stories that pre-date the tagging instruction.
  */
 export function tagScriptForMultiVoice(
   text: string,
@@ -1400,6 +1450,15 @@ export function tagScriptForMultiVoice(
   partnerName?: string,
   protagonistName?: string,
 ): TaggedScript {
+  // Primary path: LLM-annotated inline speaker tags injected by getMasterEroticLayer.
+  // Detects presence of [N], [A], or [B] tags and delegates to the tag parser,
+  // which is exact and needs no heuristics. Falls through to the regex tagger
+  // for legacy stories (editors-picks / pre-tag DB stories) that have no tags.
+  if (/\[N\]|\[A\]|\[B\]/.test(text)) {
+    console.info("[tagger] inline speaker tags detected — using parseTaggedScript (primary path)");
+    return parseTaggedScript(text);
+  }
+
   // Normalise smart quotes to straight quotes for matching.
   const normalised = text
     .replace(/[\u201C\u201D\u201E\u201F]/g, '"')

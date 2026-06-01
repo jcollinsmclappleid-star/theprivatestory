@@ -1,1 +1,2 @@
-- [Active focus: Task #207 multi-voice](task-207-focus.md) — only build the multi-voice audio pipeline; SEO + cover-image work is DONE, do not touch it.
+- [Multi-voice pipeline state](task-207-focus.md) — what is DONE vs deferred; editors picks regen + Phase 1/2 script work all complete; LLM inline speaker tags added to masterEroticLayer.
+- [LLM speaker tagging](llm-speaker-tags.md) — root cause fix for voice mis-attribution: [N][A][B] tags injected in getMasterEroticLayer(); parseTaggedScript() still needs to be added to generate.ts.

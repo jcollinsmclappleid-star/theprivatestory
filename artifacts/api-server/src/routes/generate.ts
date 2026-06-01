@@ -1405,7 +1405,12 @@ function parseTaggedScript(text: string): TaggedScript {
   while ((m = tagRe.exec(text)) !== null) {
     const role: "NARRATOR" | "CHAR_A" | "CHAR_B" =
       m[1] === "N" ? "NARRATOR" : m[1] === "A" ? "CHAR_A" : "CHAR_B";
-    const content = m[2].trim();
+    // Sanitize any stray speaker tags that leaked into this captured span because
+    // the LLM emitted unbalanced / mis-nested tags (e.g. a dialogue line missing
+    // its opening [A] leaves an orphan [/A] plus the adjacent [N] inside this
+    // span). Without stripping them, the literal "[/A]" / "[N]" tokens are read
+    // aloud by TTS — the "voice randomly says 'a'" bug.
+    const content = m[2].replace(/\[\/?[NAB]\]/g, " ").replace(/[ \t]{2,}/g, " ").trim();
     if (!content) continue;
     const prev = raw[raw.length - 1];
     if (prev?.role === role) {

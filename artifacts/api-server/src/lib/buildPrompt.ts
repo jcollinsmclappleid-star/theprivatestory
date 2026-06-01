@@ -158,8 +158,8 @@ const DNA_OPTIONS: Record<string, string[]> = {
     "ache to release",
   ],
   dialogue_density: [
-    "minimal dialogue",
-    "moderate dialogue",
+    "sharp dialogue-opened",
+    "conversation-driven alternating voices",
     "dialogue-led chemistry",
   ],
 };

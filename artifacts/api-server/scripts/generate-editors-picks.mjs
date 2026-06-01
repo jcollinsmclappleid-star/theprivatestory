@@ -94,8 +94,10 @@ function mvPairingGenders(pairing) {
   switch (p) {
     case "her & him":       return { protag: "f", li: "m" };
     case "her & him & him": return { protag: "f", li: "m" };
-    case "her & them":      return { protag: "f", li: "m" };
-    case "him & them":      return { protag: "m", li: "f" };
+    case "her & her & him": return { protag: "f", li: "m" };
+    case "her & them":      return { protag: "f", li: "them" };
+    case "him & them":      return { protag: "m", li: "them" };
+    case "them & them":     return { protag: "them", li: "them" };
     default: return null;
   }
 }

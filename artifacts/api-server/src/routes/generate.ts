@@ -1363,13 +1363,16 @@ const MV_ATTR_VERBS =
   "called|shouted|snapped|purred|drawled|countered|offered|begged";
 
 /** Genders of protagonist (CHAR_A) and love interest (CHAR_B), or null when same/ambiguous. */
-function mvPairingGenders(pairing: string): { protag: "m" | "f"; li: "m" | "f" } | null {
+function mvPairingGenders(pairing: string): { protag: "m" | "f" | "them"; li: "m" | "f" | "them" } | null {
   const p = (pairing ?? "").toLowerCase().trim();
   switch (p) {
-    case "her & him":  return { protag: "f", li: "m" };
-    case "her & them": return { protag: "f", li: "m" };
-    case "him & them": return { protag: "m", li: "f" };
-    // same-gender or ambiguous → fall back to turn-taking
+    case "her & him":       return { protag: "f", li: "m" };
+    case "her & him & him": return { protag: "f", li: "m" };
+    case "her & her & him": return { protag: "f", li: "m" };
+    case "her & them":      return { protag: "f", li: "them" };
+    case "him & them":      return { protag: "m", li: "them" };
+    case "them & them":     return { protag: "them", li: "them" };
+    // same-gender (Her & Her, Him & Him) → fall back to turn-taking
     default: return null;
   }
 }
@@ -1384,6 +1387,8 @@ export function tagScriptForMultiVoice(
   text: string,
   pairing: string,
   _narratorId: string,
+  partnerName?: string,
+  protagonistName?: string,
 ): TaggedScript {
   // Normalise smart quotes to straight quotes for matching.
   const normalised = text
@@ -1395,6 +1400,9 @@ export function tagScriptForMultiVoice(
   const maleRe = /\b(he|him|his)\b/i;
   const femaleRe = /\b(she|her|hers)\b/i;
   const firstSecondRe = /\b(I|you|your|me|my)\b/i;
+  // Only used for Them pairings — prevents false positives where plural "they"
+  // appears in attribution context in other pairings (e.g. Her & Him).
+  const singularTheyAttrRe = /\bthey\s+(said|asked|replied|whispered|breathed|told|answered|continued|added)\b/i;
 
   const raw: TaggedSegment[] = [];
   let lastSpeaker: "CHAR_A" | "CHAR_B" = "CHAR_A";
@@ -1410,6 +1418,27 @@ export function tagScriptForMultiVoice(
         lastSpeaker = "CHAR_A";
         explicitAttributions++;
         return { role: "CHAR_A", explicit: true };
+      }
+      // Name checks — run before gender pronouns so an exact name always wins.
+      // partnerName → CHAR_B (love interest); protagonistName → CHAR_A (only
+      // populated for Them & Them where both characters use they/them pronouns).
+      const ctxLc = context.toLowerCase();
+      if (partnerName && ctxLc.includes(partnerName.toLowerCase())) {
+        lastSpeaker = "CHAR_B";
+        explicitAttributions++;
+        return { role: "CHAR_B", explicit: true };
+      }
+      if (protagonistName && ctxLc.includes(protagonistName.toLowerCase())) {
+        lastSpeaker = "CHAR_A";
+        explicitAttributions++;
+        return { role: "CHAR_A", explicit: true };
+      }
+      // Singular "they said" — only fire for Them pairings (li === "them") to
+      // avoid false positives in Her & Him stories where plural "they" can appear.
+      if (genders?.li === "them" && singularTheyAttrRe.test(context)) {
+        lastSpeaker = "CHAR_B";
+        explicitAttributions++;
+        return { role: "CHAR_B", explicit: true };
       }
       if (genders) {
         const male = maleRe.test(context);
@@ -2677,7 +2706,7 @@ SCENE-LEVEL DIVERSITY MANDATE — before finalising the scene_plan, verify:
   6. No two consecutive scenes share the same prose_rhythm
   7. No two consecutive scenes share the same scene_open_beat
   8. interiority_depth follows the arc (shallow early, deep at CRACK and RESONATE)
-  9. dialogue_mode follows the arc (exchange at SIMMER and CRACK, sustained at IGNITE) — "none" is never permitted; every scene carries spoken dialogue
+  9. dialogue_mode follows the arc (exchange at SIMMER and CRACK, sustained at IGNITE) — "none" is never permitted; every scene carries spoken dialogue. SIMMER floor: at least one complete back-and-forth exchange per tension beat — 4 beats mandated = 4 exchanges minimum
   10. No two consecutive scenes share the same partner_attention_focus
   11. Every IGNITE scene at intensity ≥ 3 has a verbal_desire_declaration and dirty_talk_register populated
   12. Every IGNITE scene at intensity ≥ 4 has position_changes populated with 2–4 speech-introduced transitions
@@ -4030,7 +4059,9 @@ export async function generateAudioFile(
   voiceFeel: string,
   cacheKey: string,
   pairing?: string,
-  intensity?: string
+  intensity?: string,
+  partnerName?: string,
+  protagonistName?: string,
 ): Promise<{ url: string; durationSeconds: number }> {
   // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
   if (process.env.DISABLE_AUDIO === "true") {
@@ -4098,13 +4129,17 @@ export async function generateAudioFile(
 
   // ── Try multi-voice tagging (narrator + two characters) ───────────────────
   const fullText = scenes.map((s) => s.text.trim()).filter(Boolean).join("\n\n");
-  const tagged = tagScriptForMultiVoice(fullText, pairing ?? "", narratorId);
+  const tagged = tagScriptForMultiVoice(fullText, pairing ?? "", narratorId, partnerName, protagonistName);
   const segments = tagged.segments;
   // Only switch to multi-voice when there is real evidence of a two-person
   // exchange: both character roles present AND at least one quote resolved via an
   // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
   // single-voice to avoid splitting one speaker across two voices.
-  const useMultiVoice = tagged.distinctCharRoles >= 2 && tagged.explicitAttributions >= 1;
+  const charSegments = segments.filter(s => s.role !== "NARRATOR").length;
+  const genderInfo = mvPairingGenders(pairing ?? "");
+  const nullGenderPairing = !genderInfo || genderInfo.li === "them";
+  const useMultiVoice = tagged.distinctCharRoles >= 2 &&
+    (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
 
   if (useMultiVoice) {
     // Multi-voice path: distinct voices for narrator / protagonist / love interest.
@@ -5069,7 +5104,15 @@ router.post("/generate-full-story", async (req, res) => {
     const storyHash = getCacheKey({ brief, story });
     const [images, audioResult] = await Promise.all([
       generateAllImages(imagePrompts, storyHash),
-      generateAudioFile(story.scenes, intake.voiceFeel, storyHash, intake.pairing, intake.intensity),
+      generateAudioFile(
+        story.scenes,
+        intake.voiceFeel,
+        storyHash,
+        intake.pairing,
+        intake.intensity,
+        intake.partnerName,
+        intake.pairing?.toLowerCase() === "them & them" ? intake.listenerName : undefined,
+      ),
     ]);
     const audioUrl = audioResult.url;
     const audioDurationSeconds = audioResult.durationSeconds;

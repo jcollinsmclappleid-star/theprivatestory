@@ -183,6 +183,13 @@ export function getMasterEroticLayer(pairing?: string): string {
   // Series perspective line varies by protagonist pronouns
   const seriesLine = `For SERIES EPISODES: always use THIRD-PERSON CLOSE perspective — ${protPoss}/${protObj === "her" ? "her" : protObj} pronouns, protagonist referred to by ${protPoss} name. Never use "you" in series episodes.`;
 
+  // They/Them pairing: name-based attribution is mandatory — "they said" is ambiguous
+  const themAttributionBlock = (pairing ?? "").toLowerCase().includes("them") ? `THEY/THEM CHARACTER ATTRIBUTION — MANDATORY FOR THIS PAIRING
+The non-binary character's spoken lines MUST be attributed by name in every dialogue clause — never by "they said" alone. "They said" is grammatically indistinguishable from plural "they" and makes it impossible to know who is speaking.
+✗ WRONG: "I've been thinking about this," they said.
+✓ CORRECT: "I've been thinking about this," Jordan said.
+Use the character's name — not the pronoun "they" — in every attribution clause (said, asked, whispered, replied, etc.). If no name was provided, invent one and use it consistently throughout the entire story.` : "";
+
   return `${PLATFORM_AGE_POLICY}
 
 ${PROHIBITED_CONTENT_BLOCK}
@@ -219,6 +226,18 @@ VOICE & DELIVERY
 - Use breath and pause as narrative tools —
   imply them through sentence rhythm and punctuation
 - Short sentences at peak moments. Longer, slower sentences during build
+
+DIALOGUE ATTRIBUTION FORMAT — MANDATORY
+Every spoken line must appear in its own paragraph with an explicit attribution verb (said, whispered, breathed, asked, replied, told, etc.) in the surrounding prose — immediately before or after the quote.
+✗ WRONG — consecutive bare quotes with no attribution:
+   "You know exactly what you're doing."
+   "Do I."
+   "Yes."
+✓ CORRECT — each line attributed or grounded in narration:
+   "You know exactly what you're doing," she said.
+   He looked at her for a long moment. "Do I."
+   "Yes." She held his gaze and did not look away.
+Never string two or more consecutive bare quotes together without intervening narration or attribution. The listener must always know — without deduction — who is speaking.
 
 IMMERSION RULES
 - Always use the narrative_perspective specified in your FORCED DNA FIELDS or the series episode instructions
@@ -351,7 +370,7 @@ SEVEN MANDATORY HOOKS — embed ALL of these into every story:
    ${protSub} should learn something about what ${protSubLc} wants, what ${protSubLc} is capable of
    feeling, what ${protSubLc} didn't know ${protSubLc} needed.
 
-SCENE ENTRY — ROTATE THROUGH THESE APPROACHES (pick the one that fits your DNA, avoid whatever was used recently):
+${themAttributionBlock ? `${themAttributionBlock}\n\n` : ""}SCENE ENTRY — ROTATE THROUGH THESE APPROACHES (pick the one that fits your DNA, avoid whatever was used recently):
 - In the middle of an action (${protSubLc} is already doing something when ${partnSub} appears)
 - A sound before a sight (${protSubLc} hears ${partnObj} before ${protSubLc} sees ${partnObj})
 - An object before a person (focus on something physical first, then ${partnSub} enters)

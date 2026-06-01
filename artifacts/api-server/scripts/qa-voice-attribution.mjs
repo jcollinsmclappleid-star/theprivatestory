@@ -44,6 +44,13 @@ const RECENT_N = (() => {
   const n = parseInt(process.argv[idx + 1], 10);
   return isNaN(n) ? null : n;
 })();
+// --count N  limits synthetic samples to the first N per pairing (default: all)
+const SYNTH_COUNT = (() => {
+  const idx = process.argv.indexOf("--count");
+  if (idx === -1) return null;
+  const n = parseInt(process.argv[idx + 1], 10);
+  return isNaN(n) ? null : n;
+})();
 const PAIRING_FILTER = (() => {
   const idx = process.argv.indexOf("--pairing");
   return idx !== -1 ? process.argv[idx + 1] : null;
@@ -1486,12 +1493,25 @@ async function main() {
 
   // Synthetic stress-test samples — skipped in --story mode (testing one specific story)
   const runSynthetics = !STORY_ID;
-  const synthFilter = !runSynthetics ? [] : PAIRING_FILTER
-    ? SYNTHETIC_SAMPLES.filter(s => s.pairing === PAIRING_FILTER)
-    : SYNTHETIC_SAMPLES;
+  const synthFilter = (() => {
+    if (!runSynthetics) return [];
+    let samples = PAIRING_FILTER
+      ? SYNTHETIC_SAMPLES.filter(s => s.pairing === PAIRING_FILTER)
+      : SYNTHETIC_SAMPLES;
+    // --count N: keep the first N samples per pairing
+    if (SYNTH_COUNT != null) {
+      const seen = {};
+      samples = samples.filter(s => {
+        seen[s.pairing] = (seen[s.pairing] ?? 0) + 1;
+        return seen[s.pairing] <= SYNTH_COUNT;
+      });
+    }
+    return samples;
+  })();
 
   if (synthFilter.length > 0) {
-    console.log(`\n${C.bold}Synthetic stress-test samples (10 per pairing)${C.reset}`);
+    const countLabel = SYNTH_COUNT != null ? `${SYNTH_COUNT} per pairing` : "10 per pairing";
+    console.log(`\n${C.bold}Synthetic stress-test samples (${countLabel})${C.reset}`);
     for (const sample of synthFilter) {
       process.stdout.write(`  ${sample.label.padEnd(55)} … `);
       const entry = await runStory(

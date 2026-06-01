@@ -4136,8 +4136,10 @@ export async function generateAudioFile(
   // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
   // single-voice to avoid splitting one speaker across two voices.
   const charSegments = segments.filter(s => s.role !== "NARRATOR").length;
-  const genderInfo = mvPairingGenders(pairing ?? "");
-  const nullGenderPairing = !genderInfo || genderInfo.li === "them";
+  // nullGenderPairing = Her & Her / Him & Him only — where tagger has NO pronoun cues
+  // and relies entirely on toggle. Them pairings have explicit attribution via
+  // singularTheyAttrRe and name checks, so they use the explicitAttributions >= 1 path.
+  const nullGenderPairing = !mvPairingGenders(pairing ?? "");
   const useMultiVoice = tagged.distinctCharRoles >= 2 &&
     (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
 

@@ -108,8 +108,8 @@ function assess(r) {
     if (explicitAttributions >= 1 && !wouldUseMultiVoice) {
       issues.push(`wouldUseMultiVoice=false despite ${explicitAttributions} explicit attribution(s) (distinctCharRoles=${distinctCharRoles}, charSegs=${charSegs.length})`);
     }
-    // No further checks needed when single-voice fires correctly.
-    if (!wouldUseMultiVoice) return { pass: true, issues };
+    // No further checks needed when single-voice fires correctly (or fail if issue was pushed).
+    if (!wouldUseMultiVoice) return { pass: issues.length === 0, issues };
     // Attribution correctness when multi-voice IS active:
     for (const s of charSegs) {
       if (s.role === "CHAR_B" && (s.how === "female" || s.how === "firstSecond")) {
@@ -128,7 +128,7 @@ function assess(r) {
     if (distinctCharRoles >= 2 && charSegs.length >= 4 && !wouldUseMultiVoice) {
       issues.push(`wouldUseMultiVoice=false despite distinctCharRoles=${distinctCharRoles} and charSegs=${charSegs.length}`);
     }
-    if (!wouldUseMultiVoice) return { pass: true, issues };
+    if (!wouldUseMultiVoice) return { pass: issues.length === 0, issues };
     // Check for excessively long same-role runs (> 5 consecutive = 6+ is a fail).
     let runLen = 1;
     for (let i = 1; i < charSegs.length; i++) {
@@ -150,7 +150,7 @@ function assess(r) {
     if ((theyForB.length >= 1 || charSegs.length >= 4) && !wouldUseMultiVoice) {
       issues.push(`wouldUseMultiVoice=false despite ${theyForB.length} "they" attr(s) and ${charSegs.length} char segs (distinctCharRoles=${distinctCharRoles})`);
     }
-    if (!wouldUseMultiVoice) return { pass: true, issues };
+    if (!wouldUseMultiVoice) return { pass: issues.length === 0, issues };
     for (const s of charSegs) {
       if (s.role === "CHAR_B" && s.how === "female") issues.push(`CHAR_B via "female" — wrong for Her & Them: "${s.preview?.slice(0,60)}"`);
       if (s.role === "CHAR_A" && s.how === "male")   issues.push(`CHAR_A via "male" — wrong for Her & Them: "${s.preview?.slice(0,60)}"`);
@@ -162,7 +162,7 @@ function assess(r) {
     if ((theyForB.length >= 1 || charSegs.length >= 4) && !wouldUseMultiVoice) {
       issues.push(`wouldUseMultiVoice=false despite ${theyForB.length} "they" attr(s) and ${charSegs.length} char segs (distinctCharRoles=${distinctCharRoles})`);
     }
-    if (!wouldUseMultiVoice) return { pass: true, issues };
+    if (!wouldUseMultiVoice) return { pass: issues.length === 0, issues };
     for (const s of charSegs) {
       if (s.role === "CHAR_B" && s.how === "male") issues.push(`CHAR_B via "male" — "he" should map to CHAR_A in Him & Them: "${s.preview?.slice(0,60)}"`);
       if (s.role === "CHAR_B" && s.how === "female") issues.push(`CHAR_B via "female" — wrong for Him & Them: "${s.preview?.slice(0,60)}"`);
@@ -173,7 +173,7 @@ function assess(r) {
     if (charSegs.length >= 4 && !wouldUseMultiVoice) {
       issues.push(`wouldUseMultiVoice=false despite ${charSegs.length} char segs (distinctCharRoles=${distinctCharRoles})`);
     }
-    if (!wouldUseMultiVoice) return { pass: true, issues };
+    if (!wouldUseMultiVoice) return { pass: issues.length === 0, issues };
     for (const s of charSegs) {
       if (s.how === "male" || s.how === "female") {
         issues.push(`${s.role} via "${s.how}" — Them & Them should use "they" or turn-taking, not gender pronouns: "${s.preview?.slice(0,60)}"`);

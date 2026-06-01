@@ -623,6 +623,9 @@ export interface Scene {
   id: number;
   heading: string;
   text: string;
+  /** LLM-tagged text (with [A]/[B]/[N] markers) — used only for audio generation,
+   *  never stored to the DB display layer. Absent on rewritten scenes. */
+  rawText?: string;
   visualPrompt: string;
   durationEstimate: number;
   emotionalShift?: string;
@@ -1436,8 +1439,17 @@ function parseTaggedScript(text: string): TaggedScript {
       if (next && next.role !== "NARRATOR") {
         const normSeg  = seg.text.replace(/[\u201C\u201D""]/g, '"').replace(/[\u2018\u2019'']/g, "'").trim();
         const normNext = next.text.replace(/[\u201C\u201D""]/g, '"').replace(/[\u2018\u2019'']/g, "'").trim();
-        // Skip this narrator segment if it IS the character's dialogue (exact or contained).
-        if (normSeg === normNext || normSeg === normNext.replace(/^"|"$/g, "").trim()) continue;
+        const nextBare = normNext.replace(/^"|"$/g, "").trim();
+        // Echo detection — skip narrator segment when it IS or STARTS WITH the
+        // character's dialogue. Covers two LLM failure modes:
+        //   • Exact echo:  [N]"hello"[/N][B]"hello"[/B]
+        //   • Full-line echo: [N]"hello," he says.[/N][B]"hello,"[/B]
+        //     (normSeg has attribution appended — not equal to normNext, but starts with it)
+        const isEcho = normSeg === normNext
+          || normSeg === nextBare
+          || normSeg.startsWith(normNext)
+          || normSeg.startsWith(nextBare);
+        if (isEcho) continue;
       }
     }
     deduped.push(seg);
@@ -3734,14 +3746,20 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
         if (text !== beforeRepair) {
           logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired sentence artefacts (fragments / run-ons)");
         }
-        // Strip any LLM speaker-tagging markup — stored scene prose must be tag-free.
-        text = text.replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "");
+        // Preserve the LLM-tagged text (with [A]/[B]/[N] markers) before stripping.
+        // generateAudioFile() uses rawText so parseTaggedScript() gets the real tags
+        // instead of falling back to the regex heuristic on tag-free prose.
       }
+
+      const rawText = text || undefined;
+      // Strip speaker-tagging markup — stored scene prose must be tag-free.
+      text = text.replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "");
 
       return {
         id: s.id,
         heading: s.heading ?? `Scene ${s.id}`,
         text,
+        rawText,
         visualPrompt: "",
         durationEstimate: s.duration_estimate ?? 60,
         emotionalShift: s.emotional_shift ?? "",
@@ -4253,7 +4271,11 @@ export async function generateAudioFile(
   const buffers: Buffer[] = [];
 
   // ── Try multi-voice tagging (narrator + two characters) ───────────────────
-  const fullText = scenes.map((s) => s.text.trim()).filter(Boolean).join("\n\n");
+  // Use rawText (LLM-tagged with [A]/[B]/[N]) when available so parseTaggedScript()
+  // gets real speaker tags rather than falling back to the regex heuristic on
+  // tag-free prose. rawText is set by writeStory() and absent on rewritten scenes
+  // (rewriteStory returns text with tags still present, so s.text works there).
+  const fullText = scenes.map((s) => (s.rawText ?? s.text).trim()).filter(Boolean).join("\n\n");
   const tagged = tagScriptForMultiVoice(fullText, pairing ?? "", narratorId, partnerName, protagonistName);
   const segments = tagged.segments;
   // Only switch to multi-voice when there is real evidence of a two-person

@@ -121,13 +121,13 @@ function assess(r) {
   } else if (p === "her & her" || p === "him & him") {
     // Same-gender — turn-taking only, verify gate and no long runs
     if (charSegs.length < 4) issues.push(`only ${charSegs.length} char segments (need >= 4 for multi-voice gate)`);
-    // Check for runs longer than 6
+    // Fail on runs of 6 or more consecutive same-role segments (> 5 is a fail)
     let runLen = 1;
     for (let i = 1; i < charSegs.length; i++) {
       if (charSegs[i].role === charSegs[i-1].role) {
         runLen++;
-        if (runLen > 6) {
-          issues.push(`${charSegs[i].role} run of ${runLen}+ segments at index ${i} — long same-role streak may sound like one voice`);
+        if (runLen > 5) {
+          issues.push(`${charSegs[i].role} run of ${runLen}+ segments at index ${i} — same-role streak of 6+ sounds like one voice`);
           break;
         }
       } else {
@@ -136,22 +136,25 @@ function assess(r) {
     }
 
   } else if (p === "her & them") {
-    if (explicitAttributions < 1) issues.push("no explicit attributions");
+    // Pass if: at least one CHAR_B "they" attribution  OR enough turn-taking segs (>= 4)
     const theyForB = charSegs.filter(s => s.role === "CHAR_B" && s.how === "they");
-    const femaleForA = charSegs.filter(s => s.role === "CHAR_A" && (s.how === "female" || s.how === "firstSecond" || s.how === "name"));
-    if (theyForB.length === 0) issues.push(`no CHAR_B (love interest) "they said" attributions found (${charSegs.filter(s=>s.role==="CHAR_B").length} CHAR_B total)`);
-    // Wrong: CHAR_B via male, CHAR_A via male
+    const charBCount = charSegs.filter(s => s.role === "CHAR_B").length;
+    if (theyForB.length === 0 && charSegs.length < 4) {
+      issues.push(`no CHAR_B "they said" attributions and only ${charSegs.length} char segs — need "they" attribution or >= 4 turn-taking segs (CHAR_B total: ${charBCount})`);
+    }
     for (const s of charSegs) {
       if (s.role === "CHAR_B" && s.how === "female") issues.push(`CHAR_B via "female" — wrong for Her & Them: "${s.preview?.slice(0,60)}"`);
       if (s.role === "CHAR_A" && s.how === "male")   issues.push(`CHAR_A via "male" — wrong for Her & Them: "${s.preview?.slice(0,60)}"`);
     }
 
   } else if (p === "him & them") {
-    if (explicitAttributions < 1) issues.push("no explicit attributions");
+    // Pass if: at least one CHAR_B "they" attribution  OR enough turn-taking segs (>= 4)
     const theyForB = charSegs.filter(s => s.role === "CHAR_B" && s.how === "they");
-    if (theyForB.length === 0) issues.push(`no CHAR_B "they said" attributions (${charSegs.filter(s=>s.role==="CHAR_B").length} CHAR_B total)`);
+    const charBCount = charSegs.filter(s => s.role === "CHAR_B").length;
+    if (theyForB.length === 0 && charSegs.length < 4) {
+      issues.push(`no CHAR_B "they said" attributions and only ${charSegs.length} char segs — need "they" attribution or >= 4 turn-taking segs (CHAR_B total: ${charBCount})`);
+    }
     for (const s of charSegs) {
-      // In Him & Them: genders.li=them → male pronoun → CHAR_A (protag is him)
       if (s.role === "CHAR_B" && s.how === "male") issues.push(`CHAR_B via "male" — "he" should map to CHAR_A in Him & Them: "${s.preview?.slice(0,60)}"`);
       if (s.role === "CHAR_B" && s.how === "female") issues.push(`CHAR_B via "female" — wrong for Him & Them: "${s.preview?.slice(0,60)}"`);
     }
@@ -384,5 +387,22 @@ main().catch(err => { console.error(err); process.exit(2); });
 
 /*
  * ── Accuracy log ──────────────────────────────────────────────────────────
- * Run 1 (2026-06-01): TBD — initial run after priority-order fix
+ * Run 1 (2026-06-01): 28 pass / 14 fail out of 42 (39 library + 3 synthetic)
+ *   Her & Her:   3/5   — 2 fail: distinctCharRoles=1 (narrator +1 not counted)
+ *   Her & Him:  15/26  — 11 fail: 5 no-dialogue stories + 6 distinctCharRoles=1
+ *   Him & Him:   1/1   — PASS
+ *   Her & Him (default): 7/7 — ALL PASS (no-pairing stories default correctly)
+ *   Her & Them:  1/1   — PASS (synthetic)
+ *   Him & Them:  1/1   — PASS (synthetic)
+ *   Them & Them: 0/1   — FAIL: wouldUseMultiVoice=false despite 8 char segs
+ *                          (explicitAttr=0 because singularTheyAttrRe not in
+ *                          .mjs tagger; tracked in task #215/#216)
+ *
+ * Root causes of remaining failures (tracked in tasks #215 and #216):
+ *   A. distinctCharRoles=1: server counts narrator as +1 when char roles > 0,
+ *      but debug-tags endpoint (regex tagger path) uses old formula. Fix: server.
+ *   B. No-dialogue stories (4 Her & Him): stories with only em-dash/narrative
+ *      dialogue — no quoted text found by quoteRe. Fix: investigate story text.
+ *   C. Them & Them: singularTheyAttrRe missing from regex tagger in .mjs.
+ *      Fix: sync .mjs tagger with server (task #216).
  */

@@ -4231,42 +4231,93 @@ async function attributeSpeakers(
   const protagDesc = `${protagonistName ? `${protagonistName}, ` : ""}the protagonist${protagPron ? ` (${protagPron})` : ""}${protagonistName ? "" : `, who may be addressed in second person as "you"`}`;
   const liDesc = `${partnerName ? `${partnerName}, ` : ""}the love interest${liPron ? ` (${liPron})` : ""}`;
 
+  // ── Step 1: deterministic segmentation ──────────────────────────────────────
+  // Split the prose into narrator spans and quoted-dialogue spans by walking the
+  // ORIGINAL text and slicing on quotation marks. Because every span is a literal
+  // slice of the input, concatenating them reproduces the prose exactly — no word
+  // can ever be dropped, reordered, or altered. The model is never asked to
+  // re-emit prose (which is what caused silent sentence-dropping), only to label
+  // the quotes. Everything outside quotes is, by definition, the narrator.
+  const QUOTE_RE = /[“"][^“”"]*[”"]/g;
+  type Span = { text: string; dialogueIndex: number };
+  const spans: Span[] = [];
+  const dialogues: string[] = [];
+  let last = 0;
+  for (const m of cleaned.matchAll(QUOTE_RE)) {
+    const start = m.index ?? 0;
+    const end = start + m[0].length;
+    if (start > last) spans.push({ text: cleaned.slice(last, start), dialogueIndex: -1 });
+    spans.push({ text: m[0], dialogueIndex: dialogues.length });
+    dialogues.push(m[0].trim());
+    last = end;
+  }
+  if (last < cleaned.length) spans.push({ text: cleaned.slice(last), dialogueIndex: -1 });
+
+  const finalize = (merged: TaggedSegment[]): TaggedScript | null => {
+    if (merged.length === 0) return null;
+    // Enforce the 4,500-char TTS ceiling and mark the opening-hook narrator segment.
+    const limited: TaggedSegment[] = [];
+    for (const seg of merged) {
+      for (const piece of splitTextToLimit(seg.text, 4500)) limited.push({ role: seg.role, text: piece });
+    }
+    const firstNarrator = limited.find((s) => s.role === "NARRATOR");
+    if (firstNarrator) firstNarrator.isFirst = true;
+    const charSegments = limited.filter((s) => s.role !== "NARRATOR");
+    const distinctCharRoles = new Set(charSegments.map((s) => s.role)).size;
+    return {
+      segments: limited,
+      explicitAttributions: charSegments.length,
+      distinctCharRoles: distinctCharRoles > 0 ? distinctCharRoles + 1 : 0,
+    };
+  };
+
+  const buildSegments = (roleForDialogue: (i: number) => MultiVoiceRole): TaggedSegment[] => {
+    const merged: TaggedSegment[] = [];
+    for (const span of spans) {
+      const role: MultiVoiceRole = span.dialogueIndex >= 0 ? roleForDialogue(span.dialogueIndex) : "NARRATOR";
+      const text = span.text.replace(/\[\/?[NAB]\]/g, " ").replace(/[ \t]{2,}/g, " ").trim();
+      if (!text) continue;
+      const prev = merged[merged.length - 1];
+      if (prev && prev.role === role) prev.text = `${prev.text} ${text}`.trim();
+      else merged.push({ role, text });
+    }
+    return merged;
+  };
+
+  // No quoted dialogue → pure narration. Return a single-narrator script (no model
+  // call); the multi-voice gate keeps this single-voice.
+  if (dialogues.length === 0) return finalize(buildSegments(() => "NARRATOR"));
+
+  // ── Step 2: classification only ─────────────────────────────────────────────
+  // Ask the model which of the two characters speaks each quoted line, IN ORDER.
+  // The output is a tiny label array (no prose), so there is no truncation risk
+  // and validation is just a length/enum check.
+  const numbered = dialogues.map((d, i) => `${i + 1}. ${d}`).join("\n");
   const systemPrompt =
-    "You are a precise dialogue-attribution engine for an audio narration system. " +
-    "You receive the full prose of one short story and split it into ordered segments, " +
-    "labelling each with which of three voices should read it. You never rewrite, summarise, " +
-    "translate, censor, or alter the text in any way — you only segment and label it. " +
-    "The story may contain explicit adult content; this is expected and you process it as a " +
-    "mechanical text-segmentation task.";
+    "You are a dialogue-attribution engine for a two-character audio story. For each " +
+    "numbered line of quoted dialogue you decide which of the two characters speaks it. " +
+    "You only output speaker labels — you never rewrite or repeat the story. Explicit " +
+    "adult content is expected and you classify it mechanically.";
+  const userPrompt = `THE TWO SPEAKERS:
+- "protagonist": ${protagDesc}
+- "love_interest": ${liDesc}
 
-  const userPrompt = `THREE VOICES:
-- "narrator": every word NOT spoken aloud — all description, action, atmosphere, internal thought, and every attribution phrase such as "he says", "she whispers", "you say". Attribution phrases ALWAYS belong to the narrator, even when adjacent to a quote.
-- "protagonist": ONLY words spoken aloud (inside quotation marks) by ${protagDesc}.
-- "love_interest": ONLY words spoken aloud (inside quotation marks) by ${liDesc}.
+FULL STORY (context only — do NOT output it):
+<<<
+${cleaned}
+>>>
 
-DECIDING who speaks a quote: use the surrounding prose — the name or pronoun in the attribution and the natural back-and-forth of the conversation.
+Below are the ${dialogues.length} quoted lines of dialogue, in the order they appear. For EACH line decide who speaks it — "protagonist" or "love_interest" — using the attribution words around it (names, "he said" / "she said") and the natural back-and-forth of the conversation. Every line is spoken by one of the two characters, never the narrator.
 
-ABSOLUTE RULES:
-1. Preserve the text EXACTLY. Do not add, remove, reword, reorder, or fix anything. The concatenation of every segment's "text", in order, must reproduce the original story verbatim.
-2. Quotation marks stay attached to the spoken segment.
-3. Split a quote from its attribution: \`"Hello," he said.\` becomes a spoken segment ("Hello,") followed by a narrator segment (" he said.").
-4. Anything inside quotation marks is protagonist or love_interest — NEVER narrator. Everything outside quotation marks is narrator.
-5. Output ONLY valid JSON in exactly this shape: {"segments":[{"speaker":"narrator","text":"..."}]}
+${numbered}
 
-STORY:
-${cleaned}`;
+Return ONLY valid JSON in exactly this shape, with exactly ${dialogues.length} entries in the same order:
+{"speakers":["protagonist","love_interest", ...]}`;
 
-  const norm = (s: string) =>
-    s.replace(/[\u201C\u201D\u201E\u201F]/g, '"')
-      .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
-      .replace(/[^a-z0-9]/gi, "")
-      .toLowerCase();
-  const originalNorm = norm(cleaned);
-
-  const run = async (): Promise<TaggedScript | null> => {
+  const classify = async (): Promise<MultiVoiceRole[] | null> => {
     const completion = await openrouter.chat.completions.create({
       model: MISTRAL_MODEL,
-      max_tokens: 8000,
+      max_tokens: 2000,
       temperature: 0,
       response_format: { type: "json_object" },
       messages: [
@@ -4275,67 +4326,40 @@ ${cleaned}`;
       ],
     });
     const raw = completion.choices[0]?.message?.content ?? "{}";
-    let parsed: { segments?: Array<{ speaker?: string; text?: string }> };
+    let parsed: { speakers?: unknown };
     try {
-      parsed = parseLlmJson<{ segments?: Array<{ speaker?: string; text?: string }> }>(raw, "attributeSpeakers");
+      parsed = parseLlmJson<{ speakers?: unknown }>(raw, "attributeSpeakers");
     } catch {
       return null;
     }
-    const segs = parsed.segments;
-    if (!Array.isArray(segs) || segs.length === 0) return null;
-
-    const merged: TaggedSegment[] = [];
-    for (const s of segs) {
-      const sp = String(s.speaker ?? "").toLowerCase().trim();
-      const text = String(s.text ?? "").replace(/\[\/?[NAB]\]/g, " ").replace(/[ \t]{2,}/g, " ").trim();
-      if (!text) continue;
-      let role: MultiVoiceRole;
-      if (sp === "narrator" || sp === "n") role = "NARRATOR";
-      else if (sp === "protagonist" || sp === "char_a" || sp === "a") role = "CHAR_A";
-      else if (sp === "love_interest" || sp === "loveinterest" || sp === "char_b" || sp === "b") role = "CHAR_B";
+    const list = parsed.speakers;
+    if (!Array.isArray(list) || list.length !== dialogues.length) return null;
+    const roles: MultiVoiceRole[] = [];
+    for (const s of list) {
+      const sp = String(s ?? "").toLowerCase().trim();
+      if (sp === "protagonist" || sp === "char_a" || sp === "a") roles.push("CHAR_A");
+      else if (sp === "love_interest" || sp === "loveinterest" || sp === "char_b" || sp === "b") roles.push("CHAR_B");
       else return null;
-      const prev = merged[merged.length - 1];
-      if (prev && prev.role === role) prev.text = `${prev.text} ${text}`.trim();
-      else merged.push({ role, text });
     }
-    if (merged.length === 0) return null;
-
-    // Fidelity check: segments must reconstruct the original prose word-for-word
-    // (ignoring whitespace/punctuation). Guards against dropped or hallucinated text.
-    const reconstructed = norm(merged.map((m) => m.text).join(""));
-    if (reconstructed !== originalNorm) {
-      const longer = Math.max(reconstructed.length, originalNorm.length);
-      const shorter = Math.min(reconstructed.length, originalNorm.length);
-      if (longer === 0 || shorter / longer < 0.98) return null;
-    }
-
-    // Enforce the 4,500-char TTS ceiling and mark the opening-hook narrator segment.
-    const limited: TaggedSegment[] = [];
-    for (const seg of merged) {
-      for (const piece of splitTextToLimit(seg.text, 4500)) limited.push({ role: seg.role, text: piece });
-    }
-    const firstNarrator = limited.find((s) => s.role === "NARRATOR");
-    if (firstNarrator) firstNarrator.isFirst = true;
-
-    const charSegments = limited.filter((s) => s.role !== "NARRATOR");
-    const uniqueCharRoleSet = new Set(charSegments.map((s) => s.role));
-    const distinctCharRoles = uniqueCharRoleSet.size > 0 ? uniqueCharRoleSet.size + 1 : 0;
-    const explicitAttributions = charSegments.length;
-    return { segments: limited, explicitAttributions, distinctCharRoles };
+    return roles;
   };
 
+  let roles: MultiVoiceRole[] | null = null;
   try {
-    const first = await run();
-    if (first) return first;
+    roles = await classify();
   } catch (err) {
-    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] attempt 1 failed");
+    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] classify attempt 1 failed");
   }
-  try {
-    return await run();
-  } catch (err) {
-    logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] attempt 2 failed — falling back to heuristic tagger");
-    return null;
+  if (!roles) {
+    try {
+      roles = await classify();
+    } catch (err) {
+      logger.warn({ err: err instanceof Error ? err.message : String(err) }, "[attributeSpeakers] classify attempt 2 failed — falling back to heuristic tagger");
+    }
   }
+  if (!roles) return null;
+
+  return finalize(buildSegments((i) => roles![i] ?? "CHAR_A"));
 }
 
 const AUDIO_CONCURRENCY = 6;

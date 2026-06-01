@@ -2,3 +2,4 @@
 ---
 - [They/Them multi-voice gate](them-pairing-multivoice.md) — nullGenderPairing must include pg.li==="them"; strict explicit gate silently breaks all Her&Them / Him&Them audio.
 - [Voice assignment root cause](voice-assignment-root-cause.md) — tags stripped before audio gen; regex heuristic always ran; fix: rawText field + startsWith dedup in parseTaggedScript
+- [Speaker attribution approach](speaker-attribution-approach.md) — deterministic quote-split + LLM classify-only (labels); never ask LLM to re-emit prose (it drops sentences)

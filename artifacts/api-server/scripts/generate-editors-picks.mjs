@@ -22,6 +22,10 @@
  *   node scripts/generate-editors-picks.mjs --force      # regenerate all
  *   node scripts/generate-editors-picks.mjs --dry-run    # print tagger output, no API calls
  *   node scripts/generate-editors-picks.mjs 01 04        # only those slugs
+ *
+ * After changing any pick text, sync the UI transcripts:
+ *   node scripts/sync-transcripts.mjs
+ * (PICKS is also exported so sync-transcripts.mjs can import it directly.)
  */
 
 import fs from "fs";
@@ -42,7 +46,9 @@ const FORCE = process.argv.includes("--force");
 const DRY_RUN = process.argv.includes("--dry-run");
 const ONLY = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 
-if (!ELEVENLABS_API_KEY) {
+const IS_MAIN = process.argv[1] === fileURLToPath(import.meta.url);
+
+if (IS_MAIN && !ELEVENLABS_API_KEY) {
   console.error("ERROR: ELEVENLABS_API_KEY environment variable not set");
   process.exit(1);
 }
@@ -989,7 +995,11 @@ async function main() {
   console.log("Done.");
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+export { PICKS };
+
+if (IS_MAIN) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

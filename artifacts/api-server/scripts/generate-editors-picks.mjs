@@ -20,6 +20,7 @@
  * Usage:
  *   node scripts/generate-editors-picks.mjs              # skip existing
  *   node scripts/generate-editors-picks.mjs --force      # regenerate all
+ *   node scripts/generate-editors-picks.mjs --dry-run    # print tagger output, no API calls
  *   node scripts/generate-editors-picks.mjs 01 04        # only those slugs
  */
 
@@ -763,6 +764,9 @@ She reached for his tie.
     slug: "09-neighbour",
     title: "The Neighbour",
     voice: VOICE.theo,
+    // Male narrator IS the protagonist — route his dialogue back to Theo so the listener
+    // hears one consistent male voice rather than Theo (narration) / James (he said).
+    charBVoice: MV_THEO,
     text:
 `"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow," she said.
 
@@ -836,6 +840,9 @@ She pulled him back in.
     slug: "10-night-manager",
     title: "The Night Manager",
     voice: VOICE.theo,
+    // Male narrator IS the protagonist — route his dialogue back to Theo so the listener
+    // hears one consistent male voice rather than Theo (narration) / James (he said).
+    charBVoice: MV_THEO,
     text:
 `"I think I locked my key in the room," she said.
 
@@ -897,6 +904,8 @@ She turned the latch.
 
 She turned around.
 
+"Look at me," he said.
+
 "Now," she said.
 
 He came to her.`,
@@ -924,7 +933,11 @@ async function generateOne(pick) {
 
   const buffers = [];
   if (useMultiVoice) {
-    const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing);
+    const { charA, charB: charBResolved } = resolveCharacterVoicesServer(narratorId, pairing);
+    // charBVoice override: when the narrator IS the male protagonist (e.g. picks 09/10),
+    // route CHAR_B dialogue back to the narrator voice so the listener hears one consistent
+    // male voice rather than a jarring switch between Theo (narration) and James (dialogue).
+    const charB = pick.charBVoice ?? charBResolved;
     const VNAMES = { [MV_CLARA]:"Clara",[MV_MAYA]:"Maya",[MV_KAYLA]:"Kayla",[MV_JAMES]:"James",[MV_ETHAN]:"Ethan",[MV_THEO]:"Theo" };
     console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${tagged.segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
     if (DRY_RUN) {

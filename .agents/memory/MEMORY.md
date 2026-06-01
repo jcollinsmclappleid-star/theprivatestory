@@ -1,2 +1,1 @@
-- [Multi-voice pipeline state](task-207-focus.md) — what is DONE vs deferred; editors picks regen + Phase 1/2 script work all complete.
-- [Multi-voice attribution fix](llm-speaker-tags.md) — root cause was firstSecondRe priority order: 22/31 attributions wrong before fix; gender pronoun now wins over you/your in context; verified 31/31 correct after fix.
+- [editors-picks-charBVoice](editors-picks-charBVoice.md) — male-narrator picks need charBVoice override or protagonist dialogue goes to James (jarring)

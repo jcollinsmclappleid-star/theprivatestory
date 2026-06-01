@@ -1346,6 +1346,8 @@ export interface TaggedSegment {
   role: MultiVoiceRole;
   text: string;
   isFirst?: boolean;
+  /** Attribution signal that produced this role assignment (dialogue only). */
+  how?: "name" | "male" | "female" | "they" | "firstSecond" | "toggle";
 }
 export interface TaggedScript {
   segments: TaggedSegment[];
@@ -1519,7 +1521,8 @@ export function tagScriptForMultiVoice(
   //      narration the attribution context routinely contains "you/your" as an OBJECT
   //      ("he says, his eyes on you") not as the speaker indicator. Checking gender
   //      first ensures "he says, watching you" → CHAR_B (love interest), not CHAR_A.
-  const attribute = (context: string): { role: "CHAR_A" | "CHAR_B"; explicit: boolean } => {
+  type AttrHow = "name" | "male" | "female" | "they" | "firstSecond" | "toggle";
+  const attribute = (context: string): { role: "CHAR_A" | "CHAR_B"; explicit: boolean; how: AttrHow } => {
     const hasAttr = attrRe.test(context);
     if (hasAttr) {
       // 1. Exact name — always wins.
@@ -1527,12 +1530,12 @@ export function tagScriptForMultiVoice(
       if (partnerName && ctxLc.includes(partnerName.toLowerCase())) {
         lastSpeaker = "CHAR_B";
         explicitAttributions++;
-        return { role: "CHAR_B", explicit: true };
+        return { role: "CHAR_B", explicit: true, how: "name" };
       }
       if (protagonistName && ctxLc.includes(protagonistName.toLowerCase())) {
         lastSpeaker = "CHAR_A";
         explicitAttributions++;
-        return { role: "CHAR_A", explicit: true };
+        return { role: "CHAR_A", explicit: true, how: "name" };
       }
       // 2. Unambiguous gender pronoun.
       if (genders) {
@@ -1542,13 +1545,13 @@ export function tagScriptForMultiVoice(
           const role = genders.li === "m" ? "CHAR_B" : "CHAR_A";
           lastSpeaker = role;
           explicitAttributions++;
-          return { role, explicit: true };
+          return { role, explicit: true, how: "male" };
         }
         if (female && !male) {
           const role = genders.li === "f" ? "CHAR_B" : "CHAR_A";
           lastSpeaker = role;
           explicitAttributions++;
-          return { role, explicit: true };
+          return { role, explicit: true, how: "female" };
         }
       }
       // 3. Singular "they said/says" — Them pairings only to avoid false positives
@@ -1556,19 +1559,19 @@ export function tagScriptForMultiVoice(
       if (genders?.li === "them" && singularTheyAttrRe.test(context)) {
         lastSpeaker = "CHAR_B";
         explicitAttributions++;
-        return { role: "CHAR_B", explicit: true };
+        return { role: "CHAR_B", explicit: true, how: "they" };
       }
       // 4. First/second person fallback — only when no gender pronoun is present.
       //    "you say" / "I told her" correctly identifies the protagonist as speaker.
       if (firstSecondRe.test(context)) {
         lastSpeaker = "CHAR_A";
         explicitAttributions++;
-        return { role: "CHAR_A", explicit: true };
+        return { role: "CHAR_A", explicit: true, how: "firstSecond" };
       }
     }
     // No usable attribution → conversational turn-taking (a guess, not explicit).
     lastSpeaker = lastSpeaker === "CHAR_A" ? "CHAR_B" : "CHAR_A";
-    return { role: lastSpeaker, explicit: false };
+    return { role: lastSpeaker, explicit: false, how: "toggle" };
   };
 
   const paragraphs = normalised.split(/\n+/).map((s) => s.trim()).filter(Boolean);
@@ -1599,8 +1602,8 @@ export function tagScriptForMultiVoice(
       const localBefore = para.slice(lastIndex, q.start);
       const nextStart = qi + 1 < quotes.length ? quotes[qi + 1].start : para.length;
       const localAfter = para.slice(q.end, nextStart);
-      const { role } = attribute(`${localBefore} ${localAfter}`.trim());
-      raw.push({ role, text: q.full.trim() });
+      const { role, how } = attribute(`${localBefore} ${localAfter}`.trim());
+      raw.push({ role, text: q.full.trim(), how });
       lastIndex = q.end;
     }
     const after = para.slice(lastIndex).trim();
@@ -1619,10 +1622,11 @@ export function tagScriptForMultiVoice(
   }
 
   // Enforce the 4,500-char TTS ceiling, splitting at sentence boundaries.
+  // Carry `how` through so the debug-tags endpoint can report the attribution signal.
   const limited: TaggedSegment[] = [];
   for (const seg of merged) {
     for (const piece of splitTextToLimit(seg.text, 4500)) {
-      limited.push({ role: seg.role, text: piece });
+      limited.push({ role: seg.role, text: piece, how: seg.how });
     }
   }
 
@@ -5641,6 +5645,7 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
       segments: segments.map((seg, i) => ({
         index: i,
         role: seg.role,
+        how: seg.how ?? null,
         voiceName: voiceName(
           seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB,
         ),

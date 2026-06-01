@@ -4261,12 +4261,14 @@ export async function generateAudioFile(
   // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
   // single-voice to avoid splitting one speaker across two voices.
   const charSegments = segments.filter(s => s.role !== "NARRATOR").length;
-  // nullGenderPairing covers:
-  //   • Her & Her / Him & Him — genders === null, toggle-only attribution
-  //   • Them & Them — genders non-null but both characters use the same pronoun
-  //     set so gender can't disambiguate; fall back to turn-taking gate.
   const pg = mvPairingGenders(pairing ?? "");
-  const nullGenderPairing = !pg || (pg.protag === "them" && pg.li === "them");
+  // nullGenderPairing = pairings where gender pronouns can't disambiguate speakers:
+  //   • null (Her & Her, Him & Him) — same gender, toggle only
+  //   • Them & Them — both use they/them, indistinguishable
+  //   • Her & Them / Him & Them — love interest uses they/them; "they said" may not
+  //     appear consistently so fall back to the toggle-count gate rather than
+  //     requiring explicitAttributions >= 1 (which "he/she said" can't satisfy for them).
+  const nullGenderPairing = !pg || pg.li === "them" || pg.protag === "them";
   const useMultiVoice = tagged.distinctCharRoles >= 2 &&
     (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
 
@@ -5628,7 +5630,7 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
 
     const charSegments = segments.filter((s) => s.role !== "NARRATOR").length;
     const dpg = mvPairingGenders(pairing);
-    const nullGenderPairing = !dpg || (dpg.protag === "them" && dpg.li === "them");
+    const nullGenderPairing = !dpg || dpg.li === "them" || dpg.protag === "them";
     const wouldUseMultiVoice =
       tagged.distinctCharRoles >= 2 &&
       (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);

@@ -1,1 +1,3 @@
 - [editors-picks-charBVoice](editors-picks-charBVoice.md) — male-narrator picks need charBVoice override or protagonist dialogue goes to James (jarring)
+---
+- [They/Them multi-voice gate](them-pairing-multivoice.md) — nullGenderPairing must include pg.li==="them"; strict explicit gate silently breaks all Her&Them / Him&Them audio.

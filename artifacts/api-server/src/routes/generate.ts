@@ -1422,14 +1422,38 @@ function parseTaggedScript(text: string): TaggedScript {
   const firstNarrator = limited.find((s) => s.role === "NARRATOR");
   if (firstNarrator) firstNarrator.isFirst = true;
 
-  const charSegments = limited.filter((s) => s.role !== "NARRATOR");
-  const distinctCharRoles = new Set(charSegments.map((s) => s.role)).size;
-  // Every character segment in a tagged story is explicitly attributed by
-  // the LLM — set explicitAttributions to the full count so the multi-voice
-  // gate (explicitAttributions >= 1) always passes when tags are present.
+  // Deduplication: the LLM sometimes echoes dialogue in both [N] and the
+  // adjacent [B]/[A] tag (e.g. [N]"hello"[/N][B]"hello"[/B]).  Strip any
+  // NARRATOR segment whose trimmed text (after normalising quotes to straight)
+  // duplicates the immediately following character segment.
+  const deduped: TaggedSegment[] = [];
+  for (let i = 0; i < limited.length; i++) {
+    const seg = limited[i]!;
+    if (seg.role === "NARRATOR") {
+      const next = limited[i + 1];
+      if (next && next.role !== "NARRATOR") {
+        const normSeg  = seg.text.replace(/[\u201C\u201D""]/g, '"').replace(/[\u2018\u2019'']/g, "'").trim();
+        const normNext = next.text.replace(/[\u201C\u201D""]/g, '"').replace(/[\u2018\u2019'']/g, "'").trim();
+        // Skip this narrator segment if it IS the character's dialogue (exact or contained).
+        if (normSeg === normNext || normSeg === normNext.replace(/^"|"$/g, "").trim()) continue;
+      }
+    }
+    deduped.push(seg);
+  }
+
+  const charSegments = deduped.filter((s) => s.role !== "NARRATOR");
+  const uniqueCharRoleSet = new Set(charSegments.map((s) => s.role));
+  // Narrator is always a voice type. Count narrator as +1 when any character
+  // role is present — this ensures 2nd-person stories (where [A] is absent
+  // because the protagonist IS the narrator) still hit the distinctCharRoles >= 2
+  // gate in the multi-voice path when [B] tags are present.
+  const distinctCharRoles = uniqueCharRoleSet.size > 0 ? uniqueCharRoleSet.size + 1 : 0;
+  // Every character segment in a tagged story is explicitly attributed by the
+  // LLM — set explicitAttributions to the full count so the multi-voice gate
+  // (explicitAttributions >= 1) always passes when tags are present.
   const explicitAttributions = charSegments.length;
 
-  return { segments: limited, explicitAttributions, distinctCharRoles };
+  return { segments: deduped, explicitAttributions, distinctCharRoles };
 }
 
 /**

@@ -458,10 +458,22 @@ CORRECT EXAMPLE:
 [B]"I live here."[/B]
 [N]The words hang between you, heavy with implication. You should laugh. You should make a joke. But you don't.[/N]
 
-WRONG (untagged text, attribution inside character tag, nested tags):
+WRONG — three common mistakes you must NOT make:
+
+MISTAKE 1 — Untagged text (every word must be in exactly one tag):
 The kitchen is empty.
-"You're still here," he says.  ← attribution must be in [N], not merged with [B]
-"So are you."                  ← no tag at all
+"You're still here," he says.
+
+MISTAKE 2 — Dialogue duplicated in both [N] and [B] (each word appears ONCE only):
+[N]"You're still here," he says.[/N]
+[B]"You're still here,"[/B][N]he says.[/N]
+← The dialogue appears twice. This is wrong. Each spoken line must appear in ONLY ONE tag.
+
+MISTAKE 3 — Attribution inside the character tag (attribution always goes in [N]):
+[B]"You're still here," he says.[/B]
+← "he says" must be in [N], not inside [B].
+
+REMEMBER: Every spoken line exists in EXACTLY ONE tag. The attribution prose ("he says", "she breathes") exists in EXACTLY ONE [N] tag adjacent to it. Nothing is ever repeated across tags.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 }

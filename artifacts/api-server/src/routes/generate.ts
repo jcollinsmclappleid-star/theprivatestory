@@ -1510,17 +1510,19 @@ export function tagScriptForMultiVoice(
   // Decide a speaker for a dialogue line given its surrounding (non-quoted) prose.
   // Returns the role plus whether it came from an explicit attribution cue (vs.
   // a blind turn-taking guess) so callers can gate multi-voice on real evidence.
+  //
+  // Priority order (highest → lowest):
+  //   1. Exact character name ("Marcus said", "she told Marcus")
+  //   2. Gender pronoun (he/him/his, she/her/hers) — unambiguous when only one gender
+  //   3. Singular "they said/says" — Them pairings only
+  //   4. First/second person ("you say", "I told her") — LAST because in second-person
+  //      narration the attribution context routinely contains "you/your" as an OBJECT
+  //      ("he says, his eyes on you") not as the speaker indicator. Checking gender
+  //      first ensures "he says, watching you" → CHAR_B (love interest), not CHAR_A.
   const attribute = (context: string): { role: "CHAR_A" | "CHAR_B"; explicit: boolean } => {
     const hasAttr = attrRe.test(context);
     if (hasAttr) {
-      if (firstSecondRe.test(context)) {
-        lastSpeaker = "CHAR_A";
-        explicitAttributions++;
-        return { role: "CHAR_A", explicit: true };
-      }
-      // Name checks — run before gender pronouns so an exact name always wins.
-      // partnerName → CHAR_B (love interest); protagonistName → CHAR_A (only
-      // populated for Them & Them where both characters use they/them pronouns).
+      // 1. Exact name — always wins.
       const ctxLc = context.toLowerCase();
       if (partnerName && ctxLc.includes(partnerName.toLowerCase())) {
         lastSpeaker = "CHAR_B";
@@ -1532,13 +1534,7 @@ export function tagScriptForMultiVoice(
         explicitAttributions++;
         return { role: "CHAR_A", explicit: true };
       }
-      // Singular "they said" — only fire for Them pairings (li === "them") to
-      // avoid false positives in Her & Him stories where plural "they" can appear.
-      if (genders?.li === "them" && singularTheyAttrRe.test(context)) {
-        lastSpeaker = "CHAR_B";
-        explicitAttributions++;
-        return { role: "CHAR_B", explicit: true };
-      }
+      // 2. Unambiguous gender pronoun.
       if (genders) {
         const male = maleRe.test(context);
         const female = femaleRe.test(context);
@@ -1554,6 +1550,20 @@ export function tagScriptForMultiVoice(
           explicitAttributions++;
           return { role, explicit: true };
         }
+      }
+      // 3. Singular "they said/says" — Them pairings only to avoid false positives
+      //    where plural "they" appears in Her & Him attribution context.
+      if (genders?.li === "them" && singularTheyAttrRe.test(context)) {
+        lastSpeaker = "CHAR_B";
+        explicitAttributions++;
+        return { role: "CHAR_B", explicit: true };
+      }
+      // 4. First/second person fallback — only when no gender pronoun is present.
+      //    "you say" / "I told her" correctly identifies the protagonist as speaker.
+      if (firstSecondRe.test(context)) {
+        lastSpeaker = "CHAR_A";
+        explicitAttributions++;
+        return { role: "CHAR_A", explicit: true };
       }
     }
     // No usable attribution → conversational turn-taking (a guess, not explicit).

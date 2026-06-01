@@ -1,2 +1,2 @@
-- [Multi-voice pipeline state](task-207-focus.md) — what is DONE vs deferred; editors picks regen + Phase 1/2 script work all complete; LLM inline speaker tags added to masterEroticLayer.
-- [LLM speaker tagging](llm-speaker-tags.md) — root cause fix for voice mis-attribution: [N][A][B] tags in masterEroticLayer; Mistral compliance failure + all regression fixes applied; regex tagger primary in practice (explicitAttributions=34 typical).
+- [Multi-voice pipeline state](task-207-focus.md) — what is DONE vs deferred; editors picks regen + Phase 1/2 script work all complete.
+- [Multi-voice attribution fix](llm-speaker-tags.md) — root cause was firstSecondRe priority order: 22/31 attributions wrong before fix; gender pronoun now wins over you/your in context; verified 31/31 correct after fix.

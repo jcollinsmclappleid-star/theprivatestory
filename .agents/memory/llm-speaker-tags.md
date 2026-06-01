@@ -1,46 +1,53 @@
 ---
-name: LLM inline speaker tags
-description: Root-cause fix for voice mis-attribution — [N][A][B] tags generated at story-write time, parsed at audio-render time. Includes Mistral compliance failure and regression fixes.
+name: LLM inline speaker tags + tagger root cause fix
+description: Full history of multi-voice mis-attribution fixes. Root cause: firstSecondRe priority order in attribute(). 22/31 lines were wrong before fix.
 ---
 
-# LLM Inline Speaker Tags — Root-Cause Fix
+# Multi-Voice Speaker Attribution — Complete Fix History
 
-## What & Why
-The regex tagger (`tagScriptForMultiVoice`) was guessing speaker roles post-hoc from prose cues.
-Root causes: past-tense-only verb list, `firstSecondRe` over-firing, same-gender pairings with no pronoun cues.
-Fix: instruct the LLM to annotate its own output with `[N]`/`[A]`/`[B]` tags at write time.
+## Original issue
+"Woman saying man's lines" — love interest dialogue voiced by Clara/Maya instead of James.
 
-## Tag semantics
-- `[N]...[/N]` — narrator voice (ALL prose, attribution phrases, internal monologue)
-- `[A]...[/A]` — protagonist's spoken words only (quote marks stay inside the tag)
-- `[B]...[/B]` — love interest's spoken words only
+## Root causes (all fixed)
 
-## What was done
-- `masterEroticLayer.ts` — added "AUDIO SPEAKER TAGGING — MANDATORY" block to `getMasterEroticLayer()`.
-  Applies to both the `MASTER_EROTIC_LAYER` constant (library stories) and all runtime pairing calls (user stories).
-  WRONG-example section (MISTAKE 1/2/3) added to address Mistral's tendency to duplicate dialogue in both [N] and [B].
-- `generate.ts` — `parseTaggedScript()` function added; `tagScriptForMultiVoice()` dispatches to it only when [A] or [B] tags are present (NOT narrator-only [N] tags).
+### Root cause 1 — Past-tense-only verb list (FIXED in earlier session)
+`MV_ATTR_VERBS` only had `said|asked|...` — missed present-tense LLM prose (`says|asks|...`).
+Fix: added full present-tense set + groans/notes/observes/etc.
 
-## Mistral compliance failure (CRITICAL) — discovered after first test run
-Mistral wraps ALL prose in [N] tags but never produces [A]/[B] tags. This caused TWO regressions:
-1. `tagScriptForMultiVoice` dispatched to parseTaggedScript on narrator-only output → all-NARRATOR segments → `distinctCharRoles=0` → single-voice → TTS read "[N]" aloud.
-2. Stored text contained `[N]text[/N]` visible to display UI.
+### Root cause 2 — `firstSecondRe` priority order (FIXED — the primary bug)
+**Simulation result**: 22 of 31 explicit attributions were wrong before this fix.
 
-## Regression fixes applied
-- `tagScriptForMultiVoice` detection: changed from `/\[N\]|\[A\]|\[B\]/` to `/\[A\]|\[B\]/`. Narrator-only wrapping now falls through to regex tagger after `\[N\]|\[\/N\]` stripped from `normalised`.
-- Single-voice TTS path: `scene.text.trim().replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "")` before chunking.
-- `extractStoryParts` (admin.ts): strips [N][A][B] tags from `clean` before storage.
-- `writeStoryFromBrief` (generate.ts): strips tags from scene text after repair passes.
-- DB cleanup: both polluted test stories stripped via SQL `regexp_replace`.
+In second-person Her & Him stories, attribution context after love interest dialogue routinely
+contains "you/your/yours" as an OBJECT, not a speaker indicator:
+  `"You're still here," he says, watching you.`
+  → context = "he says, watching you."
+  → OLD: firstSecondRe fires on "you" → CHAR_A (narrator voice) ✗
+  → NEW: male "he" wins first → CHAR_B (James) ✓
 
-## `distinctCharRoles` bug + fix
-Second-person Her & Him stories have protagonist's voice = narrator → no [A] tags → `distinctCharRoles=1` → multi-voice gate fails.
-Fix: `const distinctCharRoles = uniqueCharRoleSet.size > 0 ? uniqueCharRoleSet.size + 1 : 0;` — narrator always counts as +1 when any character role is present.
+Fix: reordered `attribute()` priority in `tagScriptForMultiVoice`:
+  1. Exact name (partnerName / protagonistName)
+  2. Unambiguous gender pronoun (he/him/his → CHAR_B, she/her → CHAR_A for Her & Him)
+  3. Singular "they said/says" — Them pairings only
+  4. firstSecondRe ("you say", "I told her") — LAST, only when no gender pronoun found
 
-## Deduplication fix
-Mistral sometimes echoes dialogue as `[N]"text"[/N]\n[B]"text"[/B]`. `parseTaggedScript` now strips [N] segments that exactly match the immediately following [B]/[A] segment.
+After fix: 31/31 attributions correct, 0 misattributions on tested story.
 
-## Fallback (primary in practice)
-Regex tagger (MV_ATTR_VERBS with past + present tense verbs) handles all stories. On a typical Her & Him after_hours story: `explicitAttributions=34, charBFound=true` — multi-voice gate passes solidly.
+### Root cause 3 — LLM tagging (Mistral compliance failure, best-effort)
+Instruction added to masterEroticLayer.ts to emit [N][A][B] tags.
+Mistral wraps all prose in [N] but rarely emits [A]/[B] character tags.
+Fallback: tag detection now only dispatches to parseTaggedScript when [A] or [B] present.
+Storage strips all [N][A][B] tags before saving (admin.ts + writeStoryFromBrief).
 
-**How to apply:** Check `scenes[].text` in DB for `[N]`/`[A]`/`[B]` tags. If any [A]/[B] → tag parser runs (multi-voice exact path). If [N]-only or no tags → regex tagger. Tags must never appear in stored prose after the storage-strip fixes.
+## parseTaggedScript extras (for when LLM does comply)
+- `distinctCharRoles`: narrator counts as +1 when any character role present → fixes
+  second-person stories where [A] absent (protagonist = narrator voice).
+- Deduplication: skips [N] segment that exactly mirrors adjacent [B]/[A] (LLM echo).
+
+## Regression guards
+- Single-voice TTS path: strips all tags from sceneText before chunking.
+- tagScriptForMultiVoice: strips stray [N]/[/N] from `normalised` before regex tagger.
+- DB cleanup: two test stories had [N] pollution; cleaned via SQL regexp_replace.
+
+**How to apply:** If voice mis-attribution recurs, check attribute() priority order first.
+Run the simulation in code_execution using the story text and count CHAR_B explicit segments.
+Expected for Her & Him: all "he says/murmurs/breathes" lines → CHAR_B (James).

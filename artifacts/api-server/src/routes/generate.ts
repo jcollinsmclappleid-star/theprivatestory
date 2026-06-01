@@ -4197,6 +4197,21 @@ export async function generateAllImages(
   return { cover: `/api/images/${coverFilename}`, scenes: [] };
 }
 
+const AUDIO_CONCURRENCY = 6;
+
+async function runConcurrent<T>(items: T[], fn: (item: T) => Promise<Buffer>): Promise<Buffer[]> {
+  const results = new Array<Buffer>(items.length);
+  let cursor = 0;
+  async function worker() {
+    while (cursor < items.length) {
+      const idx = cursor++;
+      results[idx] = await fn(items[idx]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(AUDIO_CONCURRENCY, items.length) }, worker));
+  return results;
+}
+
 export async function generateAudioFile(
   scenes: Scene[],
   voiceFeel: string,
@@ -4298,14 +4313,14 @@ export async function generateAudioFile(
     // Multi-voice path: distinct voices for narrator / protagonist / love interest.
     const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing ?? "");
     console.info(`[audio] multi-voice: narrator=${narratorId} charA=${charA} charB=${charB} segments=${segments.length} intensity=${intensity ?? "?"}`);
-    for (const seg of segments) {
+    const segBuffers = await runConcurrent(segments, async (seg) => {
       const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
       const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
-      // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
       const buf = await ttsWithFallback(vid, seg.text, style);
-      buffers.push(await trimSilenceFromMp3(buf));
-    }
+      return trimSilenceFromMp3(buf);
+    });
+    buffers.push(...segBuffers);
   } else {
     // ── Single-voice fallback: chunk at scene boundaries, narrator voice only ──
     const chunks: string[] = [];

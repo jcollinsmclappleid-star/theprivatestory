@@ -14,7 +14,8 @@
  *   Clara x3 (British, soothing) - 01, 02, 03
  *   Kayla x3 (American, expressive) - 04, 05, 06
  *   Maya  x2 (American, intimate)   - 07, 08
- *   James x2 (British, assured)     - 09, 10  (his-POV scenes)
+ *   Theo  x2 (British, measured)    - 09, 10  (his-POV narrator)
+ * In-story male: James (primary CHAR_B), Ethan (secondary)
  *
  * Usage:
  *   node scripts/generate-editors-picks.mjs              # skip existing
@@ -37,6 +38,7 @@ const OUTPUT_DIR = path.join(
 );
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const FORCE = process.argv.includes("--force");
+const DRY_RUN = process.argv.includes("--dry-run");
 const ONLY = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 
 if (!ELEVENLABS_API_KEY) {
@@ -49,6 +51,7 @@ const VOICE = {
   kayla: { id: "aTxZrSrp47xsP6Ot4Kgd", name: "Kayla", settings: { stability: 0.48, similarity_boost: 0.80, style: 0.32 } },
   maya:  { id: "tQ4MEZFJOzsahSEEZtHK", name: "Maya",  settings: { stability: 0.45, similarity_boost: 0.82, style: 0.35 } },
   james: { id: "AeRdCCKzvd23BpJoofzx", name: "James", settings: { stability: 0.55, similarity_boost: 0.78, style: 0.18 } },
+  theo:  { id: "jfIS2w2yJi0grJZPyEsk", name: "Theo",  settings: { stability: 0.52, similarity_boost: 0.78, style: 0.20 } },
 };
 
 // ── Multi-voice (#207): faithful mirror of the server pipeline in ──────────────
@@ -89,9 +92,10 @@ const MV_ATTR_VERBS =
 function mvPairingGenders(pairing) {
   const p = (pairing ?? "").toLowerCase().trim();
   switch (p) {
-    case "her & him":  return { protag: "f", li: "m" };
-    case "her & them": return { protag: "f", li: "m" };
-    case "him & them": return { protag: "m", li: "f" };
+    case "her & him":       return { protag: "f", li: "m" };
+    case "her & him & him": return { protag: "f", li: "m" };
+    case "her & them":      return { protag: "f", li: "m" };
+    case "him & them":      return { protag: "m", li: "f" };
     default: return null;
   }
 }
@@ -234,15 +238,15 @@ const PICKS = [
     title: "The Last One in the Building",
     voice: VOICE.clara,
     text:
-`She had stayed late on purpose. She told herself it was the quarterly close, but the quarterly close had finished an hour ago and she was still at her desk because she had heard him say, that morning, that he might come back to pick something up.
+`"You're still here," he said.
 
-The lift chimed at the end of the corridor. She did not look up.
+She didn't look up. The quarterly close had finished an hour ago. She had stayed because she had heard him say that morning that he might come back to pick something up. She had told herself that wasn't why she'd stayed.
 
-He stopped in her doorway.
+It was why she'd stayed.
 
-"You're still here."
+He had stopped in her doorway. She could feel him there without looking.
 
-"Just finishing."
+"Just finishing," she said.
 
 "You finished an hour ago. I checked the system."
 
@@ -286,22 +290,17 @@ She reached back and found his hands. Guided them.
     slug: "02-adjoining-suites",
     title: "The Adjoining Suites",
     voice: VOICE.clara,
+    pairing: "Her & Him & Him",
     text:
-`The awards dinner had ended at midnight. She had won. The two of them had been her business partners for six years, the three of them at the same table for every dinner that had ever mattered, and tonight on the walk back through the marble lobby of the hotel, something had changed in the air between them, and she had felt it on her skin.
+`"We were going to come and ask if you wanted a nightcap," one of them said.
 
-They had taken adjoining suites because they always did. There was a door between them. There had always been a door between them.
+The connecting door had opened before she finished knocking. They had been standing on the other side of it.
 
-She kicked her heels off in her room. She could hear them next door — the low murmur of two men talking, the clink of a bottle, a laugh that was lower than the laugh she usually heard from either of them.
+The awards dinner had ended at midnight. She had won. Six years of partnership — the three of them at every dinner that had ever mattered — and tonight on the walk back through the marble lobby, something had changed in the air, and she had felt it on her skin and stopped pretending she hadn't.
 
-She went to the mirror and unpinned her hair. Her dress was still on. Her lipstick was still on. She looked at herself for a long moment.
+She looked at them both.
 
-She knocked on the connecting door.
-
-It opened immediately. They had been standing on the other side of it.
-
-"We were going to come and ask if you wanted a nightcap," one of them said.
-
-"I know."
+"I know," she said.
 
 "You don't drink whisky."
 
@@ -349,24 +348,25 @@ Her gown had a zip at the side. She reached back, found a hand, and guided it th
     slug: "03-spa-at-six",
     title: "The Spa at Six",
     voice: VOICE.clara,
+    pairing: "Her & Her",
     text:
-`She had been booking the same masseuse for a year. Always the last appointment. Always the same room — the one with the candle that smelled of orange and something darker she could never name.
+`"You're tense," the woman said quietly.
 
-Tonight she was on the table face-down. The room was warm. The hands on her shoulders were the hands she had been thinking about, increasingly often, in the week before each appointment.
+She had been booking the same masseuse for a year — always the last appointment, always the same room, the candle that smelled of orange and something darker she could never name. Tonight she was on the table face-down. The room was warm. The hands on her shoulders were the ones she had been thinking about, increasingly often, in the week before each appointment.
 
-"You're tense," the woman said quietly.
-
-"I know."
+"I know," she said.
 
 "More than usual."
 
 She didn't answer. The hands worked down her spine, slowly, professionally — the same hands that had touched her for an hour at a time, every two weeks, for a year. Tonight they felt different. Tonight she felt them.
 
+"Yes," she said finally.
+
 "You can turn over if you want."
 
-She turned over.
+She turned over. She was supposed to keep her eyes closed. She didn't. The woman was standing at the head of the table, hands resting on the towel, looking down at her with an expression she had never let her see before.
 
-She was supposed to keep her eyes closed. She didn't. The woman was standing at the head of the table, hands resting on the towel, looking down at her with an expression she had never let her see before.
+"You're looking at me," she said.
 
 "You always book the last slot," the woman said.
 
@@ -421,19 +421,17 @@ She wrapped one hand in the woman's hair and told her exactly what she wanted ne
     title: "The Driver",
     voice: VOICE.kayla,
     text:
-`He had driven her for three years. He opened the car door. He waited at events. He never spoke unless she spoke first. She had never, not once, said his first name out loud.
+`"Come up," she said.
 
-Tonight she had drunk too much champagne at a gallery opening, and he had carried her bag into the lobby of her building, and now they were standing at the lift, and she could not, suddenly, remember why she had ever bothered to be careful around him.
+He had driven her for three years. He opened the car door. He waited at events. He never spoke unless she spoke first, and she had never, not once, said his first name out loud. Tonight she had drunk too much champagne at a gallery opening, and he had carried her bag into the lobby of her building, and now they were at the lift, and she could not, suddenly, remember why she had ever bothered to be careful.
 
-"Come up," she said.
-
-"Ma'am."
+"Ma'am," he said.
 
 "Don't."
 
 "Sorry."
 
-"I mean don't call me that. Not tonight."
+"I mean don't call me that. Not tonight," she said.
 
 He looked at her properly for the first time in three years. He looked at her the way she had always known he wanted to look at her, the way he had been holding himself back from looking at her every Tuesday and Friday at the school run and every Saturday night at the restaurant.
 
@@ -483,14 +481,15 @@ He found the zip at the side of her dress — certain, unhurried, the hands of a
     slug: "05-cabin",
     title: "The Cabin",
     voice: VOICE.kayla,
+    pairing: "Her & Him & Him",
     text:
-`The snow had started at four. By eight, it was clear no one was driving anywhere. The cabin had one bedroom, and a sofa long enough for one man, and three of them — her, and the two men she had known since university, the two men who had, separately, in the years since, both told her things they shouldn't have told her.
+`"Right," he said finally. "The bedroom is yours. We'll work it out down here."
 
-They had been drinking the wine the cabin owner had left as a welcome. The fire was high. She was warm in a way that had nothing to do with the fire.
+The snow had started at four. By eight it was clear no one was driving anywhere — the cabin had one bedroom, a sofa long enough for one man, and three of them. Her. And the two men she had known since university, the two men who had, separately, in the years since, both told her things they shouldn't have told her.
 
-"Right," one of them said finally. "The bedroom is yours. We'll work it out down here."
+They had been drinking the wine the cabin owner had left. The fire was high. She was warm in a way that had nothing to do with the fire.
 
-"Will you."
+"Will you," she said.
 
 It came out lower than she had meant it to. Both of them looked at her at the same time.
 
@@ -556,10 +555,11 @@ They didn't answer. They didn't need to.`,
     slug: "06-supervisor",
     title: "The Supervisor's Office",
     voice: VOICE.kayla,
+    pairing: "Her & Her",
     text:
-`Her viva had ended three hours ago. She had passed. There had been champagne in the common room, and her parents had called, and she had, somehow, drifted back along the empty corridor to her supervisor's office because her supervisor had said, come and see me before you leave, we should toast properly.
+`"You came back," her supervisor said.
 
-The door was open. The lamp was on. Her supervisor was at her desk, no longer in the academic robe — just a black silk shirt, a glass of wine, and the half-smile she had been giving her at supervisions for three years.
+Her viva had ended three hours ago. She had passed. Champagne in the common room. Her parents calling. And yet here she was, in the empty corridor, at this particular door — because her supervisor had said: come and see me before you leave, we should toast properly. The door was open. The lamp was on. A glass already poured.
 
 "Doctor," she said.
 
@@ -569,9 +569,11 @@ The door was open. The lamp was on. Her supervisor was at her desk, no longer in
 
 "Get used to it. Sit."
 
-She sat. There was a glass already poured for her. The office was warm and smelled of old paper and the faint perfume her supervisor had always worn that, for three years, she had pretended not to notice.
+She sat. The office was warm and smelled of old paper and the faint perfume her supervisor had always worn that, for three years, she had pretended not to notice.
 
-"I have something to say," her supervisor said, "and I have been waiting to say it. I waited because I was your supervisor, and I will not be accused of saying it before I had the right to."
+"Thank you," she said.
+
+Her supervisor said, "I have something to say. I have been waiting to say it for three years. I waited because I was your supervisor, and I will not be accused of saying it before I had the right to."
 
 "Say it."
 
@@ -591,27 +593,21 @@ There was a long silence. Her supervisor stood up, walked around the desk, and s
 
 "Stand up."
 
-She stood up. Her supervisor walked past her — past her, not toward her — to the door. She closed it. She turned the key.
+She stood. Her supervisor crossed to the door, locked it, and turned around. She stayed there, back to the door, watching her. She crossed the room herself.
 
-She turned around.
+"What took you so long," she said.
 
-She did not move from the door.
-
-"Come here," she said.
-
-She crossed the room.
-
-Her supervisor took her face in both hands — this woman who had kept her at exactly the right distance for three years, always measured, always right on the edge — and kissed her slowly. Like she had been thinking about this since the second chapter.
-
-"Since your second chapter," her supervisor said against her mouth.
+"Since your second chapter," her supervisor said, and kissed her slowly. Like she had been thinking about it since that chapter.
 
 "Your fourth session." She reached for her. "The Woolf one."
 
 Her supervisor pulled back one inch.
 
+"I know," she said.
+
 "Be still."
 
-She went still. Hands dropped. Her supervisor looked at her — the specific look of someone deciding what to do with something they have been waiting for — and then returned to her mouth with considerably less patience than before.
+She went still. "Yes," she said. Hands dropped. Her supervisor looked at her — the specific look of someone deciding what to do with something they have been waiting for — and then returned to her mouth with considerably less patience than before.
 
 Her hands moved into her hair. Then less talking.
 
@@ -630,15 +626,11 @@ Her mouth on her throat. She stopped being able to be still at all.`,
     title: "The Bodyguard",
     voice: VOICE.maya,
     text:
-`He had been hired six weeks ago. He stood in the corner of every room she was in. He drove behind her car. He was at the end of every corridor. He had, in six weeks, said perhaps forty words to her in total.
+`"You can stand somewhere else," she said.
 
-Tonight she had asked him to come into the suite with her, after the gala, instead of standing in the corridor. She had said it was a security check. They both knew it wasn't.
+He stood exactly as he stood in every other room — three metres from her, watching the door, hands clasped in front of him. He had been hired six weeks ago. He had, in six weeks, said perhaps forty words to her in total. Tonight she had asked him to come into the suite instead of standing in the corridor. She had said it was a security check. The suite was lit by one lamp. They both knew it wasn't.
 
-The suite was lit by one lamp. He stood, exactly as he stood in every other room, three metres from her, watching the door, hands clasped in front of him.
-
-"You can stand somewhere else," she said.
-
-"This is where I stand."
+"This is where I stand," he said.
 
 "Not tonight."
 
@@ -662,7 +654,7 @@ She walked across the room and stopped in front of him. She had never been this 
 
 He didn't breathe.
 
-"Would you."
+"Would you," she said.
 
 A pause. A small, rough pause.
 
@@ -690,7 +682,7 @@ His hands found her hips — large, careful, the restrained precision of a man t
 
 A pause. Then he told her. Quietly. Specifically. She felt heat move through her from her chest down.
 
-"And if I said yes to that?"
+"And if I said yes to that?" she said.
 
 "Then I'd do exactly what I said."
 
@@ -715,13 +707,11 @@ She had six weeks of corners to work through. She intended to take her time.`,
     title: "The Proposition",
     voice: VOICE.maya,
     text:
-`The members' club was the kind that didn't have a sign on the door. She had come alone. She had been at the bar for an hour, deliberately not looking at the man at the corner table who had been, deliberately, looking at her.
+`"From the gentleman," the waiter said.
 
-The waiter brought a drink she hadn't ordered. The same as the one she was already drinking.
+The members' club was the kind without a sign on the door. She had been at the bar for an hour, deliberately not looking at the man at the corner table who had been, deliberately, looking at her. The waiter set a drink in front of her — the same as the one she was already drinking.
 
-"From the gentleman."
-
-"Tell the gentleman thank you."
+"Tell the gentleman thank you," she said.
 
 "He asked if he could come over."
 
@@ -770,17 +760,15 @@ She reached for his tie.
   {
     slug: "09-neighbour",
     title: "The Neighbour",
-    voice: VOICE.james,
+    voice: VOICE.theo,
     text:
-`She had moved in across the hall three weeks ago. He had seen her exactly four times — once in the lift, once on the stairs, twice in the lobby — and each time he had thought, don't, and each time, walking back into his own flat, he had thought it again.
+`"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow," she said.
 
-The knock came at half past ten.
+She had moved in across the hall three weeks ago. He had seen her exactly four times — once in the lift, once on the stairs, twice in the lobby — and each time he had thought: don't. Each time, walking back into his own flat, he had thought it again.
 
-He opened the door. She was holding an empty wine glass and a small, embarrassed smile.
+The knock had come at half past ten. He had opened the door. She was holding an empty wine glass.
 
-"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow."
-
-"I have one."
+"I have one," he said.
 
 "Brilliant. Sorry. I'll bring it back."
 
@@ -834,26 +822,26 @@ He went still.
 
 He looked at her. Three weeks of choosing not to, resolved in three seconds.
 
-"Now," she said, and pulled him back in.
+"Now," she said.
 
-"Three weeks," he said against her mouth.
+She pulled him back in.
 
-"Don't stop."`,
+"Three weeks," he said.
+
+"Don't stop," she said.`,
   },
   {
     slug: "10-night-manager",
     title: "The Night Manager",
-    voice: VOICE.james,
+    voice: VOICE.theo,
     text:
-`He was the night manager. He had been the night manager for nine years. He noticed everything because that was the job — who came in, who left, who had drunk too much, who needed help, who needed a taxi, who needed to be left alone.
+`"I think I locked my key in the room," she said.
 
-She had checked in three days ago. Suite four-twelve. She had been to a different event every night, and come back at a different hour each time, and tonight she came back at midnight, alone, in a midnight-blue dress that was — he could tell, because he noticed everything — too good for the event she had been to.
+He was the night manager. Nine years. He noticed everything — who came in, who left, who had drunk too much, who needed help, who needed to be left alone.
 
-She came to the desk. She had been crying, or about to cry, he wasn't sure which.
+She had checked in three days ago. Suite four-twelve. She had been to a different event every night, and come back at a different hour each time. Tonight she came back at midnight, alone, in a midnight-blue dress that was — he could tell, because he noticed everything — too good for the event she had been to. She had been crying, or about to cry, he wasn't sure which.
 
-"I think I locked my key in the room."
-
-"I'll walk you up."
+"I'll walk you up," he said.
 
 "You don't have to."
 
@@ -895,7 +883,7 @@ She turned when he was close. He touched her face — nine years of professional
 
 "You should know that."
 
-"I know." She opened her eyes. "I don't care."
+"I know." She opened her eyes. "I don't care," she said.
 
 He kissed her.
 
@@ -915,7 +903,7 @@ He came to her.`,
 
 async function generateOne(pick) {
   const outputPath = path.join(OUTPUT_DIR, `${pick.slug}.mp3`);
-  if (!FORCE && fs.existsSync(outputPath)) {
+  if (!FORCE && !DRY_RUN && fs.existsSync(outputPath)) {
     console.log(`  - skip ${pick.slug} (${pick.voice.name}) — already exists`);
     return;
   }
@@ -926,12 +914,27 @@ async function generateOne(pick) {
   const styleFor = MV_INTENSITY_STYLE[intensity] ?? MV_DEFAULT_STYLE;
 
   const tagged = tagScriptForMultiVoice(pick.text, pairing);
-  const useMultiVoice = tagged.distinctCharRoles >= 2 && tagged.explicitAttributions >= 1;
+  // Same-gender pairings (Her & Her, Him & Him) produce 0 explicit attributions because
+  // gender-pronoun disambiguation can't distinguish speakers — toggle does the work.
+  // Allow multi-voice when enough character segments were detected via toggle alone.
+  const enoughToggleChars = tagged.segments.filter((s) => s.role !== "NARRATOR").length >= 4;
+  const useMultiVoice = tagged.distinctCharRoles >= 2 && (tagged.explicitAttributions >= 1 || enoughToggleChars);
 
   const buffers = [];
   if (useMultiVoice) {
     const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing);
+    const VNAMES = { [MV_CLARA]:"Clara",[MV_MAYA]:"Maya",[MV_KAYLA]:"Kayla",[MV_JAMES]:"James",[MV_ETHAN]:"Ethan",[MV_THEO]:"Theo" };
     console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${tagged.segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
+    if (DRY_RUN) {
+      console.log(`  pairing="${pairing}" charA=${VNAMES[charA]||charA.slice(0,8)} charB=${VNAMES[charB]||charB.slice(0,8)}`);
+      for (const seg of tagged.segments) {
+        const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
+        const vname = VNAMES[vid] ?? vid.slice(0,8);
+        const preview = seg.text.replace(/\n/g," ").slice(0,72);
+        console.log(`  [${seg.role.padEnd(8)}] ${vname.padEnd(6)} | ${preview}`);
+      }
+      return;
+    }
     for (const seg of tagged.segments) {
       const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
       const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
@@ -942,6 +945,7 @@ async function generateOne(pick) {
     }
   } else {
     console.log(`  - gen  ${pick.slug} single-voice (${pick.voice.name}) — no multi-voice evidence "${pick.title}"`);
+    if (DRY_RUN) { console.log(`  [single-voice — no character roles detected]`); return; }
     const pieces = splitTextToLimit(pick.text, 4500);
     for (let i = 0; i < pieces.length; i++) {
       const style = i === 0 ? Math.min(0.80, styleFor.narrator + 0.15) : styleFor.narrator;

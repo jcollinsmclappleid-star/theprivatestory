@@ -184,68 +184,1168 @@ function assess(r) {
   return { pass: issues.length === 0, issues };
 }
 
-// ── Synthetic sample texts for Them pairings ──────────────────────────────
+// ── Synthetic stress-test samples (10 per pairing × 6 pairings = 60 total) ─
+// Voice IDs: Clara=FA6HhUjVbervLw2rNl8M Maya=tQ4MEZFJOzsahSEEZtHK
+//             James=AeRdCCKzvd23BpJoofzx Theo=jfIS2w2yJi0grJZPyEsk
 const SYNTHETIC_SAMPLES = [
-  {
-    label: "Her & Them (synthetic)",
-    pairing: "Her & Them",
-    voiceId: "FA6HhUjVbervLw2rNl8M",
-    text: `The rooftop bar is almost empty. You arrived early, before the city lights softened everything into something bearable.
 
-"You look like you're waiting for something," they say, setting a glass beside yours without asking.
+  // ── Her & Him ─────────────────────────────────────────────────────────────
+  { label: "Her & Him S01 — standard he said / she said", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The train compartment was empty except for the two of them.
 
-You glance up. "Maybe I am."
+"You took the last seat in first class," he said.
 
-"Same," they say, their voice unhurried. "I've seen you here before. You always sit at the end."
+"And you took the seat across from me," she said, not looking up from her book.
 
-She laughed softly, surprised by it. "Is that your opening?"
+"Fair point," he said. He set his bag down. "Daniel."
 
-"It's an observation," they reply. "Openings are overrated."
+"I know who you are," she said. She turned a page. "Everyone does."
 
-"You're not wrong," she says, turning toward them.
+"Then you have the advantage," he said. "Who are you."
 
-"I never am," they whisper.`,
-  },
-  {
-    label: "Him & Them (synthetic)",
-    pairing: "Him & Them",
-    voiceId: "AeRdCCKzvd23BpJoofzx",
-    text: `The gallery is quiet at this hour. He found the piece by accident, following a corridor that seemed to lead nowhere.
+"Someone who reads on trains," she said. She looked up. "Sit down, Daniel."` },
 
-"You've been standing there for a while," they say, stepping into his peripheral vision.
+  { label: "Her & Him S02 — name attribution (Marcus)", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She had been standing at the bar for exactly as long as it took Marcus to notice her.
 
-He doesn't move. "It doesn't let you go easily."
+"You're not drinking it," Marcus said, nodding at the untouched glass.
 
-"No," they say. "It doesn't."
+"I ordered it as an excuse to stand here," she said.
 
-He finally turns. "Do you know the artist?"
+"That's either very honest or very bold," Marcus said.
 
-"I am the artist," they reply, a half-smile shifting their expression.
+"Both," she said.
 
-"Of course you are," he says, feeling the corners of his own mouth respond.
+Marcus said, "Then I'll get you one you'll actually drink."
 
-"Is that a problem?" they whisper.`,
-  },
-  {
-    label: "Them & Them (synthetic)",
-    pairing: "Them & Them",
-    voiceId: "FA6HhUjVbervLw2rNl8M",
-    text: `The library closes in twenty minutes. They found each other in the foreign-languages section, as they always did on Thursdays.
+"You already know what I want," she said. "That's the problem."` },
 
-"You're late," they say, not looking up from the page.
+  { label: "Her & Him S03 — second-person you say", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `He has been watching you from the end of the gallery for twenty minutes.
 
-"I was finishing something," they say, dropping into the opposite chair.
+"I keep coming back to this one," he said, stopping beside you.
 
-"You're always finishing something."
+"So do I," you say.
 
-"And you're always waiting," they say, finally looking up.
+"Every Thursday," he said. "I've noticed."
 
-"Maybe I like waiting," they reply. "For the right thing."
+"You've been here every Thursday too," you say.
 
-"Is that what this is?" they whisper.
+"I have," he said. He doesn't look at the painting. "I think we both know it's not about the painting."
 
-"I think it might be," they say.`,
-  },
+"No," you say. "It isn't."` },
+
+  { label: "Her & Him S04 — mixed he said + you say", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The hotel bar is closing. He is the only other person at the counter.
+
+"Last call," he said.
+
+"I know," you say. "I can't seem to leave."
+
+"Neither can I," he said. He turned toward her. "I saw you at the conference."
+
+"I know," you say. "I saw you seeing me."
+
+"Is that an invitation or a warning?" he said.
+
+"Depends on what you do next," you say.` },
+
+  { label: "Her & Him S05 — love interest dominant (he said ×5)", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She came to the gallery opening because she knew he would be there.
+
+"You look like you hate every painting in this room," he said.
+
+She smiled. "Only most of them."
+
+"Honest," he said. He moved closer. "Which one is the exception."
+
+She pointed.
+
+"That's mine," he said. "I painted it last winter. After something ended."
+
+She turned to look at him properly. He let her.
+
+"You could have said nothing," he said. "Most people do."
+
+"I'm not most people," she said.
+
+"No," he said. "I can see that."` },
+
+  { label: "Her & Him S06 — protagonist dominant (she said ×4)", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She found him at the back of the bookshop, in a section nobody visited.
+
+"You're hiding," she said.
+
+He looked up. "From the party."
+
+"It's your own party," she said.
+
+"That makes it worse," he said.
+
+"Come back inside," she said.
+
+"Why."
+
+"Because," she said, "I want to dance with you. Once. Before you go back to being unavailable."
+
+He closed the book. "Who says I'm unavailable."
+
+"You do," she said. "Every day."` },
+
+  { label: "Her & Him S07 — rapid short exchange (7 segs)", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `He was standing in her kitchen at seven a.m. looking for coffee.
+
+"Top shelf," she said.
+
+"Found it," he said.
+
+"Mugs are below," she said.
+
+"Got it," he said.
+
+"Sugar's on the table," she said.
+
+"I don't take sugar," he said.
+
+She looked at him across the kitchen. "I know," she said. "I've been watching you have coffee for three months."` },
+
+  { label: "Her & Him S08 — toggle-only no cues → single-voice correct", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The room was quiet. The fire had burned low.
+
+"Stay."
+
+"I can't."
+
+"You can."
+
+"That's different from should."
+
+"Is it."
+
+"You know it is."
+
+"Then tell me to go."
+
+A long silence.
+
+"I can't do that either."` },
+
+  { label: "Her & Him S09 — she said + he said balanced", pairing: "Her & Him", voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    text: `She knocked on the door of his study at half past eleven.
+
+"I can't sleep," she said.
+
+He set down his pen. "Neither can I."
+
+"I know," she said. "I can hear you walking around."
+
+"Sorry," he said.
+
+"Don't be," she said. She sat across from him. "What are you thinking about."
+
+"You know what I'm thinking about," he said.
+
+"Say it," she said.
+
+He looked at her. "You," he said.
+
+"I know," she said.` },
+
+  { label: "Her & Him S10 — opening female then male dialogue", pairing: "Her & Him", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `"I know you're awake," she said.
+
+He was. He had been lying still for an hour, listening to her breathe.
+
+"Yes," he said.
+
+"Then stop pretending," she said.
+
+He turned toward her. She was already looking at him.
+
+"How long," he said.
+
+"Since Tuesday," she said.
+
+"Me too," he said.
+
+She reached over and turned off the lamp. "Good," she said.` },
+
+  // ── Her & Her ─────────────────────────────────────────────────────────────
+  { label: "Her & Her S01 — balanced toggle 8 segs", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She found her on the roof terrace at midnight.
+
+"You're still here," the woman said.
+
+"Where else would I be," she said.
+
+"Anywhere sensible," the woman said.
+
+"Since when am I sensible," she said.
+
+"Fair," the woman said. She poured a glass and passed it. "Are you going to tell me why you really came up here?"
+
+"No," she said. "Are you going to tell me why you waited?"
+
+"No," the woman said.
+
+They drank in the kind of silence that isn't empty.` },
+
+  { label: "Her & Her S02 — long balanced exchange 12 segs", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The studio was closed. She let herself in with a key she wasn't supposed to have anymore.
+
+"I knew you'd come back," the woman at the easel said without turning.
+
+"I came for the painting," she said.
+
+"No you didn't," the woman said.
+
+"No," she said. "I didn't."
+
+"Then say what you came to say," the woman said.
+
+"I don't know how," she said.
+
+"Try," the woman said.
+
+"I was wrong," she said. "About all of it."
+
+"I know," the woman said.
+
+"Is that enough," she said.
+
+"It's a start," the woman said.` },
+
+  { label: "Her & Her S03 — short 3 segs → single-voice correct", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The office was empty. She had come back for her bag.
+
+She said to the woman still at her desk: "Still here."
+
+"Always," the woman said.
+
+"Get some sleep," she said.
+
+The woman smiled but didn't look up.` },
+
+  { label: "Her & Her S04 — only protagonist you say → single-voice correct", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She is sitting across the desk from you, waiting.
+
+"I've made a decision," you say.
+
+She nods. She already knows.
+
+"I'm not going to wait anymore," you say.
+
+"Good," she says.
+
+"I mean it," you say.
+
+"I know you do," she says, and smiles in a way that means she's been waiting for you to figure this out for a long time.
+
+"You already knew," you say.
+
+"I did," she says.` },
+
+  { label: "Her & Her S05 — named character (Elena) + toggle", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She had been avoiding Elena for two weeks. Elena, apparently, had not been avoiding her.
+
+"Dinner," Elena said. Not a question.
+
+"I'm busy," she said.
+
+"You've been busy for two weeks," Elena said.
+
+"Fine," she said. "Dinner."
+
+"Tonight," Elena said.
+
+"Tonight," she said.
+
+Elena looked at her steadily. "Whatever you're afraid of — don't be."
+
+"Easy for you to say," she said.
+
+"I've been waiting," Elena said. "I'm very patient."
+
+"I know," she said. "That's the problem."` },
+
+  { label: "Her & Her S06 — toggle with narrative breaks", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The hotel room had one bed. They had booked it that way. Neither had mentioned it until now.
+
+"You could take the sofa," the woman said.
+
+"I could," she said.
+
+The woman crossed to the window. The city lights were still on below.
+
+"Neither of us is going to the sofa," the woman said.
+
+"No," she said.
+
+"So we should probably say something," the woman said.
+
+"I'm saying it now," she said.` },
+
+  { label: "Her & Her S07 — unbalanced but both present (3A, 5B)", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She cornered her supervisor after the meeting.
+
+"You knew," she said.
+
+"Yes," her supervisor said.
+
+"You knew and you said nothing," she said.
+
+"I was waiting for you to figure it out yourself," her supervisor said.
+
+"That's—" she said. Stopped.
+
+"Infuriating?" her supervisor said.
+
+"Yes," she said.
+
+"Good," her supervisor said. "That means you're paying attention."` },
+
+  { label: "Her & Her S08 — both speak clearly, 8 segs", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She found her at the hotel pool at midnight. The surface of the water was still.
+
+"I didn't know you were here too," the woman said.
+
+"I registered last minute," she said.
+
+"Good conference," the woman said.
+
+"Better now," she said.
+
+The woman looked at her directly.
+
+"I'm going to say something," the woman said, "and I need you not to panic."
+
+"Okay," she said.
+
+"I've been thinking about you since February," the woman said.
+
+"So have I," she said. "About you."` },
+
+  { label: "Her & Her S09 — exactly 4 segs minimum gate", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The fitting room had one curtain. The designer pulled it closed behind them both.
+
+"You're not looking at the dress," the woman said.
+
+"No," she said.
+
+"Turn around," the woman said.
+
+She did. "Well?"
+
+"Perfect," the woman said.` },
+
+  { label: "Her & Her S10 — fire exit, both sides", pairing: "Her & Her", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `It was the kind of party neither of them wanted to be at. They found each other by the fire exit.
+
+"Thinking about leaving?" the woman said.
+
+"Constantly," she said.
+
+"Me too," the woman said. "But I keep finding reasons to stay."
+
+"What kind of reasons," she said.
+
+"The kind that appear by fire exits," the woman said.
+
+"That's very smooth," she said.
+
+"Thank you," the woman said.` },
+
+  // ── Him & Him ─────────────────────────────────────────────────────────────
+  { label: "Him & Him S01 — balanced toggle 8 segs", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `They had been sharing an office for three years. Tonight they were the last two in the building.
+
+"You didn't go to the leaving drinks," he said.
+
+"No," said the other man. "You either."
+
+"No," he said.
+
+"Interesting," the other man said.
+
+"Is it," he said.
+
+"We both skipped the same party," the other man said.
+
+"That's either a coincidence," he said, "or it isn't."
+
+"It isn't," the other man said.` },
+
+  { label: "Him & Him S02 — long balanced 12 segs", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The mountain refuge had one room left. They had both booked it online.
+
+"I'll take the floor," the man said.
+
+"I'm not going to let you take the floor," he said.
+
+"I don't mind," the man said.
+
+"I mind," he said.
+
+"Why," the man said.
+
+He didn't answer immediately.
+
+"Because," he said, "I've been finding reasons to speak to you all day and this is another one."
+
+A silence.
+
+"The bed is big enough," the man said.
+
+"Yes," he said.
+
+"Then stop arguing," the man said.
+
+"Yes," he said.` },
+
+  { label: "Him & Him S03 — short 3 segs → single-voice correct", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The bar was closing. Only two of them left.
+
+"Last round?" the man said.
+
+"No," he said.
+
+"Somewhere else then," the man said.` },
+
+  { label: "Him & Him S04 — named character (Rafe) + toggle", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He had known Rafe since university. Tonight was different.
+
+"You're staring," Rafe said.
+
+"I know," he said.
+
+"You've been staring for an hour," Rafe said.
+
+"I know," he said.
+
+"Say something else," Rafe said.
+
+"I can't," he said.
+
+"Try," Rafe said.
+
+"I think I've been in love with you for approximately six years," he said.
+
+"Seven," Rafe said. "I got there first."` },
+
+  { label: "Him & Him S05 — you say protagonist + toggle", pairing: "Him & Him", voiceId: "jfIS2w2yJi0grJZPyEsk",
+    text: `You and the man across the aisle have been exchanging looks since Paris.
+
+"Brussels already," he said.
+
+"Time flies," you say.
+
+"Does it," he said.
+
+"When you're paying attention," you say.
+
+"And if I've been paying attention to the wrong things," he said.
+
+"Depends on what you've been looking at," you say.
+
+He looks at you directly. "Then it's the right thing," he said.` },
+
+  { label: "Him & Him S06 — toggle with narrative breaks", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The dressing room backstage was small. They had shared smaller.
+
+"Good show," the other man said.
+
+"Better crowd than yesterday," he said.
+
+"You were looking for someone," the other man said.
+
+"Was I," he said.
+
+"Front row, left side," the other man said.
+
+"Am I that obvious," he said.
+
+"Only to me," the other man said.` },
+
+  { label: "Him & Him S07 — named (Marcus) unbalanced both present", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He ran into Marcus at the airport at six in the morning.
+
+"Same flight?" Marcus said.
+
+"Apparently," he said.
+
+"Same gate," Marcus said.
+
+"Apparently," he said again.
+
+"Seat?" Marcus said.
+
+"14C," he said.
+
+"14D," Marcus said.
+
+He stopped walking. "You checked my boarding pass."
+
+"I checked the passenger list," Marcus said. "I have access."
+
+"That's either very impressive or very alarming," he said.
+
+"Both," Marcus said.` },
+
+  { label: "Him & Him S08 — both speak clearly 8 segs", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The gallery was closing. He had been in front of the same piece for forty minutes when the other man returned.
+
+"Still here," the man said.
+
+"Still here," he said.
+
+"You're going to buy it," the man said.
+
+"I can't afford it," he said.
+
+"You can," the man said. "I know what you earn."
+
+"That's disconcerting," he said.
+
+"You've been disconcerting me since March," the man said.
+
+"Then we're even," he said.` },
+
+  { label: "Him & Him S09 — exactly 5 segs each side", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The sauna at the hotel had been empty for an hour. Then it wasn't.
+
+"Busy day," the man said.
+
+"Very," he said.
+
+"Same conference?" the man said.
+
+"Same company," he said. "I'm your new account director."
+
+The man looked at him steadily. "Well," he said. "This is going to be complicated."
+
+"I know," he said.` },
+
+  { label: "Him & Him S10 — one dominates, other appears", pairing: "Him & Him", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He found his old friend on the same park bench they'd always used.
+
+"You didn't come to the reunion," his friend said.
+
+"No," he said.
+
+"You said you would," his friend said.
+
+"I know," he said.
+
+"You knew I'd be there," his friend said.
+
+"Yes," he said.
+
+"So why—" his friend said.
+
+"Because I wasn't ready," he said. "I am now."
+
+His friend was quiet.
+
+"Now you say something," he said.
+
+"I've been waiting five years," his friend said.` },
+
+  // ── Her & Them ────────────────────────────────────────────────────────────
+  { label: "Her & Them S01 — they said ×3 standard", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The conference hotel bar was quiet. She had been avoiding the closing reception.
+
+"You missed the last panel," they said, settling onto the stool beside her.
+
+"I know," she said.
+
+"It was about you," they said.
+
+"I know," she said. "That's why I missed it."
+
+"Fair," they said. They ordered without looking at the menu. "I'm Sasha."
+
+"I know who you are," she said. "Everyone does."
+
+"And yet you're talking to me," they said.
+
+"I'm listening," she said. "It's different."` },
+
+  { label: "Her & Them S02 — mixed they + she", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She had been watching them work for an hour before they noticed.
+
+"You've been here a while," they said.
+
+"I find it meditative," she said.
+
+"Watching someone install exhibition panels?" they said.
+
+"Watching you specifically," she said.
+
+"That's direct," they said.
+
+"I find it saves time," she said.
+
+"It does," they said. "What do you want to do with the time you've saved?"
+
+She smiled. "I have some ideas," she said.` },
+
+  { label: "Her & Them S03 — toggle 6 segs no they → multi via charSegs", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The workshop had overrun by an hour. She was still at her desk when they turned off most of the lights.
+
+"Last one again," they said.
+
+"It's a theme," she said.
+
+"Good themes are worth repeating," they said.
+
+"Is that a compliment," she said.
+
+They smiled. The remaining light caught the angles of their face.
+
+"Take it however you like," they said.` },
+
+  { label: "Her & Them S04 — name attribution (River)", pairing: "Her & Them", voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    text: `She had been introduced to River three times at three different events. This was the fourth.
+
+"We keep meeting," River said.
+
+"I'm starting to think it's deliberate," she said.
+
+"On my part," River said, "it is."
+
+"River," she said.
+
+"Yes," River said.
+
+"Stop being charming and ask me to dinner," she said.
+
+"Dinner," River said. "Tonight."
+
+"Tonight," she said.` },
+
+  { label: "Her & Them S05 — long they + she exchange", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She had been trying not to look at them all evening. It wasn't working.
+
+"You're trying very hard not to look at me," they said.
+
+"That obvious?" she said.
+
+"Only because I've been trying not to look at you," they said.
+
+She turned to face them properly. "That's a lot of effort for a party."
+
+"You're worth the effort," they said.
+
+"You don't know me," she said.
+
+"I'd like to," they said.
+
+"Then stop trying not to look at me," she said.
+
+"Deal," they said.` },
+
+  { label: "Her & Them S06 — love interest dominant they said ×5", pairing: "Her & Them", voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    text: `She found them at the back of the train, in the unreserved section.
+
+"No seat?" they said.
+
+"Overbooked," she said.
+
+"There's one here," they said, moving their bag.
+
+"Thank you," she said.
+
+"Three hours to the city," they said. "Good book?"
+
+"Getting better," she said.
+
+"I hope that's not entirely about the book," they said.
+
+She looked up from the page. "No," she said. "It isn't."
+
+"Good," they said.` },
+
+  { label: "Her & Them S07 — you say + they said", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `You've been sitting across from them for twenty minutes and still haven't said what you came to say.
+
+"You're thinking very loudly," they said.
+
+"Sorry," you say.
+
+"Don't be," they said. "I find it interesting."
+
+"You'd find anything interesting," you say.
+
+"Not anything," they said. "You, specifically."
+
+"That's," you say, "a lot to process."
+
+"Take your time," they said. "I'll wait."` },
+
+  { label: "Her & Them S08 — short <4 segs no they → single-voice correct", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `She met them at the coat check.
+
+"Same coat," they said.
+
+"Different owner," she said.
+
+They smiled. "Pity," they said.` },
+
+  { label: "Her & Them S09 — both they and she explicitly", pairing: "Her & Them", voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    text: `She was the last person they expected to see at their own book launch.
+
+"You came," they said.
+
+"I did," she said.
+
+"You said you wouldn't," they said.
+
+"I changed my mind," she said.
+
+"Why," they said.
+
+"Because I read it," she said.
+
+"And?" they said.
+
+"You wrote about me," she said.
+
+"Yes," they said.
+
+"So I'm here," she said.
+
+"Good," they said.` },
+
+  { label: "Her & Them S10 — you say protagonist long exchange", pairing: "Her & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `You've known them for three years. Tonight something is different.
+
+"You're quiet," they said.
+
+"I'm thinking," you say.
+
+"About," they said.
+
+"Don't make me say it," you say.
+
+"I won't make you do anything," they said. "But I'd like you to."
+
+You look at them. "I think I've been in love with you since the residency," you say.
+
+"The residency was three years ago," they said.
+
+"I know," you say.
+
+"I've been in love with you since the residency," they said.
+
+"Then we've wasted three years," you say.
+
+"No," they said. "We've been building something. This is just the next part."` },
+
+  // ── Him & Them ────────────────────────────────────────────────────────────
+  { label: "Him & Them S01 — they said CHAR_B + he said CHAR_A", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He found them in the archive, deep in a building no one visited.
+
+"You're not supposed to be in here," they said.
+
+"Neither are you," he said.
+
+"I have access," they said.
+
+"So do I," he said.
+
+"Then we're both here legitimately," they said, "and for different reasons."
+
+"What's yours," he said.
+
+"Research," they said. "What's yours?"
+
+"I followed the light under the door," he said.
+
+"Honest," they said.
+
+"Always," he said.` },
+
+  { label: "Him & Them S02 — toggle 7 segs no they → multi via charSegs", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He had been walking past their desk three times a day for a week.
+
+"You keep walking past," they said.
+
+"Shortcut," he said.
+
+"There's no shortcut that way," they said.
+
+"There is now," he said.
+
+They looked at him steadily. "What do you want to say?"
+
+"Something I probably shouldn't," he said.
+
+"Say it anyway," they said.` },
+
+  { label: "Him & Them S03 — mixed they + he", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `The night shift had two hours left. He had run out of things to pretend to read.
+
+"You're not reading," they said.
+
+"Caught," he said.
+
+"You've been watching me work for forty minutes," they said.
+
+"I find it interesting," he said.
+
+"The work?" they said.
+
+"Not exactly," he said.
+
+"Then what," they said.
+
+"The person doing it," he said.` },
+
+  { label: "Him & Them S04 — name attribution (Ari)", pairing: "Him & Them", voiceId: "jfIS2w2yJi0grJZPyEsk",
+    text: `He had been told to report to the creative director. The creative director was Ari.
+
+"Sit," Ari said.
+
+He sat. "Thank you for seeing me."
+
+"You requested the meeting," Ari said.
+
+"I did," he said.
+
+"So," Ari said.
+
+"I think I've been approaching this wrong," he said.
+
+"The project?" Ari said.
+
+"Among other things," he said.
+
+Ari looked at him. "Define other things," Ari said.
+
+"I'd rather show you," he said.` },
+
+  { label: "Him & Them S05 — short <4 segs → single-voice correct", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He met them in the elevator.
+
+"Twelve?" they said.
+
+"Twelve," he said.
+
+They rode in silence.
+
+"Same floor," they said, when the doors opened.` },
+
+  { label: "Him & Them S06 — love interest dominant they said ×5", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He was new to the building. They had been there three years.
+
+"Lost?" they said.
+
+"A little," he said.
+
+"Conference room is left," they said.
+
+"I know where the conference room is," he said.
+
+"Then you're not lost," they said.
+
+"Maybe I was looking for something else," he said.
+
+"Like what," they said.
+
+"Like a reason to come this way," he said.
+
+"I'm this way every morning at nine," they said.
+
+"Good to know," he said.` },
+
+  { label: "Him & Them S07 — protagonist dominant he said ×4", pairing: "Him & Them", voiceId: "jfIS2w2yJi0grJZPyEsk",
+    text: `He had asked for the introduction. He was regretting the reason he'd given.
+
+"You said it was urgent," they said.
+
+"I lied," he said.
+
+"Why," they said.
+
+"Because I wanted to meet you properly," he said.
+
+"We've met before," they said.
+
+"You don't remember," he said.
+
+"I remember," they said.
+
+"Then why—" he said.
+
+"Because I wanted to see if you'd admit it," they said. "Now you have."` },
+
+  { label: "Him & Them S08 — you say + they said", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `They've been in three of your meetings this week. You're starting to think it isn't accidental.
+
+"You keep showing up," you say.
+
+"I was invited," they said.
+
+"The first time," you say.
+
+"The second time I invited myself," they said. "The third I was genuinely supposed to be there."
+
+"And today?" you say.
+
+"Today," they said, "I'm here for you specifically."` },
+
+  { label: "Him & Them S09 — long exchange they + he", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He waited until the workshop had cleared before speaking.
+
+"You disagreed with everything I said," he said.
+
+"I disagreed with your conclusions," they said.
+
+"That's most of what I said," he said.
+
+"Your methodology was sound," they said.
+
+"High praise," he said.
+
+"It is," they said. "From me."
+
+"Should I be flattered," he said.
+
+"You should be curious," they said.
+
+"I am," he said. "About the work."
+
+"Just the work?" they said.
+
+"Among other things," he said.
+
+"Then we should have coffee," they said. "And argue properly."
+
+"Tonight," he said.
+
+"Tonight," they said.` },
+
+  { label: "Him & Them S10 — named protagonist (Marcus) + they said", pairing: "Him & Them", voiceId: "AeRdCCKzvd23BpJoofzx",
+    text: `He introduced himself as Marcus. They already knew.
+
+"Marcus," they said. "The one who turned down the residency."
+
+"The same," he said.
+
+"Why," they said.
+
+"Wrong time," he said.
+
+"Is the time better now?" they said.
+
+"Considerably," he said.
+
+"Good," they said. "We still have the room."
+
+"You kept it," he said.
+
+"We kept it," they said.` },
+
+  // ── Them & Them ───────────────────────────────────────────────────────────
+  { label: "Them & Them S01 — they said alternating ×6", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The library closes in twenty minutes. They have been sitting across from each other for an hour.
+
+"You're still here," they said.
+
+"So are you," they said.
+
+"I was waiting to see how long you'd stay," they said.
+
+"I was waiting for the same thing," they said.
+
+A pause.
+
+"Interesting," they said.
+
+"Very," they said.` },
+
+  { label: "Them & Them S02 — toggle 4 segs", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `They arrived at the residency on the same day, in the same car park, at the same moment.
+
+"Same studio?" one of them said.
+
+"Apparently," they said.
+
+"We'll need to divide the space," they said.
+
+"Or not divide it," they said.
+
+They looked at each other.
+
+"Let's see how it goes," they said.` },
+
+  { label: "Them & Them S03 — toggle 12 segs long exchange", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `They met at the collective's open studio. Both had been told to come.
+
+"You're the poet," they said.
+
+"You're the painter," they said.
+
+"This feels arranged," they said.
+
+"It was," they said. "By Marisol. She's been trying for a year."
+
+"A year," they said. "Why now?"
+
+"She finally gave up waiting for us to meet accidentally," they said.
+
+"And here we are," they said.
+
+"Here we are," they said. "Which piece is yours?"
+
+"All of them," they said.
+
+"Oh," they said.
+
+"Is that a problem," they said.
+
+"It's the opposite of a problem," they said.` },
+
+  { label: "Them & Them S04 — named character (Jordan)", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `They had been introduced to Jordan at a lecture, once, briefly.
+
+"Jordan," they said.
+
+"You remembered," Jordan said.
+
+"Hard to forget," they said.
+
+"I'll take that," Jordan said. "You're the architect."
+
+"The one who never builds anything," they said.
+
+"Yet," Jordan said.
+
+"Yet," they said.
+
+"Come to the site tomorrow," Jordan said. "I'll show you something real."
+
+"I'll be there," they said.` },
+
+  { label: "Them & Them S05 — both characters named (Sam and River)", pairing: "Them & Them", voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    text: `They arrived at the same residency: Sam and River, neither knowing the other.
+
+"River," Sam said.
+
+"Sam," River said.
+
+"They gave us adjacent studios," Sam said.
+
+"They always do this," River said.
+
+"Do what," Sam said.
+
+"Put us next to people they think we'd like," River said.
+
+"And do you?" Sam said.
+
+"Ask me at the end of the month," River said.
+
+"I will," Sam said.` },
+
+  { label: "Them & Them S06 — short <4 segs → single-voice correct", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `They passed each other at the exit.
+
+"Good session," they said.
+
+"Very," they said.
+
+They parted without further comment. But both looked back.` },
+
+  { label: "Them & Them S07 — toggle 12 segs doorway exchange", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The reading had run late. They ended up sheltering from the rain in the same doorway.
+
+"Do you know each other?" someone asked before leaving.
+
+"Not yet," they both said, at the same time.
+
+A silence.
+
+"Well," they said.
+
+"Well," they said.
+
+"I liked your piece," they said.
+
+"I liked yours," they said.
+
+"The second stanza," they said.
+
+"The last image," they said.
+
+"Yes," they said.
+
+"Yes," they said.
+
+"Coffee?" they said.
+
+"Obviously," they said.` },
+
+  { label: "Them & Them S08 — they say alternating present tense", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `The late shift ends at two. They always meet at the same vending machine.
+
+"Long night," they say, pressing the button for the wrong thing.
+
+"As always," they say.
+
+"You got the wrong drink again," they say.
+
+"I know," they say. "Same as you."
+
+They swap cups. This is a ritual that started three weeks ago.
+
+"We should just admit we do this on purpose," they say.
+
+"Probably," they say.
+
+"Tomorrow night?" they say.
+
+"Tonight's not over," they say.` },
+
+  { label: "Them & Them S09 — two named characters (Quinn and Sasha)", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `Quinn and Sasha had been assigned to the same project.
+
+"You want to lead," Quinn said.
+
+"So do you," Sasha said.
+
+"True," Quinn said.
+
+"We could share it," Sasha said.
+
+"That never works," Quinn said.
+
+"It does," Sasha said, "if both people actually want it to."
+
+Quinn looked at Sasha for a long moment.
+
+"Is that what you want?" Quinn said.
+
+"Yes," Sasha said. "Both things."
+
+"Both," Quinn said.
+
+"The project," Sasha said. "And whatever this is."
+
+"Yes," Quinn said. "Both."` },
+
+  { label: "Them & Them S10 — toggle only <4 segs → single-voice correct", pairing: "Them & Them", voiceId: "FA6HhUjVbervLw2rNl8M",
+    text: `Two people. One bench. A city at midnight.
+
+"You come here often?"
+
+"That's the worst line anyone has ever used on me."
+
+"I know. But do you?"
+
+A pause.
+
+"Yes."` },
 ];
 
 // ── DB fetch ───────────────────────────────────────────────────────────────
@@ -333,13 +1433,13 @@ async function main() {
     }
   }
 
-  // Synthetic Them samples
+  // Synthetic stress-test samples (10 per pairing)
   const synthFilter = PAIRING_FILTER
     ? SYNTHETIC_SAMPLES.filter(s => s.pairing === PAIRING_FILTER)
     : SYNTHETIC_SAMPLES;
 
   if (synthFilter.length > 0) {
-    console.log(`\n${C.bold}Synthetic Them samples${C.reset}`);
+    console.log(`\n${C.bold}Synthetic stress-test samples (10 per pairing)${C.reset}`);
     for (const sample of synthFilter) {
       process.stdout.write(`  ${sample.label.padEnd(55)} … `);
       const entry = await runStory(

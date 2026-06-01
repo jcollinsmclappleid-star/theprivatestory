@@ -1356,11 +1356,21 @@ export interface TaggedScript {
 }
 
 // Attribution verbs that signal a line of dialogue belongs to a speaker.
+// Includes both past tense (editors picks / any past-tense prose) and present
+// tense (all LLM-generated stories use present tense throughout).
 const MV_ATTR_VERBS =
+  // past tense
   "said|asked|replied|answered|whispered|murmured|breathed|muttered|growled|" +
   "demanded|told|added|sighed|gasped|moaned|hissed|laughed|warned|admitted|" +
   "confessed|urged|pleaded|teased|promised|repeated|continued|insisted|" +
-  "called|shouted|snapped|purred|drawled|countered|offered|begged";
+  "called|shouted|snapped|purred|drawled|countered|offered|begged|" +
+  // present tense
+  "says|asks|replies|answers|whispers|murmurs|breathes|mutters|growls|" +
+  "demands|tells|adds|sighs|gasps|moans|hisses|laughs|warns|admits|" +
+  "confesses|urges|pleads|teases|promises|repeats|continues|insists|" +
+  "calls|shouts|snaps|purrs|drawls|counters|offers|begs|" +
+  // present-tense verbs common in LLM output with no direct past-tense pair above
+  "groans|notes|observes|suggests|agrees|concedes|manages|announces|breathes";
 
 /** Genders of protagonist (CHAR_A) and love interest (CHAR_B), or null when same/ambiguous. */
 function mvPairingGenders(pairing: string): { protag: "m" | "f" | "them"; li: "m" | "f" | "them" } | null {
@@ -1402,7 +1412,8 @@ export function tagScriptForMultiVoice(
   const firstSecondRe = /\b(I|you|your|me|my)\b/i;
   // Only used for Them pairings — prevents false positives where plural "they"
   // appears in attribution context in other pairings (e.g. Her & Him).
-  const singularTheyAttrRe = /\bthey\s+(said|asked|replied|whispered|breathed|told|answered|continued|added)\b/i;
+  // Includes present-tense forms since LLM output uses present tense throughout.
+  const singularTheyAttrRe = /\bthey\s+(said|asked|replied|whispered|breathed|told|answered|continued|added|say|ask|reply|whisper|breathe|tell|answer|continue|add)\b/i;
 
   const raw: TaggedSegment[] = [];
   let lastSpeaker: "CHAR_A" | "CHAR_B" = "CHAR_A";

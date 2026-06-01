@@ -432,6 +432,37 @@ whisky / whiskey (as a recurring prop, scent, or scene-setting object — a glas
 VARY YOUR SENTENCE RHYTHM — do not default to:
 "He [verb]. You [verb]. He [verb]. You [verb]."
 Mix long sentences with short ones. Use fragments deliberately.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AUDIO SPEAKER TAGGING — MANDATORY — APPLIES TO STORY PROSE ONLY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This story is rendered by three distinct audio voices. You MUST wrap every word of the story prose in one of these three speaker tags:
+
+[N]...[/N]  →  Narrator voice — ALL prose: descriptions, atmosphere, setting, internal monologue, and attribution phrases ("he says", "she whispers", "he commands", "you say")
+[A]...[/A]  →  Protagonist voice (${protNoun}) — ONLY ${protSubLc}'s spoken dialogue: the exact words ${protSubLc} says aloud
+[B]...[/B]  →  Love interest voice (${partnNoun}) — ONLY ${partnSub}'s spoken dialogue: the exact words ${partnSub} says aloud
+
+RULES — NON-NEGOTIABLE:
+1. Every word of story prose must sit inside exactly one tag — no untagged text anywhere in the story
+2. Tags never nest inside each other
+3. Internal monologue (thoughts not spoken aloud, even if italicised) always goes in [N]
+4. Attribution phrases ("he groans", "you say", "he commands", "she breathes") always go in [N] — even when immediately adjacent to a character's dialogue
+5. Keep quote marks inside the character tag: [A]"dialogue here"[/A]
+6. Do NOT tag the DNA JSON block, [HOOK] block, or any structural labels — tag story prose only
+
+CORRECT EXAMPLE:
+[N]The kitchen is empty except for the two of you.[/N]
+[B]"You're still here,"[/B][N]he says. His voice is low, rough from hours of shouting orders.[/N]
+[A]"So are you."[/A]
+[N]A smile tugs at the corner of his mouth.[/N]
+[B]"I live here."[/B]
+[N]The words hang between you, heavy with implication. You should laugh. You should make a joke. But you don't.[/N]
+
+WRONG (untagged text, attribution inside character tag, nested tags):
+The kitchen is empty.
+"You're still here," he says.  ← attribution must be in [N], not merged with [B]
+"So are you."                  ← no tag at all
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 }
 

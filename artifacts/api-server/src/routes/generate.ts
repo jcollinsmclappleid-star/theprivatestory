@@ -1475,16 +1475,21 @@ export function tagScriptForMultiVoice(
   protagonistName?: string,
 ): TaggedScript {
   // Primary path: LLM-annotated inline speaker tags injected by getMasterEroticLayer.
-  // Detects presence of [N], [A], or [B] tags and delegates to the tag parser,
-  // which is exact and needs no heuristics. Falls through to the regex tagger
-  // for legacy stories (editors-picks / pre-tag DB stories) that have no tags.
-  if (/\[N\]|\[A\]|\[B\]/.test(text)) {
-    console.info("[tagger] inline speaker tags detected — using parseTaggedScript (primary path)");
+  // Only dispatch to the tag parser when actual CHARACTER tags ([A] or [B]) are
+  // present. When Mistral wraps all prose in narrator-only [N] tags but never
+  // produces [A]/[B], the text falls through to the regex heuristic tagger after
+  // the stray [N] wrapping is stripped — prevents "[N]" being read aloud by TTS.
+  if (/\[A\]|\[B\]/.test(text)) {
+    console.info("[tagger] inline character tags detected — using parseTaggedScript (primary path)");
     return parseTaggedScript(text);
   }
 
   // Normalise smart quotes to straight quotes for matching.
+  // Also strip any narrator-only [N] wrapping (Mistral compliance failure: model
+  // wraps all prose in [N] but omits [A]/[B] character tags — strip before regex
+  // tagger so the heuristic sees plain prose, not "[N]The room was quiet.[/N]").
   const normalised = text
+    .replace(/\[N\]|\[\/N\]/g, "")
     .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
     .replace(/[\u2018\u2019\u201A\u201B]/g, "'");
 
@@ -3705,6 +3710,8 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
         if (text !== beforeRepair) {
           logger.warn({ sceneIdx: idx + 1 }, "[writeStory] Repaired sentence artefacts (fragments / run-ons)");
         }
+        // Strip any LLM speaker-tagging markup — stored scene prose must be tag-free.
+        text = text.replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "");
       }
 
       return {
@@ -4254,7 +4261,9 @@ export async function generateAudioFile(
     const chunks: string[] = [];
     let current = "";
     for (const scene of scenes) {
-      const sceneText = scene.text.trim();
+      // Strip any LLM speaker-tagging markup — defensive guard so that narrator-only
+      // [N] wrapping (Mistral compliance failure) never reaches TTS as literal text.
+      const sceneText = scene.text.trim().replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "");
       if (current.length + sceneText.length + 2 > TTS_CHAR_LIMIT) {
         if (current.length > 0) {
           chunks.push(current.trim());

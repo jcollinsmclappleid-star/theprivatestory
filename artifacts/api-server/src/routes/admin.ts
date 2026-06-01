@@ -154,6 +154,11 @@ function extractStoryParts(rawText: string): {
   clean = clean.replace(/\{\s*"stories"\s*:[\s\S]*?\n\}/m, "");
   // Strip [HOOK] blocks
   clean = clean.replace(/\[HOOK\][\s\S]*?\[\/HOOK\]/gi, "");
+  // Strip LLM speaker-tagging markup ([N], [A], [B] and closing variants).
+  // These tags must not survive into stored prose — they would appear verbatim
+  // in the story display UI and would be read aloud as literal text by TTS.
+  // Speaker attribution is re-derived at audio time by tagScriptForMultiVoice.
+  clean = clean.replace(/\[(?:N|A|B)\]|\[\/(?:N|A|B)\]/g, "");
 
   // ── NEW: Strip prompt structural markers echoed back by GPT ──
 

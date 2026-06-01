@@ -1445,3 +1445,9 @@ id = "pCIZ62VjXANTncGkffJTy"
 uri = "file://artifacts/api-server/public-static/voice-samples/editors-picks/01-last-one.mp3"
 type = "audio"
 title = "Editor's Pick 01 — \"The Last One in the Building\" (multi-voice test)"
+
+[[outputs]]
+id = "nkP4-mJVQ-y6scB3en1GO"
+uri = "file://artifacts/api-server/public-static/voice-samples/qa-tests/qa-engine-output.mp3"
+type = "audio"
+title = "QA: \"I Don't Know Your Name Yet\" — Real Mistral story, Clara / Maya / James"

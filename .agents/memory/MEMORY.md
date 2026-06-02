@@ -1,5 +1,6 @@
 - [editors-picks-charBVoice](editors-picks-charBVoice.md) — male-narrator picks need charBVoice override or protagonist dialogue goes to James (jarring)
----
 - [They/Them multi-voice gate](them-pairing-multivoice.md) — nullGenderPairing must include pg.li==="them"; strict explicit gate silently breaks all Her&Them / Him&Them audio.
 - [Voice assignment / attribution](voice-assignment-root-cause.md) — attribution = deterministic quote-split + LLM classify (attributeSpeakers), NOT inline tags; gate relaxes for same-gender/they-them. Works for all pairings.
 - [Speaker attribution approach](speaker-attribution-approach.md) — deterministic quote-split + LLM classify-only (labels); never ask LLM to re-emit prose (it drops sentences)
+- [Derived-story casting anchors](derived-story-casting-anchors.md) — names+intensity must persist in castingData jsonb to survive into variations/continuations (no brief/column fields exist)
+- [api-server typecheck infra](api-server-typecheck-infra.md) — standalone tsc on api-server shows cascade errors (libs' .d.ts never emit); runtime is esbuild, verify via restart logs

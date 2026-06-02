@@ -4764,8 +4764,15 @@ async function runDerivedPipeline(
   storyId: string,
   parentStoryId: string,
   variantType: string | null,
-  userId: string | undefined
+  userId: string | undefined,
+  castingData?: Record<string, string | undefined>,
 ): Promise<Record<string, unknown>> {
+  // Casting anchors recovered from the parent story (may be undefined for older
+  // stories created before these were persisted).
+  const intensity = castingData?.intensity;
+  const listenerName = castingData?.listenerName;
+  const partnerName = castingData?.partnerName;
+
   // QC + targeted rewrite pass
   let finalStory = story;
   let qcResult = await qcStory(brief, finalStory);
@@ -4802,7 +4809,15 @@ async function runDerivedPipeline(
   const pipelineKey = getCacheKey({ storyId, ts: Date.now() });
   const [images, audioResult] = await Promise.all([
     generateAllImages(imagePrompts, pipelineKey),
-    generateAudioFile(finalStory.scenes, voiceFeel, pipelineKey, brief.pairing),
+    generateAudioFile(
+      finalStory.scenes,
+      voiceFeel,
+      pipelineKey,
+      brief.pairing,
+      intensity,
+      partnerName,
+      protagonistNameForAudio(brief.pairing ?? "", listenerName),
+    ),
   ]);
   const audioUrl = audioResult.url;
   const derivedDurationSec = audioResult.durationSeconds;
@@ -4831,12 +4846,15 @@ async function runDerivedPipeline(
     cached: false,
     parent_story_id: parentStoryId,
     ...(variantType ? { variant_type: variantType } : {}),
+    // Forward the parent's casting anchors so chained derived stories
+    // (variation-of-a-variation, continuation-of-a-variation) keep them too.
+    ...(castingData && Object.keys(castingData).length > 0 ? { castingData } : {}),
   };
 
   await storiesStore.set(storyId, { ...result, ownerUserId: userId ?? null });
 
   if (userId) {
-    await trackGeneratedStory(userId, storyId, mood, "Warm", voiceFeel, variantType);
+    await trackGeneratedStory(userId, storyId, mood, intensity ?? "Warm", voiceFeel, variantType);
   }
 
   return result;
@@ -5498,6 +5516,11 @@ router.post("/generate-full-story", async (req, res) => {
     if (intake.atmosphere) castingData.atmosphere = intake.atmosphere;
     if (intake.intensity)  castingData.intensity  = intake.intensity;
     if (intake.mood)       castingData.mood       = intake.mood;
+    // Persisted so derived stories (variations / continuations) can recover the
+    // names for audio attribution. Not rendered in the UI — CastSituation
+    // allowlists which keys it displays.
+    if (intake.listenerName) castingData.listenerName = intake.listenerName;
+    if (intake.partnerName)  castingData.partnerName  = intake.partnerName;
     if (brief.situation)   castingData.situation  = brief.situation;
     if (brief.situationId) castingData.situationId = brief.situationId;
 
@@ -5667,13 +5690,18 @@ router.post("/generate-variation", async (req, res) => {
   const duration = (original.duration as string) ?? "10 min";
   const voiceFeel = DEFAULT_VOICE_ID;
 
+  // Recover the original casting names + intensity (persisted in castingData) so the
+  // derived audio keeps the same name anchors and intensity styling. Older stories
+  // created before these were persisted simply fall back to flow-only attribution.
+  const cd = (original.castingData ?? {}) as Record<string, string | undefined>;
+
   const newStoryId = `${storyId}-var-${variation_type}-${Date.now()}`;
 
   const TIMEOUT_MS = 600_000; // 10 minutes for variation pipeline
 
   const pipeline = async () => {
     const variedStory = await rewriteStoryAsVariation(brief, originalStory, variation_type);
-    return runDerivedPipeline(brief, variedStory, voiceFeel, mood, duration, newStoryId, storyId, variation_type, userId);
+    return runDerivedPipeline(brief, variedStory, voiceFeel, mood, duration, newStoryId, storyId, variation_type, userId, cd);
   };
 
   try {
@@ -5737,13 +5765,18 @@ router.post("/continue-story", async (req, res) => {
   const duration = (original.duration as string) ?? "10 min";
   const voiceFeel = DEFAULT_VOICE_ID;
 
+  // Recover the original casting names + intensity (persisted in castingData) so the
+  // derived audio keeps the same name anchors and intensity styling. Older stories
+  // created before these were persisted simply fall back to flow-only attribution.
+  const cd = (original.castingData ?? {}) as Record<string, string | undefined>;
+
   const newStoryId = `${storyId}-cont-${continuation_mode}-${Date.now()}`;
 
   const TIMEOUT_MS = 600_000; // 10 minutes for continuation pipeline
 
   const pipeline = async () => {
     const continuation = await writeStoryContinuation(brief, originalStory, continuation_mode);
-    return runDerivedPipeline(brief, continuation, voiceFeel, mood, duration, newStoryId, storyId, null, userId);
+    return runDerivedPipeline(brief, continuation, voiceFeel, mood, duration, newStoryId, storyId, null, userId, cd);
   };
 
   try {

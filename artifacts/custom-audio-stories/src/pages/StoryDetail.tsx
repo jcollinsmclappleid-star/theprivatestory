@@ -110,10 +110,9 @@ export default function StoryDetail() {
   const storyDurationSeconds = parseDurationToSeconds(story.duration ?? "");
 
   const handleScrub = (val: number[]) => {
-    setProgress(val[0] / 100);
-    // In a real app with audio ref, updating state triggers onTimeUpdate which handles this,
-    // but we'd normally want to seek the actual audio ref here.
-    // Our robust AudioProvider syncs this fairly well.
+    if (!isCurrent) return;
+    const displayDuration = duration > 0 ? duration : storyDurationSeconds;
+    seekTo((val[0] / 100) * displayDuration);
   };
 
   // Calculate which scene image to show based on progress

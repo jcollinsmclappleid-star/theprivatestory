@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAudioPlayer } from '@/store/use-audio-player';
+import { registerAudioSeek } from '@/lib/audioSeekRegistry';
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -108,7 +109,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isPlaying, currentStory, narrationVolume]);
 
-  // Apply pending seek requests to the real audio element
+  // Register a direct seek callback so the Zustand store can move the audio
+  // element synchronously (no React re-render round-trip required).
+  useEffect(() => {
+    registerAudioSeek((t) => {
+      if (audioRef.current) audioRef.current.currentTime = t;
+    });
+    return () => registerAudioSeek(null);
+  }, []);
+
+  // Fallback: apply any pendingSeek that arrived before the registry was ready
+  // (e.g. seekTo called during the very first render).
   useEffect(() => {
     if (pendingSeek === null) return;
     if (audioRef.current) {

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Story } from "@workspace/api-client-react";
+import { directSeek } from "@/lib/audioSeekRegistry";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -57,11 +58,10 @@ export const useAudioPlayer = create<AudioPlayerState>()(
               .then((r) => r.ok ? r.json() : null)
               .then((entry: { audioProgressSeconds?: number } | null) => {
                 if (entry && entry.audioProgressSeconds && entry.audioProgressSeconds > 5) {
-                  const dur = useAudioPlayer.getState().duration || 300;
-                  useAudioPlayer.setState({
-                    currentTime: entry.audioProgressSeconds,
-                    progress: Math.min(entry.audioProgressSeconds / dur, 1),
-                  });
+                  // seekTo updates currentTime/progress AND moves the audio
+                  // element to the resume position so playback resumes from
+                  // where the user left off rather than from 0.
+                  useAudioPlayer.getState().seekTo(entry.audioProgressSeconds);
                 }
               })
               .catch(() => {});
@@ -107,10 +107,15 @@ export const useAudioPlayer = create<AudioPlayerState>()(
       seekTo: (t) => {
         const { duration } = get();
         const clamped = Math.max(0, duration > 0 ? Math.min(t, duration) : t);
+        // Attempt a direct, synchronous seek on the <audio> element via the
+        // registry (registered by AudioProvider on mount).  Falls back to
+        // pendingSeek state so AudioProvider's useEffect picks it up if the
+        // registry isn't populated yet (e.g. cold render).
+        const seeked = directSeek(clamped);
         set({
           currentTime: clamped,
           progress: duration > 0 ? clamped / duration : 0,
-          pendingSeek: clamped,
+          pendingSeek: seeked ? null : clamped,
         });
       },
 

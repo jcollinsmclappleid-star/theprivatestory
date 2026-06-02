@@ -10,6 +10,7 @@ import {
   rewriteStory,
   generateAllImages,
   generateAudioFile,
+  protagonistNameForAudio,
   buildCoverPromptFromCasting,
   buildCoverPromptFromBrief,
   getCacheKey,
@@ -402,7 +403,15 @@ router.post("/:id/next-chapter", async (req, res) => {
       const pipelineKey = getCacheKey({ seriesId: s.id, chapter: chapterNumber, ts: Date.now() });
       const [images, audioUrl] = await Promise.all([
         generateAllImages({ coverPrompt, scenePrompts: [] }, pipelineKey),
-        generateAudioFile(story.scenes, intake.voiceFeel, pipelineKey, intake.pairing),
+        generateAudioFile(
+          story.scenes,
+          intake.voiceFeel,
+          pipelineKey,
+          intake.pairing,
+          intake.intensity,
+          intake.partnerName,
+          protagonistNameForAudio(intake.pairing ?? "", intake.listenerName),
+        ),
       ]);
 
       const newStoryId = `series-${s.id}-ch${chapterNumber}-${Date.now()}`;

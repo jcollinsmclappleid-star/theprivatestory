@@ -14,6 +14,9 @@ description: How speaker attribution / multi-voice allocation works in generated
 
 **Multi-voice gate** (unchanged principle): `nullGenderPairing = !pg || pg.li==="them" || pg.protag==="them"`. Gendered pairings need `explicitAttributions>=1`; same-gender + any they/them need `charSegments>=4` (toggle). Voice assignment per pairing lives in `resolveCharacterVoicesServer` (covers her&him, her&her, him&him, her&them, him&them, them&them).
 
+**Protagonist name anchor:** when the protagonist has no disambiguating pronoun (same-gender pairings → genders null, or protag is they/them), the classifier needs the protagonist NAME to tell the two speakers apart. `protagonistNameForAudio(pairing, listenerName)` gates this (NOT the same set as the multi-voice gate — her&them/him&them keep a gendered protagonist pronoun so they don't need it). Every audio call site (main, user-series) must pass partnerName + this helper. The attribution prompt always keeps the second-person "you" hint even when a name is present — dropping it biased attribution away from listener-addressed lines. **Why:** same-gender stories sounded wrong because protagonist lines went to the wrong voice with no name/pronoun anchor.
+**Known gap:** `runDerivedPipeline` (variations/continuations) can't pass names — `StoryBrief` has no name fields — so derived same-gender attribution stays flow-only.
+
 ---
 ## HISTORICAL (pre-attributeSpeakers — kept for context, no longer the live path)
 

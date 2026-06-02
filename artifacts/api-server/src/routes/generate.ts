@@ -1393,6 +1393,23 @@ function mvPairingGenders(pairing: string): { protag: "m" | "f" | "them"; li: "m
 }
 
 /**
+ * The protagonist name to feed the speaker-attribution pass for audio.
+ *
+ * Only supplied when the protagonist's own pronoun can't disambiguate them from
+ * the love interest — i.e. same-gender pairings (Her & Her, Him & Him → null
+ * genders) and any pairing where the protagonist is they/them (Them & Them).
+ * In those cases the classifier has no gendered "he/she said" cue for the
+ * protagonist and must anchor on the name + conversational flow instead.
+ * Gendered protagonists (Her & Him, Her & Them, …) already have a pronoun, so we
+ * leave the name out to avoid distracting the second-person "you" framing.
+ */
+export function protagonistNameForAudio(pairing: string, listenerName?: string): string | undefined {
+  const pg = mvPairingGenders(pairing);
+  const needsName = !pg || pg.protag === "them";
+  return needsName ? (listenerName?.trim() || undefined) : undefined;
+}
+
+/**
  * Parse LLM-annotated inline speaker tags [N]...[/N], [A]...[/A], [B]...[/B]
  * that are injected at story-write time by the system prompt.  This is the
  * primary path for all new stories; the regex tagger below is the fallback for
@@ -4228,7 +4245,7 @@ async function attributeSpeakers(
     g === "m" ? "he/him" : g === "f" ? "she/her" : g === "them" ? "they/them" : "";
   const protagPron = pronOf(genders?.protag);
   const liPron = pronOf(genders?.li);
-  const protagDesc = `${protagonistName ? `${protagonistName}, ` : ""}the protagonist${protagPron ? ` (${protagPron})` : ""}${protagonistName ? "" : `, who may be addressed in second person as "you"`}`;
+  const protagDesc = `${protagonistName ? `${protagonistName}, ` : ""}the protagonist${protagPron ? ` (${protagPron})` : ""}, who may be addressed in second person as "you"`;
   const liDesc = `${partnerName ? `${partnerName}, ` : ""}the love interest${liPron ? ` (${liPron})` : ""}`;
 
   // ── Step 1: deterministic segmentation ──────────────────────────────────────
@@ -5456,7 +5473,7 @@ router.post("/generate-full-story", async (req, res) => {
         intake.pairing,
         intake.intensity,
         intake.partnerName,
-        intake.pairing?.toLowerCase() === "them & them" ? intake.listenerName : undefined,
+        protagonistNameForAudio(intake.pairing ?? "", intake.listenerName),
       ),
     ]);
     const audioUrl = audioResult.url;

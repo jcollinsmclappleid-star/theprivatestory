@@ -4,3 +4,4 @@
 - [Speaker attribution approach](speaker-attribution-approach.md) — deterministic quote-split + LLM classify-only (labels); never ask LLM to re-emit prose (it drops sentences)
 - [Derived-story casting anchors](derived-story-casting-anchors.md) — names+intensity must persist in castingData jsonb to survive into variations/continuations (no brief/column fields exist)
 - [api-server typecheck infra](api-server-typecheck-infra.md) — standalone tsc on api-server shows cascade errors (libs' .d.ts never emit); runtime is esbuild, verify via restart logs
+- [Markdown emphasis in prose](prose-markdown-stripping.md) — model emits *word*/**word**; strip via stripProseMarkdown at all 4 scene-writer parse sites (frontend renders raw text + TTS reads it)

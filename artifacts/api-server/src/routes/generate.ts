@@ -3199,6 +3199,27 @@ function repairBrokenFragments(text: string): string {
  *    Guard: preceding word checked against SAFE_BEFORE (conjunctions, prepositions,
  *    adverbs) so "without you can feel" and "step out you go" are not touched.
  */
+/**
+ * Strip markdown emphasis markers the model sometimes emits in prose
+ * (e.g. "*Boundaries*", "**word**", "_word_"). The words are kept — only the
+ * markup is removed — so emphasis reads as ordinary prose in both the on-screen
+ * text and the TTS narration. Speaker-tag markup ([A]/[B]/[N]) is left intact.
+ */
+export function stripProseMarkdown(text: string): string {
+  if (!text) return text;
+  let t = text;
+  t = t.replace(/\*\*\*([^*]+?)\*\*\*/g, "$1"); // ***bold italic***
+  t = t.replace(/\*\*([^*]+?)\*\*/g, "$1");      // **bold**
+  t = t.replace(/\*([^*]+?)\*/g, "$1");           // *italic*
+  t = t.replace(/___([^_]+?)___/g, "$1");
+  t = t.replace(/__([^_]+?)__/g, "$1");
+  // _italic_ — but not snake_case identifiers (require non-alphanumeric edges).
+  t = t.replace(/(?<![A-Za-z0-9])_([^_\n]+?)_(?![A-Za-z0-9])/g, "$1");
+  t = t.replace(/\*/g, ""); // safety net: drop any unmatched emphasis asterisks
+  t = t.replace(/ {2,}/g, " "); // collapse spaces left behind by removed markers (keeps newlines)
+  return t;
+}
+
 function repairRunOns(text: string): string {
   if (!text) return text;
 
@@ -3760,6 +3781,11 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
       const scenePlan = brief.scene_plan[idx];
       let text: string = s.text ?? "";
 
+      // Strip markdown emphasis (*word*, **word**, _word_) the model sometimes
+      // emits — keep the words, drop the markup — before repair, rawText capture,
+      // and tag stripping, so both the displayed prose and TTS narration are clean.
+      text = stripProseMarkdown(text);
+
       // Post-write safety pass — repair fragment artefacts and run-on sentences.
       if (text) {
         const beforeRepair = text;
@@ -4086,7 +4112,7 @@ Return the improved story in this exact JSON shape:
     scenes: (parsed.scenes ?? story.scenes).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
       id: s.id,
       heading: s.heading ?? `Scene ${s.id}`,
-      text: s.text,
+      text: stripProseMarkdown(s.text),
       visualPrompt: "",
       durationEstimate: s.duration_estimate ?? 60,
       emotionalShift: s.emotional_shift ?? "",
@@ -4658,7 +4684,7 @@ Return the varied story in this exact JSON shape (same number of scenes as origi
     scenes: (parsed.scenes ?? story.scenes).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
       id: s.id,
       heading: s.heading ?? `Scene ${s.id}`,
-      text: s.text,
+      text: stripProseMarkdown(s.text),
       visualPrompt: "",
       durationEstimate: s.duration_estimate ?? 60,
       emotionalShift: s.emotional_shift ?? "",
@@ -4743,7 +4769,7 @@ Return JSON only:
     scenes: (parsed.scenes ?? []).map((s: { id: number; heading: string; text: string; duration_estimate: number; emotional_shift?: string }) => ({
       id: s.id,
       heading: s.heading ?? `Scene ${s.id}`,
-      text: s.text,
+      text: stripProseMarkdown(s.text),
       visualPrompt: "",
       durationEstimate: s.duration_estimate ?? 60,
       emotionalShift: s.emotional_shift ?? "",

@@ -7,3 +7,4 @@
 - [Markdown emphasis in prose](prose-markdown-stripping.md) — model emits *word*/**word**; strip via stripProseMarkdown at all 4 scene-writer parse sites (frontend renders raw text + TTS reads it)
 - [Story serializer divergence](story-serializer-divergence.md) — cover blank but audio plays = list vs detail endpoint flat-field mismatch (images.cover→coverImage), NOT media URL/auth; never BASE_URL-prefix /api media
 - [Dialogue vs attribution coupling](dialogue-attribution-coupling.md) — more dialogue / fewer "he said" is safe ONLY if 2 alternating speakers + name/action anchor every ~3rd line (post-hoc attributeSpeakers, 2 voices); contract spans 5 prompt sites in generate.ts
+- [Attribution alternation bias + TTS stability](attribution-alternation-bias.md) — "back-and-forth fallback" in prompt caused wrong voice; fix = embed surrounding prose per quote + NARRATOR_STABILITY=0.65 vs CHAR_STABILITY=0.45

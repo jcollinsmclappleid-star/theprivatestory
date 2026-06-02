@@ -1306,6 +1306,13 @@ const MV_INTENSITY_STYLE: Record<string, { narrator: number; char: number }> = {
 };
 const MV_DEFAULT_STYLE = { narrator: 0.25, char: 0.50 };
 
+// ElevenLabs stability controls chunk-to-chunk tonal consistency.
+// Narrator reads many chunks in sequence — higher stability keeps the voice
+// sounding like one continuous reader rather than "two different narrators".
+// Characters can stay expressive (lower stability) since each speaks less.
+const NARRATOR_STABILITY = 0.65;
+const CHAR_STABILITY     = 0.45;
+
 /**
  * Resolve CHAR_A (protagonist dialogue) and CHAR_B (love-interest dialogue)
  * voices for a narrator + pairing. Neither equals narratorId.
@@ -4380,7 +4387,33 @@ async function attributeSpeakers(
   // Ask the model which of the two characters speaks each quoted line, IN ORDER.
   // The output is a tiny label array (no prose), so there is no truncation risk
   // and validation is just a length/enum check.
-  const numbered = dialogues.map((d, i) => `${i + 1}. ${d}`).join("\n");
+  //
+  // Each entry includes the prose IMMEDIATELY before and after the quote so the
+  // model can read "he said" / "she breathed" / character names without having
+  // to cross-reference the full story (which it does unreliably). This removes
+  // the need for an alternation fallback — every line should have enough local
+  // context to decide.
+  const numberedWithContext: string[] = [];
+  for (let si = 0; si < spans.length; si++) {
+    const span = spans[si];
+    if (span.dialogueIndex < 0) continue;
+    const n = span.dialogueIndex + 1;
+    // Up to 160 chars of prose immediately before the quote (catches "she said, ")
+    const prevText =
+      si > 0 && spans[si - 1].dialogueIndex < 0
+        ? spans[si - 1].text.replace(/\s+/g, " ").trim().slice(-160)
+        : "";
+    // Up to 120 chars of prose immediately after the quote (catches ", he admitted.")
+    const nextText =
+      si + 1 < spans.length && spans[si + 1].dialogueIndex < 0
+        ? spans[si + 1].text.replace(/\s+/g, " ").trim().slice(0, 120)
+        : "";
+    const parts: string[] = [];
+    if (prevText) parts.push(`…${prevText}`);
+    parts.push(span.text);
+    if (nextText) parts.push(`${nextText}…`);
+    numberedWithContext.push(`${n}. ${parts.join(" ")}`);
+  }
   const systemPrompt =
     "You are a dialogue-attribution engine for a two-character audio story. For each " +
     "numbered line of quoted dialogue you decide which of the two characters speaks it. " +
@@ -4390,14 +4423,19 @@ async function attributeSpeakers(
 - "protagonist": ${protagDesc}
 - "love_interest": ${liDesc}
 
-FULL STORY (context only — do NOT output it):
+FULL STORY (background context — do NOT output it):
 <<<
 ${cleaned}
 >>>
 
-Below are the ${dialogues.length} quoted lines of dialogue, in the order they appear. For EACH line decide who speaks it — "protagonist" or "love_interest" — using the attribution words around it (names, "he said" / "she said") and the natural back-and-forth of the conversation. Every line is spoken by one of the two characters, never the narrator.
+Below are the ${dialogues.length} quoted lines of dialogue in story order. Each entry shows the prose IMMEDIATELY surrounding the quote so you can read attribution words directly (character names, "he said", "she breathed", pronouns, etc.).
 
-${numbered}
+CRITICAL RULES:
+1. Use the surrounding prose context to identify the speaker — names, pronouns, and speech-attribution verbs ("said", "whispered", "breathed", "asked", "admitted", etc.) directly adjacent to the quote are your primary signal.
+2. A character MAY speak multiple consecutive lines — DO NOT assume back-and-forth alternation. If the surrounding context identifies the same speaker twice in a row, label both lines the same.
+3. Only fall back to conversational flow when no attribution context is available at all.
+
+${numberedWithContext.join("\n")}
 
 Return ONLY valid JSON in exactly this shape, with exactly ${dialogues.length} entries in the same order:
 {"speakers":["protagonist","love_interest", ...]}`;
@@ -4489,7 +4527,7 @@ export async function generateAudioFile(
 
   const styleFor = MV_INTENSITY_STYLE[(intensity ?? "").trim()] ?? MV_DEFAULT_STYLE;
 
-  const callTTS = async (vid: string, chunk: string, style: number): Promise<Buffer> => {
+  const callTTS = async (vid: string, chunk: string, style: number, stability = CHAR_STABILITY): Promise<Buffer> => {
     const res = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${vid}`,
       {
@@ -4503,7 +4541,7 @@ export async function generateAudioFile(
           text: chunk,
           model_id: "eleven_turbo_v2_5",
           voice_settings: {
-            stability: 0.45,
+            stability,
             similarity_boost: 0.80,
             style,
             use_speaker_boost: true,
@@ -4527,11 +4565,11 @@ export async function generateAudioFile(
   };
 
   // TTS one piece with a per-voice fallback to the default voice on failure.
-  const ttsWithFallback = async (vid: string, piece: string, style: number): Promise<Buffer> => {
+  const ttsWithFallback = async (vid: string, piece: string, style: number, stability = CHAR_STABILITY): Promise<Buffer> => {
     try {
-      return await callTTS(vid, piece, style);
+      return await callTTS(vid, piece, style, stability);
     } catch (err) {
-      if (vid !== DEFAULT_VOICE_ID) return await callTTS(DEFAULT_VOICE_ID, piece, style);
+      if (vid !== DEFAULT_VOICE_ID) return await callTTS(DEFAULT_VOICE_ID, piece, style, stability);
       throw err;
     }
   };
@@ -4577,10 +4615,14 @@ export async function generateAudioFile(
     const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing ?? "");
     console.info(`[audio] multi-voice: narrator=${narratorId} charA=${charA} charB=${charB} segments=${segments.length} intensity=${intensity ?? "?"}`);
     const segBuffers = await runConcurrent(segments, async (seg) => {
-      const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
-      const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
+      const isNarrator = seg.role === "NARRATOR";
+      const vid = isNarrator ? narratorId : seg.role === "CHAR_A" ? charA : charB;
+      const baseStyle = isNarrator ? styleFor.narrator : styleFor.char;
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
-      const buf = await ttsWithFallback(vid, seg.text, style);
+      // Narrator gets higher stability for consistent tone across chunks;
+      // character voices stay expressive with lower stability.
+      const stability = isNarrator ? NARRATOR_STABILITY : CHAR_STABILITY;
+      const buf = await ttsWithFallback(vid, seg.text, style, stability);
       return trimSilenceFromMp3(buf);
     });
     buffers.push(...segBuffers);
@@ -4612,13 +4654,13 @@ export async function generateAudioFile(
     for (let i = 0; i < chunks.length; i++) {
       const style = i === 0 ? Math.min(0.80, styleFor.narrator + 0.15) : styleFor.narrator;
       try {
-        buffers.push(await callTTS(activeVoiceId, chunks[i], style));
+        buffers.push(await callTTS(activeVoiceId, chunks[i], style, NARRATOR_STABILITY));
       } catch (err) {
         // If the selected voice fails, fall back to the default voice for this and all
         // remaining chunks to keep the audio consistent.
         if (activeVoiceId !== DEFAULT_VOICE_ID) {
           activeVoiceId = DEFAULT_VOICE_ID;
-          buffers.push(await callTTS(activeVoiceId, chunks[i], style));
+          buffers.push(await callTTS(activeVoiceId, chunks[i], style, NARRATOR_STABILITY));
         } else {
           throw err;
         }

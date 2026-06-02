@@ -1903,16 +1903,51 @@ export const VALID_LISTENER_NAMES = new Set([
   "Finn", "Leo", "Max", "Nathan", "Ryan",
 ]);
 
-export const VALID_PARTNER_NAMES = new Set([
-  // Male
+export const MALE_PARTNER_NAMES = [
   "James", "Marco", "Luca", "Alessandro", "Ethan", "Rafael", "Kai", "Dominic",
   "Noah", "Sebastian", "Leo", "Matteo", "Christian", "Xavier", "Adrian",
   "Dante", "Roman", "Hunter", "Blake", "Cain",
-  // Female
+];
+export const FEMALE_PARTNER_NAMES = [
   "Sophia", "Isabella", "Elena", "Valentina", "Camille", "Vivienne", "Aurora",
   "Scarlett", "Juliette", "Celeste", "Serena", "Aria", "Estelle", "Lila",
   "Margot", "Nina", "Cleo", "Zara", "Iris", "Bianca",
-]);
+];
+export const VALID_PARTNER_NAMES = new Set([...MALE_PARTNER_NAMES, ...FEMALE_PARTNER_NAMES]);
+
+/**
+ * Auto-pick a gender-appropriate love-interest name when the user leaves the
+ * partner-name field blank. The name is drawn from the same allowlist the
+ * casting dropdown uses, matched to the love interest's gender implied by the
+ * pairing (the second slot). For a "Them" love interest, either pool is allowed.
+ * The protagonist's (listener's) name is excluded so the two characters never
+ * share a name.
+ *
+ * Why: a blank partner name previously left the writer to fall back to a bare
+ * noun ("the man" / "the other woman"), which read poorly AND gave the
+ * multi-voice attribution pass no strong speaker signal. A concrete name is the
+ * single strongest attribution cue, which is what lets same-gender pairings
+ * (Her & Her, Him & Him) — where pronouns can't disambiguate — attribute to the
+ * correct voice.
+ */
+export function autoPickPartnerName(pairing: string | undefined, listenerName?: string): string {
+  const p = (pairing ?? "Her & Him").toLowerCase();
+  let pool: string[];
+  if (p.startsWith("her & her")) {
+    pool = FEMALE_PARTNER_NAMES;
+  } else if (p.startsWith("him & him")) {
+    pool = MALE_PARTNER_NAMES;
+  } else if (p.startsWith("her & him")) {
+    pool = MALE_PARTNER_NAMES;
+  } else {
+    // "Them" love interest (Her & Them, Him & Them, Them & Them) — either pool.
+    pool = [...MALE_PARTNER_NAMES, ...FEMALE_PARTNER_NAMES];
+  }
+  const ln = listenerName?.trim().toLowerCase();
+  const candidates = ln ? pool.filter((n) => n.toLowerCase() !== ln) : pool;
+  const list = candidates.length > 0 ? candidates : pool;
+  return list[Math.floor(Math.random() * list.length)];
+}
 
 const VALID_HERITAGES = ["Latina", "Black", "South Asian", "European", "East Asian", "Middle Eastern", "Indigenous", "Ambiguous"];
 
@@ -2188,8 +2223,13 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   // Validate names against allowlists — silently drop anything not in the set.
   const listenerName = raw.listenerName?.trim() && !validateNameFormat(raw.listenerName.trim())
     ? raw.listenerName.trim() : "";
-  const partnerName = raw.partnerName?.trim() && !validateNameFormat(raw.partnerName.trim())
+  const explicitPartnerName = raw.partnerName?.trim() && !validateNameFormat(raw.partnerName.trim())
     ? raw.partnerName.trim() : undefined;
+  // When the love-interest name is left blank, auto-generate a gender-appropriate
+  // one rather than leaving the writer to fall back to "the man" / "the other woman".
+  const validatedPairing = raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim())
+    ? raw.pairing.trim() : undefined;
+  const partnerName = explicitPartnerName ?? autoPickPartnerName(validatedPairing, listenerName);
 
   return {
     listenerName,
@@ -2210,7 +2250,7 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     dynamic: raw.dynamic && VALID_DYNAMICS.includes(raw.dynamic.trim()) ? raw.dynamic.trim() : undefined,
     ending: raw.ending && VALID_ENDINGS.includes(raw.ending.trim()) ? raw.ending.trim() : undefined,
     setting: raw.setting && VALID_SETTINGS.includes(raw.setting.trim()) ? raw.setting.trim() : undefined,
-    pairing: raw.pairing && VALID_PAIRINGS.includes(raw.pairing.trim()) ? raw.pairing.trim() : undefined,
+    pairing: validatedPairing,
     partnerName,
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,

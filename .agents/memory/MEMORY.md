@@ -5,3 +5,4 @@
 - [Derived-story casting anchors](derived-story-casting-anchors.md) — names+intensity must persist in castingData jsonb to survive into variations/continuations (no brief/column fields exist)
 - [api-server typecheck infra](api-server-typecheck-infra.md) — standalone tsc on api-server shows cascade errors (libs' .d.ts never emit); runtime is esbuild, verify via restart logs
 - [Markdown emphasis in prose](prose-markdown-stripping.md) — model emits *word*/**word**; strip via stripProseMarkdown at all 4 scene-writer parse sites (frontend renders raw text + TTS reads it)
+- [Story serializer divergence](story-serializer-divergence.md) — cover blank but audio plays = list vs detail endpoint flat-field mismatch (images.cover→coverImage), NOT media URL/auth; never BASE_URL-prefix /api media

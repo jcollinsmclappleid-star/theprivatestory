@@ -145,7 +145,17 @@ router.get("/stories/:id", async (req, res) => {
   try {
     const dbStory = await storiesStore.get(req.params.id);
     if (dbStory) {
-      res.json(dbStory);
+      // The raw DB row stores the cover nested in `images.cover`, but the
+      // frontend reads a flat `story.coverImage`. Without this the player shows
+      // a blank/black cover (audio works because `audioUrl` is a top-level
+      // column). Add the flat field while preserving scenes/castingData/etc.
+      const images = ((dbStory as Record<string, unknown>).images ?? {}) as Record<string, unknown>;
+      const coverImage =
+        (images.cover as string) ||
+        (images.coverImage as string) ||
+        ((dbStory as Record<string, unknown>).coverImage as string) ||
+        "";
+      res.json({ ...dbStory, coverImage });
       return;
     }
   } catch {

@@ -1,7 +1,21 @@
 ---
 name: Voice assignment root cause
-description: Why Her & Him stories produce wrong male/female voice allocation in generated audio
+description: How speaker attribution / multi-voice allocation works in generated audio across all pairings
 ---
+
+## CURRENT ARCHITECTURE (supersedes the rawText/parseTaggedScript notes below)
+
+`generateAudioFile` no longer trusts inline `[N]/[A]/[B]` tags. Tags are stripped, then attribution runs in two tiers:
+
+1. **Primary — `attributeSpeakers()`**: deterministic split of prose into narrator spans vs quoted-dialogue spans (sliced by quote marks, so prose is never dropped/altered), then a Mistral *classification-only* pass labels each quote `protagonist`(CHAR_A) / `love_interest`(CHAR_B), in order. Prompt is given each character's name + pronoun from `mvPairingGenders`. 2 retries, returns null on failure.
+2. **Fallback — `tagScriptForMultiVoice()`** (regex/toggle heuristic) only if attributeSpeakers returns null twice.
+
+**Why the redesign:** asking the model to re-emit tagged prose silently dropped sentences. Classifying labels (not re-emitting prose) removes truncation risk and works for same-gender + they/them (relies on names + conversational flow, not gender pronouns).
+
+**Multi-voice gate** (unchanged principle): `nullGenderPairing = !pg || pg.li==="them" || pg.protag==="them"`. Gendered pairings need `explicitAttributions>=1`; same-gender + any they/them need `charSegments>=4` (toggle). Voice assignment per pairing lives in `resolveCharacterVoicesServer` (covers her&him, her&her, him&him, her&them, him&them, them&them).
+
+---
+## HISTORICAL (pre-attributeSpeakers — kept for context, no longer the live path)
 
 ## The bug
 

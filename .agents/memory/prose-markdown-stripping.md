@@ -25,3 +25,13 @@ needs survive. Underscore stripping uses non-alphanumeric edge lookarounds so
 `snake_case`/paths are left intact. A global unmatched-`*` removal is acceptable
 here because narrative prose never contains literal asterisks (no math, no
 `* * *` dividers — scenes use headings).
+
+## Related: clipped one-word abstract-label prose
+The model sometimes emits bare abstract-noun "label" sentences ("Professionalism.
+Boundaries." / "Dangerous."). These are NOT injected seeds — there is no
+keyword-injection layer; the only seed is the brief's `recurring_motif` (a full
+phrase). The clipped style is driven by the CRACK-phase `fragmented` prose_rhythm.
+**Fix style preferences at the prompt layer, not post-processing** — a "weave
+concepts, don't label them" rule plus tightening the fragmented-rhythm definition,
+mirrored across all four writers. Post-processing can't tell an intentional terse
+beat ("Still." / "Yes.") from an undesirable abstract label without semantic loss.

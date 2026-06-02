@@ -3546,7 +3546,7 @@ NARRATIVE DIVERSITY — MANDATORY. Each scene also has five narrative texture fi
       Example: "Before she could answer, before the question had even fully formed, he was already crossing the room."
       When a new independent subject appears (he, she, you, they, or any character name — with its own verb): full stop, new sentence.
 
-    - fragmented: each fragment is its own unit of punctuation. Short. Stopped. Ellipsis signals failure to complete a thought... A dash signals sudden interruption — like this. Never let one fragment run into the next; the white space between them is the point.
+    - fragmented: each fragment is its own unit of punctuation. Short. Stopped. Ellipsis signals failure to complete a thought... A dash signals sudden interruption — like this. Never let one fragment run into the next; the white space between them is the point. Every fragment must still carry a concrete sensation, action, or image — never a bare abstract-noun label (not "Boundaries." or "Dangerous.", but the felt, physical reality the word stands for).
 
     - baroque: write a periodic sentence where noun phrases and participial clauses accumulate BEFORE the main subject-verb releases.
       Construction: [noun phrase], [noun phrase], [participial clause] — [main subject + verb].
@@ -3603,6 +3603,7 @@ ${brief.scene_plan.map((sp, i) =>
 ).join("\n")}
   Any physical contact verb NOT listed above for its scene is a technical failure. Before finishing each scene, scan every touch verb you have written and verify it matches the scene's assigned verb.
   CRITICAL — EMBEDDING RULE: Touch verbs must ALWAYS be embedded inside a complete clause with a subject and object. NEVER write a touch verb as a standalone word, fragment, or one-word sentence (e.g. WRONG: "Grip." or "She. Grip." — RIGHT: "He gripped her wrist before she could move."). The verb is the action of a full sentence, never an isolated command or label.
+  CRITICAL — WEAVE CONCEPTS, DON'T LABEL THEM: The same embedding law applies to emotions, qualities, and abstract concepts. NEVER render a concept as a bare one- or two-word sentence (e.g. WRONG: "Professionalism. Boundaries." / "Dangerous." / "Spatial presence."). Every concept must be woven into a complete sentence grounded in concrete action, sensation, or image — show what it does to the body or the moment instead of naming it as a standalone label. This bans bare abstract-noun labels only — terse beats remain welcome where they are concrete or contextual (a temporal opener like "Still.", a line of dialogue like "Yes.", a sensory or action fragment).
 
 ${brief.scene_plan.map((sp, i) => {
   const contract = [
@@ -4067,7 +4068,8 @@ SENSORY & PHYSICAL ACTION VARIETY — never repeat the same physical description
 
 - Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
 - The IGNITE phase must remain fully rendered — never summarise or fade to black
-- Keep the writing premium, cinematic, and emotionally specific — never polish it flat or make it generic`;
+- Keep the writing premium, cinematic, and emotionally specific — never polish it flat or make it generic
+- Weave concepts into full sentences — never render an emotion or abstract idea as a bare one- or two-word label sentence (e.g. "Boundaries." / "Dangerous." / "Spatial presence."); ground it in concrete action, sensation, or image instead`;
 
   const userPrompt = `Apply this targeted improvement to the story:
 
@@ -4641,7 +4643,8 @@ SENSORY & PHYSICAL ACTION VARIETY — never repeat the same physical description
 
 - Preserve the EROTIC ARCHITECTURE phase structure (ESTABLISH → SIMMER → CRACK → IGNITE → RESONATE) — do not compress or collapse phases
 - The IGNITE phase must remain fully rendered — never summarise or fade to black
-- Emotionally specific and physically present — never vague or generic`;
+- Emotionally specific and physically present — never vague or generic
+- Weave concepts into full sentences — never render an emotion or abstract idea as a bare one- or two-word label sentence (e.g. "Boundaries." / "Dangerous." / "Spatial presence."); ground it in concrete action, sensation, or image instead`;
 
   const userPrompt = `Apply this variation to the story: "${instruction}"
 
@@ -4735,6 +4738,7 @@ Requirements:
 - Keep the same sensory palette
 - Use second person point of view throughout
 - The continuation should feel like it belongs in the same world
+- Weave concepts into full sentences — never render an emotion or abstract idea as a bare one- or two-word label sentence (e.g. "Boundaries." / "Dangerous." / "Spatial presence."); ground it in concrete action, sensation, or image instead
 
 Return JSON only:
 {

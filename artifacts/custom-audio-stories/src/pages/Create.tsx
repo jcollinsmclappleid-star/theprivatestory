@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Wand2, Play, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Lock, Moon, Loader2 } from "lucide-react";
+import { Sparkles, Wand2, Play, Pause, Volume2, ChevronLeft, Headphones, Heart, Shuffle, BookOpen, X, Check, LogIn, Globe, Search, Lock, Moon, Loader2, RotateCcw, RotateCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -487,6 +487,13 @@ const WORLD_REGIONS = [
 const TIME_OF_DAY_OPTIONS = ["Dawn", "Morning", "Afternoon", "Evening", "Midnight"];
 const SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter"];
 
+function formatTime(totalSeconds: number): string {
+  if (!totalSeconds || !isFinite(totalSeconds) || totalSeconds < 0) return "0:00";
+  const m = Math.floor(totalSeconds / 60);
+  const s = Math.floor(totalSeconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
 const LOADING_PHASES = [
   { label: "Architecting your story…", sub: "Building the emotional arc and scene structure" },
   { label: "Writing the narrative…", sub: "Crafting the scenes, tension, and pacing" },
@@ -737,6 +744,7 @@ export default function Create() {
   }, [step]);
   
   const [loadingPhase, setLoadingPhase] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
@@ -788,8 +796,9 @@ export default function Create() {
   const [isSurprising, setIsSurprising] = useState(false);
 
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { play, isPlaying, togglePlay, progress, currentStory } = useAudioPlayer();
+  const { play, isPlaying, togglePlay, progress, currentStory, currentTime, duration, seekTo } = useAudioPlayer();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -857,40 +866,70 @@ export default function Create() {
     phaseTimersRef.current.forEach(clearTimeout);
     phaseTimersRef.current = [];
     setLoadingPhase(0);
+    setLoadingProgress(0);
     const phaseMs = [8000, 20000, 12000, 12000, 12000, 35000, 20000];
     let cumulativeMs = 0;
     phaseMs.forEach((ms, i) => {
       cumulativeMs += ms;
       phaseTimersRef.current.push(setTimeout(() => setLoadingPhase(Math.min(i + 1, LOADING_PHASES.length - 1)), cumulativeMs));
     });
+    // Smooth percentage that eases toward (but never reaches) 100% until the
+    // story actually resolves. Generation time varies, so this is an estimate.
+    const totalMs = phaseMs.reduce((a, b) => a + b, 0);
+    const startedAt = Date.now();
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    progressIntervalRef.current = setInterval(() => {
+      const ratio = Math.min((Date.now() - startedAt) / totalMs, 1);
+      const eased = 1 - Math.pow(1 - ratio, 2);
+      setLoadingProgress(Math.min(99, Math.round(eased * 99)));
+    }, 200);
   }, []);
 
   const stopLoadingPhase = useCallback(() => {
     phaseTimersRef.current.forEach(clearTimeout);
     phaseTimersRef.current = [];
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    setLoadingProgress(100);
   }, []);
+
+  // Clear any pending phase timers / progress interval if the page unmounts
+  // mid-generation, to avoid setting state on an unmounted component.
+  useEffect(() => {
+    return () => {
+      phaseTimersRef.current.forEach(clearTimeout);
+      phaseTimersRef.current = [];
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    };
+  }, []);
+
+  const buildStoryForPlayer = useCallback((data: FullGeneratedStory) => ({
+    id: data.id,
+    title: data.title,
+    description: data.description,
+    mood: data.mood,
+    tags: [data.mood],
+    duration: data.duration,
+    coverImage: data.images.cover,
+    audioUrl: data.audioUrl,
+    isPremium: false,
+    isNew: true,
+    scenes: data.scenes.map((s, i) => ({
+      ...s,
+      image: data.images.scenes[i],
+    })),
+  }), []);
 
   const applyResultToPlayer = useCallback((data: FullGeneratedStory) => {
     if (data.audioUrl) {
-      const storyForPlayer = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        mood: data.mood,
-        tags: [data.mood],
-        duration: data.duration,
-        coverImage: data.images.cover,
-        audioUrl: data.audioUrl,
-        isPremium: false,
-        isNew: true,
-        scenes: data.scenes.map((s, i) => ({
-          ...s,
-          image: data.images.scenes[i],
-        })),
-      };
-      setTimeout(() => play(storyForPlayer as Parameters<typeof play>[0]), 300);
+      setTimeout(() => play(buildStoryForPlayer(data) as Parameters<typeof play>[0]), 300);
     }
-  }, [play]);
+  }, [play, buildStoryForPlayer]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -1598,7 +1637,22 @@ export default function Create() {
   const activeSceneIndex = result
     ? Math.min(Math.floor(progress * result.scenes.length), result.scenes.length - 1)
     : 0;
-  const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] ?? result?.images?.cover ?? "";
+  const activeSceneImage = result?.images?.scenes?.[activeSceneIndex] || result?.images?.cover || "/images/logo.webp";
+  const isThisCurrent = !!result && currentStory?.id === result.id;
+  const handleInlinePlay = () => {
+    if (!result) return;
+    if (isThisCurrent) togglePlay();
+    else play(buildStoryForPlayer(result) as Parameters<typeof play>[0]);
+  };
+  const handleSkip = (delta: number) => {
+    if (!result) return;
+    if (!isThisCurrent) {
+      play(buildStoryForPlayer(result) as Parameters<typeof play>[0]);
+      return;
+    }
+    const target = currentTime + delta;
+    seekTo(Math.max(0, duration > 0 ? Math.min(target, duration) : target));
+  };
 
   const buildPreviewSentence = (): string => {
     const path = STORY_PATHS.find(p => p.id === selectedMode);
@@ -1961,6 +2015,20 @@ export default function Create() {
               ))}
             </div>
 
+            <div className="mt-8 w-full max-w-xs">
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="text-xs uppercase tracking-widest text-muted-foreground">Crafting</span>
+                <span className="text-3xl font-display font-bold text-primary tabular-nums">{loadingProgress}%</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-border/40 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-primary"
+                  animate={{ width: `${loadingProgress}%` }}
+                  transition={{ ease: "linear", duration: 0.3 }}
+                />
+              </div>
+            </div>
+
             <p className="text-xs text-muted-foreground mt-8 max-w-xs">
               Your story is being crafted — writing, imagery, and narration are running now.
             </p>
@@ -1999,8 +2067,19 @@ export default function Create() {
             )}
 
             <div className="glass-panel rounded-3xl overflow-hidden">
-              <div className="relative aspect-video">
-                <AnimatePresence mode="wait">
+              <div className="relative aspect-video bg-card">
+                {/* Persistent base image — always rendered so the artwork never
+                    blanks out during scene crossfades or while audio plays. */}
+                <img
+                  src={activeSceneImage}
+                  alt={result.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/logo.webp"; }}
+                />
+                {/* Crossfade layer on top for a smooth transition between scenes.
+                    No `mode="wait"` so the new image fades in while the old fades
+                    out — they overlap, eliminating the blank-frame flicker. */}
+                <AnimatePresence>
                   <motion.img
                     key={activeSceneIndex}
                     src={activeSceneImage}
@@ -2010,6 +2089,7 @@ export default function Create() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1.2, ease: "easeInOut" }}
                     className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/logo.webp"; }}
                   />
                 </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
@@ -2035,41 +2115,91 @@ export default function Create() {
               </div>
 
               <div className="p-8">
-                <div className="flex items-center gap-4 mb-8 flex-wrap">
-                  {result.audioUrl ? (
-                    <button
-                      onClick={togglePlay}
-                      className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
-                    >
-                      {isThisPlaying ? (
-                        <Volume2 className="w-5 h-5" />
-                      ) : (
-                        <Play className="w-5 h-5" />
-                      )}
-                      {isThisPlaying ? "Playing…" : "Play Story"}
-                    </button>
-                  ) : (
+                {result.audioUrl ? (
+                  <div className="mb-8 space-y-4">
+                    {/* Seek / scrub bar */}
+                    <div className="space-y-1.5">
+                      <input
+                        type="range"
+                        min={0}
+                        max={isThisCurrent ? (duration || 0) : 0}
+                        step={0.1}
+                        value={isThisCurrent ? Math.min(currentTime, duration || currentTime) : 0}
+                        onChange={(e) => { if (isThisCurrent) seekTo(parseFloat(e.target.value)); }}
+                        className="w-full h-1.5 cursor-pointer accent-primary"
+                        aria-label="Seek"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
+                        <span>{formatTime(isThisCurrent ? currentTime : 0)}</span>
+                        <span>{formatTime(isThisCurrent ? (duration || 0) : 0)}</span>
+                      </div>
+                    </div>
+
+                    {/* Transport controls */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <button
+                        onClick={() => handleSkip(-15)}
+                        className="flex flex-col items-center justify-center w-11 h-11 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors shrink-0"
+                        aria-label="Rewind 15 seconds"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        <span className="text-[8px] font-bold leading-none -mt-0.5">15</span>
+                      </button>
+                      <button
+                        onClick={handleInlinePlay}
+                        className="flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-glow"
+                      >
+                        {isThisPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+                        {isThisPlaying ? "Pause" : "Play Story"}
+                      </button>
+                      <button
+                        onClick={() => handleSkip(15)}
+                        className="flex flex-col items-center justify-center w-11 h-11 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors shrink-0"
+                        aria-label="Forward 15 seconds"
+                      >
+                        <RotateCw className="w-4 h-4" />
+                        <span className="text-[8px] font-bold leading-none -mt-0.5">15</span>
+                      </button>
+                      <button
+                        onClick={handleResultSave}
+                        disabled={savePending}
+                        className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
+                          resultSaved
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                        }`}
+                        title={resultSaved ? "Saved to library" : "Save to library"}
+                      >
+                        <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
+                      </button>
+                      <span className="text-muted-foreground text-sm ml-auto">
+                        {result.duration} · {result.scenes.length} scenes
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4 mb-8 flex-wrap">
                     <div className="flex items-center gap-3 bg-muted/30 text-muted-foreground px-6 py-3 rounded-full border border-border/50 text-sm">
                       <Headphones className="w-4 h-4" />
                       Audio narration is being prepared
                     </div>
-                  )}
-                  <button
-                    onClick={handleResultSave}
-                    disabled={savePending}
-                    className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
-                      resultSaved
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                    }`}
-                    title={resultSaved ? "Saved to library" : "Save to library"}
-                  >
-                    <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
-                  </button>
-                  <span className="text-muted-foreground text-sm">
-                    {result.duration} · {result.scenes.length} scenes
-                  </span>
-                </div>
+                    <button
+                      onClick={handleResultSave}
+                      disabled={savePending}
+                      className={`p-3 rounded-full border transition-all disabled:opacity-50 ${
+                        resultSaved
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                      }`}
+                      title={resultSaved ? "Saved to library" : "Save to library"}
+                    >
+                      <Heart className={`w-5 h-5 ${resultSaved ? "fill-current" : ""}`} />
+                    </button>
+                    <span className="text-muted-foreground text-sm">
+                      {result.duration} · {result.scenes.length} scenes
+                    </span>
+                  </div>
+                )}
 
                 {/* Save casting combo as a preset */}
                 {isAuthenticated && lastCastingData && (

@@ -397,53 +397,72 @@ router.post("/claim", async (req: Request, res: Response) => {
     }
 
     const plan = purchase.plan;
-    const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
-    if (!user) {
-      res.status(404).json({ error: "User not found." });
+
+    // Atomic claim-flip + credit in ONE transaction. Only the request that
+    // flips claimed false -> true proceeds to credit, so two concurrent claims
+    // of the same token can never double-credit. If crediting throws (e.g. user
+    // missing), the transaction rolls back, leaving claimed = false for retry.
+    const outcome = await db.transaction(async (tx) => {
+      const won = await tx
+        .update(pendingPurchasesTable)
+        .set({ claimed: true, claimedByUserId: userId, claimedAt: new Date() })
+        .where(
+          and(
+            eq(pendingPurchasesTable.claimToken, token),
+            eq(pendingPurchasesTable.claimed, false),
+          ),
+        )
+        .returning({ id: pendingPurchasesTable.id });
+
+      if (won.length === 0) return "duplicate" as const;
+
+      const [user] = await tx.select().from(usersTable).where(eq(usersTable.id, userId));
+      if (!user) {
+        throw new Error(`User ${userId} not found while claiming token`);
+      }
+
+      if (plan === "pack_1" || plan === "pack_5" || plan === "pack_20") {
+        const credits = PACK_CREDITS[plan as PackPlan];
+        await tx.update(usersTable).set({
+          subscriptionPlan: plan,
+          storyCreditsRemaining: drizzleSql`${usersTable.storyCreditsRemaining} + ${credits}`,
+          stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
+        }).where(eq(usersTable.id, userId));
+        logger.info({ userId, plan, credits }, "[stripe-claim] Pack credits applied");
+      } else if (plan === "immersive") {
+        const hasActiveSub = user.subscriptionStatus === "active" &&
+          (user.subscriptionPlan === "monthly" || user.subscriptionPlan === "annual");
+        await tx.update(usersTable).set({
+          ...(hasActiveSub ? {} : { subscriptionPlan: "immersive" }),
+          addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
+          stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
+        }).where(eq(usersTable.id, userId));
+        logger.info({ userId, hasActiveSub }, "[stripe-claim] Immersive entry credited");
+      } else {
+        // Legacy monthly/annual
+        const isMonthly = plan === "monthly";
+        const renewDate = new Date();
+        renewDate.setMonth(renewDate.getMonth() + (isMonthly ? 1 : 12));
+        await tx.update(usersTable).set({
+          subscriptionPlan: plan,
+          subscriptionStatus: "active",
+          subscriptionStartDate: new Date(),
+          subscriptionRenewDate: renewDate,
+          storiesGeneratedThisMonth: 0,
+          storiesGeneratedThisYear: 0,
+          stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
+          ...(purchase.stripeSubscriptionId ? { stripeSubscriptionId: purchase.stripeSubscriptionId } : {}),
+        }).where(eq(usersTable.id, userId));
+        logger.info({ userId, plan }, "[stripe-claim] Subscription activated via claim");
+      }
+
+      return "applied" as const;
+    });
+
+    if (outcome === "duplicate") {
+      res.status(409).json({ error: "This purchase has already been claimed." });
       return;
     }
-
-    // Apply credits
-    if (plan === "pack_1" || plan === "pack_5" || plan === "pack_20") {
-      const credits = PACK_CREDITS[plan as PackPlan];
-      await db.update(usersTable).set({
-        subscriptionPlan: plan,
-        storyCreditsRemaining: drizzleSql`${usersTable.storyCreditsRemaining} + ${credits}`,
-        stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
-      }).where(eq(usersTable.id, userId));
-      logger.info({ userId, plan, credits }, "[stripe-claim] Pack credits applied");
-    } else if (plan === "immersive") {
-      const hasActiveSub = user.subscriptionStatus === "active" &&
-        (user.subscriptionPlan === "monthly" || user.subscriptionPlan === "annual");
-      await db.update(usersTable).set({
-        ...(hasActiveSub ? {} : { subscriptionPlan: "immersive" }),
-        addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,
-        stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
-      }).where(eq(usersTable.id, userId));
-      logger.info({ userId, hasActiveSub }, "[stripe-claim] Immersive entry credited");
-    } else {
-      // Legacy monthly/annual
-      const isMonthly = plan === "monthly";
-      const renewDate = new Date();
-      renewDate.setMonth(renewDate.getMonth() + (isMonthly ? 1 : 12));
-      await db.update(usersTable).set({
-        subscriptionPlan: plan,
-        subscriptionStatus: "active",
-        subscriptionStartDate: new Date(),
-        subscriptionRenewDate: renewDate,
-        storiesGeneratedThisMonth: 0,
-        storiesGeneratedThisYear: 0,
-        stripeCustomerId: user.stripeCustomerId ?? purchase.stripeCustomerId,
-        ...(purchase.stripeSubscriptionId ? { stripeSubscriptionId: purchase.stripeSubscriptionId } : {}),
-      }).where(eq(usersTable.id, userId));
-      logger.info({ userId, plan }, "[stripe-claim] Subscription activated via claim");
-    }
-
-    await db.update(pendingPurchasesTable).set({
-      claimed: true,
-      claimedByUserId: userId,
-      claimedAt: new Date(),
-    }).where(eq(pendingPurchasesTable.claimToken, token));
 
     res.json({ success: true, plan });
   } catch (err) {

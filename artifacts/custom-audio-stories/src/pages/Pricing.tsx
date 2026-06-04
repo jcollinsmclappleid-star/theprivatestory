@@ -5,10 +5,10 @@ import {
   Sparkles, Shield, Lock, Headphones, BookOpen,
   ChevronDown, Check, Moon,
   EyeOff, Bookmark, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame, Trash2, Timer,
+  Users, Sliders, Flame, Trash2, Timer, Star,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { usePricing, type PlansResponse } from "@/hooks/usePricing";
+import { usePricing } from "@/hooks/usePricing";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
 import { ThreeDoors } from "@/components/ThreeDoors";
@@ -23,20 +23,29 @@ const REASSURANCE = [
   { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
 ];
 
-const MONTHLY_FEATURES = [
-  { text: "5 personalised stories each month", special: false },
-  { text: "Unused stories roll over (up to 10)", special: false },
+const PACK1_FEATURES = [
+  { text: "1 personalised story — yours to keep", special: false },
+  { text: "Private library — visible only to you", special: false },
+  { text: "Premium voice narration — press play instantly", special: false },
+  { text: "Original cover art for your story", special: false },
+  { text: "Credits never expire", special: false },
+];
+
+const PACK5_FEATURES = [
+  { text: "5 personalised stories — yours to keep", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
+  { text: "Credits never expire", special: false },
   { text: "After Dark — stories that explore further", special: true },
 ];
 
-const ANNUAL_FEATURES = [
-  { text: "50 personalised stories per year", special: false },
+const PACK24_FEATURES = [
+  { text: "24 personalised stories — yours to keep", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
+  { text: "Credits never expire", special: false },
   { text: "After Dark — stories that explore further", special: true },
 ];
 
@@ -46,7 +55,6 @@ const CASTING_DETAILS = [
   { icon: <Flame className="w-5 h-5" />, heading: "Choose how far it goes", body: "From romantic to deeply intimate — you set the depth. The story goes exactly where you want it, and no further." },
 ];
 
-
 const INCLUDED = [
   { icon: <Sparkles className="w-5 h-5" />, label: "Personalised story creation", desc: "Every story is written around your mood, your cast, and your world. Nothing pulled from a shelf." },
   { icon: <Lock className="w-5 h-5" />, label: "Private library access", desc: "Your stories live in your own private archive. No one else can see them — not even us." },
@@ -54,30 +62,32 @@ const INCLUDED = [
   { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
 ];
 
-const buildFaqs = (p: PlansResponse): { q: string; a: string }[] => [
+type PackKey = "pack_1" | "pack_5" | "pack_24";
+
+const FAQS: { q: string; a: string }[] = [
   {
     q: "What is After Dark?",
-    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with every plan, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
+    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with Five Private Stories and The Full Collection, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
   },
   {
     q: "Are my generated stories private?",
     a: "Completely. Your stories are saved only to your account and are not visible to anyone else — including us. You can delete them at any time.",
   },
   {
-    q: "What do I get with each plan?",
-    a: `Both plans include personalised story credits — ${p.monthly.storyAllowance} per month or ${p.annual.storyAllowance} per year — private library storage for all your stories, premium voice narration, original cover art, and After Dark. The annual plan is equivalent to ${p.annual.equivalentMonthlyDisplay} per month.`,
+    q: "What do the credit packs include?",
+    a: "Every story credit produces a fully personalised, narrated audio story of approximately 10 minutes — written around your specific cast, mood, and choices. All packs include private library storage, premium voice narration, and original cover art for each story.",
   },
   {
-    q: "Can I buy more personalised stories?",
-    a: `Yes. Additional personalised stories are available for ${p.addon.display} each — for active subscribers only, without changing your plan. They appear alongside your allowance the moment you purchase.`,
+    q: "Do my credits expire?",
+    a: "No. Credits never expire. Use them whenever you like — there's no pressure to create on a schedule.",
   },
   {
-    q: "Do unused monthly stories roll over?",
-    a: "Yes. On the monthly plan, any unused story credits carry forward to the following month, up to a maximum of 10 rollover credits.",
+    q: "Can I buy more credits later?",
+    a: "Yes. Simply return to the pricing page and purchase another pack. Credits stack — if you have 2 remaining and buy 5 more, you'll have 7.",
   },
   {
-    q: "Can I cancel my monthly plan at any time?",
-    a: "Yes. Cancel whenever you like — no forms, no calls. Your stories and library remain fully accessible until the end of your billing period.",
+    q: "What is After Dark and which packs include it?",
+    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with Five Private Stories and The Full Collection. Your First Story focuses on the full personalised experience at a lower entry point.",
   },
 ];
 
@@ -103,18 +113,14 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Pricing() {
   const { isAuthenticated, openSignIn } = useAuth();
-  const { plans, monthly, annual, currency } = usePricing();
-  const FAQS = buildFaqs(plans);
+  const { pack1, pack5, pack24, currency } = usePricing();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
-  const [loadingPlan, setLoadingPlan] = useState<"monthly" | "annual" | "addon" | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState<PackKey | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  const [usageData, setUsageData] = useState<{ plan: string; subscriptionStatus: string | null } | null>(null);
   const pendingCheckoutRef = useRef<string | null>(null);
 
-  const isActiveSub = usageData?.subscriptionStatus === "active" && usageData?.plan !== "free";
-
-  const doCheckout = async (plan: "monthly" | "annual" | "addon") => {
+  const doCheckout = async (plan: PackKey) => {
     setLoadingPlan(plan);
     setCheckoutError(null);
     try {
@@ -139,26 +145,17 @@ export default function Pricing() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => { if (d) setUsageData(d); })
-      .catch(() => {});
-
     const pending = pendingCheckoutRef.current ?? (() => {
       try { return sessionStorage.getItem("pendingPricingCheckout"); } catch { return null; }
     })();
-    if (pending && ["monthly", "annual", "addon"].includes(pending)) {
+    if (pending && ["pack_1", "pack_5", "pack_24"].includes(pending)) {
       pendingCheckoutRef.current = null;
       try { sessionStorage.removeItem("pendingPricingCheckout"); } catch { /* ignore */ }
-      doCheckout(pending as "monthly" | "annual" | "addon");
+      doCheckout(pending as PackKey);
     }
   }, [isAuthenticated]);
 
-  const startCheckout = (plan: "monthly" | "annual" | "addon") => {
-    if (!isAuthenticated && plan === "addon") {
-      openSignIn();
-      return;
-    }
+  const startCheckout = (plan: PackKey) => {
     doCheckout(plan);
   };
 
@@ -173,7 +170,6 @@ export default function Pricing() {
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
       <section className="relative py-28 md:py-40 px-4 text-center overflow-hidden">
-        {/* Atmospheric glow */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0" style={{
             background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.14) 0%, rgba(123,143,255,0.07) 48%, transparent 72%)",
@@ -181,7 +177,6 @@ export default function Pricing() {
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
         </div>
 
-        {/* Hero portrait — woman commanding, two men */}
         <img
           aria-hidden="true"
           src={`${BASE}images/pricing-hero-woman.webp`}
@@ -201,7 +196,7 @@ export default function Pricing() {
               className="mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm"
             >
               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-              <span>Your subscription is active — welcome. Head to your profile to see your plan details.</span>
+              <span>Your story credits are ready. Head to your profile to get started.</span>
             </motion.div>
           )}
           {checkoutError && (
@@ -223,7 +218,6 @@ export default function Pricing() {
             <span className="text-primary"> for you alone.</span>
           </h1>
 
-          {/* Conversion badges */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
             {[
               { icon: <Sparkles className="w-3 h-3" />, label: "Ready in under 3 minutes" },
@@ -245,13 +239,12 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Each plan also includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
+            Each pack also includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — approximately 10 minutes long.
           </p>
 
-          {/* Compact privacy trust strip */}
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             {[
               { icon: <EyeOff className="w-3 h-3" />, text: "Visible to no one else" },
@@ -305,7 +298,7 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Creation Room slide — 3-min emphasis                                */}
+      {/* Creation Room slide                                                  */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-12 px-4 md:px-8 max-w-4xl mx-auto w-full">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/20 backdrop-blur-sm p-8 md:p-12">
@@ -369,139 +362,159 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Pricing cards                                                        */}
+      {/* Voice Showcase                                                       */}
       {/* ------------------------------------------------------------------ */}
-      <section id="pricing-cards" className="py-16 px-4 md:px-8 max-w-4xl mx-auto w-full">
+      <section className="py-8 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <VoiceShowcase />
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <CountryStrip />
+      </section>
 
-          {/* Monthly — Recommended */}
-          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-8 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
+      {/* ------------------------------------------------------------------ */}
+      {/* Pricing cards — 3 credit packs                                      */}
+      {/* ------------------------------------------------------------------ */}
+      <section id="pricing-cards" className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div className="text-center mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">One-time purchase · Credits never expire</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
+            Choose your private collection.
+          </h2>
+          <p className="text-muted-foreground/70 text-sm mt-3">No subscription. Pay once, listen whenever you like.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+
+          {/* Pack 1 — Your First Story */}
+          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Your First Story</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack1.display}</span>
+              </div>
+              <p className="text-xs text-muted-foreground/70 mb-6">One story. Yours to keep.</p>
+
+              <div className="space-y-2.5 mb-6">
+                {PACK1_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-2.5">
+                    <div className="w-4 h-4 rounded-full border border-primary/60 bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-2.5 h-2.5 text-primary" />
+                    </div>
+                    <span className="text-sm leading-snug text-foreground/80">{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => startCheckout("pack_1")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_1" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : "Create My Story"}
+              </button>
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
+                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+              </p>
+            </div>
+          </div>
+
+          {/* Pack 5 — Five Private Stories */}
+          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-7 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Monthly</p>
-                <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
-                  Recommended
-                </span>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Five Private Stories</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack5.display}</span>
               </div>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{monthly.display}</span>
-                <span className="text-muted-foreground/80 mb-1.5">/ month</span>
-              </div>
-              <p className="text-xs text-muted-foreground/80 mb-8">Billed monthly. Stories yours to keep.</p>
+              <p className="text-xs text-muted-foreground/70 mb-2">{pack5.perStoryDisplay} per story — yours to keep.</p>
 
-              <div className="space-y-3 mb-3">
-                {MONTHLY_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-3">
+              <div className="space-y-2.5 mb-6">
+                {PACK5_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-2.5">
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
                       {f.special
                         ? <Moon className="w-2 h-2 text-primary" />
                         : <Check className="w-2.5 h-2.5 text-primary" />
                       }
                     </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>
-                      {f.text}
-                    </span>
+                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
                   </div>
                 ))}
               </div>
               <button
-                onClick={() => startCheckout("monthly")}
+                onClick={() => startCheckout("pack_5")}
                 disabled={loadingPlan !== null}
                 className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingPlan === "monthly" ? (
+                {loadingPlan === "pack_5" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : (
-                  isAuthenticated ? "Subscribe monthly" : "Get started"
-                )}
+                ) : "Build My Collection"}
               </button>
-
               <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
               </p>
-
-              <div className="mt-3 flex items-center justify-center gap-2">
-                <div className="flex-1 h-px bg-border/20" />
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/6 border border-primary/15 text-[11px] text-primary/70 font-medium tracking-wide whitespace-nowrap">
-                  Cancel any time — stories stay yours
-                </span>
-                <div className="flex-1 h-px bg-border/20" />
-              </div>
             </div>
           </div>
 
-          {/* Annual — Top savings */}
-          <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/30 backdrop-blur-sm p-8">
-            <div className="absolute inset-0 bg-gradient-to-br from-card/60 to-background/40 pointer-events-none" />
+          {/* Pack 24 — The Full Collection */}
+          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
-                <span className="px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
-                  Top savings
+              <div className="flex items-center gap-2 mb-3">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">The Full Collection</p>
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
+                  <Star className="w-2.5 h-2.5" /> Most Chosen
                 </span>
               </div>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{annual.display}</span>
-                <span className="text-muted-foreground/80 mb-1.5">/ year</span>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack24.display}</span>
               </div>
-              <p className="text-xs text-muted-foreground/80 mb-8">
-                Equivalent to <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span> per month — save <span className="tabular-nums">{annual.savingsVsMonthlyDisplay}</span> versus monthly.
-              </p>
+              <p className="text-xs text-muted-foreground/70 mb-2">{pack24.perStoryDisplay} per story — yours to keep.</p>
 
-              <div className="space-y-3 mb-3">
-                {ANNUAL_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-3">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/60 bg-primary/10" : "border-primary/40"}`}>
+              <div className="space-y-2.5 mb-6">
+                {PACK24_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-2.5">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
                       {f.special
                         ? <Moon className="w-2 h-2 text-primary" />
                         : <Check className="w-2.5 h-2.5 text-primary" />
                       }
                     </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>
-                      {f.text}
-                    </span>
+                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
                   </div>
                 ))}
               </div>
               <button
-                onClick={() => startCheckout("annual")}
+                onClick={() => startCheckout("pack_24")}
                 disabled={loadingPlan !== null}
-                className="block w-full text-center py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm hover:bg-primary/10 hover:border-primary/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingPlan === "annual" ? (
+                {loadingPlan === "pack_24" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : (
-                  isAuthenticated ? "Subscribe annually" : "Get started"
-                )}
+                ) : "Unlock My Collection"}
               </button>
-              <p className="text-center text-[10px] text-muted-foreground/80 mt-3">
-                The best rate for the full experience. Not sure yet? Start monthly and switch any time.
-              </p>
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-2 leading-snug px-2">
-                By clicking, you request immediate access and acknowledge this waives your statutory 14-day cancellation right. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
+                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
               </p>
             </div>
           </div>
 
         </div>
+
+        {/* Credits never expire reassurance */}
+        <div className="mt-6 flex items-center justify-center gap-2 text-center">
+          <CheckCircle2 className="w-3.5 h-3.5 text-primary/60 flex-shrink-0" />
+          <span className="text-xs text-muted-foreground/60">Credits never expire — use them on your own schedule</span>
+        </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Voice narrator showcase — placed after pricing                      */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <VoiceShowcase />
-      </section>
-
-      <section className="pb-4 pt-2 px-4 md:px-8 max-w-3xl mx-auto w-full">
-        <CountryStrip />
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* The Creation Room                                                    */}
+      {/* The Creation Room detail                                             */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/20 p-10 md:p-16">
@@ -595,7 +608,7 @@ export default function Pricing() {
               <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                 <Moon className="w-4 h-4 text-primary" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">After Dark · Included with every plan</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">After Dark · Included with Five Private Stories & The Full Collection</span>
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-5 leading-tight">
               Stories that go
@@ -605,11 +618,11 @@ export default function Pricing() {
               Some stories want to go further. After Dark is the room where they do — written without restraint, for a part of you that doesn't need to justify itself. The same voice. The same absolute privacy.
             </p>
             <p className="text-muted-foreground/80 leading-relaxed text-sm mb-6">
-              Nothing softened. Nothing left out. Included with every plan — accessed discreetly from your private library.
+              Nothing softened. Nothing left out. Included with Five Private Stories and The Full Collection — accessed discreetly from your private library.
             </p>
             <div className="flex flex-col gap-2">
               {[
-                "Included with every monthly and annual plan",
+                "Included with Five Private Stories and The Full Collection",
                 "Accessed discreetly from your private library",
                 "No extra charge. No separate sign-up.",
               ].map((line) => (
@@ -624,11 +637,11 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Included in every plan                                              */}
+      {/* Included in every pack                                              */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Every plan includes</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Every pack includes</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
             The same private experience,
             <br className="hidden md:block" />

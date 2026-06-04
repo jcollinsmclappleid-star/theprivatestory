@@ -21,6 +21,7 @@ router.get("/me", async (req: Request, res: Response) => {
         subscriptionPlan: usersTable.subscriptionPlan,
         subscriptionStatus: usersTable.subscriptionStatus,
         addonStoriesRemaining: usersTable.addonStoriesRemaining,
+        storyCreditsRemaining: usersTable.storyCreditsRemaining,
         isAdmin: usersTable.isAdmin,
       })
       .from(usersTable)
@@ -36,6 +37,7 @@ router.get("/me", async (req: Request, res: Response) => {
         subscriptionPlan: row?.subscriptionPlan ?? "free",
         subscriptionStatus: row?.subscriptionStatus ?? null,
         addonStoriesRemaining: row?.addonStoriesRemaining ?? 0,
+        storyCreditsRemaining: row?.storyCreditsRemaining ?? 0,
         isAdmin,
       },
     });

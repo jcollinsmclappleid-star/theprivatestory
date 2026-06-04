@@ -370,7 +370,7 @@ function QuickCreateBanner({ taste }: { taste: TasteProfile }) {
 // Main Profile page
 // ---------------------------------------------------------------------------
 export default function Profile() {
-  const { monthly, annual, addon, currency } = usePricing();
+  usePricing();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteProcessing, setDeleteProcessing] = useState(false);
   const [deleteDone, setDeleteDone] = useState(false);
@@ -386,15 +386,18 @@ export default function Profile() {
     used: number;
     limit: number;
     storiesRemaining: number;
+    storyCreditsRemaining: number;
     renewDate: string | null;
     subscriptionStatus: string | null;
     cancelAt: string | null;
+    addonStoriesRemaining: number;
   } | null>(null);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
   const [addonLoading, setAddonLoading] = useState(false);
-  const [upsellLoading, setUpsellLoading] = useState<"monthly" | "annual" | null>(null);
+  const [upsellLoading, _setUpsellLoading] = useState<string | null>(null);
+  void addonLoading; void upsellLoading;
   const [deleteSubLoading, setDeleteSubLoading] = useState(false);
 
   useEffect(() => {
@@ -492,56 +495,70 @@ export default function Profile() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Subscription */}
+      {/* Subscription / Credits */}
       {/* ------------------------------------------------------------------ */}
       {usageData && (
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <CreditCard className="w-4 h-4 text-primary" />
-            <h2 className="font-display font-semibold text-sm text-foreground">Subscription</h2>
-          </div>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Current plan</p>
-              <p className="font-semibold text-foreground capitalize">
-                {usageData.plan === "free" ? "Free"
-                  : usageData.plan === "monthly" ? "Monthly"
-                  : usageData.plan === "annual" ? "Annual"
-                  : "Immersive Story"}
-              </p>
-            </div>
-            {usageData.plan !== "free" && usageData.plan !== "immersive" && (
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Stories used</p>
-                <p className="font-semibold text-foreground">
-                  {usageData.used} / {usageData.limit}
-                </p>
-              </div>
-            )}
+            <h2 className="font-display font-semibold text-sm text-foreground">
+              {["pack_1", "pack_5", "pack_24"].includes(usageData.plan) ? "Story Credits" : "Subscription"}
+            </h2>
           </div>
 
-          {/* Monthly/annual progress bar */}
-          {usageData.plan !== "free" && usageData.plan !== "immersive" && (
-            <div className="mt-4">
-              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${usageData.storiesRemaining === 0 ? "bg-amber-400" : "bg-primary"}`}
-                  style={{ width: `${Math.min(100, (usageData.used / usageData.limit) * 100)}%` }}
-                />
+          {/* Pack plan: credit display */}
+          {["pack_1", "pack_5", "pack_24"].includes(usageData.plan) && (
+            <div className="space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Your plan</p>
+                  <p className="font-semibold text-foreground">
+                    {usageData.plan === "pack_1" ? "Your First Story"
+                      : usageData.plan === "pack_5" ? "Five Private Stories"
+                      : "The Full Collection"}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Credits remaining</p>
+                  <p className={`font-bold text-2xl tabular-nums ${(usageData.storyCreditsRemaining ?? 0) > 0 ? "text-primary" : "text-amber-400"}`}>
+                    {usageData.storyCreditsRemaining ?? 0}
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {usageData.storiesRemaining > 0
-                  ? <><span className="text-primary font-medium">{usageData.storiesRemaining} {usageData.storiesRemaining === 1 ? "Immersive Story" : "Immersive Stories"} remaining</span> — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</>
-                  : <span className="text-amber-400">Allowance reached — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</span>
-                }
+              {(usageData.storyCreditsRemaining ?? 0) > 0 ? (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/8 border border-primary/20">
+                  <Sparkles className="w-4 h-4 text-primary flex-shrink-0" />
+                  <p className="text-xs text-primary font-medium">
+                    {usageData.storyCreditsRemaining === 1
+                      ? "1 story credit ready — create your next story."
+                      : `${usageData.storyCreditsRemaining} story credits ready. Credits never expire.`}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground">Your stories are yours forever. Ready for more?</p>
+                  <Link
+                    href="/pricing"
+                    className="block text-center text-xs px-4 py-2.5 rounded-full bg-primary/12 border border-primary/25 text-primary hover:bg-primary/20 transition-all font-medium"
+                  >
+                    Get more credits →
+                  </Link>
+                </div>
+              )}
+              <p className="text-[10px] text-muted-foreground/50 leading-snug">
+                Credits never expire. Use them whenever you like.
               </p>
             </div>
           )}
 
-          {/* Immersive plan state */}
+          {/* Immersive plan */}
           {usageData.plan === "immersive" && (
-            <div className="mt-4">
-              {usageData.addonStoriesRemaining > 0 ? (
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Current plan</p>
+                <p className="font-semibold text-foreground">Immersive Story</p>
+              </div>
+              {(usageData.addonStoriesRemaining ?? 0) > 0 ? (
                 <div className="flex items-center justify-between p-3 rounded-xl bg-primary/8 border border-primary/20">
                   <p className="text-xs text-primary font-medium">You have a story ready — start creating</p>
                   <Link href="/after-dark" className="text-xs px-3 py-1.5 rounded-full bg-primary/15 text-primary hover:bg-primary/25 transition-all font-medium">
@@ -551,198 +568,150 @@ export default function Profile() {
               ) : (
                 <div className="space-y-3">
                   <p className="text-xs text-muted-foreground">Your story is yours forever. Ready for another?</p>
-                  <div className="flex flex-col gap-2">
-                    {(["monthly", "annual"] as const).map((plan) => {
-                      const labels: Record<string, string> = {
-                        monthly: `Subscribe — ${monthly.storyAllowance} stories/month · ${monthly.display}`,
-                        annual:  `Annual — ${annual.storyAllowance} stories/year · ${annual.display}`,
-                      };
-                      const isLoading = upsellLoading === plan;
-                      return (
-                        <button
-                          key={plan}
-                          disabled={!!upsellLoading}
-                          onClick={async () => {
-                            setUpsellLoading(plan);
-                            try {
-                              const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-                                method: "POST",
-                                credentials: "include",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ plan, currency }),
-                              });
-                              const d = await res.json();
-                              if (d.url) window.location.href = d.url;
-                            } finally {
-                              setUpsellLoading(null);
-                            }
-                          }}
-                          className={`text-xs px-4 py-2.5 rounded-full transition-all disabled:opacity-60 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-1.5 ${
-                            plan === "annual"
-                              ? "bg-primary/12 border border-primary/25 text-primary hover:bg-primary/20"
-                              : "border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30"
-                          }`}
-                        >
-                          {isLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : labels[plan]}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <Link href="/pricing" className="block text-center text-xs px-4 py-2.5 rounded-full bg-primary/12 border border-primary/25 text-primary hover:bg-primary/20 transition-all font-medium">
+                    See credit packs →
+                  </Link>
                 </div>
               )}
             </div>
           )}
 
-          {usageData.plan === "free" && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Upgrade to generate stories. <Link href="/pricing" className="text-primary hover:underline underline-offset-2">See plans →</Link>
-            </p>
-          )}
-          {/* Cancellation scheduled banner */}
-          {usageData.plan !== "free" && usageData.subscriptionStatus === "canceling" && (
-            <div className="mt-4 p-3 rounded-xl bg-amber-400/8 border border-amber-400/20 flex items-start gap-3">
-              <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-amber-400">Cancellation scheduled</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Your access continues until{" "}
-                  <span className="text-foreground font-medium">
-                    {usageData.cancelAt
-                      ? new Date(usageData.cancelAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-                      : usageData.renewDate
-                        ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-                        : "your renewal date"}
-                  </span>.
+          {/* Legacy monthly / annual subscription */}
+          {(usageData.plan === "monthly" || usageData.plan === "annual") && (
+            <div className="space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Current plan</p>
+                  <p className="font-semibold text-foreground capitalize">{usageData.plan}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Stories used</p>
+                  <p className="font-semibold text-foreground">{usageData.used} / {usageData.limit}</p>
+                </div>
+              </div>
+              <div>
+                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${usageData.storiesRemaining === 0 ? "bg-amber-400" : "bg-primary"}`}
+                    style={{ width: `${Math.min(100, (usageData.used / (usageData.limit || 1)) * 100)}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {usageData.storiesRemaining > 0
+                    ? <><span className="text-primary font-medium">{usageData.storiesRemaining} remaining</span> — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</>
+                    : <span className="text-amber-400">Allowance reached — renews {usageData.renewDate ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "soon"}</span>
+                  }
                 </p>
               </div>
-              <button
-                disabled={reactivateLoading}
-                onClick={async () => {
-                  setReactivateLoading(true);
-                  try {
-                    const res = await fetch(`${API_BASE}/api/stripe/reactivate-subscription`, {
-                      method: "POST",
-                      credentials: "include",
-                    });
-                    if (res.ok) {
-                      setUsageData(prev => prev ? { ...prev, subscriptionStatus: "active", cancelAt: null } : prev);
-                    }
-                  } finally {
-                    setReactivateLoading(false);
-                  }
-                }}
-                className="flex-shrink-0 text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all disabled:opacity-50"
-              >
-                {reactivateLoading ? "..." : "Keep plan"}
-              </button>
+
+              {/* Cancellation banner */}
+              {usageData.subscriptionStatus === "canceling" && (
+                <div className="p-3 rounded-xl bg-amber-400/8 border border-amber-400/20 flex items-start gap-3">
+                  <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-amber-400">Cancellation scheduled</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Access continues until{" "}
+                      <span className="text-foreground font-medium">
+                        {usageData.cancelAt
+                          ? new Date(usageData.cancelAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+                          : usageData.renewDate
+                            ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+                            : "your renewal date"}
+                      </span>.
+                    </p>
+                  </div>
+                  <button
+                    disabled={reactivateLoading}
+                    onClick={async () => {
+                      setReactivateLoading(true);
+                      try {
+                        const res = await fetch(`${API_BASE}/api/stripe/reactivate-subscription`, { method: "POST", credentials: "include" });
+                        if (res.ok) setUsageData(prev => prev ? { ...prev, subscriptionStatus: "active", cancelAt: null } : prev);
+                      } finally { setReactivateLoading(false); }
+                    }}
+                    className="flex-shrink-0 text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all disabled:opacity-50"
+                  >
+                    {reactivateLoading ? "..." : "Keep plan"}
+                  </button>
+                </div>
+              )}
+
+              {/* Cancel confirmation dialog */}
+              <AnimatePresence>
+                {cancelConfirmOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="p-4 rounded-xl border border-border/30 bg-card/60 space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-semibold text-foreground">Cancel your subscription?</p>
+                      <button onClick={() => setCancelConfirmOpen(false)} className="p-1 rounded-full hover:bg-white/5 text-muted-foreground">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      You'll keep full access until{" "}
+                      <span className="text-foreground font-medium">
+                        {usageData.renewDate
+                          ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+                          : "your renewal date"}
+                      </span>. After that, your account will revert to free.
+                    </p>
+                    <div className="flex gap-2">
+                      <button onClick={() => setCancelConfirmOpen(false)} className="flex-1 text-xs px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground transition-all">Keep my plan</button>
+                      <button
+                        disabled={cancelLoading}
+                        onClick={async () => {
+                          setCancelLoading(true);
+                          try {
+                            const res = await fetch(`${API_BASE}/api/stripe/cancel-subscription`, { method: "POST", credentials: "include" });
+                            const json = await res.json();
+                            if (res.ok) {
+                              setUsageData(prev => prev ? { ...prev, subscriptionStatus: "canceling", cancelAt: json.cancelAt ?? prev.renewDate } : prev);
+                              setCancelConfirmOpen(false);
+                            }
+                          } finally { setCancelLoading(false); }
+                        }}
+                        className="flex-1 text-xs px-3 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all disabled:opacity-50"
+                      >
+                        {cancelLoading ? "Cancelling..." : "Yes, cancel"}
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="pt-3 border-t border-border/20 flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={async () => {
+                    const res = await fetch(`${API_BASE}/api/stripe/portal`, { credentials: "include" });
+                    const data = await res.json();
+                    if (data.url) window.location.href = data.url;
+                  }}
+                  className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+                >
+                  Manage billing
+                </button>
+                {usageData.subscriptionStatus === "active" && (
+                  <button
+                    onClick={() => setCancelConfirmOpen(true)}
+                    className="text-xs px-4 py-2 rounded-full border border-red-500/20 text-red-400/70 hover:text-red-400 hover:border-red-400/30 transition-all"
+                  >
+                    Cancel subscription
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
-          {/* Cancel confirmation dialog */}
-          <AnimatePresence>
-            {cancelConfirmOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                className="mt-4 p-4 rounded-xl border border-border/30 bg-card/60 space-y-3"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-semibold text-foreground">Cancel your subscription?</p>
-                  <button onClick={() => setCancelConfirmOpen(false)} className="p-1 rounded-full hover:bg-white/5 text-muted-foreground">
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  You'll keep full access to your stories until{" "}
-                  <span className="text-foreground font-medium">
-                    {usageData.renewDate
-                      ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-                      : "your renewal date"}
-                  </span>. After that, your account will revert to free.
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setCancelConfirmOpen(false)}
-                    className="flex-1 text-xs px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground transition-all"
-                  >
-                    Keep my plan
-                  </button>
-                  <button
-                    disabled={cancelLoading}
-                    onClick={async () => {
-                      setCancelLoading(true);
-                      try {
-                        const res = await fetch(`${API_BASE}/api/stripe/cancel-subscription`, {
-                          method: "POST",
-                          credentials: "include",
-                        });
-                        const json = await res.json();
-                        if (res.ok) {
-                          setUsageData(prev => prev ? {
-                            ...prev,
-                            subscriptionStatus: "canceling",
-                            cancelAt: json.cancelAt ?? prev.renewDate,
-                          } : prev);
-                          setCancelConfirmOpen(false);
-                        }
-                      } finally {
-                        setCancelLoading(false);
-                      }
-                    }}
-                    className="flex-1 text-xs px-3 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all disabled:opacity-50"
-                  >
-                    {cancelLoading ? "Cancelling..." : "Yes, cancel"}
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {usageData.plan !== "free" && (
-            <div className="mt-4 pt-4 border-t border-border/20 flex flex-col sm:flex-row gap-2">
-              <button
-                onClick={async () => {
-                  const res = await fetch(`${API_BASE}/api/stripe/portal`, { credentials: "include" });
-                  const data = await res.json();
-                  if (data.url) window.location.href = data.url;
-                }}
-                className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
-              >
-                Manage billing
-              </button>
-              {(usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus === "active" && (
-                <button
-                  disabled={addonLoading}
-                  onClick={async () => {
-                    setAddonLoading(true);
-                    try {
-                      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-                        method: "POST",
-                        credentials: "include",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ plan: "addon", currency }),
-                      });
-                      const data = await res.json();
-                      if (data.url) window.location.href = data.url;
-                    } finally {
-                      setAddonLoading(false);
-                    }
-                  }}
-                  className="text-xs px-4 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
-                >
-                  {addonLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Starting…</> : <>Add more stories — <span className="tabular-nums">{addon.display}</span></>}
-                </button>
-              )}
-              {(usageData.plan === "monthly" || usageData.plan === "annual") && usageData.subscriptionStatus !== "canceling" && (
-                <button
-                  onClick={() => setCancelConfirmOpen(true)}
-                  className="text-xs px-4 py-2 rounded-full border border-red-500/20 text-red-400/70 hover:text-red-400 hover:border-red-400/30 transition-all"
-                >
-                  Cancel subscription
-                </button>
-              )}
-            </div>
+          {/* Free plan */}
+          {usageData.plan === "free" && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Purchase credits to create stories. <Link href="/pricing" className="text-primary hover:underline underline-offset-2">See packs →</Link>
+            </p>
           )}
         </section>
       )}

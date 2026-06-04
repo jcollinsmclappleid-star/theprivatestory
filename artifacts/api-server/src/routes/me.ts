@@ -126,7 +126,9 @@ const PLAN_LIMITS: Record<string, { period: "month" | "year"; limit: number }> =
   annual: { period: "year", limit: 50 },
 };
 
-/** Returns the user's current usage stats, resetting counters if the renewal period has passed. */
+const PACK_PLANS_SET = new Set(["pack_1", "pack_5", "pack_24"]);
+
+/** Returns the user's current usage stats. */
 export async function getOrResetUsage(userId: string): Promise<{
   plan: string;
   used: number;
@@ -136,6 +138,7 @@ export async function getOrResetUsage(userId: string): Promise<{
   storiesRemaining: number;
   rolloverCredits: number;
   addonStoriesRemaining: number;
+  storyCreditsRemaining: number;
   subscriptionStatus: string | null;
   cancelAt: string | null;
 }> {
@@ -149,32 +152,49 @@ export async function getOrResetUsage(userId: string): Promise<{
       subscriptionCancelAt: usersTable.subscriptionCancelAt,
       rolloverCredits: usersTable.rolloverCredits,
       addonStoriesRemaining: usersTable.addonStoriesRemaining,
+      storyCreditsRemaining: usersTable.storyCreditsRemaining,
     })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
   if (!user) {
-    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0, rolloverCredits: 0, addonStoriesRemaining: 0, subscriptionStatus: null, cancelAt: null };
+    return { plan: "free", used: 0, limit: 0, renewDate: null, canGenerate: false, storiesRemaining: 0, rolloverCredits: 0, addonStoriesRemaining: 0, storyCreditsRemaining: 0, subscriptionStatus: null, cancelAt: null };
   }
 
   const plan = user.subscriptionPlan ?? "free";
+  const addonStoriesRemaining = user.addonStoriesRemaining ?? 0;
+  const storyCreditsRemaining = user.storyCreditsRemaining ?? 0;
+
+  // Pack plan model: credits never expire, no period concept
+  if (PACK_PLANS_SET.has(plan)) {
+    return {
+      plan,
+      used: 0,
+      limit: 0,
+      renewDate: null,
+      canGenerate: storyCreditsRemaining > 0,
+      storiesRemaining: storyCreditsRemaining,
+      rolloverCredits: 0,
+      addonStoriesRemaining,
+      storyCreditsRemaining,
+      subscriptionStatus: null,
+      cancelAt: null,
+    };
+  }
+
   const planConfig = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
   const renewDate = user.subscriptionRenewDate;
-  let rolloverCredits = user.rolloverCredits ?? 0;
+  const rolloverCredits = user.rolloverCredits ?? 0;
 
   let used = planConfig.period === "year"
     ? (user.storiesGeneratedThisYear ?? 0)
     : (user.storiesGeneratedThisMonth ?? 0);
 
   // When the renewal period has passed, treat usage as 0 for display purposes but do NOT write to DB.
-  // The invoice.paid webhook is the sole authority for resetting counters and computing rollover credits.
-  // Writing a reset here before the webhook fires would zero storiesGeneratedThisMonth, causing the
-  // webhook to compute maximum rollover from a zeroed counter (over-crediting).
   if (renewDate && plan !== "free" && new Date() > renewDate) {
     used = 0;
   }
 
-  const addonStoriesRemaining = user.addonStoriesRemaining ?? 0;
   const planRemaining = Math.max(0, planConfig.limit - used);
   const storiesRemaining = planRemaining + rolloverCredits;
   const canGenerate = (plan !== "free" && (used < planConfig.limit || rolloverCredits > 0)) || addonStoriesRemaining > 0;
@@ -188,6 +208,7 @@ export async function getOrResetUsage(userId: string): Promise<{
     storiesRemaining,
     rolloverCredits,
     addonStoriesRemaining,
+    storyCreditsRemaining,
     subscriptionStatus: user.subscriptionStatus ?? null,
     cancelAt: user.subscriptionCancelAt ? user.subscriptionCancelAt.toISOString() : null,
   };

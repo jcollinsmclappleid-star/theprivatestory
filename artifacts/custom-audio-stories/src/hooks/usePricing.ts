@@ -3,32 +3,26 @@ import { useState, useEffect } from "react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const CURRENCY_CACHE_KEY = "tps_currency";
-const CURRENCY_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const CURRENCY_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-export type Plan = {
+export type PackPlan = {
   amount: number;
   currency: string;
   display: string;
-  interval: "month" | "year" | "one_time";
-};
-
-export type MonthlyPlan = Plan & { storyAllowance: number };
-export type AnnualPlan = Plan & {
-  storyAllowance: number;
-  equivalentMonthlyDisplay: string;
-  equivalentMonthlyAmount: number;
-  savingsVsMonthlyDisplay: string;
-  savingsVsMonthlyAmount: number;
+  interval: "one_time";
+  stories: number;
+  perStoryDisplay: string;
+  afterDark: boolean;
 };
 
 export type PlansResponse = {
-  monthly: MonthlyPlan;
-  annual: AnnualPlan;
-  addon: Plan;
+  pack1: PackPlan;
+  pack5: PackPlan;
+  pack24: PackPlan;
+  currency: "gbp" | "usd";
   fetchedAt: number;
 };
 
-// Fast synchronous guess from browser timezone — used as initial value only.
 function detectCurrencyFromTimezone(): "gbp" | "usd" {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
@@ -39,7 +33,6 @@ function detectCurrencyFromTimezone(): "gbp" | "usd" {
   return "usd";
 }
 
-// Read a previously cached currency result (avoids flicker on repeat visits).
 function readCurrencyCache(): "gbp" | "usd" | null {
   try {
     const raw = localStorage.getItem(CURRENCY_CACHE_KEY);
@@ -63,13 +56,10 @@ function writeCurrencyCache(value: "gbp" | "usd"): void {
   }
 }
 
-// Best initial synchronous guess: cached result > timezone fallback.
 function getInitialCurrency(): "gbp" | "usd" {
   return readCurrencyCache() ?? detectCurrencyFromTimezone();
 }
 
-// Async IP-based detection via ipapi.co — no API key required, 1 k req/day free.
-// Returns the detected currency or null if the request fails.
 async function detectCurrencyFromIP(): Promise<"gbp" | "usd" | null> {
   try {
     const res = await fetch("https://ipapi.co/country_code/", {
@@ -84,68 +74,24 @@ async function detectCurrencyFromIP(): Promise<"gbp" | "usd" | null> {
   }
 }
 
-// Sensible fallback values used only as placeholderData while the real fetch is in-flight,
-// or if the backend is unreachable.
 export const PRICING_FALLBACK_GBP: PlansResponse = {
-  monthly: {
-    amount: 2999,
-    currency: "gbp",
-    display: "£29.99",
-    interval: "month",
-    storyAllowance: 5,
-  },
-  annual: {
-    amount: 17900,
-    currency: "gbp",
-    display: "£179",
-    interval: "year",
-    storyAllowance: 50,
-    equivalentMonthlyAmount: 1492,
-    equivalentMonthlyDisplay: "£14.92",
-    savingsVsMonthlyAmount: 18088,
-    savingsVsMonthlyDisplay: "£180.88",
-  },
-  addon: {
-    amount: 799,
-    currency: "gbp",
-    display: "£7.99",
-    interval: "one_time",
-  },
+  pack1: { amount: 1200, currency: "gbp", display: "£12", interval: "one_time", stories: 1, perStoryDisplay: "£12", afterDark: false },
+  pack5: { amount: 3900, currency: "gbp", display: "£39", interval: "one_time", stories: 5, perStoryDisplay: "£7.80", afterDark: true },
+  pack24: { amount: 9900, currency: "gbp", display: "£99", interval: "one_time", stories: 24, perStoryDisplay: "£4.13", afterDark: true },
+  currency: "gbp",
   fetchedAt: 0,
 };
 
 export const PRICING_FALLBACK_USD: PlansResponse = {
-  monthly: {
-    amount: 2999,
-    currency: "usd",
-    display: "$29.99",
-    interval: "month",
-    storyAllowance: 5,
-  },
-  annual: {
-    amount: 22900,
-    currency: "usd",
-    display: "$229",
-    interval: "year",
-    storyAllowance: 50,
-    equivalentMonthlyAmount: 1908,
-    equivalentMonthlyDisplay: "$19.08",
-    savingsVsMonthlyAmount: 13088,
-    savingsVsMonthlyDisplay: "$130.88",
-  },
-  addon: {
-    amount: 799,
-    currency: "usd",
-    display: "$7.99",
-    interval: "one_time",
-  },
+  pack1: { amount: 1500, currency: "usd", display: "$15", interval: "one_time", stories: 1, perStoryDisplay: "$15", afterDark: false },
+  pack5: { amount: 4900, currency: "usd", display: "$49", interval: "one_time", stories: 5, perStoryDisplay: "$9.80", afterDark: true },
+  pack24: { amount: 11900, currency: "usd", display: "$119", interval: "one_time", stories: 24, perStoryDisplay: "$4.96", afterDark: true },
+  currency: "usd",
   fetchedAt: 0,
 };
 
-// Keep a single exported fallback alias so existing imports don't break.
 export const PRICING_FALLBACK = PRICING_FALLBACK_GBP;
 
-// Keep the synchronous export for any callers that still use it directly.
 export function detectCurrency(): "gbp" | "usd" {
   return getInitialCurrency();
 }
@@ -159,8 +105,6 @@ async function fetchPlans(currency: "gbp" | "usd"): Promise<PlansResponse> {
 export function usePricing() {
   const [currency, setCurrency] = useState<"gbp" | "usd">(getInitialCurrency);
 
-  // On mount: run the IP-based check. If it differs from the initial guess, update
-  // currency (which changes the queryKey and triggers a fresh fetch of the right prices).
   useEffect(() => {
     detectCurrencyFromIP().then((detected) => {
       if (detected) {
@@ -185,9 +129,9 @@ export function usePricing() {
   return {
     plans,
     currency,
-    monthly: plans.monthly,
-    annual: plans.annual,
-    addon: plans.addon,
+    pack1: plans.pack1,
+    pack5: plans.pack5,
+    pack24: plans.pack24,
     isLoading: query.isLoading,
     isPlaceholder: query.isPlaceholderData,
   };

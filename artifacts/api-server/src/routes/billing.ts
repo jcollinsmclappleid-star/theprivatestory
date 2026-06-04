@@ -5,36 +5,25 @@ import { logger } from "../lib/logger.js";
 const router = Router();
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_MONTHLY_PRICE_ID = process.env.STRIPE_MONTHLY_PRICE_ID;
-const STRIPE_ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID;
-const STRIPE_ADDON_PRICE_ID = process.env.STRIPE_ADDON_PRICE_ID;
-const STRIPE_MONTHLY_PRICE_ID_USD = process.env.STRIPE_MONTHLY_PRICE_ID_USD;
-const STRIPE_ANNUAL_PRICE_ID_USD = process.env.STRIPE_ANNUAL_PRICE_ID_USD;
-const STRIPE_ADDON_PRICE_ID_USD = process.env.STRIPE_ADDON_PRICE_ID_USD;
-
-const MONTHLY_STORY_ALLOWANCE = 5;
-const ANNUAL_STORY_ALLOWANCE = 50;
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const FAILURE_RETRY_MS = 30 * 1000;
 
-type PlanShape = {
+export type PackPlan = {
   amount: number;
   currency: string;
   display: string;
-  interval: "month" | "year" | "one_time";
+  interval: "one_time";
+  stories: number;
+  perStoryDisplay: string;
+  afterDark: boolean;
 };
 
-type PlansResponse = {
-  monthly: PlanShape & { storyAllowance: number };
-  annual: PlanShape & {
-    storyAllowance: number;
-    equivalentMonthlyDisplay: string;
-    equivalentMonthlyAmount: number;
-    savingsVsMonthlyDisplay: string;
-    savingsVsMonthlyAmount: number;
-  };
-  addon: PlanShape;
+export type PlansResponse = {
+  pack1: PackPlan;
+  pack5: PackPlan;
+  pack24: PackPlan;
+  currency: "gbp" | "usd";
   fetchedAt: number;
 };
 
@@ -59,67 +48,76 @@ function formatCurrency(amount: number, currency: string): string {
   }
 }
 
-async function fetchPrice(stripe: Stripe, priceId: string): Promise<PlanShape> {
-  const price = await stripe.prices.retrieve(priceId);
-  if (typeof price.unit_amount !== "number") {
-    throw new Error(`Stripe price ${priceId} has no unit_amount`);
-  }
-  const intervalRaw = price.recurring?.interval;
-  const interval: PlanShape["interval"] =
-    intervalRaw === "month" ? "month" : intervalRaw === "year" ? "year" : "one_time";
+function buildPackPlan(amount: number, currency: string, stories: number, afterDark: boolean): PackPlan {
+  const perStory = Math.round(amount / stories);
   return {
-    amount: price.unit_amount,
-    currency: price.currency,
-    display: formatCurrency(price.unit_amount, price.currency),
-    interval,
+    amount,
+    currency,
+    display: formatCurrency(amount, currency),
+    interval: "one_time",
+    stories,
+    perStoryDisplay: formatCurrency(perStory, currency),
+    afterDark,
   };
 }
 
-function buildPlansResponse(
-  monthly: PlanShape,
-  annual: PlanShape,
-  addon: PlanShape,
+function buildRegionPlans(
+  pack1Amount: number,
+  pack5Amount: number,
+  pack24Amount: number,
+  currency: "gbp" | "usd",
 ): PlansResponse {
-  const equivalentMonthlyAmount = Math.round(annual.amount / 12);
-  const annualMonthlyEquivalentTotal = monthly.amount * 12;
-  const savingsVsMonthlyAmount = Math.max(0, annualMonthlyEquivalentTotal - annual.amount);
   return {
-    monthly: { ...monthly, storyAllowance: MONTHLY_STORY_ALLOWANCE },
-    annual: {
-      ...annual,
-      storyAllowance: ANNUAL_STORY_ALLOWANCE,
-      equivalentMonthlyAmount,
-      equivalentMonthlyDisplay: formatCurrency(equivalentMonthlyAmount, annual.currency),
-      savingsVsMonthlyAmount,
-      savingsVsMonthlyDisplay: formatCurrency(savingsVsMonthlyAmount, annual.currency),
-    },
-    addon,
+    pack1: buildPackPlan(pack1Amount, currency, 1, false),
+    pack5: buildPackPlan(pack5Amount, currency, 5, true),
+    pack24: buildPackPlan(pack24Amount, currency, 24, true),
+    currency,
     fetchedAt: Date.now(),
   };
 }
 
-async function loadPlansFromStripe(): Promise<RegionPlans> {
-  if (!STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY not configured");
-  if (!STRIPE_MONTHLY_PRICE_ID || !STRIPE_ANNUAL_PRICE_ID || !STRIPE_ADDON_PRICE_ID) {
-    throw new Error("GBP Stripe price IDs not configured");
+async function fetchPriceAmount(stripe: Stripe, priceId: string): Promise<number> {
+  const price = await stripe.prices.retrieve(priceId);
+  if (typeof price.unit_amount !== "number") {
+    throw new Error(`Stripe price ${priceId} has no unit_amount`);
   }
+  return price.unit_amount;
+}
+
+const GBP_FALLBACK: RegionPlans = {
+  gbp: buildRegionPlans(1200, 3900, 9900, "gbp"),
+  usd: buildRegionPlans(1500, 4900, 11900, "usd"),
+};
+
+async function loadPlansFromStripe(): Promise<RegionPlans> {
+  if (!STRIPE_SECRET_KEY) {
+    logger.warn("STRIPE_SECRET_KEY not configured — using hardcoded pricing fallback");
+    return GBP_FALLBACK;
+  }
+
+  const single_gbp = process.env.STRIPE_SINGLE_PRICE_ID;
+  const five_gbp = process.env.STRIPE_FIVE_PACK_PRICE_ID;
+  const coll_gbp = process.env.STRIPE_COLLECTION_PRICE_ID;
+
+  if (!single_gbp || !five_gbp || !coll_gbp) {
+    logger.warn("Pack price IDs not configured — using hardcoded pricing fallback");
+    return GBP_FALLBACK;
+  }
+
   const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2025-04-30.basil" });
 
-  const hasUsd = STRIPE_MONTHLY_PRICE_ID_USD && STRIPE_ANNUAL_PRICE_ID_USD && STRIPE_ADDON_PRICE_ID_USD;
+  const single_usd = process.env.STRIPE_SINGLE_PRICE_ID_USD;
+  const five_usd = process.env.STRIPE_FIVE_PACK_PRICE_ID_USD;
+  const coll_usd = process.env.STRIPE_COLLECTION_PRICE_ID_USD;
+  const hasUsd = !!(single_usd && five_usd && coll_usd);
 
-  const priceIds = [
-    STRIPE_MONTHLY_PRICE_ID,
-    STRIPE_ANNUAL_PRICE_ID,
-    STRIPE_ADDON_PRICE_ID,
-    ...(hasUsd ? [STRIPE_MONTHLY_PRICE_ID_USD!, STRIPE_ANNUAL_PRICE_ID_USD!, STRIPE_ADDON_PRICE_ID_USD!] : []),
-  ];
+  const ids = [single_gbp, five_gbp, coll_gbp, ...(hasUsd ? [single_usd!, five_usd!, coll_usd!] : [])];
+  const amounts = await Promise.all(ids.map((id) => fetchPriceAmount(stripe, id)));
 
-  const prices = await Promise.all(priceIds.map((id) => fetchPrice(stripe, id)));
-
-  const gbp = buildPlansResponse(prices[0], prices[1], prices[2]);
+  const gbp = buildRegionPlans(amounts[0], amounts[1], amounts[2], "gbp");
   const usd = hasUsd
-    ? buildPlansResponse(prices[3], prices[4], prices[5])
-    : gbp;
+    ? buildRegionPlans(amounts[3], amounts[4], amounts[5], "usd")
+    : buildRegionPlans(1500, 4900, 11900, "usd");
 
   return { gbp, usd };
 }
@@ -149,7 +147,6 @@ async function getPlans(): Promise<RegionPlans> {
 }
 
 // GET /api/billing/plans?currency=gbp|usd
-// Returns prices for the requested currency. Defaults to GBP.
 router.get("/plans", async (req: Request, res: Response) => {
   try {
     const data = await getPlans();

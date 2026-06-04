@@ -45,7 +45,7 @@ export const usersTable = pgTable("users", {
   bannedByAdminId: varchar("banned_by_admin_id"),
   blockedGenerationCount: integer("blocked_generation_count").notNull().default(0),
   // Subscription & billing
-  subscriptionPlan: text("subscription_plan", { enum: ["free", "monthly", "annual", "immersive"] }).notNull().default("free"),
+  subscriptionPlan: text("subscription_plan", { enum: ["free", "monthly", "annual", "immersive", "pack_1", "pack_5", "pack_24"] }).notNull().default("free"),
   storiesGeneratedThisMonth: integer("stories_generated_this_month").notNull().default(0),
   storiesGeneratedThisYear: integer("stories_generated_this_year").notNull().default(0),
   subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),
@@ -54,6 +54,8 @@ export const usersTable = pgTable("users", {
   addonStoriesRemaining: integer("addon_stories_remaining").notNull().default(0),
   // Rollover credits — unused monthly plan stories that carry over (max 10)
   rolloverCredits: integer("rollover_credits").notNull().default(0),
+  // One-time credit pack credits — used by pack_1/pack_5/pack_24 plans; never expire
+  storyCreditsRemaining: integer("story_credits_remaining").notNull().default(0),
   // Snapshot of previous period usage taken at lazy reset time, consumed by invoice.paid webhook for rollover
   lastPeriodStoriesCount: integer("last_period_stories_count").notNull().default(0),
   // Idempotency guard: Stripe invoice ID last processed in invoice.paid webhook
@@ -136,7 +138,7 @@ export const pendingPurchasesTable = pgTable("pending_purchases", {
   stripeSessionId: varchar("stripe_session_id").notNull().unique(),
   stripeCustomerId: varchar("stripe_customer_id"),
   customerEmail: varchar("customer_email"),
-  plan: text("plan", { enum: ["monthly", "annual", "immersive"] }).notNull(),
+  plan: text("plan", { enum: ["monthly", "annual", "immersive", "pack_1", "pack_5", "pack_24"] }).notNull(),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   confirmed: boolean("confirmed").notNull().default(false),
   claimed: boolean("claimed").notNull().default(false),

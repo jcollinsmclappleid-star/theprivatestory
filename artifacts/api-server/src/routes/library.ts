@@ -45,10 +45,13 @@ async function requireActiveSubscription(req: Request, res: Response): Promise<b
     .where(eq(usersTable.id, userId))
     .then(r => r[0]);
   if (user?.isAdmin) return true;
-  const hasPaidPlan = user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual" || user?.subscriptionPlan === "immersive";
-  // Immersive is a one-time purchase with no ongoing subscription status — grant access unconditionally
-  const hasPaidStatus = user?.subscriptionPlan === "immersive" || user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
-  if (!(hasPaidPlan && hasPaidStatus)) {
+  const packPlans = ["pack_1", "pack_5", "pack_24"] as const;
+  const isPackPlan = packPlans.includes(user?.subscriptionPlan as typeof packPlans[number]);
+  const isLegacyPlan = user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual" || user?.subscriptionPlan === "immersive";
+  // Pack plans and immersive: one-time purchase — grant library access unconditionally once purchased
+  // Legacy monthly/annual: requires active/canceling status
+  const hasPaidStatus = isPackPlan || user?.subscriptionPlan === "immersive" || user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
+  if (!((isPackPlan || isLegacyPlan) && hasPaidStatus)) {
     res.status(403).json({ error: "A subscription is required to access your story library." });
     return false;
   }

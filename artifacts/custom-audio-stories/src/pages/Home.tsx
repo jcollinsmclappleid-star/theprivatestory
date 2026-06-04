@@ -554,7 +554,7 @@ export default function Home() {
                   <span className="text-[#9baeff]">at the end of the hall.</span>
                 </h2>
                 <p className="text-white/75 text-base leading-relaxed mb-3 max-w-md">
-                  Past The Listening Room is After Dark — the same writers, the same four voices, the same
+                  Past The Listening Room is After Dark — the same writers, the same five voices, the same
                   intimate craft. The intensity dial just goes further.
                 </p>
                 <p className="text-white/55 text-sm leading-relaxed mb-8 max-w-md">

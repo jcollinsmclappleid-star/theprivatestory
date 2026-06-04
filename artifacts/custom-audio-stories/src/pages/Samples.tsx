@@ -322,7 +322,7 @@ export default function Samples() {
         <TrustBar />
         <p className="mt-8 text-[12px] text-white/45 leading-relaxed text-center max-w-xl mx-auto">
           About these editor's picks: ten short narrated openings, written by
-          our editorial team and narrated by four voices. Each one is built as
+          our editorial team and narrated by five voices. Each one is built as
           a complete short — it lands, deliberately, before any explicit
           content.
         </p>
@@ -421,9 +421,10 @@ function Hero({ onStart }: { onStart: () => void }) {
           </h1>
 
           <p className="text-[15px] sm:text-base text-white/65 leading-relaxed max-w-xl">
-            Short, intimate stories from our writers — narrated end-to-end by
-            four voices. Each one stops where you'd want it to keep going.
-            Yours, when you create one, can go further.
+            Narrated by five voices — each story is written to pull you in,
+            then stops just before explicit. On purpose. These are here to
+            show you the writing and the narration. When you create your own,
+            you choose the pairing, the mood, and exactly how far it goes.
           </p>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
@@ -469,10 +470,10 @@ function Hero({ onStart }: { onStart: () => void }) {
                   transition={{ duration: 0.25 }}
                   className="mt-3 text-[12px] text-white/55 leading-relaxed border-l border-primary/30 pl-4 italic overflow-hidden"
                 >
-                  Adult themes throughout. By design, these public samples fade
-                  before any explicit content — they're built as cliffhangers.
-                  Fully explicit, personalised stories live behind sign-up,
-                  age verification and a paid subscription, where they belong.
+                  Adult themes throughout. These samples stop before explicit
+                  by design — they're a taste of the writing and narration,
+                  not the full experience. Your story, shaped around your own
+                  fantasy, goes as far as you want it to.
                 </motion.p>
               )}
             </AnimatePresence>

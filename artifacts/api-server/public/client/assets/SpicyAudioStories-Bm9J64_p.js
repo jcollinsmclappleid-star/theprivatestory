@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BoFu6HAU.js";import{S as i,g as r}from"./SEOPage-B1Axoy3B.js";import"./index-Q_flj6K9.js";import"./data-editors-picks-BeL-1HZ1.js";const s=r("spicy-audio-stories");function u(){return o.jsx(i,{config:s,slug:"spicy-audio-stories",doorFilter:["dark"]})}export{u as default};

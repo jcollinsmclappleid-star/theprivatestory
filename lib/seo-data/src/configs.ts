@@ -7679,7 +7679,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
       },
       {
         heading: "Pricing in dollars, plainly stated",
-        body: "Monthly, annual, and Immersive plans, priced in dollars, with no hidden tiers and no payment prompts inside a story. See the <a href=\"/pricing\">pricing page</a> for current plans.",
+        body: "One-time credit packs, priced in dollars, with no subscription, no hidden tiers, and no payment prompts inside a story. Credits never expire. See the <a href=\"/pricing\">pricing page</a> for current packs.",
       },
       {
         heading: "Privacy as architecture, not a setting",

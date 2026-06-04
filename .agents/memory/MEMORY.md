@@ -8,3 +8,4 @@
 - [Story serializer divergence](story-serializer-divergence.md) — cover blank but audio plays = list vs detail endpoint flat-field mismatch (images.cover→coverImage), NOT media URL/auth; never BASE_URL-prefix /api media
 - [Dialogue vs attribution coupling](dialogue-attribution-coupling.md) — more dialogue / fewer "he said" is safe ONLY if 2 alternating speakers + name/action anchor every ~3rd line (post-hoc attributeSpeakers, 2 voices); contract spans 5 prompt sites in generate.ts
 - [Attribution alternation bias + TTS stability](attribution-alternation-bias.md) — "back-and-forth fallback" in prompt caused wrong voice; fix = embed surrounding prose per quote + NARRATOR_STABILITY=0.65 vs CHAR_STABILITY=0.45
+- [Pricing spec is 20-story, not 24](pricing-pack20-vs-pack24.md) — final user spec = pack_20 (Immersive Collection £79/$99, 20 credits); code review may falsely demand pack_24/£99/£119 from a superseded spec.

@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Cjdo1BAo.js";import{S as r,g as t}from"./SEOPage--XUicjqA.js";import"./index-CIEbPmpN.js";import"./data-editors-picks-BeL-1HZ1.js";const i=t("erotic-audiobooks-for-women");function n(){return o.jsx(r,{config:i,slug:"erotic-audiobooks-for-women",doorFilter:["dark"]})}export{n as default};

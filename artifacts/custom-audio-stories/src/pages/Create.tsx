@@ -805,7 +805,7 @@ export default function Create() {
     defaultValues: {
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "RILOU7YmBhvwJGDGjNmP",
+      voiceFeel: "jfIS2w2yJi0grJZPyEsk",
       storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,
@@ -1459,7 +1459,7 @@ export default function Create() {
     form.reset({
       mood: "Emotional",
       intensity: "Tender",
-      voiceFeel: "RILOU7YmBhvwJGDGjNmP",
+      voiceFeel: "jfIS2w2yJi0grJZPyEsk",
       storyLength: "10 min",
       scenarioCard: "",
       cinematicVisuals: true,

@@ -13,6 +13,29 @@ export interface Voice {
 
 export const VOICES: Voice[] = [
   {
+    id: "jfIS2w2yJi0grJZPyEsk",
+    displayName: "Theo",
+    label: "Gravel",
+    accent: "British",
+    accentLabel: "British · Textured",
+    desc: "Textured, unhurried, and deeply felt. A voice that lingers long after the story ends.",
+    presence: "Feels raw, grounded, and quietly intense.",
+    bestFor: "Slow burn · Dark romance · His perspective",
+    gender: "male",
+    recommended: true,
+  },
+  {
+    id: "aTxZrSrp47xsP6Ot4Kgd",
+    displayName: "Kayla",
+    label: "Expressive",
+    accent: "American",
+    accentLabel: "American · Warm",
+    desc: "Expressive and calm. Rich narrative delivery with natural warmth and engaging presence.",
+    bestFor: "Emotional scenes · Romance · Engaging tone",
+    gender: "female",
+    recommended: true,
+  },
+  {
     id: "FA6HhUjVbervLw2rNl8M",
     displayName: "Clara",
     label: "Soothing",
@@ -33,17 +56,6 @@ export const VOICES: Voice[] = [
     presence: "Feels personal, warm, and quietly intense.",
     bestFor: "Late night · Intimacy · Closer delivery",
     gender: "female",
-  },
-  {
-    id: "aTxZrSrp47xsP6Ot4Kgd",
-    displayName: "Kayla",
-    label: "Expressive",
-    accent: "American",
-    accentLabel: "American · Warm",
-    desc: "Expressive and calm. Rich narrative delivery with natural warmth and engaging presence.",
-    bestFor: "Emotional scenes · Romance · Engaging tone",
-    gender: "female",
-    recommended: true,
   },
   {
     id: "AeRdCCKzvd23BpJoofzx",
@@ -67,17 +79,6 @@ export const VOICES: Voice[] = [
     bestFor: "Intensity · Drama · Deep fantasy",
     gender: "male",
   },
-  {
-    id: "jfIS2w2yJi0grJZPyEsk",
-    displayName: "Theo",
-    label: "Gravel",
-    accent: "British",
-    accentLabel: "British · Textured",
-    desc: "Textured, unhurried, and deeply felt. A voice that lingers long after the story ends.",
-    presence: "Feels raw, grounded, and quietly intense.",
-    bestFor: "Slow burn · Dark romance · His perspective",
-    gender: "male",
-  },
 ];
 
 export const FEMALE_VOICES = VOICES.filter(v => v.gender === "female");
@@ -93,8 +94,8 @@ export const THEO_VOICE_ID   = "jfIS2w2yJi0grJZPyEsk";
 /** @deprecated use JAMES_VOICE_ID */
 export const JOSHUA_VOICE_ID = JAMES_VOICE_ID;
 
-export const DEFAULT_FEMALE_VOICE_ID = CLARA_VOICE_ID;
-export const DEFAULT_MALE_VOICE_ID   = JAMES_VOICE_ID;
+export const DEFAULT_FEMALE_VOICE_ID = KAYLA_VOICE_ID;
+export const DEFAULT_MALE_VOICE_ID   = THEO_VOICE_ID;
 
 export const NARRATOR_VOICE_SETTINGS = {
   stability: 0.45,
@@ -120,10 +121,10 @@ export const INTENSITY_STYLE_MAP: Record<string, { narrator: number; char: numbe
   "Intense":   { narrator: 0.35, char: 0.70 },
 };
 
-// HER pool priority: Maya → Clara → Kayla
-// HIM pool priority: James → Ethan → Theo
-const HER_POOL = [MAYA_VOICE_ID, CLARA_VOICE_ID, KAYLA_VOICE_ID] as const;
-const HIM_POOL = [JAMES_VOICE_ID, ETHAN_VOICE_ID, THEO_VOICE_ID] as const;
+// HER pool priority: Kayla → Maya → Clara
+// HIM pool priority: Theo → James → Ethan
+const HER_POOL = [KAYLA_VOICE_ID, MAYA_VOICE_ID, CLARA_VOICE_ID] as const;
+const HIM_POOL = [THEO_VOICE_ID, JAMES_VOICE_ID, ETHAN_VOICE_ID] as const;
 const MALE_NARRATOR_IDS = new Set([JAMES_VOICE_ID, ETHAN_VOICE_ID, THEO_VOICE_ID]);
 
 /**
@@ -138,8 +139,8 @@ export function resolveCharacterVoices(
   const p = (pairing ?? "").toLowerCase().trim();
   const isMale = MALE_NARRATOR_IDS.has(narratorId);
 
-  const her   = () => HER_POOL.find(v => v !== narratorId) ?? MAYA_VOICE_ID;
-  const him   = () => HIM_POOL.find(v => v !== narratorId) ?? JAMES_VOICE_ID;
+  const her   = () => HER_POOL.find(v => v !== narratorId) ?? KAYLA_VOICE_ID;
+  const him   = () => HIM_POOL.find(v => v !== narratorId) ?? THEO_VOICE_ID;
   const twoHer = () => HER_POOL.filter(v => v !== narratorId);
   const twoHim = () => HIM_POOL.filter(v => v !== narratorId);
 
@@ -148,11 +149,11 @@ export function resolveCharacterVoices(
       return { charA: her(), charB: him() };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? MAYA_VOICE_ID, charB: b ?? CLARA_VOICE_ID };
+      return { charA: a ?? KAYLA_VOICE_ID, charB: b ?? MAYA_VOICE_ID };
     }
     case "him & him": {
       const [a, b] = twoHim();
-      return { charA: a ?? JAMES_VOICE_ID, charB: b ?? ETHAN_VOICE_ID };
+      return { charA: a ?? THEO_VOICE_ID, charB: b ?? JAMES_VOICE_ID };
     }
     case "her & them":
       return { charA: her(), charB: him() };
@@ -163,7 +164,6 @@ export function resolveCharacterVoices(
         ? { charA: him(), charB: her() }
         : { charA: her(), charB: him() };
     default:
-      // Threesome pairings (Her & Him & Him) and unknowns → Her & Him behaviour
       return { charA: her(), charB: him() };
   }
 }

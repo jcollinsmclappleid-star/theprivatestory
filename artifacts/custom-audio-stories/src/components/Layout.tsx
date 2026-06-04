@@ -493,7 +493,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-20 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-32 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

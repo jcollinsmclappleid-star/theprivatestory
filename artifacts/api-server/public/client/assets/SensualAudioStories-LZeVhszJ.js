@@ -1,0 +1,1 @@
+import{j as s}from"./vendor-BoFu6HAU.js";import{S as o,g as t}from"./SEOPage-B1Axoy3B.js";import"./index-Q_flj6K9.js";import"./data-editors-picks-BeL-1HZ1.js";const i=t("sensual-audio-stories");function n(){return s.jsx(o,{config:i,slug:"sensual-audio-stories"})}export{n as default};

@@ -333,11 +333,6 @@ export default function Home() {
           transition={{ delay: 0.15, duration: 0.75 }}
           className="relative flex flex-col items-start sm:items-center gap-10 max-w-2xl"
         >
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
-            <span className="text-[11px] font-bold text-white/85 uppercase tracking-widest">Personalised adult immersion · Narrated audio</span>
-          </div>
-
           <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
             Private Adult Stories that go further —{" "}
             <span className="text-primary">personalised around your choices.</span>

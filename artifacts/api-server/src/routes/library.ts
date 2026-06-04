@@ -35,27 +35,31 @@ function getUserId(req: Request, res: Response): string | null {
   return req.user.id;
 }
 
-/** Returns true if the user has a paid subscription (active or canceling). Sends 403 and returns false otherwise. */
+/** Returns true if the user has library access. Sends 403 and returns false otherwise.
+ * Access is granted if: admin | pack plan owner | has any story credits | legacy active/canceling | immersive */
 async function requireActiveSubscription(req: Request, res: Response): Promise<boolean> {
   const userId = req.user?.id;
   if (!userId) { res.status(401).json({ error: "Authentication required" }); return false; }
   const user = await db
-    .select({ subscriptionPlan: usersTable.subscriptionPlan, subscriptionStatus: usersTable.subscriptionStatus, isAdmin: usersTable.isAdmin })
+    .select({
+      subscriptionPlan: usersTable.subscriptionPlan,
+      subscriptionStatus: usersTable.subscriptionStatus,
+      storyCreditsRemaining: usersTable.storyCreditsRemaining,
+      isAdmin: usersTable.isAdmin,
+    })
     .from(usersTable)
     .where(eq(usersTable.id, userId))
     .then(r => r[0]);
   if (user?.isAdmin) return true;
   const packPlans = ["pack_1", "pack_5", "pack_24"] as const;
   const isPackPlan = packPlans.includes(user?.subscriptionPlan as typeof packPlans[number]);
-  const isLegacyPlan = user?.subscriptionPlan === "monthly" || user?.subscriptionPlan === "annual" || user?.subscriptionPlan === "immersive";
-  // Pack plans and immersive: one-time purchase — grant library access unconditionally once purchased
-  // Legacy monthly/annual: requires active/canceling status
-  const hasPaidStatus = isPackPlan || user?.subscriptionPlan === "immersive" || user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
-  if (!((isPackPlan || isLegacyPlan) && hasPaidStatus)) {
-    res.status(403).json({ error: "A subscription is required to access your story library." });
-    return false;
-  }
-  return true;
+  const hasCredits = (user?.storyCreditsRemaining ?? 0) > 0;
+  const isLegacyActive = user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";
+  const isImmersive = user?.subscriptionPlan === "immersive";
+  // Grant access: pack owner (even at 0 credits — library holds their stories) OR has credits OR legacy active/canceling OR immersive
+  if (isPackPlan || hasCredits || isLegacyActive || isImmersive) return true;
+  res.status(403).json({ error: "A credit pack is required to access your story library." });
+  return false;
 }
 
 // ---------------------------------------------------------------------------

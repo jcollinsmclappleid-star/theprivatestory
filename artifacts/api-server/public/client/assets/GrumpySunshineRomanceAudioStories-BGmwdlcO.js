@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Ck7ahBVm.js";import{S as s,g as r}from"./SEOPage-BI34Nn_E.js";import"./index-DSOHw9Ga.js";import"./data-editors-picks-BeL-1HZ1.js";const i=r("grumpy-sunshine-romance-audio-stories");function m(){return o.jsx(s,{config:i,slug:"grumpy-sunshine-romance-audio-stories"})}export{m as default};

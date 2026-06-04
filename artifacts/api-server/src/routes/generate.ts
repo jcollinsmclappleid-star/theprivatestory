@@ -5034,9 +5034,14 @@ async function checkSubscriptionLimit(userId: string): Promise<SubLimitResult> {
 
   const storiesCount = user.storiesGeneratedThisYear ?? 0;
 
-  // --- Pack plan model ---
+  // --- Credit-first check: any user with pack credits can generate, regardless of plan label ---
+  // (handles manual grants, migration edge cases, and the normal pack purchase flow)
+  if (packCredits > 0) {
+    return { error: null, useAddon: false, useRollover: false, usePack: true, storiesCount };
+  }
+
+  // Pack plan with no credits remaining
   if (PACK_PLANS.has(plan)) {
-    if (packCredits > 0) return { error: null, useAddon: false, useRollover: false, usePack: true, storiesCount };
     return { error: "You have no story credits remaining. Visit the pricing page to get more.", useAddon: false, useRollover: false, usePack: false };
   }
 

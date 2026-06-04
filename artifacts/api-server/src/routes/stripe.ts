@@ -109,6 +109,14 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     return;
   }
 
+  // New recurring/legacy purchases are no longer accepted — only credit packs.
+  // Portal, cancellation, and reactivation routes remain for existing subscribers.
+  const LEGACY_PURCHASE_PLANS = new Set(["monthly", "annual", "addon", "immersive"]);
+  if (LEGACY_PURCHASE_PLANS.has(plan)) {
+    res.status(410).json({ error: "Subscription plans are no longer available. Please choose a credit pack from the pricing page." });
+    return;
+  }
+
   const isValidReturnPath = typeof returnPath === "string" && returnPath.startsWith("/") && !returnPath.startsWith("//") && !/^\/[a-zA-Z][a-zA-Z0-9+-.]*:/.test(returnPath);
   const cancelUrl = isValidReturnPath ? `${SITE_URL}${returnPath}?checkout=cancelled` : `${SITE_URL}/pricing?checkout=cancelled`;
 

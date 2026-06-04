@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as a,g as i}from"./SEOPage-BI34Nn_E.js";import"./index-DSOHw9Ga.js";import"./data-editors-picks-BeL-1HZ1.js";const r=i("mafia-romance-audio-stories");function n(){return o.jsx(a,{config:r,slug:"mafia-romance-audio-stories"})}export{n as default};

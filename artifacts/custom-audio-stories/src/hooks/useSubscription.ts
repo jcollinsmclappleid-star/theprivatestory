@@ -89,7 +89,7 @@ export function useSubscription(): SubscriptionState {
     isImmersive: plan === "immersive",
     isPackPlan,
     isAdmin,
-    hasFullAccess: isPaid || isAdmin || plan === "immersive" || (isPackPlan && storyCreditsRemaining > 0),
+    hasFullAccess: isPaid || isAdmin || plan === "immersive" || isPackPlan,
     addonCredits,
     storyCreditsRemaining,
     isLoading,

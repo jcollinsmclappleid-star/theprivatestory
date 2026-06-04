@@ -239,7 +239,7 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Each pack also includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
+            Five Private Stories and The Full Collection include After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — approximately 10 minutes long.

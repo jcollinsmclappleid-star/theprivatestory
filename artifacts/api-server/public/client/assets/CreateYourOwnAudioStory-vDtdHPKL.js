@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Ck7ahBVm.js";import{S as r,g as t}from"./SEOPage-DH9xL8Ik.js";import"./index-RcaSnEeH.js";import"./data-editors-picks-BeL-1HZ1.js";const e=t("create-your-own-audio-story");function n(){return o.jsx(r,{config:e,slug:"create-your-own-audio-story",doorFilter:["dark"]})}export{n as default};

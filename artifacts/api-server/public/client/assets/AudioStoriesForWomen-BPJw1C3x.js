@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-Ck7ahBVm.js";import{S as r,g as t}from"./SEOPage-CvHfQ1Cz.js";import"./index-x37-oKYC.js";import"./data-editors-picks-BeL-1HZ1.js";const i=t("audio-stories-for-women");function n(){return o.jsx(r,{config:i,slug:"audio-stories-for-women",doorFilter:["dark"]})}export{n as default};

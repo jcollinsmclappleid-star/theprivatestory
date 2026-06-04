@@ -507,7 +507,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       { feature: "Length", thePrivateStory: "around 10 minutes, depending on voice selection — sized for the listening window", other: "6–20+ hours — requires sustained commitment" },
       { feature: "Privacy", thePrivateStory: "Completely private — exists only in your account", other: "On a shared platform with public reviews and ratings" },
       { feature: "Discovery", thePrivateStory: "Choose how you want to feel; story is created to match", other: "Browse catalogue and hope something fits your mood" },
-      { feature: "Price", thePrivateStory: "From $15 for 1 personalised story — credits never expire", other: "$7.99–$14.99/month; popular titles cost extra credits" },
+      { feature: "Price", thePrivateStory: "From $15 for 1 personalised story — credits never expire", other: "From $7.99/month subscription; popular titles cost extra on top" },
     ],
   },
 };
@@ -7730,7 +7730,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
     },
     {
       q: "How does pricing work for UK listeners?",
-      a: "Pricing is in dollars. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Card processing is handled through UK-compatible payment infrastructure, and there are no hidden charges or in-story upsells. You can cancel at any time from your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service.",
+      a: "Pricing is in pounds and dollars. Stories are purchased as one-time credit packs — no subscription required. Credits never expire. Current prices are on the <a href=\"/pricing\">pricing page</a>. Card processing is handled through UK-compatible payment infrastructure, and there are no hidden charges or in-story upsells."
     },
     {
       q: "What about my data and privacy under UK law?",
@@ -7916,7 +7916,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     },
     {
       q: "What does it cost?",
-      a: "Pricing is in dollars. There are three plans — Monthly, Annual, and Immersive — and the current prices are on the <a href=\"/pricing\">pricing page</a>. Cancellation is a single action in your account; the cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service. There are no hidden tiers and no payment prompts inside a story.",
+      a: "Pricing is in pounds and dollars. Stories are purchased as one-time credit packs — no subscription required. Credits never expire. Current prices are on the <a href=\"/pricing\">pricing page</a>. There are no hidden tiers and no payment prompts inside a story. The cooling-off period under the Consumer Contracts Regulations applies as it does for any UK digital service."
     },
   ],
 };
@@ -8035,7 +8035,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
       },
       {
         heading: "Pricing in dollars, plainly stated",
-        body: "Three plans — Monthly, Annual, Immersive — in dollars. No hidden tiers, no in-story upsells. See the <a href=\"/pricing\">pricing page</a>.",
+        body: "Three credit packs starting from $15/£12. Credits never expire. No subscription, no hidden tiers, no in-story upsells. See the <a href=\"/pricing\">pricing page</a>.",
       },
       {
         heading: "Generative model, not catalogue",
@@ -8094,7 +8094,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
     },
     {
       q: "What about pricing — how do the plans compare?",
-      a: "Pricing varies by category and platform. Catalogue subscriptions tend to sit in a similar monthly range to The Private Story's Monthly plan; audiobook services bundle their content into a wider library. The Private Story's plans are in dollars and shown on the <a href=\"/pricing\">pricing page</a> — Monthly, Annual, and Immersive — with no hidden tiers and no in-story upsells.",
+      a: "Pricing varies by category and platform. Catalogue subscriptions run monthly; audiobook services bundle content into a wider library. The Private Story uses one-time credit packs starting from $15/£12 — no subscription required, credits never expire. Current prices are on the <a href=\"/pricing\">pricing page</a>, with no hidden tiers and no in-story upsells.",
     },
     {
       q: "Which one should I try first?",

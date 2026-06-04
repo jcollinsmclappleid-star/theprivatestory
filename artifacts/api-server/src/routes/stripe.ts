@@ -122,35 +122,9 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 
   const currency = (rawCurrency ?? "gbp").toLowerCase() === "usd" ? "usd" : "gbp";
 
-  // --- Resolve price ID ---
-  let priceId: string | null = null;
-  let mode: Stripe.Checkout.SessionCreateParams.Mode = "payment";
-
-  if (plan === "pack_1" || plan === "pack_5" || plan === "pack_24") {
-    priceId = resolvePackPriceId(plan as PackPlan, currency);
-    mode = "payment";
-  } else if (plan === "monthly" || plan === "annual") {
-    priceId = await resolveLegacyPriceId(stripe, plan, currency);
-    mode = "subscription";
-  } else if (plan === "addon") {
-    if (!userId) {
-      res.status(401).json({ error: "Please sign in to purchase additional stories." });
-      return;
-    }
-    const addonUser = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
-    const hasActiveSub = addonUser?.subscriptionStatus === "active" && addonUser?.subscriptionPlan && addonUser.subscriptionPlan !== "free";
-    if (!hasActiveSub) {
-      res.status(403).json({ error: "Additional stories are available to active subscribers only." });
-      return;
-    }
-    const addonGbp = process.env.STRIPE_ADDON_PRICE_ID;
-    const addonUsd = process.env.STRIPE_ADDON_PRICE_ID_USD;
-    priceId = currency === "usd" ? (addonUsd ?? addonGbp ?? null) : (addonGbp ?? null);
-    mode = "payment";
-  } else if (plan === "immersive") {
-    priceId = process.env.STRIPE_IMMERSIVE_PRICE_ID ?? null;
-    mode = "payment";
-  }
+  // --- Resolve price ID --- (only pack plans reach this point)
+  const priceId: string | null = resolvePackPriceId(plan as PackPlan, currency);
+  const mode: Stripe.Checkout.SessionCreateParams.Mode = "payment";
 
   if (!priceId) {
     res.status(503).json({ error: "This plan is not yet available. Please contact support@theprivatestory.com." });
@@ -205,8 +179,6 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    const isSubscription = plan === "monthly" || plan === "annual";
-
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       line_items: [{ price: priceId, quantity: 1 }],
       mode,
@@ -214,7 +186,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       metadata: { guestToken: claimToken, plan },
-      ...(!isSubscription ? { customer_creation: "always" } : {}),
+      customer_creation: "always",
     };
 
     const stripeSession = await stripe.checkout.sessions.create(sessionParams);

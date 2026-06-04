@@ -604,7 +604,6 @@ export default function Profile() {
                 </p>
               </div>
 
-              {/* Cancellation banner */}
               {usageData.subscriptionStatus === "canceling" && (
                 <div className="p-3 rounded-xl bg-amber-400/8 border border-amber-400/20 flex items-start gap-3">
                   <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
@@ -621,70 +620,10 @@ export default function Profile() {
                       </span>.
                     </p>
                   </div>
-                  <button
-                    disabled={reactivateLoading}
-                    onClick={async () => {
-                      setReactivateLoading(true);
-                      try {
-                        const res = await fetch(`${API_BASE}/api/stripe/reactivate-subscription`, { method: "POST", credentials: "include" });
-                        if (res.ok) setUsageData(prev => prev ? { ...prev, subscriptionStatus: "active", cancelAt: null } : prev);
-                      } finally { setReactivateLoading(false); }
-                    }}
-                    className="flex-shrink-0 text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all disabled:opacity-50"
-                  >
-                    {reactivateLoading ? "..." : "Keep plan"}
-                  </button>
                 </div>
               )}
 
-              {/* Cancel confirmation dialog */}
-              <AnimatePresence>
-                {cancelConfirmOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    className="p-4 rounded-xl border border-border/30 bg-card/60 space-y-3"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-semibold text-foreground">Cancel your subscription?</p>
-                      <button onClick={() => setCancelConfirmOpen(false)} className="p-1 rounded-full hover:bg-white/5 text-muted-foreground">
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      You'll keep full access until{" "}
-                      <span className="text-foreground font-medium">
-                        {usageData.renewDate
-                          ? new Date(usageData.renewDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-                          : "your renewal date"}
-                      </span>. After that, your account will revert to free.
-                    </p>
-                    <div className="flex gap-2">
-                      <button onClick={() => setCancelConfirmOpen(false)} className="flex-1 text-xs px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground transition-all">Keep my plan</button>
-                      <button
-                        disabled={cancelLoading}
-                        onClick={async () => {
-                          setCancelLoading(true);
-                          try {
-                            const res = await fetch(`${API_BASE}/api/stripe/cancel-subscription`, { method: "POST", credentials: "include" });
-                            const json = await res.json();
-                            if (res.ok) {
-                              setUsageData(prev => prev ? { ...prev, subscriptionStatus: "canceling", cancelAt: json.cancelAt ?? prev.renewDate } : prev);
-                              setCancelConfirmOpen(false);
-                            }
-                          } finally { setCancelLoading(false); }
-                        }}
-                        className="flex-1 text-xs px-3 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all disabled:opacity-50"
-                      >
-                        {cancelLoading ? "Cancelling..." : "Yes, cancel"}
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="pt-3 border-t border-border/20 flex flex-col sm:flex-row gap-2">
+              <div className="pt-3 border-t border-border/20">
                 <button
                   onClick={async () => {
                     const res = await fetch(`${API_BASE}/api/stripe/portal`, { credentials: "include" });
@@ -695,14 +634,6 @@ export default function Profile() {
                 >
                   Manage billing
                 </button>
-                {usageData.subscriptionStatus === "active" && (
-                  <button
-                    onClick={() => setCancelConfirmOpen(true)}
-                    className="text-xs px-4 py-2 rounded-full border border-red-500/20 text-red-400/70 hover:text-red-400 hover:border-red-400/30 transition-all"
-                  >
-                    Cancel subscription
-                  </button>
-                )}
               </div>
             </div>
           )}

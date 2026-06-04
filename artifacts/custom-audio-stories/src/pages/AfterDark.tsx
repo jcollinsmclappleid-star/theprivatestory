@@ -2080,7 +2080,7 @@ export default function AfterDark() {
                     <span className="text-white font-bold text-[15px] leading-snug">Immersive Collection</span>
                     <span className="text-white/90 text-sm">20 stories · {pack20.display} one-time</span>
                     <span className="text-white/65 text-[11px] mt-0.5">
-                      {pack20.perStoryDisplay}/story · under {currency === "gbp" ? "£" : "$"}{Math.ceil(pack20.amount / 100 / 10)}/month at 2 a month
+                      {pack20.perStoryDisplay}/story · under {currency === "gbp" ? "£" : "$"}{Math.ceil(pack20.amount / 100 / 10)}/month
                     </span>
                   </div>
                   {paywallLoadingPlan === "pack_20"
@@ -2093,15 +2093,16 @@ export default function AfterDark() {
                 <button
                   onClick={() => doPaywallCheckout("pack_5")}
                   disabled={!!paywallLoadingPlan}
-                  className="w-full rounded-2xl p-4 text-left relative flex items-center justify-between transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
+                  className="w-full rounded-2xl p-4 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
                   style={{ border: "1px solid rgba(192,57,43,0.45)", background: "rgba(192,57,43,0.09)" }}
                 >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-foreground font-semibold text-sm">5 Stories</span>
-                    <span className="text-muted-foreground text-xs">{pack5.display} total · {pack5.perStoryDisplay} each · credits never expire</span>
+                  <div className="flex flex-col gap-0.5 pr-8">
+                    <span className="text-foreground font-bold text-[15px] leading-snug">Story Bundle</span>
+                    <span className="text-muted-foreground text-sm">5 stories · {pack5.display} one-time</span>
+                    <span className="text-muted-foreground/60 text-[11px] mt-0.5">{pack5.perStoryDisplay}/story · credits never expire</span>
                   </div>
                   {paywallLoadingPlan === "pack_5" && (
-                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground flex-shrink-0 ml-3" />
+                    <Loader2 className="absolute right-4 bottom-4 w-4 h-4 animate-spin text-muted-foreground" />
                   )}
                 </button>
 
@@ -2109,10 +2110,10 @@ export default function AfterDark() {
                 <button
                   onClick={() => doPaywallCheckout("pack_1")}
                   disabled={!!paywallLoadingPlan}
-                  className="w-full px-4 py-3 rounded-xl text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors text-center flex items-center justify-center gap-1.5"
-                  style={{ border: "1px solid rgba(255,255,255,0.07)" }}
+                  className="w-full px-4 py-3.5 rounded-xl text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors text-center flex items-center justify-center gap-1.5"
+                  style={{ border: "1px solid rgba(255,255,255,0.12)" }}
                 >
-                  Just one story — {pack1.display}
+                  Start with one story — {pack1.display}
                   {paywallLoadingPlan === "pack_1" && <Loader2 className="w-3 h-3 animate-spin" />}
                 </button>
               </div>

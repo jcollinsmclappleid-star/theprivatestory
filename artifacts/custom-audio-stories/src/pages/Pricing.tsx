@@ -133,7 +133,7 @@ export default function Pricing() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: (() => { try { const s = sessionStorage.getItem("paywallReturnState"); if (s) { const p = (JSON.parse(s) as { returnPath?: string }).returnPath; if (p) return p; } } catch { /* ignore */ } return window.location.pathname; })() }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {

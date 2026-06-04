@@ -355,6 +355,23 @@ export default function Drift() {
     return () => window.removeEventListener("pageshow", handler);
   }, []);
 
+  // Restore paywall when Stripe cancel_url redirects back with ?checkout=cancelled
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "cancelled") return;
+    window.history.replaceState({}, "", window.location.pathname);
+    try {
+      const saved = sessionStorage.getItem("paywallReturnState");
+      if (saved) {
+        const s = JSON.parse(saved) as { returnPath?: string; paywallCapture?: typeof paywallCapture; paywallCoverUrl?: string | null };
+        if (s.paywallCapture) setPaywallCapture(s.paywallCapture);
+        if (s.paywallCoverUrl) setPaywallCoverUrl(s.paywallCoverUrl);
+        sessionStorage.removeItem("paywallReturnState");
+      }
+    } catch { /* malformed */ }
+    setPhase("paywall");
+  }, []);
+
   useEffect(() => {
     if (phase !== "paywall" || !paywallCapture) {
       setPaywallCoverUrl(null);
@@ -424,6 +441,9 @@ export default function Drift() {
 
 
   const goToPricingFromPaywall = () => {
+    try {
+      sessionStorage.setItem("paywallReturnState", JSON.stringify({ returnPath: "/drift", paywallCapture, paywallCoverUrl }));
+    } catch { /* storage unavailable */ }
     window.location.href = `${import.meta.env.BASE_URL}pricing`;
   };
 

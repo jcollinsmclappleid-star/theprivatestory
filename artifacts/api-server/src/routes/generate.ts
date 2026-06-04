@@ -2104,6 +2104,8 @@ function labelToIntensityLevel(label: string): number {
     Warm: 3,
     Elevated: 4,
     Intense: 5,
+    Unrestrained: 5,
+    Scorching: 5,
   };
   return map[label] ?? 3;
 }

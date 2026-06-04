@@ -2393,10 +2393,10 @@ export default function Create() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] overflow-y-auto"
+              className="fixed inset-0 z-[60]"
             >
-              {/* Cinematic background */}
-              <div className="fixed inset-0">
+              {/* Cinematic background — absolute so they stay behind the scroll container */}
+              <div className="absolute inset-0">
                 <img
                   src={`${import.meta.env.BASE_URL}images/paywall-romance-bg.webp`}
                   alt=""
@@ -2405,14 +2405,16 @@ export default function Create() {
                 />
               </div>
               <div
-                className="fixed inset-0"
+                className="absolute inset-0"
                 style={{
                   background: "radial-gradient(ellipse at 60% 20%, #2a1a0a80 0%, #0d0a0888 55%, #000 100%)",
                 }}
               />
-              <div className="fixed inset-0" style={{
+              <div className="absolute inset-0" style={{
                 background: "linear-gradient(0deg, #000 0%, #0009 28%, transparent 65%)",
               }} />
+              {/* Scroll container — non-fixed so iOS Safari scrolls reliably */}
+              <div className="absolute inset-0 overflow-y-auto">
 
               {/* Back button */}
               <button
@@ -2570,6 +2572,7 @@ export default function Create() {
                   </button>
                 </div>
               </div>
+              </div>{/* end scroll container */}
             </motion.div>
           );
         })()}

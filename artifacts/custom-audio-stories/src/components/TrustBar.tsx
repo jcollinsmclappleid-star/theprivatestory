@@ -1,63 +1,6 @@
-import "flag-icons/css/flag-icons.min.css";
-import { EyeOff, Lock, Ban, Trash2, ShieldCheck } from "lucide-react";
+import { EyeOff, Lock, Ban, Trash2, ShieldCheck, Globe } from "lucide-react";
 
-const COUNTRIES = [
-  { code: "us", name: "United States" },
-  { code: "in", name: "India" },
-  { code: "gb", name: "United Kingdom" },
-  { code: "au", name: "Australia" },
-  { code: "ca", name: "Canada" },
-  { code: "nl", name: "Netherlands" },
-  { code: "ph", name: "Philippines" },
-  { code: "it", name: "Italy" },
-  { code: "id", name: "Indonesia" },
-  { code: "de", name: "Germany" },
-  { code: "es", name: "Spain" },
-  { code: "fr", name: "France" },
-  { code: "br", name: "Brazil" },
-  { code: "pk", name: "Pakistan" },
-  { code: "za", name: "South Africa" },
-  { code: "se", name: "Sweden" },
-  { code: "eg", name: "Egypt" },
-  { code: "at", name: "Austria" },
-  { code: "mx", name: "Mexico" },
-  { code: "ae", name: "United Arab Emirates" },
-  { code: "dk", name: "Denmark" },
-  { code: "ke", name: "Kenya" },
-  { code: "np", name: "Nepal" },
-  { code: "fi", name: "Finland" },
-  { code: "tn", name: "Tunisia" },
-  { code: "no", name: "Norway" },
-  { code: "cn", name: "China" },
-  { code: "my", name: "Malaysia" },
-  { code: "ie", name: "Ireland" },
-  { code: "be", name: "Belgium" },
-  { code: "vn", name: "Vietnam" },
-  { code: "bd", name: "Bangladesh" },
-  { code: "nz", name: "New Zealand" },
-  { code: "ch", name: "Switzerland" },
-  { code: "ru", name: "Russia" },
-  { code: "ir", name: "Iran" },
-  { code: "hk", name: "Hong Kong" },
-  { code: "hr", name: "Croatia" },
-  { code: "cz", name: "Czechia" },
-  { code: "dz", name: "Algeria" },
-  { code: "lk", name: "Sri Lanka" },
-  { code: "md", name: "Moldova" },
-  { code: "et", name: "Ethiopia" },
-  { code: "zw", name: "Zimbabwe" },
-  { code: "si", name: "Slovenia" },
-  { code: "gt", name: "Guatemala" },
-  { code: "zm", name: "Zambia" },
-  { code: "bs", name: "Bahamas" },
-  { code: "tz", name: "Tanzania" },
-  { code: "jm", name: "Jamaica" },
-  { code: "th", name: "Thailand" },
-  { code: "am", name: "Armenia" },
-  { code: "ua", name: "Ukraine" },
-  { code: "cl", name: "Chile" },
-  { code: "tr", name: "Turkey" },
-];
+const COUNTRY_COUNT = 55;
 
 const TRUST_ITEMS = [
   {
@@ -78,88 +21,70 @@ const TRUST_ITEMS = [
   },
 ];
 
-// ── CountryStrip — compact reusable flag strip (no privacy cards) ─────────────
+// ── CountryStrip — compact single-line stat (used in paywall / create) ────────
 export function CountryStrip({ className }: { className?: string }) {
   return (
-    <div className={`text-center ${className ?? ""}`}>
+    <div className={`flex items-center justify-center gap-2 ${className ?? ""}`}>
+      <Globe
+        style={{ width: "13px", height: "13px", color: "rgba(255,255,255,0.22)", flexShrink: 0 }}
+      />
       <p
         style={{
           fontSize: "10px",
           fontWeight: 700,
-          letterSpacing: "0.26em",
+          letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.20)",
-          marginBottom: "10px",
+          color: "rgba(255,255,255,0.22)",
         }}
       >
-        Discovered across {COUNTRIES.length} countries
+        Discovered by listeners across {COUNTRY_COUNT} countries
       </p>
-      <div className="flex flex-wrap justify-center gap-x-2 gap-y-1.5">
-        {COUNTRIES.map((c) => (
-          <span
-            key={c.name}
-            title={c.name}
-            className={`fi fi-${c.code}`}
-            aria-label={c.name}
-            style={{
-              width: "1.25em",
-              height: "1em",
-              borderRadius: "2px",
-              opacity: 0.5,
-              display: "inline-block",
-              transition: "opacity 0.2s",
-              cursor: "default",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.5")}
-          />
-        ))}
-      </div>
     </div>
   );
 }
 
-// ── TrustBar — full section (flag strip + privacy cards + Stripe line) ────────
+// ── TrustBar — full section (country stat + privacy cards + Stripe line) ──────
 export function TrustBar() {
   return (
     <section className="w-full py-12 px-4 md:px-8">
       <div className="max-w-3xl mx-auto space-y-10">
 
-        {/* Country discovery */}
-        <div className="text-center">
+        {/* Country stat */}
+        <div className="text-center space-y-3">
+          <div className="flex items-center justify-center gap-2.5">
+            <Globe className="w-5 h-5 text-muted-foreground/30 flex-shrink-0" />
+            <span
+              style={{
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.26em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.22)",
+              }}
+            >
+              Global reach
+            </span>
+          </div>
           <p
             style={{
-              fontSize: "10px",
+              fontSize: "clamp(1.5rem, 4vw, 2.25rem)",
               fontWeight: 700,
-              letterSpacing: "0.26em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.22)",
-              marginBottom: "14px",
+              letterSpacing: "-0.02em",
+              color: "rgba(255,255,255,0.55)",
+              lineHeight: 1.1,
             }}
           >
-            Discovered across {COUNTRIES.length} countries
+            Discovered by listeners<br />across {COUNTRY_COUNT} countries
           </p>
-          <div className="flex flex-wrap justify-center gap-x-2 gap-y-1.5">
-            {COUNTRIES.map((c) => (
-              <span
-                key={c.name}
-                title={c.name}
-                className={`fi fi-${c.code}`}
-                aria-label={c.name}
-                style={{
-                  width: "1.4em",
-                  height: "1.05em",
-                  borderRadius: "2px",
-                  opacity: 0.6,
-                  display: "inline-block",
-                  transition: "opacity 0.2s",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
-              />
-            ))}
-          </div>
+          <p
+            style={{
+              fontSize: "12px",
+              color: "rgba(255,255,255,0.22)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            From the US and UK to India, the Philippines, Brazil, and beyond.
+          </p>
         </div>
 
         {/* Divider */}

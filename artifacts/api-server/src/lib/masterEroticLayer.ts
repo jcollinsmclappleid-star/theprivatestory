@@ -239,6 +239,8 @@ Every spoken line must appear in its own paragraph with an explicit attribution 
    "Yes." She held his gaze and did not look away.
 Never string two or more consecutive bare quotes together without intervening narration or attribution. The listener must always know — without deduction — who is speaking.
 
+SPEAKER-SWITCH RULE — highest priority for audio: every time the speaker changes from one character to the other, the NEW speaker's very first line in that turn MUST carry an explicit attribution — their name, a possessive action beat, or a speech verb tied to a pronoun ("he said", "she murmured", "his voice was low — 'Come here.'"). A bare, unattributed opening quote at a speaker switch will cause the audio engine to assign the wrong voice to that entire run of dialogue. When in doubt, over-attribute rather than under-attribute at a speaker change.
+
 IMMERSION RULES
 - Always use the narrative_perspective specified in your FORCED DNA FIELDS or the series episode instructions
 - ${seriesLine}

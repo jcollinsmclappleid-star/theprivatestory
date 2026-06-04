@@ -11,7 +11,7 @@ import { usePricing } from "@/hooks/usePricing";
 import { CastingRoom, PAIRINGS } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
-import { VOICES } from "@/lib/voices";
+import { VOICES, resolveCharacterVoices } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
 
 /* ── Pronoun adaptation for scenario text ────────────────────────── */
@@ -2052,7 +2052,7 @@ export default function AfterDark() {
               <div className="w-full flex flex-col gap-2 text-left">
                 {[
                   "Unrestrained stories — nothing held back",
-                  "Full casting unlocked — every option",
+                  "Full cast narration — narrator, her voice, his voice",
                   "Complete privacy — nothing stored, nothing shared",
                 ].map(benefit => (
                   <div key={benefit} className="flex items-center gap-2.5 text-sm" style={{ color: "#e8a09a" }}>
@@ -2240,6 +2240,21 @@ export default function AfterDark() {
                     {result.title}
                   </h1>
                   <p className="text-muted-foreground text-sm max-w-xl">{result.description}</p>
+                  {(() => {
+                    const vid = lastCastingData?.voiceId as string | undefined;
+                    const pairing = (lastCastingData?.pairing as string | undefined) ?? confirmedPairing ?? "Her & Him";
+                    if (!vid) return null;
+                    const { charA, charB } = resolveCharacterVoices(vid, pairing);
+                    const names = [vid, charA, charB].map(id => {
+                      const v = VOICES.find(v => v.id === id);
+                      return v?.displayName ?? v?.label ?? null;
+                    }).filter(Boolean);
+                    return (
+                      <p className="text-[11px] text-muted-foreground/45 mt-1.5 tracking-wide">
+                        Voiced by {names.join(" · ")}
+                      </p>
+                    );
+                  })()}
                 </div>
               </div>
 

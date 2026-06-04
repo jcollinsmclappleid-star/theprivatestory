@@ -168,7 +168,7 @@ export default function CreateLanding({ onEnter }: Props) {
           className="text-sm sm:text-base leading-relaxed mb-5 max-w-sm"
           style={{ color: "rgba(255,255,255,0.50)" }}
         >
-          You cast the characters. You set the scene. Your story is written from scratch and narrated privately — no template, no catalogue, nothing left over from someone else's night.
+          You cast the characters. You set the scene. Your story is written from scratch, voiced by a full cast, and narrated privately — no template, no catalogue, nothing left over from someone else's night.
         </motion.p>
 
         {/* Room chips */}

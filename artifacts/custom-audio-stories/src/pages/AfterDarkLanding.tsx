@@ -164,7 +164,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           className="text-sm sm:text-base leading-relaxed mb-5 max-w-sm"
           style={{ color: "rgba(255,255,255,0.52)" }}
         >
-          Explicit, intimate adult storytelling built entirely around your choices. You choose the character, the dynamic, and exactly how far it goes. Written from scratch. Nothing softened unless you want it to be.
+          Explicit, intimate adult storytelling built entirely around your choices. You choose the character, the dynamic, and exactly how far it goes. Written from scratch, voiced by a full cast. Nothing softened unless you want it to be.
         </motion.p>
 
         {/* Room chips */}

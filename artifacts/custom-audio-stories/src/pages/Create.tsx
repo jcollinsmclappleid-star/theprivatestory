@@ -2545,7 +2545,7 @@ export default function Create() {
                 <div className="w-full flex flex-col gap-1.5">
                   {[
                     "Stories written to your cast, your mood, your world",
-                    "Every voice — choose your narrator each time",
+                    "Full cast narration — narrator plus character voices, matched to your pairing",
                     "Completely private — seen and heard only by you",
                   ].map(benefit => (
                     <div key={benefit} className="flex items-center gap-2 text-xs text-primary/70">

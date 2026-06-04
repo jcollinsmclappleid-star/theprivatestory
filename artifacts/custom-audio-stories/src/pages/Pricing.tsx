@@ -18,7 +18,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const REASSURANCE = [
   { icon: <Sliders className="w-4 h-4" />, label: "Fully cast by you", sub: "Character, energy, chemistry, setting — every detail yours before a word is written" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Premium voice narration", sub: "A curated voice reads it aloud — a fully immersive audio experience, approximately 10 minutes long" },
+  { icon: <Headphones className="w-4 h-4" />, label: "Full cast narration", sub: "Three distinct voices — narrator, her voice, his voice — matched to your pairing. Not one reader. A full cast." },
   { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library is visible only to you. Nothing shared, ever" },
   { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
 ];
@@ -26,16 +26,17 @@ const REASSURANCE = [
 const PACK1_FEATURES = [
   { text: "1 personalised audio story — yours to keep", special: false },
   { text: "Written around exactly what you want", special: false },
-  { text: "Premium voice narration — press play instantly", special: false },
+  { text: "Full cast narration — narrator plus character voices", special: false },
   { text: "Original cover art for your story", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "One-time purchase — no subscription", special: false },
+  { text: "After Dark — stories that go further, no limits held back", special: true },
 ];
 
 const PACK5_FEATURES = [
   { text: "5 personalised audio stories — yours to keep", special: false },
   { text: "Explore different moods, fantasies & scenarios", special: false },
-  { text: "Premium voice narration — press play instantly", special: false },
+  { text: "Full cast narration — narrator plus character voices", special: false },
   { text: "Original cover art for every story", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Credits never expire", special: false },
@@ -46,7 +47,7 @@ const PACK20_FEATURES = [
   { text: "20 personalised audio stories — yours to keep", special: false },
   { text: "Your own private collection, built around your desires", special: false },
   { text: "Indulge every mood, fantasy & scenario you can imagine", special: false },
-  { text: "Premium voice narration — press play instantly", special: false },
+  { text: "Full cast narration — narrator plus character voices", special: false },
   { text: "Original cover art for every story", special: false },
   { text: "Private library — visible only to you", special: false },
   { text: "Credits never expire", special: false },
@@ -62,7 +63,7 @@ const CASTING_DETAILS = [
 const INCLUDED = [
   { icon: <Sparkles className="w-5 h-5" />, label: "Personalised story creation", desc: "Every story is written around your mood, your cast, and your world. Nothing pulled from a shelf." },
   { icon: <Lock className="w-5 h-5" />, label: "Private library access", desc: "Your stories live in your own private archive. No one else can see them — not even us." },
-  { icon: <Headphones className="w-5 h-5" />, label: "Premium voice narration", desc: "A curated selection of voices, chosen for their intimacy and depth. Heard only by you." },
+  { icon: <Headphones className="w-5 h-5" />, label: "Full cast narration", desc: "Every story uses a full cast — your chosen narrator plus separate voices for each character. Three voices, one story, heard only by you." },
   { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
 ];
 
@@ -71,7 +72,7 @@ type PackKey = "pack_1" | "pack_5" | "pack_20";
 const FAQS: { q: string; a: string }[] = [
   {
     q: "What is After Dark?",
-    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with the Immersive Bundle and Immersive Collection, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
+    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with every pack, even a single story, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
   },
   {
     q: "Are my generated stories private?",
@@ -79,7 +80,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What do the credit packs include?",
-    a: "Every story credit produces a fully personalised, narrated audio story of approximately 10 minutes — written around your specific cast, mood, and choices. All packs include private library storage, premium voice narration, and original cover art for each story.",
+    a: "Every story credit produces a fully personalised, narrated audio story of approximately 10 minutes — written around your specific cast, mood, and choices. All packs include private library storage, full cast narration — narrator plus separate character voices — and original cover art for each story.",
   },
   {
     q: "Do my credits expire?",
@@ -91,7 +92,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What is After Dark and which packs include it?",
-    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with the Immersive Bundle and Immersive Collection. The Immersive Story is a lower-commitment way to try your first personalised experience.",
+    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with every pack, even a single story.",
   },
 ];
 
@@ -243,7 +244,7 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            The Immersive Bundle and Immersive Collection include After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
+            Every pack includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — approximately 10 minutes long.

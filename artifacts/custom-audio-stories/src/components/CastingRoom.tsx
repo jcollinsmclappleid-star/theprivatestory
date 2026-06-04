@@ -5,7 +5,7 @@ import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuf
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
-import { VOICES, DEFAULT_FEMALE_VOICE_ID, getVoicesForPairing, getDefaultVoiceId } from "../lib/voices";
+import { VOICES, DEFAULT_FEMALE_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
 
@@ -2383,7 +2383,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Voice</h2>
             <p className="text-muted-foreground text-sm mb-1">
-              Choose who tells your story.
+              Choose your narrator — character voices are matched automatically.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
               Most people start with Eleanor for their first story.
@@ -2453,10 +2453,41 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                   </button>
                 );
               };
+              const { charA, charB } = resolveCharacterVoices(voiceId, data.pairing ?? "Her & Him");
+              const { labelA, labelB } = getCastLabels(data.pairing ?? "Her & Him");
+              const voiceA = VOICES.find(v => v.id === charA);
+              const voiceB = VOICES.find(v => v.id === charB);
+              const nameA = voiceA?.displayName ?? voiceA?.label ?? "";
+              const nameB = voiceB?.displayName ?? voiceB?.label ?? "";
+              const selectedVoice = VOICES.find(v => v.id === voiceId);
+              const narratorName = selectedVoice?.displayName ?? selectedVoice?.label ?? "";
               return (
-                <div className="space-y-4">
-                  {voicesToShow.map(renderVoiceCard)}
-                </div>
+                <>
+                  <div className="space-y-4">
+                    {voicesToShow.map(renderVoiceCard)}
+                  </div>
+                  <div className="mt-5 rounded-2xl border border-primary/15 bg-primary/[0.03] p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Your full cast</p>
+                    <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
+                      {[
+                        { role: "Narrator", name: narratorName },
+                        { role: labelA, name: nameA },
+                        { role: labelB, name: nameB },
+                      ].map(({ role, name }, i, arr) => (
+                        <div key={role} className="flex items-end gap-3">
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[9px] uppercase tracking-widest text-muted-foreground/40 font-semibold">{role}</span>
+                            <span className="text-sm font-medium text-foreground">{name}</span>
+                          </div>
+                          {i < arr.length - 1 && <span className="text-muted-foreground/25 text-base mb-0.5">·</span>}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground/40 mt-3 leading-relaxed">
+                      Three voices, one story — character voices are matched to your narrator and pairing automatically.
+                    </p>
+                  </div>
+                </>
               );
             })()}
 

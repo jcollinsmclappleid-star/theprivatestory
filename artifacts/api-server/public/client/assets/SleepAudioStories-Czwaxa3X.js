@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Cjdo1BAo.js";import{S as e,g as r}from"./SEOPage-DnHYpOsF.js";import"./index-DdWnAA0j.js";import"./data-editors-picks-BeL-1HZ1.js";const s=r("sleep-audio-stories");function p(){return o.jsx(e,{config:s,slug:"sleep-audio-stories",doorFilter:["quiet"],showSecondaryDoors:!0})}export{p as default};

@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Cjdo1BAo.js";import{S as r,g as i}from"./SEOPage-DnHYpOsF.js";import"./index-DdWnAA0j.js";import"./data-editors-picks-BeL-1HZ1.js";const e=i("audio-erotica-for-beginners");function g(){return o.jsx(r,{config:e,slug:"audio-erotica-for-beginners"})}export{g as default};

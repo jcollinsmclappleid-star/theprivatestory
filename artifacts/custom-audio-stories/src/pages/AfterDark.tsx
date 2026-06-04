@@ -1,7 +1,7 @@
 /* @refresh reset */
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check } from "lucide-react";
+import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, Loader2 } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -1289,7 +1289,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
-  const { pack1, pack20 } = usePricing();
+  const { pack1, pack5, pack20, currency } = usePricing();
   useSEO({
     title: "After Dark — Unrestrained adult audio fiction — The Private Story",
     description:
@@ -1302,6 +1302,30 @@ export default function AfterDark() {
   const [phase, setPhase] = useState<"pairing" | "scenario" | "casting" | "generating" | "result" | "paywall">("pairing");
   const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
+  const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
+
+  const doPaywallCheckout = useCallback(async (plan: "pack_1" | "pack_5" | "pack_20") => {
+    setPaywallLoadingPlan(plan);
+    setPaywallCheckoutError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        setPaywallCheckoutError(data.error ?? "Could not start checkout — please try again.");
+      } else {
+        window.location.href = data.url;
+      }
+    } catch {
+      setPaywallCheckoutError("Network error — please try again.");
+    } finally {
+      setPaywallLoadingPlan(null);
+    }
+  }, [currency]);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
@@ -1486,10 +1510,7 @@ export default function AfterDark() {
     } catch { /* ignore */ }
   }, [lastCastingData, isAuthenticated]);
 
-  // Routes to the pricing page (story packs) from the paywall phase
-  const goToPricingFromPaywall = useCallback(() => {
-    window.location.href = `${import.meta.env.BASE_URL}pricing`;
-  }, []);
+
 
 
 
@@ -1689,6 +1710,10 @@ export default function AfterDark() {
                     whileTap={{ scale: 0.97 }}
                     onClick={() => {
                       setSelectedPairing(p.id);
+                      // Start cover fetch immediately — pairing is now known.
+                      // By the time the user picks a scenario and casting completes,
+                      // the image will be ready and the paywall won't show a spinner.
+                      preGenCoverPromise.current = fetchPreviewCover(p.id);
                       setTimeout(() => setPhase("scenario"), 280);
                     }}
                     className={`relative overflow-hidden rounded-2xl border text-left p-5 transition-colors ${
@@ -2037,29 +2062,58 @@ export default function AfterDark() {
                 ))}
               </div>
 
-              {/* CTAs */}
-              <div className="w-full flex flex-col gap-3">
-                {/* Best value — primary */}
+              {/* Pricing boxes — direct to Stripe */}
+              <div className="w-full flex flex-col gap-2.5">
+                {paywallCheckoutError && (
+                  <p className="text-xs text-red-400 text-center pb-1">{paywallCheckoutError}</p>
+                )}
+
+                {/* Pack 20 — Best value */}
                 <button
-                  onClick={goToPricingFromPaywall}
-                  className="w-full flex flex-col items-center justify-center gap-0.5 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5"
+                  onClick={() => doPaywallCheckout("pack_20")}
+                  disabled={!!paywallLoadingPlan}
+                  className="w-full rounded-2xl p-4 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
                   style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 28px rgba(192,57,43,0.35)" }}
                 >
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    Write my story — best value <span className="tabular-nums">{pack20.perStoryDisplay}</span>/story
-                    <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
-                  </span>
-                  <span className="text-[11px] text-white/80 font-normal">One-time credit pack · credits never expire</span>
+                  <span className="absolute top-3 right-3 px-1.5 py-0.5 rounded-full bg-black/25 text-white/90 text-[9px] font-bold uppercase tracking-wider">Best value</span>
+                  <div className="flex flex-col gap-0.5 pr-16">
+                    <span className="text-white font-bold text-[15px] leading-snug">Immersive Collection</span>
+                    <span className="text-white/90 text-sm">20 stories · {pack20.display} one-time</span>
+                    <span className="text-white/65 text-[11px] mt-0.5">
+                      {pack20.perStoryDisplay}/story · under {currency === "gbp" ? "£" : "$"}{Math.ceil(pack20.amount / 100 / 10)}/month at 2 a month
+                    </span>
+                  </div>
+                  {paywallLoadingPlan === "pack_20"
+                    ? <Loader2 className="absolute right-4 bottom-4 w-4 h-4 animate-spin text-white/70" />
+                    : <Sparkles className="absolute right-4 bottom-4 w-4 h-4 text-white/30" />
+                  }
                 </button>
 
-                {/* Single story — secondary */}
+                {/* Pack 5 */}
                 <button
-                  onClick={goToPricingFromPaywall}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all"
-                  style={{ border: "1px solid rgba(192,57,43,0.4)", color: "#e8a09a" }}
+                  onClick={() => doPaywallCheckout("pack_5")}
+                  disabled={!!paywallLoadingPlan}
+                  className="w-full rounded-2xl p-4 text-left relative flex items-center justify-between transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
+                  style={{ border: "1px solid rgba(192,57,43,0.45)", background: "rgba(192,57,43,0.09)" }}
                 >
-                  Or start with one story — from <span className="tabular-nums">{pack1.display}</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-foreground font-semibold text-sm">5 Stories</span>
+                    <span className="text-muted-foreground text-xs">{pack5.display} total · {pack5.perStoryDisplay} each · credits never expire</span>
+                  </div>
+                  {paywallLoadingPlan === "pack_5" && (
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground flex-shrink-0 ml-3" />
+                  )}
+                </button>
+
+                {/* Single story */}
+                <button
+                  onClick={() => doPaywallCheckout("pack_1")}
+                  disabled={!!paywallLoadingPlan}
+                  className="w-full px-4 py-3 rounded-xl text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors text-center flex items-center justify-center gap-1.5"
+                  style={{ border: "1px solid rgba(255,255,255,0.07)" }}
+                >
+                  Just one story — {pack1.display}
+                  {paywallLoadingPlan === "pack_1" && <Loader2 className="w-3 h-3 animate-spin" />}
                 </button>
               </div>
 

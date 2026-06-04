@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BoFu6HAU.js";import{S as r,g as e}from"./SEOPage-DixpUDY7.js";import"./index-C9ZZa2qG.js";import"./data-editors-picks-BeL-1HZ1.js";const t=e("audio-erotica-for-women-over-30");function s(){return o.jsx(r,{config:t,slug:"audio-erotica-for-women-over-30"})}export{s as default};

@@ -1303,6 +1303,7 @@ export default function AfterDark() {
   const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
+  const paywallStateRef = useRef<{ confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null }>({});
 
   const doPaywallCheckout = useCallback(async (plan: "pack_1" | "pack_5" | "pack_20") => {
     setPaywallLoadingPlan(plan);
@@ -1318,6 +1319,9 @@ export default function AfterDark() {
       if (!res.ok || !data.url) {
         setPaywallCheckoutError(data.error ?? "Could not start checkout — please try again.");
       } else {
+        try {
+          sessionStorage.setItem("afterDarkCheckoutState", JSON.stringify(paywallStateRef.current));
+        } catch { /* storage unavailable */ }
         window.location.href = data.url;
       }
     } catch {
@@ -1351,6 +1355,11 @@ export default function AfterDark() {
   const preGenCoverPromise = useRef<Promise<string | null> | null>(null);
 
   const fetchPreviewCover = useCallback(async (pairing?: string): Promise<string | null> => {
+    const cacheKey = `preview-cover:afterdark:${pairing ?? "default"}`;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) return cached;
+    } catch { /* storage unavailable */ }
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const r = await fetch(`${API_BASE}/api/preview-cover`, {
@@ -1360,7 +1369,10 @@ export default function AfterDark() {
         });
         if (r.ok) {
           const d = await r.json() as { url?: string };
-          if (d?.url) return d.url;
+          if (d?.url) {
+            try { sessionStorage.setItem(cacheKey, d.url); } catch { /* quota */ }
+            return d.url;
+          }
         }
       } catch { /* ignore — will retry or fallback */ }
       if (attempt < 1) await new Promise(res => setTimeout(res, 2000));
@@ -1373,6 +1385,29 @@ export default function AfterDark() {
   const [loadingPhase, setLoadingPhase] = useState(0);
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
+
+  // Keep paywallStateRef current so doPaywallCheckout always saves fresh values on Stripe navigate
+  useEffect(() => {
+    paywallStateRef.current = { confirmedPairing, lastCastingData, paywallCoverUrl };
+  }, [confirmedPairing, lastCastingData, paywallCoverUrl]);
+
+  // Restore paywall phase when Stripe cancel_url redirects back with ?checkout=cancelled
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "cancelled") return;
+    window.history.replaceState({}, "", window.location.pathname);
+    const saved = sessionStorage.getItem("afterDarkCheckoutState");
+    if (saved) {
+      try {
+        const s = JSON.parse(saved) as { confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null };
+        if (s.confirmedPairing) setConfirmedPairing(s.confirmedPairing);
+        if (s.lastCastingData) setLastCastingData(s.lastCastingData);
+        if (s.paywallCoverUrl) setPaywallCoverUrl(s.paywallCoverUrl);
+      } catch { /* malformed storage */ }
+      sessionStorage.removeItem("afterDarkCheckoutState");
+    }
+    setPhase("paywall");
+  }, []);
 
   // Guard: if the user somehow reaches the scenario screen without a pairing selected
   // (e.g. state preserved across HMR, or navigating via browser history), send them

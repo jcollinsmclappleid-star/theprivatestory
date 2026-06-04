@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BoFu6HAU.js";import{S as i,g as r}from"./SEOPage-J9_QMEtj.js";import"./index-3P7s7er7.js";import"./data-editors-picks-BeL-1HZ1.js";const t=r("british-audio-erotica-for-women");function n(){return o.jsx(i,{config:t,slug:"british-audio-erotica-for-women"})}export{n as default};

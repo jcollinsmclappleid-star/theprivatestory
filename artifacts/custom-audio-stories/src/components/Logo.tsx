@@ -72,7 +72,7 @@ export function LogoMark({ size = 40, className = "" }: { size?: number; classNa
       className={className}
     >
       <img
-        src={`${BASE}images/logo-icon.webp`}
+        src={`${BASE}images/logo-icon.png`}
         alt="The Private Story"
         style={{
           width: "100%",

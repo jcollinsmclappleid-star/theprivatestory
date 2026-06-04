@@ -47,7 +47,7 @@ const config: CompetitorPageConfig = {
     },
     {
       h2: "Pricing and what you get",
-      body: `The Private Story offers two subscription tiers — Monthly at $29.99/month (5 story generations) and Annual at $229/year (50 story generations) — with additional stories available for subscribers beyond their plan allocation. Every story includes the full creation flow: your brief, the written narrative, professional narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a catalogue. You are paying for the creation of something that has never existed before — written for you, from your description, for this session. Please see the <a href="/pricing">pricing page</a> for full details and any current offers.`,
+      body: `The Private Story uses one-time credit packs — no subscription, no recurring charge. Three packs are available: a single story, a five-story bundle, and a twenty-story collection. Credits never expire, and you can top up at any time. Every story includes the full creation flow: your brief, the written narrative, professional narration in the voice you selected, and original cover art generated to match the story. Everything is saved privately to your account.<br><br>You are not paying for access to a catalogue. You are paying for the creation of something that has never existed before — written for you, from your description, for this session. See the <a href="/pricing">pricing page</a> for current prices.`,
     },
   ],
   faqs: [
@@ -69,7 +69,7 @@ const config: CompetitorPageConfig = {
     },
     {
       q: "Does The Private Story have a free option?",
-      a: "Please check the current pricing page for any introductory offers. Availability may change over time. The platform is a premium subscription service — you are paying for original stories created specifically for you, not access to a free community archive.",
+      a: "Please check the current pricing page for details. The Private Story uses one-time credit packs — no subscription. You are paying for original stories created specifically for you, not access to a free community archive.",
     },
     {
       q: "My favourite creator on GWA has left or deleted their account — what are my options?",

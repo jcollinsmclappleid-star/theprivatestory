@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-Cjdo1BAo.js";import{S as s,g as r}from"./SEOPage-COthMJsk.js";import"./index-B3oqrq9n.js";import"./data-editors-picks-BeL-1HZ1.js";const i=r("personalised-audio-stories");function d(){return o.jsx(s,{config:i,slug:"personalised-audio-stories",doorFilter:["dark"]})}export{d as default};

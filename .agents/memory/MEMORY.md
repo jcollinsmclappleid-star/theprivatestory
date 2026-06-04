@@ -9,3 +9,5 @@
 - [Dialogue vs attribution coupling](dialogue-attribution-coupling.md) — more dialogue / fewer "he said" is safe ONLY if 2 alternating speakers + name/action anchor every ~3rd line (post-hoc attributeSpeakers, 2 voices); contract spans 5 prompt sites in generate.ts
 - [Attribution alternation bias + TTS stability](attribution-alternation-bias.md) — "back-and-forth fallback" in prompt caused wrong voice; fix = embed surrounding prose per quote + NARRATOR_STABILITY=0.65 vs CHAR_STABILITY=0.45
 - [Pricing spec is 20-story, not 24](pricing-pack20-vs-pack24.md) — final user spec = pack_20 (Immersive Collection £79/$99, 20 credits); code review may falsely demand pack_24/£99/£119 from a superseded spec.
+- [Intensity canonicalization + floor](intensity-canonicalization-floor.md) — labels not in VALID_INTENSITIES silently → "Warm" (lvl3), killing explicit gate; canonicalize synonyms + floor label AND numericIntensity for unrestrained.
+- [After Dark cover pairing default](afterdark-preview-cover-pairing.md) — missing pairing on cover/image endpoints defaults to "Her & Him" (woman); pass selectedPairing ?? confirmedPairing. Story prose pairing is separate.

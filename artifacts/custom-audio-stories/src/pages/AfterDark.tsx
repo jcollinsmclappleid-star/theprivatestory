@@ -1836,7 +1836,7 @@ export default function AfterDark() {
                                 setSelectedScenario(next);
                                 if (next) {
                                   // Start generating the cover image immediately — it'll be ready by the time the paywall appears
-                                  preGenCoverPromise.current = fetchPreviewCover(selectedPairing ?? undefined);
+                                  preGenCoverPromise.current = fetchPreviewCover(selectedPairing ?? confirmedPairing ?? undefined);
                                   // Pre-load pairing into CastingRoom so step 0 is skipped
                                   if (selectedPairing) {
                                     setCastingHandoff({ pairing: selectedPairing, handoffStep: 1 });
@@ -1919,7 +1919,7 @@ export default function AfterDark() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[60]"
           >
             {/* Cinematic dark-crimson background */}
             <div className="absolute inset-0">
@@ -1939,8 +1939,10 @@ export default function AfterDark() {
               background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",
             }} />
 
+            {/* Scroll container — non-fixed so iOS Safari scrolls reliably */}
+            <div className="absolute inset-0 overflow-y-auto">
             {/* Content */}
-            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 flex flex-col items-center gap-5 text-center">
+            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 min-h-full flex flex-col items-center justify-center gap-5 text-center">
 
               {/* Moon icon */}
               <div
@@ -2075,6 +2077,7 @@ export default function AfterDark() {
                 </button>
               </div>
             </div>
+            </div>{/* end scroll container */}
           </motion.div>
         )}
 

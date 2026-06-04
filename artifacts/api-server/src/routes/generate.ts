@@ -1759,6 +1759,23 @@ function trimSilenceFromMp3(input: Buffer): Promise<Buffer> {
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
 const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
+
+/**
+ * Frontend doors send intensity labels that are NOT in VALID_INTENSITIES
+ * (After Dark sends "Unrestrained", paywall fallback sends "Heated", etc.).
+ * Without this map those labels silently fall through to "Warm" (level 3) in
+ * normaliseIntake — which means After Dark's brand-defining "Unrestrained" was
+ * being neutered to a non-explicit level and the explicit-content contract
+ * (numericLevel >= 4) never fired. Canonicalise synonyms BEFORE validation so
+ * the requested intensity actually reaches the story writer.
+ */
+const INTENSITY_SYNONYMS: Record<string, string> = {
+  Unrestrained: "Intense",
+  Scorching: "Intense",
+  Heated: "Elevated",
+  // "Tender" / "Sensual" intentionally omitted — they correctly resolve to the
+  // "Warm" default (gentle / sleep content must not become explicit).
+};
 const VALID_VOICES = Object.keys(VOICE_CATALOGUE);
 const VALID_LENGTHS = ["10 min"];
 
@@ -2160,7 +2177,19 @@ function derivePairingPronouns(pairing: string): string {
 
 function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
-  const intensity = VALID_INTENSITIES.includes(raw.intensity) ? raw.intensity : "Warm";
+  const rawIntensityTrim = (raw.intensity ?? "").trim();
+  const canonicalIntensity = INTENSITY_SYNONYMS[rawIntensityTrim] ?? rawIntensityTrim;
+  let intensity = VALID_INTENSITIES.includes(canonicalIntensity) ? canonicalIntensity : "Warm";
+  // GUARANTEE explicit content for the "unrestrained" story mode (After Dark).
+  // An unrestrained story must always contain an explicit sex scene, so floor
+  // its intensity at "Elevated" (level 4) — the threshold that activates the
+  // explicit-content contract and the erotic-architecture QC rewrite. This is
+  // the safety net that prevents a sex scene from ever being silently dropped.
+  const storyModeVal = raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim())
+    ? raw.storyMode.trim() : undefined;
+  if (storyModeVal === "unrestrained" && labelToIntensityLevel(intensity) < 4) {
+    intensity = "Elevated";
+  }
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel)
     ? raw.voiceFeel
     : (LEGACY_VOICE_MAP[raw.voiceFeel] ?? DEFAULT_VOICE_ID);
@@ -2225,9 +2254,15 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
 
   // Clamp numeric intensity 1–5
   const rawNumeric = raw.numericIntensity;
-  const numericIntensity = typeof rawNumeric === "number"
+  let numericIntensity = typeof rawNumeric === "number"
     ? Math.max(1, Math.min(5, Math.round(rawNumeric)))
     : undefined;
+  // Mirror the intensity floor onto numericIntensity for the "unrestrained" mode.
+  // numericIntensity takes precedence in the erotic-architecture QC check, so a
+  // low/absent numeric value must not be allowed to weaken the explicit guarantee.
+  if (storyModeVal === "unrestrained") {
+    numericIntensity = Math.max(numericIntensity ?? 0, 4);
+  }
 
   // Validate names against allowlists — silently drop anything not in the set.
   const listenerName = raw.listenerName?.trim() && !validateNameFormat(raw.listenerName.trim())
@@ -2264,7 +2299,7 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     categoryId: validCategory ? categoryId : undefined,
     subthemeId: validSubtheme ? subthemeId : undefined,
     numericIntensity,
-    storyMode: raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim()) ? raw.storyMode.trim() : undefined,
+    storyMode: storyModeVal,
     heritage: raw.heritage && VALID_HERITAGES.includes(raw.heritage.trim()) ? raw.heritage.trim() : undefined,
     atmosphere: raw.atmosphere && VALID_ATMOSPHERES.includes(raw.atmosphere.trim()) ? raw.atmosphere.trim() : undefined,
     chemistry: raw.chemistry && VALID_CHEMISTRIES.includes(raw.chemistry.trim()) ? raw.chemistry.trim() : undefined,
@@ -3951,9 +3986,13 @@ Return only JSON — no explanation, no markdown.`;
 
   const castingJsonExample = hasCastingRequirements ? `\n    "casting_compliance": 9,` : "";
 
-  // Erotic architecture criterion — only applied when intensity is 4 or 5
-  const numericIntensity = originalInput?.numericIntensity
-    ?? (originalInput?.intensity ? labelToIntensityLevel(originalInput.intensity) : 0);
+  // Erotic architecture criterion — only applied when intensity is 4 or 5.
+  // Use the MAX of numeric and label so a low client-supplied numericIntensity
+  // can never override a high intensity label and silently skip the QC check.
+  const numericIntensity = Math.max(
+    originalInput?.numericIntensity ?? 0,
+    originalInput?.intensity ? labelToIntensityLevel(originalInput.intensity) : 0,
+  );
   const hasEroticArchitectureCheck = numericIntensity >= 4;
   const eroticArchDimension = hasEroticArchitectureCheck
     ? `\n${hasCastingRequirements ? "10" : "9"}. erotic_architecture_compliance — at this intensity level, IGNITE scenes are required to contain: (a) at least one scene of oral sex described with anatomical specificity — no euphemism; (b) at least one scene of penetrative intercourse described with anatomical specificity — no euphemism; (c) sustained dirty talk in every IGNITE scene — characters name what they want and what is happening; (d) at least one speech-introduced position change per IGNITE scene; (e) both characters' arousal described explicitly throughout. Score 10 if all five are present. Deduct 2 for each element missing. Score 1–3 if IGNITE scenes are vague, euphemistic, or pornography-free despite the intensity mandate.`

@@ -2113,18 +2113,18 @@ function sanitiseTextField(raw: string | undefined, maxChars: number): string | 
  * Maps the 4 user-facing intensity label strings to the detailed 5-level
  * intensity directive from buildIntensityLayer. This ensures all stories use
  * the full, specific intensity instructions rather than a single weak paragraph.
- * Subtle→1, Warm→2, Elevated→3, Intense→4, Unrestrained→5
+ * Subtle→1, Warm→3, Elevated→4, Intense→5 (Unrestrained is a storyMode alias = 5)
  */
 function labelToIntensityLevel(label: string): number {
   const map: Record<string, number> = {
     Subtle: 1,
-    Warm: 2,
-    Elevated: 3,
-    Intense: 4,
-    Unrestrained: 5,
+    Warm: 3,
+    Elevated: 4,
+    Intense: 5,
+    Unrestrained: 5, // storyMode alias, not a UI option — treated same as Intense
     Scorching: 5,
   };
-  return map[label] ?? 2;
+  return map[label] ?? 3;
 }
 
 function buildCustomIntensityGuidance(intensity: string): string {

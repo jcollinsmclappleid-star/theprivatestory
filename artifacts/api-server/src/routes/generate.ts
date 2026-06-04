@@ -4398,16 +4398,24 @@ async function attributeSpeakers(
     const span = spans[si];
     if (span.dialogueIndex < 0) continue;
     const n = span.dialogueIndex + 1;
-    // Up to 160 chars of prose immediately before the quote (catches "she said, ")
-    const prevText =
-      si > 0 && spans[si - 1].dialogueIndex < 0
-        ? spans[si - 1].text.replace(/\s+/g, " ").trim().slice(-160)
-        : "";
-    // Up to 120 chars of prose immediately after the quote (catches ", he admitted.")
-    const nextText =
-      si + 1 < spans.length && spans[si + 1].dialogueIndex < 0
-        ? spans[si + 1].text.replace(/\s+/g, " ").trim().slice(0, 120)
-        : "";
+    // Scan backward through ALL spans to find the nearest narrator prose before this
+    // quote (not just the immediately adjacent span). This gives context even when
+    // multiple quotes appear back-to-back with no prose between them.
+    let prevText = "";
+    for (let j = si - 1; j >= 0; j--) {
+      if (spans[j].dialogueIndex < 0) {
+        prevText = spans[j].text.replace(/\s+/g, " ").trim().slice(-200);
+        break;
+      }
+    }
+    // Similarly scan forward for the nearest narrator prose after this quote.
+    let nextText = "";
+    for (let j = si + 1; j < spans.length; j++) {
+      if (spans[j].dialogueIndex < 0) {
+        nextText = spans[j].text.replace(/\s+/g, " ").trim().slice(0, 120);
+        break;
+      }
+    }
     const parts: string[] = [];
     if (prevText) parts.push(`…${prevText}`);
     parts.push(span.text);
@@ -4433,7 +4441,7 @@ Below are the ${dialogues.length} quoted lines of dialogue in story order. Each 
 CRITICAL RULES:
 1. Use the surrounding prose context to identify the speaker — names, pronouns, and speech-attribution verbs ("said", "whispered", "breathed", "asked", "admitted", etc.) directly adjacent to the quote are your primary signal.
 2. A character MAY speak multiple consecutive lines — DO NOT assume back-and-forth alternation. If the surrounding context identifies the same speaker twice in a row, label both lines the same.
-3. Only fall back to conversational flow when no attribution context is available at all.
+3. When no attribution cue exists at all for a quote, assume the SAME speaker continues from the previous line. Only switch to the other character if there is a clear contextual reason (e.g. a direct question-and-answer exchange, or the other character is explicitly introduced into the scene).
 
 ${numberedWithContext.join("\n")}
 

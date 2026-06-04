@@ -14,6 +14,10 @@ description: Two audio quality bugs in attributeSpeakers and generateAudioFile; 
 
 **Why:** The model was reliable at reading "she said" but unreliable at scrolling back through a 4000-char story to find what surrounded quote #7. Embedding the context inline removed that cross-reference burden.
 
+**Follow-up fix (back-to-back quotes):** The original code did `spans[si-1].dialogueIndex < 0` to get prevText — but if two quotes appear consecutively with no narrator text between them, `spans[si-1]` is itself a dialogue span, so prevText/nextText both come up empty. Fix: scan backward/forward through ALL spans to find the nearest narrator span. Every quote now gets prose context even across runs of consecutive dialogue.
+
+**Fallback rule:** Changed from "conversational flow" (alternation) to "same speaker continues" (persistence). Persistence matches real story dialogue far better — characters routinely speak multiple lines in a row; pure alternation is rarely correct when no cue is present.
+
 ## TTS narrator stability
 
 **The bug:** All TTS chunks (narrator + characters) used `stability: 0.45`. ElevenLabs generates each chunk independently; at 0.45 narrator chunks drift noticeably in tone/pitch between them, sounding like "two different narrators."

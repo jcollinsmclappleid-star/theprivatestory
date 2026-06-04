@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, EyeOff, Lock, Headphones, Sparkles } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
+import { CountryStrip } from "@/components/TrustBar";
 
 export interface CompetitorPageConfig {
   slug: string;
@@ -135,6 +136,9 @@ export default function CompetitorPage({ config }: { config: CompetitorPageConfi
                 <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest mt-0.5">{label}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-2 pt-3 border-t border-border/20 w-full">
+            <CountryStrip />
           </div>
         </div>
       </div>

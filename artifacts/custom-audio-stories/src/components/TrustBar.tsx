@@ -26,7 +26,7 @@ export function CountryStrip({ className }: { className?: string }) {
   return (
     <div className={`flex items-center justify-center gap-2 ${className ?? ""}`}>
       <Globe
-        style={{ width: "13px", height: "13px", color: "rgba(255,255,255,0.22)", flexShrink: 0 }}
+        style={{ width: "13px", height: "13px", color: "rgba(255,255,255,0.50)", flexShrink: 0 }}
       />
       <p
         style={{
@@ -34,7 +34,7 @@ export function CountryStrip({ className }: { className?: string }) {
           fontWeight: 700,
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.22)",
+          color: "rgba(255,255,255,0.50)",
         }}
       >
         Discovered by listeners across {COUNTRY_COUNT} countries
@@ -52,14 +52,14 @@ export function TrustBar() {
         {/* Country stat */}
         <div className="text-center space-y-3">
           <div className="flex items-center justify-center gap-2.5">
-            <Globe className="w-5 h-5 text-muted-foreground/30 flex-shrink-0" />
+            <Globe className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
             <span
               style={{
                 fontSize: "10px",
                 fontWeight: 700,
                 letterSpacing: "0.26em",
                 textTransform: "uppercase",
-                color: "rgba(255,255,255,0.22)",
+                color: "rgba(255,255,255,0.45)",
               }}
             >
               Global reach
@@ -70,7 +70,7 @@ export function TrustBar() {
               fontSize: "clamp(1.5rem, 4vw, 2.25rem)",
               fontWeight: 700,
               letterSpacing: "-0.02em",
-              color: "rgba(255,255,255,0.55)",
+              color: "rgba(255,255,255,0.90)",
               lineHeight: 1.1,
             }}
           >
@@ -79,11 +79,11 @@ export function TrustBar() {
           <p
             style={{
               fontSize: "12px",
-              color: "rgba(255,255,255,0.22)",
+              color: "rgba(255,255,255,0.55)",
               letterSpacing: "0.04em",
             }}
           >
-            From the US and UK to India, the Philippines, Brazil, and beyond.
+            From the US and UK to Australia, Canada, Germany, the Netherlands, and beyond.
           </p>
         </div>
 

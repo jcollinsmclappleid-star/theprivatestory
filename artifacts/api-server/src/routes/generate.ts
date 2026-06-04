@@ -2113,18 +2113,18 @@ function sanitiseTextField(raw: string | undefined, maxChars: number): string | 
  * Maps the 4 user-facing intensity label strings to the detailed 5-level
  * intensity directive from buildIntensityLayer. This ensures all stories use
  * the full, specific intensity instructions rather than a single weak paragraph.
- * Subtle→1, Warm→3, Elevated→4, Intense→5
+ * Subtle→1, Warm→2, Elevated→3, Intense→4, Unrestrained→5
  */
 function labelToIntensityLevel(label: string): number {
   const map: Record<string, number> = {
     Subtle: 1,
-    Warm: 3,
-    Elevated: 4,
-    Intense: 5,
+    Warm: 2,
+    Elevated: 3,
+    Intense: 4,
     Unrestrained: 5,
     Scorching: 5,
   };
-  return map[label] ?? 3;
+  return map[label] ?? 2;
 }
 
 function buildCustomIntensityGuidance(intensity: string): string {
@@ -2187,8 +2187,13 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   // the safety net that prevents a sex scene from ever being silently dropped.
   const storyModeVal = raw.storyMode && VALID_STORY_MODES.includes(raw.storyMode.trim())
     ? raw.storyMode.trim() : undefined;
-  if (storyModeVal === "unrestrained" && labelToIntensityLevel(intensity) < 4) {
-    intensity = "Elevated";
+  if (storyModeVal === "unrestrained") {
+    // After Dark: default to level 5 (Intense); Elevated selection drops to level 4.
+    // Both are above the explicit-contract gate (≥4) so the sex scene always fires.
+    if (intensity !== "Elevated") {
+      intensity = "Intense";
+    }
+    // (Elevated label kept as-is; its numeric floor is applied below)
   }
   const voiceFeel = VALID_VOICES.includes(raw.voiceFeel)
     ? raw.voiceFeel
@@ -2257,11 +2262,12 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   let numericIntensity = typeof rawNumeric === "number"
     ? Math.max(1, Math.min(5, Math.round(rawNumeric)))
     : undefined;
-  // Mirror the intensity floor onto numericIntensity for the "unrestrained" mode.
-  // numericIntensity takes precedence in the erotic-architecture QC check, so a
-  // low/absent numeric value must not be allowed to weaken the explicit guarantee.
+  // Mirror the intensity floor onto numericIntensity for After Dark ("unrestrained").
+  // After Dark default (Intense) → floor 5; Elevated selection → floor 4.
+  // Both land at ≥4, keeping the erotic-architecture QC and explicit contract active.
   if (storyModeVal === "unrestrained") {
-    numericIntensity = Math.max(numericIntensity ?? 0, 4);
+    const afterDarkNumericFloor = intensity === "Elevated" ? 4 : 5;
+    numericIntensity = Math.max(numericIntensity ?? 0, afterDarkNumericFloor);
   }
 
   // Validate names against allowlists — silently drop anything not in the set.

@@ -11,3 +11,4 @@
 - [Pricing spec is 20-story, not 24](pricing-pack20-vs-pack24.md) — final user spec = pack_20 (Immersive Collection £79/$99, 20 credits); code review may falsely demand pack_24/£99/£119 from a superseded spec.
 - [Intensity canonicalization + floor](intensity-canonicalization-floor.md) — labels not in VALID_INTENSITIES silently → "Warm" (lvl3), killing explicit gate; canonicalize synonyms + floor label AND numericIntensity for unrestrained.
 - [After Dark cover pairing default](afterdark-preview-cover-pairing.md) — missing pairing on cover/image endpoints defaults to "Her & Him" (woman); pass selectedPairing ?? confirmedPairing. Story prose pairing is separate.
+- [Pack-credit idempotency](pack-credit-idempotency.md) — credit-once-per-Stripe-session: claim-flip + balance mutation MUST be one transaction, else a failed credit permanently locks the buyer out of their credits.

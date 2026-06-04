@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { randomUUID } from "crypto";
 import { db, usersTable } from "@workspace/db";
 import { pendingPurchasesTable } from "@workspace/db/schema";
-import { eq, sql as drizzleSql } from "drizzle-orm";
+import { eq, and, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { sendEmail } from "../lib/email.js";
 
@@ -23,6 +23,97 @@ const PACK_CREDITS: Record<PackPlan, number> = {
   pack_5: 5,
   pack_20: 20,
 };
+
+/**
+ * Apply credit-pack credits for an authenticated purchase exactly once.
+ *
+ * Idempotency is anchored on the Stripe checkout session id (unique in
+ * pendingPurchasesTable). Both the webhook and the live-check fallback
+ * (/verify-session) call this; an atomic `claimed: false -> true` flip
+ * guarantees only the first caller credits the account. Stripe webhook
+ * retries and a webhook+fallback race are therefore safe — no double credits.
+ *
+ * Returns "applied" if this call credited the account, "duplicate" if the
+ * session was already processed.
+ */
+async function applyPackSession(opts: {
+  sessionId: string;
+  userId: string;
+  plan: PackPlan;
+  customerId: string | null;
+}): Promise<"applied" | "duplicate"> {
+  const { sessionId, userId, plan, customerId } = opts;
+
+  // Ensure an idempotency anchor row exists for this session. If the row was
+  // already created (by the other code path or a retry), this is a no-op.
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 30);
+  await db
+    .insert(pendingPurchasesTable)
+    .values({
+      claimToken: randomUUID(),
+      stripeSessionId: sessionId,
+      plan,
+      confirmed: true,
+      claimed: false,
+      claimedByUserId: userId,
+      ...(customerId ? { stripeCustomerId: customerId } : {}),
+      expiresAt,
+    })
+    .onConflictDoNothing({ target: pendingPurchasesTable.stripeSessionId });
+
+  const credits = PACK_CREDITS[plan];
+
+  // Claim + credit happen in ONE transaction so they succeed or fail together.
+  // The atomic claimed false -> true flip means only one caller proceeds to
+  // credit (blocks webhook retries + webhook/verify races). If the user-credit
+  // write fails or matches no user, we throw so the whole transaction rolls
+  // back — leaving claimed = false so a later retry can still apply credits.
+  const outcome = await db.transaction(async (tx) => {
+    const won = await tx
+      .update(pendingPurchasesTable)
+      .set({
+        claimed: true,
+        confirmed: true,
+        claimedByUserId: userId,
+        claimedAt: new Date(),
+        ...(customerId ? { stripeCustomerId: customerId } : {}),
+      })
+      .where(
+        and(
+          eq(pendingPurchasesTable.stripeSessionId, sessionId),
+          eq(pendingPurchasesTable.claimed, false),
+        ),
+      )
+      .returning({ id: pendingPurchasesTable.id });
+
+    if (won.length === 0) return "duplicate" as const;
+
+    const credited = await tx
+      .update(usersTable)
+      .set({
+        subscriptionPlan: plan,
+        storyCreditsRemaining: drizzleSql`${usersTable.storyCreditsRemaining} + ${credits}`,
+        ...(customerId ? { stripeCustomerId: customerId } : {}),
+      })
+      .where(eq(usersTable.id, userId))
+      .returning({ id: usersTable.id });
+
+    if (credited.length === 0) {
+      // No user row updated — roll back the claim so credits aren't lost.
+      throw new Error(`User ${userId} not found while crediting pack session ${sessionId}`);
+    }
+
+    return "applied" as const;
+  });
+
+  if (outcome === "duplicate") {
+    logger.info({ userId, plan, sessionId }, "[stripe] Pack session already processed — skipping (idempotent)");
+  } else {
+    logger.info({ userId, plan, credits, sessionId }, "[stripe] Pack credits applied (idempotent)");
+  }
+  return outcome;
+}
 
 function getStripe(): Stripe | null {
   if (!STRIPE_SECRET_KEY) return null;
@@ -163,7 +254,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
         customer: customerId,
         line_items: [{ price: priceId, quantity: 1 }],
         mode,
-        success_url: `${SITE_URL}/purchase/confirmed`,
+        success_url: `${SITE_URL}/purchase/confirmed?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: cancelUrl,
         allow_promotion_codes: true,
         metadata: { userId, plan },
@@ -362,6 +453,65 @@ router.post("/claim", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/stripe/verify-session — live-check fallback for logged-in pack buyers
+//
+// The success page calls this with the Stripe checkout session id. We retrieve
+// the session live from Stripe (so access does NOT depend on webhook timing),
+// confirm it belongs to the requesting user and is paid, then credit the
+// account through the shared idempotent path. Safe to call repeatedly and
+// safe alongside the webhook — credits are applied exactly once.
+// ---------------------------------------------------------------------------
+router.post("/verify-session", async (req: Request, res: Response) => {
+  const userId = requireAuth(req, res);
+  if (!userId) return;
+
+  const { sessionId } = req.body as { sessionId?: string };
+  if (!sessionId) {
+    res.status(400).json({ error: "Session id is required." });
+    return;
+  }
+
+  const stripe = getStripe();
+  if (!stripe) {
+    res.status(503).json({ error: "Payments are not configured." });
+    return;
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    // Security: the session must belong to the requesting user.
+    if (session.metadata?.userId !== userId) {
+      res.status(403).json({ error: "This purchase does not belong to your account." });
+      return;
+    }
+
+    const plan = session.metadata?.plan as AnyPlan | undefined;
+    if (plan !== "pack_1" && plan !== "pack_5" && plan !== "pack_20") {
+      // Non-pack purchases are handled elsewhere; nothing to verify here.
+      res.json({ applied: false, plan: plan ?? null });
+      return;
+    }
+
+    if (session.payment_status !== "paid" && session.status !== "complete") {
+      res.status(402).json({ error: "Payment not yet confirmed. Please try again in a moment." });
+      return;
+    }
+
+    const customerId =
+      typeof session.customer === "string"
+        ? session.customer
+        : (session.customer as Stripe.Customer | Stripe.DeletedCustomer | null)?.id ?? null;
+
+    const result = await applyPackSession({ sessionId, userId, plan, customerId });
+    res.json({ applied: result === "applied", plan });
+  } catch (err) {
+    logger.error({ err, userId, sessionId }, "[stripe] Failed to verify session");
+    res.status(500).json({ error: "Could not verify your purchase. Please contact support@theprivatestory.com." });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/stripe/portal — Stripe Customer Portal (legacy subscribers only)
 // ---------------------------------------------------------------------------
 router.get("/portal", async (req: Request, res: Response) => {
@@ -497,15 +647,14 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
             : (session.customer as Stripe.Customer | Stripe.DeletedCustomer | null)?.id ?? null;
 
         if (userId) {
-          // --- Pack plan ---
+          // --- Pack plan --- (idempotent; safe against retries + fallback race)
           if (plan === "pack_1" || plan === "pack_5" || plan === "pack_20") {
-            const credits = PACK_CREDITS[plan as PackPlan];
-            await db.update(usersTable).set({
-              subscriptionPlan: plan,
-              storyCreditsRemaining: drizzleSql`${usersTable.storyCreditsRemaining} + ${credits}`,
-              ...(sessionCustomerId ? { stripeCustomerId: sessionCustomerId } : {}),
-            }).where(eq(usersTable.id, userId));
-            logger.info({ userId, plan, credits }, "[stripe-webhook] Pack credits applied");
+            await applyPackSession({
+              sessionId: session.id,
+              userId,
+              plan: plan as PackPlan,
+              customerId: sessionCustomerId,
+            });
           } else if (plan === "addon") {
             await db.update(usersTable).set({
               addonStoriesRemaining: drizzleSql`${usersTable.addonStoriesRemaining} + 1`,

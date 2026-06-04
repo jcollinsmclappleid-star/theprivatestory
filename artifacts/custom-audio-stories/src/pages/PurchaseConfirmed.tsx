@@ -347,15 +347,134 @@ function GuestTokenFlow({ token }: { token: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// Authenticated pack flow — live-check verify (does NOT depend on webhook)
+// Credits are applied exactly once via the shared idempotent server path.
+// ---------------------------------------------------------------------------
+function AuthVerifyFlow({ sessionId }: { sessionId: string }) {
+  const [, navigate] = useLocation();
+  const [state, setState] = useState<"verifying" | "done" | "error">("verifying");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 12;
+
+    const verify = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/stripe/verify-session`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        });
+
+        // 402 = payment not yet settled on Stripe's side; retry a few times.
+        if (res.status === 402 && attempts < maxAttempts) {
+          attempts++;
+          if (!cancelled) setTimeout(verify, 2000);
+          return;
+        }
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error ?? "Could not confirm your purchase.");
+        }
+
+        if (!cancelled) setState("done");
+      } catch (err) {
+        if (attempts < maxAttempts) {
+          attempts++;
+          if (!cancelled) setTimeout(verify, 2000);
+          return;
+        }
+        if (!cancelled) {
+          setState("error");
+          setErrorMsg(
+            (err as Error).message ??
+              "Could not confirm your purchase. Please contact support@theprivatestory.com.",
+          );
+        }
+      }
+    };
+
+    verify();
+    return () => { cancelled = true; };
+  }, [sessionId]);
+
+  // Redirect to create once credits are applied.
+  useEffect(() => {
+    if (state !== "done") return;
+    const timer = setTimeout(() => navigate("/create"), 2500);
+    return () => clearTimeout(timer);
+  }, [state, navigate]);
+
+  if (state === "error") {
+    return (
+      <div className="w-full max-w-md text-center">
+        <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
+        <p className="text-foreground font-semibold mb-2">We couldn't confirm your purchase</p>
+        <p className="text-muted-foreground text-sm mb-6">{errorMsg}</p>
+        <button
+          onClick={() => { startedRef.current = false; setState("verifying"); setErrorMsg(null); }}
+          className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
+  if (state === "verifying") {
+    return (
+      <div className="w-full max-w-md text-center">
+        <Loader2 className="w-8 h-8 text-primary mx-auto mb-4 animate-spin" />
+        <p className="text-foreground font-semibold mb-2">Confirming your purchase…</p>
+        <p className="text-muted-foreground text-sm">This usually takes a few seconds. Please don't close this page.</p>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-md text-center"
+    >
+      <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
+        <CheckCircle2 className="w-8 h-8 text-green-400" />
+      </div>
+      <h1 className="font-display text-2xl font-bold text-foreground mb-2">You're all set.</h1>
+      <p className="text-muted-foreground text-sm mb-4">
+        Your credits have been added to your account. Taking you to create your story…
+      </p>
+      <Loader2 className="w-4 h-4 text-primary mx-auto animate-spin" />
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main export
 // ---------------------------------------------------------------------------
 export default function PurchaseConfirmed() {
   const search = useSearch();
-  const token = new URLSearchParams(search).get("token") ?? "";
+  const params = new URLSearchParams(search);
+  const token = params.get("token") ?? "";
+  const sessionId = params.get("session_id") ?? "";
 
   return (
     <Shell>
-      {token ? <GuestTokenFlow token={token} /> : <SubscriptionConfirmed />}
+      {token ? (
+        <GuestTokenFlow token={token} />
+      ) : sessionId ? (
+        <AuthVerifyFlow sessionId={sessionId} />
+      ) : (
+        <SubscriptionConfirmed />
+      )}
     </Shell>
   );
 }

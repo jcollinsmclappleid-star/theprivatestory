@@ -22,7 +22,7 @@ export type PackPlan = {
 export type PlansResponse = {
   pack1: PackPlan;
   pack5: PackPlan;
-  pack24: PackPlan;
+  pack20: PackPlan;
   currency: "gbp" | "usd";
   fetchedAt: number;
 };
@@ -64,13 +64,13 @@ function buildPackPlan(amount: number, currency: string, stories: number, afterD
 function buildRegionPlans(
   pack1Amount: number,
   pack5Amount: number,
-  pack24Amount: number,
+  pack20Amount: number,
   currency: "gbp" | "usd",
 ): PlansResponse {
   return {
     pack1: buildPackPlan(pack1Amount, currency, 1, false),
     pack5: buildPackPlan(pack5Amount, currency, 5, true),
-    pack24: buildPackPlan(pack24Amount, currency, 24, true),
+    pack20: buildPackPlan(pack20Amount, currency, 20, true),
     currency,
     fetchedAt: Date.now(),
   };
@@ -85,8 +85,8 @@ async function fetchPriceAmount(stripe: Stripe, priceId: string): Promise<number
 }
 
 const GBP_FALLBACK: RegionPlans = {
-  gbp: buildRegionPlans(1200, 3900, 9900, "gbp"),
-  usd: buildRegionPlans(1500, 4900, 11900, "usd"),
+  gbp: buildRegionPlans(1200, 2900, 7900, "gbp"),
+  usd: buildRegionPlans(1500, 3900, 9900, "usd"),
 };
 
 async function loadPlansFromStripe(): Promise<RegionPlans> {
@@ -117,7 +117,7 @@ async function loadPlansFromStripe(): Promise<RegionPlans> {
   const gbp = buildRegionPlans(amounts[0], amounts[1], amounts[2], "gbp");
   const usd = hasUsd
     ? buildRegionPlans(amounts[3], amounts[4], amounts[5], "usd")
-    : buildRegionPlans(1500, 4900, 11900, "usd");
+    : buildRegionPlans(1500, 3900, 9900, "usd");
 
   return { gbp, usd };
 }

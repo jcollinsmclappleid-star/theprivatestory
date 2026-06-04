@@ -5003,7 +5003,7 @@ const PLAN_LIMITS_GEN: Record<string, { period: "month" | "year"; limit: number 
   annual: { period: "year", limit: 50 },
 };
 
-const PACK_PLANS = new Set(["pack_1", "pack_5", "pack_24"]);
+const PACK_PLANS = new Set(["pack_1", "pack_5", "pack_20"]);
 
 /** Result of checkSubscriptionLimit. error=null means proceed; useAddon=true means an addon credit should be consumed post-generation; useRollover=true means a rollover credit should be consumed; usePack=true means a pack credit should be consumed. storiesCount is used for variety profile seeding. */
 type SubLimitResult = { error: string | null; useAddon: boolean; useRollover: boolean; usePack: boolean; storiesCount?: number };

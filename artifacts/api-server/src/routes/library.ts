@@ -51,7 +51,7 @@ async function requireActiveSubscription(req: Request, res: Response): Promise<b
     .where(eq(usersTable.id, userId))
     .then(r => r[0]);
   if (user?.isAdmin) return true;
-  const packPlans = ["pack_1", "pack_5", "pack_24"] as const;
+  const packPlans = ["pack_1", "pack_5", "pack_20"] as const;
   const isPackPlan = packPlans.includes(user?.subscriptionPlan as typeof packPlans[number]);
   const hasCredits = (user?.storyCreditsRemaining ?? 0) > 0;
   const isLegacyActive = user?.subscriptionStatus === "active" || user?.subscriptionStatus === "canceling";

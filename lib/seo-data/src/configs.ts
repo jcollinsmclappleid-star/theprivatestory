@@ -1640,7 +1640,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
       { q: `Can I create multiple stories?`, a: `Yes. You can create a new story whenever you want one. Your mood varies — your story can vary with it. Previous stories are saved privately to your account and remain there until you choose to remove them.` },
       { q: `How long is a created story?`, a: `Stories are typically around 10 minutes, depending on voice selection. Pacing affects length — a slower, more deliberate story will often be longer than a more immediate one.` },
       { q: `Can I edit my story after it's created?`, a: `Stories are not editable after creation — they are generated pieces of audio, not documents. If the result isn't quite what you wanted, you can create a new one with adjusted choices. Creation takes less than two minutes.` },
-      { q: `Is creation free or paid?`, a: `Creating personalised audio stories requires a credit. Credits are purchased as one-time packs — 1 story from £12/$15, 5 stories from £39/$49, or 24 stories from £99/$119. There is no subscription. Credits never expire.` },
+      { q: `Is creation free or paid?`, a: `Creating personalised audio stories requires a credit. Credits are purchased as one-time packs — 1 story from £12/$15, 5 stories from £29/$39, or 20 stories from £79/$99. There is no subscription. Credits never expire.` },
       { q: `How is this different from writing my own story?`, a: `Writing requires craft. Creating here requires only choices. You describe how you want to feel — the mood, the dynamic, the atmosphere. The story is written around those choices. You don't produce text, edit it, or solve the problems of storytelling. You direct. The story follows.` },
     ],
 };

@@ -3,7 +3,7 @@ import { useAuth } from "./useAuth";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type SubPlan = "free" | "monthly" | "annual" | "immersive" | "pack_1" | "pack_5" | "pack_24";
+type SubPlan = "free" | "monthly" | "annual" | "immersive" | "pack_1" | "pack_5" | "pack_20";
 
 export interface SubscriptionState {
   plan: SubPlan;
@@ -78,7 +78,7 @@ export function useSubscription(): SubscriptionState {
       .finally(() => setIsLoading(false));
   }, [isAuthenticated, authLoading]);
 
-  const PACK_PLANS = new Set<SubPlan>(["pack_1", "pack_5", "pack_24"]);
+  const PACK_PLANS = new Set<SubPlan>(["pack_1", "pack_5", "pack_20"]);
   const isPackPlan = PACK_PLANS.has(plan);
   const isPaid = (plan === "monthly" || plan === "annual") &&
     (subscriptionStatus === "active" || subscriptionStatus === "canceling");

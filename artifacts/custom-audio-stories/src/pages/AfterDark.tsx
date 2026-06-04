@@ -1289,7 +1289,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
-  const { monthly, annual, currency } = usePricing();
+  const { pack1, pack20 } = usePricing();
   useSEO({
     title: "After Dark — Unrestrained adult audio fiction — The Private Story",
     description:
@@ -1486,23 +1486,9 @@ export default function AfterDark() {
     } catch { /* ignore */ }
   }, [lastCastingData, isAuthenticated]);
 
-  // Launches Stripe checkout from the paywall phase
-  const startAfterDarkCheckout = useCallback(async (plan: "monthly" | "annual") => {
-    setPaywallLoadingPlan(plan);
-    try {
-      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
-      });
-      const data = await res.json() as { url?: string };
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-    } catch { /* silent */ }
-    setPaywallLoadingPlan(null);
+  // Routes to the pricing page (story packs) from the paywall phase
+  const goToPricingFromPaywall = useCallback(() => {
+    window.location.href = `${import.meta.env.BASE_URL}pricing`;
   }, []);
 
 
@@ -2051,36 +2037,27 @@ export default function AfterDark() {
 
               {/* CTAs */}
               <div className="w-full flex flex-col gap-3">
-                {/* Annual — primary */}
+                {/* Best value — primary */}
                 <button
-                  disabled={!!paywallLoadingPlan}
-                  onClick={() => void startAfterDarkCheckout("annual")}
-                  className="w-full flex flex-col items-center justify-center gap-0.5 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                  onClick={goToPricingFromPaywall}
+                  className="w-full flex flex-col items-center justify-center gap-0.5 px-6 py-4 rounded-2xl font-semibold text-white text-sm transition-all hover:-translate-y-0.5"
                   style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 28px rgba(192,57,43,0.35)" }}
                 >
                   <span className="flex items-center gap-2">
-                    {paywallLoadingPlan === "annual" ? (
-                      <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                    ) : (
-                      <Sparkles className="w-4 h-4" />
-                    )}
-                    Write my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo
+                    <Sparkles className="w-4 h-4" />
+                    Write my story — best value <span className="tabular-nums">{pack20.perStoryDisplay}</span>/story
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
-                  <span className="text-[11px] text-white/80 font-normal">billed annually · cancel renewal anytime</span>
+                  <span className="text-[11px] text-white/80 font-normal">One-time credit pack · credits never expire</span>
                 </button>
 
-                {/* Monthly — secondary */}
+                {/* Single story — secondary */}
                 <button
-                  disabled={!!paywallLoadingPlan}
-                  onClick={() => void startAfterDarkCheckout("monthly")}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all disabled:opacity-60"
+                  onClick={goToPricingFromPaywall}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium transition-all"
                   style={{ border: "1px solid rgba(192,57,43,0.4)", color: "#e8a09a" }}
                 >
-                  {paywallLoadingPlan === "monthly" ? (
-                    <span className="w-4 h-4 rounded-full border-2 border-current/40 border-t-current animate-spin" />
-                  ) : null}
-                  Monthly — <span className="tabular-nums">{monthly.display}</span>/month
+                  Or start with one story — from <span className="tabular-nums">{pack1.display}</span>
                 </button>
               </div>
 

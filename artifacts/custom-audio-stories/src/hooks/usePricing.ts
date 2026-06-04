@@ -18,7 +18,7 @@ export type PackPlan = {
 export type PlansResponse = {
   pack1: PackPlan;
   pack5: PackPlan;
-  pack24: PackPlan;
+  pack20: PackPlan;
   currency: "gbp" | "usd";
   fetchedAt: number;
 };
@@ -76,16 +76,16 @@ async function detectCurrencyFromIP(): Promise<"gbp" | "usd" | null> {
 
 export const PRICING_FALLBACK_GBP: PlansResponse = {
   pack1: { amount: 1200, currency: "gbp", display: "£12", interval: "one_time", stories: 1, perStoryDisplay: "£12", afterDark: false },
-  pack5: { amount: 3900, currency: "gbp", display: "£39", interval: "one_time", stories: 5, perStoryDisplay: "£7.80", afterDark: true },
-  pack24: { amount: 9900, currency: "gbp", display: "£99", interval: "one_time", stories: 24, perStoryDisplay: "£4.13", afterDark: true },
+  pack5: { amount: 2900, currency: "gbp", display: "£29", interval: "one_time", stories: 5, perStoryDisplay: "£5.80", afterDark: true },
+  pack20: { amount: 7900, currency: "gbp", display: "£79", interval: "one_time", stories: 20, perStoryDisplay: "£3.95", afterDark: true },
   currency: "gbp",
   fetchedAt: 0,
 };
 
 export const PRICING_FALLBACK_USD: PlansResponse = {
   pack1: { amount: 1500, currency: "usd", display: "$15", interval: "one_time", stories: 1, perStoryDisplay: "$15", afterDark: false },
-  pack5: { amount: 4900, currency: "usd", display: "$49", interval: "one_time", stories: 5, perStoryDisplay: "$9.80", afterDark: true },
-  pack24: { amount: 11900, currency: "usd", display: "$119", interval: "one_time", stories: 24, perStoryDisplay: "$4.96", afterDark: true },
+  pack5: { amount: 3900, currency: "usd", display: "$39", interval: "one_time", stories: 5, perStoryDisplay: "$7.80", afterDark: true },
+  pack20: { amount: 9900, currency: "usd", display: "$99", interval: "one_time", stories: 20, perStoryDisplay: "$4.95", afterDark: true },
   currency: "usd",
   fetchedAt: 0,
 };
@@ -131,7 +131,7 @@ export function usePricing() {
     currency,
     pack1: plans.pack1,
     pack5: plans.pack5,
-    pack24: plans.pack24,
+    pack20: plans.pack20,
     isLoading: query.isLoading,
     isPlaceholder: query.isPlaceholderData,
   };

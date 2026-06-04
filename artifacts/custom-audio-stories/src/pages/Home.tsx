@@ -282,41 +282,12 @@ function SamplePlayCard({ pick, tone, featured = false }: SamplePlayCardProps) {
 // ---------------------------------------------------------------------------
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
-  const { isPaid } = useSubscription();
-  const { monthly, annual, currency } = usePricing();
+  const { pack1, pack5, pack20 } = usePricing();
 
   useSEO({
     title: "The Private Story — Personalised Audio Stories",
     description: "Personalised romantic and intimate audio stories, created around your choices and private to you alone. You choose the cast, the chemistry, the world. We write it, narrate it, and keep it entirely yours.",
   });
-
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
-
-  const startCheckout = useCallback(async (plan: "monthly" | "annual") => {
-    setCheckoutLoading(plan);
-    setCheckoutError(null);
-    try {
-      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        ...(isAuthenticated ? { credentials: "include" } : {}),
-        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
-      });
-      const data = await res.json() as { url?: string; error?: string };
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setCheckoutError(data.error ?? "Could not start checkout. Please try again.");
-      }
-    } catch {
-      setCheckoutError("Something went wrong. Please try again.");
-    } finally {
-      setCheckoutLoading(null);
-    }
-  }, [isAuthenticated]);
-
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col">
@@ -536,7 +507,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/85 border border-white/15 hover:border-primary/40 hover:text-white transition-all"
             >
               Or skip ahead — create yours from{" "}
-              <span className="tabular-nums">{monthly.display}</span>
+              <span className="tabular-nums">{pack1.display}</span>
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -605,7 +576,7 @@ export default function Home() {
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                   <span className="text-[11px] text-[#9baeff]/50">
-                    Included with your subscription · 18+
+                    Included with the Immersive Bundle &amp; Collection · 18+
                   </span>
                 </div>
               </div>
@@ -647,94 +618,63 @@ export default function Home() {
                 href="/pricing"
                 className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-all whitespace-nowrap"
               >
-                See all plan details
+                See all pack details
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 
-            <div className={`grid grid-cols-1 gap-4 mb-6 ${isPaid ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
-              {/* Monthly */}
-              <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Monthly</p>
-                <div className="flex items-end gap-1.5 mb-1">
-                  <span className="font-display text-3xl font-bold text-foreground tabular-nums">{monthly.display}</span>
-                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
-                </div>
-                <p className="text-xs text-muted-foreground/80 mb-4">Billed monthly. Stories yours to keep.</p>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { text: "5 personalised stories / month", special: false },
-                    { text: "Private library — visible only to you", special: false },
-                    { text: "Premium voice narration", special: false },
-                    { text: "After Dark — stories that explore further", special: true },
-                  ].map((f) => (
-                    <div key={f.text} className="flex items-start gap-2">
-                      {f.special
-                        ? <Moon className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-                        : <Check className="w-3.5 h-3.5 text-primary/70 flex-shrink-0 mt-0.5" />
-                      }
-                      <span className={`text-xs leading-snug ${f.special ? "text-primary/80 font-medium" : "text-muted-foreground/80"}`}>{f.text}</span>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => startCheckout("monthly")}
-                  disabled={checkoutLoading === "monthly"}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all disabled:opacity-50"
-                >
-                  {checkoutLoading === "monthly" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Monthly"}
-                </button>
-                <div className="mt-3 flex items-center gap-2">
-                  <div className="flex-1 h-px bg-border/20" />
-                  <span className="text-[10px] text-primary/80 font-medium whitespace-nowrap px-1">Cancel any time — stories stay yours</span>
-                  <div className="flex-1 h-px bg-border/20" />
-                </div>
-              </div>
-
-              {/* Annual */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              {/* Immersive Collection — Best Value */}
               <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
                 <div className="flex items-center gap-2 mb-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">Annual</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">Immersive Collection</p>
                   <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">Best value</span>
                 </div>
                 <div className="flex items-end gap-1.5 mb-1">
-                  <span className="font-display text-3xl font-bold text-foreground tabular-nums">{annual.display}</span>
-                  <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
+                  <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack20.display}</span>
                 </div>
-                <p className="text-xs text-muted-foreground/80 mb-4"><span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/month — save <span className="tabular-nums">{annual.savingsVsMonthlyDisplay}</span> vs monthly.</p>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { text: "50 personalised stories / year", special: false },
-                    { text: "Private library — visible only to you", special: false },
-                    { text: "Premium voice narration", special: false },
-                    { text: "After Dark — stories that explore further", special: true },
-                  ].map((f) => (
-                    <div key={f.text} className="flex items-start gap-2">
-                      {f.special
-                        ? <Moon className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-                        : <Check className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                      }
-                      <span className={`text-xs leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => startCheckout("annual")}
-                  disabled={checkoutLoading === "annual"}
-                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)] disabled:opacity-50"
+                <p className="text-xs text-muted-foreground/80 mb-4"><span className="tabular-nums">{pack20.perStoryDisplay}</span> per story · 20 stories · After Dark included</p>
+                <Link
+                  href="/pricing"
+                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
                 >
-                  {checkoutLoading === "annual" ? <><Loader2 className="w-4 h-4 animate-spin" /> Starting…</> : "Choose Annual"}
-                </button>
+                  Unlock 20 Stories
+                </Link>
+              </div>
+
+              {/* Immersive Bundle */}
+              <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Bundle</p>
+                <div className="flex items-end gap-1.5 mb-1">
+                  <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack5.display}</span>
+                </div>
+                <p className="text-xs text-muted-foreground/80 mb-4"><span className="tabular-nums">{pack5.perStoryDisplay}</span> per story · 5 stories · After Dark included</p>
+                <Link
+                  href="/pricing"
+                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
+                >
+                  Get 5 Stories
+                </Link>
+              </div>
+
+              {/* Immersive Story — trial */}
+              <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Story</p>
+                <div className="flex items-end gap-1.5 mb-1">
+                  <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack1.display}</span>
+                </div>
+                <p className="text-xs text-muted-foreground/80 mb-4">1 story · the simplest way to try your first</p>
+                <Link
+                  href="/pricing"
+                  className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
+                >
+                  Create One Story
+                </Link>
               </div>
 
             </div>
 
-            {checkoutError && (
-              <div className="mb-4 px-4 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs text-center">
-                {checkoutError}
-              </div>
-            )}
             <div className="text-center space-y-2">
               <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
                 {["Private library included", "After Dark included", "Cast every character yourself", "Add more stories whenever you want"].map((item) => (
@@ -745,8 +685,8 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-xs text-muted-foreground/80">
-                Every plan includes: private library · original cover art · premium voice narration ·{" "}
-                <Link href="/pricing" className="text-primary/80 hover:text-primary transition-colors">full plan details →</Link>
+                Every pack includes: private library · original cover art · premium voice narration ·{" "}
+                <Link href="/pricing" className="text-primary/80 hover:text-primary transition-colors">see all packs →</Link>
               </p>
             </div>
           </div>

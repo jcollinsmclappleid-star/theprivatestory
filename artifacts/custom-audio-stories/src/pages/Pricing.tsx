@@ -24,29 +24,33 @@ const REASSURANCE = [
 ];
 
 const PACK1_FEATURES = [
-  { text: "1 personalised story — yours to keep", special: false },
-  { text: "Private library — visible only to you", special: false },
+  { text: "1 personalised audio story — yours to keep", special: false },
+  { text: "Written around exactly what you want", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for your story", special: false },
-  { text: "Credits never expire", special: false },
+  { text: "Private library — visible only to you", special: false },
+  { text: "One-time purchase — no subscription", special: false },
 ];
 
 const PACK5_FEATURES = [
-  { text: "5 personalised stories — yours to keep", special: false },
-  { text: "Private library — visible only to you", special: false },
+  { text: "5 personalised audio stories — yours to keep", special: false },
+  { text: "Explore different moods, fantasies & scenarios", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
+  { text: "Private library — visible only to you", special: false },
   { text: "Credits never expire", special: false },
-  { text: "After Dark — stories that explore further", special: true },
+  { text: "After Dark — stories that go further, no limits held back", special: true },
 ];
 
-const PACK24_FEATURES = [
-  { text: "24 personalised stories — yours to keep", special: false },
-  { text: "Private library — visible only to you", special: false },
+const PACK20_FEATURES = [
+  { text: "20 personalised audio stories — yours to keep", special: false },
+  { text: "Your own private collection, built around your desires", special: false },
+  { text: "Indulge every mood, fantasy & scenario you can imagine", special: false },
   { text: "Premium voice narration — press play instantly", special: false },
   { text: "Original cover art for every story", special: false },
+  { text: "Private library — visible only to you", special: false },
   { text: "Credits never expire", special: false },
-  { text: "After Dark — stories that explore further", special: true },
+  { text: "After Dark — stories that go further, no limits held back", special: true },
 ];
 
 const CASTING_DETAILS = [
@@ -62,12 +66,12 @@ const INCLUDED = [
   { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
 ];
 
-type PackKey = "pack_1" | "pack_5" | "pack_24";
+type PackKey = "pack_1" | "pack_5" | "pack_20";
 
 const FAQS: { q: string; a: string }[] = [
   {
     q: "What is After Dark?",
-    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with Five Private Stories and The Full Collection, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
+    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with the Immersive Bundle and Immersive Collection, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
   },
   {
     q: "Are my generated stories private?",
@@ -87,7 +91,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What is After Dark and which packs include it?",
-    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with Five Private Stories and The Full Collection. Your First Story focuses on the full personalised experience at a lower entry point.",
+    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with the Immersive Bundle and Immersive Collection. The Immersive Story is a lower-commitment way to try your first personalised experience.",
   },
 ];
 
@@ -113,7 +117,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Pricing() {
   const { isAuthenticated, openSignIn } = useAuth();
-  const { pack1, pack5, pack24, currency } = usePricing();
+  const { pack1, pack5, pack20, currency } = usePricing();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
   const [loadingPlan, setLoadingPlan] = useState<PackKey | null>(null);
@@ -148,7 +152,7 @@ export default function Pricing() {
     const pending = pendingCheckoutRef.current ?? (() => {
       try { return sessionStorage.getItem("pendingPricingCheckout"); } catch { return null; }
     })();
-    if (pending && ["pack_1", "pack_5", "pack_24"].includes(pending)) {
+    if (pending && ["pack_1", "pack_5", "pack_20"].includes(pending)) {
       pendingCheckoutRef.current = null;
       try { sessionStorage.removeItem("pendingPricingCheckout"); } catch { /* ignore */ }
       doCheckout(pending as PackKey);
@@ -239,7 +243,7 @@ export default function Pricing() {
             Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
           </p>
           <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Five Private Stories and The Full Collection include After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
+            The Immersive Bundle and Immersive Collection include After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
           </p>
           <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
             Every personalised story is a fully narrated audio experience — approximately 10 minutes long.
@@ -379,22 +383,105 @@ export default function Pricing() {
         <div className="text-center mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">One-time purchase · Credits never expire</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Choose your private collection.
+            Choose your private story experience.
           </h2>
-          <p className="text-muted-foreground/70 text-sm mt-3">No subscription. Pay once, listen whenever you like.</p>
+          <p className="text-muted-foreground/70 text-sm mt-3 max-w-xl mx-auto">Start with one custom audio story, explore a five-story bundle, or unlock the best-value collection of twenty. No subscription, ever.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
 
-          {/* Pack 1 — Your First Story */}
+          {/* Immersive Collection — Best Value (pack_20) */}
+          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-7 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-3">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Immersive Collection</p>
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
+                  <Star className="w-2.5 h-2.5" /> Best Value
+                </span>
+              </div>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack20.display}</span>
+              </div>
+              <p className="text-xs text-muted-foreground/70 mb-2">{pack20.perStoryDisplay} per story — your private collection of 20.</p>
+
+              <div className="space-y-2.5 mb-6">
+                {PACK20_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-2.5">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
+                      {f.special
+                        ? <Moon className="w-2 h-2 text-primary" />
+                        : <Check className="w-2.5 h-2.5 text-primary" />
+                      }
+                    </div>
+                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => startCheckout("pack_20")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_20" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : "Unlock 20 Stories"}
+              </button>
+              <p className="text-center text-[10px] text-muted-foreground/50 mt-3 leading-snug px-2">
+                Most chosen by listeners who want more than one experience.
+              </p>
+            </div>
+          </div>
+
+          {/* Immersive Bundle (pack_5) */}
+          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Bundle</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack5.display}</span>
+              </div>
+              <p className="text-xs text-muted-foreground/70 mb-2">{pack5.perStoryDisplay} per story — a flexible pack to explore.</p>
+
+              <div className="space-y-2.5 mb-6">
+                {PACK5_FEATURES.map((f) => (
+                  <div key={f.text} className="flex items-start gap-2.5">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
+                      {f.special
+                        ? <Moon className="w-2 h-2 text-primary" />
+                        : <Check className="w-2.5 h-2.5 text-primary" />
+                      }
+                    </div>
+                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => startCheckout("pack_5")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_5" ? (
+                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
+                ) : "Get 5 Stories"}
+              </button>
+              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
+                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
+              </p>
+            </div>
+          </div>
+
+          {/* Immersive Story — trial (pack_1) */}
           <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Your First Story</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Story</p>
               <div className="flex items-end gap-1.5 mb-1">
                 <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack1.display}</span>
               </div>
-              <p className="text-xs text-muted-foreground/70 mb-6">One story. Yours to keep.</p>
+              <p className="text-xs text-muted-foreground/70 mb-6">The simplest way to try your first private story.</p>
 
               <div className="space-y-2.5 mb-6">
                 {PACK1_FEATURES.map((f) => (
@@ -413,90 +500,7 @@ export default function Pricing() {
               >
                 {loadingPlan === "pack_1" ? (
                   <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Create My Story"}
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-              </p>
-            </div>
-          </div>
-
-          {/* Pack 5 — Five Private Stories */}
-          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-7 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Five Private Stories</p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack5.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-2">{pack5.perStoryDisplay} per story — yours to keep.</p>
-
-              <div className="space-y-2.5 mb-6">
-                {PACK5_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-2.5">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
-                      {f.special
-                        ? <Moon className="w-2 h-2 text-primary" />
-                        : <Check className="w-2.5 h-2.5 text-primary" />
-                      }
-                    </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => startCheckout("pack_5")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "pack_5" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Build My Collection"}
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-              </p>
-            </div>
-          </div>
-
-          {/* Pack 24 — The Full Collection */}
-          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">The Full Collection</p>
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
-                  <Star className="w-2.5 h-2.5" /> Most Chosen
-                </span>
-              </div>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack24.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-2">{pack24.perStoryDisplay} per story — yours to keep.</p>
-
-              <div className="space-y-2.5 mb-6">
-                {PACK24_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-2.5">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
-                      {f.special
-                        ? <Moon className="w-2 h-2 text-primary" />
-                        : <Check className="w-2.5 h-2.5 text-primary" />
-                      }
-                    </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => startCheckout("pack_24")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "pack_24" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Unlock My Collection"}
+                ) : "Create One Story"}
               </button>
               <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
                 One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>

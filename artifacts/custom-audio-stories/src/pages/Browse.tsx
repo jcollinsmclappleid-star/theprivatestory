@@ -97,10 +97,10 @@ function StoryRow({ categoryId, label, isPaid, onGated }: { categoryId: string; 
                   <button
                     className="absolute inset-0 z-10 flex items-end justify-center pb-3 bg-black/10 rounded-2xl group"
                     onClick={onGated}
-                    aria-label="Subscribe to read"
+                    aria-label="Unlock to read"
                   >
                     <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Lock className="w-2.5 h-2.5" /> Subscribe
+                      <Lock className="w-2.5 h-2.5" /> Unlock
                     </span>
                   </button>
                 )}
@@ -112,7 +112,7 @@ function StoryRow({ categoryId, label, isPaid, onGated }: { categoryId: string; 
 }
 
 function CollectionGate() {
-  const { monthly } = usePricing();
+  const { pack1 } = usePricing();
   const [, navigate] = useLocation();
   return (
     <motion.div
@@ -132,7 +132,7 @@ function CollectionGate() {
         </div>
         <h2 className="font-display text-2xl font-bold text-foreground mb-3">Collection access</h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          The curated collection — original audio stories across every mood — is included with every subscription.
+          The curated collection — original audio stories across every mood — is included with every story pack.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
@@ -141,7 +141,7 @@ function CollectionGate() {
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-glow"
           >
             <Sparkles className="w-4 h-4" />
-            View plans — from <span className="tabular-nums">{monthly.display}</span>/month
+            View packs — from <span className="tabular-nums">{pack1.display}</span>
           </button>
         </div>
 
@@ -162,7 +162,6 @@ function CollectionGate() {
 }
 
 export default function Browse() {
-  const { monthly } = usePricing();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -300,10 +299,10 @@ export default function Browse() {
                         <button
                           className="absolute inset-0 z-10 flex items-end justify-center pb-3 bg-black/10 rounded-2xl group"
                           onClick={() => navigate("/pricing")}
-                          aria-label="Subscribe to read"
+                          aria-label="Unlock to read"
                         >
                           <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 text-white/80 text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Lock className="w-2.5 h-2.5" /> Subscribe
+                            <Lock className="w-2.5 h-2.5" /> Unlock
                           </span>
                         </button>
                       )}

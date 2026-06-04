@@ -152,7 +152,7 @@ const TRUST_POINTS = [
 ];
 
 export default function HowItWorks() {
-  const { monthly, annual } = usePricing();
+  const { pack1, pack5, pack20 } = usePricing();
   useSEO({
     title: "How It Works — Create Your Personalised Audio Story | The Private Story",
     description:
@@ -535,11 +535,11 @@ export default function HowItWorks() {
                 Access
               </p>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                One subscription.
+                One-time credit packs.
                 <br className="hidden md:block" /> Private stories whenever the moment calls.
               </h2>
               <p className="text-sm text-muted-foreground/80 mt-2 max-w-sm leading-relaxed">
-                Every plan includes custom stories, the full curated collection, private library, narration, and original cover art.
+                Every pack includes custom stories, the full curated collection, private library, narration, and original cover art. Pay once — credits never expire.
               </p>
             </div>
             <Link
@@ -552,49 +552,66 @@ export default function HowItWorks() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            {/* Monthly */}
-            <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
-                Monthly
-              </p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{monthly.display}</span>
-                <span className="text-muted-foreground/80 text-sm mb-0.5">/ month</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                5 custom stories · full collection · private library · narration · cover art
-              </p>
-              <Link
-                href="/pricing"
-                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
-              >
-                Choose Monthly
-              </Link>
-            </div>
-
-            {/* Annual */}
+            {/* Immersive Collection — Best Value */}
             <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
               <div className="flex items-center gap-2 mb-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
-                  Annual
+                  Immersive Collection
                 </p>
                 <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">
                   Best value
                 </span>
               </div>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{annual.display}</span>
-                <span className="text-muted-foreground/80 text-sm mb-0.5">/ year</span>
+                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack20.display}</span>
               </div>
               <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                {annual.storyAllowance} custom stories · full collection · private library · narration · cover art · <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/month
+                20 stories · <span className="tabular-nums">{pack20.perStoryDisplay}</span> per story · After Dark · credits never expire
               </p>
               <Link
                 href="/pricing"
                 className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
               >
-                Choose Annual
+                Unlock 20 Stories
+              </Link>
+            </div>
+
+            {/* Immersive Bundle */}
+            <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
+                Immersive Bundle
+              </p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack5.display}</span>
+              </div>
+              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
+                5 stories · <span className="tabular-nums">{pack5.perStoryDisplay}</span> per story · After Dark · credits never expire
+              </p>
+              <Link
+                href="/pricing"
+                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
+              >
+                Get 5 Stories
+              </Link>
+            </div>
+
+            {/* Immersive Story — trial */}
+            <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
+                Immersive Story
+              </p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack1.display}</span>
+              </div>
+              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
+                1 story · the simplest way to try your first private story
+              </p>
+              <Link
+                href="/pricing"
+                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
+              >
+                Create One Story
               </Link>
             </div>
 
@@ -604,7 +621,7 @@ export default function HowItWorks() {
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
               {[
                 "Private library included",
-                "Cancel monthly anytime",
+                "Credits never expire",
                 "Add more stories whenever you want",
               ].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">

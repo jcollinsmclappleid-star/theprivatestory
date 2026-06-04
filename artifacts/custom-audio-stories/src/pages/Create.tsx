@@ -679,7 +679,7 @@ function OptionCard({
 
 export default function Create() {
   const { isAuthenticated, isLoading: authLoading, openSignIn, user } = useAuth();
-  const { monthly, annual, currency } = usePricing();
+  const { pack1, pack20 } = usePricing();
   const [showLanding, setShowLanding] = useState(true);
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [step, setStep] = useState<"casting" | "voice" | "preset-prompt" | "form" | "generating" | "result" | "paywall">("casting");
@@ -2325,14 +2325,14 @@ export default function Create() {
               <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/8 to-primary/3 p-6 flex flex-col items-center gap-4 text-center">
                 <div className="space-y-1">
                   <p className="font-display text-lg font-bold text-foreground">Want another story like this?</p>
-                  <p className="text-sm text-muted-foreground">Subscribe and get 5 stories a month — with unused ones rolling over.</p>
+                  <p className="text-sm text-muted-foreground">Top up with a one-time credit pack. Credits never expire.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => { window.location.href = `${import.meta.env.BASE_URL}pricing`; }}
                   className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-glow"
                 >
-                  See subscription plans
+                  See story packs
                 </button>
               </div>
             )}
@@ -2379,26 +2379,12 @@ export default function Create() {
           const voiceName = voice?.displayName ?? voice?.label ?? "Clara";
           const voiceAccent = voice?.accentLabel ?? voice?.accent ?? "British · Warm";
 
-          const startCheckoutFromPaywall = async (plan: "monthly" | "annual") => {
+          const goToPricingFromPaywall = () => {
             try { sessionStorage.setItem("quickCreateParams", JSON.stringify(form.getValues())); } catch { /* ignore */ }
             if (continueAfterDark) {
               try { sessionStorage.setItem("after_dark_intent", "1"); } catch { /* ignore */ }
             }
-            setPaywallLoadingPlan(plan);
-            try {
-              const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
-              });
-              const data = await res.json();
-              if (res.ok && data.url) {
-                window.location.href = data.url;
-                return;
-              }
-            } catch { /* silent */ }
-            setPaywallLoadingPlan(null);
+            window.location.href = `${import.meta.env.BASE_URL}pricing`;
           };
 
           return (
@@ -2526,34 +2512,30 @@ export default function Create() {
 
                 {/* Personalised bridge copy */}
                 <p className="text-center text-xs text-muted-foreground/80 leading-relaxed">
-                  Your casting is saved. Subscribe and it writes itself — narrated privately, ready in minutes.
+                  Your casting is saved. Choose a story pack and it writes itself — narrated privately, ready in minutes.
                 </p>
 
-                {/* Primary subscription CTAs */}
+                {/* Story pack CTAs */}
                 <div className="w-full flex flex-col gap-2">
-                  {/* Annual — primary hero button */}
+                  {/* Best value — primary hero button */}
                   <button
                     type="button"
-                    disabled={!!paywallLoadingPlan}
-                    onClick={() => startCheckoutFromPaywall("annual")}
-                    className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-all shadow-glow disabled:opacity-60 flex items-center justify-between px-5"
+                    onClick={goToPricingFromPaywall}
+                    className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 transition-all shadow-glow flex items-center justify-between px-5"
                   >
                     <span className="flex items-center gap-2">
-                      {paywallLoadingPlan === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      <span>Write my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo</span>
+                      <span>Write my story — best value <span className="tabular-nums">{pack20.perStoryDisplay}</span>/story</span>
                       <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-primary-foreground/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                     </span>
-                    <span className="text-xs text-primary-foreground/50">billed annually</span>
+                    <span className="text-xs text-primary-foreground/50">one-time</span>
                   </button>
-                  {/* Monthly — secondary */}
+                  {/* Single story — secondary */}
                   <button
                     type="button"
-                    disabled={!!paywallLoadingPlan}
-                    onClick={() => startCheckoutFromPaywall("monthly")}
-                    className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all disabled:opacity-60 flex items-center justify-center gap-2 px-4"
+                    onClick={goToPricingFromPaywall}
+                    className="w-full py-3 rounded-xl border border-primary/30 bg-primary/5 text-foreground font-semibold text-sm hover:bg-primary/10 hover:border-primary/50 transition-all flex items-center justify-center gap-2 px-4"
                   >
-                    {paywallLoadingPlan === "monthly" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                    Monthly — <span className="tabular-nums">{monthly.display}</span>/month
+                    Or start with one story — from <span className="tabular-nums">{pack1.display}</span>
                   </button>
                 </div>
 
@@ -2577,7 +2559,7 @@ export default function Create() {
                 {/* Privacy + start over */}
                 <div className="flex flex-col items-center gap-2">
                   <p className="text-[11px] text-muted-foreground/80 text-center">
-                    Billed discreetly · Cancel instantly, any time · No story history shared
+                    Billed discreetly · One-time purchase · Credits never expire
                   </p>
                   <button
                     type="button"

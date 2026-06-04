@@ -329,7 +329,7 @@ const DRIFT_TITLES: Record<string, string> = {
 type Phase = "scenario" | "casting" | "generating" | "result" | "paywall";
 
 export default function Drift() {
-  const { monthly, annual, currency } = usePricing();
+  const { pack1, pack20 } = usePricing();
   useSEO({
     title: "Drift — Calm bedtime audio stories — The Private Story",
     description:
@@ -423,22 +423,8 @@ export default function Drift() {
   });
 
 
-  const startDriftCheckout = async (plan: "monthly" | "annual") => {
-    setPaywallLoadingPlan(plan);
-    try {
-      const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-    } catch { /* silent */ }
-    setPaywallLoadingPlan(null);
+  const goToPricingFromPaywall = () => {
+    window.location.href = `${import.meta.env.BASE_URL}pricing`;
   };
 
   const startLoadingPhase = useCallback(() => {
@@ -896,41 +882,32 @@ export default function Drift() {
 
               {/* Personalised bridge copy */}
               <p className="text-center text-xs text-muted-foreground/80 leading-relaxed">
-                Your casting is saved. Subscribe and your story writes immediately.
+                Your casting is saved. Choose a story pack and your story writes immediately.
               </p>
 
               {/* Primary CTAs */}
               <div className="w-full flex flex-col gap-2">
-                {/* Annual — primary hero */}
+                {/* Best value — primary hero */}
                 <button
-                  disabled={!!paywallLoadingPlan}
-                  onClick={() => void startDriftCheckout("annual")}
-                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-white text-base transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                  onClick={goToPricingFromPaywall}
+                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl font-bold text-white text-base transition-all hover:-translate-y-0.5"
                   style={{ background: `linear-gradient(135deg, ${ACCENT}, #4338ca)`, boxShadow: `0 0 28px rgba(99,102,241,0.3)` }}
                 >
                   <span className="flex items-center gap-2">
-                    {paywallLoadingPlan === "annual" ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Sparkles className="w-4 h-4" />
-                    )}
-                    <span>Hear my story — <span className="tabular-nums">{annual.equivalentMonthlyDisplay}</span>/mo</span>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Hear my story — best value <span className="tabular-nums">{pack20.perStoryDisplay}</span>/story</span>
                     <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-white/80 text-[9px] font-bold uppercase tracking-wider">Best value</span>
                   </span>
-                  <span className="text-xs text-white/80">billed annually</span>
+                  <span className="text-xs text-white/80">one-time</span>
                 </button>
 
-                {/* Monthly — secondary */}
+                {/* Single story — secondary */}
                 <button
-                  disabled={!!paywallLoadingPlan}
-                  onClick={() => void startDriftCheckout("monthly")}
-                  className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-60"
+                  onClick={goToPricingFromPaywall}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-semibold transition-all"
                   style={{ border: `1px solid rgba(99,102,241,0.35)`, color: "#a5b4fc" }}
                 >
-                  {paywallLoadingPlan === "monthly" ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : null}
-                  Monthly — <span className="tabular-nums">{monthly.display}</span>/month
+                  Or start with one story — from <span className="tabular-nums">{pack1.display}</span>
                 </button>
               </div>
 

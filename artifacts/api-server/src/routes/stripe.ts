@@ -14,14 +14,14 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const SITE_URL = process.env.SITE_URL ?? "https://theprivatestory.com";
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@theprivatestory.com";
 
-type PackPlan = "pack_1" | "pack_5" | "pack_24";
+type PackPlan = "pack_1" | "pack_5" | "pack_20";
 type LegacyPlan = "monthly" | "annual" | "addon" | "immersive";
 type AnyPlan = PackPlan | LegacyPlan;
 
 const PACK_CREDITS: Record<PackPlan, number> = {
   pack_1: 1,
   pack_5: 5,
-  pack_24: 24,
+  pack_20: 20,
 };
 
 function getStripe(): Stripe | null {
@@ -103,7 +103,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 
   const { plan, returnPath, currency: rawCurrency } = req.body as { plan: AnyPlan; returnPath?: string; currency?: string };
 
-  const validPlans: AnyPlan[] = ["pack_1", "pack_5", "pack_24", "monthly", "annual", "addon", "immersive"];
+  const validPlans: AnyPlan[] = ["pack_1", "pack_5", "pack_20", "monthly", "annual", "addon", "immersive"];
   if (!plan || !validPlans.includes(plan)) {
     res.status(400).json({ error: "Invalid plan." });
     return;
@@ -194,7 +194,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     await db.insert(pendingPurchasesTable).values({
       claimToken,
       stripeSessionId: stripeSession.id,
-      plan: plan as "monthly" | "annual" | "immersive" | "pack_1" | "pack_5" | "pack_24",
+      plan: plan as "monthly" | "annual" | "immersive" | "pack_1" | "pack_5" | "pack_20",
       confirmed: false,
       expiresAt,
     });
@@ -313,7 +313,7 @@ router.post("/claim", async (req: Request, res: Response) => {
     }
 
     // Apply credits
-    if (plan === "pack_1" || plan === "pack_5" || plan === "pack_24") {
+    if (plan === "pack_1" || plan === "pack_5" || plan === "pack_20") {
       const credits = PACK_CREDITS[plan as PackPlan];
       await db.update(usersTable).set({
         subscriptionPlan: plan,
@@ -498,7 +498,7 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
 
         if (userId) {
           // --- Pack plan ---
-          if (plan === "pack_1" || plan === "pack_5" || plan === "pack_24") {
+          if (plan === "pack_1" || plan === "pack_5" || plan === "pack_20") {
             const credits = PACK_CREDITS[plan as PackPlan];
             await db.update(usersTable).set({
               subscriptionPlan: plan,
@@ -556,9 +556,9 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
           if (guestEmail) {
             const claimUrl = `${SITE_URL}/purchase/confirmed?token=${guestToken}`;
             const planLabel =
-              plan === "pack_1" ? "Your First Story (1 story credit)" :
-              plan === "pack_5" ? "Five Private Stories (5 story credits)" :
-              plan === "pack_24" ? "The Full Collection (24 story credits)" :
+              plan === "pack_1" ? "Immersive Story (1 story credit)" :
+              plan === "pack_5" ? "Immersive Bundle (5 story credits)" :
+              plan === "pack_20" ? "Immersive Collection (20 story credits)" :
               plan === "immersive" ? "a single Immersive Story" :
               plan === "monthly" ? "a monthly subscription (5 stories/month)" :
               "an annual subscription (50 stories/year)";
@@ -581,9 +581,9 @@ export async function stripeWebhookHandler(req: Request, res: Response) {
         // Purchase notification to support
         {
           const planLabel =
-            plan === "pack_1" ? "Your First Story — £12/$15" :
-            plan === "pack_5" ? "Five Private Stories — £39/$49" :
-            plan === "pack_24" ? "The Full Collection — £99/$119" :
+            plan === "pack_1" ? "Immersive Story — £12/$15" :
+            plan === "pack_5" ? "Immersive Bundle — £29/$39" :
+            plan === "pack_20" ? "Immersive Collection — £79/$99" :
             plan === "immersive" ? "Single Story — £7.99" :
             plan === "addon"     ? "Add-on Story — £7.99" :
             plan === "monthly"   ? "Monthly Subscription — £29.99/month" :

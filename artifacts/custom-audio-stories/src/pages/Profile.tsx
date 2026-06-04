@@ -502,12 +502,12 @@ export default function Profile() {
           <div className="flex items-center gap-2 mb-4">
             <CreditCard className="w-4 h-4 text-primary" />
             <h2 className="font-display font-semibold text-sm text-foreground">
-              {["pack_1", "pack_5", "pack_24"].includes(usageData.plan) ? "Story Credits" : "Subscription"}
+              {["pack_1", "pack_5", "pack_20"].includes(usageData.plan) ? "Story Credits" : "Subscription"}
             </h2>
           </div>
 
           {/* Pack plan: credit display */}
-          {["pack_1", "pack_5", "pack_24"].includes(usageData.plan) && (
+          {["pack_1", "pack_5", "pack_20"].includes(usageData.plan) && (
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-4">
                 <div>

@@ -126,7 +126,7 @@ const PLAN_LIMITS: Record<string, { period: "month" | "year"; limit: number }> =
   annual: { period: "year", limit: 50 },
 };
 
-const PACK_PLANS_SET = new Set(["pack_1", "pack_5", "pack_24"]);
+const PACK_PLANS_SET = new Set(["pack_1", "pack_5", "pack_20"]);
 
 /** Returns the user's current usage stats. */
 export async function getOrResetUsage(userId: string): Promise<{

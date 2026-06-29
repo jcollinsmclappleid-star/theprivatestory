@@ -188,11 +188,11 @@ function DoorCard({ door, tall = false }: { door: typeof DOORS[0]; tall?: boolea
             width: "100%", height: "68%",
             objectFit: "cover", objectPosition: "center top",
             borderRadius: "110px 110px 0 0",
-            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.3) 85%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.3) 85%, transparent 100%)",
             pointerEvents: "none", zIndex: 1,
             transition: "opacity 0.4s ease",
-            opacity: hovered ? 0.85 : 0.65,
+            opacity: hovered ? 0.98 : 0.90,
           }}
         />
 
@@ -204,7 +204,7 @@ function DoorCard({ door, tall = false }: { door: typeof DOORS[0]; tall?: boolea
               left: `${img.x}%`, top: `${img.y}%`,
               width: `${img.w}px`, height: `${Math.round(img.w * 1.35)}px`,
               transform: `rotate(${img.rot}deg)`,
-              opacity: hovered ? 0.72 : 0.40,
+              opacity: hovered ? 0.85 : 0.58,
               transition: `opacity 0.55s ease ${mi * 0.06}s`,
               pointerEvents: "none", zIndex: 2,
               borderRadius: "3px", overflow: "hidden",

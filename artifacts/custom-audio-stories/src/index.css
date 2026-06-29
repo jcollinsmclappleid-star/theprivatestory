@@ -67,8 +67,8 @@
 }
 
 :root {
-  /* Deep plum — velvet dark, not black; images breathe against it */
-  --background: 270 22% 11%;
+  /* Deep plum — velvet dark, rich and saturated; images breathe against it */
+  --background: 270 28% 10%;
   --foreground: 270 18% 93%;
   --card: 270 20% 14%;
   --card-foreground: 270 18% 93%;

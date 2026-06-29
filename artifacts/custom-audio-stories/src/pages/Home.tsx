@@ -335,7 +335,7 @@ export default function Home() {
         >
           <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
             Private Adult Stories that go further —{" "}
-            <span className="text-primary">personalised around your choices.</span>
+            <span className="text-primary">personalised around your Fantasies.</span>
           </h1>
 
           <p className="text-sm md:text-base text-white/40 tracking-[0.2em] sm:text-center uppercase font-light">
@@ -394,62 +394,6 @@ export default function Home() {
         {/* Trust bar                                                         */}
         {/* ---------------------------------------------------------------- */}
         <TrustBar />
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Emotion-led hook                                                  */}
-        {/* ---------------------------------------------------------------- */}
-        <section className="py-20 px-4 md:px-8 max-w-2xl mx-auto w-full text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
-          >
-            <div className="space-y-5">
-              <p className="text-2xl md:text-3xl font-display font-medium text-white/88 leading-snug">
-                Have you ever wanted a story written entirely around you?
-              </p>
-              <p className="text-base md:text-lg text-white/80 leading-relaxed">
-                Your world. Your rules. The energy you want, the tension that builds exactly as you like it — and a character who feels written for you, because he was.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                "Not browsed. Not compromised. Yours from the first line.",
-                "Choose the feeling. Choose how far it goes.",
-                "The female imagination at its centre. Narrated for you. Saved privately for you.",
-              ].map((line) => (
-                <p
-                  key={line}
-                  className="text-sm text-white/80 tracking-wide italic"
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-
-            <div className="pt-2 flex flex-wrap justify-center gap-x-5 gap-y-2">
-              {[
-                { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
-                { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
-                { icon: <Lock className="w-3 h-3" />, label: "No profile" },
-                { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
-              ].map(({ icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/80">
-                  <span className="text-primary/70">{icon}</span>
-                  {label}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* CastingRoom preview                                               */}
-        {/* ---------------------------------------------------------------- */}
-        <CastingPreview />
 
         {/* ---------------------------------------------------------------- */}
         {/* The Listening Room — three Editor's Picks, one per voice          */}
@@ -547,7 +491,7 @@ export default function Home() {
               {/* Left — copy + CTA */}
               <div>
                 <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#7b8fff]/65 mb-5">
-                  After Dark
+                  After Dark — Fantasies
                 </p>
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-white/92 leading-[1.1] mb-5">
                   There's a door<br className="hidden md:block" />
@@ -594,6 +538,62 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Emotion-led hook                                                  */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-20 px-4 md:px-8 max-w-2xl mx-auto w-full text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
+          >
+            <div className="space-y-5">
+              <p className="text-2xl md:text-3xl font-display font-medium text-white/88 leading-snug">
+                Have you ever wanted a story written entirely around you?
+              </p>
+              <p className="text-base md:text-lg text-white/80 leading-relaxed">
+                Your world. Your rules. The energy you want, the tension that builds exactly as you like it — and a character who feels written for you, because he was.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                "Not browsed. Not compromised. Yours from the first line.",
+                "Choose the feeling. Choose how far it goes.",
+                "The female imagination at its centre. Narrated for you. Saved privately for you.",
+              ].map((line) => (
+                <p
+                  key={line}
+                  className="text-sm text-white/80 tracking-wide italic"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+
+            <div className="pt-2 flex flex-wrap justify-center gap-x-5 gap-y-2">
+              {[
+                { icon: <EyeOff className="w-3 h-3" />, label: "Visible only to you" },
+                { icon: <WifiOff className="w-3 h-3" />, label: "No sharing" },
+                { icon: <Lock className="w-3 h-3" />, label: "No profile" },
+                { icon: <Headphones className="w-3 h-3" />, label: "Saved privately" },
+              ].map(({ icon, label }) => (
+                <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/80">
+                  <span className="text-primary/70">{icon}</span>
+                  {label}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* CastingRoom preview                                               */}
+        {/* ---------------------------------------------------------------- */}
+        <CastingPreview />
 
 
         {/* ---------------------------------------------------------------- */}

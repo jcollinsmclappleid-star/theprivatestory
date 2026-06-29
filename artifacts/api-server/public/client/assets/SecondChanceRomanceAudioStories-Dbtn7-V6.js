@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BK7KDvFf.js";import{S as e,g as n}from"./SEOPage-4m_qSMWs.js";import"./index-DmdqYZNw.js";import"./data-editors-picks-CJizIKSx.js";const s=n("second-chance-romance-audio-stories");function i(){return o.jsx(e,{config:s,slug:"second-chance-romance-audio-stories"})}export{i as default};

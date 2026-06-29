@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BK7KDvFf.js";import{S as a,g as t}from"./SEOPage-4m_qSMWs.js";import"./index-DmdqYZNw.js";import"./data-editors-picks-CJizIKSx.js";const i=t("fake-dating-romance-audio-stories");function g(){return o.jsx(a,{config:i,slug:"fake-dating-romance-audio-stories"})}export{g as default};

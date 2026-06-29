@@ -49,7 +49,7 @@ function pickToStory(pick: EditorsPick): Story {
  *  (Clara · Kayla · James) so visitors hear the breadth in 30 seconds.
  *  Maya is reserved for the After Dark teaser below to keep all four voices
  *  present on the home page without repeating any single narrator. */
-const LISTENING_ROOM_SLUGS = ["09-neighbour", "08-proposition", "06-supervisor"] as const;
+const LISTENING_ROOM_SLUGS = ["09-neighbour", "08-proposition", "06-supervisor", "02-adjoining-suites"] as const;
 
 /** The single pick that fronts the After Dark teaser — the MFM Adjoining
  *  Suites sits in the deeper register the section is selling. */
@@ -417,8 +417,8 @@ export default function Home() {
 
           {/* Three-card trio — centre card weighted on md+, vertical stack on mobile.
               Order chosen so Kayla (the centre, scaled) sits between Clara & James. */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch max-w-6xl mx-auto">
-            {LISTENING_ROOM_SLUGS.map((slug, i) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 items-stretch max-w-6xl mx-auto">
+            {LISTENING_ROOM_SLUGS.map((slug) => {
               const pick = EDITORS_PICKS.find((p) => p.slug === slug);
               if (!pick) return null;
               return (
@@ -426,7 +426,7 @@ export default function Home() {
                   key={slug}
                   pick={pick}
                   tone="gold"
-                  featured={i === 1}
+                  featured={false}
                 />
               );
             })}

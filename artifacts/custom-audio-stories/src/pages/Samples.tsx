@@ -259,7 +259,7 @@ export default function Samples() {
             Editor's Picks · 18+
           </span>
           <Link
-            href="/create"
+            href="/after-dark"
             className="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors tracking-widest uppercase"
           >
             Create →
@@ -298,7 +298,7 @@ export default function Samples() {
           onPick={(v) => setVoiceFilter((curr) => (curr === v ? null : v))}
         />
 
-        {visiblePicks.slice(5).map((pick) => (
+        {visiblePicks.slice(2).map((pick) => (
           <StoryCard
             key={pick.slug}
             pick={pick}
@@ -771,7 +771,7 @@ function FinalCTA() {
             Editor's picks fade by design. The story you create — around your
             cast, your scene, your situation — can go as far as you want it to.
           </p>
-          <Link href="/create">
+          <Link href="/after-dark">
             <button
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm
                          bg-primary text-primary-foreground transition-all
@@ -904,7 +904,7 @@ function StickyPlayer({
                   Next →
                 </button>
               )}
-              <Link href="/create">
+              <Link href="/after-dark">
                 <button
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-bold bg-primary text-primary-foreground hover:brightness-110 transition-all uppercase tracking-[0.1em]"
                   data-testid="player-create-cta"

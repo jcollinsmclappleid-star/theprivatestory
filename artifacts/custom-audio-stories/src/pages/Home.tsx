@@ -49,11 +49,11 @@ function pickToStory(pick: EditorsPick): Story {
  *  (Clara · Kayla · James) so visitors hear the breadth in 30 seconds.
  *  Maya is reserved for the After Dark teaser below to keep all four voices
  *  present on the home page without repeating any single narrator. */
-const LISTENING_ROOM_SLUGS = ["01-last-one", "08-proposition", "06-supervisor"] as const;
+const LISTENING_ROOM_SLUGS = ["09-neighbour", "08-proposition", "06-supervisor"] as const;
 
-/** The single pick that fronts the After Dark teaser — Maya's power-play
- *  bodyguard piece sits in the deeper register the section is selling. */
-const AFTER_DARK_SLUG = "07-bodyguard";
+/** The single pick that fronts the After Dark teaser — the MFM Adjoining
+ *  Suites sits in the deeper register the section is selling. */
+const AFTER_DARK_SLUG = "02-adjoining-suites";
 
 // ---------------------------------------------------------------------------
 // Data hooks
@@ -494,7 +494,7 @@ export default function Home() {
               href="/samples"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-7 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
             >
-              Hear all 10 Editor's Picks
+              Hear all 4 Editor's Picks
               <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
@@ -554,7 +554,7 @@ export default function Home() {
                   <span className="text-[#9baeff]">at the end of the hall.</span>
                 </h2>
                 <p className="text-white/75 text-base leading-relaxed mb-3 max-w-md">
-                  Past The Listening Room is After Dark — the same writers, the same five voices, the same
+                  Past The Listening Room is After Dark — the same writers, the same voices, the same
                   intimate craft. The intensity dial just goes further.
                 </p>
                 <p className="text-white/55 text-sm leading-relaxed mb-8 max-w-md">

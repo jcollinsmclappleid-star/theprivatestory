@@ -3,11 +3,11 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-/* ── Brand scrollbar (deep crimson) ─────────────────────────────────────────
+/* ── Brand scrollbar (deep violet) ──────────────────────────────────────────
    Apply .scrollbar-brand to any overflow container that needs a branded bar.  */
 .scrollbar-brand {
   scrollbar-width: thin;
-  scrollbar-color: #8b0000 transparent;
+  scrollbar-color: #6D28D9 transparent;
 }
 .scrollbar-brand::-webkit-scrollbar {
   height: 4px;
@@ -17,11 +17,11 @@
   background: transparent;
 }
 .scrollbar-brand::-webkit-scrollbar-thumb {
-  background: #8b0000;
+  background: #6D28D9;
   border-radius: 2px;
 }
 .scrollbar-brand::-webkit-scrollbar-thumb:hover {
-  background: #c0392b;
+  background: #7C3AED;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -67,38 +67,38 @@
 }
 
 :root {
-  /* Warm cinematic dark — candlelit study, not cold tech dark mode */
-  --background: 28 10% 5%;
-  --foreground: 38 25% 90%;
-  --card: 28 10% 7%;
-  --card-foreground: 38 25% 90%;
-  --popover: 28 10% 7%;
-  --popover-foreground: 38 25% 90%;
+  /* Deep plum dark — intimate boudoir, sensual and private */
+  --background: 270 12% 5%;
+  --foreground: 270 20% 92%;
+  --card: 270 12% 7%;
+  --card-foreground: 270 20% 92%;
+  --popover: 270 12% 7%;
+  --popover-foreground: 270 20% 92%;
 
-  /* Primary: Antique gold / warm cream — pulled directly from the logo */
-  --primary: 37 42% 68%;
-  --primary-foreground: 28 10% 7%;
+  /* Primary: Warm amethyst violet — sensual, luxurious, inviting */
+  --primary: 272 50% 65%;
+  --primary-foreground: 270 12% 7%;
 
-  /* Secondary: Deep warm brown */
-  --secondary: 30 20% 14%;
-  --secondary-foreground: 38 25% 90%;
+  /* Secondary: Deep plum surface */
+  --secondary: 270 18% 14%;
+  --secondary-foreground: 270 20% 92%;
 
-  --muted: 28 10% 12%;
-  --muted-foreground: 35 15% 80%;
+  --muted: 270 12% 12%;
+  --muted-foreground: 270 15% 75%;
 
-  --accent: 30 20% 14%;
-  --accent-foreground: 38 25% 90%;
+  --accent: 270 18% 14%;
+  --accent-foreground: 270 20% 92%;
 
   --destructive: 0 72% 54%;
-  --destructive-foreground: 38 25% 90%;
+  --destructive-foreground: 270 20% 92%;
 
-  --border: 30 12% 17%;
-  --input: 30 12% 17%;
-  --ring: 37 42% 68%;
+  --border: 270 12% 18%;
+  --input: 270 12% 18%;
+  --ring: 272 50% 65%;
 
   --radius: 0.75rem;
 
-  /* Custom glow shadows — warm amber glow matching logo gold */
+  /* Custom glow shadows — warm violet glow */
   --shadow-glow: 0 0 24px -6px hsl(var(--primary) / 0.35);
   --shadow-glow-lg: 0 0 48px -12px hsl(var(--primary) / 0.45);
 }

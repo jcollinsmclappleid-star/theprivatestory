@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BK7KDvFf.js";import{S as r,g as t}from"./SEOPage-CatjnZjh.js";import"./index-DKZjFvZj.js";import"./data-editors-picks-CJizIKSx.js";const i=t("love-stories-audio");function g(){return o.jsx(r,{config:i,slug:"love-stories-audio",doorFilter:["dark"]})}export{g as default};

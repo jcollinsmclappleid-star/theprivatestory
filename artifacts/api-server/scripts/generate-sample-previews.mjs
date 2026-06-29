@@ -43,6 +43,7 @@ const SAMPLES = [
       { voice: "james", text: "I've wanted to knock for weeks." },
       { voice: "maya",  text: "Then why didn't you?" },
       { voice: "james", text: "Because I wasn't sure I'd stop at wine." },
+      { voice: "maya",  text: "Don't stop." },
     ],
   },
   {
@@ -60,7 +61,7 @@ const SAMPLES = [
       { voice: "maya",  text: "You. Then him. And then — however you want to arrange it after that." },
       { voice: "james", text: "Look at me when you say that again." },
       { voice: "maya",  text: "However. You. Want." },
-      { voice: "theo",  text: "Neither man moved. Not yet. They were very good at waiting." },
+      { voice: "james", text: "Then get on the bed." },
     ],
   },
   {
@@ -77,8 +78,7 @@ const SAMPLES = [
       { voice: "james", text: "I'd take my time with you. Something tells me no one has." },
       { voice: "maya",  text: "And if I said yes?" },
       { voice: "james", text: "Then we finish our drinks. We leave. And I show you what it feels like when a man knows exactly what he wants — and isn't in any hurry to stop wanting it." },
-      { voice: "elena", text: "She set down her glass. Very deliberately. And looked at him." },
-      { voice: "maya",  text: "Finish your drink." },
+      { voice: "maya",  text: "I'm not going home alone tonight." },
     ],
   },
   {
@@ -97,7 +97,7 @@ const SAMPLES = [
       { voice: "maya",  text: "Yes. Here. I have wanted it every single Friday." },
       { voice: "kayla", text: "And I have spent every single Friday not doing it." },
       { voice: "maya",  text: "Then stop being good." },
-      { voice: "elena", text: "She stood. Crossed the room. Her supervisor finally — finally — moved." },
+      { voice: "kayla", text: "Lock the door." },
     ],
   },
 ];

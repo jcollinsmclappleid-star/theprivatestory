@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-BK7KDvFf.js";import{S as r,g as e}from"./SEOPage-CpqRA-U6.js";import"./index-B25tau2b.js";import"./data-editors-picks-CJizIKSx.js";const t=e("queer-audio-erotica");function g(){return o.jsx(r,{config:t,slug:"queer-audio-erotica"})}export{g as default};

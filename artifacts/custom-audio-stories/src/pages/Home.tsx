@@ -270,7 +270,7 @@ function SamplePlayCard({ pick, tone, featured = false }: SamplePlayCardProps) {
           </span>
         </span>
         <span className="flex-shrink-0 text-[10px] text-white/35 tabular-nums">
-          ~{Math.round(pick.runtimeSec / 60)} min
+          ~{Math.max(1, Math.round(pick.runtimeSec / 60))} min
         </span>
       </div>
     </button>
@@ -410,7 +410,7 @@ export default function Home() {
               <span className="text-primary">Three voices. Three stops on a held breath.</span>
             </h2>
             <p className="text-muted-foreground text-base leading-relaxed">
-              Short, narrated openings from our Editor's Picks. Each one stops where you'd want it to keep going.
+              Short, narrated sample openings from our Editor's Picks. Each one stops where you'd want it to keep going.
               <span className="block mt-1 text-sm text-white/50">Yours, when you create one, can go further.</span>
             </p>
           </div>

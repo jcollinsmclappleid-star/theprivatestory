@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BK7KDvFf.js";import{S as r,g as s}from"./SEOPage-C7It8BU8.js";import"./index-Bx7infSU.js";import"./data-editors-picks-CJizIKSx.js";const t=s("slow-burn-audio-stories");function n(){return o.jsx(r,{config:t,slug:"slow-burn-audio-stories",doorFilter:["dark"]})}export{n as default};

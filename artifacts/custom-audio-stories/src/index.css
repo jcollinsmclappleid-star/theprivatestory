@@ -67,33 +67,33 @@
 }
 
 :root {
-  /* Deep plum dark — intimate boudoir, sensual and private */
-  --background: 270 12% 5%;
-  --foreground: 270 20% 92%;
-  --card: 270 12% 7%;
-  --card-foreground: 270 20% 92%;
-  --popover: 270 12% 7%;
-  --popover-foreground: 270 20% 92%;
+  /* Deep plum — velvet dark, not black; images breathe against it */
+  --background: 270 22% 11%;
+  --foreground: 270 18% 93%;
+  --card: 270 20% 14%;
+  --card-foreground: 270 18% 93%;
+  --popover: 270 20% 14%;
+  --popover-foreground: 270 18% 93%;
 
   /* Primary: Warm amethyst violet — sensual, luxurious, inviting */
   --primary: 272 50% 65%;
-  --primary-foreground: 270 12% 7%;
+  --primary-foreground: 270 22% 8%;
 
-  /* Secondary: Deep plum surface */
-  --secondary: 270 18% 14%;
-  --secondary-foreground: 270 20% 92%;
+  /* Secondary: Raised plum surface */
+  --secondary: 270 18% 20%;
+  --secondary-foreground: 270 18% 93%;
 
-  --muted: 270 12% 12%;
-  --muted-foreground: 270 15% 75%;
+  --muted: 270 16% 17%;
+  --muted-foreground: 270 14% 72%;
 
-  --accent: 270 18% 14%;
-  --accent-foreground: 270 20% 92%;
+  --accent: 270 18% 20%;
+  --accent-foreground: 270 18% 93%;
 
   --destructive: 0 72% 54%;
-  --destructive-foreground: 270 20% 92%;
+  --destructive-foreground: 270 18% 93%;
 
-  --border: 270 12% 18%;
-  --input: 270 12% 18%;
+  --border: 270 15% 24%;
+  --input: 270 15% 24%;
   --ring: 272 50% 65%;
 
   --radius: 0.75rem;

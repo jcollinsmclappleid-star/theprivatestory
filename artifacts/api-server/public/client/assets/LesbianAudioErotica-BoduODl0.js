@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-BK7KDvFf.js";import{S as i,g as a}from"./SEOPage-C7It8BU8.js";import"./index-Bx7infSU.js";import"./data-editors-picks-CJizIKSx.js";const t=a("lesbian-audio-erotica");function u(){return o.jsx(i,{config:t,slug:"lesbian-audio-erotica"})}export{u as default};

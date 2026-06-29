@@ -41,7 +41,7 @@ const SAMPLES = [
       { voice: "james", text: "I have wine. And I've been thinking about you every night." },
       { voice: "maya",  text: "That's either very thoughtful — or very dangerous." },
       { voice: "james", text: "Which would you prefer it to be?" },
-      { voice: "maya",  text: "...come in." },
+      { voice: "maya",  text: "Come in." },
       { voice: "james", text: "I've been standing in that hallway wanting you. Every single night." },
       { voice: "maya",  text: "Then stop standing there." },
       { voice: "james", text: "Tell me what you want me to do to you." },

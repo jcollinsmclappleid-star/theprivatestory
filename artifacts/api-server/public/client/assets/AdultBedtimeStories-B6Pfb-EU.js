@@ -1,1 +1,0 @@
-import{j as t}from"./vendor-BK7KDvFf.js";import{S as o,g as e}from"./SEOPage-D0ISGLMr.js";import"./index-DZSDKiXG.js";import"./data-editors-picks-BeL-1HZ1.js";const r=e("adult-bedtime-stories");function u(){return t.jsx(o,{config:r,slug:"adult-bedtime-stories",doorFilter:["quiet"],showSecondaryDoors:!0})}export{u as default};

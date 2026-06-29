@@ -57,9 +57,9 @@ function fmtTime(s: number): string {
 export default function Samples() {
   useSEO({
     title:
-      "Editor's Picks — Ten short audio stories — The Private Story",
+      "Editor's Picks — Four short audio stories — The Private Story",
     description:
-      "Ten openings. Ten endings on a held breath. Short, intimate, narrated stories from our writers — each one stops where you'd want it to keep going. Yours, when you create one, can go further. 18+.",
+      "Four openings. Four endings on a held breath. Short, intimate, narrated stories from our writers — each one stops where you'd want it to keep going. Yours, when you create one, can go further. 18+.",
   });
 
   // Synchronous lazy init — read localStorage on first render so previously
@@ -277,7 +277,7 @@ export default function Samples() {
         onKeyDown={onCardsKeyDown}
         aria-label="Editor's Picks"
       >
-        {visiblePicks.slice(0, 5).map((pick) => (
+        {visiblePicks.slice(0, 2).map((pick) => (
           <StoryCard
             key={pick.slug}
             pick={pick}
@@ -321,9 +321,9 @@ export default function Samples() {
       <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-24">
         <TrustBar />
         <p className="mt-8 text-[12px] text-white/45 leading-relaxed text-center max-w-xl mx-auto">
-          About these editor's picks: ten short narrated openings, written by
-          our editorial team and narrated by five voices. Each one is built as
-          a complete short — it lands, deliberately, before any explicit
+          About these editor's picks: four short multi-voice samples, written
+          by our editorial team. Each one is built to pull you in, then stops
+          at the worst possible moment — deliberately, before any explicit
           content.
         </p>
       </section>
@@ -409,21 +409,21 @@ function Hero({ onStart }: { onStart: () => void }) {
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/35 bg-primary/[0.07]">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             <span className="text-[10px] font-bold text-white/85 uppercase tracking-[0.22em]">
-              Editor's Picks · Ten Stories · 18+
+              Editor's Picks · Four Stories · 18+
             </span>
           </div>
 
           <h1 className="font-display text-[2rem] sm:text-5xl md:text-[3.4rem] font-bold leading-[1.05] text-foreground">
-            Ten openings.{" "}
+            Four openings.{" "}
             <em className="text-primary not-italic font-bold">
-              Ten endings on a held breath.
+              Four endings on a held breath.
             </em>
           </h1>
 
           <p className="text-[15px] sm:text-base text-white/65 leading-relaxed max-w-xl">
-            Narrated by five voices — each story is written to pull you in,
-            then stops just before explicit. On purpose. These are here to
-            show you the writing and the narration. When you create your own,
+            Multi-voice, real dialogue — each story is written to pull you in,
+            then stops at the worst possible moment. On purpose. These are here
+            to show you the writing and narration. When you create your own,
             you choose the pairing, the mood, and exactly how far it goes.
           </p>
 
@@ -443,7 +443,7 @@ function Hero({ onStart }: { onStart: () => void }) {
               href="#stories"
               className="text-[11px] text-primary/70 hover:text-primary transition-colors tracking-[0.18em] uppercase font-semibold"
             >
-              Browse all ten ↓
+              Browse all four ↓
             </a>
           </div>
 
@@ -693,12 +693,12 @@ function VoiceStrip({
       className="my-12 sm:my-16 py-10 sm:py-12 px-5 sm:px-8 rounded-2xl border border-white/[0.06] bg-white/[0.015]"
     >
       <p className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.22em] text-center mb-2">
-        Four Voices
+        Two Voices
       </p>
       <h3 className="font-display italic text-2xl sm:text-[1.7rem] font-bold text-center text-foreground mb-7 leading-tight">
         Each chosen for the room they live in.
       </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {VOICES_META.map((v) => {
           const active = activeVoice === v.key;
           return (

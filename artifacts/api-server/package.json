@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "export NODE_ENV=development && export SKIP_VITE_BUILD=1 && (pnpm --filter @workspace/db run push-force 2>/dev/null || true) && pnpm run build && pnpm run start",
+    "serve": "if [ ! -f dist/index.mjs ]; then echo 'No build found — running full build...' && (pnpm --filter @workspace/db run push-force 2>/dev/null || true) && pnpm run build; else echo 'Build exists — skipping rebuild, starting immediately'; fi && node --enable-source-maps ./dist/index.mjs",
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",

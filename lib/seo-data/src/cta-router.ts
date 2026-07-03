@@ -5,25 +5,25 @@
  * Googlebot renderer so both produce the same CTA href for a given slug
  * (no hydration mismatch, no SEO/UX divergence).
  *
- * Routing rules:
- *   - bedtime / sleep / relax / drift slugs   → /drift   (The Quiet Room)
- *   - erotic / dark / intimate / forbidden    → /after-dark
- *   - everything else (romantic, slow-burn, …) → /create  (Romance/Story Room)
- *
- * Substring-tested (no strict word boundaries) so `relaxing-audio-stories`,
- * `erotic-audio-stories-for-women`, etc. all classify correctly.
+ * All CTAs route to /after-dark (Personalised Erotica funnel).
+ * Labels stay trope-aware where the slug signals intent.
  */
 export interface MidCtaTarget {
   label: string;
   href: string;
 }
 
+const AFTER_DARK = "/after-dark";
+
 export function pickMidCtaTarget(slug: string): MidCtaTarget {
-  if (/(bedtime|sleep|relax|drift)/.test(slug)) {
-    return { label: "Drift into a bedtime story", href: "/drift" };
+  if (/(billionaire|mafia|dark-romance|forbidden|enemies-to-lovers|smut|steamy|erotic|after-dark|intimate|late-night|fantasy)/.test(slug)) {
+    return { label: "Create your erotica", href: AFTER_DARK };
   }
-  if (/(erotic|after-dark|dark-romance|intimate|forbidden|late-night|fantasy)/.test(slug)) {
-    return { label: "Enter After Dark", href: "/after-dark" };
+  if (/(slow-burn|romance|romantic|love-story|emotional)/.test(slug)) {
+    return { label: "Create your romantic erotica", href: AFTER_DARK };
   }
-  return { label: "Create your story", href: "/create" };
+  if (/(bedtime|sleep|relax|drift|quiet)/.test(slug)) {
+    return { label: "Create your erotica", href: AFTER_DARK };
+  }
+  return { label: "Create your erotica", href: AFTER_DARK };
 }

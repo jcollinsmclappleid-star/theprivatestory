@@ -1,10 +1,31 @@
 const BASE = import.meta.env.BASE_URL;
 
-const SCREEN_STYLE = {
+/**
+ * Logo assets ship on a black plate. Screen blend on a site-purple backing
+ * replaces that black with the same plum as the rest of the site.
+ */
+const LOGO_IMG_STYLE = {
   display: "block",
   mixBlendMode: "screen" as const,
-  filter: "brightness(1.15)",
+  filter: "brightness(1.06) saturate(0.9)",
 } as const;
+
+function LogoFrame({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center bg-background ${className}`}
+      style={{ lineHeight: 0, flexShrink: 0 }}
+    >
+      {children}
+    </span>
+  );
+}
 
 interface LogoProps {
   height?: number;
@@ -14,43 +35,26 @@ interface LogoProps {
 /** Horizontal logo — icon + "THE PRIVATE STORY" text side by side. Best for nav bars. */
 export function Logo({ height = 44, className = "" }: LogoProps) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        lineHeight: 0,
-        flexShrink: 0,
-      }}
-      className={className}
-    >
+    <LogoFrame className={className}>
       <img
         src={`${BASE}images/logo-nav.webp`}
         alt="The Private Story"
-        style={{ height: `${height}px`, width: "auto", ...SCREEN_STYLE }}
+        style={{ height: `${height}px`, width: "auto", ...LOGO_IMG_STYLE }}
       />
-    </span>
+    </LogoFrame>
   );
 }
 
 /** Stacked logo — icon above "THE PRIVATE STORY" text. Best for centered/hero placements. */
 export function LogoFull({ height = 120, className = "" }: { height?: number; className?: string }) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        lineHeight: 0,
-        flexShrink: 0,
-      }}
-      className={className}
-    >
+    <LogoFrame className={className}>
       <img
         src={`${BASE}images/logo-full.webp`}
         alt="The Private Story"
-        style={{ height: `${height}px`, width: "auto", ...SCREEN_STYLE }}
+        style={{ height: `${height}px`, width: "auto", ...LOGO_IMG_STYLE }}
       />
-    </span>
+    </LogoFrame>
   );
 }
 
@@ -58,18 +62,13 @@ export function LogoFull({ height = 120, className = "" }: { height?: number; cl
 export function LogoMark({ size = 40, className = "" }: { size?: number; className?: string }) {
   return (
     <span
+      className={`inline-flex items-center justify-center bg-background overflow-hidden rounded-full ${className}`}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
         lineHeight: 0,
         flexShrink: 0,
         width: size,
         height: size,
-        borderRadius: "50%",
-        overflow: "hidden",
       }}
-      className={className}
     >
       <img
         src={`${BASE}images/logo-icon.png`}
@@ -79,6 +78,7 @@ export function LogoMark({ size = 40, className = "" }: { size?: number; classNa
           height: "100%",
           objectFit: "cover",
           display: "block",
+          ...LOGO_IMG_STYLE,
         }}
       />
     </span>

@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import { useSEO } from "@/hooks/useSEO";
 import { pickMidCtaTarget as sharedPickMidCtaTarget, type SEOPageConfig, type ParagraphContent } from "@workspace/seo-data";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
-import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
+import { PersonalisedEroticaDoor, MiniDoorCTA } from "@/components/ThreeDoors";
 
 export type { SEOPageConfig };
 
@@ -49,10 +49,8 @@ const BODY_IMAGE_H = 768;
  * `doorFilter` signal so legacy wrappers without a slug prop still work.
  */
 type DoorIdLocal = "story" | "dark" | "quiet";
-function pickMidCtaFromDoorFilter(doorFilter?: DoorIdLocal[]): { label: string; href: string } {
-  if (doorFilter?.includes("quiet")) return { label: "Drift into a bedtime story", href: "/drift" };
-  if (doorFilter?.includes("dark")) return { label: "Enter After Dark", href: "/after-dark" };
-  return { label: "Create your story", href: "/create" };
+function pickMidCtaFromDoorFilter(_doorFilter?: DoorIdLocal[]): { label: string; href: string } {
+  return { label: "Create your erotica", href: "/after-dark" };
 }
 
 // Cheap deterministic hash so each page gets a stable rotation seed.
@@ -211,10 +209,10 @@ function SEOStickyCTA({ label, href }: { label?: string; href?: string }) {
       }}
     >
       <Link
-        href={href ?? "/create"}
+        href={href ?? "/after-dark"}
         className="pointer-events-auto flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-sm font-bold py-3.5 rounded-2xl shadow-[0_0_28px_-6px_rgba(201,162,39,0.5)] hover:bg-primary/90 active:scale-[0.99] transition-all"
       >
-        {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
+        {label ?? "Create your erotica"} <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
   );
@@ -319,10 +317,10 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
       <Link
-        href={href ?? "/create"}
+        href={href ?? "/after-dark"}
         className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
       >
-        {label ?? "Create your story"} <ArrowRight className="w-4 h-4" />
+        {label ?? "Create your erotica"} <ArrowRight className="w-4 h-4" />
       </Link>
       <Link
         href="/samples"
@@ -334,7 +332,7 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
         href="/pricing"
         className="text-xs text-white/55 hover:text-white/85 transition-colors text-center sm:text-left sm:ml-1"
       >
-        From $19.08/mo · 5 stories included · cancel anytime
+        From £12 · one story · no subscription
       </Link>
     </div>
   );
@@ -479,7 +477,7 @@ export default function SEOPage({
       {!showSecondaryDoors && (
         <div className="flex flex-col items-center gap-3 py-6 px-4 border-b border-border/20">
           <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
-            Choose your door
+            Personalised Erotica
           </p>
           <MiniDoorCTA />
         </div>
@@ -859,15 +857,13 @@ export default function SEOPage({
       <div className="border-t border-border/20 py-12 px-4">
         <div className="max-w-2xl mx-auto mb-8 text-center">
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-2">
-            The Three Private Doors
+            Personalised Erotica
           </p>
           <p className="text-sm text-muted-foreground/70">
-            Romance, After Dark, or Drift — every story is generated for you, privately, around the door you choose.
+            Erotic audio written and narrated around your choices — private to you alone.
           </p>
         </div>
-        {/* Always render all three big doors at the end — every SEO page
-            offers the full choice as a final exit, regardless of doorFilter. */}
-        <ThreeDoors />
+        <PersonalisedEroticaDoor />
       </div>
 
       <div className="max-w-2xl mx-auto px-4 pb-16">

@@ -780,12 +780,12 @@ function FinalCTA() {
               data-testid="final-cta-create"
             >
               <Sparkles className="w-4 h-4" />
-              Start your private story
+              Start your erotica
             </button>
           </Link>
           <p className="text-[11px] text-white/35 italic mt-7 max-w-md mx-auto leading-relaxed">
             All explicit content is private to you. Behind sign-up, age
-            verification and a paid subscription.
+            verification and a story credit pack.
           </p>
           <Link
             href="/how-it-works"

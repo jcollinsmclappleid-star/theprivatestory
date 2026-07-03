@@ -218,7 +218,7 @@ interface ChemistryOption {
   gradient: string; accent: string; image?: string;
 }
 
-function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
+export function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
   const { partner: P, protagonist: ME } = derivePronouns(pairingId);
   return [
     {
@@ -344,7 +344,7 @@ function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
   ];
 }
 
-const HERITAGES = [
+export const HERITAGES = [
   { id: "Latina",         label: "Latina",         sub: "Warm, magnetic, fire beneath calm",         gradient: "from-[#1a0800] via-[#2e1200] to-[#120600]", accent: "#e07840", image: "images/heritage/latina.webp" },
   { id: "Black",          label: "Black",           sub: "Radiant, commanding presence",              gradient: "from-[#0a0510] via-[#160a20] to-[#080310]", accent: "#c084fc", image: "images/heritage/black.webp" },
   { id: "South Asian",    label: "South Asian",     sub: "Layered beauty, quiet intensity",           gradient: "from-[#0e0a00] via-[#1e1400] to-[#0a0800]", accent: "#fbbf24", image: "images/heritage/south_asian.webp" },
@@ -356,7 +356,7 @@ const HERITAGES = [
 ];
 
 /* ── Archetypes — pronoun-aware, 21 options ───────────────────────── */
-function buildArchetypes(pairingId: string | undefined) {
+export function buildArchetypes(pairingId: string | undefined) {
   const { partner: P, protagonist: ME } = derivePronouns(pairingId);
   const s = P.subject; const o = P.object; const p = P.possessive;
   const me = ME.subject;
@@ -386,7 +386,7 @@ function buildArchetypes(pairingId: string | undefined) {
 }
 
 /* ── Settings — tile data ─────────────────────────────────────────── */
-const CONTEMPORARY_SETTINGS = [
+export const CONTEMPORARY_SETTINGS = [
   { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce", image: "images/settings/late_night_city.webp" },
   { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: "images/settings/luxury_hotel.webp" },
   { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706", image: "images/settings/european_villa.webp" },
@@ -405,7 +405,7 @@ const CONTEMPORARY_SETTINGS = [
   { id: "Casino High-Stakes Room",  label: "Casino — High Stakes",     sub: "Chips down. Everyone's watching. Except them.",    gradient: "from-[#0a0800] via-[#181200] to-[#050400]", accent: "#fbbf24" },
 ];
 
-const HISTORICAL_SETTINGS = [
+export const HISTORICAL_SETTINGS = [
   { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d", image: "images/settings/regency_england.webp" },
   { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: "images/settings/victorian_london.webp" },
   { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b", image: "images/settings/belle_epoque.webp" },
@@ -420,7 +420,7 @@ const HISTORICAL_SETTINGS = [
   { id: "Georgian Scotland",         label: "Georgian Scotland",      sub: "Highland estate, candlelight, a storm coming",       gradient: "from-[#020a04] via-[#041208] to-[#010502]", accent: "#6ee7b7", image: "images/settings/georgian_scotland.webp" },
 ];
 
-const AFTER_DARK_SETTINGS = [
+export const AFTER_DARK_SETTINGS = [
   { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185", image: "images/settings/private_club.webp" },
   { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: "images/settings/vip_suite.webp" },
   { id: "The Back Room",         label: "The Back Room",            sub: "Velvet curtains. Low light. No questions.",           gradient: "from-[#0c0004] via-[#180008] to-[#060002]", accent: "#e11d48" },
@@ -467,7 +467,7 @@ const MOUNTAIN_COUNTRIES = new Set([
 ]);
 
 /* ── Country / City data ──────────────────────────────────────────── */
-const COUNTRY_FLAGS: Record<string, string> = {
+export const COUNTRY_FLAGS: Record<string, string> = {
   "France": "🇫🇷", "United Kingdom": "🇬🇧", "Italy": "🇮🇹", "Spain": "🇪🇸",
   "Monaco": "🇲🇨", "Greece": "🇬🇷", "Turkey": "🇹🇷", "Portugal": "🇵🇹",
   "Switzerland": "🇨🇭", "Austria": "🇦🇹", "Germany": "🇩🇪", "Netherlands": "🇳🇱",
@@ -493,7 +493,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
   "French Polynesia": "🇵🇫", "Fiji": "🇫🇯",
 };
 
-const COUNTRY_CITIES: Record<string, string[]> = {
+export const COUNTRY_CITIES: Record<string, string[]> = {
   // Europe
   "France":             ["Paris", "Nice", "Cannes", "Bordeaux", "Biarritz", "Antibes", "Saint-Tropez", "Lyon", "Marseille"],
   "United Kingdom":     ["London", "Edinburgh", "Bath", "Oxford", "Brighton", "Glasgow", "Manchester", "Bristol", "Liverpool"],
@@ -580,7 +580,7 @@ const COUNTRY_CITIES: Record<string, string[]> = {
   "Fiji":               ["Nadi", "Suva", "Mamanuca Islands", "Yasawa Islands"],
 };
 
-const COUNTRY_CULTURAL_PREVIEW: Record<string, string> = {
+export const COUNTRY_CULTURAL_PREVIEW: Record<string, string> = {
   // Europe
   "France":           "Wine-dark afternoons, café tables at dusk, and a city that has always known desire.",
   "United Kingdom":   "Rain on Georgian stone, pub warmth after midnight, and a restraint that breaks slowly.",
@@ -672,11 +672,11 @@ const ATMOSPHERES = [
   "Rain", "Sun-Soaked", "Foggy", "Firelit", "Electric", "Languid",
 ];
 
-const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: string; color: string }[] = [
-  { id: "Subtle",   label: "Subtle",   desc: "Something building beneath the surface",  color: "#60a5fa" },
-  { id: "Warm",     label: "Warm",     desc: "Presence, attention, and what comes next", color: "#c9a227" },
-  { id: "Elevated", label: "Elevated", desc: "Nothing left unspoken",                   color: "#f97316" },
-  { id: "Intense",  label: "Intense",  desc: "Full immersion — every moment felt",      color: "#ef4444" },
+const INTENSITIES: { id: CastingRoomResult["intensity"]; label: string; desc: string; color: string; image: string }[] = [
+  { id: "Subtle",   label: "Subtle",   desc: "Something building beneath the surface",  color: "#60a5fa", image: "images/rooms/slow_burn.webp" },
+  { id: "Warm",     label: "Warm",     desc: "Presence, attention, and what comes next", color: "#c9a227", image: "images/chemistry/romantic.webp" },
+  { id: "Elevated", label: "Elevated", desc: "Nothing left unspoken",                   color: "#f97316", image: "images/rooms/dark_territory.webp" },
+  { id: "Intense",  label: "Intense",  desc: "Full immersion — every moment felt",      color: "#ef4444", image: "images/rooms/power_exchange.webp" },
 ];
 
 const MOODS = [
@@ -790,7 +790,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const [data, setData] = useState<Partial<CastingRoomResult>>(() => {
     const base: Partial<CastingRoomResult> = {
       perspective: "her",
-      intensity: afterDark ? "Elevated" : bedtime ? "Subtle" : "Warm",
+      intensity: afterDark ? "Warm" : bedtime ? "Subtle" : "Warm",
       mood: "Emotional",
     };
     if (savedSession) {
@@ -966,7 +966,11 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       mood: data.mood ?? "Emotional",
       whoIsHe,
       dynamic,
-      storyMode: afterDark ? "unrestrained" : bedtime ? "nocturne" : (data.intensity === "Subtle" || data.intensity === "Warm" ? "passionate" : "unrestrained"),
+      storyMode: (data.intensity === "Subtle" || data.intensity === "Warm")
+        ? "passionate"
+        : afterDark || !bedtime
+          ? "unrestrained"
+          : "nocturne",
       customTags,
       // Structured appearance fields — sent individually to the API, reconstructed server-side
       appearBuild: appearBuild || undefined,
@@ -1113,7 +1117,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <div ref={topRef} className="max-w-2xl mx-auto px-4 py-8 pb-28 w-full">
+    <div ref={topRef} className={`max-w-2xl mx-auto px-4 w-full ${afterDark ? "py-8 pb-36" : "py-8 pb-28"}`}>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -1755,10 +1759,31 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
             <div className="glass-panel rounded-2xl p-5 border border-white/8 mb-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Intensity</p>
-              <div className="grid grid-cols-2 gap-2.5">
-                {INTENSITIES.filter(i => afterDark ? ["Elevated", "Intense"].includes(i.id) : true).map(i => {
+              <div className={`grid gap-2.5 ${afterDark ? "grid-cols-2" : "grid-cols-2"}`}>
+                {INTENSITIES.filter(i => !(bedtime && (i.id === "Elevated" || i.id === "Intense"))).map(i => {
                   const isGateway = !afterDark && !bedtime && i.id === "Intense";
                   const isDriftLocked = bedtime && (i.id === "Elevated" || i.id === "Intense");
+                  const isSelected = data.intensity === i.id;
+
+                  if (afterDark && !isDriftLocked) {
+                    return (
+                      <ArtTile
+                        key={i.id}
+                        gradient="from-black/80 via-black/50 to-transparent"
+                        accent={i.color}
+                        image={i.image}
+                        selected={isSelected}
+                        onClick={() => {
+                          setShowAfterDarkTeaser(false);
+                          update("intensity", i.id);
+                        }}
+                      >
+                        <p className="font-semibold text-white text-sm">{i.label}</p>
+                        <p className="text-white/75 text-xs mt-0.5 leading-snug">{i.desc}</p>
+                      </ArtTile>
+                    );
+                  }
+
                   return (
                     <button
                       key={i.id}
@@ -1780,7 +1805,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           ? showAfterDarkTeaser
                             ? "border-[#7b8fff]/50 bg-[#7b8fff]/10 opacity-90"
                             : "border-[#7b8fff]/35 bg-[#7b8fff]/8 opacity-80 hover:opacity-100 hover:border-[#7b8fff]/55"
-                          : data.intensity === i.id
+                          : isSelected
                             ? "border-primary bg-primary/10 shadow-glow"
                             : "border-border/30 bg-card/30 hover:border-primary/30 hover:bg-primary/5"
                       }`}
@@ -1792,7 +1817,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ background: isDriftLocked ? "#444" : i.color }} />
                         )}
                         <p className={`font-semibold text-sm ${
-                          isDriftLocked ? "text-muted-foreground/40" : isGateway ? "text-[#9baeff]" : data.intensity === i.id ? "text-primary" : "text-foreground"
+                          isDriftLocked ? "text-muted-foreground/40" : isGateway ? "text-[#9baeff]" : isSelected ? "text-primary" : "text-foreground"
                         }`}>{i.label}</p>
                         {isGateway && (
                           <span className="ml-auto text-[9px] font-bold uppercase tracking-widest" style={{ color: "#7b8fff" }}>After Dark</span>
@@ -2528,6 +2553,36 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
       </AnimatePresence>
 
+      {afterDark && (
+        <div className="fixed bottom-[5.25rem] left-0 right-0 z-40 px-4 pointer-events-none">
+          <div className="max-w-2xl mx-auto flex gap-1.5 overflow-x-auto pb-1 pointer-events-auto">
+            {(
+              [
+                data.pairing ? { label: "Pairing", value: data.pairing, accent: "#e879a0" } : null,
+                data.chemistry ? { label: "Dynamic", value: data.chemistry, accent: "#c9a227" } : null,
+                data.archetype ? { label: "Archetype", value: data.archetype, accent: "#6b8cce" } : null,
+                data.intensity ? { label: "Intensity", value: data.intensity, accent: "#f97316" } : null,
+                data.mood ? { label: "Mood", value: data.mood, accent: "#a78bfa" } : null,
+                data.setting ? { label: "Setting", value: data.setting, accent: "#34d399" } : null,
+              ] as const
+            )
+              .filter((chip): chip is { label: string; value: string; accent: string } => chip != null)
+              .map((chip) => (
+                <span
+                  key={`${chip.label}-${chip.value}`}
+                  className="flex-shrink-0 inline-flex flex-col px-2.5 py-1.5 rounded-lg border backdrop-blur-md"
+                  style={{ borderColor: `${chip.accent}44`, background: "rgba(8,4,6,0.75)" }}
+                >
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-white/45">{chip.label}</span>
+                  <span className="text-[11px] font-semibold leading-tight" style={{ color: chip.accent }}>
+                    {chip.value}
+                  </span>
+                </span>
+              ))}
+          </div>
+        </div>
+      )}
+
       {/* Navigation — always above dropdown panels (z-[60] > z-50) */}
       <div className="mt-8 flex gap-3 relative z-[60]">
         {step > 0 && (
@@ -2559,7 +2614,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
             style={afterDark ? { background: "linear-gradient(135deg, #c0392b, #922b21)", boxShadow: "0 0 30px rgba(192,57,43,0.3)" } : {}}
           >
             <Sparkles className="w-5 h-5" />
-            Write My Story
+            {afterDark ? "Reveal my story" : "Write My Story"}
           </button>
         )}
       </div>

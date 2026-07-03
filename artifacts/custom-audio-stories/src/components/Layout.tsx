@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, Moon, MessageCircle, Info } from "lucide-react";
+import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, MessageCircle, Info } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { Logo, LogoFull } from "./Logo";
 import { AuthModal } from "./AuthModal";
@@ -112,7 +112,6 @@ function Navbar({ streakDays }: { streakDays: number }) {
 
   const desktopNavItems = [
     { label: "How It Works", href: "/how-it-works" },
-    { label: "The Three Private Doors", href: "/the-three-doors" },
     { label: "Pricing", href: "/pricing" },
     { label: "Listen", href: "/samples" },
     ...(isAuthenticated ? [{ label: "My Stories", href: "/library" }] : []),
@@ -121,7 +120,6 @@ function Navbar({ streakDays }: { streakDays: number }) {
   const navItems = [
     { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
     { label: "How It Works", href: "/how-it-works", icon: <Sparkles className="w-4 h-4" /> },
-    { label: "The Three Private Doors", href: "/the-three-doors", icon: <Sparkles className="w-4 h-4" /> },
     { label: "My Stories", href: "/library", icon: <BookOpen className="w-4 h-4" /> },
     ...(isAuthenticated
       ? [{ label: "My Account", href: "/me", icon: <User className="w-4 h-4" /> }]
@@ -134,16 +132,14 @@ function Navbar({ streakDays }: { streakDays: number }) {
     ...(isAdmin ? [{ label: "Admin", href: "/admin", icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
-  const isAfterDark = location === "/after-dark";
-  const isDrift = location === "/drift";
 
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
-              <Logo height={128} />
+              <Logo height={64} />
             </Link>
 
             <div className="hidden md:flex items-center gap-5">
@@ -156,20 +152,6 @@ function Navbar({ streakDays }: { streakDays: number }) {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/after-dark"
-                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isAfterDark ? "text-[#c0392b]" : "text-muted-foreground/70 hover:text-[#c0392b]"}`}
-              >
-                <Moon className="w-3.5 h-3.5" />
-                Enter After Dark
-              </Link>
-              <Link
-                href="/drift"
-                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isDrift ? "text-[#6366f1]" : "text-muted-foreground/70 hover:text-[#6366f1]"}`}
-              >
-                <Moon className="w-3.5 h-3.5 opacity-60" />
-                Drift
-              </Link>
             </div>
           </div>
 
@@ -182,11 +164,11 @@ function Navbar({ streakDays }: { streakDays: number }) {
             </Link>
 
             <Link
-              href="/the-three-doors"
+              href="/after-dark"
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-2 rounded-full font-medium text-sm hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4" />
-              Create my story
+              Create your erotica
             </Link>
 
             {!isLoading && (
@@ -270,36 +252,16 @@ function Navbar({ streakDays }: { streakDays: number }) {
             ))}
           </div>
 
-          {/* After Dark + Drift mobile links */}
-          <div className="px-2 pb-1 space-y-0.5">
-            <Link
-              href="/after-dark"
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                isAfterDark ? "bg-[#c0392b]/10 text-[#c0392b]" : "text-muted-foreground hover:text-[#c0392b] hover:bg-[#c0392b]/5"
-              }`}
-            >
-              <Moon className="w-4 h-4" />
-              The Private Story - 'After Dark'
-            </Link>
-            <Link
-              href="/drift"
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                isDrift ? "bg-[#6366f1]/10 text-[#6366f1]" : "text-muted-foreground hover:text-[#6366f1] hover:bg-[#6366f1]/5"
-              }`}
-            >
-              <Moon className="w-4 h-4 opacity-60" />
-              Drift - Bedtime Stories
-            </Link>
-          </div>
+          {/* After Dark + Drift mobile links removed — single Personalised Erotica funnel */}
 
           {/* Create CTA */}
           <div className="px-4 pb-3">
             <Link
-              href="/the-three-doors"
+              href="/after-dark"
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary/90 to-primary text-primary-foreground px-4 py-3 rounded-xl font-semibold text-sm"
             >
               <Sparkles className="w-4 h-4" />
-              Create my story
+              Create your erotica
             </Link>
           </div>
 
@@ -391,12 +353,9 @@ function Footer() {
           <FooterColumn heading="Navigate" links={[
             { label: "Home", href: "/" },
             { label: "How It Works", href: "/how-it-works" },
-            { label: "The Three Private Doors", href: "/the-three-doors" },
-            { label: "Create your story", href: "/create" },
+            { label: "Personalised Erotica", href: "/after-dark" },
             { label: "Pricing", href: "/pricing" },
             { label: "Listen to a sample", href: "/samples" },
-            { label: "After Dark", href: "/after-dark" },
-            { label: "Drift — Bedtime", href: "/drift" },
             { label: "My Stories", href: "/library" },
             { label: "About", href: "/about" },
             { label: "Contact", href: "/contact" },
@@ -493,7 +452,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-32 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-20 pb-24 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

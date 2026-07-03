@@ -12,8 +12,10 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import { usePricing } from "@/hooks/usePricing";
 import type { Story } from "@workspace/api-client-react";
-import { ThreeDoors, MiniDoorCTA } from "@/components/ThreeDoors";
-import { StoryAnatomyCard } from "@/components/StoryAnatomy";
+import { CreationStudio } from "@/components/CreationStudio";
+import { HeroLivingPortrait } from "@/components/HeroLivingPortrait";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { MiniDoorCTA } from "@/components/ThreeDoors";
 import { TrustBar } from "@/components/TrustBar";
 import { EDITORS_PICKS, type EditorsPick } from "@/data/editorsPicks";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -45,11 +47,11 @@ function pickToStory(pick: EditorsPick): Story {
   };
 }
 
-/** The three picks featured in the home "Listening Room" — one per voice
- *  (Clara · Kayla · James) so visitors hear the breadth in 30 seconds.
- *  Maya is reserved for the After Dark teaser below to keep all four voices
- *  present on the home page without repeating any single narrator. */
-const LISTENING_ROOM_SLUGS = ["09-neighbour", "08-proposition", "06-supervisor", "02-adjoining-suites"] as const;
+/** Featured above the fold — most provocative + broadest pairing proof. */
+const HERO_SAMPLE_SLUGS = ["09-neighbour", "02-adjoining-suites"] as const;
+
+/** Remaining picks in the listening room grid. */
+const LISTENING_ROOM_SLUGS = ["08-proposition", "06-supervisor"] as const;
 
 /** The single pick that fronts the After Dark teaser — the MFM Adjoining
  *  Suites sits in the deeper register the section is selling. */
@@ -93,68 +95,7 @@ function useQuickCreate(isAuthenticated: boolean) {
   return ready;
 }
 
-// ---------------------------------------------------------------------------
-// CastingPreview — single "Anatomy of Your Story" composition
-//   Left column carries the editorial frame and the conversion CTA; right
-//   column is the shared <StoryAnatomyCard /> exhibit (also used on every
-//   SEO landing page) — every dimension of personalisation, on one card,
-//   with "1 of N" markers signalling the breadth.
-// ---------------------------------------------------------------------------
-
-function CastingPreview() {
-  return (
-    <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
-        {/* ---------------- Left: editorial frame + CTA ---------------- */}
-        <div>
-          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            The Creation Room
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            The version of them<br className="hidden md:block" /> that's been in your head.
-          </h2>
-          <p className="text-muted-foreground mt-4 text-base max-w-xl leading-relaxed">
-            One story written end-to-end for you. Set the cast, the chemistry, the world, and how far it goes — before a single word is written.
-          </p>
-          <p className="font-display italic text-base text-muted-foreground/80 mt-4 max-w-xl leading-relaxed">
-            Six pairings. Eight chemistries. Nineteen archetypes. Two hundred situations. Seven endings. Four intensities. Six narrators.
-          </p>
-          <p className="text-sm text-primary/85 mt-3 max-w-xl leading-relaxed">
-            <span className="font-semibold text-primary">Over 1 million story configurations</span> — only one built for you.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Link
-              href="/the-three-doors"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-7 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
-            >
-              Create my story
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/how-it-works"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              See how every choice works
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <p className="text-[11px] text-muted-foreground/65 mt-6 tracking-wide">
-            Your name not listed?{" "}
-            <Link href="/me" className="text-primary/70 hover:text-primary transition-colors underline-offset-2 hover:underline">
-              Submit it to the Name Club →
-            </Link>
-          </p>
-        </div>
-
-        {/* ---------------- Right: Anatomy of Your Story exhibit ---------------- */}
-        <StoryAnatomyCard />
-      </div>
-    </section>
-  );
-}
-
+// CastingPreview removed — merged into CreationStudio at top of funnel.
 
 // ---------------------------------------------------------------------------
 // SamplePlayCard — used by The Listening Room (3 cards) and the After Dark
@@ -245,7 +186,7 @@ function SamplePlayCard({ pick, tone, featured = false }: SamplePlayCardProps) {
           <p className="font-display italic text-xl md:text-[1.55rem] leading-tight text-white/95 mb-1.5 drop-shadow">
             {pick.title}
           </p>
-          <p className="text-[12px] text-white/70 leading-snug">
+          <p className="text-[12px] text-white/80 leading-snug">
             {pick.tagline}
           </p>
         </div>
@@ -262,10 +203,10 @@ function SamplePlayCard({ pick, tone, featured = false }: SamplePlayCardProps) {
             : <Play className="w-4 h-4 ml-0.5" fill="currentColor" />}
         </span>
         <span className="flex flex-col min-w-0 flex-1">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-0.5">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">
             Ends on
           </span>
-          <span className="text-[12px] italic text-white/75 leading-snug truncate">
+          <span className="text-[12px] italic text-white/85 leading-snug truncate">
             {pick.endsOn}
           </span>
         </span>
@@ -285,8 +226,8 @@ export default function Home() {
   const { pack1, pack5, pack20 } = usePricing();
 
   useSEO({
-    title: "The Private Story — Personalised Audio Stories",
-    description: "Personalised romantic and intimate audio stories, created around your choices and private to you alone. You choose the cast, the chemistry, the world. We write it, narrate it, and keep it entirely yours.",
+    title: "The Private Story — Personalised Erotica",
+    description: "Personalised erotic audio — written and narrated around your choices, private to you alone. Choose the cast, the chemistry, and how explicit it gets.",
   });
 
   return (
@@ -295,79 +236,130 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative z-30 w-full pt-3 pb-10 md:pt-4 md:pb-14 px-6 sm:px-8 flex flex-col items-start sm:items-center justify-center overflow-hidden">
-        {/* ── Atmospheric glow ── */}
+      <section className="relative z-30 w-full min-h-[min(100dvh,820px)] md:min-h-[720px] pt-3 pb-8 md:pt-4 md:pb-10 px-6 sm:px-8 flex flex-col items-start justify-center overflow-hidden">
+        {/* ── Atmospheric glow + text scrim (keeps headline readable, image stays visible) ── */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0" style={{
             background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.13) 0%, rgba(123,143,255,0.06) 48%, transparent 72%)",
           }} />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/78 to-background/20 sm:from-background/90 sm:via-background/50 sm:to-transparent" />
         </div>
 
-        {/* ── Woman portrait (WebP w/ PNG fallback, eager + high priority — above the fold) ── */}
-        <picture>
-          <source
-            type="image/webp"
-            srcSet={`${import.meta.env.BASE_URL}images/home-hero-woman.webp?v=8`}
-          />
-          <img
-            aria-hidden="true"
-            src={`${import.meta.env.BASE_URL}images/home-hero-woman.webp`}
-            alt=""
-            width={1200}
-            height={1600}
-            loading="eager"
-            // @ts-expect-error -- fetchpriority is valid HTML, not yet in React types
-            fetchpriority="high"
-            decoding="async"
-            className="block absolute right-0 top-0 h-full w-full sm:w-[48%] object-cover object-top pointer-events-none select-none opacity-[0.38] sm:opacity-[0.82]"
-            style={{
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
-              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, black 42%)",
-            }}
-          />
-        </picture>
+        <HeroLivingPortrait />
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.75 }}
-          className="relative flex flex-col items-start sm:items-center gap-10 max-w-2xl"
+          className="relative flex flex-col items-start gap-10 max-w-xl sm:max-w-[46%] lg:max-w-[42%]"
         >
-          <h1 className="text-[2.4rem] sm:text-5xl md:text-6xl font-display font-bold text-foreground leading-[1.1] drop-shadow-xl sm:text-center">
-            Private Adult Stories that go further —{" "}
-            <span className="text-primary">personalised around your Fantasies.</span>
+          <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-primary/90 mb-4">
+            Personalised erotica · private to you
+          </p>
+          <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl font-display font-bold text-white leading-[1.08] drop-shadow-xl">
+            Your cast. Your dynamic.{" "}
+            <span className="text-primary">How explicit it gets.</span>
           </h1>
 
-          <p className="text-sm md:text-base text-white/40 tracking-[0.2em] sm:text-center uppercase font-light">
-            Private &nbsp;·&nbsp; Intense &nbsp;·&nbsp; Entirely yours
+          <p className="text-base md:text-lg text-white/85 tracking-wide max-w-xl leading-relaxed">
+            Erotic audio written and narrated around your choices — from slow-burn tension to explicitly unrestrained. Premium, private, entirely yours.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-            <Link href="/the-three-doors">
-              <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
+            <Link href="/after-dark" className="w-full sm:w-auto">
+              <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all hover:scale-105 hover:brightness-110 active:scale-100" style={{ background: "#c9a227", color: "#0a0806" }}>
                 <Sparkles className="w-4 h-4" />
-                Create my story
+                Create your erotica
               </button>
             </Link>
             <Link
               href="/samples"
-              className="flex items-center gap-1.5 text-xs text-primary/55 hover:text-primary transition-colors tracking-widest uppercase"
+              className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-white/80 hover:text-primary transition-colors tracking-widest uppercase py-2"
             >
               <Headphones className="w-3 h-3" />
               Hear a sample first →
             </Link>
           </div>
+          <p className="text-xs text-white/70">
+            From {pack1.display} · one story · no subscription · 18+
+          </p>
         </motion.div>
       </section>
 
+      <StickyMobileCTA priceDisplay={pack1.display} />
+
       <div className="relative z-20 space-y-0 mt-2 md:mt-4">
 
-        {/* ---------------------------------------------------------------- */}
-        {/* Three Doors                                                       */}
-        {/* ---------------------------------------------------------------- */}
-        <ThreeDoors />
+        <CreationStudio priceDisplay={pack1.display} />
 
-        <p className="text-center text-[10px] text-white/25 tracking-widest pt-3 pb-1 px-4">
+        {/* ---------------------------------------------------------------- */}
+        {/* Proof — hear the narration (featured samples first)               */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-8 max-w-2xl mx-auto">
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary mb-3">
+              Hear what we build
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+              These stop on a held breath.{" "}
+              <span className="text-primary">Yours doesn't have to.</span>
+            </h2>
+            <p className="text-white/80 text-base leading-relaxed">
+              Tap to hear short openings — same studio voices, same craft. Then imagine where your version goes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 items-stretch max-w-4xl mx-auto mb-8">
+            {HERO_SAMPLE_SLUGS.map((slug) => {
+              const pick = EDITORS_PICKS.find((p) => p.slug === slug);
+              if (!pick) return null;
+              return (
+                <SamplePlayCard
+                  key={slug}
+                  pick={pick}
+                  tone="gold"
+                  featured
+                />
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 items-stretch max-w-4xl mx-auto">
+            {LISTENING_ROOM_SLUGS.map((slug) => {
+              const pick = EDITORS_PICKS.find((p) => p.slug === slug);
+              if (!pick) return null;
+              return (
+                <SamplePlayCard
+                  key={slug}
+                  pick={pick}
+                  tone="gold"
+                />
+              );
+            })}
+          </div>
+
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <Link
+              href="/samples"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-7 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
+            >
+              Hear all 4 Editor's Picks
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/after-dark"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/85 border border-white/15 hover:border-primary/40 hover:text-white transition-all"
+            >
+              Create your erotica from {pack1.display}
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <p className="text-center text-xs text-white/65 mt-4">
+            Samples fade before the heat. The erotica you create goes as far as you choose.
+          </p>
+        </section>
+
+        <p className="text-center text-[11px] text-white/55 tracking-widest pt-2 pb-1 px-4">
           Over 1 million story configurations possible
         </p>
 
@@ -396,79 +388,17 @@ export default function Home() {
         <TrustBar />
 
         {/* ---------------------------------------------------------------- */}
-        {/* The Listening Room — three Editor's Picks, one per voice          */}
-        {/* (Clara · Kayla · James). Plays through the central audio store    */}
-        {/* so the FloatingPlayer takes over once a card is started.          */}
-        {/* ---------------------------------------------------------------- */}
-        <section className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
-          <div className="text-center mb-10 max-w-2xl mx-auto">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary/70 mb-3">
-              The Listening Room
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
-              Three of our writers.<br className="hidden md:block" />
-              <span className="text-primary">Three voices. Three stops on a held breath.</span>
-            </h2>
-            <p className="text-muted-foreground text-base leading-relaxed">
-              Short, narrated sample openings from our Editor's Picks. Each one stops where you'd want it to keep going.
-              <span className="block mt-1 text-sm text-white/50">Yours, when you create one, can go further.</span>
-            </p>
-          </div>
-
-          {/* Three-card trio — centre card weighted on md+, vertical stack on mobile.
-              Order chosen so Kayla (the centre, scaled) sits between Clara & James. */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 items-stretch max-w-6xl mx-auto">
-            {LISTENING_ROOM_SLUGS.map((slug) => {
-              const pick = EDITORS_PICKS.find((p) => p.slug === slug);
-              if (!pick) return null;
-              return (
-                <SamplePlayCard
-                  key={slug}
-                  pick={pick}
-                  tone="gold"
-                  featured={false}
-                />
-              );
-            })}
-          </div>
-
-          {/* Two CTAs below the trio */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <Link
-              href="/samples"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold text-sm px-7 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
-            >
-              Hear all 4 Editor's Picks
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/the-three-doors"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/85 border border-white/15 hover:border-primary/40 hover:text-white transition-all"
-            >
-              Or skip ahead — create yours from{" "}
-              <span className="tabular-nums">{pack1.display}</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <p className="text-center text-[11px] text-white/40 mt-4">
-            Each piece fades before the heat. The story you create is yours alone — and goes as far as you choose. 18+.
-          </p>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* After Dark — atmospheric teaser. "A door at the end of the hall"  */}
-        {/* sits past The Listening Room: same craft, deeper register. Single */}
-        {/* Maya teaser card + single CTA, indigo palette, original artwork.  */}
+        {/* Explicit register teaser — gold frame, links to creation           */}
         {/* ---------------------------------------------------------------- */}
         <section
           id="after-dark-section"
           className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full scroll-mt-24"
         >
-          <div className="relative overflow-hidden rounded-3xl border border-[#1a1a3e]/80 bg-[#060610]">
+          <div className="relative overflow-hidden rounded-3xl border border-primary/25 bg-[#0d0a06]">
             {/* Atmospheric layers */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#08081a] via-[#060610] to-[#0a0a1e] pointer-events-none" />
-            <div className="absolute top-0 right-0 w-[28rem] h-[28rem] bg-indigo-900/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-violet-950/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#1a1208] via-[#0d0a06] to-[#0a0818] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[28rem] h-[28rem] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-950/20 rounded-full blur-3xl pointer-events-none" />
             {/* Original After Dark artwork — kept */}
             <div
               className="absolute inset-y-0 right-0 w-2/5 pointer-events-none"
@@ -490,32 +420,30 @@ export default function Home() {
             <div className="relative z-10 p-8 md:p-14 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-center">
               {/* Left — copy + CTA */}
               <div>
-                <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#7b8fff]/65 mb-5">
-                  After Dark — Fantasies
+                <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary/70 mb-5">
+                  Personalised Erotica
                 </p>
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-white/92 leading-[1.1] mb-5">
-                  There's a door<br className="hidden md:block" />
-                  <span className="text-[#9baeff]">at the end of the hall.</span>
+                  Nothing held back.<br className="hidden md:block" />
+                  <span className="text-primary">When you want it to be.</span>
                 </h2>
-                <p className="text-white/75 text-base leading-relaxed mb-3 max-w-md">
-                  Past The Listening Room is After Dark — the same writers, the same voices, the same
-                  intimate craft. The intensity dial just goes further.
+                <p className="text-white/88 text-base leading-relaxed mb-3 max-w-md">
+                  The same premium narration — with an intensity dial that runs from slow-burn intimate to explicitly unrestrained.
                 </p>
-                <p className="text-white/55 text-sm leading-relaxed mb-8 max-w-md">
-                  Power, surrender, the things you'd only ask for in the dark. Written for you. Narrated for you.
-                  Private to you.
+                <p className="text-white/75 text-sm leading-relaxed mb-8 max-w-md">
+                  Power, surrender, forbidden dynamics — written around your choices. Narrated for you alone.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4">
                   <Link
                     href="/after-dark"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#7b8fff]/15 border border-[#7b8fff]/40 text-[#cdd6ff] text-sm font-semibold hover:bg-[#7b8fff]/25 hover:border-[#7b8fff]/70 hover:text-white transition-all shadow-[0_0_28px_-8px_rgba(123,143,255,0.6)]"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_28px_-8px_rgba(201,162,39,0.55)]"
                   >
-                    Open After Dark
+                    Create your erotica
                     <ChevronRight className="w-4 h-4" />
                   </Link>
-                  <span className="text-[11px] text-[#9baeff]/50">
-                    Included with the Immersive Bundle &amp; Collection · 18+
+                  <span className="text-[11px] text-white/65">
+                    From {pack1.display} · 18+
                   </span>
                 </div>
               </div>
@@ -589,12 +517,6 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* CastingRoom preview                                               */}
-        {/* ---------------------------------------------------------------- */}
-        <CastingPreview />
-
 
         {/* ---------------------------------------------------------------- */}
         {/* Pricing teaser                                                    */}

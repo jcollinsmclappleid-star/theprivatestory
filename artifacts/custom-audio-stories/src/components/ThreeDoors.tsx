@@ -122,13 +122,31 @@ const DOORS = [
   },
 ];
 
+const ROMANCE_DOOR = DOORS.find((d) => d.id === "story")!;
+
+export const MAIN_FUNNEL_DOOR = {
+  ...ROMANCE_DOOR,
+  room: "Personalised Erotica",
+  name: "Personalised Erotica",
+  shortName: "Personalised",
+  tagline:
+    "Erotic audio written and narrated around you — intimate, explicit when you choose, entirely private.",
+  cta: "Create your erotica",
+  href: "/after-dark",
+  teasers: [
+    { text: "Cast the dynamic. Set the intensity.", blur: false },
+    { text: "From slow burn to explicitly unrestrained.", blur: false },
+    { text: "Written fresh. Heard only by you.", blur: false },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // MiniDoorCTA — standalone reusable mini doors (named export)
 // ---------------------------------------------------------------------------
 
-export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "quiet"> } = {}) {
-  const [miniHovered, setMiniHovered] = useState<string | null>(null);
-  const visibleDoors = filter ? DOORS.filter(d => filter.includes(d.id as "story" | "dark" | "quiet")) : DOORS;
+export function MiniDoorCTA(_props: { filter?: Array<"story" | "dark" | "quiet"> } = {}) {
+  const [miniHovered, setMiniHovered] = useState(false);
+  const door = MAIN_FUNNEL_DOOR;
   return (
     <div className="flex flex-col items-center gap-6">
       <p
@@ -140,16 +158,16 @@ export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "qui
           color: "rgba(255,255,255,0.85)",
         }}
       >
-        Choose where your story begins
+        Personalised erotica — private to you
       </p>
       <div className="flex items-end justify-center gap-4">
-        {visibleDoors.map((door) => {
-          const isMin = miniHovered === door.id;
+        {(() => {
+          const isMin = miniHovered;
           return (
-            <Link key={door.id} href={door.href}>
+            <Link href={door.href}>
               <div
-                onMouseEnter={() => setMiniHovered(door.id)}
-                onMouseLeave={() => setMiniHovered(null)}
+                onMouseEnter={() => setMiniHovered(true)}
+                onMouseLeave={() => setMiniHovered(false)}
                 style={{
                   width: "76px",
                   height: "114px",
@@ -214,7 +232,7 @@ export function MiniDoorCTA({ filter }: { filter?: Array<"story" | "dark" | "qui
               </div>
             </Link>
           );
-        })}
+        })()}
       </div>
     </div>
   );
@@ -530,6 +548,194 @@ export function ThreeDoors({ filter }: { filter?: Array<"story" | "dark" | "quie
             </Link>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// PersonalisedEroticaDoor — single gold Romance door → /after-dark
+// ---------------------------------------------------------------------------
+
+export function PersonalisedEroticaDoor() {
+  const [hovered, setHovered] = useState(false);
+  const door = MAIN_FUNNEL_DOOR;
+
+  return (
+    <section className="py-4 px-4 md:px-8 max-w-7xl mx-auto w-full">
+      <div className="max-w-md mx-auto mb-6 text-center px-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/70 mb-2">
+          Personalised Erotica
+        </p>
+        <p className="text-sm text-muted-foreground/80 leading-relaxed">
+          One private studio. You choose the cast, the chemistry, and how explicit it gets.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 max-w-md mx-auto">
+        <Link href={door.href}>
+          <div
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            style={{
+              background: door.bg,
+              border: `1px solid ${hovered ? door.borderHover : door.border}`,
+              boxShadow: hovered
+                ? `0 0 70px -12px ${door.glow}, 0 24px 48px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.04)`
+                : `0 8px 24px -16px rgba(0,0,0,0.6)`,
+              transform: hovered ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+              borderRadius: "110px 110px 8px 8px",
+              cursor: "pointer",
+              minHeight: "min(420px, 72vh)",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              src={door.image}
+              alt=""
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                width: "100%",
+                height: "68%",
+                objectFit: "cover",
+                objectPosition: "center top",
+                borderRadius: "110px 110px 0 0",
+                maskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, transparent 100%)",
+                pointerEvents: "none",
+                zIndex: 1,
+                opacity: hovered ? 0.85 : 0.65,
+                transition: "opacity 0.4s ease",
+              }}
+            />
+            {door.moodImages.map((img, mi) => (
+              <div
+                key={mi}
+                style={{
+                  position: "absolute",
+                  left: `${img.x}%`,
+                  top: `${img.y}%`,
+                  width: `${img.w}px`,
+                  height: `${Math.round(img.w * 1.35)}px`,
+                  transform: `rotate(${img.rot}deg)`,
+                  opacity: hovered ? 0.72 : 0.42,
+                  transition: `opacity 0.55s ease ${mi * 0.06}s`,
+                  pointerEvents: "none",
+                  zIndex: 2,
+                  borderRadius: "3px",
+                  overflow: "hidden",
+                  boxShadow: "0 3px 12px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.10)",
+                }}
+              >
+                <img
+                  src={img.src}
+                  alt=""
+                  aria-hidden="true"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              </div>
+            ))}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 10,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+                flex: 1,
+                padding: "28px",
+                paddingBottom: "32px",
+              }}
+            >
+              <div
+                style={{
+                  opacity: hovered ? 1 : 0,
+                  transform: hovered ? "translateY(0)" : "translateY(14px)",
+                  transition: "all 0.38s ease",
+                  marginBottom: "18px",
+                }}
+              >
+                {door.teasers.map((teaser, ti) => (
+                  <p
+                    key={ti}
+                    style={{
+                      fontSize: "11px",
+                      lineHeight: 1.7,
+                      color: `rgba(${door.rgb},${0.72 - ti * 0.2})`,
+                      marginBottom: "3px",
+                    }}
+                  >
+                    {teaser.text}
+                  </p>
+                ))}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "10px" }}>
+                <door.Icon style={{ width: 11, height: 11, color: door.labelColor, flexShrink: 0 }} />
+                <span
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 700,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: door.labelColor,
+                  }}
+                >
+                  {door.room}
+                </span>
+              </div>
+              <p
+                className="font-display"
+                style={{
+                  fontSize: "clamp(22px, 5vw, 30px)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: door.nameColor,
+                  marginBottom: "8px",
+                }}
+              >
+                {door.name}
+              </p>
+              <p
+                style={{
+                  fontSize: "12px",
+                  lineHeight: 1.65,
+                  color: door.taglineColor,
+                  marginBottom: "20px",
+                }}
+              >
+                {door.tagline}
+              </p>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  padding: "9px 18px",
+                  borderRadius: "999px",
+                  background: `rgba(${door.rgb},${hovered ? 0.22 : 0.12})`,
+                  border: `1px solid rgba(${door.rgb},${hovered ? 0.65 : 0.35})`,
+                  color: door.nameColor,
+                  width: "fit-content",
+                  transition: "all 0.4s ease",
+                }}
+              >
+                <ChevronRight style={{ width: 11, height: 11 }} />
+                {door.cta}
+              </span>
+            </div>
+          </div>
+        </Link>
       </div>
     </section>
   );

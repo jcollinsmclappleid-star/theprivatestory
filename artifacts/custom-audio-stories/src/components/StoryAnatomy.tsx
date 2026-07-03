@@ -1,11 +1,20 @@
 import { motion } from "framer-motion";
 
-export const ANATOMY_ROWS: ReadonlyArray<{
+export type AnatomyRow = {
   axis: string;
   value: string;
   scale: string;
   accent: string;
-}> = [
+};
+
+export type AnatomyPreset = {
+  title: string;
+  teaser: string;
+  rows: AnatomyRow[];
+  intensityIndex?: number;
+};
+
+export const ANATOMY_ROWS: ReadonlyArray<AnatomyRow> = [
   { axis: "Pairing",   value: "Her & Him",          scale: "1 of 6",            accent: "#e879a0" },
   { axis: "Chemistry", value: "Forbidden Pull",     scale: "1 of 8",            accent: "#c9a227" },
   { axis: "Archetype", value: "The Executive",      scale: "1 of 19",           accent: "#6b8cce" },
@@ -22,15 +31,32 @@ export const ANATOMY_ROWS: ReadonlyArray<{
  * teaser. Used as the right column of Home's Creation Room and as a
  * standalone proof block on SEO landing pages.
  */
-export function StoryAnatomyCard() {
+const DEFAULT_PRESET: AnatomyPreset = {
+  title: "The Fog Between Us",
+  teaser: "\"He shouldn't be in her study. She should have locked the door.\"",
+  rows: [...ANATOMY_ROWS],
+};
+
+export function StoryAnatomyCard({
+  preset,
+  showMotion = true,
+}: {
+  preset?: AnatomyPreset;
+  showMotion?: boolean;
+} = {}) {
+  const { title, teaser, rows } = preset ?? DEFAULT_PRESET;
+  const Wrapper = showMotion ? motion.div : "div";
+  const motionProps = showMotion
+    ? {
+        initial: { opacity: 0, y: 16 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-80px" },
+        transition: { duration: 0.6 },
+      }
+    : {};
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6 }}
-      className="relative"
-    >
+    <Wrapper {...motionProps} className="relative">
       <div
         className="relative overflow-hidden rounded-2xl border"
         style={{
@@ -51,14 +77,14 @@ export function StoryAnatomyCard() {
                 Anatomy of Your Story
               </p>
               <p className="font-display text-xl md:text-[1.35rem] text-white/95 leading-tight">
-                The Fog Between Us
+                {title}
               </p>
             </div>
             <span className="font-display text-2xl italic text-primary/40 flex-shrink-0">✦</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-            {ANATOMY_ROWS.map((row) => (
+            {rows.map((row) => (
               <div key={row.axis} className="flex flex-col">
                 <div className="flex items-baseline gap-2">
                   <span
@@ -79,15 +105,15 @@ export function StoryAnatomyCard() {
           </div>
 
           <div className="mt-7 pt-5 border-t border-white/8">
-            <p className="font-display italic text-base text-white/82 leading-relaxed">
-              "He shouldn't be in her study. She should have locked the door."
+            <p className="font-display italic text-base text-white/88 leading-relaxed">
+              {teaser}
             </p>
-            <p className="text-[11px] text-white/45 mt-3 tracking-wide">
-              One of <span className="text-primary/75">over a million</span>. Built for you.
+            <p className="text-[11px] text-white/60 mt-3 tracking-wide">
+              One of <span className="text-primary/85">over a million</span>. Built for you.
             </p>
           </div>
         </div>
       </div>
-    </motion.div>
+    </Wrapper>
   );
 }

@@ -161,7 +161,7 @@ function Router() {
               <Route path="/browse" component={Browse} />
               <Route path="/search" component={Search} />
               <Route path="/story/:id" component={StoryDetail} />
-              <Route path="/create" component={Create} />
+              <Route path="/create" component={AfterDark} />
               <Route path="/signin"><Redirect to="/" /></Route>
               <Route path="/sign-in"><Redirect to="/" /></Route>
               <Route path="/login"><Redirect to="/" /></Route>

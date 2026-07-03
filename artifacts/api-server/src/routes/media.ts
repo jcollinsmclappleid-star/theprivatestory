@@ -219,6 +219,7 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
   if (
     /^category-[a-z0-9_]+-[a-z0-9_]+\.(?:png|webp)$/.test(filename) ||
     /^category-[a-z0-9_]+\.(?:png|webp)$/.test(filename) ||
+    /^express-act4-[a-z0-9-]+\.(?:png|webp)$/.test(filename) ||
     SAMPLE_COVER_FILENAMES.has(filename)
   ) {
     const found = await streamImageFile(filename, res);

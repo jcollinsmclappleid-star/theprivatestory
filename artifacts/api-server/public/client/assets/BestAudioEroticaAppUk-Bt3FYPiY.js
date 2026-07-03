@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CiSdDXy4.js";import{S as t,g as a}from"./SEOPage-Ckc6eXEV.js";import"./index-CzutWfkm.js";import"./data-editors-picks-CJizIKSx.js";const i=a("best-audio-erotica-app-uk");function u(){return o.jsx(t,{config:i,slug:"best-audio-erotica-app-uk"})}export{u as default};

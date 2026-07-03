@@ -63,8 +63,8 @@ const DOORS = [
     name: "Romance",
     room: "The Story Room",
     tagline: "Tension, atmosphere, the feeling you're after.",
-    href: "/create",
-    cta: "Create My Story",
+    href: "/after-dark",
+    cta: "Create your erotica",
     ctaIcon: Sparkles,
     image: `${BASE}images/door-romance.webp`,
     accent: "#c9a227",
@@ -514,18 +514,23 @@ export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?
       {/* ── Final CTA ──────────────────────────────────────────── */}
       <section className="px-4 sm:px-8 max-w-5xl mx-auto py-16 text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-white/25 mb-5">
-          All plans include all three worlds
+          One-time story packs
         </p>
         <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
-          One subscription. Every door open.
+          Create your erotica — private to you alone.
         </h2>
         <p className="text-muted-foreground/60 text-sm max-w-sm mx-auto mb-8">
-          Every plan includes the full creation room across Romance, After Dark, and Drift.
+          Romance, After Dark, and Drift all live in the creation room. Start with one story from £12 — no subscription.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/pricing">
+          <Link href="/after-dark">
             <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105">
               <Sparkles className="w-4 h-4" />
+              Create your erotica
+            </button>
+          </Link>
+          <Link href="/pricing">
+            <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border/30 text-muted-foreground/70 hover:text-foreground hover:border-border/60 transition-all text-sm">
               See pricing
             </button>
           </Link>
@@ -537,7 +542,7 @@ export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?
           </Link>
         </div>
         <p className="text-xs text-muted-foreground/40 mt-6">
-          Private from the first word. Monthly plans cancel any time.{" "}
+          Private from the first word. One-time packs — no subscription.{" "}
           <Link href="/privacy" className="hover:text-primary/70 transition-colors">How we protect it →</Link>
         </p>
       </section>

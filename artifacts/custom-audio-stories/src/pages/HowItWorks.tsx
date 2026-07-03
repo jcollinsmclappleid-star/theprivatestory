@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Sparkles, Headphones, Globe, PenLine, Check, X,
-  Lock, EyeOff, Bookmark, Calendar, ChevronRight,
-  Users, Heart, MapPin, Zap, BookOpen, Layers, Moon,
+  Sparkles, Headphones, PenLine, Check, X,
+  Lock, ChevronRight, ArrowDown,
+  Users, Heart, MapPin, Zap, BookOpen, Layers, SlidersHorizontal,
 } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { usePricing } from "@/hooks/usePricing";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
-import { MiniDoorCTA, ThreeDoors } from "@/components/ThreeDoors";
+import { TrustBar } from "@/components/TrustBar";
+import { HowItWorksHero, hiwAct4Src } from "@/components/HowItWorksHero";
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -16,27 +17,47 @@ const fade = (delay = 0) => ({
   transition: { duration: 0.55, delay },
 });
 
+const SECTION_LABEL = "text-xs font-bold uppercase tracking-[0.28em] text-primary mb-3";
+const CARD =
+  "relative rounded-2xl border border-white/10 bg-white/[0.03] hover:border-primary/25 hover:bg-primary/[0.04] transition-all overflow-hidden";
+
+const PERSONALISATION_PILLARS = [
+  { stat: "6", label: "Pairing options", detail: "Her & Him, Her & Her, MFM, and more" },
+  { stat: "19", label: "Character archetypes", detail: "Name them. Describe them. Cast them." },
+  { stat: "200+", label: "Settings & situations", detail: "Countries, eras, and starting points" },
+  { stat: "17", label: "Desire categories", detail: "Tags that shape how it's written" },
+  { stat: "1M+", label: "Possible stories", detail: "Yours has never existed before" },
+];
+
+const PERSONALISATION_STACK = [
+  { step: 1, title: "Who is in the story?", body: "Pairing and heritage set pronouns for every line.", slug: "desire-they", accent: "#e879a0" },
+  { step: 2, title: "What pulls them together?", body: "Chemistry, archetype, and the fantasy you choose.", slug: "tension", accent: "#c9a227" },
+  { step: 3, title: "Where does it unfold?", body: "Country, setting, era — or a world entirely yours.", slug: "scene", accent: "#34d399" },
+  { step: 4, title: "How do you want it written?", body: "Desire tags, intensity, voice — nothing held back unless you want it.", slug: "yours", accent: "#a78bfa" },
+  { step: 5, title: "We write & narrate it", body: "Original prose + full cast audio, saved privately to you.", slug: "devotion", accent: "#c9a227" },
+];
+
 const HOW_IT_WORKS_STEPS = [
   {
     step: "01",
-    icon: <Globe className="w-4 h-4" />,
+    icon: <SlidersHorizontal className="w-4 h-4" />,
     accent: "#c9a227",
-    heading: "Shape your story in the Creation Room",
-    body: "Choose who's in your story, the energy between them, where it's set, the mood — and how far it goes. Every choice is yours, including the intensity.",
+    heading: "Build your brief",
+    body: "Five acts — who, fantasy, world, desires, intensity. Each choice feeds the story. Nothing is pre-written for you.",
   },
   {
     step: "02",
     icon: <PenLine className="w-4 h-4" />,
     accent: "#e879a0",
-    heading: "We write and narrate it for you",
-    body: "An original story shaped entirely around your choices — written to your cast, your setting, your emotional tone. Then narrated, so you can press play rather than read.",
+    heading: "We write to your spec",
+    body: "Original fiction shaped around every selection — your cast, your dynamic, your tags, your narrator.",
   },
   {
     step: "03",
     icon: <Headphones className="w-4 h-4" />,
     accent: "#a78bfa",
-    heading: "Yours to keep, privately",
-    body: "Ready in minutes, saved to your private library, and visible only to you. Return to it whenever you want. No one else can see it — not even us.",
+    heading: "Play it privately",
+    body: "Full cast narration, original cover art, saved to your library. Visible only to you.",
   },
 ];
 
@@ -45,640 +66,466 @@ const CASTING_FEATURES = [
     icon: <Users className="w-4 h-4" />,
     accent: "#e879a0",
     label: "The Pairing",
-    desc: "Six pairings. Choose the dynamic and we write to it.",
-    examples: ["Her & Him", "Her & Her", "Him & Him", "Her & Them"],
+    desc: "Six pairings. Pronouns and perspective follow your cast automatically.",
+    examples: ["Her & Him", "Her & Her", "MFM", "Her & Them"],
+    slug: "desire-they",
   },
   {
     icon: <Zap className="w-4 h-4" />,
     accent: "#c9a227",
     label: "The Chemistry",
-    desc: "The tension, the pull, the energy between them — chosen by you.",
+    desc: "Who moves first, who holds back — the tension between them is yours to set.",
     examples: ["Slow Surrender", "Forbidden Pull", "Push & Pull", "Rivals"],
+    slug: "tension",
   },
   {
     icon: <BookOpen className="w-4 h-4" />,
     accent: "#6b8cce",
     label: "The Archetype",
-    desc: "Cast the other character from 19 distinct archetypes. Name them. Describe them.",
+    desc: "19 distinct character types. Name them. Add the details that make them real.",
     examples: ["The Executive", "The Stranger", "The Artist", "The Professor"],
+    slug: "submission-worship",
   },
   {
     icon: <MapPin className="w-4 h-4" />,
     accent: "#34d399",
     label: "The Setting",
-    desc: "200+ places across countries and eras — or an After Dark world entirely your own.",
+    desc: "200+ places across countries and eras — Paris 1920s to a penthouse at midnight.",
     examples: ["Paris, 1920s", "Victorian London", "Luxury Hotel", "Mountain Retreat"],
+    slug: "dark-fantasy",
   },
   {
     icon: <Heart className="w-4 h-4" />,
     accent: "#a78bfa",
-    label: "The Mood",
-    desc: "The emotional tone the story carries from the first line to the last.",
-    examples: ["Slow Burn", "Quiet Intensity", "Late Night", "Unspoken"],
+    label: "Your Desires",
+    desc: "17 categories of tags — restraint, praise, tension, romance — written into the prose.",
+    examples: ["Slow Burn", "Praise Kink", "Power Exchange", "Forbidden"],
+    slug: "feel",
   },
   {
     icon: <Layers className="w-4 h-4" />,
     accent: "#e11d48",
     label: "The Situation",
-    desc: "200+ starting points — or let us choose one for you. The context that gives every story its own charge.",
+    desc: "Where the story starts — colleagues, strangers, exes, one night only.",
     examples: ["She works for him", "One night only", "Seven years later", "Strangers, delayed"],
-  },
-];
-
-const DOOR_EXPLANATIONS = [
-  {
-    id: "story",
-    icon: <Sparkles className="w-4 h-4" />,
-    accent: "#c9a227",
-    rgb: "201,162,39",
-    name: "Romance",
-    desc: "A fully personalised story — your cast, your chemistry, your world. Tension, atmosphere, and the feeling you're after.",
-    cta: "Create My Story",
-    href: "/create",
-  },
-  {
-    id: "dark",
-    icon: <Moon className="w-4 h-4" />,
-    accent: "#7b8fff",
-    rgb: "123,143,255",
-    name: "After Dark",
-    desc: "Explicit, unrestrained erotic fiction. Everything in Romance — with the intensity turned all the way up and nothing held back.",
-    cta: "Enter After Dark",
-    href: "/after-dark",
-  },
-  {
-    id: "quiet",
-    icon: <Moon className="w-4 h-4" />,
-    accent: "#56b4e0",
-    rgb: "86,180,224",
-    name: "Drift",
-    desc: "Personalised bedtime stories, calm and warm — written to carry you off.",
-    cta: "Explore Drift",
-    href: "/drift",
+    slug: "plot",
   },
 ];
 
 const LIBRARY_VS = {
   them: [
-    "Choose from what already exists",
-    "Hope something fits your mood",
-    "Someone else's cast, their world",
-    "Content made for everyone, not for you",
+    "Pick from a catalogue someone else curated",
+    "Hope the cast and dynamic feel close enough",
+    "Same story thousands of others have heard",
+    "Intensity fixed — take it or leave it",
   ],
   us: [
-    "Built from your choices, every time",
-    "Your cast. Your chemistry. Your desire.",
-    "Intimate — exactly as far as you want",
-    "Visible to no one but you",
+    "You choose every layer of the brief",
+    "Your cast, your chemistry, your pronouns",
+    "Original fiction — never replicated",
+    "Intensity dial from intimate to explicit",
   ],
 };
-
-const TRUST_POINTS = [
-  {
-    icon: <EyeOff className="w-4 h-4" />,
-    label: "Visible only to you",
-    desc: "Your library is private to your account. No social features, no history shared.",
-  },
-  {
-    icon: <Bookmark className="w-4 h-4" />,
-    label: "Saved forever, quietly",
-    desc: "Return to any story, any time. Resume, replay, or quietly remove — your call.",
-  },
-  {
-    icon: <Calendar className="w-4 h-4" />,
-    label: "Something new every month",
-    desc: "A curated release added to the collection each month — something to return to between your own.",
-  },
-];
 
 export default function HowItWorks() {
   const { pack1, pack5, pack20 } = usePricing();
   useSEO({
-    title: "How It Works — Create Your Personalised Audio Story | The Private Story",
+    title: "How It Works — Personalised Erotic Audio | The Private Story",
     description:
-      "Choose your cast, your world, and your mood. We write and narrate a story built entirely around your choices — private, original, and ready to play in minutes.",
+      "Build a brief — cast, chemistry, setting, desires, intensity. We write and narrate an original story around your choices. Private, unique, ready in minutes.",
   });
 
   return (
-    <div className="flex flex-col w-full">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col w-full">
 
-      {/* ── Hero ── */}
-      <section className="relative w-full min-h-[600px] md:min-h-[720px] flex flex-col justify-center pt-12 pb-20 px-4 md:px-8 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src={`${import.meta.env.BASE_URL}images/hiw-hero-bg.webp`}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div {...fade()} className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/8">
-                <Sparkles className="w-3.5 h-3.5 text-primary/70" />
-                <span className="text-[11px] font-semibold text-primary/70 uppercase tracking-widest">
-                  Personalised adult audio
-                </span>
-              </div>
-            </div>
+      <HowItWorksHero priceDisplay={pack1.display} />
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
-              A story built around{" "}
-              <span className="text-primary">you.</span>
-              <br className="hidden md:block" />
-              Entirely yours to keep.
-            </h1>
+      <div className="relative z-10 space-y-0">
 
-            <p className="text-lg md:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl">
-              Not chosen from a shelf. Not written for someone else. A story that starts
-              where your imagination already is — shaped to your mood, your cast, and the
-              feeling you want to be left with.
-            </p>
-            <p className="text-base text-muted-foreground/80 mb-10 leading-relaxed max-w-xl">
-              Written, narrated, and saved privately to your account — ready to play in minutes.
-            </p>
-
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Three Doors with explanations ── */}
-      <motion.section {...fade(0.1)} className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="text-center mb-6">
-          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            Three rooms
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Every story personalised to you.
-            <br className="hidden md:block" />
-            <span className="text-muted-foreground font-normal"> Choose where yours begins.</span>
-          </h2>
-        </div>
-
-        <ThreeDoors />
-
-        {/* Door explanations row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 max-w-4xl mx-auto">
-          {DOOR_EXPLANATIONS.map((door) => (
-            <Link key={door.id} href={door.href}>
-              <div
-                className="rounded-2xl border p-5 hover:opacity-90 transition-all cursor-pointer"
-                style={{
-                  borderColor: `rgba(${door.rgb},0.22)`,
-                  background: `rgba(${door.rgb},0.05)`,
-                }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: `rgba(${door.rgb},0.15)`, color: door.accent }}
-                  >
-                    {door.icon}
-                  </div>
-                  <span className="text-xs font-bold tracking-wide" style={{ color: door.accent }}>
-                    {door.name}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground/80 leading-relaxed mb-3">{door.desc}</p>
-                <span
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold"
-                  style={{ color: door.accent }}
-                >
-                  <ChevronRight className="w-3 h-3" />
-                  {door.cta}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* ── Not a library contrast strip ── */}
-      <motion.section {...fade(0.1)} className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="rounded-3xl border border-border/20 bg-card/15 overflow-hidden">
-          <div className="px-8 py-8 md:py-10">
-            <div className="text-center mb-8">
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Not a library. Not a compromise.
+        {/* ── Personalisation by numbers ── */}
+        <section className="py-10 px-4 md:px-8 border-b border-white/6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8 max-w-xl mx-auto">
+              <p className={SECTION_LABEL}>Built around you</p>
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-white leading-tight">
+                Personalisation isn&apos;t a feature.{" "}
+                <span className="text-primary">It&apos;s the product.</span>
               </h2>
-              <p className="text-sm text-muted-foreground/80 max-w-md mx-auto">
-                Every story starts with you — not with what someone else already wrote.
-              </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-3xl mx-auto">
-              {/* Left — other platforms */}
-              <div className="p-6 md:border-r border-border/20">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-4">
-                  Other platforms
-                </p>
-                <div className="space-y-3">
-                  {LIBRARY_VS.them.map((item) => (
-                    <div key={item} className="flex items-start gap-2.5">
-                      <X className="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-muted-foreground/40 line-through leading-snug">
-                        {item}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right — The Private Story */}
-              <div className="p-6 rounded-2xl md:rounded-none" style={{ background: "rgba(201,162,39,0.04)" }}>
-                <p
-                  className="text-[10px] font-bold uppercase tracking-widest mb-4"
-                  style={{ color: "rgba(201,162,39,0.7)" }}
-                >
-                  The Private Story
-                </p>
-                <div className="space-y-3">
-                  {LIBRARY_VS.us.map((item) => (
-                    <div key={item} className="flex items-start gap-2.5">
-                      <Check className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#c9a227" }} />
-                      <span className="text-sm text-foreground/80 font-medium leading-snug">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* ── Sample story CTA banner ── */}
-      <motion.section {...fade(0.1)} className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div
-          className="rounded-3xl border p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6"
-          style={{
-            borderColor: "rgba(232,121,160,0.25)",
-            background: "linear-gradient(135deg, rgba(232,121,160,0.06) 0%, rgba(123,143,255,0.04) 100%)",
-          }}
-        >
-          <div className="flex items-center gap-5">
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(232,121,160,0.12)", color: "#e879a0" }}
-            >
-              <Headphones className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-1">
-                Hear what a personalised intimate story sounds like.
-              </h3>
-              <p className="text-sm text-muted-foreground/80">
-                Ten short stories — free to listen, no account needed.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/samples"
-            className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap"
-            style={{
-              background: "rgba(232,121,160,0.15)",
-              border: "1px solid rgba(232,121,160,0.35)",
-              color: "#f0a0c0",
-            }}
-          >
-            <Headphones className="w-4 h-4" />
-            Listen now — free
-          </Link>
-        </div>
-      </motion.section>
-
-      {/* ── How it works (3 steps) ── */}
-      <section id="how-it-works" className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            How it works
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            From your imagination to your ears —
-            <br className="hidden md:block" />
-            <span className="text-muted-foreground font-normal"> in under 3 minutes.</span>
-          </h2>
-          <p className="text-muted-foreground mt-3 max-w-md mx-auto text-sm leading-relaxed">
-            No browsing hoping something fits. No compromising. A story that starts exactly
-            where your imagination already is.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-          <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
-          {HOW_IT_WORKS_STEPS.map((item, i) => (
-            <motion.div
-              key={item.step}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="relative rounded-2xl border border-border/20 bg-card/20 p-6 hover:border-primary/20 hover:bg-primary/4 transition-all"
-            >
-              <div
-                className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl pointer-events-none"
-                style={{ background: `${item.accent}12` }}
-              />
-              <div className="flex items-center gap-3 mb-3 relative z-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {PERSONALISATION_PILLARS.map((p) => (
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border"
+                  key={p.label}
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center hover:border-primary/25 transition-colors"
+                >
+                  <p className="font-display text-2xl md:text-3xl font-bold text-primary tabular-nums">{p.stat}</p>
+                  <p className="text-xs font-bold text-white mt-1">{p.label}</p>
+                  <p className="text-[10px] text-white/55 mt-1 leading-snug">{p.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Personalisation stack (visual journey) ── */}
+        <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start">
+            <div>
+              <p className={SECTION_LABEL}>The brief you build</p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+                Five layers.{" "}
+                <span className="text-primary">One story that could only be yours.</span>
+              </h2>
+              <p className="text-white/80 text-base leading-relaxed mb-6">
+                Each step adds detail the writer must honour. By the end, your brief reads like a casting document — and the finished audio follows it line for line.
+              </p>
+              <Link
+                href="/after-dark"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                Build your brief now
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="space-y-3">
+              {PERSONALISATION_STACK.map((layer, i) => (
+                <motion.div
+                  key={layer.step}
+                  initial={{ opacity: 0, x: 12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className={`${CARD} flex gap-0`}
+                >
+                  <div className="relative w-24 sm:w-28 flex-shrink-0">
+                    <img
+                      src={hiwAct4Src(layer.slug)}
+                      alt=""
+                      aria-hidden
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0c0a10]/90" />
+                  </div>
+                  <div className="flex-1 p-4 flex gap-3 items-start">
+                    <span
+                      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border"
+                      style={{ borderColor: `${layer.accent}50`, color: layer.accent, background: `${layer.accent}15` }}
+                    >
+                      {layer.step}
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-bold text-white leading-snug">{layer.title}</h3>
+                      <p className="text-xs text-white/70 mt-0.5 leading-relaxed">{layer.body}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              <div className="flex justify-center pt-2 text-white/30">
+                <ArrowDown className="w-4 h-4 animate-bounce" />
+              </div>
+              <div className={`${CARD} p-5 border-primary/30 bg-primary/[0.06] text-center`}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">Output</p>
+                <p className="font-display text-lg font-bold text-white">Your private audio story</p>
+                <p className="text-xs text-white/65 mt-1">Written once · narrated · never shared</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Not a library ── */}
+        <motion.section {...fade(0.05)} className="py-10 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="relative rounded-3xl border border-primary/20 bg-[#0c0a10]/80 overflow-hidden">
+            <div
+              className="absolute inset-0 pointer-events-none opacity-40"
+              aria-hidden
+              style={{ background: "radial-gradient(ellipse at 80% 0%, rgba(201,162,39,0.12) 0%, transparent 55%)" }}
+            />
+            <div className="relative px-8 py-8 md:py-10">
+              <div className="text-center mb-8">
+                <p className={SECTION_LABEL}>Why personalisation matters</p>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">
+                  A catalogue vs. a story built for you
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-3xl mx-auto">
+                <div className="p-6 md:border-r border-white/10">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-4">Streaming catalogues</p>
+                  <div className="space-y-3">
+                    {LIBRARY_VS.them.map((item) => (
+                      <div key={item} className="flex items-start gap-2.5">
+                        <X className="w-3.5 h-3.5 text-white/25 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-white/35 line-through leading-snug">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-6 bg-primary/[0.06]">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80 mb-4">The Private Story</p>
+                  <div className="space-y-3">
+                    {LIBRARY_VS.us.map((item) => (
+                      <div key={item} className="flex items-start gap-2.5">
+                        <Check className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-primary" />
+                        <span className="text-sm text-white/90 font-medium leading-snug">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Three steps ── */}
+        <section id="process" className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-10 max-w-2xl mx-auto">
+            <p className={SECTION_LABEL}>From brief to audio</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+              Three steps.{" "}
+              <span className="text-primary">Under three minutes of your time.</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+            <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
+            {HOW_IT_WORKS_STEPS.map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className={`${CARD} p-6`}
+              >
+                <div
+                  className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl pointer-events-none"
+                  style={{ background: `${item.accent}12` }}
+                />
+                <div className="flex items-center gap-3 mb-3 relative z-10">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border"
+                    style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase">{item.step}</span>
+                </div>
+                <h3 className="text-sm font-bold text-white mb-1.5 relative z-10">{item.heading}</h3>
+                <p className="text-xs text-white/75 leading-relaxed relative z-10">{item.body}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Every choice you control (with art) ── */}
+        <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="mb-10 max-w-2xl">
+            <p className={SECTION_LABEL}>Every dimension</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+              Six decisions.{" "}
+              <span className="text-primary">Thousands of combinations each.</span>
+            </h2>
+            <p className="text-white/80 leading-relaxed">
+              Tap any tile in the studio and the story shifts. Change the pairing and pronouns rewrite. Change the tags and the scenes rewrite. Nothing is decorative — it all lands in the script.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {CASTING_FEATURES.map((f, i) => (
+              <motion.div
+                key={f.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05, duration: 0.4 }}
+                className={CARD}
+              >
+                <div className="relative h-32 overflow-hidden">
+                  <img
+                    src={hiwAct4Src(f.slug)}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 w-full h-full object-cover opacity-90"
+                    style={{ objectPosition: "50% 20%" }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a10] via-[#0c0a10]/40 to-transparent" />
+                  <div className="absolute bottom-3 left-4 flex items-center gap-2">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center border"
+                      style={{ borderColor: `${f.accent}50`, background: `${f.accent}20`, color: f.accent }}
+                    >
+                      {f.icon}
+                    </div>
+                    <span className="text-sm font-bold text-white">{f.label}</span>
+                  </div>
+                </div>
+                <div className="p-4 pt-3">
+                  <p className="text-xs text-white/75 leading-relaxed mb-3">{f.desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {f.examples.map((ex) => (
+                      <span
+                        key={ex}
+                        className="px-2 py-0.5 rounded-full border text-[10px] font-medium"
+                        style={{ borderColor: `${f.accent}25`, color: `${f.accent}bb`, background: `${f.accent}08` }}
+                      >
+                        {ex}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Sample ── */}
+        <motion.section {...fade(0.05)} className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="rounded-3xl border border-primary/25 bg-[#0d0a06] p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" aria-hidden />
+            <div className="relative z-10 max-w-lg">
+              <p className={SECTION_LABEL}>Proof before you build</p>
+              <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-2">
+                Samples show the craft. Your story shows your choices.
+              </h3>
+              <p className="text-sm text-white/75">
+                Editor&apos;s picks are fixed scenarios — listen to the narration quality, then imagine it with your cast.
+              </p>
+            </div>
+            <Link
+              href="/samples"
+              className="relative z-10 flex-shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_32px_-6px_rgba(201,162,39,0.5)]"
+            >
+              <Headphones className="w-4 h-4" />
+              Hear samples — free
+            </Link>
+          </div>
+        </motion.section>
+
+        {/* ── Voices ── */}
+        <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
+          <div className="text-center mb-8">
+            <p className={SECTION_LABEL}>You choose the narrator too</p>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-white leading-tight">
+              Hear each voice before you commit —{" "}
+              <span className="text-primary">then lock it into your brief.</span>
+            </h2>
+          </div>
+          <VoiceShowcase />
+        </section>
+
+        {/* ── Deliverable ── */}
+        <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="text-center mb-10 max-w-2xl mx-auto">
+            <p className={SECTION_LABEL}>What lands in your library</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+              One brief in.{" "}
+              <span className="text-primary">A complete private story out.</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {[
+              { icon: <PenLine className="w-5 h-5" />, accent: "#c9a227", heading: "Original script", body: "Every choice from your brief reflected in the prose — not a template with blanks filled in." },
+              { icon: <Headphones className="w-5 h-5" />, accent: "#e879a0", heading: "Full cast audio", body: "Narrator plus separate voices for each character. Press play and disappear into it." },
+              { icon: <Lock className="w-5 h-5" />, accent: "#a78bfa", heading: "Private forever", body: "Saved to your account only. Replay, resume, or delete — your call, always." },
+            ].map((item) => (
+              <div key={item.heading} className={`${CARD} flex flex-col gap-3 p-6`}>
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center border"
                   style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
                 >
                   {item.icon}
                 </div>
-                <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/80 uppercase">
-                  {item.step}
-                </span>
+                <h3 className="text-sm font-bold text-white">{item.heading}</h3>
+                <p className="text-xs text-white/75 leading-relaxed">{item.body}</p>
               </div>
-              <h3 className="text-sm font-bold text-foreground mb-1.5 relative z-10 leading-snug">
-                {item.heading}
-              </h3>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed relative z-10">{item.body}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
 
-      {/* ── The Creation Room ── */}
-      <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="mb-10">
-          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-4">
-            The Creation Room
-          </span>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div className="max-w-xl">
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
-                You build the world.
-                <br className="hidden md:block" />
-                <span className="text-primary"> We write it into existence.</span>
-              </h2>
-              <p className="text-base text-muted-foreground leading-relaxed mb-3">
-                The Creation Room is where your story takes shape — one deliberate choice at a
-                time. You choose who's in the room, what pulls them together, the setting that
-                holds it all, and the mood that runs underneath every line.
-              </p>
-              <p className="text-sm text-muted-foreground/80 leading-relaxed">
-                Each choice adds a layer. By the time you reach the end, the story already
-                feels like it belongs to you — because it does. Nothing left to chance,
-                nothing left to someone else's imagination.
-              </p>
+        <TrustBar />
+
+        {/* ── Pricing ── */}
+        <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="rounded-3xl border border-primary/20 bg-[#0c0a10]/90 p-8 md:p-12">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
+              <div className="flex-1">
+                <p className={SECTION_LABEL}>Pay once per story</p>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-white leading-tight">
+                  Each credit = one fully personalised story.
+                </h2>
+                <p className="text-sm text-white/75 mt-2 max-w-sm leading-relaxed">
+                  No subscription. Build a new brief whenever you want a different cast, mood, or intensity.
+                </p>
+              </div>
+              <Link
+                href="/pricing"
+                className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-all whitespace-nowrap"
+              >
+                See all packs
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-3">20 stories</p>
+                <span className="font-display text-3xl font-bold text-white tabular-nums">{pack20.display}</span>
+                <p className="text-xs text-white/70 my-4 flex-1"><span className="tabular-nums">{pack20.perStoryDisplay}</span> per story</p>
+                <Link href="/pricing" className="py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold text-center hover:bg-primary/90 transition-all">
+                  Unlock 20 Stories
+                </Link>
+              </div>
+              <div className="rounded-2xl border border-white/12 bg-white/[0.03] p-6 flex flex-col">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-3">5 stories</p>
+                <span className="font-display text-3xl font-bold text-white tabular-nums">{pack5.display}</span>
+                <p className="text-xs text-white/70 my-4 flex-1"><span className="tabular-nums">{pack5.perStoryDisplay}</span> per story</p>
+                <Link href="/pricing" className="py-2.5 rounded-full border border-white/20 text-sm font-semibold text-white/85 text-center hover:border-primary/40 hover:text-primary transition-all">
+                  Get 5 Stories
+                </Link>
+              </div>
+              <div className="rounded-2xl border border-white/12 bg-white/[0.03] p-6 flex flex-col">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-3">Try one</p>
+                <span className="font-display text-3xl font-bold text-white tabular-nums">{pack1.display}</span>
+                <p className="text-xs text-white/70 my-4 flex-1">Build your first brief</p>
+                <Link href="/after-dark" className="py-2.5 rounded-full border border-white/20 text-sm font-semibold text-white/85 text-center hover:border-primary/40 hover:text-primary transition-all">
+                  Start personalising
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {CASTING_FEATURES.map((f, i) => (
-            <motion.div
-              key={f.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07, duration: 0.4 }}
-              className="relative rounded-2xl border border-border/20 bg-card/15 p-5 hover:border-border/40 hover:bg-card/25 transition-all overflow-hidden"
-            >
-              <div
-                className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl pointer-events-none opacity-60"
-                style={{ background: `${f.accent}18` }}
+        {/* ── Final CTA ── */}
+        <motion.section {...fade(0.1)} className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+          <div className="relative overflow-hidden rounded-3xl border border-primary/25 px-8 py-14 text-center flex flex-col items-center gap-6">
+            <div className="absolute inset-0 pointer-events-none" aria-hidden>
+              <img
+                src={hiwAct4Src("yours")}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-25"
               />
-              <div className="flex items-center gap-2.5 mb-3 relative z-10">
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 border"
-                  style={{ borderColor: `${f.accent}40`, background: `${f.accent}12`, color: f.accent }}
-                >
-                  {f.icon}
-                </div>
-                <span className="text-xs font-bold text-foreground/80 tracking-wide">{f.label}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed mb-3 relative z-10">{f.desc}</p>
-              <div className="flex flex-wrap gap-1.5 relative z-10">
-                {f.examples.map((ex) => (
-                  <span
-                    key={ex}
-                    className="px-2 py-0.5 rounded-full border text-[10px] font-medium"
-                    style={{ borderColor: `${f.accent}25`, color: `${f.accent}bb`, background: `${f.accent}08` }}
-                  >
-                    {ex}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Voice narrator showcase ── */}
-      <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <VoiceShowcase />
-      </section>
-
-      {/* ── What you get ── */}
-      <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
-            What you get at the end
-          </p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            A complete, original story —
-            <br className="hidden md:block" />
-            <span className="text-primary"> written, narrated, illustrated.</span>
-          </h2>
-          <p className="text-muted-foreground mt-3 max-w-md mx-auto text-base leading-relaxed">
-            Not a text file. Not a rough draft. A finished story — narrated in a voice that
-            fits, with original cover art — ready to play the moment it's created.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {[
-            {
-              icon: <PenLine className="w-5 h-5" />,
-              accent: "#c9a227",
-              heading: "Written for you",
-              body: "An original story — not a template — shaped around every choice you made in the Creation Room. No two stories are alike.",
-            },
-            {
-              icon: <Headphones className="w-5 h-5" />,
-              accent: "#e879a0",
-              heading: "Ready to play",
-              body: "Narrated and waiting. Press play when you want — wherever you are. No reading required.",
-            },
-            {
-              icon: <Lock className="w-5 h-5" />,
-              accent: "#a78bfa",
-              heading: "Privately yours",
-              body: "Saved to your account. Visible to no one else. Return to it, replay it, or quietly remove it — entirely at your discretion.",
-            },
-          ].map((item) => (
-            <div
-              key={item.heading}
-              className="flex flex-col gap-3 rounded-2xl border border-border/20 bg-card/15 p-6"
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center border"
-                style={{ borderColor: `${item.accent}40`, background: `${item.accent}12`, color: item.accent }}
-              >
-                {item.icon}
-              </div>
-              <h3 className="text-sm font-bold text-foreground">{item.heading}</h3>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0810] via-[#0a0810]/92 to-[#0a0810]/85" />
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Pricing ── */}
-      <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="rounded-3xl border border-border/25 bg-card/20 p-8 md:p-12">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-center mb-8">
-            <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
-                Access
-              </p>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-tight">
-                One-time credit packs.
-                <br className="hidden md:block" /> Private stories whenever the moment calls.
+            <div className="relative z-10 max-w-lg">
+              <p className={SECTION_LABEL}>Ready when you are</p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
+                Your cast. Your desires. Your story.
               </h2>
-              <p className="text-sm text-muted-foreground/80 mt-2 max-w-sm leading-relaxed">
-                Every pack includes custom stories, the full curated collection, private library, narration, and original cover art. Pay once — credits never expire.
+              <p className="text-white/80">
+                The brief takes minutes. The story is written around every choice you make.
               </p>
             </div>
             <Link
-              href="/pricing"
-              className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-all whitespace-nowrap"
+              href="/after-dark"
+              className="relative z-10 inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_28px_-8px_rgba(201,162,39,0.55)]"
             >
-              See all plan details
+              <Sparkles className="w-4 h-4" />
+              Build your brief — from {pack1.display}
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
+        </motion.section>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            {/* Immersive Collection — Best Value */}
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 relative overflow-hidden shadow-[0_0_40px_-12px_rgba(201,162,39,0.2)] flex flex-col">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
-              <div className="flex items-center gap-2 mb-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
-                  Immersive Collection
-                </p>
-                <span className="px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold tracking-wider uppercase">
-                  Best value
-                </span>
-              </div>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack20.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                20 stories · <span className="tabular-nums">{pack20.perStoryDisplay}</span> per story · After Dark · credits never expire
-              </p>
-              <Link
-                href="/pricing"
-                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_24px_-4px_rgba(201,162,39,0.4)]"
-              >
-                Unlock 20 Stories
-              </Link>
-            </div>
-
-            {/* Immersive Bundle */}
-            <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
-                Immersive Bundle
-              </p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack5.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                5 stories · <span className="tabular-nums">{pack5.perStoryDisplay}</span> per story · After Dark · credits never expire
-              </p>
-              <Link
-                href="/pricing"
-                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
-              >
-                Get 5 Stories
-              </Link>
-            </div>
-
-            {/* Immersive Story — trial */}
-            <div className="rounded-2xl border border-border/25 bg-background/30 p-6 flex flex-col">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">
-                Immersive Story
-              </p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-3xl font-bold text-foreground tabular-nums">{pack1.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
-                1 story · the simplest way to try your first private story
-              </p>
-              <Link
-                href="/pricing"
-                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-border/40 bg-background/40 text-sm font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary transition-all"
-              >
-                Create One Story
-              </Link>
-            </div>
-
-          </div>
-
-          <div className="text-center">
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground/80">
-              {[
-                "Private library included",
-                "Credits never expire",
-                "Add more stories whenever you want",
-              ].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <span className="w-1 h-1 rounded-full bg-primary/30 inline-block" />
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Privacy trust row ── */}
-      <section className="py-14 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TRUST_POINTS.map((t) => (
-            <div key={t.label} className="flex items-start gap-4 p-6 rounded-2xl border border-border/15 bg-card/10">
-              <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-                {t.icon}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground mb-1">{t.label}</p>
-                <p className="text-xs text-muted-foreground/80 leading-relaxed">{t.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Final conversion CTA ── */}
-      <motion.section {...fade(0.1)} className="py-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div
-          className="rounded-3xl border border-border/20 bg-card/15 px-8 py-14 text-center flex flex-col items-center gap-8"
-          style={{ background: "linear-gradient(180deg, rgba(201,162,39,0.04) 0%, rgba(0,0,0,0) 100%)" }}
-        >
-          <div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
-              Your story is waiting to be written.
-            </h2>
-            <p className="text-base text-muted-foreground/80 max-w-sm mx-auto">
-              Choose where it begins.
-            </p>
-          </div>
-
-          <MiniDoorCTA />
-
-          <Link
-            href="/samples"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-          >
-            <Headphones className="w-3.5 h-3.5" />
-            Or hear a sample story first — free
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </motion.section>
-
-    </div>
+      </div>
+    </motion.div>
   );
 }

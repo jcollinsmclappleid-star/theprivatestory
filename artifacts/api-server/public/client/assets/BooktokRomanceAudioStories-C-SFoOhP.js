@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-CiSdDXy4.js";import{S as t,g as r}from"./SEOPage-Ckc6eXEV.js";import"./index-CzutWfkm.js";import"./data-editors-picks-CJizIKSx.js";const i=r("booktok-romance-audio-stories");function n(){return o.jsx(t,{config:i,slug:"booktok-romance-audio-stories"})}export{n as default};

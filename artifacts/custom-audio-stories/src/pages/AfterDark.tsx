@@ -1,5 +1,5 @@
 /* @refresh reset */
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, Loader2 } from "lucide-react";
 import { useGenerateFullStory } from "@workspace/api-client-react";
@@ -8,11 +8,41 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
 import { useSEO } from "@/hooks/useSEO";
 import { usePricing } from "@/hooks/usePricing";
-import { CastingRoom, PAIRINGS } from "@/components/CastingRoom";
+import { CastingRoom, PAIRINGS, buildChemistries } from "@/components/CastingRoom";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { VOICES, resolveCharacterVoices } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
+import { AfterDarkCreationBackdrop } from "@/components/AfterDarkCreationBackdrop";
+import {
+  AfterDarkExpressPairing,
+  AfterDarkExpressFantasy,
+  AfterDarkExpressWorld,
+  AfterDarkExpressMakeItYours,
+  type ExpressBriefState,
+} from "@/components/AfterDarkExpress";
+import { StoryRevealPaywall } from "@/components/StoryRevealPaywall";
+import {
+  buildExpressCasting,
+  CURATED_SCENARIO_IDS,
+  homeIntensityToCasting,
+  readHomeBrief,
+  voiceNameToId,
+  type ExpressScenario,
+} from "@/lib/afterDarkExpress";
+import {
+  EXPRESS_SETTINGS,
+  suggestAfterDarkSceneForRoom,
+  suggestCountryForSetting,
+  suggestSettingForScenarioRoom,
+} from "@/lib/worldSelection";
+import { intensityToIndex } from "@/components/BriefBuilder";
+import {
+  buildStoryRevealContent,
+  getScenarioRoomImage,
+  PENDING_CAST_KEY,
+  type PendingAfterDarkCast,
+} from "@/lib/storyReveal";
 
 /* ── Pronoun adaptation for scenario text ────────────────────────── */
 type PCtxFull = {
@@ -1196,16 +1226,28 @@ function DarknessBadge({ level }: { level: DarknessLevel }) {
   );
 }
 
+/* ── Pairing hero images ─────────────────────────────────────────────── */
+const PAIRING_IMAGES: Record<string, string> = {
+  "Her & Him": "images/chemistry/lovers.webp",
+  "Her & Her": "images/seo-body-spa-two-women.png",
+  "Him & Him": "images/chemistry/rivals.webp",
+  "Her & Them": "images/chemistry/playful.webp",
+  "Him & Them": "images/energy/charmer.webp",
+  "Them & Them": "images/chemistry/equal_tension.webp",
+};
+
 /* ── Scenario card ──────────────────────────────────────────────────── */
 function ScenarioCard({
   scenario,
   selected,
   locked,
+  coverImage,
   onClick,
 }: {
   scenario: Scenario;
   selected?: boolean;
   locked?: boolean;
+  coverImage?: string | null;
   onClick?: () => void;
 }) {
   return (
@@ -1226,7 +1268,20 @@ function ScenarioCard({
       }`}
       style={{ minHeight: "185px" }}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient}`} />
+      {coverImage && (
+        <img
+          src={coverImage}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
+          style={{ opacity: 0.72 }}
+        />
+      )}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient}`}
+        style={{ opacity: coverImage ? 0.45 : 1 }}
+      />
       <motion.div
         animate={{ opacity: selected ? [0.4, 0.7, 0.4] : [0.1, 0.2, 0.1] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -1299,7 +1354,40 @@ export default function AfterDark() {
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [showLanding, setShowLanding] = useState(true);
-  const [phase, setPhase] = useState<"pairing" | "scenario" | "casting" | "generating" | "result" | "paywall">("pairing");
+  const [phase, setPhase] = useState<
+    | "express_pairing"
+    | "express_fantasy"
+    | "express_world"
+    | "express_scenes"
+    | "pairing"
+    | "scenario"
+    | "casting"
+    | "generating"
+    | "result"
+    | "paywall"
+  >("express_pairing");
+  const [hasHomeBrief, setHasHomeBrief] = useState(false);
+  const [expressIntensityIndex, setExpressIntensityIndex] = useState(1);
+  const [expressChemistry, setExpressChemistry] = useState("Forbidden Pull");
+  const [expressArchetype, setExpressArchetype] = useState("The Executive");
+  const [expressVoiceName, setExpressVoiceName] = useState("Clara");
+  const [expressCountry, setExpressCountry] = useState("");
+  const [expressCity, setExpressCity] = useState("");
+  const [expressSetting, setExpressSetting] = useState("");
+  const [expressHeritage, setExpressHeritage] = useState("Ambiguous");
+  const [expressCustomTags, setExpressCustomTags] = useState<string[]>([]);
+  const [expressAfterDarkScene, setExpressAfterDarkScene] = useState("Private Club");
+  const [expressAtmosphere, setExpressAtmosphere] = useState("Candlelit");
+  const [expressMood, setExpressMood] = useState("Forbidden");
+  const [expressRoomTab, setExpressRoomTab] = useState("featured");
+  const [expressChooseForMe, setExpressChooseForMe] = useState(false);
+
+  const toggleExpressTag = useCallback((tag: string) => {
+    setExpressCustomTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+  }, []);
+  const [browseFromExpress, setBrowseFromExpress] = useState(false);
   const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
@@ -1332,7 +1420,77 @@ export default function AfterDark() {
   }, [currency]);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
+  const [storyCredits, setStoryCredits] = useState<number | null>(null);
+  const [creditsLoading, setCreditsLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const curatedScenarios = useMemo(
+    () =>
+      CURATED_SCENARIO_IDS.map((id) => SCENARIOS.find((s) => s.id === id))
+        .filter((s): s is Scenario => !!s),
+    [],
+  );
+
+  const startFunnel = useCallback(() => {
+    setShowLanding(false);
+    const brief = readHomeBrief();
+    if (brief) {
+      setHasHomeBrief(true);
+      setSelectedPairing(brief.pairing);
+      setExpressChemistry(brief.chemistry);
+      setExpressArchetype(brief.archetype);
+      setExpressVoiceName(brief.voice);
+      setExpressIntensityIndex(intensityToIndex(brief.intensity));
+      if (brief.setting) {
+        const match = EXPRESS_SETTINGS.find(
+          (s) => s.id === brief.setting || s.label === brief.setting,
+        );
+        setExpressSetting(match?.id ?? brief.setting);
+      }
+      const countryGuess = suggestCountryForSetting(brief.setting);
+      if (countryGuess) setExpressCountry(countryGuess);
+    } else {
+      setHasHomeBrief(false);
+    }
+    setPhase("express_pairing");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const expressIntensity = useMemo((): CastingRoomResult["intensity"] => {
+    const labels = ["Slow burn", "Warm", "Explicit", "Unrestrained"] as const;
+    return homeIntensityToCasting(labels[expressIntensityIndex] ?? "Warm");
+  }, [expressIntensityIndex]);
+
+  const expressBrief = useMemo((): ExpressBriefState => ({
+    scenario: selectedScenario as ExpressScenario | null,
+    pairing: selectedPairing,
+    intensity: expressIntensity,
+    country: expressCountry,
+    city: expressCity,
+    setting: expressSetting,
+    afterDarkScene: expressAfterDarkScene,
+    atmosphere: expressAtmosphere,
+    heritage: expressHeritage,
+    chemistry: expressChemistry,
+    archetype: expressArchetype,
+    mood: expressMood,
+    voiceName: expressVoiceName,
+    customTags: expressCustomTags,
+  }), [
+    selectedScenario,
+    selectedPairing,
+    expressIntensity,
+    expressCountry,
+    expressCity,
+    expressSetting,
+    expressAfterDarkScene,
+    expressAtmosphere,
+    expressHeritage,
+    expressChemistry,
+    expressArchetype,
+    expressMood,
+    expressVoiceName,
+    expressCustomTags,
+  ]);
 
   useEffect(() => {
     const handler = (e: PageTransitionEvent) => {
@@ -1354,8 +1512,14 @@ export default function AfterDark() {
   // so by the time the paywall appears it's already fetched.
   const preGenCoverPromise = useRef<Promise<string | null> | null>(null);
 
-  const fetchPreviewCover = useCallback(async (pairing?: string): Promise<string | null> => {
-    const cacheKey = `preview-cover:afterdark:${pairing ?? "default"}`;
+  const fetchPreviewCover = useCallback(async (opts?: {
+    pairing?: string;
+    intensity?: string;
+    heritage?: string;
+    mood?: string;
+    archetype?: string;
+  }): Promise<string | null> => {
+    const cacheKey = `preview-cover:afterdark:${opts?.pairing ?? "default"}:${opts?.intensity ?? "warm"}`;
     try {
       const cached = sessionStorage.getItem(cacheKey);
       if (cached) return cached;
@@ -1365,7 +1529,12 @@ export default function AfterDark() {
         const r = await fetch(`${API_BASE}/api/preview-cover`, {
           method: "POST", credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mood: "After Dark", intensity: "Unrestrained", pairing }),
+          body: JSON.stringify({
+            mood: opts?.mood ?? "After Dark",
+            intensity: opts?.intensity ?? "Warm",
+            pairing: opts?.pairing,
+            heritage: opts?.heritage,
+          }),
         });
         if (r.ok) {
           const d = await r.json() as { url?: string };
@@ -1406,6 +1575,14 @@ export default function AfterDark() {
       } catch { /* malformed storage */ }
       sessionStorage.removeItem("afterDarkCheckoutState");
     }
+    try {
+      const pendingRaw = sessionStorage.getItem(PENDING_CAST_KEY);
+      if (pendingRaw) {
+        const pending = JSON.parse(pendingRaw) as PendingAfterDarkCast;
+        setPendingAfterDarkCast(pending);
+      }
+    } catch { /* malformed storage */ }
+    setShowLanding(false);
     setPhase("paywall");
   }, []);
 
@@ -1421,45 +1598,49 @@ export default function AfterDark() {
   useEffect(() => {
     if (phase !== "paywall") {
       if (phase === "pairing") {
-        // Full reset — user navigated all the way back
         preGenCoverPromise.current = null;
         setPaywallCoverUrl(null);
       }
       return;
     }
     setPaywallImageLoading(true);
-    (async () => {
-      // Use pre-generated image if available (started when scenario was selected)
+    setCreditsLoading(true);
+
+    void fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { storyCreditsRemaining?: number; storiesRemaining?: number } | null) => {
+        setStoryCredits(d?.storyCreditsRemaining ?? d?.storiesRemaining ?? 0);
+      })
+      .catch(() => setStoryCredits(0))
+      .finally(() => setCreditsLoading(false));
+
+    const casting = lastCastingData ?? {};
+    const pairing = (casting.pairing as string | undefined) ?? selectedPairing ?? undefined;
+
+    void (async () => {
       if (preGenCoverPromise.current) {
         const url = await preGenCoverPromise.current;
-        if (url) { setPaywallCoverUrl(url); setPaywallImageLoading(false); return; }
+        if (url) {
+          setPaywallCoverUrl(url);
+          setPaywallImageLoading(false);
+          return;
+        }
       }
-      // Fallback: generate now (no pre-gen started, or it failed)
-      const pairing = (lastCastingData?.pairing as string | undefined) ?? selectedPairing ?? undefined;
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try {
-          const r = await fetch(`${API_BASE}/api/preview-cover`, {
-            method: "POST", credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mood: "After Dark", intensity: "Unrestrained", pairing }),
-          });
-          if (r.ok) {
-            const d = await r.json() as { url?: string };
-            if (d?.url) { setPaywallCoverUrl(d.url); setPaywallImageLoading(false); return; }
-          }
-        } catch {}
-        if (attempt < 1) await new Promise(res => setTimeout(res, 1500));
-      }
+      const url = await fetchPreviewCover({
+        pairing,
+        intensity: casting.intensity as string | undefined,
+        heritage: casting.heritage as string | undefined,
+        mood: casting.mood as string | undefined,
+        archetype: casting.archetype as string | undefined,
+      });
+      if (url) setPaywallCoverUrl(url);
       setPaywallImageLoading(false);
     })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
   const [presetSaved, setPresetSaved] = useState(false);
-  const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<{
-    casting: CastingRoomResult;
-    allTags: string[];
-  } | null>(null);
+  const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<PendingAfterDarkCast | null>(null);
   const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const { play } = useAudioPlayer();
@@ -1615,13 +1796,23 @@ export default function AfterDark() {
       }
 
       const storyMode = selectedScenario?.storyMode ?? "unrestrained";
+      const voice = casting.voiceId ? VOICES.find((v) => v.id === casting.voiceId) : null;
 
-      const castingSnapshot = {
+      const castingSnapshot: Record<string, unknown> = {
         archetype: casting.archetype,
         dynamic: casting.dynamic,
+        chemistry: casting.chemistry,
         intensity: casting.intensity,
+        mood: casting.mood,
+        setting: casting.setting,
+        atmosphere: casting.atmosphere,
+        heritage: casting.heritage,
+        situation: casting.situation,
+        country: casting.country,
+        city: casting.city,
         storyMode,
         voiceId: casting.voiceId,
+        voiceName: voice?.displayName ?? voice?.label,
         pairing: casting.pairing || selectedPairing || undefined,
       };
 
@@ -1629,12 +1820,102 @@ export default function AfterDark() {
       setPresetSaved(false);
 
       const allTags = [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
-      setPendingAfterDarkCast({ casting, allTags });
+      const pending: PendingAfterDarkCast = {
+        casting,
+        allTags,
+        scenarioId: selectedScenario?.id,
+      };
+      setPendingAfterDarkCast(pending);
+      try {
+        sessionStorage.setItem(PENDING_CAST_KEY, JSON.stringify(pending));
+      } catch { /* storage unavailable */ }
 
-      // Skip the preset-prompt step — go straight to generation.
-      void handleAutoGenerateAfterDark(casting, allTags);
+      preGenCoverPromise.current = fetchPreviewCover({
+        pairing: castingSnapshot.pairing as string | undefined,
+        intensity: casting.intensity,
+        heritage: casting.heritage,
+        mood: casting.mood,
+        archetype: casting.archetype,
+      });
+
+      setPhase("paywall");
     },
-    [selectedScenario, handleAutoGenerateAfterDark]
+    [selectedScenario, selectedPairing, fetchPreviewCover]
+  );
+
+  const finishExpress = useCallback(
+    (chooseForMe: boolean) => {
+      if (!selectedScenario || !selectedPairing) return;
+      const casting = buildExpressCasting(
+        selectedScenario as ExpressScenario,
+        selectedPairing,
+        expressIntensity,
+        {
+          chemistry: expressChemistry,
+          archetype: expressArchetype,
+          voiceId: voiceNameToId(expressVoiceName, selectedPairing),
+          country: expressCountry || undefined,
+          city: expressCity || undefined,
+          setting: expressSetting || undefined,
+          afterDarkScene: expressAfterDarkScene || undefined,
+          atmosphere: expressAtmosphere || undefined,
+          mood: expressMood || undefined,
+          heritage: expressHeritage || undefined,
+          customTags: expressCustomTags.length ? expressCustomTags : undefined,
+          chooseForMe,
+        },
+      );
+      handleCastingComplete(casting);
+    },
+    [
+      selectedScenario,
+      selectedPairing,
+      expressIntensity,
+      expressChemistry,
+      expressArchetype,
+      expressVoiceName,
+      expressCountry,
+      expressCity,
+      expressSetting,
+      expressAfterDarkScene,
+      expressAtmosphere,
+      expressHeritage,
+      expressCustomTags,
+      expressMood,
+      handleCastingComplete,
+    ],
+  );
+
+  const handleWriteWithCredit = useCallback(() => {
+    if (!pendingAfterDarkCast) return;
+    void handleAutoGenerateAfterDark(pendingAfterDarkCast.casting, pendingAfterDarkCast.allTags);
+  }, [pendingAfterDarkCast, handleAutoGenerateAfterDark]);
+
+  const activePairingId =
+    (lastCastingData?.pairing as string | undefined) ?? confirmedPairing ?? selectedPairing;
+  const activePairingCfg = PAIRINGS.find((p) => p.id === activePairingId);
+  const protagonistPronouns = activePairingCfg?.protagonistPronouns ?? "she/her";
+  const partnerPronouns = activePairingCfg?.partnerPronouns ?? "he/him";
+
+  const storyReveal = useMemo(() => {
+    const scenarioForReveal = selectedScenario
+      ? {
+          label: adaptScenarioText(selectedScenario.label, protagonistPronouns, partnerPronouns),
+          sub: adaptScenarioText(selectedScenario.sub, protagonistPronouns, partnerPronouns),
+          room: selectedScenario.room,
+          darkness: selectedScenario.darkness,
+          accent: selectedScenario.accent,
+          storyMode: selectedScenario.storyMode,
+        }
+      : null;
+    return buildStoryRevealContent(lastCastingData ?? {}, scenarioForReveal);
+  }, [lastCastingData, selectedScenario, protagonistPronouns, partnerPronouns]);
+
+  const revealFallbackCover = useMemo(
+    () =>
+      getScenarioRoomImage(selectedScenario?.room, import.meta.env.BASE_URL) ??
+      `${import.meta.env.BASE_URL}images/creation-room-hero.webp`,
+    [selectedScenario?.room],
   );
 
   if (!ageConfirmed) {
@@ -1655,7 +1936,7 @@ export default function AfterDark() {
   if (showLanding) {
     return (
       <AnimatePresence mode="wait">
-        <AfterDarkLanding key="after-dark-landing" onEnter={() => setShowLanding(false)} />
+        <AfterDarkLanding key="after-dark-landing" onEnter={startFunnel} />
       </AnimatePresence>
     );
   }
@@ -1698,13 +1979,140 @@ export default function AfterDark() {
   */
 
   return (
-    <div
-      className="w-full min-h-screen"
-      style={{ background: "linear-gradient(180deg, #030303 0%, #070205 60%, #0a0205 100%)" }}
-    >
+    <div className="relative w-full min-h-screen">
+      {(phase === "express_pairing" || phase === "express_fantasy" || phase === "express_world" || phase === "express_scenes" || phase === "pairing" || phase === "scenario" || phase === "casting") && (
+        <AfterDarkCreationBackdrop />
+      )}
+      <div className="relative z-10 w-full min-h-screen">
       <AnimatePresence mode="wait">
 
-        {/* ── Pairing Selection (first step in After Dark) ───────────────── */}
+        {phase === "express_pairing" && (
+          <motion.div key="express_pairing" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <AfterDarkExpressPairing
+              pairings={PAIRINGS}
+              selectedPairing={selectedPairing}
+              heritage={expressHeritage}
+              brief={expressBrief}
+              onPairing={(id) => {
+                setSelectedPairing(id);
+                setConfirmedPairing(id);
+                const chemistries = buildChemistries(id);
+                const validChemistry = chemistries.find((c) => c.id === expressChemistry);
+                if (!validChemistry && chemistries[0]) {
+                  setExpressChemistry(chemistries[0].id);
+                }
+                preGenCoverPromise.current = fetchPreviewCover({ pairing: id, intensity: expressIntensity });
+              }}
+              onHeritage={setExpressHeritage}
+              onContinue={() => {
+                if (!selectedPairing || !expressHeritage) return;
+                window.scrollTo({ top: 0 });
+                setPhase("express_fantasy");
+              }}
+              onOpenStudio={() => setPhase("pairing")}
+            />
+          </motion.div>
+        )}
+
+        {phase === "express_fantasy" && selectedPairing && (
+          <motion.div key="express_fantasy" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <AfterDarkExpressFantasy
+              rooms={ROOMS}
+              curatedScenarios={curatedScenarios}
+              allScenarios={SCENARIOS}
+              activeRoomTab={expressRoomTab}
+              selectedScenario={selectedScenario}
+              intensityIndex={expressIntensityIndex}
+              homeBriefBanner={hasHomeBrief}
+              brief={expressBrief}
+              adaptScenarioText={(text) => {
+                const cfg = PAIRINGS.find((p) => p.id === selectedPairing);
+                return adaptScenarioText(
+                  text,
+                  cfg?.protagonistPronouns ?? "she/her",
+                  cfg?.partnerPronouns ?? "he/him",
+                );
+              }}
+              onRoomTab={setExpressRoomTab}
+              onScenario={(s) => {
+                setSelectedScenario(s as Scenario);
+                const suggested = suggestSettingForScenarioRoom(s.room);
+                setExpressSetting(suggested);
+                setExpressAfterDarkScene(suggestAfterDarkSceneForRoom(s.room));
+                const country = suggestCountryForSetting(suggested);
+                if (country) setExpressCountry(country);
+                preGenCoverPromise.current = fetchPreviewCover({
+                  pairing: selectedPairing ?? undefined,
+                  intensity: expressIntensity,
+                  mood: s.tags[0],
+                });
+              }}
+              onIntensity={setExpressIntensityIndex}
+              onContinue={() => {
+                if (!selectedScenario) return;
+                window.scrollTo({ top: 0 });
+                setPhase("express_world");
+              }}
+              onOpenStudio={() => setPhase("pairing")}
+            />
+          </motion.div>
+        )}
+
+        {phase === "express_world" && selectedScenario && selectedPairing && (
+          <motion.div key="express_world" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <AfterDarkExpressWorld
+              scenario={selectedScenario as ExpressScenario}
+              selectedPairing={selectedPairing}
+              country={expressCountry}
+              city={expressCity}
+              setting={expressSetting}
+              chemistry={expressChemistry}
+              archetype={expressArchetype}
+              voiceName={expressVoiceName}
+              brief={expressBrief}
+              onCountry={(c) => {
+                setExpressCountry(c);
+                setExpressCity("");
+              }}
+              onCity={setExpressCity}
+              onSetting={(s) => {
+                setExpressSetting(s);
+                const country = suggestCountryForSetting(s);
+                if (country) setExpressCountry(country);
+              }}
+              onChemistry={setExpressChemistry}
+              onArchetype={setExpressArchetype}
+              onVoice={setExpressVoiceName}
+              onContinue={() => {
+                window.scrollTo({ top: 0 });
+                setPhase("express_scenes");
+              }}
+              onBack={() => setPhase("express_fantasy")}
+            />
+          </motion.div>
+        )}
+
+        {phase === "express_scenes" && selectedScenario && selectedPairing && (
+          <motion.div key="express_scenes" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <AfterDarkExpressMakeItYours
+              selectedPairing={selectedPairing}
+              customTags={expressCustomTags}
+              brief={expressBrief}
+              onTagToggle={toggleExpressTag}
+              onSkip={() => {
+                finishExpress(expressChooseForMe);
+                setExpressChooseForMe(false);
+              }}
+              onReveal={() => {
+                finishExpress(expressChooseForMe);
+                setExpressChooseForMe(false);
+              }}
+              onBack={() => setPhase("express_world")}
+            />
+          </motion.div>
+        )}
+
+        {/* ── Pairing Selection (Studio path) ──────────────────────────── */}
         {phase === "pairing" && (
           <motion.div
             key="pairing"
@@ -1737,6 +2145,7 @@ export default function AfterDark() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {PAIRINGS.map(p => {
                 const selected = selectedPairing === p.id;
+                const pairingImage = PAIRING_IMAGES[p.id];
                 return (
                   <motion.button
                     key={p.id}
@@ -1745,24 +2154,39 @@ export default function AfterDark() {
                     whileTap={{ scale: 0.97 }}
                     onClick={() => {
                       setSelectedPairing(p.id);
-                      // Start cover fetch immediately — pairing is now known.
-                      // By the time the user picks a scenario and casting completes,
-                      // the image will be ready and the paywall won't show a spinner.
-                      preGenCoverPromise.current = fetchPreviewCover(p.id);
+                      preGenCoverPromise.current = fetchPreviewCover({ pairing: p.id });
                       setTimeout(() => setPhase("scenario"), 280);
                     }}
-                    className={`relative overflow-hidden rounded-2xl border text-left p-5 transition-colors ${
+                    className={`relative overflow-hidden rounded-2xl border text-left p-5 min-h-[120px] transition-colors ${
                       selected
                         ? "border-white/30 shadow-[0_0_20px_rgba(192,57,43,0.2)]"
                         : "border-white/8 hover:border-white/20"
                     }`}
-                    style={{
-                      background: `linear-gradient(135deg, ${p.accent}18 0%, transparent 70%)`,
-                    }}
                   >
-                    <div className="absolute top-3 right-3 w-2 h-2 rounded-full" style={{ background: p.accent, opacity: selected ? 1 : 0.3 }} />
-                    <p className="font-bold text-white text-base mb-0.5">{p.label}</p>
-                    <p className="text-white/65 text-sm">{p.sub}</p>
+                    {pairingImage && (
+                      <img
+                        src={`${import.meta.env.BASE_URL}${pairingImage}`}
+                        alt=""
+                        aria-hidden
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        style={{ opacity: 0.65 }}
+                      />
+                    )}
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${p.gradient}`}
+                      style={{ opacity: pairingImage ? 0.55 : 1 }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: `radial-gradient(ellipse at 70% 30%, ${p.accent}35 0%, transparent 65%)`,
+                      }}
+                    />
+                    <div className="relative z-10">
+                      <div className="absolute top-0 right-0 w-2 h-2 rounded-full" style={{ background: p.accent, opacity: selected ? 1 : 0.3 }} />
+                      <p className="font-bold text-white text-base mb-0.5">{p.label}</p>
+                      <p className="text-white/75 text-sm">{p.sub}</p>
+                    </div>
                   </motion.button>
                 );
               })}
@@ -1787,11 +2211,18 @@ export default function AfterDark() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-4">
                 <button
-                  onClick={() => setPhase("pairing")}
+                  onClick={() => {
+                    if (browseFromExpress) {
+                      setBrowseFromExpress(false);
+                      setPhase("express_fantasy");
+                    } else {
+                      setPhase("pairing");
+                    }
+                  }}
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  Change pairing
+                  {browseFromExpress ? "Back to express" : "Change pairing"}
                 </button>
                 {selectedPairing && (
                   <span className="text-xs font-medium px-2.5 py-0.5 rounded-full"
@@ -1890,20 +2321,24 @@ export default function AfterDark() {
                               scenario={adaptedScenario}
                               selected={selectedScenario?.id === scenario.id}
                               locked={isLockedByPairing}
+                              coverImage={getScenarioRoomImage(scenario.room, import.meta.env.BASE_URL)}
                               onClick={() => {
                                 if (isLockedByPairing) return;
                                 const next = selectedScenario?.id === scenario.id ? null : scenario;
                                 setSelectedScenario(next);
                                 if (next) {
-                                  // Start generating the cover image immediately — it'll be ready by the time the paywall appears
-                                  preGenCoverPromise.current = fetchPreviewCover(selectedPairing ?? confirmedPairing ?? undefined);
-                                  // Pre-load pairing into CastingRoom so step 0 is skipped
+                                  preGenCoverPromise.current = fetchPreviewCover({ pairing: selectedPairing ?? confirmedPairing ?? undefined });
                                   if (selectedPairing) {
                                     setCastingHandoff({ pairing: selectedPairing, handoffStep: 1 });
                                     setConfirmedPairing(selectedPairing);
                                   }
                                   window.scrollTo({ top: 0 });
-                                  setPhase("casting");
+                                  if (browseFromExpress) {
+                                    setBrowseFromExpress(false);
+                                    setPhase("express_fantasy");
+                                  } else {
+                                    setPhase("casting");
+                                  }
                                 }
                               }}
                             />
@@ -1972,202 +2407,39 @@ export default function AfterDark() {
           </motion.div>
         )}
 
-        {/* ── Paywall ──────────────────────────────────────────────────── */}
+        {/* ── Paywall — story reveal + library packs ───────────────────── */}
         {phase === "paywall" && (
           <motion.div
             key="paywall"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60]"
           >
-            {/* Cinematic dark-crimson background */}
-            <div className="absolute inset-0">
-              <img
-                src={`${import.meta.env.BASE_URL}images/creation-room-hero.webp`}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover object-top opacity-30"
-                style={{ objectPosition: "center top" }}
-              />
-            </div>
-            <div
-              className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #1a050580 0%, #0a020288 55%, #000 100%)" }}
+            <StoryRevealPaywall
+              reveal={storyReveal}
+              coverUrl={paywallCoverUrl}
+              fallbackCoverUrl={revealFallbackCover}
+              coverLoading={paywallImageLoading}
+              accentHex={selectedScenario?.accent ?? "#c0392b"}
+              darknessLabel={selectedScenario?.darkness}
+              pack1={pack1}
+              pack5={pack5}
+              pack20={pack20}
+              currency={currency}
+              checkoutError={paywallCheckoutError}
+              loadingPlan={paywallLoadingPlan}
+              storyCredits={storyCredits}
+              creditsLoading={creditsLoading}
+              onCheckout={doPaywallCheckout}
+              onWriteWithCredit={handleWriteWithCredit}
+              onStartOver={() => {
+                setPhase("express_1");
+                setSelectedScenario(null);
+                setPendingAfterDarkCast(null);
+                setBrowseFromExpress(false);
+                try { sessionStorage.removeItem(PENDING_CAST_KEY); } catch { /* storage unavailable */ }
+              }}
             />
-            <div className="absolute inset-0" style={{
-              background: "linear-gradient(0deg, #000 0%, #000a 30%, transparent 70%)",
-            }} />
-
-            {/* Scroll container — non-fixed so iOS Safari scrolls reliably */}
-            <div className="absolute inset-0 overflow-y-auto">
-            {/* Content */}
-            <div className="relative z-10 w-full max-w-md mx-auto px-4 py-10 min-h-full flex flex-col items-center justify-center gap-5 text-center">
-
-              {/* Moon icon */}
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(192,57,43,0.15)", border: "1px solid rgba(192,57,43,0.4)" }}
-              >
-                <Moon className="w-7 h-7" style={{ color: "#c0392b" }} />
-              </div>
-
-              {/* Personalised headline */}
-              <div className="flex flex-col gap-2">
-                <h2 className="font-display text-2xl font-bold text-foreground leading-tight">
-                  {selectedScenario?.label ?? "After Dark"} — your story is ready.
-                </h2>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  One step. Then your story writes itself.
-                </p>
-                {/* Casting detail pill */}
-                {lastCastingData && (lastCastingData.archetype as string || lastCastingData.dynamic as string) && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full self-center text-xs font-medium"
-                    style={{ background: "rgba(192,57,43,0.12)", border: "1px solid rgba(192,57,43,0.3)", color: "#e8a09a" }}
-                  >
-                    {[lastCastingData.archetype as string, lastCastingData.dynamic as string].filter(Boolean).join(" · ")}
-                  </div>
-                )}
-              </div>
-
-              {/* Story preview card */}
-              {(() => {
-                const storyMode = selectedScenario?.storyMode ?? "unrestrained";
-                const excerpt = AFTER_DARK_TEASERS[storyMode] ?? AFTER_DARK_TEASERS.unrestrained;
-                const titleLine = AFTER_DARK_TITLES[storyMode] ?? selectedScenario?.label ?? "Your story";
-                const accentHex = selectedScenario?.accent ?? "#c0392b";
-                const voiceId = lastCastingData?.voiceId as string | undefined;
-                const voice = voiceId ? VOICES.find(v => v.id === voiceId) : null;
-                const voiceName = voice?.displayName ?? voice?.label ?? null;
-                return (
-                  <div className="w-full rounded-2xl overflow-hidden" style={{ border: `1px solid ${accentHex}25`, background: "#08010100" }}>
-                    <div className="relative h-44 flex items-end p-4 overflow-hidden"
-                      style={{ background: `linear-gradient(135deg, ${accentHex}22 0%, ${accentHex}08 60%, transparent 100%)` }}>
-                      <img
-                        src={paywallCoverUrl ?? `${import.meta.env.BASE_URL}images/creation-room-hero.webp`}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700"
-                        style={{ opacity: paywallCoverUrl ? 0.55 : (paywallImageLoading ? 0.18 : 0.35) }}
-                        onError={(e) => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/creation-room-hero.webp`; }}
-                      />
-                      {paywallImageLoading && !paywallCoverUrl && (
-                        <div className="absolute top-3 right-3">
-                          <div className="w-4 h-4 rounded-full border border-white/20 border-t-white/60 animate-spin" />
-                        </div>
-                      )}
-                      <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 70% 30%, ${accentHex}28 0%, transparent 65%)` }} />
-                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="relative z-10 text-left">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: accentHex }}>
-                          {selectedScenario?.room?.replace(/_/g, " ") ?? "After Dark"}
-                        </p>
-                        <h3 className="font-display text-base font-bold text-foreground leading-tight">{titleLine}</h3>
-                      </div>
-                    </div>
-                    <div className="px-4 py-3 relative" style={{ borderTop: `1px solid ${accentHex}15`, background: "rgba(0,0,0,0.3)" }}>
-                      <p className="text-xs text-muted-foreground leading-relaxed italic line-clamp-4">"{excerpt}"</p>
-                      <div className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none" style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)" }} />
-                    </div>
-                    {(voiceName) && (
-                      <div className="px-4 pb-3 flex flex-wrap gap-1.5 mt-1">
-                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: `${accentHex}18`, color: accentHex, border: `1px solid ${accentHex}30` }}>
-                          {voiceName}
-                        </span>
-                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", color: "#e8a09a", border: "1px solid rgba(232,160,154,0.2)" }}>
-                          Audio ready to write
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-
-              {/* Value bullets */}
-              <div className="w-full flex flex-col gap-2 text-left">
-                {[
-                  "Unrestrained stories — nothing held back",
-                  "Full cast narration — narrator, her voice, his voice",
-                  "Complete privacy — nothing stored, nothing shared",
-                ].map(benefit => (
-                  <div key={benefit} className="flex items-center gap-2.5 text-sm" style={{ color: "#e8a09a" }}>
-                    <Moon className="w-3.5 h-3.5 flex-shrink-0 opacity-70" style={{ color: "#c0392b" }} />
-                    <span>{benefit}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Pricing boxes — direct to Stripe */}
-              <div className="w-full flex flex-col gap-2.5">
-                {paywallCheckoutError && (
-                  <p className="text-xs text-red-400 text-center pb-1">{paywallCheckoutError}</p>
-                )}
-
-                {/* Pack 20 — Best value */}
-                <button
-                  onClick={() => doPaywallCheckout("pack_20")}
-                  disabled={!!paywallLoadingPlan}
-                  className="w-full rounded-2xl p-4 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
-                  style={{ background: "linear-gradient(135deg, #c0392b, #7b241c)", boxShadow: "0 0 28px rgba(192,57,43,0.35)" }}
-                >
-                  <span className="absolute top-3 right-3 px-1.5 py-0.5 rounded-full bg-black/25 text-white/90 text-[9px] font-bold uppercase tracking-wider">Best value</span>
-                  <div className="flex flex-col gap-0.5 pr-16">
-                    <span className="text-white font-bold text-[15px] leading-snug">Immersive Collection</span>
-                    <span className="text-white/90 text-sm">20 stories · {pack20.display} one-time</span>
-                    <span className="text-white/65 text-[11px] mt-0.5">
-                      {pack20.perStoryDisplay}/story · under {currency === "gbp" ? "£" : "$"}{Math.ceil(pack20.amount / 100 / 10)}/month
-                    </span>
-                  </div>
-                  {paywallLoadingPlan === "pack_20"
-                    ? <Loader2 className="absolute right-4 bottom-4 w-4 h-4 animate-spin text-white/70" />
-                    : <Sparkles className="absolute right-4 bottom-4 w-4 h-4 text-white/30" />
-                  }
-                </button>
-
-                {/* Pack 5 */}
-                <button
-                  onClick={() => doPaywallCheckout("pack_5")}
-                  disabled={!!paywallLoadingPlan}
-                  className="w-full rounded-2xl p-4 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
-                  style={{ border: "1px solid rgba(192,57,43,0.45)", background: "rgba(192,57,43,0.09)" }}
-                >
-                  <div className="flex flex-col gap-0.5 pr-8">
-                    <span className="text-foreground font-bold text-[15px] leading-snug">Story Bundle</span>
-                    <span className="text-muted-foreground text-sm">5 stories · {pack5.display} one-time</span>
-                    <span className="text-muted-foreground/60 text-[11px] mt-0.5">{pack5.perStoryDisplay}/story · credits never expire</span>
-                  </div>
-                  {paywallLoadingPlan === "pack_5" && (
-                    <Loader2 className="absolute right-4 bottom-4 w-4 h-4 animate-spin text-muted-foreground" />
-                  )}
-                </button>
-
-                {/* Single story */}
-                <button
-                  onClick={() => doPaywallCheckout("pack_1")}
-                  disabled={!!paywallLoadingPlan}
-                  className="w-full px-4 py-3.5 rounded-xl text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors text-center flex items-center justify-center gap-1.5"
-                  style={{ border: "1px solid rgba(255,255,255,0.12)" }}
-                >
-                  Start with one story — {pack1.display}
-                  {paywallLoadingPlan === "pack_1" && <Loader2 className="w-3 h-3 animate-spin" />}
-                </button>
-              </div>
-
-              {/* Privacy signal + start over */}
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-[11px] text-muted-foreground/80">
-                  Billed discreetly · Nothing stored · Heard only by you.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => { setPhase("scenario"); setSelectedScenario(null); }}
-                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors underline underline-offset-2"
-                >
-                  Start over
-                </button>
-              </div>
-            </div>
-            </div>{/* end scroll container */}
           </motion.div>
         )}
 
@@ -2333,7 +2605,7 @@ export default function AfterDark() {
 
             <button
               onClick={() => {
-                setPhase("pairing");
+                setPhase("express_1");
                 setSelectedPairing(null);
                 setSelectedScenario(null);
                 setResult(null);
@@ -2352,6 +2624,7 @@ export default function AfterDark() {
         )}
 
       </AnimatePresence>
+      </div>
     </div>
   );
 }

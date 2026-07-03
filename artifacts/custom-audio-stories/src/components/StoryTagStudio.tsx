@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Moon } from "lucide-react";
 import { useAuth } from "../hooks/useAuth.js";
+import { EXPRESS_CATEGORY_IMAGES, EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
+
+export { EXPRESS_CATEGORY_IMAGES, EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const TAG_DISPLAY_MAP: Record<string, string> = {
+export const TAG_DISPLAY_MAP: Record<string, string> = {
   // Restraint & BDSM — She
   "She wanted to be tied up": "Tied up",
   "She wanted to be blindfolded": "Blindfolded",
@@ -498,16 +501,51 @@ const CATEGORY_EXCLUSION_PAIRS: [string, string][] = [
   ["Praise & Devotion",         "Submission & Worship"],
 ];
 
+export function getTagDisplayLabel(tag: string): string {
+  return TAG_DISPLAY_MAP[tag] ?? tag;
+}
+
+/** Express After Dark — category backdrop imagery for arousal-led UI */
+// Primary images live in @/lib/expressCategoryImages (EXPRESS_CATEGORY_GALLERIES)
+
+export const EXPRESS_CATEGORY_ORDER = [
+  "Restraint & BDSM",
+  "Submission & Worship",
+  "Her Dominance",
+  "What does she really want?",
+  "What does he really want?",
+  "What do they really want?",
+  "How do you want to feel?",
+  "Words & Praise",
+  "Dark Fantasy",
+  "What's between them?",
+  "How do you want it written?",
+  "What makes this yours?",
+  "Pure Romance",
+  "Praise & Devotion",
+  "Story Arc & Plot",
+  "Just the Scene",
+  "How does it end?",
+] as const;
+
 interface Props {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
   afterDark?: boolean;
   bedtime?: boolean;
+  express?: boolean;
   accentColor?: string;
   protagonistPronouns?: string;
   partnerPronouns?: string;
   isSameGender?: boolean;
   onAfterDark?: () => void;
+  /** Mobile express: one category at a time with pill nav */
+  expressTabbed?: boolean;
+  activeCategoryHeading?: string | null;
+  onActiveCategoryChange?: (heading: string) => void;
+  /** Parent renders category hero — hide pill nav and per-category backdrops */
+  expressHeroMode?: boolean;
+  hideCategoryNav?: boolean;
 }
 
 export function StoryTagStudio({
@@ -515,6 +553,12 @@ export function StoryTagStudio({
   onTagToggle,
   afterDark = false,
   bedtime = false,
+  express = false,
+  expressTabbed = false,
+  activeCategoryHeading = null,
+  onActiveCategoryChange,
+  expressHeroMode = false,
+  hideCategoryNav = false,
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
   partnerPronouns = "he/him",
@@ -594,6 +638,18 @@ export function StoryTagStudio({
   const totalSelected = selectedTags.length;
   const globalAtCap = totalSelected >= totalCap;
 
+  const visibleCategories = expressTabbed && activeCategoryHeading
+    ? activeCategories.filter((c) => c.heading === activeCategoryHeading)
+    : activeCategories;
+
+  const categorySelectionCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const cat of activeCategories) {
+      counts.set(cat.heading, cat.tags.filter((t) => selectedTags.includes(t)).length);
+    }
+    return counts;
+  }, [activeCategories, selectedTags]);
+
   // Build a lookup: category heading → all tags in that category (active only)
   const categoryTagMap = new Map<string, string[]>(
     activeCategories.map((c) => [c.heading, c.tags]),
@@ -670,9 +726,17 @@ export function StoryTagStudio({
           }`}
           style={
             selected
-              ? { background: accentColor, borderColor: accentColor }
+              ? {
+                  background: express
+                    ? `linear-gradient(135deg, ${accentColor}, #922b21)`
+                    : accentColor,
+                  borderColor: accentColor,
+                  boxShadow: express ? "0 0 22px rgba(232,121,160,0.45)" : undefined,
+                }
               : isUsual && !isDisabled
               ? { background: `${accentColor}14` }
+              : express && !isDisabled
+              ? { borderColor: "rgba(232,121,160,0.18)" }
               : undefined
           }
         >
@@ -703,13 +767,32 @@ export function StoryTagStudio({
     const excludedBy = locked ? null : getExcludedBy(cat.heading);
     const categoryExcluded = excludedBy !== null;
 
+    const catImage = express && !expressHeroMode ? EXPRESS_CATEGORY_IMAGES[cat.heading] : undefined;
+
     return (
       <div
         key={cat.heading}
-        className={`transition-opacity ${locked ? "opacity-45" : categoryExcluded ? "opacity-80" : ""}`}
+        className={`transition-opacity ${locked ? "opacity-45" : categoryExcluded ? "opacity-80" : ""} ${
+          express && !expressHeroMode ? "relative rounded-2xl border border-[#e879a0]/12 overflow-hidden mb-10" : ""
+        }`}
       >
+        {express && catImage && (
+          <>
+            <img
+              src={`${import.meta.env.BASE_URL}${catImage}`}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover opacity-[0.14]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/75 to-[#1a0008]/80" />
+          </>
+        )}
+        <div className={express && !expressHeroMode ? "relative z-10 p-5 sm:p-6" : express ? "relative z-10" : undefined}>
+        {!expressHeroMode && (
         <div className="flex items-baseline justify-between mb-1">
-          <p className="text-base font-semibold text-foreground">{cat.heading}</p>
+          <p className={`font-semibold text-foreground ${express ? "text-lg font-display" : "text-base"}`}>
+            {cat.heading}
+          </p>
           <div className="flex items-center gap-3">
             {categoryExcluded && (
               <span className="text-xs text-foreground/80 font-medium">
@@ -728,7 +811,20 @@ export function StoryTagStudio({
             )}
           </div>
         </div>
-        {cat.sub && (
+        )}
+        {expressHeroMode && !locked && !categoryExcluded && cat.maxSelect !== undefined && (
+          <div className="flex justify-end mb-2">
+            <span
+              className={`text-xs tabular-nums transition-colors ${
+                atCap ? "font-semibold" : "text-muted-foreground/50"
+              }`}
+              style={atCap ? { color: accentColor } : undefined}
+            >
+              {catSelectedCount}/{cat.maxSelect} in this section
+            </span>
+          </div>
+        )}
+        {cat.sub && !expressHeroMode && (
           <p className="text-xs text-muted-foreground mb-4 leading-snug">{cat.sub}</p>
         )}
         {roleKeyText && cat.roleKey && (
@@ -736,23 +832,68 @@ export function StoryTagStudio({
             In these tags: {roleKeyText}
           </p>
         )}
-        <div className="flex flex-wrap gap-2">
+        <div className={`flex flex-wrap gap-2 ${express ? "gap-2.5" : ""}`}>
           {cat.tags.map((tag) =>
             renderTag(tag, catSelectedCount, cat.maxSelect, locked, categoryExcluded),
           )}
+        </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div className={expressTabbed ? "space-y-4" : "space-y-10"}>
+      {expressTabbed && !hideCategoryNav && (
+        <div className="sticky top-14 z-20 -mx-1 px-1 py-2 bg-black/80 backdrop-blur-md border-b border-white/10">
+          <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1 scrollbar-hide">
+            {activeCategories.map((cat) => {
+              const count = categorySelectionCounts.get(cat.heading) ?? 0;
+              const active = cat.heading === activeCategoryHeading;
+              return (
+                <button
+                  key={cat.heading}
+                  type="button"
+                  onClick={() => onActiveCategoryChange?.(cat.heading)}
+                  className={`flex-shrink-0 snap-start px-3 py-2 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+                    active
+                      ? "border-[#e879a0]/60 bg-[#e879a0]/15 text-white"
+                      : "border-white/12 text-white/55"
+                  }`}
+                >
+                  {EXPRESS_CATEGORY_SHORT[cat.heading] ?? cat.heading}
+                  {count > 0 && (
+                    <span className="ml-1.5 tabular-nums" style={{ color: active ? "#e879a0" : undefined }}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {/* Global tag counter */}
       {!bedtime && (
-        <div className="rounded-lg border border-white/10 bg-black/20 p-4 mb-2">
+        <div
+          className={`rounded-lg p-4 mb-2 ${
+            express
+              ? "border border-[#e879a0]/25 bg-gradient-to-br from-[#1a0008]/90 to-black/60 shadow-[0_0_40px_rgba(192,57,43,0.12)]"
+              : "border border-white/10 bg-black/20"
+          }`}
+        >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-semibold text-foreground">
-              Select up to <span style={{ color: accentColor }}>{totalCap} tags</span>
+            <p className={`font-semibold text-foreground ${express ? "text-base" : "text-sm"}`}>
+              {express ? (
+                <>
+                  Tell us exactly how you want it — up to{" "}
+                  <span style={{ color: accentColor }}>{totalCap} desires</span>
+                </>
+              ) : (
+                <>
+                  Select up to <span style={{ color: accentColor }}>{totalCap} tags</span>
+                </>
+              )}
             </p>
             <span
               className={`text-sm tabular-nums font-semibold transition-colors ${
@@ -763,12 +904,14 @@ export function StoryTagStudio({
               {totalSelected}/{totalCap} selected
             </span>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            The more specific your choices, the better we can craft your story. Choose what shapes your experience.
+          <p className={`leading-relaxed ${express ? "text-sm text-white/70 italic" : "text-xs text-muted-foreground"}`}>
+            {express
+              ? "Every tag you choose is written into your story — explicit, personal, unrestrained."
+              : "The more specific your choices, the better we can craft your story. Choose what shapes your experience."}
           </p>
         </div>
       )}
-      {activeCategories.map((cat) => renderCategory(cat, false))}
+      {visibleCategories.map((cat) => renderCategory(cat, false))}
       {lockedCategories.length > 0 && (
         <div
           className="flex items-center gap-3 px-4 py-3 rounded-xl"

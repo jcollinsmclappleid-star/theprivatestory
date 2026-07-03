@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePricing } from "@/hooks/usePricing";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
 import { VoiceShowcase } from "@/components/VoiceShowcase";
-import { ThreeDoors } from "@/components/ThreeDoors";
+import { PersonalisedEroticaDoor } from "@/components/ThreeDoors";
 
 const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -688,17 +688,17 @@ export default function Pricing() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Final CTA — ThreeDoors                                              */}
+      {/* Final CTA — Personalised Erotica door                                      */}
       {/* ------------------------------------------------------------------ */}
       <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
         <div className="text-center mb-8">
           <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Ready to begin?</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Choose where to start.
+            Create your personalised erotica.
           </h2>
           <p className="text-muted-foreground/70 text-sm mt-3">Under 3 minutes from first choice to listening.</p>
         </div>
-        <ThreeDoors />
+        <PersonalisedEroticaDoor />
       </section>
 
     </motion.div>

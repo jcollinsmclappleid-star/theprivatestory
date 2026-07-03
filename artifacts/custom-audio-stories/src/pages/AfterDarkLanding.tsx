@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Moon } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { CreationRoomHero } from "@/components/CreationRoomHero";
 
-const BASE = import.meta.env.BASE_URL;
-const BG = "#03030e";
+const BG = "#080604";
+const GOLD = "#c9a227";
 
 const ROOMS = [
   "Power Exchange",
@@ -18,92 +18,6 @@ interface Props {
   onEnter: () => void;
 }
 
-function PartiallyOpenDoor({ onEnter }: Props) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div className="flex flex-col items-center gap-5">
-      <button
-        onClick={onEnter}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
-        aria-label="Enter After Dark"
-        className="relative focus:outline-none"
-        style={{ perspective: "900px", perspectiveOrigin: "30% center" }}
-      >
-        <motion.div
-          className="absolute inset-y-0 left-0 w-6 rounded-l-sm pointer-events-none z-0"
-          animate={{
-            opacity: hovered ? 1 : 0.55,
-            background: hovered
-              ? "linear-gradient(90deg, rgba(123,143,255,0.75) 0%, rgba(123,143,255,0.18) 60%, transparent 100%)"
-              : "linear-gradient(90deg, rgba(123,143,255,0.35) 0%, rgba(123,143,255,0.08) 60%, transparent 100%)",
-            boxShadow: hovered
-              ? "-8px 0 32px 4px rgba(123,143,255,0.55)"
-              : "-4px 0 18px 2px rgba(123,143,255,0.22)",
-          }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-        />
-        <motion.div
-          style={{ transformOrigin: "left center", transformStyle: "preserve-3d" }}
-          animate={{ rotateY: hovered ? -32 : -18 }}
-          transition={{ type: "spring", damping: 22, stiffness: 90 }}
-        >
-          <img
-            src={`${BASE}images/door-afterdark.webp`}
-            alt=""
-            aria-hidden="true"
-            className="relative z-10 block select-none"
-            style={{
-              width: "clamp(110px, 16vw, 165px)",
-              height: "auto",
-              filter: hovered
-                ? "brightness(1.12) drop-shadow(0 0 32px rgba(123,143,255,0.5))"
-                : "brightness(0.95) drop-shadow(0 0 18px rgba(123,143,255,0.22))",
-              transition: "filter 0.5s ease",
-            }}
-            draggable={false}
-          />
-        </motion.div>
-        <motion.div
-          className="absolute -bottom-4 left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{
-            width: "110%",
-            height: 28,
-            borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(123,143,255,0.28) 0%, transparent 70%)",
-          }}
-          animate={{ opacity: hovered ? 0.9 : 0.4 }}
-          transition={{ duration: 0.4 }}
-        />
-      </button>
-
-      <motion.button
-        onClick={onEnter}
-        className="flex items-center gap-2.5 px-7 py-3 rounded-full font-semibold text-sm tracking-wide"
-        style={{
-          background: "linear-gradient(135deg, rgba(123,143,255,0.18) 0%, rgba(90,105,200,0.22) 100%)",
-          border: "1px solid rgba(123,143,255,0.40)",
-          color: "#a8b8ff",
-          boxShadow: "0 0 20px rgba(123,143,255,0.15)",
-        }}
-        whileHover={{
-          scale: 1.04,
-          boxShadow: "0 0 36px rgba(123,143,255,0.35)",
-          borderColor: "rgba(123,143,255,0.70)",
-        }}
-        whileTap={{ scale: 0.97 }}
-        transition={{ type: "spring", damping: 18, stiffness: 120 }}
-      >
-        <Moon className="w-4 h-4" style={{ color: "#7b8fff" }} />
-        Enter After Dark
-      </motion.button>
-    </div>
-  );
-}
-
 export default function AfterDarkLanding({ onEnter }: Props) {
   return (
     <motion.div
@@ -111,13 +25,12 @@ export default function AfterDarkLanding({ onEnter }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.7 }}
-      className="relative min-h-screen w-full overflow-hidden flex flex-col md:flex-row"
+      className="relative min-h-[100dvh] w-full overflow-hidden flex flex-col md:flex-row"
       style={{ background: BG }}
     >
       {/* ── Left column — content ──────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col justify-start w-full md:w-[52%] lg:w-[48%] px-6 sm:px-10 lg:px-16 pt-24 md:pt-20 pb-6">
+      <div className="relative z-10 flex flex-col justify-start w-full md:max-w-[46%] lg:max-w-[42%] px-6 sm:px-10 lg:px-16 pt-24 md:pt-20 pb-8">
 
-        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -129,50 +42,44 @@ export default function AfterDarkLanding({ onEnter }: Props) {
             transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
-              background: "rgba(123,143,255,0.12)",
-              border: "1px solid rgba(123,143,255,0.35)",
+              background: "rgba(201,162,39,0.12)",
+              border: "1px solid rgba(201,162,39,0.35)",
             }}
           >
-            <Moon className="w-2.5 h-2.5" style={{ color: "#7b8fff" }} />
+            <Sparkles className="w-2.5 h-2.5 text-primary" />
           </motion.div>
-          <span
-            className="text-xs font-semibold uppercase tracking-[0.22em]"
-            style={{ color: "rgba(123,143,255,0.75)" }}
-          >
-            After Dark · Private · Unrestrained
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+            Personalised Erotica · Private
           </span>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.7 }}
           className="font-display font-bold leading-[1.08] text-white mb-3"
-          style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)", textShadow: "0 2px 24px rgba(3,3,14,0.95)" }}
+          style={{ fontSize: "clamp(1.9rem, 4.5vw, 3.2rem)", textShadow: "0 2px 24px rgba(8,6,4,0.95)" }}
         >
           Nothing held back.
           <br />
-          <span style={{ color: "#9baeff" }}>Heard only by you.</span>
+          <span className="text-primary">Heard only by you.</span>
         </motion.h1>
 
-        {/* Copy */}
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.65 }}
           className="text-sm sm:text-base leading-relaxed mb-5 max-w-sm"
-          style={{ color: "rgba(255,255,255,0.52)" }}
+          style={{ color: "rgba(255,255,255,0.72)" }}
         >
-          Explicit, intimate adult storytelling built entirely around your choices. You choose the character, the dynamic, and exactly how far it goes. Written from scratch, voiced by a full cast. Nothing softened unless you want it to be.
+          Explicit, intimate erotic audio built entirely around your choices. Cast the dynamic, set the intensity, and hear it narrated by a full cast — private to your account alone.
         </motion.p>
 
-        {/* Room chips */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex flex-wrap gap-1.5 mb-7"
+          className="flex flex-wrap gap-1.5 mb-8"
         >
           {ROOMS.map((room, i) => (
             <motion.span
@@ -182,9 +89,9 @@ export default function AfterDarkLanding({ onEnter }: Props) {
               transition={{ delay: 0.85 + i * 0.06, duration: 0.4 }}
               className="text-[10px] sm:text-xs font-medium px-3 py-1.5 rounded-full"
               style={{
-                color: "rgba(123,143,255,0.75)",
-                background: "rgba(123,143,255,0.07)",
-                border: "1px solid rgba(123,143,255,0.16)",
+                color: "rgba(232,213,160,0.85)",
+                background: "rgba(201,162,39,0.08)",
+                border: "1px solid rgba(201,162,39,0.22)",
                 letterSpacing: "0.06em",
               }}
             >
@@ -193,86 +100,56 @@ export default function AfterDarkLanding({ onEnter }: Props) {
           ))}
         </motion.div>
 
-        {/* Door CTA */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.7, ease: "easeOut" }}
-          className="flex justify-center md:justify-start mb-5"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-5"
         >
-          <PartiallyOpenDoor onEnter={onEnter} />
+          <motion.button
+            type="button"
+            onClick={onEnter}
+            className="flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-sm tracking-wide w-full sm:w-auto"
+            style={{
+              background: GOLD,
+              color: "#0a0806",
+              boxShadow: "0 0 32px rgba(201,162,39,0.35)",
+            }}
+            whileHover={{ scale: 1.03, boxShadow: "0 0 44px rgba(201,162,39,0.5)" }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Sparkles className="w-4 h-4" />
+            Create your erotica
+          </motion.button>
         </motion.div>
 
-        {/* Reassurance */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 0.6 }}
           className="flex items-center gap-3"
         >
-          <div className="w-14 h-px" style={{ background: "rgba(123,143,255,0.18)" }} />
-          <p
-            className="text-xs tracking-wide"
-            style={{ color: "rgba(255,255,255,0.25)", letterSpacing: "0.07em" }}
-          >
-            Private · Written fresh each time · Nothing leaves this room
+          <div className="w-14 h-px bg-primary/25" />
+          <p className="text-xs tracking-wide text-white/40" style={{ letterSpacing: "0.07em" }}>
+            Private · Written fresh each time · Your intensity
           </p>
         </motion.div>
       </div>
 
-      {/* ── Mobile full-height background (image bleeds behind text) ── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 1.1 }}
-        className="block md:hidden absolute inset-0 pointer-events-none select-none"
-        style={{ zIndex: 0 }}
-      >
-        <img
-          src={`${BASE}images/creation-room-hero.webp`}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.6, objectPosition: "50% 8%" }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(180deg, ${BG} 0%, rgba(3,3,14,0.45) 22%, rgba(3,3,14,0.2) 42%, rgba(3,3,14,0.5) 72%, ${BG} 100%)`,
-          }}
-        />
-      </motion.div>
+      {/* ── Text scrim (headline readable, scene stays visible) ── */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none z-[1]"
+        style={{
+          background:
+            "linear-gradient(90deg, #080604 0%, rgba(8,6,4,0.88) 28%, rgba(8,6,4,0.45) 48%, transparent 72%)",
+        }}
+      />
 
-      {/* ── Right column — desktop image ──────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 1 }}
-        className="hidden md:block absolute right-0 top-0 bottom-0 pointer-events-none select-none"
-        style={{ width: "52%", left: "48%" }}
-      >
-        <img
-          src={`${BASE}images/creation-room-hero.webp`}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.88, objectPosition: "50% 8%" }}
-        />
-        {/* Left-edge gradient so text stays readable */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(90deg, ${BG} 0%, rgba(3,3,14,0.55) 30%, rgba(3,3,14,0.1) 65%, transparent 100%)`,
-          }}
-        />
-        {/* Subtle indigo tint */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "radial-gradient(ellipse at 60% 40%, rgba(80,90,200,0.18) 0%, transparent 70%)",
-          }}
-        />
-      </motion.div>
+      <CreationRoomHero variant="mobile" />
+      <div className="hidden md:block">
+        <CreationRoomHero variant="desktop" />
+      </div>
     </motion.div>
   );
 }

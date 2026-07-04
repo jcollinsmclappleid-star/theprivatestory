@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-WcHzuGS1.js";import{S as t,g as r}from"./SEOPage-DdY1yWZF.js";import"./index-iMoBVwWO.js";import"./data-editors-picks-CU3fKZjv.js";const i=r("short-erotic-audio-stories");function g(){return o.jsx(t,{config:i,slug:"short-erotic-audio-stories"})}export{g as default};

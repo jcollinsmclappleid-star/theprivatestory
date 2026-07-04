@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles, Headphones, ChevronRight, Moon,
-  EyeOff, WifiOff, Lock, Flame,
-  Check, Loader2, Clock,
+  EyeOff, WifiOff, Lock,
+  Check, Loader2,
   Play, Pause,
 } from "lucide-react";
 import { Link } from "wouter";
@@ -60,10 +60,9 @@ const HERO_SAMPLE_SLUGS = ["02-adjoining-suites", "06-supervisor"] as const;
 /** The single pick that fronts the After Dark teaser */
 const AFTER_DARK_SLUG = "02-adjoining-suites";
 
-const MOBILE_HERO_DIFF = [
-  { icon: Sparkles, text: "Your fantasy, written fresh — not a catalogue" },
-  { icon: Headphones, text: "Full-cast narration · ~10 min" },
-  { icon: Flame, text: "Slow burn to unrestrained — you choose" },
+const MOBILE_HERO_PROOF = [
+  { icon: Sparkles, text: "1M+ fantasy combinations — yours is written fresh" },
+  { icon: Headphones, text: "Full-cast audio · ~10 min · private to your account" },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -296,14 +295,14 @@ export default function Home() {
         </motion.div>
 
         <div className="relative z-10 px-5 pb-4 space-y-2.5 border-t border-white/8 pt-4 mx-0 bg-background/40 backdrop-blur-[2px]">
-          {MOBILE_HERO_DIFF.map(({ icon: Icon, text }) => (
+          {MOBILE_HERO_PROOF.map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-start gap-2.5">
               <Icon className="w-3.5 h-3.5 text-primary/80 flex-shrink-0 mt-0.5" />
               <p className="text-[11px] text-white/72 leading-snug">{text}</p>
             </div>
           ))}
           <p className="text-[10px] text-white/45 pt-1">
-            From {pack1.display} · 18+ · one story, no subscription
+            From {pack1.display} · one-time purchase · credits never expire · 18+
           </p>
         </div>
       </section>
@@ -330,7 +329,7 @@ export default function Home() {
           className="relative flex flex-col items-start gap-4 md:gap-8 w-full md:max-w-xl lg:max-w-[42%] pt-2 md:pt-4"
         >
           <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-primary/90">
-            Your private audio fantasy · written tonight
+            Your private audio fantasy · ready in minutes
           </p>
           <h1 className="text-[1.85rem] sm:text-5xl md:text-6xl font-display font-bold text-white leading-[1.1] md:drop-shadow-xl">
             Your fantasy. Your cast.{" "}
@@ -350,7 +349,7 @@ export default function Home() {
           </Link>
 
           <p className="text-xs text-white/70 hidden md:block">
-            From {pack1.display} · ready in ~3 min · 18+ · yours alone
+            From {pack1.display} · one-time purchase · credits never expire · 18+
             {" · "}
             <Link href="/pricing" className="text-primary/80 hover:text-primary transition-colors">
               20 stories · best value
@@ -373,10 +372,10 @@ export default function Home() {
       <section className="relative z-20 px-6 sm:px-8 pb-2 md:pb-0 -mt-1 hidden md:block">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-start gap-x-5 gap-y-2 py-3 px-4 rounded-2xl border border-primary/15 bg-primary/5">
           {[
+            { icon: <Sparkles className="w-3 h-3" />, label: "1M+ combos — written fresh" },
             { icon: <EyeOff className="w-3 h-3" />, label: "Private to you" },
-            { icon: <Lock className="w-3 h-3" />, label: "Not a public library" },
-            { icon: <Headphones className="w-3 h-3" />, label: "Full-cast narration" },
-            { icon: <Clock className="w-3 h-3" />, label: "~10 min each" },
+            { icon: <Headphones className="w-3 h-3" />, label: "Full-cast · ~10 min" },
+            { icon: <Lock className="w-3 h-3" />, label: "One-time · credits never expire" },
           ].map(({ icon, label }) => (
             <span key={label} className="flex items-center gap-1.5 text-[11px] text-white/80 font-medium">
               <span className="text-primary/75">{icon}</span>
@@ -445,7 +444,7 @@ export default function Home() {
               href="/after-dark"
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/85 border border-white/15 hover:border-primary/40 hover:text-white transition-all"
             >
-              Create your erotica from {pack1.display}
+              Create your fantasy from {pack1.display}
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -529,7 +528,7 @@ export default function Home() {
                     href="/after-dark"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all shadow-[0_0_28px_-8px_rgba(201,162,39,0.55)]"
                   >
-                    Create your erotica
+                    Create your fantasy
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                   <span className="text-[11px] text-white/65">

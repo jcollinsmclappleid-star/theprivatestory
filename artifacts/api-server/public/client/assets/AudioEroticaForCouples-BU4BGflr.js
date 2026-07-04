@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CTZLXwgx.js";import{S as r,g as t}from"./SEOPage-nCl0n9hv.js";import"./index-BcldykfY.js";import"./data-editors-picks-CU3fKZjv.js";const i=t("audio-erotica-for-couples");function p(){return o.jsx(r,{config:i,slug:"audio-erotica-for-couples"})}export{p as default};

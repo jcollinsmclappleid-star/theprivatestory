@@ -84,7 +84,7 @@ export function CreationStudio({ priceDisplay }: CreationStudioProps) {
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
               Shape it.{" "}
-              <span className="text-primary">Hear it tonight.</span>
+              <span className="text-primary">Listen in minutes.</span>
             </h2>
             <p className="text-base text-white/88 leading-relaxed max-w-2xl">
               Who they are, where you are, how far it goes — tap to build a premium erotic story written and narrated just for you.

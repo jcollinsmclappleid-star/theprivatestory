@@ -75,15 +75,24 @@ const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA];
 const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO];
 const MV_MALE_NARRATORS = new Set([MV_JAMES, MV_ETHAN, MV_THEO]);
 
-const MV_INTENSITY_STYLE = {
-  "Subtle":    { narrator: 0.15, char: 0.35 },
-  "Tender":    { narrator: 0.15, char: 0.35 },
-  "Warm":      { narrator: 0.15, char: 0.35 },
-  "Heated":    { narrator: 0.25, char: 0.50 },
-  "Elevated":  { narrator: 0.25, char: 0.50 },
-  "Scorching": { narrator: 0.35, char: 0.70 },
-  "Intense":   { narrator: 0.35, char: 0.70 },
+const CANONICAL_INTENSITY_STYLE = {
+  Subtle: { narrator: 0.15, char: 0.35 },
+  Warm: { narrator: 0.15, char: 0.35 },
+  Elevated: { narrator: 0.25, char: 0.50 },
+  Intense: { narrator: 0.35, char: 0.70 },
 };
+const INTENSITY_SYNONYMS = {
+  Unrestrained: "Intense", Scorching: "Intense", Heated: "Elevated", Explicit: "Elevated",
+  "Slow burn": "Subtle", Tender: "Subtle", Sensual: "Warm",
+};
+function canonicalizeIntensity(raw, fallback = "Elevated") {
+  const t = (raw ?? "").trim();
+  if (!t) return fallback;
+  return INTENSITY_SYNONYMS[t] ?? (Object.hasOwn(CANONICAL_INTENSITY_STYLE, t) ? t : fallback);
+}
+function intensityStyleFor(raw) {
+  return CANONICAL_INTENSITY_STYLE[canonicalizeIntensity(raw)] ?? { narrator: 0.25, char: 0.50 };
+}
 const MV_DEFAULT_STYLE = { narrator: 0.25, char: 0.50 };
 
 // All Editor's Picks are female-protagonist / male love-interest romances.
@@ -928,7 +937,7 @@ async function generateOne(pick) {
   const narratorId = pick.voice.id;
   const pairing = pick.pairing ?? MV_DEFAULT_PAIRING;
   const intensity = pick.intensity ?? MV_DEFAULT_INTENSITY;
-  const styleFor = MV_INTENSITY_STYLE[intensity] ?? MV_DEFAULT_STYLE;
+  const styleFor = intensityStyleFor(intensity);
 
   const tagged = tagScriptForMultiVoice(pick.text, pairing);
   // Same-gender pairings (Her & Her, Him & Him) produce 0 explicit attributions because

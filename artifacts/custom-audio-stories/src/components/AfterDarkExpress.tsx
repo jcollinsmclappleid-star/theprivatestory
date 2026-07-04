@@ -7,7 +7,8 @@ import { StoryTagStudio, getTagDisplayLabel } from "@/components/StoryTagStudio"
 import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
 import { VOICES } from "@/lib/voices";
 import { ExpressCategoryHero } from "@/components/ExpressCategoryHero";
-import { EXPRESS_CATEGORY_SHORT, getCategoryGallery } from "@/lib/expressCategoryImages";
+import { EXPRESS_CATEGORY_SHORT, getCategoryGallery, getCategoryImagePool } from "@/lib/expressCategoryImages";
+import { preloadImages } from "@/lib/preloadImages";
 import {
   buildPresetFromSelections,
   intensityToIndex,
@@ -50,7 +51,7 @@ const NARRATOR_AVATARS: Record<string, string> = {
   Theo: "images/avatar-oliver.webp",
 };
 
-const EXPRESS_NARRATORS = (["Clara", "James", "Maya", "Theo"] as const).map((name) => {
+const EXPRESS_NARRATORS = (["Theo", "Clara", "James", "Maya"] as const).map((name) => {
   const voice = VOICES.find((v) => v.displayName === name)!;
   return {
     id: name,
@@ -963,6 +964,9 @@ export function AfterDarkExpressWorld({
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
                           <span className="font-semibold text-white">{o.label}</span>
+                          {o.id === "Theo" && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">Default</span>
+                          )}
                           {selected && (
                             <span className="text-[9px] font-bold uppercase tracking-wider text-[#e879a0]">Selected</span>
                           )}
@@ -1018,23 +1022,23 @@ export const AfterDarkExpressCast = AfterDarkExpressPairing;
 /* ── Act IV · Make it yours — tag studio (conversion peak) ───────── */
 
 const EXPRESS_CATEGORY_SUB: Record<string, string> = {
-  "Restraint & BDSM": "Restraint, BDSM, and the things you rarely say out loud",
-  "Submission & Worship": "Submission, worship, and how deep the surrender goes",
-  "Her Dominance": "She sets every rule — they follow",
-  "What does she really want?": "The desire at the core of it",
-  "What does he really want?": "The desire at the core of it",
-  "What do they really want?": "The desire at the core of it",
-  "How do you want to feel?": "The emotional register of this story",
-  "Words & Praise": "What you want said while it happens",
-  "Dark Fantasy": "When the rules break — dark power, impossible desire, not a monster under the bed",
-  "What's between them?": "The energy and tension at the heart of it",
-  "How do you want it written?": "The texture and pacing of the writing",
-  "What makes this yours?": "The personal detail that makes it unmistakable",
-  "Pure Romance": "When tenderness is the whole story",
-  "Praise & Devotion": "Adoration woven through every scene",
-  "Story Arc & Plot": "Structure beyond the moment",
-  "Just the Scene": "No buildup — start in the middle of it",
-  "How does it end?": "The final note of your story",
+  "Restraint & BDSM": "Bound, blindfolded, begging — how far the surrender goes",
+  "Submission & Worship": "On their knees. Every word of praise you want heard.",
+  "Her Dominance": "She sets every rule — they follow, or else",
+  "What does she really want?": "The desire she's never said out loud",
+  "What does he really want?": "What he's been holding back — finally written",
+  "What do they really want?": "The hunger between them, finally named",
+  "How do you want to feel?": "Breathless, adored, undone — you choose the register",
+  "Words & Praise": "Exactly what you want whispered while it happens",
+  "Dark Fantasy": "When the rules break — power, risk, impossible want",
+  "What's between them?": "The charge before anyone touches",
+  "How do you want it written?": "Languid and literary — or raw and explicit",
+  "What makes this yours?": "The detail that makes it unmistakably your fantasy",
+  "Pure Romance": "When tenderness is the whole story — and still burns",
+  "Praise & Devotion": "Adoration woven through every scene, every breath",
+  "Story Arc & Plot": "The slow climb — or the fall that takes all night",
+  "Just the Scene": "No buildup. Start in the middle of it.",
+  "How does it end?": "The final note — satisfied, ruined, or wanting more",
 };
 
 function getExpressCategoryTabs(protagonistPronouns: string): string[] {
@@ -1086,6 +1090,13 @@ export function AfterDarkExpressMakeItYours({
     () => getExpressCategoryTabs(protagonistPronouns),
     [protagonistPronouns],
   );
+
+  useEffect(() => {
+    const urls = categoryTabs.flatMap((heading) =>
+      getCategoryImagePool(heading).map((path) => act4Img(path)),
+    );
+    preloadImages(urls);
+  }, [categoryTabs]);
 
   const [activeTagCategory, setActiveTagCategory] = useState(() =>
     defaultCategoryForRoom(brief.scenario?.room),

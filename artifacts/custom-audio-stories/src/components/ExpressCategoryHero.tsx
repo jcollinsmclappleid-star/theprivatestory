@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { getCategoryGallery, getCategoryImagePool, getCategoryThumb } from "@/lib/expressCategoryImages";
 import { EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
 import { resolveExpressCategoryImage } from "@/lib/expressAct4Slugs";
+import { Act4Crossfade, SlideProgressDots } from "@/components/Act4Crossfade";
+import { ACT4_SLIDE_INTERVAL_MS, usePreloadImages, useSlideshow } from "@/lib/preloadImages";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -16,7 +18,6 @@ type Props = {
   activeCategory: string;
   onCategoryChange: (heading: string) => void;
   subtitle: string;
-  /** Brief pulse when user selects a tag */
   pulseKey?: number;
   fallbackCover?: string;
 };
@@ -32,64 +33,67 @@ export function ExpressCategoryHero({
 }: Props) {
   const gallery = getCategoryGallery(category);
   const pool = useMemo(() => getCategoryImagePool(category), [category]);
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  const slideSrcs = useMemo(
+    () =>
+      pool.map((path) => ({
+        src: img(path),
+        objectPosition: gallery.focus,
+      })),
+    [pool, gallery.focus],
+  );
+
+  const tabThumbUrls = useMemo(
+    () => categoryTabs.map((heading) => img(getCategoryThumb(heading))),
+    [categoryTabs],
+  );
+
+  usePreloadImages([...slideSrcs.map((s) => s.src), ...tabThumbUrls]);
+  const [slideIndex, setSlideIndex] = useSlideshow(slideSrcs.length, ACT4_SLIDE_INTERVAL_MS, !reduceMotion);
+
+  useEffect(() => {
+    setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   useEffect(() => {
     setSlideIndex(0);
   }, [category]);
 
-  useEffect(() => {
-    if (pool.length <= 1) return;
-    const id = window.setInterval(() => {
-      setSlideIndex((i) => (i + 1) % pool.length);
-    }, 5500);
-    return () => window.clearInterval(id);
-  }, [pool]);
-
-  const slideSrc = img(pool[slideIndex] ?? gallery.primary);
-
   return (
-    <div className="relative -mx-4 sm:mx-0 mb-5 rounded-none sm:rounded-2xl overflow-hidden border-y sm:border border-[#e879a0]/25 shadow-[0_0_60px_rgba(192,57,43,0.15)]">
+    <div className="relative -mx-4 sm:mx-0 mb-4 sm:mb-5 rounded-none sm:rounded-2xl overflow-hidden border-y sm:border border-[#e879a0]/25 shadow-[0_0_60px_rgba(192,57,43,0.15)]">
       <div
         className="absolute -inset-1 z-0 rounded-2xl opacity-40 blur-2xl pointer-events-none"
         style={{ background: `radial-gradient(ellipse at 50% 80%, ${gallery.glow}55, transparent 70%)` }}
       />
 
-      <div className="relative min-h-[280px] md:min-h-[380px] overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${category}-${slideIndex}`}
-            className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1.06 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ opacity: { duration: 0.8 }, scale: { duration: 14, ease: "linear" } }}
-          >
-            <img
-              src={slideSrc || (fallbackCover ?? "")}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 w-full h-full object-cover will-change-transform brightness-[1.05] contrast-[1.05]"
-              style={{ objectPosition: gallery.focus }}
-            />
-          </motion.div>
-        </AnimatePresence>
+      <div className="relative min-h-[240px] sm:min-h-[300px] md:min-h-[360px] overflow-hidden">
+        {slideSrcs.length > 0 ? (
+          <Act4Crossfade slides={slideSrcs} activeIndex={slideIndex} />
+        ) : fallbackCover ? (
+          <img
+            src={fallbackCover}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover brightness-[1.05]"
+            style={{ objectPosition: gallery.focus }}
+          />
+        ) : null}
 
         <motion.div
           key={pulseKey}
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 z-[4] pointer-events-none"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.25, 0] }}
+          animate={{ opacity: [0, 0.28, 0] }}
           transition={{ duration: 0.75 }}
           style={{
             background: `radial-gradient(circle at 50% 60%, ${gallery.glow}55, transparent 65%)`,
           }}
         />
-        {/* Light scrim — art must stay visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/20" />
+        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/95 via-black/30 to-black/10" />
+        <div className="absolute inset-0 z-[5] bg-gradient-to-r from-black/55 via-transparent to-black/25" />
 
-        <div className="relative z-10 p-5 md:p-8 flex flex-col justify-end min-h-[280px] md:min-h-[380px] pb-[4.75rem] md:pb-[5.25rem]">
+        <div className="relative z-10 p-4 sm:p-5 md:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[300px] md:min-h-[360px] pb-[4.25rem] sm:pb-[4.75rem] md:pb-[5.25rem]">
           <motion.p
             key={`act-${category}`}
             initial={{ opacity: 0, y: 6 }}
@@ -103,7 +107,7 @@ export function ExpressCategoryHero({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="font-display text-2xl md:text-4xl font-bold text-white leading-tight mb-1 drop-shadow-lg"
+            className="font-display text-xl sm:text-2xl md:text-4xl font-bold text-white leading-tight mb-1 drop-shadow-lg"
           >
             {category}
           </motion.h1>
@@ -112,14 +116,20 @@ export function ExpressCategoryHero({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-sm md:text-base text-white/85 italic max-w-lg leading-relaxed"
+            className="text-sm md:text-base text-white/88 italic max-w-lg leading-relaxed"
           >
             {subtitle}
           </motion.p>
+          <SlideProgressDots
+            count={slideSrcs.length}
+            active={slideIndex}
+            accent="#e879a0"
+            className="mt-3 md:mt-4"
+          />
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-20 px-2 pb-2 pt-8 bg-gradient-to-t from-black via-black/95 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-2 pb-2 pt-6 bg-gradient-to-t from-black via-black/95 to-transparent">
         <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1">
           {categoryTabs.map((heading) => {
             const active = heading === activeCategory;
@@ -131,14 +141,14 @@ export function ExpressCategoryHero({
                 key={heading}
                 type="button"
                 onClick={() => onCategoryChange(heading)}
-                className={`group flex-shrink-0 snap-start flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border transition-all ${
+                className={`group flex-shrink-0 snap-start flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border transition-all min-h-[44px] ${
                   active
                     ? "border-[#e879a0]/70 bg-black/70 shadow-[0_0_24px_rgba(232,121,160,0.3)]"
                     : "border-white/12 bg-black/50 hover:border-white/28"
                 }`}
               >
                 <span
-                  className={`relative w-11 h-11 rounded-full overflow-hidden border flex-shrink-0 transition-transform ${
+                  className={`relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border flex-shrink-0 transition-transform ${
                     active ? "border-[#e879a0]/80 scale-105 ring-2 ring-[#e879a0]/30" : "border-white/20 group-hover:border-white/35"
                   }`}
                 >
@@ -146,6 +156,7 @@ export function ExpressCategoryHero({
                     src={img(thumb)}
                     alt=""
                     aria-hidden
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                   {active && (
@@ -193,7 +204,7 @@ export function ExpressActIVBackdrop({ images }: { images: string[] }) {
             ease: "easeInOut",
           }}
         >
-          <img src={src} alt="" className="w-full h-full object-cover" />
+          <img src={src} alt="" className="w-full h-full object-cover" decoding="async" />
         </motion.div>
       ))}
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black" />

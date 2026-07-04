@@ -5,7 +5,7 @@ import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuf
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
-import { VOICES, DEFAULT_FEMALE_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
+import { VOICES, DEFAULT_NARRATOR_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
 
@@ -845,9 +845,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   // Voice selection — step 11
   const [voiceId, setVoiceId] = useState<string>(() => {
     try {
-      return localStorage.getItem("preferred_voice_id") ?? DEFAULT_FEMALE_VOICE_ID;
+      return localStorage.getItem("preferred_voice_id") ?? DEFAULT_NARRATOR_VOICE_ID;
     } catch {
-      return DEFAULT_FEMALE_VOICE_ID;
+      return DEFAULT_NARRATOR_VOICE_ID;
     }
   });
   const [situationCategory, setSituationCategory] = useState<string>("");

@@ -23,7 +23,7 @@ export function pickMidCtaTarget(slug: string): MidCtaTarget {
     return { label: "Create your romantic erotica", href: AFTER_DARK };
   }
   if (/(bedtime|sleep|relax|drift|quiet)/.test(slug)) {
-    return { label: "Create your erotica", href: AFTER_DARK };
+    return { label: "Create your bedtime story", href: "/drift" };
   }
   return { label: "Create your erotica", href: AFTER_DARK };
 }

@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, Loader2 } from "lucide-react";
+import { useSearch } from "wouter";
 import { useGenerateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -13,6 +14,10 @@ import type { CastingRoomResult, CastingRoomHandoff } from "@/components/Casting
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import { VOICES, resolveCharacterVoices } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
+import DriftLanding from "@/pages/DriftLanding";
+import { BedtimeScenarioPicker } from "@/components/BedtimeScenarioPicker";
+import type { BedtimeScenario } from "@/lib/bedtimeScenarios";
+import { buildGeneratePayload } from "@/lib/buildGeneratePayload";
 import { AfterDarkCreationBackdrop } from "@/components/AfterDarkCreationBackdrop";
 import {
   AfterDarkExpressPairing,
@@ -1345,12 +1350,24 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 /* ── Main component ─────────────────────────────────────────────────── */
 export default function AfterDark() {
   const { pack1, pack5, pack20, currency } = usePricing();
-  useSEO({
-    title: "After Dark — Unrestrained adult audio fiction — The Private Story",
-    description:
-      "Personalised, unrestrained adult audio fiction. Choose your pairing, your scenario, your intensity — narrated and entirely yours. Female-first, privacy-led, written for adult listeners.",
-    ogImage: "https://theprivatestory.com/og/after-dark.jpg",
-  });
+  const search = useSearch();
+  const isBedtime = search.includes("funnel=bedtime");
+
+  useSEO(
+    isBedtime
+      ? {
+          title: "Drift — Calm bedtime audio stories — The Private Story",
+          description:
+            "Slow, sensory bedtime audio stories written to let you settle. Choose your scenario, listen with eyes closed. Premium narration, private to your account.",
+          ogImage: "https://theprivatestory.com/og/drift.jpg",
+        }
+      : {
+          title: "After Dark — Unrestrained adult audio fiction — The Private Story",
+          description:
+            "Personalised, unrestrained adult audio fiction. Choose your pairing, your scenario, your intensity — narrated and entirely yours. Female-first, privacy-led, written for adult listeners.",
+          ogImage: "https://theprivatestory.com/og/after-dark.jpg",
+        },
+  );
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [showLanding, setShowLanding] = useState(true);
@@ -1370,7 +1387,7 @@ export default function AfterDark() {
   const [expressIntensityIndex, setExpressIntensityIndex] = useState(1);
   const [expressChemistry, setExpressChemistry] = useState("Forbidden Pull");
   const [expressArchetype, setExpressArchetype] = useState("The Executive");
-  const [expressVoiceName, setExpressVoiceName] = useState("Clara");
+  const [expressVoiceName, setExpressVoiceName] = useState("Theo");
   const [expressCountry, setExpressCountry] = useState("");
   const [expressCity, setExpressCity] = useState("");
   const [expressSetting, setExpressSetting] = useState("");
@@ -1401,7 +1418,7 @@ export default function AfterDark() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, currency, returnPath: window.location.pathname }),
+        body: JSON.stringify({ plan, currency, returnPath: isBedtime ? "/after-dark?funnel=bedtime" : window.location.pathname }),
       });
       const data = await res.json() as { url?: string; error?: string };
       if (!res.ok || !data.url) {
@@ -1417,12 +1434,13 @@ export default function AfterDark() {
     } finally {
       setPaywallLoadingPlan(null);
     }
-  }, [currency]);
+  }, [currency, isBedtime]);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
   const [storyCredits, setStoryCredits] = useState<number | null>(null);
   const [creditsLoading, setCreditsLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [selectedBedtimeScenario, setSelectedBedtimeScenario] = useState<BedtimeScenario | null>(null);
   const curatedScenarios = useMemo(
     () =>
       CURATED_SCENARIO_IDS.map((id) => SCENARIOS.find((s) => s.id === id))
@@ -1454,6 +1472,20 @@ export default function AfterDark() {
     setPhase("express_pairing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const startBedtimeFunnel = useCallback(() => {
+    setShowLanding(false);
+    setSelectedPairing("Her & Him");
+    setPhase("scenario");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  // /drift redirect passes enter=1 — skip marketing landing, go straight to scenarios.
+  useEffect(() => {
+    if (isBedtime && search.includes("enter=1") && ageConfirmed && showLanding) {
+      startBedtimeFunnel();
+    }
+  }, [isBedtime, search, ageConfirmed, showLanding, startBedtimeFunnel]);
 
   const expressIntensity = useMemo((): CastingRoomResult["intensity"] => {
     const labels = ["Slow burn", "Warm", "Explicit", "Unrestrained"] as const;
@@ -1735,39 +1767,13 @@ export default function AfterDark() {
     async (casting: CastingRoomResult, allTags: string[]) => {
       setPhase("generating");
       startLoadingPhase();
-      const apiPerspective =
-        casting.perspective === "your" ? "you"
-        : casting.perspective === "their" ? "they"
-        : casting.perspective;
-      const genData: Record<string, unknown> = {
-        mood: "Late Night",
-        intensity: casting.intensity,
-        voiceFeel: casting.voiceId ?? "RILOU7YmBhvwJGDGjNmP",
-        storyLength: "10 min",
-        perspective: apiPerspective,
-        cinematicVisuals: true,
-        emotionalFocus: false,
-        whoIsHe: casting.archetype || undefined,
-        dynamic: casting.dynamic || selectedScenario?.tags[0] || undefined,
-        storyMode: selectedScenario?.storyMode ?? "unrestrained",
+      const genData = buildGeneratePayload({
+        funnel: isBedtime ? "bedtime" : "erotic",
+        casting,
         experienceTags: allTags,
-        pairing: casting.pairing || undefined,
-        heritage: casting.heritage || undefined,
-        atmosphere: casting.atmosphere || undefined,
-        chemistry: casting.chemistry || undefined,
-        setting: casting.setting || undefined,
-        appearBuild: casting.appearBuild || undefined,
-        appearHeight: casting.appearHeight || undefined,
-        appearColouring: casting.appearColouring || undefined,
-        appearEyes: casting.appearEyes || undefined,
-        appearFeatures: casting.appearFeatures?.length ? casting.appearFeatures : undefined,
-        listenerName: casting.listenerName || undefined,
-        partnerName: casting.partnerName || undefined,
-        country: casting.country || undefined,
-        city: casting.city || undefined,
-        scenarioRoom: selectedScenario?.room,
-        situationId: casting.situationId || undefined,
-      };
+        scenarioRoom: isBedtime ? selectedBedtimeScenario?.room : selectedScenario?.room,
+        scenarioStoryMode: isBedtime ? undefined : selectedScenario?.storyMode,
+      });
       lastGenDataRef.current = genData;
       try {
         await generateMutation.mutateAsync({ data: genData as never });
@@ -1775,7 +1781,7 @@ export default function AfterDark() {
         stopLoadingPhase();
       }
     },
-    [generateMutation, startLoadingPhase, stopLoadingPhase, selectedScenario]
+    [generateMutation, startLoadingPhase, stopLoadingPhase, selectedScenario, selectedBedtimeScenario, isBedtime]
   );
 
   const handleCastingComplete = useCallback(
@@ -1786,6 +1792,7 @@ export default function AfterDark() {
       // Guard: if the selected scenario requires specific pairings and the
       // chosen pairing doesn't qualify, send the user back to scenario selection.
       if (
+        !isBedtime &&
         selectedScenario?.allowedPairings &&
         casting.pairing &&
         !selectedScenario.allowedPairings.includes(casting.pairing)
@@ -1795,7 +1802,9 @@ export default function AfterDark() {
         return;
       }
 
-      const storyMode = selectedScenario?.storyMode ?? "unrestrained";
+      const storyMode = isBedtime
+        ? (casting.storyMode ?? "nocturne")
+        : (selectedScenario?.storyMode ?? "unrestrained");
       const voice = casting.voiceId ? VOICES.find((v) => v.id === casting.voiceId) : null;
 
       const castingSnapshot: Record<string, unknown> = {
@@ -1819,11 +1828,13 @@ export default function AfterDark() {
       setLastCastingData(castingSnapshot);
       setPresetSaved(false);
 
-      const allTags = [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
+      const allTags = isBedtime
+        ? [...(selectedBedtimeScenario?.tags ?? []), ...(casting.customTags ?? [])]
+        : [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
       const pending: PendingAfterDarkCast = {
         casting,
         allTags,
-        scenarioId: selectedScenario?.id,
+        scenarioId: isBedtime ? selectedBedtimeScenario?.id : selectedScenario?.id,
       };
       setPendingAfterDarkCast(pending);
       try {
@@ -1840,7 +1851,7 @@ export default function AfterDark() {
 
       setPhase("paywall");
     },
-    [selectedScenario, selectedPairing, fetchPreviewCover]
+    [selectedScenario, selectedBedtimeScenario, selectedPairing, fetchPreviewCover, isBedtime]
   );
 
   const finishExpress = useCallback(
@@ -1936,7 +1947,11 @@ export default function AfterDark() {
   if (showLanding) {
     return (
       <AnimatePresence mode="wait">
-        <AfterDarkLanding key="after-dark-landing" onEnter={startFunnel} />
+        {isBedtime ? (
+          <DriftLanding key="drift-landing" onEnter={startBedtimeFunnel} />
+        ) : (
+          <AfterDarkLanding key="after-dark-landing" onEnter={startFunnel} />
+        )}
       </AnimatePresence>
     );
   }
@@ -2195,7 +2210,26 @@ export default function AfterDark() {
         )}
 
         {/* ── Scenario Selection ────────────────────────────────────────── */}
-        {phase === "scenario" && (() => {
+        {phase === "scenario" && isBedtime && (
+          <BedtimeScenarioPicker
+            selected={selectedBedtimeScenario}
+            onSelect={setSelectedBedtimeScenario}
+            onContinue={(scenario) => {
+              setSelectedBedtimeScenario(scenario);
+              setCastingHandoff({ pairing: selectedPairing ?? "Her & Him", handoffStep: 1 });
+              setConfirmedPairing(selectedPairing ?? "Her & Him");
+              preGenCoverPromise.current = fetchPreviewCover({
+                pairing: selectedPairing ?? "Her & Him",
+                intensity: "Warm",
+              });
+              window.scrollTo({ top: 0 });
+              setPhase("casting");
+            }}
+            onBack={() => setShowLanding(true)}
+          />
+        )}
+
+        {phase === "scenario" && !isBedtime && (() => {
           const activePairingCfg = PAIRINGS.find(p => p.id === selectedPairing);
           const partnerPronouns = activePairingCfg?.partnerPronouns ?? "he/him";
           const protagonistPronouns = activePairingCfg?.protagonistPronouns ?? "she/her";
@@ -2372,7 +2406,15 @@ export default function AfterDark() {
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </button>
-              {selectedScenario && (
+              {selectedBedtimeScenario && isBedtime && (
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: selectedBedtimeScenario.accent }} />
+                  <span className="text-xs font-medium" style={{ color: `${selectedBedtimeScenario.accent}cc` }}>
+                    {selectedBedtimeScenario.label}
+                  </span>
+                </div>
+              )}
+              {selectedScenario && !isBedtime && (
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#c0392b] animate-pulse" />
                   <span className="text-xs font-medium text-[#c0392b]/80">
@@ -2388,21 +2430,26 @@ export default function AfterDark() {
                   perspective: "her",
                   heritage: "",
                   archetype: "",
-                  chemistry: selectedScenario?.tags[0] ?? "He Takes Charge",
+                  chemistry: isBedtime
+                    ? (selectedBedtimeScenario?.tags[0] ?? "Warmth with nowhere to go")
+                    : (selectedScenario?.tags[0] ?? "He Takes Charge"),
                   setting: "",
                   atmosphere: "",
-                  intensity: "Unrestrained",
-                  mood: "Raw",
+                  intensity: isBedtime ? "Subtle" : "Intense",
+                  mood: isBedtime ? "Late Night" : "Raw",
                   whoIsHe: "",
-                  dynamic: selectedScenario?.tags[0] ?? "",
-                  storyMode: selectedScenario?.storyMode ?? "unrestrained",
+                  dynamic: isBedtime
+                    ? (selectedBedtimeScenario?.tags[0] ?? "")
+                    : (selectedScenario?.tags[0] ?? ""),
+                  storyMode: isBedtime ? "nocturne" : (selectedScenario?.storyMode ?? "unrestrained"),
                   pairing: selectedPairing || "Her & Him",
                 })
               }
-              afterDark={true}
+              afterDark={!isBedtime}
+              bedtime={isBedtime}
               handoff={castingHandoff ?? undefined}
               handoffStep={castingHandoff?.handoffStep}
-              scenarioTags={selectedScenario?.tags}
+              scenarioTags={isBedtime ? selectedBedtimeScenario?.tags : selectedScenario?.tags}
             />
           </motion.div>
         )}
@@ -2420,8 +2467,12 @@ export default function AfterDark() {
               coverUrl={paywallCoverUrl}
               fallbackCoverUrl={revealFallbackCover}
               coverLoading={paywallImageLoading}
-              accentHex={selectedScenario?.accent ?? "#c0392b"}
-              darknessLabel={selectedScenario?.darkness}
+              accentHex={
+                isBedtime
+                  ? (selectedBedtimeScenario?.accent ?? "#6366f1")
+                  : (selectedScenario?.accent ?? "#c0392b")
+              }
+              darknessLabel={isBedtime ? undefined : selectedScenario?.darkness}
               pack1={pack1}
               pack5={pack5}
               pack20={pack20}

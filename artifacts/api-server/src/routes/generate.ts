@@ -22,6 +22,7 @@ import { db, contentBlocks, usersTable, generationJobs } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
 import { isAdmin as isAdminUser } from "../middlewares/requireAdmin.js";
+import { canonicalizeIntensity, intensityStyleFor, intensityToLevel } from "@workspace/intensity";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -1294,18 +1295,6 @@ const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA] as const;
 const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO] as const;
 const MV_MALE_NARRATORS = new Set<string>([MV_JAMES, MV_ETHAN, MV_THEO]);
 
-// Casting intensity → ElevenLabs style. Mirror of INTENSITY_STYLE_MAP.
-const MV_INTENSITY_STYLE: Record<string, { narrator: number; char: number }> = {
-  "Subtle":    { narrator: 0.15, char: 0.35 },
-  "Tender":    { narrator: 0.15, char: 0.35 },
-  "Warm":      { narrator: 0.15, char: 0.35 },
-  "Heated":    { narrator: 0.25, char: 0.50 },
-  "Elevated":  { narrator: 0.25, char: 0.50 },
-  "Scorching": { narrator: 0.35, char: 0.70 },
-  "Intense":   { narrator: 0.35, char: 0.70 },
-};
-const MV_DEFAULT_STYLE = { narrator: 0.25, char: 0.50 };
-
 // ElevenLabs stability controls chunk-to-chunk tonal consistency.
 // Narrator reads many chunks in sequence — higher stability keeps the voice
 // sounding like one continuous reader rather than "two different narrators".
@@ -1758,24 +1747,12 @@ function trimSilenceFromMp3(input: Buffer): Promise<Buffer> {
 // ---------------------------------------------------------------------------
 
 const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
-const VALID_INTENSITIES = ["Subtle", "Warm", "Elevated", "Intense"];
 
 /**
- * Frontend doors send intensity labels that are NOT in VALID_INTENSITIES
- * (After Dark sends "Unrestrained", paywall fallback sends "Heated", etc.).
- * Without this map those labels silently fall through to "Warm" (level 3) in
- * normaliseIntake — which means After Dark's brand-defining "Unrestrained" was
- * being neutered to a non-explicit level and the explicit-content contract
- * (numericLevel >= 4) never fired. Canonicalise synonyms BEFORE validation so
- * the requested intensity actually reaches the story writer.
+ * Frontend doors send intensity labels that are NOT canonical (After Dark sends
+ * "Unrestrained", legacy clients send "Heated", etc.). canonicalizeIntensity
+ * from @workspace/intensity resolves all synonyms before story/TTS pipelines run.
  */
-const INTENSITY_SYNONYMS: Record<string, string> = {
-  Unrestrained: "Intense",
-  Scorching: "Intense",
-  Heated: "Elevated",
-  // "Tender" / "Sensual" intentionally omitted — they correctly resolve to the
-  // "Warm" default (gentle / sleep content must not become explicit).
-};
 const VALID_VOICES = Object.keys(VOICE_CATALOGUE);
 const VALID_LENGTHS = ["10 min"];
 
@@ -2116,13 +2093,7 @@ function sanitiseTextField(raw: string | undefined, maxChars: number): string | 
  * Subtle→1, Warm→3, Elevated→4, Intense→5
  */
 function labelToIntensityLevel(label: string): number {
-  const map: Record<string, number> = {
-    Subtle: 1,
-    Warm: 3,
-    Elevated: 4,
-    Intense: 5,
-  };
-  return map[label] ?? 3;
+  return intensityToLevel(label);
 }
 
 function buildCustomIntensityGuidance(intensity: string): string {
@@ -2175,9 +2146,7 @@ function derivePairingPronouns(pairing: string): string {
 
 function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
   const mood = VALID_MOODS.includes(raw.mood) ? raw.mood : "Emotional";
-  const rawIntensityTrim = (raw.intensity ?? "").trim();
-  const canonicalIntensity = INTENSITY_SYNONYMS[rawIntensityTrim] ?? rawIntensityTrim;
-  let intensity = VALID_INTENSITIES.includes(canonicalIntensity) ? canonicalIntensity : "Warm";
+  let intensity = canonicalizeIntensity(raw.intensity, "Warm");
   // GUARANTEE explicit content for the "unrestrained" story mode (After Dark).
   // An unrestrained story must always contain an explicit sex scene, so floor
   // its intensity at "Elevated" (level 4) — the threshold that activates the
@@ -4579,7 +4548,7 @@ export async function generateAudioFile(
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
   if (!elevenLabsKey) throw new Error("ELEVENLABS_API_KEY is not set");
 
-  const styleFor = MV_INTENSITY_STYLE[(intensity ?? "").trim()] ?? MV_DEFAULT_STYLE;
+  const styleFor = intensityStyleFor(intensity);
 
   const callTTS = async (vid: string, chunk: string, style: number, stability = CHAR_STABILITY): Promise<Buffer> => {
     const res = await fetch(
@@ -6160,7 +6129,7 @@ router.post("/preview-cover", async (req: Request, res: Response) => {
     }
 
     if (!base64) {
-      const fallbackPrompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Heated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
+      const fallbackPrompt = `Literary erotica cover image. ${mood || "Emotional"} mood, ${intensity || "Elevated"} intensity${pairing ? `, ${pairing} dynamic` : ""}${heritage ? `, ${heritage} heritage` : ""}. Sophisticated luxury aesthetic. Warm golds and deep charcoal. Cinematic lighting. No text. Adult literary fiction style.`;
       const response = await openai.images.generate({
         model: "gpt-image-1",
         prompt: fallbackPrompt,
@@ -6182,5 +6151,7 @@ router.post("/preview-cover", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Cover generation failed" });
   }
 });
+
+export { normaliseIntake as normalizeStoryIntake };
 
 export default router;

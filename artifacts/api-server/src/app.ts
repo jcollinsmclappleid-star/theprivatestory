@@ -19,6 +19,17 @@ import { runAccountPurge } from "./lib/accountPurge.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/** Runtime public root — Vercel bundles dist/public/client; images served from edge /public. */
+function serverPublicRoot(): string {
+  const bundled = path.resolve(__dirname, "public");
+  if (existsSync(bundled)) return bundled;
+  const sibling = path.resolve(__dirname, "..", "public");
+  if (existsSync(sibling)) return sibling;
+  return bundled;
+}
+
+const PUBLIC_ROOT = serverPublicRoot();
+
 const app: Express = express();
 
 // Trust the first hop of Replit's reverse proxy so rate limiters key on the
@@ -102,6 +113,7 @@ const ALLOWED_ORIGIN_PATTERNS = [
   /\.replit\.dev$/,
   /\.replit\.app$/,
   /\.repl\.co$/,
+  /\.vercel\.app$/,
   /^https:\/\/(www\.)?theprivatestory\.com$/,
 ];
 
@@ -227,7 +239,7 @@ app.use("/api/rewrite-story", generationLimiter);
 // These are public-safe files with no user data — no auth required.
 // ---------------------------------------------------------------------------
 app.use(
-  express.static(path.resolve(__dirname, "..", "public"), {
+  express.static(PUBLIC_ROOT, {
     maxAge: process.env.NODE_ENV === "production" ? "30d" : 0,
     immutable: false,
   }),
@@ -289,7 +301,7 @@ app.use("/api", router);
 // index (the explicit SPA catch-all below handles that, ensuring SSR routes
 // always take priority over the client-side fallback).
 // ---------------------------------------------------------------------------
-const CLIENT_DIR = path.resolve(__dirname, "..", "public", "client");
+const CLIENT_DIR = path.join(PUBLIC_ROOT, "client");
 if (existsSync(CLIENT_DIR)) {
   app.use(
     express.static(CLIENT_DIR, {
@@ -364,15 +376,15 @@ async function runRetentionCleanup(): Promise<void> {
   }
 }
 
-// Run on startup (catches backlog) then every 24 hours
-runRetentionCleanup();
-setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000);
+// Scheduled jobs — long-running intervals are disabled on Vercel serverless.
+// Use Vercel Cron (vercel.json) for production sweeps when on Vercel.
+if (!process.env.VERCEL) {
+  runRetentionCleanup();
+  setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000);
 
-// Account-purge sweep: anonymises soft-deleted users older than 30 days.
-// See lib/accountPurge.ts for the cascade list and anonymisation contract.
-// Runs once on startup (catches backlog) then daily.
-runAccountPurge();
-setInterval(runAccountPurge, 24 * 60 * 60 * 1000);
+  runAccountPurge();
+  setInterval(runAccountPurge, 24 * 60 * 60 * 1000);
+}
 
 // ---------------------------------------------------------------------------
 // Global error handler — must be registered last, after all routes.

@@ -17,7 +17,7 @@ interface CreationStudioProps {
   priceDisplay: string;
 }
 
-const AUTO_CYCLE_MS = 2800;
+const AUTO_CYCLE_MS = 3200;
 const AUTO_PAUSE_MS = 12000;
 
 export function CreationStudio({ priceDisplay }: CreationStudioProps) {
@@ -66,29 +66,31 @@ export function CreationStudio({ priceDisplay }: CreationStudioProps) {
   const preset = buildPresetFromSelections(selections, "Your story brief");
 
   return (
-    <section className="relative py-8 md:py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
-      <div className="relative rounded-3xl border border-primary/25 bg-[#0c0a10]/95 overflow-hidden shadow-[0_0_90px_-20px_rgba(201,162,39,0.4)]">
+    <section id="creation-room" className="relative py-4 md:py-8 px-4 md:px-8 max-w-7xl mx-auto w-full scroll-mt-24">
+      <div className="relative rounded-3xl border border-primary/30 bg-[#120a14]/95 overflow-hidden shadow-[0_0_80px_-24px_hsl(var(--primary)/0.45)]">
         <div
-          className="absolute inset-0 pointer-events-none opacity-50"
+          className="absolute inset-0 pointer-events-none opacity-60"
           aria-hidden
           style={{
             background:
-              "radial-gradient(ellipse at 15% 0%, rgba(201,162,39,0.16) 0%, transparent 50%), radial-gradient(ellipse at 95% 100%, rgba(232,121,160,0.12) 0%, transparent 45%)",
+              "radial-gradient(ellipse at 15% 0%, hsl(var(--primary) / 0.14) 0%, transparent 50%), radial-gradient(ellipse at 95% 100%, rgba(180,90,110,0.14) 0%, transparent 45%)",
           }}
         />
 
-        <div className="relative p-6 md:p-10 lg:p-12 space-y-8 md:space-y-10">
+        <div className="relative p-6 md:p-10 lg:p-12 space-y-6 md:space-y-8">
           <div className="max-w-3xl">
             <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-primary mb-3">
               The Creation Room
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-              Cast it. Set the heat.{" "}
+              Cast it. Set the tone.{" "}
               <span className="text-primary">Hear what only you imagined.</span>
             </h2>
             <p className="text-base text-white/88 leading-relaxed max-w-2xl">
-              Tap the tiles below — your brief builds live. Same studio that powers Quinn-level narration,
-              but every choice is yours.
+              Choose the dynamic, the chemistry, and how intimate it becomes. We write and narrate a premium erotic story that belongs to you alone — nothing to browse, everything to create.
+            </p>
+            <p className="text-sm text-white/75 leading-relaxed max-w-2xl mt-3">
+              In under three minutes, your brief becomes ~10 minutes of full-cast audio — narrator and characters, each voiced separately.
             </p>
           </div>
 
@@ -112,7 +114,7 @@ export function CreationStudio({ priceDisplay }: CreationStudioProps) {
                     type="button"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-[0_0_40px_-8px_rgba(201,162,39,0.6)]"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-[0_0_40px_-8px_hsl(var(--primary)/0.55)]"
                   >
                     <Sparkles className="w-4 h-4" />
                     Bring this brief to life — from {priceDisplay}

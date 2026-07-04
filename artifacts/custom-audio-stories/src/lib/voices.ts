@@ -96,6 +96,8 @@ export const JOSHUA_VOICE_ID = JAMES_VOICE_ID;
 
 export const DEFAULT_FEMALE_VOICE_ID = KAYLA_VOICE_ID;
 export const DEFAULT_MALE_VOICE_ID   = THEO_VOICE_ID;
+/** Default narrator across the product — Theo (British, textured). */
+export const DEFAULT_NARRATOR_VOICE_ID = THEO_VOICE_ID;
 
 export const NARRATOR_VOICE_SETTINGS = {
   stability: 0.45,
@@ -111,15 +113,10 @@ export const CHAR_VOICE_SETTINGS = {
   use_speaker_boost: true,
 } as const;
 
-export const INTENSITY_STYLE_MAP: Record<string, { narrator: number; char: number }> = {
-  "Subtle":    { narrator: 0.15, char: 0.35 },
-  "Tender":    { narrator: 0.15, char: 0.35 },
-  "Warm":      { narrator: 0.15, char: 0.35 },
-  "Heated":    { narrator: 0.25, char: 0.50 },
-  "Elevated":  { narrator: 0.25, char: 0.50 },
-  "Scorching": { narrator: 0.35, char: 0.70 },
-  "Intense":   { narrator: 0.35, char: 0.70 },
-};
+export {
+  CANONICAL_INTENSITY_STYLE as INTENSITY_STYLE_MAP,
+  intensityStyleFor,
+} from "@workspace/intensity";
 
 // HER pool priority: Kayla → Maya → Clara
 // HIM pool priority: Theo → James → Ethan
@@ -188,7 +185,6 @@ export function getVoicesForPairing(pairing: string | undefined): Voice[] {
   return [...FEMALE_VOICES, ...MALE_VOICES];
 }
 
-export function getDefaultVoiceId(pairing?: string): string {
-  if (pairing && ALL_MALE_PAIRINGS.includes(pairing)) return DEFAULT_MALE_VOICE_ID;
-  return DEFAULT_FEMALE_VOICE_ID;
+export function getDefaultVoiceId(_pairing?: string): string {
+  return DEFAULT_NARRATOR_VOICE_ID;
 }

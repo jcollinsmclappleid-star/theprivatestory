@@ -115,11 +115,11 @@ export const THREE_DOORS_HTML = `
 <div class="three-doors-wrap">
   <p class="three-doors-heading">Where does your story begin?</p>
   <div class="three-doors">
-    <a href="/create" class="door door-story">
+    <a href="/after-dark" class="door door-story">
       <span class="door-room door-room-story">The Story Room</span>
-      <span class="door-name door-name-story">Romance</span>
-      <span class="door-tagline door-tagline-story">Tension, atmosphere, the feeling you&rsquo;re after.</span>
-      <span class="door-btn door-btn-story">Create My Story &rarr;</span>
+      <span class="door-name door-name-story">Personalised Erotica</span>
+      <span class="door-tagline door-tagline-story">Written and narrated for you alone.</span>
+      <span class="door-btn door-btn-story">Create your erotica &rarr;</span>
     </a>
     <a href="/after-dark" class="door door-dark">
       <span class="door-room door-room-dark">The Story Room</span>
@@ -147,7 +147,7 @@ const FOOTER_HTML = `
           <li><a href="/">Home</a></li>
           <li><a href="/how-it-works">How It Works</a></li>
           <li><a href="/browse">Browse stories</a></li>
-          <li><a href="/create">Create your story</a></li>
+          <li><a href="/after-dark">Create your erotica</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/after-dark">After Dark</a></li>
           <li><a href="/drift">Drift — Bedtime</a></li>

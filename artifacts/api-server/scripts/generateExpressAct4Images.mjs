@@ -10,6 +10,7 @@ import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -127,6 +128,17 @@ function buildPrompt(brief) {
 }
 
 const imagesDir = path.resolve(__dirname, "../public/images");
+const viteImagesDir = path.resolve(__dirname, "../../custom-audio-stories/public/images");
+
+async function writeWebpCopies(pngPath, basename) {
+  const webpName = basename.replace(/\.png$/i, ".webp");
+  const buf = await sharp(pngPath).webp({ quality: 82, effort: 4 }).toBuffer();
+  for (const dir of [imagesDir, viteImagesDir]) {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, webpName), buf);
+  }
+}
+
 if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
 
 const filter = process.argv.slice(2);
@@ -145,6 +157,9 @@ for (const [slug, brief] of entries) {
 
   if (brief.skip && fs.existsSync(filepath)) {
     console.log(`  skip ${slug} (${brief.cast}) — approved asset`);
+    try {
+      await writeWebpCopies(filepath, filename);
+    } catch { /* webp optional on skip */ }
     done++;
     continue;
   }
@@ -171,8 +186,12 @@ for (const [slug, brief] of entries) {
       throw new Error("No image data in response");
     }
 
+    if (!fs.existsSync(viteImagesDir)) fs.mkdirSync(viteImagesDir, { recursive: true });
+    fs.copyFileSync(filepath, path.join(viteImagesDir, filename));
+    await writeWebpCopies(filepath, filename);
+
     done++;
-    console.log(`✓ ${filename}`);
+    console.log(`✓ ${filename} + .webp`);
   } catch (err) {
     failed++;
     console.log(`✗ ${err.message}`);

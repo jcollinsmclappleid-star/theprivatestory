@@ -14,10 +14,14 @@ const artifactDir = path.dirname(fileURLToPath(import.meta.url));
 
 async function buildAll() {
   const distDir = path.resolve(artifactDir, "dist");
+  const workspaceRoot = path.resolve(artifactDir, "..", "..");
   await rm(distDir, { recursive: true, force: true });
 
   await esbuild({
-    entryPoints: [path.resolve(artifactDir, "src/index.ts")],
+    entryPoints: [
+      path.resolve(artifactDir, "src/index.ts"),
+      path.resolve(artifactDir, "src/app.ts"),
+    ],
     platform: "node",
     bundle: true,
     format: "esm",
@@ -139,10 +143,10 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
   // fast).  In production deployments the env var is absent, so the Vite build
   // always runs, ensuring the bundled client is always up-to-date.
   if (!process.env.SKIP_VITE_BUILD) {
-    const workspaceRoot = path.resolve(artifactDir, "..", "..");
+    const pnpmBin = "npx pnpm";
     console.log("Building React SPA (Vite)…");
     execSync(
-      "PORT=3000 BASE_PATH=/ pnpm --filter @workspace/custom-audio-stories run build",
+      `${pnpmBin} --filter @workspace/custom-audio-stories run build`,
       {
         cwd: workspaceRoot,
         stdio: "inherit",
@@ -160,6 +164,35 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     console.log("React SPA build complete → public/client/");
   } else {
     console.log("SKIP_VITE_BUILD=1 — skipping React SPA build (dev mode)");
+  }
+
+  // Act IV WebP variants (smaller hero carousel loads on mobile).
+  const webpScript = path.resolve(artifactDir, "scripts/convertExpressAct4ToWebp.mjs");
+  if (existsSync(webpScript)) {
+    console.log("Generating Act IV WebP variants…");
+    execSync("node ./scripts/convertExpressAct4ToWebp.mjs", {
+      cwd: artifactDir,
+      stdio: "inherit",
+    });
+  }
+
+  // Vercel: bundle SPA into dist/public/client for the serverless function (SPA fallback).
+  // Large images stay in repo /public/ and are served by the Vercel CDN before rewrites.
+  if (process.env.VERCEL) {
+    const clientSrc = path.resolve(artifactDir, "public/client");
+    const clientDest = path.resolve(distDir, "public/client");
+    if (existsSync(clientSrc)) {
+      await mkdir(path.dirname(clientDest), { recursive: true });
+      await cp(clientSrc, clientDest, { recursive: true });
+      console.log("Vercel: copied public/client → dist/public/client");
+    }
+
+    const publicRoot = path.resolve(workspaceRoot, "public");
+    const serverPublic = path.resolve(artifactDir, "public");
+    if (existsSync(serverPublic)) {
+      await cp(serverPublic, publicRoot, { recursive: true });
+      console.log("Vercel: copied api-server/public → repo public/");
+    }
   }
 }
 

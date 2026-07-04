@@ -139,7 +139,8 @@ function Navbar({ streakDays }: { streakDays: number }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center">
-              <Logo height={64} />
+              <Logo height={48} className="md:hidden" />
+              <Logo height={64} className="hidden md:block" />
             </Link>
 
             <div className="hidden md:flex items-center gap-5">

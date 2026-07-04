@@ -1,15 +1,38 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 
 interface StickyMobileCTAProps {
   priceDisplay: string;
+  /** Defaults to /after-dark */
+  href?: string;
+  /** If set, button scrolls instead of navigating */
+  scrollToId?: string;
+  label?: string;
+  /** Direct action (e.g. checkout) — takes priority over scrollToId and href */
+  onClick?: () => void;
+  loading?: boolean;
+  secondaryLabel?: string;
+  onSecondaryClick?: () => void;
+  /** Secondary link (e.g. try-one path) — shown below primary on mobile sticky bar */
+  secondaryHref?: string;
 }
 
 /** Appears after scroll on mobile — keeps conversion path one thumb away. */
-export function StickyMobileCTA({ priceDisplay }: StickyMobileCTAProps) {
+export function StickyMobileCTA({
+  priceDisplay,
+  href = "/after-dark",
+  scrollToId,
+  label,
+  onClick,
+  loading = false,
+  secondaryLabel,
+  onSecondaryClick,
+  secondaryHref,
+}: StickyMobileCTAProps) {
   const [visible, setVisible] = useState(false);
+  const ctaLabel = label ?? `Create your erotica · from ${priceDisplay}`;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 480);
@@ -17,6 +40,26 @@ export function StickyMobileCTA({ priceDisplay }: StickyMobileCTAProps) {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleScroll = () => {
+    if (!scrollToId) return;
+    document.getElementById(scrollToId)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const primaryClass =
+    "pointer-events-auto w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-[0_0_32px_-6px_hsl(var(--primary)/0.55)] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed";
+
+  const primaryContent = loading ? (
+    <>
+      <Loader2 className="w-4 h-4 animate-spin" />
+      One moment…
+    </>
+  ) : (
+    <>
+      <Sparkles className="w-4 h-4" />
+      {ctaLabel}
+    </>
+  );
 
   return (
     <AnimatePresence>
@@ -31,15 +74,37 @@ export function StickyMobileCTA({ priceDisplay }: StickyMobileCTAProps) {
             background: "linear-gradient(0deg, rgba(10,9,8,0.97) 0%, rgba(10,9,8,0.88) 55%, transparent 100%)",
           }}
         >
-          <Link href="/after-dark" className="pointer-events-auto block">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-[0_0_32px_-6px_rgba(201,162,39,0.55)] active:scale-[0.99]"
-            >
-              <Sparkles className="w-4 h-4" />
-              Create your erotica · from {priceDisplay}
-            </button>
-          </Link>
+          <div className="pointer-events-auto flex flex-col gap-2">
+            {onClick ? (
+              <button type="button" onClick={onClick} disabled={loading} className={primaryClass}>
+                {primaryContent}
+              </button>
+            ) : scrollToId ? (
+              <button type="button" onClick={handleScroll} className={primaryClass}>
+                {primaryContent}
+              </button>
+            ) : (
+              <Link href={href} className="block">
+                <button type="button" className={primaryClass}>
+                  {primaryContent}
+                </button>
+              </Link>
+            )}
+            {secondaryLabel && secondaryHref && (
+              <Link href={secondaryHref} className="block text-center text-[11px] text-white/50 hover:text-primary transition-colors py-1">
+                {secondaryLabel}
+              </Link>
+            )}
+            {secondaryLabel && onSecondaryClick && !secondaryHref && (
+              <button
+                type="button"
+                onClick={onSecondaryClick}
+                className="text-center text-[11px] text-white/50 hover:text-primary transition-colors py-1 w-full"
+              >
+                {secondaryLabel}
+              </button>
+            )}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

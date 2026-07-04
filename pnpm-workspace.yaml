@@ -6,6 +6,7 @@ packages:
 
 allowBuilds:
   esbuild: true
+  sharp: true
 
 autoInstallPeers: false
 
@@ -42,6 +43,7 @@ onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
   - msw
+  - sharp
   - unrs-resolver
 
 overrides:

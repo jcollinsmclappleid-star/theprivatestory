@@ -1,0 +1,7 @@
+screenshots/
+attached_assets/
+.replit
+**/*.md
+!README.md
+artifacts/mockup-sandbox/
+terminals/

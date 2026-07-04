@@ -18,6 +18,9 @@
     },
     {
       "path": "../../lib/seo-data"
+    },
+    {
+      "path": "../../lib/intensity"
     }
   ]
 }

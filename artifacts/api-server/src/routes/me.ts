@@ -7,6 +7,7 @@ import { eq, and, desc, sql as drizzleSql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { validateNameFormat, isBlockedInput } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
+import { canonicalizeIntensity } from "@workspace/intensity";
 
 function getStripe(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -20,7 +21,7 @@ function getStripe(): Stripe | null {
 // Must be kept in sync with the equivalent constants in generate.ts.
 // ---------------------------------------------------------------------------
 const VALID_TASTE_INTENSITIES = new Set([
-  "Tender", "Warm", "Heated", "Explicit", "Scorching",
+  "Subtle", "Warm", "Elevated", "Intense",
 ]);
 const VALID_TASTE_VOICES = new Set([
   // Current voice IDs
@@ -366,9 +367,12 @@ router.post("/taste", async (req, res) => {
     }
 
     if (preferredIntensity) {
-      const safe = filterDimension(preferredIntensity as Record<string, unknown>, VALID_TASTE_INTENSITIES);
-      for (const [key, val] of Object.entries(safe)) {
-        current.preferredIntensity[key] = (current.preferredIntensity[key] ?? 0) + val;
+      for (const [key, val] of Object.entries(preferredIntensity as Record<string, unknown>)) {
+        const canonical = canonicalizeIntensity(String(key));
+        const n = clampIncrement(val);
+        if (n > 0) {
+          current.preferredIntensity[canonical] = (current.preferredIntensity[canonical] ?? 0) + n;
+        }
       }
     }
 
@@ -666,7 +670,7 @@ router.get("/quick-create-params", async (req, res) => {
       .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Emotional";
 
     const topIntensity = Object.entries(taste.preferredIntensity)
-      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Heated";
+      .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "Elevated";
 
     const topVoice = Object.entries(taste.preferredVoiceFeel)
       .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "UK Voice";
@@ -678,12 +682,11 @@ router.get("/quick-create-params", async (req, res) => {
       .sort(([, a], [, b]) => b - a)[0]?.[0] ?? "";
 
     const VALID_MOODS = ["Slow Burn", "Late Night", "Emotional", "Forbidden", "First Encounter", "Tender"];
-    const VALID_INTENSITIES = ["Tender", "Heated", "Explicit", "Scorching"];
     const VALID_VOICE_IDS = ["RILOU7YmBhvwJGDGjNmP", "tQ4MEZFJOzsahSEEZtHK", "FA6HhUjVbervLw2rNl8M", "AeRdCCKzvd23BpJoofzx", "n1PvBOwxb8X6m7tahp2h", "jfIS2w2yJi0grJZPyEsk"];
     const LEGACY_VOICE_MAP: Record<string, string> = { "UK Voice": "RILOU7YmBhvwJGDGjNmP", "US Voice": "RILOU7YmBhvwJGDGjNmP", "Soft Voice": "RILOU7YmBhvwJGDGjNmP", "Deep Voice": "RILOU7YmBhvwJGDGjNmP", "Breathy Voice": "RILOU7YmBhvwJGDGjNmP", "Confident Voice": "RILOU7YmBhvwJGDGjNmP" };
 
     const mood = VALID_MOODS.includes(topMood) ? topMood : "Emotional";
-    const intensity = VALID_INTENSITIES.includes(topIntensity) ? topIntensity : "Heated";
+    const intensity = canonicalizeIntensity(topIntensity, "Elevated");
     const voiceFeel = VALID_VOICE_IDS.includes(topVoice) ? topVoice : (LEGACY_VOICE_MAP[topVoice] ?? "RILOU7YmBhvwJGDGjNmP");
 
     res.json({

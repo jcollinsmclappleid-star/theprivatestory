@@ -26,7 +26,6 @@ const About = lazy(() => import("@/pages/About"));
 const Browse = lazy(() => import("@/pages/Browse"));
 const Search = lazy(() => import("@/pages/Search"));
 const StoryDetail = lazy(() => import("@/pages/StoryDetail"));
-const Create = lazy(() => import("@/pages/Create"));
 const Library = lazy(() => import("@/pages/Library"));
 const Admin = lazy(() => import("@/pages/Admin"));
 const AdminModeration = lazy(() => import("@/pages/AdminModeration"));

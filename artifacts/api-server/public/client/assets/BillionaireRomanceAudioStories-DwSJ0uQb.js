@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CiSdDXy4.js";import{S as i,g as r}from"./SEOPage-Ckc6eXEV.js";import"./index-CzutWfkm.js";import"./data-editors-picks-CJizIKSx.js";const e=r("billionaire-romance-audio-stories");function m(){return o.jsx(i,{config:e,slug:"billionaire-romance-audio-stories"})}export{m as default};

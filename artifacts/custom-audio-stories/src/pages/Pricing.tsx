@@ -1,129 +1,174 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearch } from "wouter";
 import {
-  Sparkles, Shield, Lock, Headphones, BookOpen,
-  ChevronDown, Check, Moon,
-  EyeOff, Bookmark, Loader2, CheckCircle2, AlertCircle,
-  Users, Sliders, Flame, Trash2, Timer, Star,
+  Sparkles, Shield, Lock, Headphones,
+  ChevronDown, Check, ChevronRight,
+  EyeOff, Loader2, CheckCircle2, AlertCircle,
+  Sliders, Flame, Trash2, Timer, Star, X,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePricing } from "@/hooks/usePricing";
 import { TrustBar, CountryStrip } from "@/components/TrustBar";
-import { VoiceShowcase } from "@/components/VoiceShowcase";
-import { PersonalisedEroticaDoor } from "@/components/ThreeDoors";
+import { PricingHero } from "@/components/PricingHero";
+import { PricingSampleTeaser } from "@/components/PricingSampleTeaser";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { hiwAct4Src } from "@/components/HowItWorksHero";
+import { readHomeBrief } from "@/lib/afterDarkExpress";
 
-const BASE = import.meta.env.BASE_URL;
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-const REASSURANCE = [
-  { icon: <Sliders className="w-4 h-4" />, label: "Fully cast by you", sub: "Character, energy, chemistry, setting — every detail yours before a word is written" },
-  { icon: <Headphones className="w-4 h-4" />, label: "Full cast narration", sub: "Three distinct voices — narrator, her voice, his voice — matched to your pairing. Not one reader. A full cast." },
-  { icon: <EyeOff className="w-4 h-4" />, label: "Completely private", sub: "Your library is visible only to you. Nothing shared, ever" },
-  { icon: <Flame className="w-4 h-4" />, label: "You set how far it goes", sub: "From warm and romantic to deeply intimate — your depth, your call" },
-];
+const SECTION_LABEL = "text-[10px] font-bold uppercase tracking-[0.28em] text-primary/90 mb-2";
+const PANEL = "rounded-3xl border border-white/10 bg-[#0c0a10]";
 
-const PACK1_FEATURES = [
-  { text: "1 personalised audio story — yours to keep", special: false },
-  { text: "Written around exactly what you want", special: false },
-  { text: "Full cast narration — narrator plus character voices", special: false },
-  { text: "Original cover art for your story", special: false },
-  { text: "Private library — visible only to you", special: false },
-  { text: "One-time purchase — no subscription", special: false },
-  { text: "After Dark — stories that go further, no limits held back", special: true },
-];
-
-const PACK5_FEATURES = [
-  { text: "5 personalised audio stories — yours to keep", special: false },
-  { text: "Explore different moods, fantasies & scenarios", special: false },
-  { text: "Full cast narration — narrator plus character voices", special: false },
-  { text: "Original cover art for every story", special: false },
-  { text: "Private library — visible only to you", special: false },
-  { text: "Credits never expire", special: false },
-  { text: "After Dark — stories that go further, no limits held back", special: true },
+const TRUST_CHIPS = [
+  { icon: <Sliders className="w-3.5 h-3.5" />, label: "Your cast & chemistry" },
+  { icon: <Headphones className="w-3.5 h-3.5" />, label: "Full-cast narration" },
+  { icon: <EyeOff className="w-3.5 h-3.5" />, label: "Only you hear it" },
+  { icon: <Flame className="w-3.5 h-3.5" />, label: "Your explicit dial" },
+  { icon: <Lock className="w-3.5 h-3.5" />, label: "Billed discreetly" },
+  { icon: <Timer className="w-3.5 h-3.5" />, label: "Yours in under 3 minutes" },
 ];
 
 const PACK20_FEATURES = [
-  { text: "20 personalised audio stories — yours to keep", special: false },
-  { text: "Your own private collection, built around your desires", special: false },
-  { text: "Indulge every mood, fantasy & scenario you can imagine", special: false },
-  { text: "Full cast narration — narrator plus character voices", special: false },
-  { text: "Original cover art for every story", special: false },
-  { text: "Private library — visible only to you", special: false },
-  { text: "Credits never expire", special: false },
-  { text: "After Dark — stories that go further, no limits held back", special: true },
+  "Twenty private stories — each ~10 minutes of full-cast audio",
+  "Every mood, pairing & scenario you can imagine",
+  "Written around your cast, chemistry & desires",
+  "Explicit dial on every story — intimate to unrestrained",
+  "Original cover art · private library · never shared",
 ];
 
-const CASTING_DETAILS = [
-  { icon: <Users className="w-5 h-5" />, heading: "Cast your characters", body: "Name them. Give them a voice, a presence, a history. Who they are shapes everything — from their first word to the last." },
-  { icon: <Sliders className="w-5 h-5" />, heading: "Set the dynamic", body: "Choose the tension, the pace, the power. Slow burn or immediate. Tender or charged. You decide what the air between them feels like." },
-  { icon: <Flame className="w-5 h-5" />, heading: "Choose how far it goes", body: "From romantic to deeply intimate — you set the depth. The story goes exactly where you want it, and no further." },
+const PACK5_FEATURES = [
+  "Five private stories to explore different fantasies",
+  "Different pairings, moods & scenarios each time",
+  "Full-cast narration on every story",
+  "Your explicit dial on each — your depth, your call",
+  "Original cover art · private library",
 ];
 
-const INCLUDED = [
-  { icon: <Sparkles className="w-5 h-5" />, label: "Personalised story creation", desc: "Every story is written around your mood, your cast, and your world. Nothing pulled from a shelf." },
-  { icon: <Lock className="w-5 h-5" />, label: "Private library access", desc: "Your stories live in your own private archive. No one else can see them — not even us." },
-  { icon: <Headphones className="w-5 h-5" />, label: "Full cast narration", desc: "Every story uses a full cast — your chosen narrator plus separate voices for each character. Three voices, one story, heard only by you." },
-  { icon: <Bookmark className="w-5 h-5" />, label: "Stories saved to your account", desc: "Return to any story, any time. Resume, replay, or quietly remove — entirely at your discretion." },
+const PACK1_FEATURES = [
+  "One fully narrated story (~10 min), private to you",
+  "Written around your cast, tags & scenario",
+  "Full-cast narration with your chosen narrator",
+  "Intensity from intimate to explicitly unrestrained",
+  "One-time purchase — no subscription",
 ];
+
+const LIBRARY_VS = {
+  them: [
+    "Pick from a catalogue someone else curated",
+    "Hope the cast and chemistry feel close enough",
+    "Same story thousands of others have heard",
+    "Intensity fixed — take it or leave it",
+  ],
+  us: [
+    "Each story built from your choices alone",
+    "Your cast, your chemistry, your pronouns",
+    "Original fiction — never replicated",
+    "Explicit dial from intimate to unrestrained",
+  ],
+};
 
 type PackKey = "pack_1" | "pack_5" | "pack_20";
 
 const FAQS: { q: string; a: string }[] = [
   {
-    q: "What is After Dark?",
-    a: "After Dark is a curated space within The Private Story for stories that explore adult themes with full literary maturity — stories that don't hold back. It's included with every pack, even a single story, accessed discreetly from your library. No extra charge. The content goes further; the quality and craft remain the same.",
+    q: "What do I get per story?",
+    a: "Each story is a fully personalised, narrated audio experience — approximately ten minutes — written around your cast, chemistry, tags, and how explicit you want it. Original cover art and private library storage are included with every pack.",
   },
   {
-    q: "Are my generated stories private?",
+    q: "How explicit can my story be?",
+    a: "You set the dial when you create your erotica — from slow burn and romantic to warm, elevated, or explicitly unrestrained. There is no separate tier or extra charge. Every pack includes the full range.",
+  },
+  {
+    q: "Are my stories private?",
     a: "Completely. Your stories are saved only to your account and are not visible to anyone else — including us. You can delete them at any time.",
   },
   {
-    q: "What do the credit packs include?",
-    a: "Every story credit produces a fully personalised, narrated audio story of approximately 10 minutes — written around your specific cast, mood, and choices. All packs include private library storage, full cast narration — narrator plus separate character voices — and original cover art for each story.",
-  },
-  {
-    q: "Do my credits expire?",
-    a: "No. Credits never expire. Use them whenever you like — there's no pressure to create on a schedule.",
-  },
-  {
-    q: "Can I buy more credits later?",
-    a: "Yes. Simply return to the pricing page and purchase another pack. Credits stack — if you have 2 remaining and buy 5 more, you'll have 7.",
-  },
-  {
-    q: "What is After Dark and which packs include it?",
-    a: "After Dark is the space for stories that go further — written without restraint, for a part of you that doesn't need to justify itself. It's included with every pack, even a single story.",
+    q: "Do credits expire?",
+    a: "No. Use them whenever you like — there is no schedule and no subscription pressure.",
   },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div
-      className="border-b border-white/8 last:border-0"
-      onClick={() => setOpen(!open)}
-    >
-      <button className="w-full flex items-center justify-between gap-4 py-5 text-left group cursor-pointer">
-        <span className="text-sm font-medium text-foreground group-hover:text-foreground transition-colors leading-snug">{q}</span>
+    <div className="border-b border-white/8 last:border-0" onClick={() => setOpen(!open)}>
+      <button type="button" className="w-full flex items-center justify-between gap-4 py-5 text-left group cursor-pointer">
+        <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors leading-snug">{q}</span>
         <span className="flex-shrink-0 text-primary/80 group-hover:text-primary transition-colors">
           <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
         </span>
       </button>
-      {open && (
-        <p className="text-sm text-muted-foreground/80 leading-relaxed pb-5 pr-8">{a}</p>
-      )}
+      {open && <p className="text-sm text-white/60 leading-relaxed pb-5 pr-8">{a}</p>}
     </div>
   );
 }
 
+function hasWarmTraffic(): boolean {
+  try {
+    if (sessionStorage.getItem("afterDarkCheckoutState")) return true;
+    const prs = sessionStorage.getItem("paywallReturnState");
+    if (prs) {
+      const p = (JSON.parse(prs) as { returnPath?: string }).returnPath;
+      if (p?.includes("after-dark")) return true;
+    }
+    const brief = readHomeBrief();
+    if (brief && Object.values(brief).some(Boolean)) return true;
+  } catch { /* ignore */ }
+  return false;
+}
+
+function PackFeatureList({ items, compact = false }: { items: string[]; compact?: boolean }) {
+  return (
+    <div className={`${compact ? "mb-4 space-y-2" : "mb-6 space-y-2.5"}`}>
+      {items.map((text) => (
+        <div key={text} className="flex items-start gap-2.5">
+          <div className="w-4 h-4 rounded-full border border-primary/60 bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Check className="w-2.5 h-2.5 text-primary" />
+          </div>
+          <span className="text-sm leading-snug text-white/85">{text}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CheckoutSpinner() {
+  return (
+    <span className="flex items-center justify-center gap-2">
+      <Loader2 className="w-4 h-4 animate-spin" />
+      One moment…
+    </span>
+  );
+}
+
 export default function Pricing() {
-  const { isAuthenticated, openSignIn } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { pack1, pack5, pack20, currency } = usePricing();
   const search = useSearch();
   const checkoutResult = new URLSearchParams(search).get("checkout");
   const [loadingPlan, setLoadingPlan] = useState<PackKey | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const pendingCheckoutRef = useRef<string | null>(null);
+  const [warmTraffic, setWarmTraffic] = useState(false);
+
+  useEffect(() => {
+    setWarmTraffic(hasWarmTraffic());
+  }, []);
+
+  const pack20Features = useMemo(
+    () => [...PACK20_FEATURES, `${pack20.perStoryDisplay} per story — most chosen by listeners`],
+    [pack20.perStoryDisplay],
+  );
+
+  const scrollToPacks = useCallback(() => {
+    document.getElementById("pricing-cards")?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const scrollToPack1 = useCallback(() => {
+    document.getElementById("pack-1")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   const doCheckout = async (plan: PackKey) => {
     setLoadingPlan(plan);
@@ -133,7 +178,21 @@ export default function Pricing() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, currency, returnPath: (() => { try { const s = sessionStorage.getItem("paywallReturnState"); if (s) { const p = (JSON.parse(s) as { returnPath?: string }).returnPath; if (p) return p; } } catch { /* ignore */ } return window.location.pathname; })() }),
+        body: JSON.stringify({
+          plan,
+          currency,
+          returnPath: (() => {
+            try {
+              const s = sessionStorage.getItem("paywallReturnState");
+              if (s) {
+                const p = (JSON.parse(s) as { returnPath?: string }).returnPath;
+                if (p) return p;
+              }
+              if (sessionStorage.getItem("afterDarkCheckoutState")) return "/after-dark";
+            } catch { /* ignore */ }
+            return "/after-dark";
+          })(),
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
@@ -165,200 +224,211 @@ export default function Pricing() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex-1 flex flex-col"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col bg-background">
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Hero                                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="relative py-28 md:py-40 px-4 text-center overflow-hidden">
-        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0" style={{
-            background: "radial-gradient(ellipse at 50% -5%, rgba(201,162,39,0.14) 0%, rgba(123,143,255,0.07) 48%, transparent 72%)",
-          }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-        </div>
+      <PricingHero warmTraffic={warmTraffic} onScrollToPacks={scrollToPacks} />
 
-        <img
-          aria-hidden="true"
-          src={`${BASE}images/pricing-hero-woman.webp`}
-          alt=""
-          className="block absolute right-0 top-0 h-full w-full sm:w-[44%] object-cover object-top pointer-events-none select-none opacity-[0.18] sm:opacity-[0.52]"
-          style={{
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 22%, black 52%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 22%, black 52%)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-2xl mx-auto">
+      {(checkoutResult === "success" || checkoutError) && (
+        <section className="px-4 md:px-8 max-w-3xl mx-auto w-full -mt-2 relative z-20">
           {checkoutResult === "success" && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm"
+              className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 px-5 py-4 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm"
             >
               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-              <span>Your story credits are ready. Head to your profile to get started.</span>
+              <span className="flex-1">Your stories are ready. Continue creating yours.</span>
+              <Link
+                href="/after-dark"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/40 text-green-300 text-xs font-bold hover:bg-green-500/30 transition-colors"
+              >
+                Create your erotica
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </motion.div>
           )}
           {checkoutError && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-sm"
+              className="mb-4 flex items-center gap-3 px-5 py-4 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-sm"
             >
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span>{checkoutError}</span>
             </motion.div>
           )}
-          <span className="inline-block px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium uppercase tracking-widest mb-6">
-            Private access
-          </span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-5 leading-tight">
-            A story written entirely
-            <br className="hidden md:block" />
-            <span className="text-primary"> for you alone.</span>
-          </h1>
+        </section>
+      )}
 
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-            {[
-              { icon: <Sparkles className="w-3 h-3" />, label: "Ready in under 3 minutes" },
-              { icon: <Timer className="w-3 h-3" />, label: "~10 mins of narrated audio" },
-              { icon: <Lock className="w-3 h-3" />, label: "Private from the first word" },
-              { icon: <BookOpen className="w-3 h-3" />, label: "1M+ story configurations" },
-            ].map(({ icon, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-[11px] font-medium"
-              >
-                {icon}
-                {label}
-              </span>
-            ))}
-          </div>
-
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
-            Not chosen from a catalogue. Not written for someone else. Every story created around your cast, your mood, your world — then saved privately to your account, heard only by you.
-          </p>
-          <p className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mb-4">
-            Every pack includes After Dark — a space for stories that go further, with no extra charge and no separate sign-up.
-          </p>
-          <p className="text-xs text-primary/80 tracking-wide mb-5 font-medium">
-            Every personalised story is a fully narrated audio experience — approximately 10 minutes long.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            {[
-              { icon: <EyeOff className="w-3 h-3" />, text: "Visible to no one else" },
-              { icon: <Shield className="w-3 h-3" />, text: "Billed discreetly" },
-              { icon: <Trash2 className="w-3 h-3" />, text: "Delete any time" },
-            ].map(({ icon, text }, i) => (
-              <span key={text} className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/55">
-                {i > 0 && <span className="w-px h-3 bg-border/30 mr-2" />}
-                {icon}
-                {text}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Reassurance strip                                                    */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {REASSURANCE.map((r) => (
-            <div
-              key={r.label}
-              className="flex flex-col items-center text-center gap-2 px-4 py-5 rounded-2xl border border-border/20 bg-card/20"
+      {warmTraffic && checkoutResult !== "success" && (
+        <section className="px-4 md:px-8 max-w-3xl mx-auto w-full py-3">
+          <div className={`${PANEL} border-primary/30 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4`}>
+            <div className="flex-1">
+              <p className={SECTION_LABEL}>Your story is waiting</p>
+              <p className="text-sm text-white/90 font-medium">Choose a collection below to hear it narrated — private to you alone.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => startCheckout("pack_20")}
+              disabled={loadingPlan !== null}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all flex-shrink-0 disabled:opacity-60"
             >
-              <span className="text-primary/80">{r.icon}</span>
-              <p className="text-xs font-semibold text-foreground">{r.label}</p>
-              <p className="text-[11px] text-muted-foreground/80 leading-snug">{r.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+              {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Get 20 stories"}
+            </button>
+          </div>
+        </section>
+      )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Stats strip                                                          */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-6 px-4 md:px-8 max-w-3xl mx-auto w-full">
-        <div className="flex flex-wrap items-center justify-center gap-0 divide-x divide-border/20">
-          {[
-            { stat: "1M+", label: "Story configurations" },
-            { stat: "< 3 mins", label: "From first choice to listening" },
-            { stat: "100% private", label: "Visible to no one else" },
-          ].map(({ stat, label }) => (
-            <div key={stat} className="flex flex-col items-center px-8 py-2 gap-0.5">
-              <span className="text-lg font-bold text-foreground tracking-tight">{stat}</span>
-              <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-widest text-center">{label}</span>
-            </div>
-          ))}
+      {/* Pricing cards — first conversion section after hero */}
+      <section id="pricing-cards" className="py-8 md:py-14 px-4 md:px-8 max-w-5xl mx-auto w-full scroll-mt-16">
+        <div className="text-center mb-8 md:mb-10">
+          <p className={SECTION_LABEL}>Pay once · stories never expire</p>
+          <h2 className="font-display text-2xl md:text-4xl font-bold text-white leading-tight">
+            Choose your
+            <span className="text-primary"> private collection.</span>
+          </h2>
+          <p className="text-white/60 text-sm mt-3 max-w-xl mx-auto">
+            One-time purchase. Every pack includes the full explicit dial — no subscription, no upsell tier.
+          </p>
         </div>
-      </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Creation Room slide                                                  */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-4xl mx-auto w-full">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/20 backdrop-blur-sm p-8 md:p-12">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/6 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
-              <div className="flex-1 max-w-lg">
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="w-4 h-4 text-primary/70" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-primary/70">The Creation Room</span>
-                </div>
-                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground leading-snug mb-3">
-                  Your story is built by you,<br className="hidden md:block" /> ready in under 3 minutes.
-                </h2>
-                <p className="text-sm text-muted-foreground/80 leading-relaxed mb-6">
-                  Before a word is written, you decide everything — who's in it, the dynamic between you, how far it goes. The creation process takes about three minutes. Your story takes about ten to listen to.
-                </p>
-                <button
-                  onClick={() => {
-                    document.getElementById("pricing-cards")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all hover:scale-105"
-                >
-                  See pricing below
-                  <ChevronDown className="w-4 h-4" />
-                </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-start">
+
+          {/* pack_20 — anchor tier, first on mobile */}
+          <div
+            id="pack-20"
+            className={`relative overflow-hidden ${PANEL} p-6 md:p-7 border-primary/35 shadow-[0_0_60px_-15px_rgba(201,162,39,0.25)] md:-mt-2 md:mb-2 order-1 md:order-2`}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-[#0c0a10]/80 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/55">Your private collection</p>
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 border border-primary/35 text-primary text-[10px] font-bold tracking-wider uppercase">
+                  <Star className="w-2.5 h-2.5" /> Most chosen
+                </span>
               </div>
+              <p className="text-[10px] text-primary/80 font-semibold uppercase tracking-wider mb-2">20 stories</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-4xl md:text-5xl font-bold text-white tabular-nums">{pack20.display}</span>
+              </div>
+              <p className="text-xs text-primary/75 mb-5 font-medium">{pack20.perStoryDisplay} per story · indulge every mood</p>
+              <PackFeatureList items={pack20Features} />
+              <button
+                type="button"
+                onClick={() => startCheckout("pack_20")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:shadow-[0_0_32px_rgba(201,162,39,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Get 20 stories"}
+              </button>
+              <p className="text-center text-[10px] text-white/45 mt-3">Twenty nights. Twenty fantasies. Yours alone.</p>
+            </div>
+          </div>
 
-              <div className="flex-shrink-0 w-full md:w-64">
-                <div className="flex items-center gap-2 mb-4">
-                  <Timer className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-semibold text-primary/80 uppercase tracking-widest">From click to listening</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { step: "01", label: "Choose your mood & tone", time: "~30s" },
-                    { step: "02", label: "Name & cast your character", time: "~45s" },
-                    { step: "03", label: "Set the dynamic", time: "~30s" },
-                    { step: "04", label: "Choose your narrator", time: "~15s" },
-                    { step: "05", label: "Your story is created", time: "~60s", highlight: true },
-                  ].map(({ step, label, time, highlight }) => (
-                    <div
-                      key={step}
-                      className={`flex items-center gap-3 rounded-xl px-4 py-2.5 ${highlight ? "bg-primary/12 border border-primary/25" : "bg-white/[0.02] border border-border/15"}`}
-                    >
-                      <span className={`text-[10px] font-bold tabular-nums ${highlight ? "text-primary" : "text-muted-foreground/40"}`}>{step}</span>
-                      <span className={`text-xs flex-1 ${highlight ? "text-primary font-semibold" : "text-muted-foreground/70"}`}>{label}</span>
-                      <span className={`text-[10px] font-medium tabular-nums ${highlight ? "text-primary/80" : "text-muted-foreground/40"}`}>{time}</span>
+          {/* pack_5 — middle tier */}
+          <div className={`relative overflow-hidden ${PANEL} p-6 md:p-7 border-white/15 order-2 md:order-1`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-1">Explore five moods</p>
+              <p className="text-[10px] text-white/45 font-semibold uppercase tracking-wider mb-2">5 stories</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-4xl md:text-5xl font-bold text-white tabular-nums">{pack5.display}</span>
+              </div>
+              <p className="text-xs text-white/55 mb-5">{pack5.perStoryDisplay} per story · room to experiment</p>
+              <PackFeatureList items={PACK5_FEATURES} />
+              <button
+                type="button"
+                onClick={() => startCheckout("pack_5")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3 rounded-full border border-primary/45 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_5" ? <CheckoutSpinner /> : "Get 5 stories"}
+              </button>
+            </div>
+          </div>
+
+          {/* pack_1 — demoted */}
+          <div id="pack-1" className={`relative overflow-hidden ${PANEL} p-5 md:p-6 border-white/8 opacity-95 order-3 md:order-3`}>
+            <div className="relative z-10">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Just one story?</p>
+              <p className="text-[10px] text-white/35 font-semibold uppercase tracking-wider mb-2">1 story</p>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="font-display text-3xl md:text-4xl font-bold text-white/90 tabular-nums">{pack1.display}</span>
+              </div>
+              <p className="text-xs text-white/45 mb-4">Yours alone · no subscription</p>
+              <PackFeatureList items={PACK1_FEATURES} compact />
+              <button
+                type="button"
+                onClick={() => startCheckout("pack_1")}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-2.5 rounded-full border border-white/20 bg-white/[0.03] text-white/80 font-semibold text-sm hover:border-primary/35 hover:text-primary transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingPlan === "pack_1" ? <CheckoutSpinner /> : "Try one story"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center justify-center gap-2 text-center">
+          <CheckCircle2 className="w-3.5 h-3.5 text-primary/70 flex-shrink-0" />
+          <span className="text-xs text-white/50">Stories never expire · one-time purchase · <Link href="/terms" className="underline underline-offset-2 hover:text-white/70">terms</Link></span>
+        </div>
+      </section>
+
+      {/* Compact trust chips — horizontal scroll on mobile */}
+      <section className="pb-6 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1 -mx-1 px-1">
+          {TRUST_CHIPS.map((chip) => (
+            <div
+              key={chip.label}
+              className="flex-shrink-0 snap-start inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/10 bg-white/[0.03] text-[11px] text-white/70 whitespace-nowrap"
+            >
+              <span className="text-primary">{chip.icon}</span>
+              {chip.label}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="py-2 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <PricingSampleTeaser />
+      </section>
+
+      <section className="py-8 md:py-10 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div className={`relative overflow-hidden ${PANEL} border-primary/20`}>
+          <div className="absolute inset-0 opacity-30 pointer-events-none" aria-hidden>
+            <img src={hiwAct4Src("yours")} alt="" className="absolute inset-0 w-full h-full object-cover object-[70%_20%]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0c0a10] via-[#0c0a10]/92 to-[#0c0a10]/75" />
+          </div>
+          <div className="relative px-5 py-7 md:px-10 md:py-10">
+            <div className="text-center mb-6 md:mb-8 max-w-lg mx-auto">
+              <p className={SECTION_LABEL}>Not a catalogue</p>
+              <h2 className="font-display text-xl md:text-3xl font-bold text-white">
+                Generic heat vs. <span className="text-primary">your exact fantasy</span>
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10">
+              <div className="p-5 md:p-6 md:border-r border-white/10 bg-black/20">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-3">Streaming catalogues</p>
+                <div className="space-y-2.5">
+                  {LIBRARY_VS.them.map((item) => (
+                    <div key={item} className="flex items-start gap-2.5">
+                      <X className="w-3.5 h-3.5 text-white/25 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-white/35 line-through leading-snug">{item}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-xs font-bold text-primary">Total: under 3 minutes</span>
+              </div>
+              <div className="p-5 md:p-6 bg-primary/[0.08]">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80 mb-3">The Private Story</p>
+                <div className="space-y-2.5">
+                  {LIBRARY_VS.us.map((item) => (
+                    <div key={item} className="flex items-start gap-2.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-primary" />
+                      <span className="text-sm text-white/90 font-medium leading-snug">{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -366,341 +436,96 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Voice Showcase                                                       */}
-      {/* ------------------------------------------------------------------ */}
       <section className="py-8 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <VoiceShowcase />
-      </section>
-
-      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <CountryStrip />
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Pricing cards — 3 credit packs                                      */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="pricing-cards" className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">One-time purchase · Credits never expire</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Choose your private story experience.
-          </h2>
-          <p className="text-muted-foreground/70 text-sm mt-3 max-w-xl mx-auto">Start with one custom audio story, explore a five-story bundle, or unlock the best-value collection of twenty. No subscription, ever.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-
-          {/* Immersive Collection — Best Value (pack_20) */}
-          <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-card/40 backdrop-blur-sm p-7 shadow-[0_0_60px_-15px_rgba(201,162,39,0.2)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-background/50 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Immersive Collection</p>
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold tracking-wider uppercase">
-                  <Star className="w-2.5 h-2.5" /> Best Value
-                </span>
-              </div>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack20.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-2">{pack20.perStoryDisplay} per story — your private collection of 20.</p>
-
-              <div className="space-y-2.5 mb-6">
-                {PACK20_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-2.5">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
-                      {f.special
-                        ? <Moon className="w-2 h-2 text-primary" />
-                        : <Check className="w-2.5 h-2.5 text-primary" />
-                      }
-                    </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => startCheckout("pack_20")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-[0_0_32px_rgba(201,162,39,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "pack_20" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Unlock 20 Stories"}
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground/50 mt-3 leading-snug px-2">
-                Most chosen by listeners who want more than one experience.
-              </p>
-            </div>
-          </div>
-
-          {/* Immersive Bundle (pack_5) */}
-          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Bundle</p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack5.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-2">{pack5.perStoryDisplay} per story — a flexible pack to explore.</p>
-
-              <div className="space-y-2.5 mb-6">
-                {PACK5_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-2.5">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 mt-0.5 ${f.special ? "border-primary/80 bg-primary/15" : "border-primary/60 bg-primary/10"}`}>
-                      {f.special
-                        ? <Moon className="w-2 h-2 text-primary" />
-                        : <Check className="w-2.5 h-2.5 text-primary" />
-                      }
-                    </div>
-                    <span className={`text-sm leading-snug ${f.special ? "text-primary/90 font-medium" : "text-foreground/80"}`}>{f.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => startCheckout("pack_5")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "pack_5" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Get 5 Stories"}
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-              </p>
-            </div>
-          </div>
-
-          {/* Immersive Story — trial (pack_1) */}
-          <div className="relative overflow-hidden rounded-3xl border border-border/30 bg-card/30 backdrop-blur-sm p-7">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-transparent pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80 mb-3">Immersive Story</p>
-              <div className="flex items-end gap-1.5 mb-1">
-                <span className="font-display text-5xl font-bold text-foreground tabular-nums">{pack1.display}</span>
-              </div>
-              <p className="text-xs text-muted-foreground/70 mb-6">The simplest way to try your first private story.</p>
-
-              <div className="space-y-2.5 mb-6">
-                {PACK1_FEATURES.map((f) => (
-                  <div key={f.text} className="flex items-start gap-2.5">
-                    <div className="w-4 h-4 rounded-full border border-primary/60 bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-2.5 h-2.5 text-primary" />
-                    </div>
-                    <span className="text-sm leading-snug text-foreground/80">{f.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => startCheckout("pack_1")}
-                disabled={loadingPlan !== null}
-                className="block w-full text-center py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loadingPlan === "pack_1" ? (
-                  <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Starting checkout…</span>
-                ) : "Create One Story"}
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground/40 mt-3 leading-snug px-2">
-                One-time payment. No subscription. <Link href="/terms" className="underline underline-offset-2 hover:text-muted-foreground/60 transition-colors">Terms apply.</Link>
-              </p>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Credits never expire reassurance */}
-        <div className="mt-6 flex items-center justify-center gap-2 text-center">
-          <CheckCircle2 className="w-3.5 h-3.5 text-primary/60 flex-shrink-0" />
-          <span className="text-xs text-muted-foreground/60">Credits never expire — use them on your own schedule</span>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* The Creation Room detail                                             */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="relative overflow-hidden rounded-3xl border border-border/25 bg-card/20 p-10 md:p-16">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-0 left-0 w-72 h-72 bg-primary/6 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-4 h-4 text-primary/70" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">The Creation Room</span>
-            </div>
-            <div className="max-w-xl mb-10">
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-5 leading-tight">
-                You build the world.
-              </h2>
-              <p className="text-muted-foreground/80 leading-relaxed text-lg mb-3">
-                Every personalised story begins in the Creation Room — where you decide who's in it, what the energy between them feels like, and exactly how far it goes.
-              </p>
-              <p className="text-muted-foreground/80 leading-relaxed text-sm">
-                This isn't a form. It's a creative act. The story that comes out is one only you could have made — because only you made those choices.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {CASTING_DETAILS.map((item) => (
-                <div key={item.heading} className="rounded-2xl border border-border/20 bg-card/30 p-6">
-                  <span className="text-primary/70 mb-3 block">{item.icon}</span>
-                  <p className="text-sm font-semibold text-foreground/90 mb-2">{item.heading}</p>
-                  <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Privacy                                                              */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="relative overflow-hidden rounded-3xl border border-border/20 bg-card/30 p-10 md:p-14">
-          <div className="absolute inset-0 bg-gradient-to-br from-background to-card/40 pointer-events-none" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col md:flex-row gap-10 items-start">
-            <div className="flex-shrink-0">
-              <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                <Shield className="w-7 h-7 text-primary/80" />
-              </div>
+        <div className={`relative overflow-hidden ${PANEL} p-6 md:p-10`}>
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/25 flex items-center justify-center flex-shrink-0">
+              <Shield className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Privacy, by design</p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-5 leading-tight">
-                Your library belongs to
-                <span className="text-primary"> no one else.</span>
+              <p className={SECTION_LABEL}>Privacy by design</p>
+              <h2 className="font-display text-xl md:text-2xl font-bold text-white mb-4 leading-tight">
+                Your fantasies belong to <span className="text-primary">no one else.</span>
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
                 {[
-                  { heading: "No social layer", body: "No feeds. No follows. No discovery. There is nothing to share and no one to share it with." },
-                  { heading: "No shared access", body: "Your stories are not visible to other users — or to us. Not even the platform can read them." },
-                  { heading: "Billed discreetly", body: "Your statement shows a neutral name. Nothing that identifies the platform or its content." },
-                  { heading: "Delete any time", body: "Any story can be permanently removed from your library at any time. Entirely at your discretion." },
+                  { heading: "No social layer", body: "No feeds. No discovery. Nothing to share." },
+                  { heading: "Not visible to us", body: "Your library is yours alone." },
+                  { heading: "Billed discreetly", body: "Neutral descriptor on your statement." },
+                  { heading: "Delete any time", body: "Remove any story permanently." },
                 ].map((item) => (
-                  <div key={item.heading} className="rounded-xl border border-border/20 bg-card/30 p-5">
-                    <p className="text-sm font-semibold text-foreground/90 mb-1.5">{item.heading}</p>
-                    <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.body}</p>
+                  <div key={item.heading} className="rounded-xl border border-white/8 bg-white/[0.03] p-3.5">
+                    <p className="text-sm font-semibold text-white/90 mb-0.5">{item.heading}</p>
+                    <p className="text-xs text-white/55 leading-relaxed">{item.body}</p>
                   </div>
                 ))}
               </div>
-              <Link href="/privacy" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                Read our privacy policy →
+              <Link href="/privacy" className="text-xs text-primary/80 hover:text-primary transition-colors">
+                Privacy policy →
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* After Dark teaser                                                    */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div
-          className="relative overflow-hidden rounded-3xl border border-border/20 p-10 md:p-14"
-          style={{
-            backgroundImage: `url(${BASE}images/home-visual-1.webp)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-background/97 via-background/90 to-background/70 rounded-3xl" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 rounded-3xl" />
-          <div className="relative z-10 max-w-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                <Moon className="w-4 h-4 text-primary" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-primary/70">After Dark · Included with Five Private Stories & The Full Collection</span>
-            </div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-5 leading-tight">
-              Stories that go
-              <span className="text-primary"> further.</span>
-            </h2>
-            <p className="text-muted-foreground/80 leading-relaxed mb-4 text-base">
-              Some stories want to go further. After Dark is the room where they do — written without restraint, for a part of you that doesn't need to justify itself. The same voice. The same absolute privacy.
-            </p>
-            <p className="text-muted-foreground/80 leading-relaxed text-sm mb-6">
-              Nothing softened. Nothing left out. Included with Five Private Stories and The Full Collection — accessed discreetly from your private library.
-            </p>
-            <div className="flex flex-col gap-2">
-              {[
-                "Included with Five Private Stories and The Full Collection",
-                "Accessed discreetly from your private library",
-                "No extra charge. No separate sign-up.",
-              ].map((line) => (
-                <div key={line} className="flex items-center gap-2">
-                  <Moon className="w-3 h-3 flex-shrink-0" style={{ color: "#9baeff" }} />
-                  <span className="text-xs font-medium" style={{ color: "rgba(155,174,255,0.85)" }}>{line}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      <section className="py-4 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <CountryStrip />
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Included in every pack                                              */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Every pack includes</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            The same private experience,
-            <br className="hidden md:block" />
-            <span className="text-muted-foreground font-normal"> wherever you start.</span>
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {INCLUDED.map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl border border-border/20 bg-card/20 p-6 hover:border-primary/20 hover:bg-primary/4 transition-all"
-            >
-              <span className="text-primary/70 mb-3 block">{item.icon}</span>
-              <p className="text-sm font-semibold text-foreground/90 mb-2">{item.label}</p>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Trust bar                                                            */}
-      {/* ------------------------------------------------------------------ */}
       <TrustBar />
 
-      {/* ------------------------------------------------------------------ */}
-      {/* FAQ                                                                  */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 md:px-8 max-w-2xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Questions</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Answered quietly.</h2>
+      <section className="py-10 px-4 md:px-8 max-w-2xl mx-auto w-full">
+        <div className="text-center mb-6">
+          <p className={SECTION_LABEL}>Questions</p>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-white">Answered quietly.</h2>
         </div>
-        <div className="rounded-2xl border border-border/20 bg-card/20 px-6">
+        <div className={`${PANEL} px-5 md:px-6 border-white/8`}>
           {FAQS.map((faq) => (
             <FaqItem key={faq.q} {...faq} />
           ))}
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Final CTA — Personalised Erotica door                                      */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="py-16 px-4 md:px-8 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-8">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Ready to begin?</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground leading-tight">
-            Create your personalised erotica.
-          </h2>
-          <p className="text-muted-foreground/70 text-sm mt-3">Under 3 minutes from first choice to listening.</p>
+      <section className="py-14 px-4 md:px-8 max-w-3xl mx-auto w-full text-center">
+        <p className={SECTION_LABEL}>Ready when you are</p>
+        <h2 className="font-display text-2xl md:text-4xl font-bold text-white leading-tight mb-3">
+          Your collection.
+          <span className="text-primary"> Your heat. Your rules.</span>
+        </h2>
+        <p className="text-sm text-white/60 mb-8 max-w-md mx-auto">
+          Most listeners start with twenty — room for every mood you haven&apos;t imagined yet.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => startCheckout("pack_20")}
+            disabled={loadingPlan !== null}
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all shadow-[0_0_32px_-8px_rgba(201,162,39,0.5)] disabled:opacity-60 w-full sm:w-auto"
+          >
+            {loadingPlan === "pack_20" ? <CheckoutSpinner /> : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Get 20 stories · {pack20.display}
+              </>
+            )}
+          </button>
+          <Link
+            href="/after-dark"
+            className="inline-flex items-center justify-center gap-1.5 text-xs text-white/70 hover:text-primary transition-colors uppercase tracking-widest py-2"
+          >
+            Create your erotica first →
+          </Link>
         </div>
-        <PersonalisedEroticaDoor />
       </section>
 
+      <StickyMobileCTA
+        priceDisplay={pack20.display}
+        label={warmTraffic ? `Unlock your story · ${pack20.display}` : `Get 20 stories · ${pack20.display}`}
+        onClick={() => startCheckout("pack_20")}
+        loading={loadingPlan === "pack_20"}
+        secondaryLabel="Just one story"
+        onSecondaryClick={scrollToPack1}
+      />
     </motion.div>
   );
 }

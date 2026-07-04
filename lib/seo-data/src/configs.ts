@@ -294,7 +294,7 @@ export const aiAudioStoryGeneratorConfig: SEOPageConfig = {
       "Tell it how you want to feel. It will write something around that — original, narrated, private, and ready to play in the time it takes you to get comfortable.",
       "It exists for right now. For the exact version of you that showed up.",
     ],
-    primary: { label: "Generate your story", href: "/create" },
+    primary: { label: "Generate your story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "How creation works", href: "/create-your-own-audio-story" },
@@ -482,7 +482,7 @@ export const alternativesToRomanceAudiobooksConfig: SEOPageConfig = {
       "The romance audiobook catalogue cannot deliver that precision. No library can.",
       "But a story created around your specifications can.",
     ],
-    primary: { label: "Create your romance story", href: "/create" },
+    primary: { label: "Create your romance story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Personalised audio stories — what this is", href: "/personalised-audio-stories" },
@@ -634,7 +634,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
       "Private, personalised, literary. Created around your choices and your mood for right now.",
       "The platform was built for this. The story is waiting to be created.",
     ],
-    primary: { label: "Create your audio story", href: "/create" },
+    primary: { label: "Create your audio story", href: "/after-dark" },
     links: [
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
       { label: "Emotional audio stories", href: "/emotional-audio-stories" },
@@ -816,7 +816,7 @@ export const audioStoriesVsAudiobooksConfig: SEOPageConfig = {
       "Then it makes something around your answer.",
       "Not selected from a library. Not adapted from a template. Made for right now.",
     ],
-    primary: { label: "Try a personalised story", href: "/create" },
+    primary: { label: "Try a personalised story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Explore personalised audio stories", href: "/personalised-audio-stories" },
@@ -1002,7 +1002,7 @@ export const audioStoriesVsPodcastsConfig: SEOPageConfig = {
       "Three choices. Ninety seconds. A story shaped around your mood right now — paced for exactly the version of you that showed up at the end of this day.",
       "Not broadcast at you. Made for you.",
     ],
-    primary: { label: "Create your first story", href: "/create" },
+    primary: { label: "Create your first story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Personalised audio stories — how it works", href: "/personalised-audio-stories" },
@@ -1345,7 +1345,7 @@ export const bestAudioStoryAppForAdultsConfig: SEOPageConfig = {
       "It creates rather than presents. It is private by design. It was built for women. It gives you full control. And it is written with premium emotional intelligence.",
       "You know what to look for. Here it is.",
     ],
-    primary: { label: "Try The Private Story", href: "/create" },
+    primary: { label: "Try The Private Story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Explore personalised audio stories", href: "/personalised-audio-stories" },
@@ -1483,7 +1483,7 @@ export const confidentEnergyStoriesConfig: SEOPageConfig = {
       "A story built around that version of you is not a story about someone else. It is your story — in which you are the protagonist, the desire flows toward you, and the encounter is entirely on your terms.",
       "Private, narrated, original. Created around the specific energy you want to inhabit right now.",
     ],
-    primary: { label: "Create your confident-energy story", href: "/create" },
+    primary: { label: "Create your confident-energy story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -1627,7 +1627,7 @@ export const createYourOwnAudioStoryConfig: SEOPageConfig = {
       "The Private Story makes the third thing possible. Not by asking you to write, or to choose from a shelf. By turning your choices into something that didn't exist until you described it.",
       "Create yours in under two minutes.",
     ],
-    primary: { label: "Create your story now", href: "/create" },
+    primary: { label: "Create your story now", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Explore personalised audio stories", href: "/personalised-audio-stories" },
@@ -1774,7 +1774,7 @@ export const darkRomanceAudioStoriesConfig: SEOPageConfig = {
       "Dark romance works because it respects the reader enough to write to what she actually feels, rather than what she's supposed to feel. The Private Story creates your dark romance story around the specific moral terrain you want to inhabit.",
       "Private, narrated, yours. Created in under two minutes.",
     ],
-    primary: { label: "Create your dark romance story", href: "/create" },
+    primary: { label: "Create your dark romance story", href: "/after-dark" },
     links: [
       { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
@@ -1922,7 +1922,7 @@ export const emotionalAudioStoriesConfig: SEOPageConfig = {
       "Describe what you need to feel. The story is built around that — written from the inside of the experience, narrated for private listening, held in a space that belongs entirely to you.",
       "Create yours in under two minutes.",
     ],
-    primary: { label: "Create your emotional story", href: "/create" },
+    primary: { label: "Create your emotional story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Romantic audio stories", href: "/romantic-audio-stories" },
@@ -2068,7 +2068,7 @@ export const enemiesToLoversAudioStoriesConfig: SEOPageConfig = {
       "Enemies to lovers works because the connection, when it arrives, has been earned — built from genuine knowledge, accumulated attention, and the specific intimacy of opposition that turns out to have been preparation.",
       "Create your enemies to lovers story around the specific dynamic and history that gives it charge. Private, narrated, yours.",
     ],
-    primary: { label: "Create your enemies to lovers story", href: "/create" },
+    primary: { label: "Create your enemies to lovers story", href: "/after-dark" },
     links: [
       { label: "Forbidden romance stories", href: "/forbidden-romance-audio-stories" },
       { label: "Dark romance audio stories", href: "/dark-romance-audio-stories" },
@@ -2206,7 +2206,7 @@ export const forbiddenRomanceAudioStoriesConfig: SEOPageConfig = {
       "Forbidden romance is built from exactly this — the pull that cannot be acknowledged, the exchange that means something else entirely, the restraint that makes every moment of proximity electric.",
       "Create your forbidden romance story around the specific prohibition and stakes that give it charge. Private, narrated, yours.",
     ],
-    primary: { label: "Create your forbidden romance story", href: "/create" },
+    primary: { label: "Create your forbidden romance story", href: "/after-dark" },
     links: [
       { label: "Dark romance audio stories", href: "/dark-romance-audio-stories" },
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
@@ -2360,7 +2360,7 @@ export const intimateAudioStoriesConfig: SEOPageConfig = {
       "An intimate audio story made around your choices right now is different. It is shaped to the version of intimate you're actually looking for — the specific tone, dynamic, and experience you described.",
       "Private, narrated, original. Created in under two minutes. Yours alone.",
     ],
-    primary: { label: "Create your intimate story", href: "/create" },
+    primary: { label: "Create your intimate story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Romantic audio stories", href: "/romantic-audio-stories" },
@@ -2499,7 +2499,7 @@ export const lateNightAudioStoriesConfig: SEOPageConfig = {
       "A late night story created around your choices tonight was made for exactly this — for the hour, for the specific atmospheric world you want to inhabit, for the version of you that showed up at midnight.",
       "Create it in under two minutes. The night can hold it.",
     ],
-    primary: { label: "Create your late night story", href: "/create" },
+    primary: { label: "Create your late night story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -2638,7 +2638,7 @@ export const loveStoriesAudioConfig: SEOPageConfig = {
       "A love story created around you right now carries your choices. The emotional situation that speaks to where you are. The tone that will actually reach you. The specific quality of connection you are looking for.",
       "Describe what you need. It gets made around that. Private, narrated, and entirely yours.",
     ],
-    primary: { label: "Create your love story", href: "/create" },
+    primary: { label: "Create your love story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Romantic audio stories", href: "/romantic-audio-stories" },
@@ -2809,7 +2809,7 @@ export const personalisedAudioStoriesConfig: SEOPageConfig = {
       "This isn't a library. You won't browse here.",
       "You'll tell us how you want to feel. And we'll make you something for exactly that.",
     ],
-    primary: { label: "Create your personalised story", href: "/create" },
+    primary: { label: "Create your personalised story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Explore intimate audio stories", href: "/intimate-audio-stories" },
@@ -2986,11 +2986,11 @@ export const privateAudioStoriesConfig: SEOPageConfig = {
       "The Private Story is that space.",
       "Create your first story in under two minutes. Choose how you want to feel. Listen to something made for exactly that. Know that no one else will ever hear it.",
     ],
-    primary: { label: "Start your private story", href: "/create" },
+    primary: { label: "Start your private story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "How personalisation works", href: "/personalised-audio-stories" },
-      { label: "How it works", href: "/create" },
+      { label: "How it works", href: "/after-dark" },
     ],
   },
   faqs: [
@@ -3125,7 +3125,7 @@ export const quietIntensityStoriesConfig: SEOPageConfig = {
       "A quiet intensity story created around your choices right now inhabits that register from the first sentence to the last. No announcement. No declaration. Only the precise rendering of what it feels like to be inside a moment where everything is present and nothing has been said.",
       "Private, psychological, entirely yours.",
     ],
-    primary: { label: "Create your quiet intensity story", href: "/create" },
+    primary: { label: "Create your quiet intensity story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
@@ -3274,7 +3274,7 @@ export const relaxingAudioStoriesConfig: SEOPageConfig = {
       "A story created around how you need to feel right now is none of those things. It is somewhere to be for twenty minutes while the rest of you settles. It is a voice that takes its time because right now, finally, you have yours.",
       "Create yours in under two minutes.",
     ],
-    primary: { label: "Create your relaxing story", href: "/create" },
+    primary: { label: "Create your relaxing story", href: "/drift" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Bedtime audio stories", href: "/bedtime-audio-stories" },
@@ -3415,7 +3415,7 @@ export const romanticAudioStoriesConfig: SEOPageConfig = {
       "It is written for this version of romantic you are feeling right now. Slow burn, or tender, or cinematic, or something else entirely — you describe it, and the story is built around that description. Private, narrated, yours.",
       "Create yours in under two minutes.",
     ],
-    primary: { label: "Create your romantic story", href: "/create" },
+    primary: { label: "Create your romantic story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -3575,7 +3575,7 @@ export const sleepAudioStoriesConfig: SEOPageConfig = {
       "It is a voice, and a world, and a pace that knows where you need to go. It is something your mind can follow without effort — willingly, gratefully, all the way down into the quiet.",
       "Create yours in under two minutes. Tonight.",
     ],
-    primary: { label: "Create your sleep story", href: "/create" },
+    primary: { label: "Create your sleep story", href: "/drift" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Explore bedtime audio stories", href: "/bedtime-audio-stories" },
@@ -3714,7 +3714,7 @@ export const slowBurnAudioStoriesConfig: SEOPageConfig = {
       "Create your slow burn story around the specific tension you want to inhabit. Choose the premise. The story builds from there — accumulating, restraining, arriving somewhere that was earned by everything that preceded it.",
       "Private, narrated, yours. Created in under two minutes. Worth the wait.",
     ],
-    primary: { label: "Create your slow burn story", href: "/create" },
+    primary: { label: "Create your slow burn story", href: "/after-dark" },
     links: [
       { label: "See pricing", href: "/pricing" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -4244,7 +4244,7 @@ export const aiRomanceStoriesForWomenConfig: SEOPageConfig = {
   finalCTA: {
     h2: "Your Romance Story, Right Now",
     paragraphs: ["An AI-generated romance story personalised around your mood and choices. Narrated, private, and under two minutes to create."],
-    primary: { label: "Create your romance", href: "/create" },
+    primary: { label: "Create your romance", href: "/after-dark" },
     links: [
       { label: "Romantic audio stories", href: "/romantic-audio-stories" },
       { label: "Audio stories for women", href: "/audio-stories-for-women" },
@@ -4731,7 +4731,7 @@ export const forcedProximityRomanceAudioStoriesConfig: SEOPageConfig = {
       "Forced proximity works because the intimacy it produces is real. What is learned in shared space is genuinely known. The connection that develops within the constraint has a foundation that first-meeting attraction does not.",
       "Create your story around the specific constraint, situation, and dynamic that gives it charge. Private, narrated, yours.",
     ],
-    primary: { label: "Create your forced proximity story", href: "/create" },
+    primary: { label: "Create your forced proximity story", href: "/after-dark" },
     links: [
       { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
       { label: "Slow burn audio stories", href: "/slow-burn-audio-stories" },
@@ -5025,7 +5025,7 @@ export const officeRomanceAudioStoriesConfig: SEOPageConfig = {
       "Office romance works because the constraint is real, the stakes are genuine, and the interior experience is one that the professional world never gets to see. The Private Story creates your office romance story around the specific dynamic and situation that gives it charge.",
       "Private, narrated, yours. Created in under two minutes.",
     ],
-    primary: { label: "Create your office romance story", href: "/create" },
+    primary: { label: "Create your office romance story", href: "/after-dark" },
     links: [
       { label: "Forbidden romance audio stories", href: "/forbidden-romance-audio-stories" },
       { label: "Enemies to lovers audio stories", href: "/enemies-to-lovers-audio-stories" },
@@ -8059,7 +8059,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
       "The honest test of a generative platform is to use it. The story takes under two minutes to brief, around ten minutes to listen to, and is saved to your private account.",
       "If the specificity matters to you, the category will speak for itself. If the catalogue model suits the evening better, that is also a real answer.",
     ],
-    primary: { label: "Try the Creation Room", href: "/create" },
+    primary: { label: "Try the Creation Room", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Personalised erotica", href: "/personalised-erotica" },
@@ -8585,7 +8585,7 @@ export const audioEroticaForCouplesConfig: SEOPageConfig = {
       "Sit down together. Make the choices together. The story is generated from the brief the two of you assembled, narrated by the voice you both chose, saved to the private account it was created in.",
       "Under two minutes from arrival to ready. About ten minutes to listen. The shared practice that the rest of the week does not include.",
     ],
-    primary: { label: "Open the Creation Room", href: "/create" },
+    primary: { label: "Open the Creation Room", href: "/after-dark" },
     links: [
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
@@ -9099,7 +9099,7 @@ export const shortEroticAudioStoriesConfig: SEOPageConfig = {
       "The contained form, the specific brief, the production-grade narration. Under two minutes to create. Saved privately to your account. Ready to listen now.",
       "Different evening, different mood, different ten minutes. The form is built around the way listening actually fits into a life that is already busy.",
     ],
-    primary: { label: "Create your ten-minute story", href: "/create" },
+    primary: { label: "Create your ten-minute story", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Intimate audio stories", href: "/intimate-audio-stories" },
@@ -9273,7 +9273,7 @@ export const audioEroticaWithMaleNarratorConfig: SEOPageConfig = {
       "The brief, the narrator, the specific register the story will land in. Sample the male narration voices in the Creation Room and choose the one that fits.",
       "Production-grade narration generated for your text. Saved privately to your account. Ready to listen.",
     ],
-    primary: { label: "Create your audio erotica", href: "/create" },
+    primary: { label: "Create your audio erotica", href: "/after-dark" },
     links: [
       { label: "Audio erotica with British male voice", href: "/audio-erotica-male-voice-british" },
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
@@ -9627,7 +9627,7 @@ export const howToListenToAudioEroticaConfig: SEOPageConfig = {
       "Headphones on, a private window, a brief built around what you actually want to feel. The first story takes under two minutes to create, and the format becomes legible quickly across the first handful of sessions.",
       "Production-grade narration, generated for your text, saved privately to your account. Ready to listen.",
     ],
-    primary: { label: "Create your first story", href: "/create" },
+    primary: { label: "Create your first story", href: "/after-dark" },
     links: [
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },
       { label: "Personalised audio stories", href: "/personalised-audio-stories" },
@@ -9801,7 +9801,7 @@ export const audioEroticaForBeginnersConfig: SEOPageConfig = {
       "A brief built around what you actually want to feel, a story generated for that brief, a voice you chose from samples. The first listen is under two minutes away.",
       "Saved privately to your account. Ready to listen on headphones in a window of your choosing.",
     ],
-    primary: { label: "Create your first story", href: "/create" },
+    primary: { label: "Create your first story", href: "/after-dark" },
     links: [
       { label: "How to listen to audio erotica", href: "/how-to-listen-to-audio-erotica" },
       { label: "Audio erotica for women", href: "/audio-erotica-for-women" },

@@ -10,6 +10,7 @@ import {
   rewriteStory,
   generateAllImages,
   generateAudioFile,
+  normalizeStoryIntake,
   protagonistNameForAudio,
   buildCoverPromptFromCasting,
   buildCoverPromptFromBrief,
@@ -20,7 +21,6 @@ import {
   checkRiskThreshold,
   ContentModerationError,
   type GenerateStoryRequest,
-  type InternalGenerateRequest,
   type GenerateStoryOptions,
   type StoryBrief,
   type WrittenStory,
@@ -332,8 +332,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       ? `TIME OF DAY: This chapter takes place at ${timeOfDay}. Use this to set the atmosphere and sensory palette.`
       : undefined;
 
-    const intake: InternalGenerateRequest = {
-      // Names come from the authenticated user's approved profile — not from saved casting data
+    const intake = normalizeStoryIntake({
       listenerName: req.user?.approvedListenerName?.trim() ?? "",
       partnerName: req.user?.approvedPartnerName?.trim() || undefined,
       whoIsHe: (casting.whoIsHe as string) || undefined,
@@ -343,18 +342,22 @@ router.post("/:id/next-chapter", async (req, res) => {
       heritage: (casting.heritage as string) || undefined,
       atmosphere: (casting.atmosphere as string) || undefined,
       chemistry: (casting.chemistry as string) || undefined,
-      partnerAppearance: (casting.partnerAppearance as string) || undefined,
+      appearBuild: casting.appearBuild as string | undefined,
+      appearHeight: casting.appearHeight as string | undefined,
+      appearColouring: casting.appearColouring as string | undefined,
+      appearEyes: casting.appearEyes as string | undefined,
+      appearFeatures: casting.appearFeatures as string[] | undefined,
       storyMode: (casting.storyMode as string) || "romance",
       mood: mood || (casting.mood as string) || (s.mood as string) || "Emotional",
-      intensity: (casting.intensity as string) || "Heated",
-      voiceFeel: (casting.voiceFeel as string) || "UK Voice",
+      intensity: (casting.intensity as string) || "Elevated",
+      voiceFeel: (casting.voiceFeel as string) || "jfIS2w2yJi0grJZPyEsk",
       storyLength: (casting.storyLength as string) || "10 min",
-      scenarioPrompt: timeOfDay
-        ? `Setting: ${timeOfDay}. The story continues from where we left off.`
-        : "The story continues from where we left off.",
       cinematicVisuals: true,
       emotionalFocus: true,
-    };
+    });
+    intake.scenarioPrompt = timeOfDay
+      ? `Setting: ${timeOfDay}. The story continues from where we left off.`
+      : "The story continues from where we left off.";
 
     const pipeline = async () => {
       const planOpts: GenerateStoryOptions | undefined = seriesLayer ? { seriesLayer } : undefined;

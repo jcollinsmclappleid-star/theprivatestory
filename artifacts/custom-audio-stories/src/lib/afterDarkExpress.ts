@@ -1,6 +1,11 @@
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { getDefaultVoiceId, VOICES } from "@/lib/voices";
 import type { CategoryId } from "@/components/BriefBuilder";
+import {
+  marketingIntensityToCanonical,
+  canonicalToMarketing,
+  type CanonicalIntensity,
+} from "@workspace/intensity";
 
 export const HOME_BRIEF_KEY = "afterDarkHomeBrief";
 
@@ -52,23 +57,11 @@ export function saveHomeBrief(brief: HomeBrief): void {
 }
 
 export function homeIntensityToCasting(label: string): CastingRoomResult["intensity"] {
-  switch (label) {
-    case "Slow burn": return "Subtle";
-    case "Warm": return "Warm";
-    case "Explicit": return "Elevated";
-    case "Unrestrained": return "Intense";
-    default: return "Warm";
-  }
+  return marketingIntensityToCanonical(label);
 }
 
 export function castingIntensityToHome(intensity: CastingRoomResult["intensity"]): string {
-  switch (intensity) {
-    case "Subtle": return "Slow burn";
-    case "Warm": return "Warm";
-    case "Elevated": return "Explicit";
-    case "Intense": return "Unrestrained";
-    default: return "Warm";
-  }
+  return canonicalToMarketing(intensity as CanonicalIntensity);
 }
 
 export function voiceNameToId(name: string, pairing?: string): string {

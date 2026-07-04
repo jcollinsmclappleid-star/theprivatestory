@@ -28,6 +28,8 @@ import { logger } from "./logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const PUBLIC_AUDIO_DIR = path.resolve(__dirname, "../../public/audio");
+const PUBLIC_IMAGES_DIR = path.resolve(__dirname, "../../public/images");
 const AUDIO_GCS_PREFIX = "media/audio";
 const IMAGE_GCS_PREFIX = "media/images";
 
@@ -37,8 +39,18 @@ function getBucket() {
   return objectStorageClient.bucket(bucketId);
 }
 
-/** Save an audio buffer to GCS. */
+/** Save an audio buffer to GCS. Optionally mirror to public/audio when LOCAL_AUDIO_MIRROR=1 (dev QA). */
 export async function uploadAudioFile(filename: string, buffer: Buffer): Promise<void> {
+  if (process.env.LOCAL_AUDIO_MIRROR === "1") {
+    const localPath = path.join(PUBLIC_AUDIO_DIR, filename);
+    fs.mkdirSync(path.dirname(localPath), { recursive: true });
+    fs.writeFileSync(localPath, buffer);
+    logger.info({ filename, localPath }, "[mediaStorage] audio mirrored to local disk");
+  }
+  if (process.env.SKIP_GCS_UPLOAD === "1") {
+    logger.info({ filename }, "[mediaStorage] SKIP_GCS_UPLOAD=1 — local mirror only");
+    return;
+  }
   const file = getBucket().file(`${AUDIO_GCS_PREFIX}/${filename}`);
   await file.save(buffer, {
     metadata: { contentType: "audio/mpeg" },
@@ -95,7 +107,7 @@ export async function streamAudioFile(
   res: Response,
   req: Request,
 ): Promise<boolean> {
-  const localPath = path.resolve(__dirname, "../public/audio", filename);
+  const localPath = path.join(PUBLIC_AUDIO_DIR, filename);
   if (fs.existsSync(localPath)) {
     // Express sendFile handles range requests automatically.
     res.setHeader("Content-Type", "audio/mpeg");
@@ -150,7 +162,7 @@ export async function streamAudioFile(
  * Checks local disk first (covers committed static files), then GCS.
  */
 export async function streamImageFile(filename: string, res: Response): Promise<boolean> {
-  const localPath = path.resolve(__dirname, "../public/images", filename);
+  const localPath = path.join(PUBLIC_IMAGES_DIR, filename);
   if (fs.existsSync(localPath)) {
     res.setHeader("Cache-Control", "private, max-age=86400");
     res.sendFile(localPath);

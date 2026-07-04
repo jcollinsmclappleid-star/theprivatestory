@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { Loader2, Sparkles, Lock, ChevronRight, Flame } from "lucide-react";
 import type { StoryRevealContent } from "@/lib/storyReveal";
@@ -26,6 +28,8 @@ interface StoryRevealPaywallProps {
   onCheckout: (plan: "pack_1" | "pack_5" | "pack_20") => void;
   onWriteWithCredit: () => void;
   onStartOver: () => void;
+  /** Local dev — skip paywall and continue the funnel */
+  onDevBypass?: () => void;
 }
 
 export function StoryRevealPaywall({
@@ -46,13 +50,22 @@ export function StoryRevealPaywall({
   onCheckout,
   onWriteWithCredit,
   onStartOver,
+  onDevBypass,
 }: StoryRevealPaywallProps) {
   const heroSrc = coverUrl ?? fallbackCoverUrl;
   const hasGeneratedCover = !!coverUrl;
   const sym = currency === "gbp" ? "£" : "$";
 
-  return (
-    <div className="fixed inset-0 z-[60] overflow-hidden">
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  const content = (
+    <div className="fixed inset-0 z-[100] overflow-hidden">
       {/* Full-bleed cover — the arousal peak */}
       <div className="absolute inset-0">
         <motion.img
@@ -76,15 +89,29 @@ export function StoryRevealPaywall({
         />
       </div>
 
-      <div className="absolute inset-0 overflow-y-auto">
-        <div className="relative z-10 w-full max-w-lg mx-auto px-4 py-8 md:py-10 pb-16 flex flex-col gap-6">
-
-          {/* Progress + hook */}
+      <div className="absolute inset-0 overflow-y-auto overscroll-contain">
+        <div
+          className="relative z-10 w-full max-w-lg mx-auto px-4 flex flex-col gap-6 pb-[max(4rem,env(safe-area-inset-bottom))]"
+          style={{
+            paddingTop: "max(1.5rem, env(safe-area-inset-top))",
+            minHeight: "100%",
+          }}
+        >
+          {/* Progress + hook — padded below any OS chrome */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center space-y-2"
+            className="text-center space-y-2 pt-2"
           >
+            {onDevBypass && (
+              <button
+                type="button"
+                onClick={onDevBypass}
+                className="mb-2 w-full px-4 py-3 rounded-xl text-sm font-bold border border-amber-400/50 bg-amber-400/15 text-amber-200 hover:bg-amber-400/25 transition-colors"
+              >
+                Local preview — skip to story generation →
+              </button>
+            )}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 bg-black/40 backdrop-blur-sm">
               <Flame className="w-3 h-3" style={{ color: accentHex }} />
               <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/90">
@@ -98,6 +125,20 @@ export function StoryRevealPaywall({
             <p className="text-sm text-white/75 max-w-md mx-auto leading-relaxed">
               Cover art {coverLoading && !coverUrl ? "is rendering" : "is ready"} — unlock your private library to hear it narrated.
             </p>
+            <div className="mt-3 mx-auto max-w-md rounded-xl border border-white/12 bg-black/45 px-4 py-3 text-left">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/50 mb-2">
+                What happens after this
+              </p>
+              <ol className="text-xs text-white/75 space-y-1.5 list-decimal list-inside leading-relaxed">
+                <li>Unlock with a story pack (or a credit you already have)</li>
+                <li>Your story generates — ~3 minutes, full-cast narration</li>
+                <li>Listen in your private library — no more choices unless you start over</li>
+              </ol>
+              <p className="text-[11px] text-white/45 mt-2 leading-snug">
+                Character names, appearance, and 200+ situations live in{" "}
+                <span className="text-white/65">Full studio</span> if you want more control before checkout.
+              </p>
+            </div>
           </motion.div>
 
           {/* Story card */}
@@ -283,4 +324,6 @@ export function StoryRevealPaywall({
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }

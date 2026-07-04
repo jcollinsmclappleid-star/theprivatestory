@@ -5,12 +5,12 @@ import { VOICES } from "@/lib/voices";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const SAMPLE_VOICE_IDS = [
-  "FA6HhUjVbervLw2rNl8M", // Clara — female first
-  "tQ4MEZFJOzsahSEEZtHK", // Maya
-  "aTxZrSrp47xsP6Ot4Kgd", // Kayla
-  "AeRdCCKzvd23BpJoofzx", // James
+  "aTxZrSrp47xsP6Ot4Kgd", // Kayla — recommended narrator
+  "jfIS2w2yJi0grJZPyEsk", // Theo — male narrator
+  "tQ4MEZFJOzsahSEEZtHK", // Maya — her dialogue
+  "AeRdCCKzvd23BpJoofzx", // James — his dialogue
+  "FA6HhUjVbervLw2rNl8M", // Clara
   "n1PvBOwxb8X6m7tahp2h", // Ethan
-  "jfIS2w2yJi0grJZPyEsk", // Theo
 ];
 
 const SAMPLE_VOICES = SAMPLE_VOICE_IDS
@@ -72,7 +72,7 @@ export function VoiceShowcase() {
           Choose your narrator
         </p>
         <p className="text-sm text-muted-foreground/60 leading-relaxed">
-          Every story is narrated — press play to hear each voice before you decide.
+          Kayla is our recommended narrator — Theo for a male voice. Press play to hear each one before you decide.
         </p>
       </div>
 
@@ -115,6 +115,11 @@ export function VoiceShowcase() {
                   <span className="text-sm font-semibold text-foreground leading-tight">
                     {voice.displayName}
                   </span>
+                  {voice.recommendLabel && (
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
+                      {voice.recommendLabel}
+                    </span>
+                  )}
                   <span
                     className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border leading-none flex-shrink-0 ${
                       voice.gender === "female"
@@ -135,7 +140,7 @@ export function VoiceShowcase() {
       </div>
 
       <p className="text-center text-[11px] text-muted-foreground/30 mt-5">
-        You choose your narrator when creating each story — and can switch any time.
+        You choose your narrator when creating each story — Maya and James handle character dialogue by default.
       </p>
     </div>
   );

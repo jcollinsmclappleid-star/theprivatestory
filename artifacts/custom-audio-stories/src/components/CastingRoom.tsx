@@ -6,6 +6,7 @@ import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
 import { VOICES, DEFAULT_NARRATOR_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
+import { CHEMISTRY_IMAGES, PAIRING_IMAGES } from "../lib/chemistryImages";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
 
@@ -227,7 +228,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: `${P.subject} takes control. Certain of what ${P.possessive} want. Patient enough to take their time.`,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
-      image: "images/chemistry/takes_charge.webp",
+      image: CHEMISTRY_IMAGES.takesCharge,
     },
     {
       id: "Equal Tension",
@@ -235,7 +236,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "Neither one yields. That's the whole story.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#080010] via-[#100020] to-[#040008]", accent: "#818cf8",
-      image: "images/chemistry/equal_tension.webp",
+      image: CHEMISTRY_IMAGES.equalTension,
     },
     {
       id: `${ME.subject} Leads`,
@@ -243,7 +244,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: `${ME.subject} takes the lead. Sets the terms. ${P.subject} follows ${ME.possessive} pace entirely.`,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
-      image: "images/chemistry/leads.webp",
+      image: CHEMISTRY_IMAGES.leads,
     },
     {
       id: "Push & Pull",
@@ -251,7 +252,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: `Back and forth. Who ${conjugateBreaks(P.subject)} first?`,
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#100000] via-[#200000] to-[#080000]", accent: "#fb923c",
-      image: "images/chemistry/push_pull.webp",
+      image: CHEMISTRY_IMAGES.pushPull,
     },
     {
       id: "Slow Surrender",
@@ -259,7 +260,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "The tension holds until it can't. Both of them know exactly how this ends.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#000a10] via-[#001420] to-[#000508]", accent: "#38bdf8",
-      image: "images/chemistry/slow_surrender.webp",
+      image: CHEMISTRY_IMAGES.slowSurrender,
     },
     {
       id: "Charged Dynamic",
@@ -267,7 +268,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: `${P.subject} holds the power. ${ME.subject} chose to give it. That's what makes everything that follows possible.`,
       dynamic: "Leading and following",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
-      image: "images/chemistry/power_play.webp",
+      image: CHEMISTRY_IMAGES.powerPlay,
     },
     {
       id: "Forbidden Pull",
@@ -275,7 +276,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "They shouldn't. They've been trying not to. They can't stop.",
       dynamic: "Forbidden desire",
       gradient: "from-[#08000a] via-[#120014] to-[#040008]", accent: "#9333ea",
-      image: "images/chemistry/forbidden_pull.webp",
+      image: CHEMISTRY_IMAGES.forbidden,
     },
     {
       id: "Pure Devotion",
@@ -283,7 +284,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: `${P.subject} makes ${ME.object} feel like the only thing in the room. The world.`,
       dynamic: "Adoration and devotion",
       gradient: "from-[#001010] via-[#001e1e] to-[#000a0a]", accent: "#2dd4bf",
-      image: "images/chemistry/worship.webp",
+      image: CHEMISTRY_IMAGES.devotion,
     },
     {
       id: "Rivals",
@@ -291,7 +292,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "They've always been at each other's throats. This is what that was.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0800] via-[#121000] to-[#050600]", accent: "#84cc16",
-      image: "images/chemistry/rivals.webp",
+      image: CHEMISTRY_IMAGES.rivals,
     },
     {
       id: "Lovers",
@@ -299,7 +300,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "Two people who chose each other. The familiarity only makes it better.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#0a0010] via-[#120018] to-[#060009]", accent: "#e879a0",
-      image: "images/chemistry/lovers.webp",
+      image: CHEMISTRY_IMAGES.lovers,
     },
     {
       id: "Playful",
@@ -307,7 +308,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "It starts with a joke. Ends somewhere neither of them expected.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#001808] via-[#002810] to-[#000e04]", accent: "#34d399",
-      image: "images/chemistry/playful.webp",
+      image: CHEMISTRY_IMAGES.playful,
     },
     {
       id: "Romantic",
@@ -315,7 +316,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "Deliberate. Everything intentional. This kind of attention is rare.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0a0600] via-[#180e00] to-[#060300]", accent: "#f59e0b",
-      image: "images/chemistry/romantic.webp",
+      image: CHEMISTRY_IMAGES.romantic,
     },
     {
       id: "The Best Friend",
@@ -323,7 +324,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "Known each other too long to pretend. Not long enough to stop feeling this.",
       dynamic: "Equal desire, equal intensity",
       gradient: "from-[#000a14] via-[#001020] to-[#00050c]", accent: "#7dd3fc",
-      image: "images/chemistry/the_best_friend.webp",
+      image: CHEMISTRY_IMAGES.bestFriend,
     },
     {
       id: "Sweet & Tender",
@@ -331,7 +332,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "No games, no strategy. Two people being honest with each other.",
       dynamic: "Adoration and surrender",
       gradient: "from-[#0c0008] via-[#180010] to-[#080005]", accent: "#f0abfc",
-      image: "images/chemistry/sweet_tender.webp",
+      image: CHEMISTRY_IMAGES.sweetTender,
     },
     {
       id: "Nervous Energy",
@@ -339,7 +340,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
       sub: "First time together. Neither is sure what comes next. That's the whole thing.",
       dynamic: "They pursue, I decide",
       gradient: "from-[#080800] via-[#141400] to-[#050500]", accent: "#fde68a",
-      image: "images/chemistry/nervous_energy.webp",
+      image: CHEMISTRY_IMAGES.nervous,
     },
   ];
 }
@@ -1156,11 +1157,18 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 0 — Pairing ─────────────────────────────────────── */}
         {step === 0 && (
           <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who's in the story?</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who are you fantasising about?</h2>
             <p className="text-muted-foreground text-sm mb-6">Choose the pairing — this shapes everything that follows.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {PAIRINGS.map(p => (
-                <ArtTile key={p.id} gradient={p.gradient} accent={p.accent} selected={data.pairing === p.id} onClick={() => { update("pairing", p.id); setTimeout(next, 350); }}>
+                <ArtTile
+                  key={p.id}
+                  gradient={p.gradient}
+                  accent={p.accent}
+                  image={PAIRING_IMAGES[p.id]}
+                  selected={data.pairing === p.id}
+                  onClick={() => { update("pairing", p.id); setTimeout(next, 350); }}
+                >
                   <p className="font-semibold text-white text-base">{p.label}</p>
                   <p className="text-white/75 text-sm mt-0.5">{p.sub}</p>
                 </ArtTile>
@@ -1173,7 +1181,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              Between {protagonistP.object} and {partnerP.object}.
+              What's the tension between you?
             </h2>
             <p className="text-muted-foreground text-sm mb-6">How does the power sit? Who moves first?</p>
             <div className="grid gap-3">
@@ -1202,7 +1210,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 2 — Perspective ─────────────────────────────────── */}
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Whose story?</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Are you in it, or watching them?</h2>
             <p className="text-muted-foreground text-sm mb-2">Choose who the story follows.</p>
             {isSameGender && (
               <p className="text-xs text-muted-foreground/55 italic mb-5">
@@ -1237,7 +1245,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               const selectedHeritage = HERITAGES.find(h => h.id === data.heritage);
               return (
                 <div className="mb-5 relative" ref={heritageDropdownRef}>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Heritage</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Their background</p>
                   <button
                     type="button"
                     onClick={() => { setHeritageDropdownOpen(o => !o); setEnergyDropdownOpen(false); setAppearanceDropdownOpen(false); }}
@@ -1303,7 +1311,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               return (
                 <div className="mb-6 relative" ref={energyDropdownRef}>
                   <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">
-                    {capFirst(partnerP.possessive)} Energy
+                    Their vibe
                   </p>
                   <button
                     type="button"
@@ -1328,7 +1336,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                       )}
                       <span className="flex-1 min-w-0">
                         <span className={`block text-sm font-semibold ${selectedEnergy ? "text-foreground" : "text-muted-foreground/60"}`}>
-                          {selectedEnergy ? selectedEnergy.label : "Choose energy…"}
+                          {selectedEnergy ? selectedEnergy.label : "Choose their vibe…"}
                         </span>
                         {selectedEnergy && (
                           <span className="block text-xs truncate mt-0.5" style={{ color: `${selectedEnergy.accent}99` }}>{selectedEnergy.sub}</span>
@@ -1510,7 +1518,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-center gap-3 mb-3">
               <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: accentColor }} />
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Where in the world?</h2>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Pick your city</h2>
             </div>
             <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
               A real country and city weave genuine cultural texture into your story — its sounds, its light, its customs. Entirely optional.
@@ -1687,8 +1695,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         {/* ── Step 5 — Setting ─────────────────────────────────────── */}
         {step === 5 && (
           <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the world of this story?</h2>
-            <p className="text-muted-foreground text-sm mb-6">The setting shapes what's possible — and how everything feels.</p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Where does it happen?</h2>
+            <p className="text-muted-foreground text-sm mb-6">The scene shapes what's possible — and how everything feels.</p>
 
             {/* ── Scenario (required) ── */}
             {afterDark && (
@@ -1752,8 +1760,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </>
             ) : (
               <>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How far?</h2>
-                <p className="text-muted-foreground text-sm mb-6">Set the intensity and the feeling of this story.</p>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How do you want it?</h2>
+                <p className="text-muted-foreground text-sm mb-6">Set the heat and the feeling of this story.</p>
               </>
             )}
 
@@ -1924,8 +1932,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the situation?</h2>
-                <p className="text-muted-foreground text-sm">Choose the engine of your story — or let us pick one for you.</p>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the fantasy?</h2>
+                <p className="text-muted-foreground text-sm">Choose what happens — or let us pick one for you.</p>
               </div>
               <button
                 type="button"
@@ -2406,12 +2414,12 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
 
         {step === 11 && (
           <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Voice</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who do you want in your ear?</h2>
             <p className="text-muted-foreground text-sm mb-1">
               Choose your narrator — character voices are matched automatically.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
-              Most people start with Eleanor for their first story.
+              Kayla is our recommended narrator; Theo if you prefer a male voice. Maya and James handle dialogue by default for Her &amp; Him.
             </p>
 
             {(() => {
@@ -2438,9 +2446,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-foreground leading-tight">{displayTitle}</span>
-                            {voice.recommended && (
+                            {voice.recommendLabel && (
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-semibold tracking-wide uppercase">
-                                Recommended
+                                {voice.recommendLabel}
                               </span>
                             )}
                           </div>
@@ -2509,7 +2517,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                       ))}
                     </div>
                     <p className="text-[10px] text-muted-foreground/40 mt-3 leading-relaxed">
-                      Three voices, one story — character voices are matched to your narrator and pairing automatically.
+                      Three voices, one story — character voices are matched to your narrator and pairing. Maya and James by default for Her &amp; Him.
                     </p>
                   </div>
                 </>

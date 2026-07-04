@@ -16,6 +16,8 @@ import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import {
   EDITORS_PICKS,
   VOICES_META,
+  formatRuntime,
+  pickIncludesVoice,
   type EditorsPick,
   type EditorsPickVoice,
 } from "@/data/editorsPicks";
@@ -39,7 +41,7 @@ function pickToStory(pick: EditorsPick): Story {
     description: pick.tagline,
     mood: pick.tags[0] ?? "sample",
     tags: pick.tags,
-    duration: "2 min",
+    duration: formatRuntime(pick.runtimeSec),
     coverImage: coverUrl(pick.slug),
     audioUrl: audioUrl(pick.slug),
     isPremium: false,
@@ -321,10 +323,14 @@ export default function Samples() {
       <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-24">
         <TrustBar />
         <p className="mt-8 text-[12px] text-white/45 leading-relaxed text-center max-w-xl mx-auto">
-          About these editor's picks: four short multi-voice samples, written
-          by our editorial team. Each one is built to pull you in, then stops
-          at the worst possible moment — deliberately, before any explicit
-          content.
+          About these editor's picks: four short full-cast previews (
+          {formatRuntime(
+            EDITORS_PICKS.reduce((sum, p) => sum + p.runtimeSec, 0) /
+              EDITORS_PICKS.length,
+          )}{" "}
+          each). Narrator plus a distinct voice for every speaker — the same
+          production you'll get when you create a story. Each one names the
+          fantasy, then cuts off before explicit content.
         </p>
       </section>
 
@@ -374,7 +380,7 @@ function Hero({ onStart }: { onStart: () => void }) {
       <div className="absolute inset-0 -z-10 pointer-events-none opacity-[0.32]">
         <div className="absolute right-[-10%] top-[8%] w-[55%] aspect-square rounded-3xl overflow-hidden">
           <img
-            src={coverUrl("07-bodyguard")}
+            src={coverUrl("02-adjoining-suites")}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover"
@@ -383,7 +389,7 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
         <div className="absolute left-[-5%] bottom-[-5%] w-[40%] aspect-square rounded-3xl overflow-hidden">
           <img
-            src={coverUrl("05-cabin")}
+            src={coverUrl("06-supervisor")}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover"
@@ -421,10 +427,10 @@ function Hero({ onStart }: { onStart: () => void }) {
           </h1>
 
           <p className="text-[15px] sm:text-base text-white/65 leading-relaxed max-w-xl">
-            Multi-voice, real dialogue — each story is written to pull you in,
-            then stops at the worst possible moment. On purpose. These are here
-            to show you the writing and narration. When you create your own,
-            you choose the pairing, the mood, and exactly how far it goes.
+            Four voices. Four scenes. One rule: they all stop right before the
+            part you're waiting for. Each sample is a full cast — narrator plus
+            every character on their own line. Listen for the handoff. When you
+            create yours, you pick the pairing, the mood, and how far it goes.
           </p>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
@@ -437,7 +443,7 @@ function Hero({ onStart }: { onStart: () => void }) {
               data-testid="hero-start-first"
             >
               <Play className="w-4 h-4" fill="currentColor" />
-              Start with the first
+              Play the hottest one first
             </button>
             <a
               href="#stories"
@@ -470,10 +476,10 @@ function Hero({ onStart }: { onStart: () => void }) {
                   transition={{ duration: 0.25 }}
                   className="mt-3 text-[12px] text-white/55 leading-relaxed border-l border-primary/30 pl-4 italic overflow-hidden"
                 >
-                  Adult themes throughout. These samples stop before explicit
-                  by design — they're a taste of the writing and narration,
-                  not the full experience. Your story, shaped around your own
-                  fantasy, goes as far as you want it to.
+                  Adult themes throughout. These samples name the fantasy, then
+                  stop before explicit — they're proof of the writing and full
+                  cast, not the full experience. Your story, shaped around your
+                  own fantasy, goes as far as you want it to.
                 </motion.p>
               )}
             </AnimatePresence>
@@ -506,7 +512,7 @@ function StoryCard({
   onToggleTranscript: () => void;
   voiceFilter: EditorsPickVoice | null;
 }) {
-  const dimmed = voiceFilter !== null && pick.voice !== voiceFilter;
+  const dimmed = voiceFilter !== null && !pickIncludesVoice(pick, voiceFilter);
 
   return (
     <motion.article
@@ -525,7 +531,7 @@ function StoryCard({
       data-testid={`pick-card-${pick.slug}`}
       data-pick-card
       tabIndex={0}
-      aria-label={`${pick.title} — narrated by ${pick.voiceName}`}
+      aria-label={`${pick.title} — full cast: ${pick.castLabel}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           // Only catch when the card itself is focused, not a button inside.
@@ -566,10 +572,9 @@ function StoryCard({
         <div className="absolute bottom-4 left-5">
           <p className="text-[10px] font-bold text-primary/85 uppercase tracking-[0.28em]">
             {String(pick.number).padStart(2, "0")} ·{" "}
-            <span className="text-white/65">Narrated by {pick.voiceName}</span>{" "}
-            ·{" "}
+            <span className="text-white/65">{pick.castLabel}</span> ·{" "}
             <span className="text-white/55">
-              {Math.round(pick.runtimeSec / 60)} min
+              {formatRuntime(pick.runtimeSec)}
             </span>
           </p>
         </div>
@@ -693,12 +698,12 @@ function VoiceStrip({
       className="my-12 sm:my-16 py-10 sm:py-12 px-5 sm:px-8 rounded-2xl border border-white/[0.06] bg-white/[0.015]"
     >
       <p className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.22em] text-center mb-2">
-        Two Voices
+        The cast
       </p>
       <h3 className="font-display italic text-2xl sm:text-[1.7rem] font-bold text-center text-foreground mb-7 leading-tight">
-        Each chosen for the room they live in.
+        Tap a voice — hear the samples they're in.
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {VOICES_META.map((v) => {
           const active = activeVoice === v.key;
           return (
@@ -729,11 +734,11 @@ function VoiceStrip({
       </div>
       {activeVoice && (
         <p className="text-[11px] text-white/40 text-center mt-4">
-          Highlighting{" "}
+          Highlighting samples with{" "}
           <span className="text-primary/70 font-semibold">
             {VOICES_META.find((v) => v.key === activeVoice)?.name}
           </span>
-          's stories. Tap again to clear.
+          . Tap again to clear.
         </p>
       )}
     </motion.section>
@@ -887,7 +892,7 @@ function StickyPlayer({
               />
               <div className="min-w-0">
                 <p className="text-[11px] font-bold text-primary uppercase tracking-[0.18em] mb-0.5">
-                  Want yours to keep going?
+                  That was {pick.cast.length} voices. Yours can be ten minutes.
                 </p>
                 <p className="text-[12px] text-white/55 italic truncate">
                   Ends on: {pick.endsOn}
@@ -941,7 +946,7 @@ function StickyPlayer({
                 {pick.title}
               </p>
               <p className="text-[10.5px] text-white/45 uppercase tracking-[0.16em] mt-0.5">
-                {pick.voiceName} ·{" "}
+                {pick.castLabel} ·{" "}
                 <span className="text-white/35">
                   {fmtTime(currentTime)} / {fmtTime(duration)}
                 </span>

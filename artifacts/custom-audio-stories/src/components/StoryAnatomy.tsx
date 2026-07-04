@@ -22,7 +22,7 @@ export const ANATOMY_ROWS: ReadonlyArray<AnatomyRow> = [
   { axis: "Intensity", value: "Warm",               scale: "1 of 4",            accent: "#f97316" },
   { axis: "Ending",    value: "Left wanting more",  scale: "1 of 7",            accent: "#a78bfa" },
   { axis: "Situation", value: "Unexpected Reunion", scale: "1 of 200+",         accent: "#e11d48" },
-  { axis: "Voice",     value: "Clara",              scale: "1 of 6 narrators",  accent: "#c9a227" },
+  { axis: "Voice",     value: "Kayla",              scale: "1 of 6 narrators",  accent: "#e879a0" },
 ];
 
 /**

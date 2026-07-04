@@ -80,17 +80,17 @@ export function CreationStudio({ priceDisplay }: CreationStudioProps) {
         <div className="relative p-6 md:p-10 lg:p-12 space-y-6 md:space-y-8">
           <div className="max-w-3xl">
             <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-primary mb-3">
-              The Creation Room
+              Create your spicy fantasy
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-              Cast it. Set the tone.{" "}
-              <span className="text-primary">Hear what only you imagined.</span>
+              Shape it.{" "}
+              <span className="text-primary">Hear it tonight.</span>
             </h2>
             <p className="text-base text-white/88 leading-relaxed max-w-2xl">
-              Choose the dynamic, the chemistry, and how intimate it becomes. We write and narrate a premium erotic story that belongs to you alone — nothing to browse, everything to create.
+              Who they are, where you are, how far it goes — tap to build a premium erotic story written and narrated just for you.
             </p>
             <p className="text-sm text-white/75 leading-relaxed max-w-2xl mt-3">
-              In under three minutes, your brief becomes ~10 minutes of full-cast audio — narrator and characters, each voiced separately.
+              Under three minutes to brief · ~10 minutes of full-cast audio in return.
             </p>
           </div>
 

@@ -103,6 +103,8 @@ export function buildExpressCasting(
     heritage?: string;
     customTags?: string[];
     chooseForMe?: boolean;
+    listenerName?: string;
+    partnerName?: string;
   },
 ): CastingRoomResult {
   const primaryTag = scenario.tags[0] ?? "He Takes Charge";
@@ -136,5 +138,7 @@ export function buildExpressCasting(
     storyMode: scenario.storyMode,
     voiceId: opts.voiceId ?? getDefaultVoiceId(pairing),
     customTags: opts.customTags?.length ? opts.customTags : undefined,
+    listenerName: opts.listenerName || undefined,
+    partnerName: opts.partnerName || undefined,
   };
 }

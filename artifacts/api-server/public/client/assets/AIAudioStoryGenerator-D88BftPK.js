@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-4X2jBMA5.js";import{S as r,g as t}from"./SEOPage-P6LaJ4et.js";import"./index-BO03AJZH.js";import"./data-editors-picks-CJizIKSx.js";const a=t("ai-audio-story-generator");function g(){return o.jsx(r,{config:a,slug:"ai-audio-story-generator",doorFilter:["dark"]})}export{g as default};

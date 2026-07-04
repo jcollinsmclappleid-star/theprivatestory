@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Flame } from "lucide-react";
+import { HOME_STUDIO_IMAGES } from "@/lib/chemistryImages";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (path: string) => `${BASE}/${path.replace(/^\//, "")}`;
@@ -12,7 +13,7 @@ export const INTENSITY_LEVELS = [
     hint: "Tension & longing",
     color: "#a68fa3",
     sampleCap: true,
-    image: img("images/rooms/slow_burn.webp"),
+    image: img(HOME_STUDIO_IMAGES.intensity.slowBurn),
     pulse: "Still on the edge of saying it…",
   },
   {
@@ -21,7 +22,7 @@ export const INTENSITY_LEVELS = [
     hint: "Intimate & charged",
     color: "#c9956a",
     sampleCap: false,
-    image: img("images/chemistry/romantic.webp"),
+    image: img(HOME_STUDIO_IMAGES.intensity.warm),
     pulse: "The tension builds, deliberately.",
   },
   {
@@ -30,7 +31,7 @@ export const INTENSITY_LEVELS = [
     hint: "Nothing held back",
     color: "#d4738f",
     sampleCap: false,
-    image: img("images/rooms/dark_territory.webp"),
+    image: img(HOME_STUDIO_IMAGES.intensity.explicit),
     pulse: "Nothing held back — on your terms.",
   },
   {
@@ -39,7 +40,7 @@ export const INTENSITY_LEVELS = [
     hint: "As far as you choose",
     color: "#c9a87c",
     sampleCap: false,
-    image: img("images/rooms/power_exchange.webp"),
+    image: img(HOME_STUDIO_IMAGES.intensity.unrestrained),
     pulse: "Exactly as far as you chose.",
   },
 ] as const;
@@ -70,7 +71,7 @@ export function IntensityDial({ activeIndex, onChange }: IntensityDialProps) {
           src={active.image}
           alt=""
           initial={{ opacity: 0, scale: 1.08 }}
-          animate={{ opacity: 0.38, scale: 1 }}
+          animate={{ opacity: 0.55, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55 }}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"

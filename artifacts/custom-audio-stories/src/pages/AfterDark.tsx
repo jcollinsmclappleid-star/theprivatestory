@@ -27,6 +27,7 @@ import {
   type ExpressBriefState,
 } from "@/components/AfterDarkExpress";
 import { StoryRevealPaywall } from "@/components/StoryRevealPaywall";
+import { canBypassPaywall } from "@/lib/devFlags";
 import {
   buildExpressCasting,
   CURATED_SCENARIO_IDS,
@@ -48,6 +49,7 @@ import {
   PENDING_CAST_KEY,
   type PendingAfterDarkCast,
 } from "@/lib/storyReveal";
+import { PAIRING_IMAGES } from "@/lib/chemistryImages";
 
 /* ── Pronoun adaptation for scenario text ────────────────────────── */
 type PCtxFull = {
@@ -1231,16 +1233,6 @@ function DarknessBadge({ level }: { level: DarknessLevel }) {
   );
 }
 
-/* ── Pairing hero images ─────────────────────────────────────────────── */
-const PAIRING_IMAGES: Record<string, string> = {
-  "Her & Him": "images/chemistry/lovers.webp",
-  "Her & Her": "images/seo-body-spa-two-women.png",
-  "Him & Him": "images/chemistry/rivals.webp",
-  "Her & Them": "images/chemistry/playful.webp",
-  "Him & Them": "images/energy/charmer.webp",
-  "Them & Them": "images/chemistry/equal_tension.webp",
-};
-
 /* ── Scenario card ──────────────────────────────────────────────────── */
 function ScenarioCard({
   scenario,
@@ -1387,12 +1379,14 @@ export default function AfterDark() {
   const [expressIntensityIndex, setExpressIntensityIndex] = useState(1);
   const [expressChemistry, setExpressChemistry] = useState("Forbidden Pull");
   const [expressArchetype, setExpressArchetype] = useState("The Executive");
-  const [expressVoiceName, setExpressVoiceName] = useState("Theo");
+  const [expressVoiceName, setExpressVoiceName] = useState("Kayla");
   const [expressCountry, setExpressCountry] = useState("");
   const [expressCity, setExpressCity] = useState("");
   const [expressSetting, setExpressSetting] = useState("");
   const [expressHeritage, setExpressHeritage] = useState("Ambiguous");
   const [expressCustomTags, setExpressCustomTags] = useState<string[]>([]);
+  const [expressListenerName, setExpressListenerName] = useState("");
+  const [expressPartnerName, setExpressPartnerName] = useState("");
   const [expressAfterDarkScene, setExpressAfterDarkScene] = useState("Private Club");
   const [expressAtmosphere, setExpressAtmosphere] = useState("Candlelit");
   const [expressMood, setExpressMood] = useState("Forbidden");
@@ -1507,6 +1501,8 @@ export default function AfterDark() {
     mood: expressMood,
     voiceName: expressVoiceName,
     customTags: expressCustomTags,
+    listenerName: expressListenerName || undefined,
+    partnerName: expressPartnerName || undefined,
   }), [
     selectedScenario,
     selectedPairing,
@@ -1522,6 +1518,8 @@ export default function AfterDark() {
     expressMood,
     expressVoiceName,
     expressCustomTags,
+    expressListenerName,
+    expressPartnerName,
   ]);
 
   useEffect(() => {
@@ -1823,6 +1821,8 @@ export default function AfterDark() {
         voiceId: casting.voiceId,
         voiceName: voice?.displayName ?? voice?.label,
         pairing: casting.pairing || selectedPairing || undefined,
+        listenerName: casting.listenerName,
+        partnerName: casting.partnerName,
       };
 
       setLastCastingData(castingSnapshot);
@@ -1874,6 +1874,8 @@ export default function AfterDark() {
           heritage: expressHeritage || undefined,
           customTags: expressCustomTags.length ? expressCustomTags : undefined,
           chooseForMe,
+          listenerName: expressListenerName || undefined,
+          partnerName: expressPartnerName || undefined,
         },
       );
       handleCastingComplete(casting);
@@ -1893,6 +1895,8 @@ export default function AfterDark() {
       expressHeritage,
       expressCustomTags,
       expressMood,
+      expressListenerName,
+      expressPartnerName,
       handleCastingComplete,
     ],
   );
@@ -1928,6 +1932,38 @@ export default function AfterDark() {
       `${import.meta.env.BASE_URL}images/creation-room-hero.webp`,
     [selectedScenario?.room],
   );
+
+  const handleDevBypassPaywall = useCallback(() => {
+    if (!canBypassPaywall) return;
+    setPhase("generating");
+    startLoadingPhase();
+    window.setTimeout(() => {
+      stopLoadingPhase();
+      const cover = paywallCoverUrl ?? revealFallbackCover;
+      setResult({
+        id: "dev-preview-story",
+        title: storyReveal.title || "Your Private Story",
+        description: storyReveal.snippet,
+        mood: "explicit",
+        duration: "~10 min",
+        images: { cover, scenes: [] },
+        scenes: [
+          {
+            id: "scene-1",
+            title: "Opening",
+            content: `Dev preview — your personalised story would play here.\n\n${storyReveal.choices.map((c) => `${c.label}: ${c.value}`).join(" · ")}`,
+          },
+        ],
+      } as FullGeneratedStory);
+      setPhase("result");
+    }, 2600);
+  }, [
+    startLoadingPhase,
+    stopLoadingPhase,
+    paywallCoverUrl,
+    revealFallbackCover,
+    storyReveal,
+  ]);
 
   if (!ageConfirmed) {
     return <AgeGate onConfirmed={() => setAgeConfirmed(true)} />;
@@ -2112,6 +2148,10 @@ export default function AfterDark() {
             <AfterDarkExpressMakeItYours
               selectedPairing={selectedPairing}
               customTags={expressCustomTags}
+              listenerName={expressListenerName}
+              partnerName={expressPartnerName}
+              onListenerName={setExpressListenerName}
+              onPartnerName={setExpressPartnerName}
               brief={expressBrief}
               onTagToggle={toggleExpressTag}
               onSkip={() => {
@@ -2483,8 +2523,9 @@ export default function AfterDark() {
               creditsLoading={creditsLoading}
               onCheckout={doPaywallCheckout}
               onWriteWithCredit={handleWriteWithCredit}
+              onDevBypass={canBypassPaywall ? handleDevBypassPaywall : undefined}
               onStartOver={() => {
-                setPhase("express_1");
+                setPhase("express_pairing");
                 setSelectedScenario(null);
                 setPendingAfterDarkCast(null);
                 setBrowseFromExpress(false);
@@ -2656,7 +2697,7 @@ export default function AfterDark() {
 
             <button
               onClick={() => {
-                setPhase("express_1");
+                setPhase("express_pairing");
                 setSelectedPairing(null);
                 setSelectedScenario(null);
                 setResult(null);

@@ -85,6 +85,8 @@ export function buildStoryRevealContent(
   push("Mood", mood, "#a78bfa");
   push("Situation", situation, "#e11d48");
   push("Narrator", voiceName, "#c9a227");
+  if (casting.listenerName) push("Your name", casting.listenerName as string, "#e879a0");
+  if (casting.partnerName) push("Their name", casting.partnerName as string, "#6b8cce");
 
   return {
     title,

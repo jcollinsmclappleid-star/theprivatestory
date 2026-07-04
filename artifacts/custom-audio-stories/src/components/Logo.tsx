@@ -30,10 +30,29 @@ function LogoFrame({
 interface LogoProps {
   height?: number;
   className?: string;
+  /** Mobile nav — hide the circular icon, show wordmark only. */
+  wordmarkOnly?: boolean;
 }
 
 /** Horizontal logo — icon + "THE PRIVATE STORY" text side by side. Best for nav bars. */
-export function Logo({ height = 44, className = "" }: LogoProps) {
+export function Logo({ height = 44, className = "", wordmarkOnly = false }: LogoProps) {
+  if (wordmarkOnly) {
+    return (
+      <LogoFrame className={`overflow-hidden ${className}`}>
+        <img
+          src={`${BASE}images/logo-nav.webp`}
+          alt="The Private Story"
+          style={{
+            height: `${height}px`,
+            width: "auto",
+            marginLeft: `-${Math.round(height * 0.92)}px`,
+            ...LOGO_IMG_STYLE,
+          }}
+        />
+      </LogoFrame>
+    );
+  }
+
   return (
     <LogoFrame className={className}>
       <img

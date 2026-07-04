@@ -1291,20 +1291,18 @@ const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
 const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
 const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
 
-const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA] as const;
-const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO] as const;
+const MV_HER_POOL = [MV_MAYA, MV_KAYLA, MV_CLARA] as const;
+const MV_HIM_POOL = [MV_JAMES, MV_THEO, MV_ETHAN] as const;
 const MV_MALE_NARRATORS = new Set<string>([MV_JAMES, MV_ETHAN, MV_THEO]);
 
-// ElevenLabs stability controls chunk-to-chunk tonal consistency.
-// Narrator reads many chunks in sequence — higher stability keeps the voice
-// sounding like one continuous reader rather than "two different narrators".
-// Characters can stay expressive (lower stability) since each speaks less.
-const NARRATOR_STABILITY = 0.65;
-const CHAR_STABILITY     = 0.45;
+const pickHerDialogue = (narratorId: string) =>
+  MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
+const pickHimDialogue = (narratorId: string) =>
+  MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
 
 /**
- * Resolve CHAR_A (protagonist dialogue) and CHAR_B (love-interest dialogue)
- * voices for a narrator + pairing. Neither equals narratorId.
+ * Resolve CHAR_A and CHAR_B dialogue voices.
+ * Maya/James lead for Her & Him; skips narrator when another option exists.
  * Server mirror of resolveCharacterVoices in voices.ts.
  */
 function resolveCharacterVoicesServer(
@@ -1313,32 +1311,36 @@ function resolveCharacterVoicesServer(
 ): { charA: string; charB: string } {
   const p = (pairing ?? "").toLowerCase().trim();
   const isMale = MV_MALE_NARRATORS.has(narratorId);
-  const her = () => MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
-  const him = () => MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
   const twoHer = () => MV_HER_POOL.filter((v) => v !== narratorId);
   const twoHim = () => MV_HIM_POOL.filter((v) => v !== narratorId);
 
   switch (p) {
     case "her & him":
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? MV_MAYA, charB: b ?? MV_CLARA };
+      return { charA: a ?? MV_MAYA, charB: b ?? MV_KAYLA };
     }
     case "him & him": {
       const [a, b] = twoHim();
-      return { charA: a ?? MV_JAMES, charB: b ?? MV_ETHAN };
+      return { charA: a ?? MV_JAMES, charB: b ?? MV_THEO };
     }
     case "her & them":
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     case "him & them":
-      return { charA: him(), charB: her() };
+      return { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) };
     case "them & them":
-      return isMale ? { charA: him(), charB: her() } : { charA: her(), charB: him() };
+      return isMale
+        ? { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) }
+        : { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     default:
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
   }
 }
+
+// ElevenLabs stability controls chunk-to-chunk tonal consistency.
+const NARRATOR_STABILITY = 0.65;
+const CHAR_STABILITY     = 0.45;
 
 export type MultiVoiceRole = "NARRATOR" | "CHAR_A" | "CHAR_B";
 export interface TaggedSegment {

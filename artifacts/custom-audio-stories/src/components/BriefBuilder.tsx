@@ -1,9 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Flame, UserCircle, MapPin, Volume2, Gauge,
 } from "lucide-react";
 import type { AnatomyPreset } from "@/components/StoryAnatomy";
+import { HOME_STUDIO_IMAGES } from "@/lib/chemistryImages";
+import { CREATION_ROOM_FOCUS_EVENT } from "@/components/HeroChoiceChips";
+import { HorizontalScrollRow } from "@/components/ScrollRowHint";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (path: string) => `${BASE}/${path.replace(/^\//, "")}`;
@@ -27,47 +30,47 @@ const CATEGORIES: {
 }[] = [
   {
     id: "pairing",
-    label: "Pairing",
+    label: "Who you're with",
     icon: Users,
-    axis: "Pairing",
-    scale: "1 of 6",
+    axis: "Who you're with",
+    scale: "6 ways",
     options: [
-      { value: "Her & Him", label: "Her & Him", image: img("images/chemistry/lovers.webp"), accent: "#e879a0" },
-      { value: "Her & Her", label: "Her & Her", image: img("images/seo-body-spa-two-women.png"), accent: "#f472b6" },
-      { value: "Her & Him & Him", label: "MFM", image: img("images/rooms/more_than_two.webp"), accent: "#c084fc" },
+      { value: "Her & Him", label: "Her & Him", image: img(HOME_STUDIO_IMAGES.pairing.herHim), accent: "#e879a0" },
+      { value: "Her & Her", label: "Her & Her", image: img(HOME_STUDIO_IMAGES.pairing.herHer), accent: "#f472b6" },
+      { value: "Her & Him & Him", label: "MFM", image: img(HOME_STUDIO_IMAGES.pairing.mfm), accent: "#c084fc" },
     ],
   },
   {
     id: "chemistry",
-    label: "Chemistry",
+    label: "The tension",
     icon: Flame,
-    axis: "Chemistry",
-    scale: "1 of 8",
+    axis: "The tension",
+    scale: "8 dynamics",
     options: [
-      { value: "Forbidden Pull", label: "Forbidden", image: img("images/chemistry/forbidden_pull.webp"), accent: "#c9a227" },
-      { value: "Power Play", label: "Power", image: img("images/chemistry/power_play.webp"), accent: "#ef4444" },
-      { value: "Slow Surrender", label: "Surrender", image: img("images/chemistry/slow_surrender.webp"), accent: "#a78bfa" },
-      { value: "Push & Pull", label: "Push & pull", image: img("images/chemistry/push_pull.webp"), accent: "#fb7185" },
+      { value: "Forbidden Pull", label: "Forbidden", image: img(HOME_STUDIO_IMAGES.chemistry.forbidden), accent: "#c9a227" },
+      { value: "Power Play", label: "Power", image: img(HOME_STUDIO_IMAGES.chemistry.power), accent: "#ef4444" },
+      { value: "Slow Surrender", label: "Surrender", image: img(HOME_STUDIO_IMAGES.chemistry.surrender), accent: "#a78bfa" },
+      { value: "Push & Pull", label: "Push & pull", image: img(HOME_STUDIO_IMAGES.chemistry.pushPull), accent: "#fb7185" },
     ],
   },
   {
     id: "archetype",
-    label: "Archetype",
+    label: "Who they are",
     icon: UserCircle,
-    axis: "Archetype",
-    scale: "1 of 19",
+    axis: "Who they are",
+    scale: "19 types",
     options: [
-      { value: "The Executive", label: "Executive", image: img("images/energy/executive.webp"), accent: "#c9a227" },
-      { value: "The Professor", label: "Professor", image: img("images/energy/professor.webp"), accent: "#60a5fa" },
-      { value: "The Stranger", label: "Stranger", image: img("images/energy/stranger.webp"), accent: "#94a3b8" },
-      { value: "The Charmer", label: "Charmer", image: img("images/energy/charmer.webp"), accent: "#f472b6" },
+      { value: "The Executive", label: "Executive", image: img(HOME_STUDIO_IMAGES.archetype.executive), accent: "#c9a227" },
+      { value: "The Professor", label: "Professor", image: img(HOME_STUDIO_IMAGES.archetype.professor), accent: "#60a5fa" },
+      { value: "The Stranger", label: "Stranger", image: img(HOME_STUDIO_IMAGES.archetype.stranger), accent: "#94a3b8" },
+      { value: "The Charmer", label: "Charmer", image: img(HOME_STUDIO_IMAGES.archetype.charmer), accent: "#f472b6" },
     ],
   },
   {
     id: "setting",
-    label: "Setting",
+    label: "Where it happens",
     icon: MapPin,
-    axis: "Setting",
+    axis: "Where it happens",
     scale: "200+ places",
     options: [
       { value: "Victorian London", label: "Victorian", image: img("images/settings/victorian_london.webp"), accent: "#34d399" },
@@ -78,31 +81,42 @@ const CATEGORIES: {
   },
   {
     id: "intensity",
-    label: "Intensity",
+    label: "How you want it",
     icon: Gauge,
-    axis: "Intensity",
-    scale: "1 of 4",
+    axis: "How you want it",
+    scale: "4 levels",
     options: [
-      { value: "Slow burn", label: "Slow burn", image: img("images/rooms/slow_burn.webp"), accent: "#94a3b8" },
-      { value: "Warm", label: "Warm", image: img("images/chemistry/romantic.webp"), accent: "#f97316" },
-      { value: "Explicit", label: "Explicit", image: img("images/rooms/dark_territory.webp"), accent: "#e879a0" },
-      { value: "Unrestrained", label: "Unrestrained", image: img("images/rooms/power_exchange.webp"), accent: "#c9a227" },
+      { value: "Slow burn", label: "Slow burn", image: img(HOME_STUDIO_IMAGES.intensity.slowBurn), accent: "#94a3b8" },
+      { value: "Warm", label: "Warm", image: img(HOME_STUDIO_IMAGES.intensity.warm), accent: "#f97316" },
+      { value: "Explicit", label: "Explicit", image: img(HOME_STUDIO_IMAGES.intensity.explicit), accent: "#e879a0" },
+      { value: "Unrestrained", label: "Unrestrained", image: img(HOME_STUDIO_IMAGES.intensity.unrestrained), accent: "#c9a227" },
     ],
   },
   {
     id: "voice",
-    label: "Narrator",
+    label: "Who tells it",
     icon: Volume2,
-    axis: "Voice",
-    scale: "1 of 6 narrators",
+    axis: "Who tells it",
+    scale: "6 narrators",
     options: [
-      { value: "Clara", label: "Clara · British", image: img("images/avatar-eleanor.webp"), accent: "#c9a227" },
-      { value: "James", label: "James · British", image: img("images/avatar-nathaniel.webp"), accent: "#6b8cce" },
-      { value: "Maya", label: "Maya · American", image: img("images/avatar-maya.webp"), accent: "#e879a0" },
+      { value: "Kayla", label: "Kayla · American", image: img("images/avatar-isla.webp"), accent: "#e879a0" },
       { value: "Theo", label: "Theo · British", image: img("images/avatar-oliver.webp"), accent: "#34d399" },
+      { value: "Maya", label: "Maya · American", image: img("images/avatar-maya.webp"), accent: "#f472b6" },
+      { value: "James", label: "James · British", image: img("images/avatar-nathaniel.webp"), accent: "#6b8cce" },
+      { value: "Clara", label: "Clara · British", image: img("images/avatar-eleanor.webp"), accent: "#c9a227" },
+      { value: "Ethan", label: "Ethan · American", image: img("images/avatar-caleb.webp"), accent: "#94a3b8" },
     ],
   },
 ];
+
+const CATEGORY_PROMPTS: Record<CategoryId, string> = {
+  pairing: "Who's in this fantasy?",
+  chemistry: "What's the pull between you?",
+  archetype: "Stranger, executive, old friend…",
+  setting: "Hotel, office, your city…",
+  intensity: "Slow burn through to unrestrained",
+  voice: "Pick the voice in your ear",
+};
 
 const TEASERS: Record<string, string> = {
   "Slow burn": "\"They've been circling each other for weeks. Tonight, neither of them left.\"",
@@ -117,7 +131,7 @@ const DEFAULT_SELECTIONS: Record<CategoryId, string> = {
   archetype: "The Executive",
   setting: "Victorian London",
   intensity: "Warm",
-  voice: "Clara",
+  voice: "Kayla",
 };
 
 export function intensityToIndex(value: string): number {
@@ -164,6 +178,7 @@ function ThemedTile({
   selected,
   onClick,
   size = "option",
+  bright = true,
 }: {
   image: string;
   accent: string;
@@ -172,8 +187,12 @@ function ThemedTile({
   selected: boolean;
   onClick: () => void;
   size?: "tab" | "option";
+  /** Lighter scrim so Act IV art reads on home tiles. */
+  bright?: boolean;
 }) {
   const isTab = size === "tab";
+  const scrimBottom = bright ? 0.72 : 0.92;
+  const scrimMid = bright ? 0.28 : 0.5;
 
   return (
     <motion.button
@@ -196,15 +215,15 @@ function ThemedTile({
         src={image}
         alt=""
         className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
-          selected ? "opacity-90 scale-105" : "opacity-65 group-hover:opacity-80"
+          selected ? "opacity-100 scale-105" : bright ? "opacity-95" : "opacity-80"
         }`}
       />
       <div
         className="absolute inset-0"
         style={{
           background: selected
-            ? `linear-gradient(to top, rgba(8,6,4,0.95) 0%, rgba(8,6,4,0.35) 45%, ${accent}22 100%)`
-            : "linear-gradient(to top, rgba(8,6,4,0.92) 0%, rgba(8,6,4,0.5) 50%, rgba(8,6,4,0.25) 100%)",
+            ? `linear-gradient(to top, rgba(8,6,4,${bright ? 0.82 : 0.95}) 0%, rgba(8,6,4,${bright ? 0.2 : 0.35}) 50%, ${accent}18 100%)`
+            : `linear-gradient(to top, rgba(8,6,4,${scrimBottom}) 0%, rgba(8,6,4,${scrimMid}) 55%, rgba(8,6,4,${bright ? 0.08 : 0.25}) 100%)`,
         }}
       />
       {selected && (
@@ -258,6 +277,17 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
   const [activeCategory, setActiveCategory] = useState<CategoryId>("chemistry");
   const active = CATEGORIES.find((c) => c.id === activeCategory)!;
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const cat = (e as CustomEvent<CategoryId>).detail;
+      if (cat && CATEGORIES.some((c) => c.id === cat)) {
+        setActiveCategory(cat);
+      }
+    };
+    window.addEventListener(CREATION_ROOM_FOCUS_EVENT, handler);
+    return () => window.removeEventListener(CREATION_ROOM_FOCUS_EVENT, handler);
+  }, []);
+
   const pick = (catId: CategoryId, value: string) => {
     const next = { ...selections, [catId]: value };
     onChange(next);
@@ -276,10 +306,10 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary mb-1.5">
-            Build your brief — tap to cast
+            Create your spicy fantasy
           </p>
           <p className="text-sm text-white/85 leading-snug">
-            Every tile updates your story live. This is what the Creation Room feels like.
+            Tap each piece — every choice updates your story live.
           </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -330,10 +360,11 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
           exit={{ opacity: 0, y: -8, scale: 0.99 }}
           transition={{ duration: 0.32, ease: "easeOut" }}
         >
-          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55 mb-2.5">
-            Choose {active.label.toLowerCase()}
+          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55 mb-1">
+            {active.label}
           </p>
-          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-brand snap-x snap-mandatory">
+          <p className="text-[11px] text-white/65 mb-2.5 leading-snug">{CATEGORY_PROMPTS[activeCategory]}</p>
+          <HorizontalScrollRow className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-brand snap-x snap-mandatory">
             {active.options.map((opt) => (
               <ThemedTile
                 key={opt.value}
@@ -344,7 +375,7 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
                 onClick={() => pick(activeCategory, opt.value)}
               />
             ))}
-          </div>
+          </HorizontalScrollRow>
           {activeCategory === "intensity" && (
             <motion.p
               key={selections.intensity}

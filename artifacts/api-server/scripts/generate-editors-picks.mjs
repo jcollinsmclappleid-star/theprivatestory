@@ -71,9 +71,43 @@ const MV_KAYLA = "aTxZrSrp47xsP6Ot4Kgd";
 const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
 const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
 const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
-const MV_HER_POOL = [MV_MAYA, MV_CLARA, MV_KAYLA];
-const MV_HIM_POOL = [MV_JAMES, MV_ETHAN, MV_THEO];
+const MV_HER_POOL = [MV_MAYA, MV_KAYLA, MV_CLARA];
+const MV_HIM_POOL = [MV_JAMES, MV_THEO, MV_ETHAN];
 const MV_MALE_NARRATORS = new Set([MV_JAMES, MV_ETHAN, MV_THEO]);
+
+const pickHerDialogue = (narratorId) =>
+  MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
+const pickHimDialogue = (narratorId) =>
+  MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
+
+function resolveCharacterVoicesServer(narratorId, pairing) {
+  const p = (pairing ?? "").toLowerCase().trim();
+  const isMale = MV_MALE_NARRATORS.has(narratorId);
+  const twoHer = () => MV_HER_POOL.filter((v) => v !== narratorId);
+  const twoHim = () => MV_HIM_POOL.filter((v) => v !== narratorId);
+  switch (p) {
+    case "her & him":
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
+    case "her & her": {
+      const [a, b] = twoHer();
+      return { charA: a ?? MV_MAYA, charB: b ?? MV_KAYLA };
+    }
+    case "him & him": {
+      const [a, b] = twoHim();
+      return { charA: a ?? MV_JAMES, charB: b ?? MV_THEO };
+    }
+    case "her & them":
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
+    case "him & them":
+      return { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) };
+    case "them & them":
+      return isMale
+        ? { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) }
+        : { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
+    default:
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
+  }
+}
 
 const CANONICAL_INTENSITY_STYLE = {
   Subtle: { narrator: 0.15, char: 0.35 },
@@ -115,24 +149,6 @@ function mvPairingGenders(pairing) {
     case "him & them":      return { protag: "m", li: "them" };
     case "them & them":     return { protag: "them", li: "them" };
     default: return null;
-  }
-}
-
-function resolveCharacterVoicesServer(narratorId, pairing) {
-  const p = (pairing ?? "").toLowerCase().trim();
-  const isMale = MV_MALE_NARRATORS.has(narratorId);
-  const her = () => MV_HER_POOL.find((v) => v !== narratorId) ?? MV_MAYA;
-  const him = () => MV_HIM_POOL.find((v) => v !== narratorId) ?? MV_JAMES;
-  const twoHer = () => MV_HER_POOL.filter((v) => v !== narratorId);
-  const twoHim = () => MV_HIM_POOL.filter((v) => v !== narratorId);
-  switch (p) {
-    case "her & him":  return { charA: her(), charB: him() };
-    case "her & her":  { const [a, b] = twoHer(); return { charA: a ?? MV_MAYA, charB: b ?? MV_CLARA }; }
-    case "him & him":  { const [a, b] = twoHim(); return { charA: a ?? MV_JAMES, charB: b ?? MV_ETHAN }; }
-    case "her & them": return { charA: her(), charB: him() };
-    case "him & them": return { charA: him(), charB: her() };
-    case "them & them": return isMale ? { charA: him(), charB: her() } : { charA: her(), charB: him() };
-    default: return { charA: her(), charB: him() };
   }
 }
 
@@ -307,60 +323,25 @@ She reached back and found his hands. Guided them.
   {
     slug: "02-adjoining-suites",
     title: "The Adjoining Suites",
-    voice: VOICE.clara,
+    voice: VOICE.theo,
     pairing: "Her & Him & Him",
+    charAVoice: MV_MAYA,
     text:
-`"We were going to come and ask if you wanted a nightcap," one of them said.
+`Two men. One hotel suite. She had had every chance to leave — and walked through the connecting door instead.
 
-The connecting door had opened before she finished knocking. They had been standing on the other side of it.
+"We've been talking about you," he said. "For months. Tell us what you've imagined."
 
-The awards dinner had ended at midnight. She had won. Six years of partnership — the three of them at every dinner that had ever mattered — and tonight on the walk back through the marble lobby, something had changed in the air, and she had felt it on her skin and stopped pretending she hadn't.
+"Both of you," she said. "In this room. Me between you — and you deciding who goes first."
 
-She looked at them both.
+"Be specific," he said.
 
-"I know," she said.
+"One of you holding me still," she said. "The other watching until I say his name."
 
-"You don't drink whisky."
+"Look at me," he said. "Are you sure?"
 
-"I do tonight."
+"I've never been more sure of anything," she said.
 
-The other one — the quieter one — set a glass down on the dresser without taking his eyes off her.
-
-"You should know," he said, "what we were talking about. Before you knocked."
-
-"I know what you were talking about."
-
-A pause.
-
-"And?"
-
-She stepped through the doorway. She walked between them. She turned, slowly, so she could see them both. The door behind her was still open. The door behind them was not.
-
-"Close it," she said.
-
-One of them crossed to the door. The click of the latch was the loudest thing in the room.
-
-The quieter one came to her first. He stopped in front of her and put one hand at the side of her face.
-
-"You're sure," he said.
-
-"Ask me again and I'll change my mind."
-
-She looked at him. Then past him, at the other one.
-
-"You," she said. "First."
-
-To the one still watching, she said: "Not yet."
-
-He kissed her — slowly, carefully, the way a man kisses someone he has been wanting to kiss for six years. Behind her, the other one held himself absolutely still on her instruction alone. The specific charge of that — two men, both wanting her, one held back by a single word — moved through her like something low and deliberate.
-
-When she was ready she lifted her chin from the kiss and looked over her shoulder.
-
-The look was the instruction.
-
-He came forward. His hands at her hair, her jaw. She heard the first one's breath change behind her.
-
-Her gown had a zip at the side. She reached back, found a hand, and guided it there herself.`,
+"Then get on the bed," he said.`,
   },
   {
     slug: "03-spa-at-six",
@@ -572,72 +553,28 @@ They didn't answer. They didn't need to.`,
   {
     slug: "06-supervisor",
     title: "The Supervisor's Office",
-    voice: VOICE.kayla,
+    voice: VOICE.clara,
     pairing: "Her & Her",
+    charAVoice: MV_MAYA,
+    charBVoice: MV_KAYLA,
     text:
-`"You came back," her supervisor said.
+`The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule did not apply.
 
-Her viva had ended three hours ago. She had passed. Champagne in the common room. Her parents calling. And yet here she was, in the empty corridor, at this particular door — because her supervisor had said: come and see me before you leave, we should toast properly. The door was open. The lamp was on. A glass already poured.
+"You're not looking at the page," she said.
 
-"Doctor," she said.
+"No," her supervisor said. "I'm looking at you. And I'm done pretending I haven't wanted to for three years."
 
-"Don't."
+"You can't say that," she said. "You're still my—"
 
-"It's strange to hear it."
+"I'm not your supervisor anymore," her supervisor said. "You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?"
 
-"Get used to it. Sit."
+"Wanting your hands on me," she said. "Wanting you to tell me what to do."
 
-She sat. The office was warm and smelled of old paper and the faint perfume her supervisor had always worn that, for three years, she had pretended not to notice.
+"Be still," her supervisor said.
 
-"Thank you," she said.
+"...yes," she said.
 
-Her supervisor said, "I have something to say. I have been waiting to say it for three years. I waited because I was your supervisor, and I will not be accused of saying it before I had the right to."
-
-"Say it."
-
-"You have known what I am about to say for at least a year."
-
-"Yes."
-
-"And."
-
-"I waited for the same reason."
-
-There was a long silence. Her supervisor stood up, walked around the desk, and stopped in front of her chair. She set her glass down on the desk behind her.
-
-"I am no longer your supervisor," she said.
-
-"No."
-
-"Stand up."
-
-She stood. Her supervisor crossed to the door, locked it, and turned around. She stayed there, back to the door, watching her. She crossed the room herself.
-
-"What took you so long," she said.
-
-"Since your second chapter," her supervisor said, and kissed her slowly. Like she had been thinking about it since that chapter.
-
-"Your fourth session." She reached for her. "The Woolf one."
-
-Her supervisor pulled back one inch.
-
-"I know," she said.
-
-"Be still."
-
-She went still. "Yes," she said. Hands dropped. Her supervisor looked at her — the specific look of someone deciding what to do with something they have been waiting for — and then returned to her mouth with considerably less patience than before.
-
-Her hands moved into her hair. Then less talking.
-
-Her supervisor's hands found the hem of her dress and she remembered she was supposed to be still and it cost her something real to stay that way.
-
-"You're certain," her supervisor said.
-
-"I wrote three thousand words about wanting this."
-
-"Then we have a great deal of ground to cover."
-
-Her mouth on her throat. She stopped being able to be still at all.`,
+"Lock the door," her supervisor said. "Then we'll find out if you mean it."`,
   },
   {
     slug: "07-bodyguard",
@@ -723,133 +660,50 @@ She had six weeks of corners to work through. She intended to take her time.`,
   {
     slug: "08-proposition",
     title: "The Proposition",
-    voice: VOICE.maya,
+    voice: VOICE.clara,
+    pairing: "Her & Him",
+    charAVoice: MV_MAYA,
     text:
-`"From the gentleman," the waiter said.
+`The members' club had no sign on the door. He had been watching her for an hour. A drink arrived she did not order — and a message: he asked if he could come over.
 
-The members' club was the kind without a sign on the door. She had been at the bar for an hour, deliberately not looking at the man at the corner table who had been, deliberately, looking at her. The waiter set a drink in front of her — the same as the one she was already drinking.
+She looked at the corner table. Then she nodded.
 
-"Tell the gentleman thank you," she said.
+"I'm going to be direct," he said, standing beside her stool. "I have a room upstairs. I won't touch you in the lift. I won't touch you in the corridor. If you change your mind, you walk away — I won't follow."
 
-"He asked if he could come over."
+"And if I don't?" she said.
 
-She didn't answer for a moment. Then she nodded.
+"Then you'll tell me exactly what you want," he said, "and I'll decide whether I'm willing to give it to you."
 
-He was older than she had thought. Better dressed. He didn't sit down — he stood beside her stool, close but not touching, and waited until she turned to face him.
+"You want me to ask," she said.
 
-"I'm going to be very direct with you," he said. "Is that all right."
+"I want you to say it out loud," he said. "What you want a stranger to do to you tonight."
 
-"Yes."
-
-"I have a room upstairs. Suite four. I have been watching you for an hour, and I would like you to come up. I will not touch you in the lift. I will not touch you in the corridor. If at any point between this stool and that door you change your mind, you walk away, and I will not follow. I will not ask twice. I am asking once."
-
-She looked at him. He looked back. He did not move closer. He did not press. He had said what he was going to say, and now he was waiting for an answer, and his face had the steady, undefended look of a man who could take either one.
-
-"What's the catch," she said.
-
-"There's no catch. I think you're the most interesting woman in this room."
-
-She picked up the new drink. She drank half of it. She set it down.
-
-She stood up.
-
-She did not say yes. She did not need to.
-
-He kept his word — did not touch her in the lift, did not press in the corridor. She found the restraint more effective than persuasion would have been.
-
-In the suite she stopped two steps inside the door. He turned.
-
-She said: "Sit down."
-
-He sat.
-
-She moved around the room once. Took off the earring she had been wearing. Set it on the desk. Stood at the window for a moment. She was thinking. She was also entirely aware of what it felt like to be watched by a man sitting very still and waiting because she had asked him to.
-
-When she was ready she crossed to him.
-
-She kissed him first. His hands stayed where they were until she brought them to her hips herself. Then they moved, certain and unhurried, and he kissed her back like a man who understood he had been given her complete attention and intended to deserve every second of it.
-
-She pulled back. Looked at him. He did not move.
-
-She reached for his tie.
-
-"Show me," she said. "Everything."`,
+"Then stop talking," she said. "And let me say it."`,
   },
   {
     slug: "09-neighbour",
     title: "The Neighbour",
     voice: VOICE.theo,
-    // Male narrator IS the protagonist — route his dialogue back to Theo so the listener
-    // hears one consistent male voice rather than Theo (narration) / James (he said).
-    charBVoice: MV_THEO,
+    pairing: "Her & Him",
+    charAVoice: MV_MAYA,
     text:
-`"This is going to sound — I genuinely have run out of corkscrews. Do you have one I can borrow," she said.
+`Three weeks. Every night — footsteps above her. Barefoot. Restless. Tonight she knocked on his door with an empty wine glass and no shoes.
 
-She had moved in across the hall three weeks ago. He had seen her exactly four times — once in the lift, once on the stairs, twice in the lobby — and each time he had thought: don't. Each time, walking back into his own flat, he had thought it again.
+"I've been listening to you," she said. "The shower. The late nights. I know your rhythm better than I should."
 
-The knock had come at half past ten. He had opened the door. She was holding an empty wine glass.
+"That's a strange thing to admit to your neighbour," he said.
 
-"I have one," he said.
+"I didn't come for the corkscrew," she said. "I came because I wanted to know if you've been listening too."
 
-"Brilliant. Sorry. I'll bring it back," she said.
+"Every night," he said. "Every sound you make upstairs."
 
-He went to the kitchen. He took longer than he needed to find it. When he came back to the door she was still there, leaning lightly against the frame, not — he noticed, with a precision that troubled him — wearing shoes.
+"Good," she said. "Then tell me what you've been imagining when you hear me."
 
-He held out the corkscrew. She did not take it.
+"You," he said. "In my kitchen. Not leaving until I—"
 
-"Are you on your own tonight," she said.
+"Until you what?" she said. "Say it."
 
-"My daughter is at her mother's."
-
-"Oh," she said.
-
-A pause. He should have closed the door. He did not.
-
-"I have wine," she said, "and no one to drink it with, and I have been hearing you walk around in there alone for three weeks."
-
-"You've been listening," he said.
-
-"Yes," she said.
-
-He looked at her properly. He let himself, for the first time, look at her properly. She let him.
-
-"If I come over," he said, "I should be honest with you about what I have been thinking for three weeks."
-
-"That would save us both some time," she said.
-
-He stepped out into the hallway. He pulled his door closed behind him.
-
-She turned and walked the four steps to her own door. She left it open behind her.
-
-He stood on the threshold.
-
-He stepped through.
-
-She was in the kitchen, her back to him, pouring the wine. The line of her shoulders. The way she wasn't quite steady with the bottle. She knew he was there. She was letting him come to her.
-
-He came to her.
-
-She turned when he was close enough. He took the glass out of her hand, set it on the counter, and took her face in both hands and finally looked at her the way he had been refusing to look at her for three weeks.
-
-The kiss was slow at first — learning her — and then less slow. Her hands at his chest, his shirt buttons. He walked her backwards until she was against the counter.
-
-He lifted her onto it. She wrapped her legs around him and then — immediately, deliberately — put both hands flat on his chest and held him there.
-
-Not stopping. Slowing.
-
-He went still.
-
-"Look at me," she said.
-
-He looked at her. Three weeks of choosing not to, resolved in three seconds.
-
-"Now," she said.
-
-She pulled him back in.
-
-"Three weeks," he said.
-
-"Don't stop," she said.`,
+"Until you let me do everything I've been thinking about for three weeks," he said.`,
   },
   {
     slug: "10-night-manager",
@@ -948,8 +802,10 @@ async function generateOne(pick) {
 
   const buffers = [];
   if (useMultiVoice) {
-    const { charA, charB: charBResolved } = resolveCharacterVoicesServer(narratorId, pairing);
-    // charBVoice override: when the narrator IS the male protagonist (e.g. picks 09/10),
+    const { charA: charAResolved, charB: charBResolved } = resolveCharacterVoicesServer(narratorId, pairing);
+    // charAVoice / charBVoice overrides pin specific cast members (e.g. Maya as lead female).
+    const charA = pick.charAVoice ?? charAResolved;
+    // charBVoice override: when the narrator IS the male protagonist (e.g. pick 10),
     // route CHAR_B dialogue back to the narrator voice so the listener hears one consistent
     // male voice rather than a jarring switch between Theo (narration) and James (dialogue).
     const charB = pick.charBVoice ?? charBResolved;

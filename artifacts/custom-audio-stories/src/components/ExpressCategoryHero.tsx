@@ -5,6 +5,7 @@ import { EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
 import { resolveExpressCategoryImage } from "@/lib/expressAct4Slugs";
 import { Act4Crossfade, SlideProgressDots } from "@/components/Act4Crossfade";
 import { ACT4_SLIDE_INTERVAL_MS, usePreloadImages, useSlideshow } from "@/lib/preloadImages";
+import { HorizontalScrollRow } from "@/components/ScrollRowHint";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -20,6 +21,8 @@ type Props = {
   subtitle: string;
   pulseKey?: number;
   fallbackCover?: string;
+  /** Desires picked per category tab — shows a dot on tabs with selections */
+  categoryPickCounts?: Record<string, number>;
 };
 
 export function ExpressCategoryHero({
@@ -30,6 +33,7 @@ export function ExpressCategoryHero({
   subtitle,
   pulseKey = 0,
   fallbackCover,
+  categoryPickCounts,
 }: Props) {
   const gallery = getCategoryGallery(category);
   const pool = useMemo(() => getCategoryImagePool(category), [category]);
@@ -130,12 +134,13 @@ export function ExpressCategoryHero({
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 z-20 px-2 pb-2 pt-6 bg-gradient-to-t from-black via-black/95 to-transparent">
-        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1">
+        <HorizontalScrollRow className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-1">
           {categoryTabs.map((heading) => {
             const active = heading === activeCategory;
             const thumb = getCategoryThumb(heading);
             const tabGlow = getCategoryGallery(heading).glow;
             const short = EXPRESS_CATEGORY_SHORT[heading] ?? heading;
+            const pickCount = categoryPickCounts?.[heading] ?? 0;
             return (
               <button
                 key={heading}
@@ -144,7 +149,9 @@ export function ExpressCategoryHero({
                 className={`group flex-shrink-0 snap-start flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border transition-all min-h-[44px] ${
                   active
                     ? "border-[#e879a0]/70 bg-black/70 shadow-[0_0_24px_rgba(232,121,160,0.3)]"
-                    : "border-white/12 bg-black/50 hover:border-white/28"
+                    : pickCount > 0
+                      ? "border-[#e879a0]/40 bg-black/60"
+                      : "border-white/12 bg-black/50 hover:border-white/28"
                 }`}
               >
                 <span
@@ -166,13 +173,18 @@ export function ExpressCategoryHero({
                     />
                   )}
                 </span>
-                <span className={`text-[11px] font-semibold whitespace-nowrap ${active ? "text-white" : "text-white/55"}`}>
+                <span className={`text-[11px] font-semibold whitespace-nowrap ${active ? "text-white" : pickCount > 0 ? "text-white/85" : "text-white/55"}`}>
                   {short}
+                  {pickCount > 0 && (
+                    <span className="ml-1.5 inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 rounded-full text-[9px] tabular-nums bg-[#e879a0]/25 text-[#e879a0]">
+                      {pickCount}
+                    </span>
+                  )}
                 </span>
               </button>
             );
           })}
-        </div>
+        </HorizontalScrollRow>
       </div>
     </div>
   );

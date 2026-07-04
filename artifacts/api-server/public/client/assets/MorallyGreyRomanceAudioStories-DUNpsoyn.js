@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-4X2jBMA5.js";import{S as r,g as e}from"./SEOPage-P6LaJ4et.js";import"./index-BO03AJZH.js";import"./data-editors-picks-CJizIKSx.js";const a=e("morally-grey-romance-audio-stories");function n(){return o.jsx(r,{config:a,slug:"morally-grey-romance-audio-stories"})}export{n as default};

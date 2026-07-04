@@ -9,21 +9,11 @@ export interface Voice {
   bestFor?: string;
   gender: "female" | "male";
   recommended?: boolean;
+  /** Short badge in narrator picker (e.g. "Recommended", "Male narrator"). */
+  recommendLabel?: string;
 }
 
 export const VOICES: Voice[] = [
-  {
-    id: "jfIS2w2yJi0grJZPyEsk",
-    displayName: "Theo",
-    label: "Gravel",
-    accent: "British",
-    accentLabel: "British · Textured",
-    desc: "Textured, unhurried, and deeply felt. A voice that lingers long after the story ends.",
-    presence: "Feels raw, grounded, and quietly intense.",
-    bestFor: "Slow burn · Dark romance · His perspective",
-    gender: "male",
-    recommended: true,
-  },
   {
     id: "aTxZrSrp47xsP6Ot4Kgd",
     displayName: "Kayla",
@@ -34,17 +24,19 @@ export const VOICES: Voice[] = [
     bestFor: "Emotional scenes · Romance · Engaging tone",
     gender: "female",
     recommended: true,
+    recommendLabel: "Recommended",
   },
   {
-    id: "FA6HhUjVbervLw2rNl8M",
-    displayName: "Clara",
-    label: "Soothing",
+    id: "jfIS2w2yJi0grJZPyEsk",
+    displayName: "Theo",
+    label: "Gravel",
     accent: "British",
-    accentLabel: "British · Warm",
-    desc: "Warm, measured narration. Nothing rushed. Everything allowed to breathe, drawing you in completely.",
-    presence: "Feels genuine, warm, and completely unhurried.",
-    bestFor: "All moods · First listen · Calm presence",
-    gender: "female",
+    accentLabel: "British · Textured",
+    desc: "Textured, unhurried, and deeply felt. A voice that lingers long after the story ends.",
+    presence: "Feels raw, grounded, and quietly intense.",
+    bestFor: "Slow burn · Dark romance · His perspective",
+    gender: "male",
+    recommendLabel: "Male narrator",
   },
   {
     id: "tQ4MEZFJOzsahSEEZtHK",
@@ -67,6 +59,17 @@ export const VOICES: Voice[] = [
     presence: "Feels present, grounded, and quietly compelling.",
     bestFor: "Tension · Drama · His perspective",
     gender: "male",
+  },
+  {
+    id: "FA6HhUjVbervLw2rNl8M",
+    displayName: "Clara",
+    label: "Soothing",
+    accent: "British",
+    accentLabel: "British · Warm",
+    desc: "Warm, measured narration. Nothing rushed. Everything allowed to breathe, drawing you in completely.",
+    presence: "Feels genuine, warm, and completely unhurried.",
+    bestFor: "All moods · First listen · Calm presence",
+    gender: "female",
   },
   {
     id: "n1PvBOwxb8X6m7tahp2h",
@@ -95,9 +98,9 @@ export const THEO_VOICE_ID   = "jfIS2w2yJi0grJZPyEsk";
 export const JOSHUA_VOICE_ID = JAMES_VOICE_ID;
 
 export const DEFAULT_FEMALE_VOICE_ID = KAYLA_VOICE_ID;
-export const DEFAULT_MALE_VOICE_ID   = THEO_VOICE_ID;
-/** Default narrator across the product — Theo (British, textured). */
-export const DEFAULT_NARRATOR_VOICE_ID = THEO_VOICE_ID;
+export const DEFAULT_MALE_VOICE_ID   = JAMES_VOICE_ID;
+/** Default narrator — Kayla (warm, expressive). */
+export const DEFAULT_NARRATOR_VOICE_ID = KAYLA_VOICE_ID;
 
 export const NARRATOR_VOICE_SETTINGS = {
   stability: 0.45,
@@ -118,16 +121,22 @@ export {
   intensityStyleFor,
 } from "@workspace/intensity";
 
-// HER pool priority: Kayla → Maya → Clara
-// HIM pool priority: Theo → James → Ethan
-const HER_POOL = [KAYLA_VOICE_ID, MAYA_VOICE_ID, CLARA_VOICE_ID] as const;
-const HIM_POOL = [THEO_VOICE_ID, JAMES_VOICE_ID, ETHAN_VOICE_ID] as const;
+/** Dialogue pools — Maya/James lead; skips narrator to avoid same voice twice. */
+const HER_DIALOGUE_POOL = [MAYA_VOICE_ID, KAYLA_VOICE_ID, CLARA_VOICE_ID] as const;
+const HIM_DIALOGUE_POOL = [JAMES_VOICE_ID, THEO_VOICE_ID, ETHAN_VOICE_ID] as const;
 const MALE_NARRATOR_IDS = new Set([JAMES_VOICE_ID, ETHAN_VOICE_ID, THEO_VOICE_ID]);
 
+function pickHerDialogue(narratorId: string): string {
+  return HER_DIALOGUE_POOL.find((v) => v !== narratorId) ?? MAYA_VOICE_ID;
+}
+
+function pickHimDialogue(narratorId: string): string {
+  return HIM_DIALOGUE_POOL.find((v) => v !== narratorId) ?? JAMES_VOICE_ID;
+}
+
 /**
- * Resolve CHAR_A (protagonist dialogue) and CHAR_B (love interest dialogue)
- * for a given narrator voice + story pairing.
- * Neither returned voice will equal narratorId.
+ * Resolve CHAR_A (protagonist dialogue) and CHAR_B (love interest dialogue).
+ * Neither returned voice equals narratorId when another option exists.
  */
 export function resolveCharacterVoices(
   narratorId: string,
@@ -135,33 +144,30 @@ export function resolveCharacterVoices(
 ): { charA: string; charB: string } {
   const p = (pairing ?? "").toLowerCase().trim();
   const isMale = MALE_NARRATOR_IDS.has(narratorId);
-
-  const her   = () => HER_POOL.find(v => v !== narratorId) ?? KAYLA_VOICE_ID;
-  const him   = () => HIM_POOL.find(v => v !== narratorId) ?? THEO_VOICE_ID;
-  const twoHer = () => HER_POOL.filter(v => v !== narratorId);
-  const twoHim = () => HIM_POOL.filter(v => v !== narratorId);
+  const twoHer = () => HER_DIALOGUE_POOL.filter((v) => v !== narratorId);
+  const twoHim = () => HIM_DIALOGUE_POOL.filter((v) => v !== narratorId);
 
   switch (p) {
     case "her & him":
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? KAYLA_VOICE_ID, charB: b ?? MAYA_VOICE_ID };
+      return { charA: a ?? MAYA_VOICE_ID, charB: b ?? KAYLA_VOICE_ID };
     }
     case "him & him": {
       const [a, b] = twoHim();
-      return { charA: a ?? THEO_VOICE_ID, charB: b ?? JAMES_VOICE_ID };
+      return { charA: a ?? JAMES_VOICE_ID, charB: b ?? THEO_VOICE_ID };
     }
     case "her & them":
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     case "him & them":
-      return { charA: him(), charB: her() };
+      return { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) };
     case "them & them":
       return isMale
-        ? { charA: him(), charB: her() }
-        : { charA: her(), charB: him() };
+        ? { charA: pickHimDialogue(narratorId), charB: pickHerDialogue(narratorId) }
+        : { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     default:
-      return { charA: her(), charB: him() };
+      return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
   }
 }
 
@@ -187,4 +193,9 @@ export function getVoicesForPairing(pairing: string | undefined): Voice[] {
 
 export function getDefaultVoiceId(_pairing?: string): string {
   return DEFAULT_NARRATOR_VOICE_ID;
+}
+
+export function voiceDisplayName(voiceId: string): string {
+  const v = VOICES.find((voice) => voice.id === voiceId);
+  return v?.displayName ?? v?.label ?? "Narrator";
 }

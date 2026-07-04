@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { Link } from "wouter";
 import { Play, Pause, Headphones, ChevronRight } from "lucide-react";
-import { EDITORS_PICKS } from "@/data/editorsPicks";
+import { EDITORS_PICKS, formatRuntime } from "@/data/editorsPicks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { SAMPLE_ID_PREFIX, isSampleId } from "@/data/sampleId";
 import type { Story } from "@workspace/api-client-react";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
-const TEASER_SLUG = "09-neighbour";
+const TEASER_SLUG = "02-adjoining-suites";
 
 function pickToStory(slug: string): Story | null {
   const pick = EDITORS_PICKS.find((p) => p.slug === slug);
@@ -18,7 +18,7 @@ function pickToStory(slug: string): Story | null {
     description: pick.tagline,
     mood: pick.tags[0] ?? "sample",
     tags: pick.tags,
-    duration: "2 min",
+    duration: formatRuntime(pick.runtimeSec),
     coverImage: `${API_BASE}/voice-samples/editors-picks/covers/${pick.slug}.webp`,
     audioUrl: `${API_BASE}/voice-samples/editors-picks/${pick.slug}.mp3`,
     isPremium: false,
@@ -65,7 +65,7 @@ export function PricingSampleTeaser() {
           <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-1">{pick.title}</h3>
           <p className="text-sm text-white/80 italic mb-2">&ldquo;{pick.excerpt}&rdquo;</p>
           <p className="text-xs text-white/55">
-            Narrated by Theo. Samples stop on a held breath.{" "}
+            Full cast — {pick.castLabel}. Samples name the fantasy, then stop.{" "}
             <span className="text-white/75">Yours keeps going — as explicit as you choose.</span>
           </p>
         </div>

@@ -5,7 +5,7 @@ import { IntensityDial, INTENSITY_LEVELS } from "@/components/IntensityDial";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
 import { StoryTagStudio, getTagDisplayLabel } from "@/components/StoryTagStudio";
 import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
-import { VOICES } from "@/lib/voices";
+import { VOICES, resolveCharacterVoices, getCastLabels, getDefaultVoiceId } from "@/lib/voices";
 import { ExpressCategoryHero } from "@/components/ExpressCategoryHero";
 import { EXPRESS_CATEGORY_SHORT, getCategoryGallery, getCategoryImagePool } from "@/lib/expressCategoryImages";
 import { preloadImages } from "@/lib/preloadImages";
@@ -37,6 +37,9 @@ import { CountryPickerModal } from "@/components/CountryPickerModal";
 import { buildExpressSummaryGroups, buildExpressSummaryLine } from "@/lib/expressStorySummary";
 import { defaultCategoryForRoom, suggestExpressTags } from "@/lib/expressTagSuggestions";
 import { resolveExpressCategoryImage } from "@/lib/expressAct4Slugs";
+import { HorizontalScrollRow, VerticalScrollCol } from "@/components/ScrollRowHint";
+import { ExpressCharacterNames } from "@/components/ExpressCharacterNames";
+import { PAIRING_IMAGES } from "@/lib/chemistryImages";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -45,13 +48,15 @@ function act4Img(path: string) {
 }
 
 const NARRATOR_AVATARS: Record<string, string> = {
-  Clara: "images/avatar-eleanor.webp",
-  James: "images/avatar-nathaniel.webp",
-  Maya: "images/avatar-maya.webp",
+  Kayla: "images/avatar-isla.webp",
   Theo: "images/avatar-oliver.webp",
+  Maya: "images/avatar-maya.webp",
+  James: "images/avatar-nathaniel.webp",
+  Clara: "images/avatar-eleanor.webp",
+  Ethan: "images/avatar-caleb.webp",
 };
 
-const EXPRESS_NARRATORS = (["Theo", "Clara", "James", "Maya"] as const).map((name) => {
+const EXPRESS_NARRATORS = (["Kayla", "Theo", "Maya", "James", "Clara", "Ethan"] as const).map((name) => {
   const voice = VOICES.find((v) => v.displayName === name)!;
   return {
     id: name,
@@ -61,15 +66,6 @@ const EXPRESS_NARRATORS = (["Theo", "Clara", "James", "Maya"] as const).map((nam
     image: NARRATOR_AVATARS[name],
   };
 });
-
-const PAIRING_IMAGES: Record<string, string> = {
-  "Her & Him": "images/chemistry/lovers.webp",
-  "Her & Her": "images/seo-body-spa-two-women.png",
-  "Him & Him": "images/chemistry/rivals.webp",
-  "Her & Them": "images/chemistry/playful.webp",
-  "Him & Them": "images/energy/charmer.webp",
-  "Them & Them": "images/chemistry/equal_tension.webp",
-};
 
 export const EXPRESS_ACTS = ["Who", "Fantasy", "World", "Yours", "Unlock"] as const;
 export type ExpressActIndex = 0 | 1 | 2 | 3 | 4;
@@ -137,6 +133,8 @@ export type ExpressBriefState = {
   mood: string;
   voiceName: string;
   customTags: string[];
+  listenerName?: string;
+  partnerName?: string;
 };
 
 export function ExpressLivingBrief({ brief }: { brief: ExpressBriefState }) {
@@ -526,7 +524,7 @@ export function AfterDarkExpressFantasy({
             )}
           </AnimatePresence>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-4 snap-x snap-mandatory scrollbar-hide">
+          <HorizontalScrollRow className="flex gap-2 overflow-x-auto pb-2 mb-4 snap-x snap-mandatory scrollbar-hide">
             <button
               type="button"
               onClick={() => onRoomTab("featured")}
@@ -557,9 +555,9 @@ export function AfterDarkExpressFantasy({
                 </button>
               );
             })}
-          </div>
+          </HorizontalScrollRow>
 
-          <div className="flex sm:grid sm:grid-cols-3 gap-3 sm:gap-2 max-h-none sm:max-h-[320px] overflow-x-auto sm:overflow-y-auto overscroll-contain pb-2 sm:pr-1 mb-6 sm:mb-8 snap-x snap-mandatory scrollbar-hide">
+          <HorizontalScrollRow className="flex sm:grid sm:grid-cols-3 gap-3 sm:gap-2 max-h-none sm:max-h-[320px] overflow-x-auto sm:overflow-y-auto overscroll-contain pb-2 sm:pr-1 mb-6 sm:mb-8 snap-x snap-mandatory scrollbar-hide">
             {displayedScenarios.map((s) => {
               const selected = selectedScenario?.id === s.id;
               const cover = getScenarioImage(s.id, s.room, BASE);
@@ -582,7 +580,7 @@ export function AfterDarkExpressFantasy({
                 </button>
               );
             })}
-          </div>
+          </HorizontalScrollRow>
 
           <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-3">How explicit?</p>
           <IntensityDial activeIndex={intensityIndex} onChange={onIntensity} />
@@ -905,7 +903,7 @@ export function AfterDarkExpressWorld({
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">
               Dynamic — who moves first?
             </p>
-            <div className="flex gap-2 overflow-x-auto pb-2 mb-6 snap-x snap-mandatory">
+            <HorizontalScrollRow className="flex gap-2 overflow-x-auto pb-2 mb-6 snap-x snap-mandatory">
               {chemistries.map((o) => (
                 <ImageTile
                   key={o.id}
@@ -917,10 +915,10 @@ export function AfterDarkExpressWorld({
                   className="flex-shrink-0 w-[160px] snap-start min-h-[120px]"
                 />
               ))}
-            </div>
+            </HorizontalScrollRow>
 
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">Who are they?</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6 max-h-[220px] overflow-y-auto pr-1">
+            <VerticalScrollCol className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6 max-h-[220px] overflow-y-auto pr-1">
               {archetypes.map((o) => (
                 <ImageTile
                   key={o.id}
@@ -932,7 +930,7 @@ export function AfterDarkExpressWorld({
                   className="min-h-[96px]"
                 />
               ))}
-            </div>
+            </VerticalScrollCol>
 
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">Narrator — hear a sample</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
@@ -964,9 +962,17 @@ export function AfterDarkExpressWorld({
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
                           <span className="font-semibold text-white">{o.label}</span>
-                          {o.id === "Theo" && (
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">Default</span>
-                          )}
+                          {(() => {
+                            const voice = VOICES.find((v) => v.displayName === o.id);
+                            if (voice?.recommendLabel) {
+                              return (
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">
+                                  {voice.recommendLabel}
+                                </span>
+                              );
+                            }
+                            return null;
+                          })()}
                           {selected && (
                             <span className="text-[9px] font-bold uppercase tracking-wider text-[#e879a0]">Selected</span>
                           )}
@@ -981,6 +987,31 @@ export function AfterDarkExpressWorld({
                 );
               })}
             </div>
+            {(() => {
+              const narratorVoice = VOICES.find((v) => v.displayName === voiceName);
+              const narratorId = narratorVoice?.id ?? getDefaultVoiceId();
+              const pairing = selectedPairing ?? "Her & Him";
+              const { charA, charB } = resolveCharacterVoices(narratorId, pairing);
+              const { labelA, labelB } = getCastLabels(pairing);
+              const voiceA = VOICES.find((v) => v.id === charA);
+              const voiceB = VOICES.find((v) => v.id === charB);
+              const narratorLabel = narratorVoice?.displayName ?? "Kayla";
+              const nameA = voiceA?.displayName ?? voiceA?.label ?? "";
+              const nameB = voiceB?.displayName ?? voiceB?.label ?? "";
+              return (
+                <div className="mt-4 rounded-xl border border-[#e879a0]/20 bg-[#e879a0]/5 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#e879a0]/60 mb-2">Your full cast</p>
+                  <p className="text-sm text-white/75">
+                    <span className="text-white/45">Narrator</span> {narratorLabel}
+                    <span className="text-white/25 mx-2">·</span>
+                    <span className="text-white/45">{labelA}</span> {nameA}
+                    <span className="text-white/25 mx-2">·</span>
+                    <span className="text-white/45">{labelB}</span> {nameB}
+                  </p>
+                  <p className="text-[10px] text-white/40 mt-2">Character voices are matched to your narrator — Maya and James by default for Her &amp; Him.</p>
+                </div>
+              );
+            })()}
             </div>
           </details>
 
@@ -1066,6 +1097,10 @@ function getExpressCategoryTabs(protagonistPronouns: string): string[] {
 export function AfterDarkExpressMakeItYours({
   selectedPairing,
   customTags,
+  listenerName,
+  partnerName,
+  onListenerName,
+  onPartnerName,
   onTagToggle,
   onReveal,
   onSkip,
@@ -1074,6 +1109,10 @@ export function AfterDarkExpressMakeItYours({
 }: {
   selectedPairing: string | null;
   customTags: string[];
+  listenerName: string;
+  partnerName: string;
+  onListenerName: (name: string) => void;
+  onPartnerName: (name: string) => void;
   onTagToggle: (tag: string) => void;
   onReveal: () => void;
   onSkip: () => void;
@@ -1102,6 +1141,7 @@ export function AfterDarkExpressMakeItYours({
     defaultCategoryForRoom(brief.scenario?.room),
   );
   const [tagPulse, setTagPulse] = useState(0);
+  const [categoryPickCounts, setCategoryPickCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const preferred = defaultCategoryForRoom(brief.scenario?.room);
@@ -1156,6 +1196,7 @@ export function AfterDarkExpressMakeItYours({
         subtitle={EXPRESS_CATEGORY_SUB[activeTagCategory] ?? "Tell us exactly how you want it written."}
         pulseKey={tagPulse}
         fallbackCover={fallbackCover}
+        categoryPickCounts={categoryPickCounts}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
@@ -1203,7 +1244,7 @@ export function AfterDarkExpressMakeItYours({
                   Suggested for your fantasy
                 </p>
               </div>
-              <div className="px-3 pb-3 flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+              <HorizontalScrollRow className="px-3 pb-3 flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
                 {suggestedTags.map((tag) => (
                   <button
                     key={tag}
@@ -1214,9 +1255,30 @@ export function AfterDarkExpressMakeItYours({
                     + {getTagDisplayLabel(tag)}
                   </button>
                 ))}
-              </div>
+              </HorizontalScrollRow>
             </div>
           )}
+
+          <ExpressCharacterNames
+            listenerName={listenerName}
+            partnerName={partnerName}
+            onListenerName={onListenerName}
+            onPartnerName={onPartnerName}
+            protagonistLabel={
+              protagonistPronouns === "he/him"
+                ? "Your character's name"
+                : protagonistPronouns === "they/them"
+                  ? "Your character's name"
+                  : "Your character's name"
+            }
+            partnerLabel={
+              partnerPronouns === "he/him"
+                ? "His name"
+                : partnerPronouns === "they/them"
+                  ? "Their name"
+                  : "Her name"
+            }
+          />
 
           <StoryTagStudio
             selectedTags={customTags}
@@ -1228,6 +1290,7 @@ export function AfterDarkExpressMakeItYours({
             hideCategoryNav
             activeCategoryHeading={activeTagCategory}
             onActiveCategoryChange={setActiveTagCategory}
+            onCategoryCountsChange={setCategoryPickCounts}
             accentColor="#e879a0"
             protagonistPronouns={protagonistPronouns}
             partnerPronouns={partnerPronouns}

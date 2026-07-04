@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Moon } from "lucide-react";
+import { Moon, X } from "lucide-react";
 import { useAuth } from "../hooks/useAuth.js";
 import { EXPRESS_CATEGORY_IMAGES, EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
+import { HorizontalScrollRow } from "@/components/ScrollRowHint";
 
 export { EXPRESS_CATEGORY_IMAGES, EXPRESS_CATEGORY_SHORT } from "@/lib/expressCategoryImages";
 
@@ -546,6 +547,8 @@ interface Props {
   /** Parent renders category hero — hide pill nav and per-category backdrops */
   expressHeroMode?: boolean;
   hideCategoryNav?: boolean;
+  /** Fired when per-category selection counts change (express tabbed mode) */
+  onCategoryCountsChange?: (counts: Record<string, number>) => void;
 }
 
 export function StoryTagStudio({
@@ -559,6 +562,7 @@ export function StoryTagStudio({
   onActiveCategoryChange,
   expressHeroMode = false,
   hideCategoryNav = false,
+  onCategoryCountsChange,
   accentColor = "#c9a227",
   protagonistPronouns = "she/her",
   partnerPronouns = "he/him",
@@ -649,6 +653,15 @@ export function StoryTagStudio({
     }
     return counts;
   }, [activeCategories, selectedTags]);
+
+  useEffect(() => {
+    if (!onCategoryCountsChange) return;
+    const record: Record<string, number> = {};
+    categorySelectionCounts.forEach((v, k) => {
+      record[k] = v;
+    });
+    onCategoryCountsChange(record);
+  }, [categorySelectionCounts, onCategoryCountsChange]);
 
   // Build a lookup: category heading → all tags in that category (active only)
   const categoryTagMap = new Map<string, string[]>(
@@ -846,7 +859,7 @@ export function StoryTagStudio({
     <div className={expressTabbed ? "space-y-4" : "space-y-10"}>
       {expressTabbed && !hideCategoryNav && (
         <div className="sticky top-14 z-20 -mx-1 px-1 py-2 bg-black/80 backdrop-blur-md border-b border-white/10">
-          <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1 scrollbar-hide">
+          <HorizontalScrollRow className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1 scrollbar-hide">
             {activeCategories.map((cat) => {
               const count = categorySelectionCounts.get(cat.heading) ?? 0;
               const active = cat.heading === activeCategoryHeading;
@@ -870,9 +883,41 @@ export function StoryTagStudio({
                 </button>
               );
             })}
-          </div>
+          </HorizontalScrollRow>
         </div>
       )}
+      {/* Express — always-visible selected desires (tap × to remove) */}
+      {express && selectedTags.length > 0 && (
+        <div className="sticky top-[4.5rem] z-20 -mx-1 px-3 py-3 mb-3 rounded-xl border border-[#e879a0]/35 bg-black/90 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#e879a0]">
+              Your selections
+            </p>
+            <span className="text-[10px] text-white/45 tabular-nums">
+              Tap × to remove
+            </span>
+          </div>
+          <HorizontalScrollRow className="flex gap-2 overflow-x-auto pb-0.5 snap-x snap-mandatory scrollbar-hide">
+            {selectedTags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => onTagToggle(tag)}
+                className="flex-shrink-0 snap-start inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full text-xs font-semibold text-black border border-transparent"
+                style={{
+                  background: `linear-gradient(135deg, ${accentColor}, #922b21)`,
+                  boxShadow: "0 0 16px rgba(232,121,160,0.35)",
+                }}
+                title="Remove this desire"
+              >
+                {getTagDisplayLabel(tag)}
+                <X className="w-3 h-3 opacity-80" aria-hidden />
+              </button>
+            ))}
+          </HorizontalScrollRow>
+        </div>
+      )}
+
       {/* Global tag counter */}
       {!bedtime && (
         <div

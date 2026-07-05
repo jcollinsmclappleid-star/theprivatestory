@@ -145,7 +145,9 @@ function Navbar({ streakDays }: { streakDays: number }) {
                   The Private Story
                 </span>
               </span>
-              <Logo height={64} className="hidden md:block" />
+              <span className="hidden md:inline-flex">
+                <Logo height={64} />
+              </span>
             </Link>
 
             <div className="hidden md:flex items-center gap-5">

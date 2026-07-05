@@ -1,4 +1,7 @@
 /**
+ * @deprecated Superseded by structural quote-adjacent parsing in dialogueAttribution.ts.
+ * Do not extend verb lists here — fix segmentation instead.
+ *
  * TTS-only pass: mute narrator segments that are dialogue tags ("he said",
  * "her supervisor said") after voice roles are already assigned.
  *

@@ -18,7 +18,7 @@ import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
-import { narratorTextForTts, dialogueTextForTts } from "../lib/narratorAttributionMute.js";
+import { cleanNarratorSegmentsForTts, speakableDialogueLine, speakableNarratorSpan } from "../lib/dialogueAttribution.js";
 import { db, contentBlocks, usersTable, generationJobs } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
@@ -4639,12 +4639,12 @@ export async function generateAudioFile(
     console.info("[tagger] speaker-attribution pass unavailable — using regex heuristic fallback");
     tagged = tagScriptForMultiVoice(cleanText, pairing ?? "", narratorId, partnerName, protagonistName);
   }
-  const segments = tagged.segments;
+  const segmentsRaw = tagged.segments;
   // Only switch to multi-voice when there is real evidence of a two-person
   // exchange: both character roles present AND at least one quote resolved via an
   // explicit attribution cue. Blind turn-taking alone (no explicit cues) stays
   // single-voice to avoid splitting one speaker across two voices.
-  const charSegments = segments.filter(s => s.role !== "NARRATOR").length;
+  const charSegments = segmentsRaw.filter(s => s.role !== "NARRATOR").length;
   const pg = mvPairingGenders(pairing ?? "");
   // nullGenderPairing = pairings where gender pronouns can't disambiguate speakers:
   //   • null (Her & Her, Him & Him) — same gender, toggle only
@@ -4655,6 +4655,9 @@ export async function generateAudioFile(
   const nullGenderPairing = !pg || pg.li === "them" || pg.protag === "them";
   const useMultiVoice = tagged.distinctCharRoles >= 2 &&
     (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
+
+  // Strip quote-adjacent attribution from narrator payloads (structural, not TTS mute).
+  const segments = useMultiVoice ? cleanNarratorSegmentsForTts(segmentsRaw) : segmentsRaw;
 
   const attributionQa = process.env.ATTRIBUTION_QA === "1";
   const qaSegments: AudioQaSegment[] = [];
@@ -4667,7 +4670,7 @@ export async function generateAudioFile(
       segments.forEach((seg, index) => {
         const isNarrator = seg.role === "NARRATOR";
         const vid = isNarrator ? narratorId : seg.role === "CHAR_A" ? charA : charB;
-        const spoken = isNarrator ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+        const spoken = isNarrator ? seg.text : speakableDialogueLine(seg.text);
         qaSegments.push({
           index,
           role: seg.role,
@@ -4686,7 +4689,7 @@ export async function generateAudioFile(
       // Narrator gets higher stability for consistent tone across chunks;
       // character voices stay expressive with lower stability.
       const stability = isNarrator ? NARRATOR_STABILITY : CHAR_STABILITY;
-      const spoken = isNarrator ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+      const spoken = isNarrator ? seg.text : speakableDialogueLine(seg.text);
       if (!spoken) return Buffer.alloc(0);
       const buf = await ttsWithFallback(vid, spoken, style, stability);
       return trimSilenceFromMp3(buf);

@@ -46,8 +46,11 @@ function findForbidden(transcript: string, forbidden: string[]): string[] {
   for (const phrase of forbidden) {
     const p = normalise(phrase);
     if (!p) continue;
-    // Word-boundary style match on normalised text
-    const re = new RegExp(`(?:^|\\s)${p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "i");
+    // Attribution-tag shape only — avoid narrative phrases like "what she asked for".
+    const re = new RegExp(
+      `(?:^|[.!?…]\\s+|,\\s+)${p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|[.!?…,]|$)`,
+      "i",
+    );
     if (re.test(norm)) hits.push(phrase);
   }
   return hits;

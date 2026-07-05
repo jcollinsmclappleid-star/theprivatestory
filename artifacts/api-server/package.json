@@ -11,7 +11,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "convert-act4-webp": "node ./scripts/convertExpressAct4ToWebp.mjs",
     "qa:attr:generate": "ATTRIBUTION_QA=1 LOCAL_AUDIO_MIRROR=1 SKIP_GCS_UPLOAD=1 tsx scripts/generate-attribution-snippet-audio.mts --all",
-    "qa:attr:verify": "tsx scripts/verify-attribution-audio.mts --all"
+    "qa:attr:verify": "tsx scripts/verify-attribution-audio.mts --all",
+    "test:dialogue-attribution": "tsx scripts/dialogueAttribution.test.mts"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.19.0",

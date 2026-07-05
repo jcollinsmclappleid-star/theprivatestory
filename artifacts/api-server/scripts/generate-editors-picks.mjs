@@ -31,7 +31,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
-import { narratorTextForTts, dialogueTextForTts } from "./lib/narratorAttributionMute.mjs";
+import { cleanNarratorSegmentsForTts, speakableDialogueLine } from "./lib/dialogueAttribution.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(
@@ -799,6 +799,7 @@ async function generateOne(pick) {
   // Allow multi-voice when enough character segments were detected via toggle alone.
   const enoughToggleChars = tagged.segments.filter((s) => s.role !== "NARRATOR").length >= 4;
   const useMultiVoice = tagged.distinctCharRoles >= 2 && (tagged.explicitAttributions >= 1 || enoughToggleChars);
+  const segments = useMultiVoice ? cleanNarratorSegmentsForTts(tagged.segments) : tagged.segments;
 
   const buffers = [];
   if (useMultiVoice) {
@@ -810,24 +811,24 @@ async function generateOne(pick) {
     // male voice rather than a jarring switch between Theo (narration) and James (dialogue).
     const charB = pick.charBVoice ?? charBResolved;
     const VNAMES = { [MV_CLARA]:"Clara",[MV_MAYA]:"Maya",[MV_KAYLA]:"Kayla",[MV_JAMES]:"James",[MV_ETHAN]:"Ethan",[MV_THEO]:"Theo" };
-    console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${tagged.segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
+    console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
     if (DRY_RUN) {
       console.log(`  pairing="${pairing}" charA=${VNAMES[charA]||charA.slice(0,8)} charB=${VNAMES[charB]||charB.slice(0,8)}`);
-      for (const seg of tagged.segments) {
+      for (const seg of segments) {
         const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
         const vname = VNAMES[vid] ?? vid.slice(0,8);
-        const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
-        const preview = (spoken ?? `(muted) ${seg.text}`).replace(/\n/g," ").slice(0,72);
+        const spoken = seg.role === "NARRATOR" ? seg.text : speakableDialogueLine(seg.text);
+        const preview = (spoken || `(dropped) ${seg.text}`).replace(/\n/g," ").slice(0,72);
         console.log(`  [${seg.role.padEnd(8)}] ${vname.padEnd(6)} | ${preview}`);
       }
       return;
     }
-    for (const seg of tagged.segments) {
+    for (const seg of segments) {
       const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
       const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
       // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
-      const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+      const spoken = seg.role === "NARRATOR" ? seg.text : speakableDialogueLine(seg.text);
       if (!spoken) continue;
       const buf = await mvTTS(vid, spoken, style);
       buffers.push(await trimSilenceFromMp3(buf));

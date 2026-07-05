@@ -10,8 +10,8 @@
   "protagonistName": "You",
   "intensity": "Explicit",
   "targetMinutes": 2,
-  "gate": "regression",
-  "gateNote": "Real LLM prose uses he commands / you ask — expected STT hits until engine mutes those patterns.",
+  "gate": "strict",
+  "gateNote": "Real LLM IGNITE prose — he commands / you ask / you breathe attribution style.",
   "sourceStory": "4e32994e76eecd44ab8ab8cc0bd9213a",
   "sourceSceneId": 4,
   "forbiddenInAudio": [

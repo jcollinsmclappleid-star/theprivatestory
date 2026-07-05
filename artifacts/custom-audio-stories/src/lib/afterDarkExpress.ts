@@ -1,6 +1,7 @@
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import { getDefaultVoiceId, VOICES } from "@/lib/voices";
-import type { CategoryId } from "@/components/BriefBuilder";
+import type { CastCategoryId } from "@/components/BriefBuilder";
+import type { HomeBrief } from "@/lib/homeBriefUtils";
 import {
   marketingIntensityToCanonical,
   canonicalToMarketing,
@@ -8,8 +9,10 @@ import {
 } from "@workspace/intensity";
 
 export const HOME_BRIEF_KEY = "afterDarkHomeBrief";
-
-export type HomeBrief = Record<CategoryId, string>;
+/** Pre-select express fantasy scenario when user taps “Build one like this” from a sample. */
+export const SAMPLE_SCENARIO_KEY = "afterDarkSampleScenarioId";
+export type { HomeBrief } from "@/lib/homeBriefUtils";
+export { HOME_STUDIO_HANDOFF_KEY } from "@/lib/homeBriefUtils";
 
 export const CURATED_SCENARIO_IDS = [
   "he_decides",
@@ -102,6 +105,8 @@ export function buildExpressCasting(
     mood?: string;
     heritage?: string;
     customTags?: string[];
+    situation?: string;
+    situationId?: string;
     chooseForMe?: boolean;
     listenerName?: string;
     partnerName?: string;
@@ -140,5 +145,7 @@ export function buildExpressCasting(
     customTags: opts.customTags?.length ? opts.customTags : undefined,
     listenerName: opts.listenerName || undefined,
     partnerName: opts.partnerName || undefined,
+    situation: opts.situation || undefined,
+    situationId: opts.situationId || undefined,
   };
 }

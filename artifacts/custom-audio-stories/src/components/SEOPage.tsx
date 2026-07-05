@@ -50,7 +50,7 @@ const BODY_IMAGE_H = 768;
  */
 type DoorIdLocal = "story" | "dark" | "quiet";
 function pickMidCtaFromDoorFilter(_doorFilter?: DoorIdLocal[]): { label: string; href: string } {
-  return { label: "Create your erotica", href: "/after-dark" };
+  return { label: "Create your fantasy", href: "/after-dark" };
 }
 
 // Cheap deterministic hash so each page gets a stable rotation seed.
@@ -212,7 +212,7 @@ function SEOStickyCTA({ label, href }: { label?: string; href?: string }) {
         href={href ?? "/after-dark"}
         className="pointer-events-auto flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-sm font-bold py-3.5 rounded-2xl shadow-[0_0_28px_-6px_rgba(201,162,39,0.5)] hover:bg-primary/90 active:scale-[0.99] transition-all"
       >
-        {label ?? "Create your erotica"} <ArrowRight className="w-4 h-4" />
+        {label ?? "Create your fantasy"} <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
   );
@@ -320,7 +320,7 @@ function HeroCTA({ label, href }: { label?: string; href?: string }) {
         href={href ?? "/after-dark"}
         className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto"
       >
-        {label ?? "Create your erotica"} <ArrowRight className="w-4 h-4" />
+        {label ?? "Create your fantasy"} <ArrowRight className="w-4 h-4" />
       </Link>
       <Link
         href="/samples"

@@ -119,7 +119,7 @@ export default function AfterDarkLanding({ onEnter }: Props) {
             whileTap={{ scale: 0.97 }}
           >
             <Sparkles className="w-4 h-4" />
-            Create your erotica
+            Create your fantasy
           </motion.button>
         </motion.div>
 

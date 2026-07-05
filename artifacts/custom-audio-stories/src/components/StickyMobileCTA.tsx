@@ -32,7 +32,7 @@ export function StickyMobileCTA({
   secondaryHref,
 }: StickyMobileCTAProps) {
   const [visible, setVisible] = useState(false);
-  const ctaLabel = label ?? `Create your erotica · from ${priceDisplay}`;
+  const ctaLabel = label ?? `Create your fantasy · from ${priceDisplay}`;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 480);

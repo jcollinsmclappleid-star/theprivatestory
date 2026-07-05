@@ -1,0 +1,13 @@
+{
+  "title": "The Door Left Open (last ~4 min)",
+  "narrator": "Kayla",
+  "cast": "Maya · James",
+  "scenes": [
+    "On Your Knees",
+    "The Door Is Still Open"
+  ],
+  "durationSeconds": 286,
+  "audioUrl": "/api/audio/audio-test-door-open-kayla-last4min.mp3",
+  "listenUrl": "http://localhost:8770/audio-test-door-open-kayla-last4min.mp3",
+  "filename": "audio-test-door-open-kayla-last4min.mp3"
+}

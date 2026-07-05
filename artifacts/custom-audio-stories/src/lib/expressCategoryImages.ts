@@ -73,9 +73,9 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
   "How do you want to feel?": {
     primary: expressAct4ImagePath("How do you want to feel?"),
     alternates: [
+      "images/express-act4-elevator-mf.webp",
+      "images/express-act4-her-her-bw.webp",
       "images/seo-body-bedroom-glow.webp",
-      "images/seo-body-candlelit-bath.webp",
-      "images/category-slow_burn.webp",
     ],
     focus: "center 48%",
     glow: "#e879a0",
@@ -93,19 +93,19 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
   "Dark Fantasy": {
     primary: expressAct4ImagePath("Dark Fantasy"),
     alternates: [
-      "images/category-dark_romance.webp",
-      "images/rooms/dark_territory.webp",
-      "images/settings/feudal_japan.webp",
+      expressAct4ImagePath("After the Gala"),
+      "images/express-act4-office-after-hours-mf.webp",
+      "images/settings/penthouse_suite.webp",
     ],
-    focus: "center 32%",
+    focus: "center 38%",
     glow: "#7c3aed",
   },
   "What's between them?": {
     primary: expressAct4ImagePath("What's between them?"),
     alternates: [
+      "images/express-act4-london-townhouse-mf.webp",
       "images/category-forbidden_desire.webp",
       "images/chemistry/rivals.webp",
-      "images/seo-body-embrace-window.webp",
     ],
     focus: "center 44%",
     glow: "#fb923c",
@@ -133,8 +133,8 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
   "Pure Romance": {
     primary: expressAct4ImagePath("Pure Romance"),
     alternates: [
-      "images/seo-body-candlelit-bath.webp",
-      "images/chemistry/sweet_tender.webp",
+      "images/express-act4-her-her-bw.webp",
+      expressAct4ImagePath("After the Gala"),
       "images/seo-body-lovers-embrace.webp",
     ],
     focus: "center 46%",
@@ -143,9 +143,9 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
   "Praise & Devotion": {
     primary: expressAct4ImagePath("Praise & Devotion"),
     alternates: [
+      "images/express-act4-caribbean-mfm.webp",
       "images/seo-body-lovers-embrace.webp",
       "images/chemistry/worship.webp",
-      "images/category-emotional_desire.webp",
     ],
     focus: "center 42%",
     glow: "#e879a0",
@@ -163,8 +163,8 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
   "Just the Scene": {
     primary: expressAct4ImagePath("Just the Scene"),
     alternates: [
-      "images/category-late_night.webp",
-      "images/category-explicit_collection.webp",
+      "images/express-act4-adjoining-suites-mfm.webp",
+      "images/express-act4-private-yacht-mf.webp",
       "images/settings/vip_suite.webp",
     ],
     focus: "center 40%",

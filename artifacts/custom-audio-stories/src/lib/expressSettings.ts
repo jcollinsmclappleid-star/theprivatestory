@@ -64,6 +64,7 @@ export const FEATURED_EXPRESS_SETTINGS = ALL_EXPRESS_SETTINGS.filter((s) =>
     "Private Members Club",
     "Rooftop Bar",
     "Private Yacht",
+    "Moving Elevator",
     "Regency England (1810s)",
   ].includes(s.id),
 );

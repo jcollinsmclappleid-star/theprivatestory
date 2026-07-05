@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-07-04T16:06:03.848Z",
+  "title": "The Door Left Open",
+  "description": "Two colleagues who’ve spent months circling each other finally stop pretending—tonight, the adjoining door is open, and neither of them is leaving.",
+  "durationSeconds": 687,
+  "audioUrl": "/api/audio/audio-4e32994e76eecd44ab8ab8cc0bd9213a.mp3",
+  "audioFilename": "audio-4e32994e76eecd44ab8ab8cc0bd9213a.mp3",
+  "localListenUrl": "http://localhost:3000/api/audio/audio-4e32994e76eecd44ab8ab8cc0bd9213a.mp3",
+  "qcScore": 8.7,
+  "qcPassed": true,
+  "pairing": "Her & Him",
+  "voiceFeel": "Maya",
+  "sceneCount": 5,
+  "wordCount": 1567,
+  "elapsedMs": 337379,
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "Still",
+      "textPreview": "Still. The hum of the minibar is the only sound in the suite, a low, steady pulse beneath the rain against the window. You’re sitting on the edge of the bed, your dress unzipped just enough to let the"
+    },
+    {
+      "id": 2,
+      "heading": "The Weight of a Glass",
+      "textPreview": "The cold of the glass is still on your palm when he steps into the room, the ice clinking softly as he hands it to you. His fingers brush against yours—deliberate or not, you don’t pull away. The whis"
+    },
+    {
+      "id": 3,
+      "heading": "Tell Me to Stop",
+      "textPreview": "His hand closes around your wrist. Not gently. Not like the brush of his fingers earlier. This is a grip—firm, unyielding, the kind of touch that doesn’t ask permission. Your pulse jumps against his t"
+    },
+    {
+      "id": 4,
+      "heading": "On Your Knees",
+      "textPreview": "The heat of his skin is the first thing you notice—the way it radiates off him, the way it seeps into you when he steps closer, his hands already reaching for the zipper of your dress. The fabric pool"
+    },
+    {
+      "id": 6,
+      "heading": "The Door Is Still Open",
+      "textPreview": "You’d rehearsed exactly what you’d say, and now you remember none of it. The sheets are tangled around your legs, the air thick with the scent of sex and whiskey, and the way his fingers trace slow ci"
+    }
+  ]
+}

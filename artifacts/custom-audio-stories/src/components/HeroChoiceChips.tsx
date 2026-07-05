@@ -1,17 +1,21 @@
-import type { CategoryId } from "@/components/BriefBuilder";
+import type { CastCategoryId } from "@/components/BriefBuilder";
 
 export const CREATION_ROOM_FOCUS_EVENT = "creation-room-focus";
 
-export const HERO_CHOICE_CHIPS: { label: string; category: CategoryId }[] = [
+export const HERO_CHOICE_CHIPS: { label: string; category: CastCategoryId | "situation" }[] = [
   { label: "Who you're with", category: "pairing" },
   { label: "The tension", category: "chemistry" },
   { label: "Who they are", category: "archetype" },
-  { label: "Pick your city", category: "setting" },
   { label: "Where it happens", category: "setting" },
-  { label: "How you want it", category: "intensity" },
+  { label: "The situation", category: "situation" },
+  { label: "Who tells it", category: "voice" },
 ];
 
-export function scrollToCreationCategory(category: CategoryId) {
+export function scrollToCreationCategory(category: CastCategoryId | "situation") {
+  if (category === "situation") {
+    document.getElementById("creation-step-situation")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   window.dispatchEvent(new CustomEvent(CREATION_ROOM_FOCUS_EVENT, { detail: category }));
   document.getElementById("creation-room")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }

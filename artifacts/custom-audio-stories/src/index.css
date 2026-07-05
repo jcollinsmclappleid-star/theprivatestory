@@ -136,4 +136,19 @@
   .glass-panel {
     @apply bg-background/60 backdrop-blur-xl border border-border/50 shadow-xl;
   }
+
+  @keyframes home-showcase-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .animate-home-showcase-marquee {
+    animation: home-showcase-marquee 42s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-home-showcase-marquee {
+      animation: none;
+    }
+  }
 }

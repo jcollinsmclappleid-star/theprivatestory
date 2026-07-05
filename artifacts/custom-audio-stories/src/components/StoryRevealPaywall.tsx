@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
-import { Loader2, Sparkles, Lock, ChevronRight, Flame } from "lucide-react";
+import { Loader2, Sparkles, Lock, ChevronRight, Flame, Star, Check } from "lucide-react";
 import type { StoryRevealContent } from "@/lib/storyReveal";
+import { buildPackSavingsCopy } from "@/lib/packSavings";
 
 type PackPricing = {
   display: string;
   perStoryDisplay: string;
   amount: number;
+  stories: number;
 };
 
 interface StoryRevealPaywallProps {
@@ -56,6 +58,17 @@ export function StoryRevealPaywall({
   const hasGeneratedCover = !!coverUrl;
   const sym = currency === "gbp" ? "£" : "$";
 
+  const savings = useMemo(
+    () => buildPackSavingsCopy(pack1, pack5, pack20, currency),
+    [pack1, pack5, pack20, currency],
+  );
+
+  const savePctVsSingles = useMemo(() => {
+    const baseline = pack1.amount * 20;
+    if (baseline <= 0) return 0;
+    return Math.round(((baseline - pack20.amount) / baseline) * 100);
+  }, [pack1.amount, pack20.amount]);
+
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -66,7 +79,6 @@ export function StoryRevealPaywall({
 
   const content = (
     <div className="fixed inset-0 z-[100] overflow-hidden">
-      {/* Full-bleed cover — the arousal peak */}
       <div className="absolute inset-0">
         <motion.img
           key={heroSrc}
@@ -97,7 +109,6 @@ export function StoryRevealPaywall({
             minHeight: "100%",
           }}
         >
-          {/* Progress + hook — padded below any OS chrome */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,29 +130,23 @@ export function StoryRevealPaywall({
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-lg">
-              We built this from{" "}
-              <span style={{ color: accentHex }}>your choices</span>
+              Unlock your <span style={{ color: accentHex }}>private library</span>
             </h2>
             <p className="text-sm text-white/75 max-w-md mx-auto leading-relaxed">
-              Cover art {coverLoading && !coverUrl ? "is rendering" : "is ready"} — unlock your private library to hear it narrated.
+              You built this fantasy from scratch. Most listeners keep exploring — different pairings, moods, and situations — with a story collection.
             </p>
             <div className="mt-3 mx-auto max-w-md rounded-xl border border-white/12 bg-black/45 px-4 py-3 text-left">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/50 mb-2">
-                What happens after this
+                What happens next
               </p>
               <ol className="text-xs text-white/75 space-y-1.5 list-decimal list-inside leading-relaxed">
-                <li>Unlock with a story pack (or a credit you already have)</li>
-                <li>Your story generates — ~3 minutes, full-cast narration</li>
-                <li>Listen in your private library — no more choices unless you start over</li>
+                <li>Choose your library size — credits never expire</li>
+                <li>Your story generates in ~3 minutes, full-cast narration</li>
+                <li>Listen privately, then build the next fantasy whenever you want</li>
               </ol>
-              <p className="text-[11px] text-white/45 mt-2 leading-snug">
-                Character names, appearance, and 200+ situations live in{" "}
-                <span className="text-white/65">Full studio</span> if you want more control before checkout.
-              </p>
             </div>
           </motion.div>
 
-          {/* Story card */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -199,7 +204,6 @@ export function StoryRevealPaywall({
               </p>
             </div>
 
-            {/* Visible erotic choices — proof of personalization */}
             <div className="px-4 pb-4">
               <p className="text-[9px] font-bold uppercase tracking-[0.24em] text-white/45 mb-2">
                 Cast from your selections
@@ -220,7 +224,6 @@ export function StoryRevealPaywall({
             </div>
           </motion.div>
 
-          {/* Library / packs — not single-story framing */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -229,10 +232,10 @@ export function StoryRevealPaywall({
           >
             <div className="text-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/90 mb-1">
-                Your private story library
+                One-time · yours forever
               </p>
               <p className="text-sm text-white/70 leading-snug">
-                One-time packs · credits never expire · each story built around your cast
+                No subscription. Credits never expire. Every story built around your cast.
               </p>
             </div>
 
@@ -259,52 +262,84 @@ export function StoryRevealPaywall({
               </button>
             )}
 
+            {/* ── Recommended: 20-story collection ── */}
             <button
               type="button"
               disabled={!!loadingPlan}
               onClick={() => onCheckout("pack_20")}
-              className="w-full rounded-2xl p-4 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              className="w-full rounded-2xl p-4 sm:p-5 text-left relative overflow-hidden transition-all hover:-translate-y-0.5 disabled:opacity-60"
               style={{
-                background: "linear-gradient(135deg, #c0392b, #7b241c)",
-                boxShadow: "0 0 32px rgba(192,57,43,0.4)",
+                background: "linear-gradient(135deg, #c0392b 0%, #7b241c 55%, #4a0e0e 100%)",
+                boxShadow: "0 0 40px rgba(192,57,43,0.45), inset 0 1px 0 rgba(255,255,255,0.12)",
               }}
             >
-              <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/30 text-white text-[9px] font-bold uppercase tracking-wider">
-                Most stories · best value
-              </span>
-              <p className="text-white font-bold text-base pr-20">Immersive Library — 20 stories</p>
-              <p className="text-white/90 text-sm mt-0.5">{pack20.display} once · {pack20.perStoryDisplay} each</p>
-              <p className="text-white/60 text-[11px] mt-1">
-                Under {sym}{Math.ceil(pack20.amount / 100 / 10)}/month if you listen weekly
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/35 border border-white/20 text-white text-[9px] font-bold uppercase tracking-wider">
+                  <Star className="w-3 h-3 fill-current" />
+                  Recommended
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-white/15 text-white text-[9px] font-bold uppercase tracking-wider">
+                  Save {savePctVsSingles}%
+                </span>
+              </div>
+              <p className="text-white font-bold text-lg pr-4">Immersive Collection — 20 stories</p>
+              <p className="text-white/95 text-sm mt-1 font-semibold">
+                {pack20.display} once · {pack20.perStoryDisplay} per story
               </p>
+              <p className="text-white/75 text-xs mt-2 leading-relaxed">
+                Save <span className="text-white font-semibold">{savings.collectionSaveVsSingles}</span> vs buying
+                one at a time ({savings.collectionSinglesTotal}).
+                {savings.collectionSaveVsFivePacks && (
+                  <> Or <span className="text-white font-semibold">{savings.collectionSaveVsFivePacks}</span> less than four 5-packs.</>
+                )}
+              </p>
+              <ul className="mt-3 space-y-1">
+                {[
+                  "Twenty nights, twenty fantasies — pairings, heat, situations",
+                  savings.collectionPerStoryVsSingle,
+                  `About ${sym}${Math.ceil(pack20.amount / 100 / 5)}/month if you enjoy one a week`,
+                ].map((line) => (
+                  <li key={line} className="flex items-start gap-2 text-[11px] text-white/80">
+                    <Check className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-white/90" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
               {loadingPlan === "pack_20" && (
-                <Loader2 className="absolute right-4 bottom-4 w-4 h-4 animate-spin text-white/70" />
+                <Loader2 className="absolute right-4 top-5 w-5 h-5 animate-spin text-white/70" />
               )}
             </button>
 
+            {/* ── Fallback: 5-story bundle ── */}
             <button
               type="button"
               disabled={!!loadingPlan}
               onClick={() => onCheckout("pack_5")}
               className="w-full rounded-2xl p-4 text-left relative border transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{ borderColor: `${accentHex}55`, background: `${accentHex}12` }}
+              style={{ borderColor: `${accentHex}44`, background: "rgba(255,255,255,0.04)" }}
             >
+              <p className="text-[10px] font-bold uppercase tracking-wider text-white/50 mb-1">
+                Start smaller
+              </p>
               <p className="text-white font-bold text-base">Story Bundle — 5 stories</p>
-              <p className="text-white/75 text-sm mt-0.5">{pack5.display} once · {pack5.perStoryDisplay} each</p>
+              <p className="text-white/80 text-sm mt-0.5">
+                {pack5.display} once · {pack5.perStoryDisplay} each
+              </p>
+              <p className="text-white/55 text-xs mt-1.5">
+                Save {savings.bundleSaveVsSingles} vs five singles ({savings.bundleSinglesTotal}). Room to experiment — upgrade anytime.
+              </p>
               {loadingPlan === "pack_5" && (
-                <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" />
+                <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-white/60" />
               )}
             </button>
 
-            <button
-              type="button"
-              disabled={!!loadingPlan}
-              onClick={() => onCheckout("pack_1")}
-              className="w-full px-4 py-3 rounded-xl text-sm text-white/65 hover:text-white/85 border border-white/12 flex items-center justify-center gap-2 transition-colors"
-            >
-              Start with 1 story — {pack1.display}
-              {loadingPlan === "pack_1" && <Loader2 className="w-3 h-3 animate-spin" />}
-            </button>
+            <p className="text-center text-[10px] text-white/40 leading-snug px-2">
+              Single-story purchase available on our{" "}
+              <a href="/pricing" className="underline underline-offset-2 hover:text-white/60">
+                pricing page
+              </a>{" "}
+              — most listeners choose the collection for the per-story savings.
+            </p>
           </motion.div>
 
           <div className="flex flex-col items-center gap-2 text-center">

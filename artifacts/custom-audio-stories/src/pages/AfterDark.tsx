@@ -21,21 +21,25 @@ import { buildGeneratePayload } from "@/lib/buildGeneratePayload";
 import { AfterDarkCreationBackdrop } from "@/components/AfterDarkCreationBackdrop";
 import {
   AfterDarkExpressPairing,
+  AfterDarkExpressSituation,
   AfterDarkExpressFantasy,
   AfterDarkExpressWorld,
   AfterDarkExpressMakeItYours,
   type ExpressBriefState,
+  type ExpressFunnelPhase,
 } from "@/components/AfterDarkExpress";
 import { StoryRevealPaywall } from "@/components/StoryRevealPaywall";
 import { canBypassPaywall } from "@/lib/devFlags";
 import {
   buildExpressCasting,
   CURATED_SCENARIO_IDS,
+  HOME_STUDIO_HANDOFF_KEY,
   homeIntensityToCasting,
   readHomeBrief,
   voiceNameToId,
   type ExpressScenario,
 } from "@/lib/afterDarkExpress";
+import { readSampleScenarioId } from "@/lib/sampleInspiredBrief";
 import {
   EXPRESS_SETTINGS,
   suggestAfterDarkSceneForRoom,
@@ -1365,6 +1369,7 @@ export default function AfterDark() {
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<
     | "express_pairing"
+    | "express_situation"
     | "express_fantasy"
     | "express_world"
     | "express_scenes"
@@ -1384,6 +1389,8 @@ export default function AfterDark() {
   const [expressCity, setExpressCity] = useState("");
   const [expressSetting, setExpressSetting] = useState("");
   const [expressHeritage, setExpressHeritage] = useState("Ambiguous");
+  const [expressSituationId, setExpressSituationId] = useState("");
+  const [expressSituationLabel, setExpressSituationLabel] = useState("");
   const [expressCustomTags, setExpressCustomTags] = useState<string[]>([]);
   const [expressListenerName, setExpressListenerName] = useState("");
   const [expressPartnerName, setExpressPartnerName] = useState("");
@@ -1392,13 +1399,13 @@ export default function AfterDark() {
   const [expressMood, setExpressMood] = useState("Forbidden");
   const [expressRoomTab, setExpressRoomTab] = useState("featured");
   const [expressChooseForMe, setExpressChooseForMe] = useState(false);
+  const [expressReturnPhase, setExpressReturnPhase] = useState<ExpressFunnelPhase | null>(null);
 
   const toggleExpressTag = useCallback((tag: string) => {
     setExpressCustomTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   }, []);
-  const [browseFromExpress, setBrowseFromExpress] = useState(false);
   const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
@@ -1445,6 +1452,12 @@ export default function AfterDark() {
   const startFunnel = useCallback(() => {
     setShowLanding(false);
     const brief = readHomeBrief();
+    let studioHandoff: "situation" | null = null;
+    try {
+      studioHandoff = sessionStorage.getItem(HOME_STUDIO_HANDOFF_KEY) as "situation" | null;
+      if (studioHandoff) sessionStorage.removeItem(HOME_STUDIO_HANDOFF_KEY);
+    } catch { /* storage unavailable */ }
+
     if (brief) {
       setHasHomeBrief(true);
       setSelectedPairing(brief.pairing);
@@ -1452,6 +1465,9 @@ export default function AfterDark() {
       setExpressArchetype(brief.archetype);
       setExpressVoiceName(brief.voice);
       setExpressIntensityIndex(intensityToIndex(brief.intensity));
+      if (brief.customTags?.length) {
+        setExpressCustomTags(brief.customTags);
+      }
       if (brief.setting) {
         const match = EXPRESS_SETTINGS.find(
           (s) => s.id === brief.setting || s.label === brief.setting,
@@ -1460,9 +1476,49 @@ export default function AfterDark() {
       }
       const countryGuess = suggestCountryForSetting(brief.setting);
       if (countryGuess) setExpressCountry(countryGuess);
+      if (brief.situationId || brief.situationLabel) {
+        setExpressSituationId(brief.situationId ?? "");
+        setExpressSituationLabel(brief.situationLabel ?? "");
+        setCastingHandoff({
+          pairing: brief.pairing,
+          chemistry: brief.chemistry,
+          archetype: brief.archetype,
+          setting: brief.setting,
+          situation: brief.situationLabel,
+          situationId: brief.situationId,
+          customTags: brief.customTags,
+        });
+        if (studioHandoff === "situation") {
+          setPhase("casting");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+      }
     } else {
       setHasHomeBrief(false);
     }
+
+    const sampleScenarioId = readSampleScenarioId();
+    if (sampleScenarioId) {
+      const scenario = SCENARIOS.find((s) => s.id === sampleScenarioId);
+      if (scenario) {
+        setSelectedScenario(scenario);
+        setExpressRoomTab(scenario.room);
+        const suggested = suggestSettingForScenarioRoom(scenario.room);
+        setExpressSetting(suggested);
+        setExpressAfterDarkScene(suggestAfterDarkSceneForRoom(scenario.room));
+        const country = suggestCountryForSetting(suggested);
+        if (country) setExpressCountry(country);
+        const pairingForCover = brief?.pairing ?? selectedPairing ?? undefined;
+        const intensityLabel = brief?.intensity ?? "Warm";
+        preGenCoverPromise.current = fetchPreviewCover({
+          pairing: pairingForCover,
+          intensity: homeIntensityToCasting(intensityLabel),
+          mood: scenario.tags[0],
+        });
+      }
+    }
+
     setPhase("express_pairing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -1501,6 +1557,8 @@ export default function AfterDark() {
     mood: expressMood,
     voiceName: expressVoiceName,
     customTags: expressCustomTags,
+    situationId: expressSituationId,
+    situationLabel: expressSituationLabel,
     listenerName: expressListenerName || undefined,
     partnerName: expressPartnerName || undefined,
   }), [
@@ -1518,6 +1576,8 @@ export default function AfterDark() {
     expressMood,
     expressVoiceName,
     expressCustomTags,
+    expressSituationId,
+    expressSituationLabel,
     expressListenerName,
     expressPartnerName,
   ]);
@@ -1535,6 +1595,45 @@ export default function AfterDark() {
   // confirmedPairing: the most recently known pairing — set from handoff on load,
   // then updated after each casting completion so locking is always current.
   const [confirmedPairing, setConfirmedPairing] = useState<string | null>(null);
+
+  const openFullStudioFromExpress = useCallback(
+    (returnPhase: ExpressFunnelPhase) => {
+      if (!selectedPairing) return;
+      setExpressReturnPhase(returnPhase);
+      setCastingHandoff({
+        pairing: selectedPairing,
+        heritage: expressHeritage,
+        chemistry: expressChemistry,
+        archetype: expressArchetype,
+        setting: expressSetting,
+        situation: expressSituationLabel || undefined,
+        situationId: expressSituationId || undefined,
+        customTags: expressCustomTags.length ? expressCustomTags : undefined,
+      });
+      setConfirmedPairing(selectedPairing);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setPhase("casting");
+    },
+    [
+      selectedPairing,
+      expressHeritage,
+      expressChemistry,
+      expressArchetype,
+      expressSetting,
+      expressSituationLabel,
+      expressSituationId,
+      expressCustomTags,
+    ],
+  );
+
+  const returnFromFullStudio = useCallback(() => {
+    if (!expressReturnPhase) return false;
+    const target = expressReturnPhase;
+    setExpressReturnPhase(null);
+    setPhase(target);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return true;
+  }, [expressReturnPhase]);
 
   const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
 
@@ -1872,6 +1971,8 @@ export default function AfterDark() {
           atmosphere: expressAtmosphere || undefined,
           mood: expressMood || undefined,
           heritage: expressHeritage || undefined,
+          situation: expressSituationLabel || undefined,
+          situationId: expressSituationId || undefined,
           customTags: expressCustomTags.length ? expressCustomTags : undefined,
           chooseForMe,
           listenerName: expressListenerName || undefined,
@@ -1893,6 +1994,8 @@ export default function AfterDark() {
       expressAfterDarkScene,
       expressAtmosphere,
       expressHeritage,
+      expressSituationId,
+      expressSituationLabel,
       expressCustomTags,
       expressMood,
       expressListenerName,
@@ -2031,7 +2134,7 @@ export default function AfterDark() {
 
   return (
     <div className="relative w-full min-h-screen">
-      {(phase === "express_pairing" || phase === "express_fantasy" || phase === "express_world" || phase === "express_scenes" || phase === "pairing" || phase === "scenario" || phase === "casting") && (
+      {(phase === "express_pairing" || phase === "express_situation" || phase === "express_fantasy" || phase === "express_world" || phase === "express_scenes" || phase === "pairing" || phase === "scenario" || phase === "casting") && (
         <AfterDarkCreationBackdrop />
       )}
       <div className="relative z-10 w-full min-h-screen">
@@ -2060,7 +2163,11 @@ export default function AfterDark() {
                 window.scrollTo({ top: 0 });
                 setPhase("express_fantasy");
               }}
-              onOpenStudio={() => setPhase("pairing")}
+              onBack={() => {
+                setShowLanding(true);
+                window.scrollTo({ top: 0 });
+              }}
+              onOpenStudio={() => openFullStudioFromExpress("express_pairing")}
             />
           </motion.div>
         )}
@@ -2104,7 +2211,11 @@ export default function AfterDark() {
                 window.scrollTo({ top: 0 });
                 setPhase("express_world");
               }}
-              onOpenStudio={() => setPhase("pairing")}
+              onBack={() => {
+                window.scrollTo({ top: 0 });
+                setPhase("express_pairing");
+              }}
+              onOpenStudio={() => openFullStudioFromExpress("express_fantasy")}
             />
           </motion.div>
         )}
@@ -2136,9 +2247,34 @@ export default function AfterDark() {
               onVoice={setExpressVoiceName}
               onContinue={() => {
                 window.scrollTo({ top: 0 });
-                setPhase("express_scenes");
+                setPhase("express_situation");
               }}
               onBack={() => setPhase("express_fantasy")}
+              onOpenStudio={() => openFullStudioFromExpress("express_world")}
+            />
+          </motion.div>
+        )}
+
+        {phase === "express_situation" && selectedPairing && (
+          <motion.div key="express_situation" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <AfterDarkExpressSituation
+              selectedPairing={selectedPairing}
+              situationId={expressSituationId}
+              situationLabel={expressSituationLabel}
+              brief={expressBrief}
+              onSituation={(id, label) => {
+                setExpressSituationId(id);
+                setExpressSituationLabel(label);
+              }}
+              onContinue={() => {
+                window.scrollTo({ top: 0 });
+                setPhase("express_scenes");
+              }}
+              onBack={() => {
+                window.scrollTo({ top: 0 });
+                setPhase("express_world");
+              }}
+              onOpenStudio={() => openFullStudioFromExpress("express_situation")}
             />
           </motion.div>
         )}
@@ -2162,11 +2298,11 @@ export default function AfterDark() {
                 finishExpress(expressChooseForMe);
                 setExpressChooseForMe(false);
               }}
-              onBack={() => setPhase("express_world")}
+              onBack={() => setPhase("express_situation")}
+              onOpenStudio={() => openFullStudioFromExpress("express_scenes")}
             />
           </motion.div>
         )}
-
         {/* ── Pairing Selection (Studio path) ──────────────────────────── */}
         {phase === "pairing" && (
           <motion.div
@@ -2256,7 +2392,7 @@ export default function AfterDark() {
             onSelect={setSelectedBedtimeScenario}
             onContinue={(scenario) => {
               setSelectedBedtimeScenario(scenario);
-              setCastingHandoff({ pairing: selectedPairing ?? "Her & Him", handoffStep: 1 });
+              setCastingHandoff({ pairing: selectedPairing ?? "Her & Him" });
               setConfirmedPairing(selectedPairing ?? "Her & Him");
               preGenCoverPromise.current = fetchPreviewCover({
                 pairing: selectedPairing ?? "Her & Him",
@@ -2285,18 +2421,11 @@ export default function AfterDark() {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-4">
                 <button
-                  onClick={() => {
-                    if (browseFromExpress) {
-                      setBrowseFromExpress(false);
-                      setPhase("express_fantasy");
-                    } else {
-                      setPhase("pairing");
-                    }
-                  }}
+                  onClick={() => setPhase("pairing")}
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  {browseFromExpress ? "Back to express" : "Change pairing"}
+                  Change pairing
                 </button>
                 {selectedPairing && (
                   <span className="text-xs font-medium px-2.5 py-0.5 rounded-full"
@@ -2403,16 +2532,11 @@ export default function AfterDark() {
                                 if (next) {
                                   preGenCoverPromise.current = fetchPreviewCover({ pairing: selectedPairing ?? confirmedPairing ?? undefined });
                                   if (selectedPairing) {
-                                    setCastingHandoff({ pairing: selectedPairing, handoffStep: 1 });
+                                    setCastingHandoff({ pairing: selectedPairing });
                                     setConfirmedPairing(selectedPairing);
                                   }
                                   window.scrollTo({ top: 0 });
-                                  if (browseFromExpress) {
-                                    setBrowseFromExpress(false);
-                                    setPhase("express_fantasy");
-                                  } else {
-                                    setPhase("casting");
-                                  }
+                                  setPhase("casting");
                                 }
                               }}
                             />
@@ -2440,11 +2564,14 @@ export default function AfterDark() {
           >
             <div className="max-w-2xl mx-auto px-4 pt-6">
               <button
-                onClick={() => setPhase("scenario")}
+                onClick={() => {
+                  if (returnFromFullStudio()) return;
+                  setPhase(selectedScenario || selectedBedtimeScenario ? "scenario" : "express_pairing");
+                }}
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back
+                {expressReturnPhase ? "Back to fast studio" : "Back"}
               </button>
               {selectedBedtimeScenario && isBedtime && (
                 <div className="flex items-center gap-2 mb-4">
@@ -2488,7 +2615,6 @@ export default function AfterDark() {
               afterDark={!isBedtime}
               bedtime={isBedtime}
               handoff={castingHandoff ?? undefined}
-              handoffStep={castingHandoff?.handoffStep}
               scenarioTags={isBedtime ? selectedBedtimeScenario?.tags : selectedScenario?.tags}
             />
           </motion.div>
@@ -2528,7 +2654,6 @@ export default function AfterDark() {
                 setPhase("express_pairing");
                 setSelectedScenario(null);
                 setPendingAfterDarkCast(null);
-                setBrowseFromExpress(false);
                 try { sessionStorage.removeItem(PENDING_CAST_KEY); } catch { /* storage unavailable */ }
               }}
             />

@@ -14,10 +14,10 @@ const DESKTOP_MASK = {
     "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%)",
 } as const;
 
-type HeroPortraitVariant = "overlay" | "contained" | "mobileBackdrop";
+type HeroPortraitVariant = "overlay" | "contained" | "mobileBackdrop" | "scene";
 
 interface HeroLivingPortraitProps {
-  /** overlay = desktop side bleed; contained = legacy card; mobileBackdrop = full-bleed behind mobile copy. */
+  /** overlay = desktop side bleed; contained = card; mobileBackdrop = full-bleed; scene = full couple, no crop. */
   variant?: HeroPortraitVariant;
   className?: string;
 }
@@ -76,22 +76,23 @@ function PortraitMedia({
   parallax: { x: number; y: number };
 }) {
   const isContained = variant === "contained";
+  const isScene = variant === "scene";
   const isMobileBackdrop = variant === "mobileBackdrop";
-  const mediaClass = isMobileBackdrop
-    ? "w-full h-full object-cover object-[center_22%]"
-    : isContained
-      ? "w-full h-full object-cover object-[center_20%]"
+  const mediaClass = isScene || isContained
+    ? "w-full h-full object-contain object-center"
+    : isMobileBackdrop
+      ? "w-full h-full object-cover object-[center_45%]"
       : "w-full h-full object-cover object-center opacity-[0.96]";
 
   return (
     <motion.div
-      className={isContained || isMobileBackdrop ? "absolute inset-0" : "absolute inset-[-2%] sm:inset-0"}
+      className={isContained || isScene || isMobileBackdrop ? "absolute inset-0" : "absolute inset-[-2%] sm:inset-0"}
       style={{
-        x: isContained || isMobileBackdrop || reduceMotion ? 0 : parallax.x,
-        y: isContained || isMobileBackdrop || reduceMotion ? 0 : parallax.y,
+        x: isContained || isScene || isMobileBackdrop || reduceMotion ? 0 : parallax.x,
+        y: isContained || isScene || isMobileBackdrop || reduceMotion ? 0 : parallax.y,
       }}
       animate={
-        useVideo || isContained || isMobileBackdrop
+        useVideo || isContained || isScene || isMobileBackdrop
           ? undefined
           : reduceMotion
             ? undefined
@@ -102,7 +103,7 @@ function PortraitMedia({
               }
       }
       transition={
-        useVideo || reduceMotion || isContained || isMobileBackdrop
+        useVideo || reduceMotion || isContained || isScene || isMobileBackdrop
           ? undefined
           : { duration: 22, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }
       }
@@ -120,7 +121,7 @@ function PortraitMedia({
           onError={() => setVideoFailed(true)}
           className={mediaClass}
           style={{
-            ...(isContained || isMobileBackdrop ? {} : DESKTOP_MASK),
+            ...(isContained || isScene || isMobileBackdrop ? {} : DESKTOP_MASK),
             opacity: videoReady ? undefined : 0,
           }}
         >
@@ -140,7 +141,7 @@ function PortraitMedia({
             loading="eager"
             decoding="async"
             className={mediaClass}
-            style={isContained || isMobileBackdrop ? undefined : DESKTOP_MASK}
+            style={isContained || isScene || isMobileBackdrop ? undefined : DESKTOP_MASK}
           />
         </picture>
       )}
@@ -152,6 +153,33 @@ export function HeroLivingPortrait({ variant = "overlay", className = "" }: Hero
   const reduceMotion = useReducedMotion();
   const { videoRef, parallax, videoReady, videoFailed, useVideo, setVideoFailed, setVideoReady } =
     useHeroVideo(reduceMotion);
+
+  if (variant === "scene") {
+    return (
+      <div
+        aria-hidden
+        className={`relative w-full h-[min(252px,34svh)] bg-[#0a0806] overflow-hidden ${className}`}
+      >
+        <PortraitMedia
+          variant="scene"
+          reduceMotion={reduceMotion}
+          videoRef={videoRef}
+          videoReady={videoReady}
+          videoFailed={videoFailed}
+          useVideo={useVideo}
+          setVideoFailed={setVideoFailed}
+          setVideoReady={setVideoReady}
+          parallax={parallax}
+        />
+        <div
+          className="absolute inset-x-0 bottom-0 h-14 pointer-events-none"
+          style={{
+            background: "linear-gradient(to top, #120a14 0%, transparent 100%)",
+          }}
+        />
+      </div>
+    );
+  }
 
   if (variant === "mobileBackdrop") {
     return (
@@ -185,7 +213,7 @@ export function HeroLivingPortrait({ variant = "overlay", className = "" }: Hero
     return (
       <div
         aria-hidden
-        className={`relative w-full aspect-[4/5] max-h-[min(420px,52vh)] rounded-2xl overflow-hidden border border-white/10 shadow-[0_24px_64px_-28px_rgba(0,0,0,0.85)] ${className}`}
+        className={`relative w-full aspect-[3/4] max-h-[min(420px,52vh)] rounded-2xl overflow-hidden border border-white/10 bg-[#0a0806] shadow-[0_24px_64px_-28px_rgba(0,0,0,0.85)] ${className}`}
       >
         <PortraitMedia
           variant="contained"

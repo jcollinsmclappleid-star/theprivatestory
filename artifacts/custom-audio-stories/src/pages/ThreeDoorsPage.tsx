@@ -64,7 +64,7 @@ const DOORS = [
     room: "The Story Room",
     tagline: "Tension, atmosphere, the feeling you're after.",
     href: "/after-dark",
-    cta: "Create your erotica",
+    cta: "Create your fantasy",
     ctaIcon: Sparkles,
     image: `${BASE}images/door-romance.webp`,
     accent: "#c9a227",
@@ -517,7 +517,7 @@ export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?
           One-time story packs
         </p>
         <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
-          Create your erotica — private to you alone.
+          Create your fantasy — private to you alone.
         </h2>
         <p className="text-muted-foreground/60 text-sm max-w-sm mx-auto mb-8">
           Romance, After Dark, and Drift all live in the creation room. Start with one story from £12 — no subscription.
@@ -526,7 +526,7 @@ export default function ThreeDoorsPage({ seoTitle, seoDescription }: { seoTitle?
           <Link href="/after-dark">
             <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105">
               <Sparkles className="w-4 h-4" />
-              Create your erotica
+              Create your fantasy
             </button>
           </Link>
           <Link href="/pricing">

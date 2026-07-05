@@ -11,7 +11,7 @@ export const PAIRING_IMAGES: Record<string, string> = {
   /** M+F · rope restraint · gallery characters */
   "Her & Him": act4("restraint-bdsm-v2"),
   /** F+F · sunlit embrace */
-  "Her & Her": act4("feel"),
+  "Her & Her": act4("her-her-bw"),
   /** M portrait — no dedicated M+M duo in library yet */
   "Him & Him": act4("desire-he"),
   /** Woman lead · intimate POV */
@@ -20,16 +20,19 @@ export const PAIRING_IMAGES: Record<string, string> = {
   "Him & Them": act4("desire-he"),
   /** Two-person rooftop intimacy */
   "Them & Them": act4("desire-they"),
+  /** MFM · Caribbean veranda */
+  "Her & Him & Him": act4("caribbean-mfm"),
 };
 
 /** Human-readable catalog for pairing → image assignments. */
 export const PAIRING_IMAGE_CATALOG = [
   { pairing: "Her & Him", slug: "restraint-bdsm-v2", pairingType: "M+F", tone: "BDSM · characters" },
-  { pairing: "Her & Her", slug: "feel", pairingType: "F+F", tone: "Embrace · characters" },
+  { pairing: "Her & Her", slug: "her-her-bw", pairingType: "F+F", tone: "Balcony intimacy · characters" },
   { pairing: "Him & Him", slug: "desire-he", pairingType: "M solo", tone: "Male lead portrait" },
   { pairing: "Her & Them", slug: "desire-she", pairingType: "F lead", tone: "Female lead portrait" },
   { pairing: "Him & Them", slug: "desire-he", pairingType: "M lead", tone: "Male lead portrait" },
   { pairing: "Them & Them", slug: "desire-they", pairingType: "Couple", tone: "Rooftop intimacy" },
+  { pairing: "Her & Him & Him", slug: "caribbean-mfm", pairingType: "MFM", tone: "Caribbean veranda" },
 ] as const;
 
 export function pairingImage(pairingId: string | null | undefined): string | undefined {
@@ -42,13 +45,13 @@ export const CHEMISTRY_IMAGES = {
   takesCharge: act4("restraint-bdsm"),
   equalTension: act4("tension"),
   leads: act4("her-dominance"),
-  pushPull: act4("praise-words"),
+  pushPull: act4("elevator-mf"),
   slowSurrender: act4("romance"),
   powerPlay: act4("restraint-bdsm-v2"),
-  forbidden: act4("dark-fantasy"),
+  forbidden: act4("penthouse-hotel-mf"),
   devotion: act4("submission-worship"),
   rivals: act4("scene"),
-  lovers: act4("feel"),
+  lovers: act4("her-her-bw"),
   playful: act4("desire-they"),
   romantic: act4("romance"),
   bestFriend: act4("yours"),
@@ -66,9 +69,9 @@ export const HOME_STUDIO_IMAGES = {
     /** M+F · BDSM characters (not rain-street prop) */
     herHim: act4("restraint-bdsm-v2"),
     /** F+F · sunlit embrace */
-    herHer: act4("feel"),
-    /** MFM · penthouse trio */
-    mfm: act4("scene"),
+    herHer: act4("her-her-bw"),
+    /** MFM · Caribbean veranda */
+    mfm: act4("caribbean-mfm"),
   },
   chemistry: {
     /** M+F almost-kiss */
@@ -78,7 +81,7 @@ export const HOME_STUDIO_IMAGES = {
     /** M+F intimate whisper */
     surrender: act4("praise-words"),
     /** F+F rooftop charged */
-    pushPull: act4("desire-they"),
+    pushPull: act4("elevator-mf"),
   },
   archetype: {
     executive: act4("desire-he"),
@@ -92,6 +95,6 @@ export const HOME_STUDIO_IMAGES = {
     /** Restrained explicit — cuffs / tension */
     explicit: act4("restraint-bdsm-v3"),
     /** No limits — darker, distinct from explicit */
-    unrestrained: act4("dark-fantasy"),
+    unrestrained: act4("caribbean-mfm"),
   },
 } as const;

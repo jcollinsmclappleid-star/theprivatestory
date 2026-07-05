@@ -785,7 +785,7 @@ function FinalCTA() {
               data-testid="final-cta-create"
             >
               <Sparkles className="w-4 h-4" />
-              Start your erotica
+              Start your fantasy
             </button>
           </Link>
           <p className="text-[11px] text-white/35 italic mt-7 max-w-md mx-auto leading-relaxed">

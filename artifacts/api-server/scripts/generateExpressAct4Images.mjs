@@ -82,9 +82,63 @@ const BRIEFS = {
   },
   "dark-fantasy": {
     cast: "Her & Him",
-    characters:
-      "White woman, raven black hair, black lace gown; pale dark aristocrat man, sharp features, silver-grey eyes, black long coat — human, devastating, uncanny not a monster",
-    scene: "gothic castle chamber, crimson moon, his hand at her jaw, dark seduction, suspended reality",
+    skip: true,
+    characters: "White woman, blonde, black dress; white man, brown hair, open shirt",
+    scene: "penthouse hotel suite city night, forbidden tension, no text",
+  },
+  "after-gala": {
+    cast: "Her & Her",
+    skip: true,
+    characters: "Black woman, emerald gown; South Asian woman, midnight blue dress",
+    scene: "hotel corridor after gala, champagne, stolen glance, no door text",
+  },
+  "penthouse-hotel-mf": {
+    cast: "Her & Him",
+    skip: true,
+    characters: "White woman blonde black dress; white man brown hair open shirt",
+    scene: "Luxury Hotel penthouse skyline night champagne",
+  },
+  "london-townhouse-mf": {
+    cast: "Her & Him",
+    skip: true,
+    characters: "White woman auburn burgundy dress; white man dark hair shirtsleeves",
+    scene: "London Chelsea townhouse rain study doorway reunion",
+  },
+  "private-yacht-mf": {
+    cast: "Her & Him",
+    skip: true,
+    characters: "White woman blonde ivory dress; white man dark hair linen shirt",
+    scene: "Private Yacht Monaco harbor night sundeck",
+  },
+  "office-after-hours-mf": {
+    cast: "Her & Him",
+    skip: true,
+    characters: "White woman navy blazer dress; white man loosened tie seated",
+    scene: "Office After Hours glass boardroom city night",
+  },
+  "adjoining-suites-mfm": {
+    cast: "MFM",
+    skip: true,
+    characters: "White woman emerald dress; two white men tuxedos",
+    scene: "Luxury Hotel adjoining doors corridor",
+  },
+  "caribbean-mfm": {
+    cast: "MFM",
+    skip: true,
+    characters: "Tall Black man linen; white woman sundress; second man background",
+    scene: "Caribbean beach house veranda sunset",
+  },
+  "her-her-bw": {
+    cast: "Her & Her",
+    skip: true,
+    characters: "Black woman curls emerald slip; white woman auburn cream robe",
+    scene: "hotel suite balcony night F+F closeness",
+  },
+  "elevator-mf": {
+    cast: "Her & Him",
+    skip: true,
+    characters: "Ambiguous woman olive skin red dress; ambiguous man brown skin black shirt",
+    scene: "glass elevator night city lights proximity",
   },
   "style-written": {
     cast: "Her & Him",

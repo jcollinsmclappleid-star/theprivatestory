@@ -6,9 +6,11 @@ import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
 import { VOICES, DEFAULT_NARRATOR_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
-import { CHEMISTRY_IMAGES, PAIRING_IMAGES } from "../lib/chemistryImages";
+import { CHEMISTRY_IMAGES, PAIRING_IMAGES, act4 } from "../lib/chemistryImages";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
+import { SituationLiteraryPanel } from "./SituationPicker";
+import type { HomeBrief } from "@/lib/homeBriefUtils";
 
 export interface CastingRoomResult {
   perspective: "her" | "his" | "your" | "their";
@@ -389,13 +391,13 @@ export function buildArchetypes(pairingId: string | undefined) {
 /* ── Settings — tile data ─────────────────────────────────────────── */
 export const CONTEMPORARY_SETTINGS = [
   { id: "Late Night City",          label: "Late Night City",          sub: "Streets wet, lights low, anything goes",           gradient: "from-[#02050e] via-[#040a18] to-[#010308]", accent: "#6b8cce", image: "images/settings/late_night_city.webp" },
-  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: "images/settings/luxury_hotel.webp" },
+  { id: "Luxury Hotel",             label: "Luxury Hotel",             sub: "A room for one night only",                        gradient: "from-[#100d00] via-[#1e1900] to-[#0a0800]", accent: "#c9a227", image: act4("after-gala") },
   { id: "European Villa",           label: "European Villa",           sub: "Heat, terraces, and no schedule",                  gradient: "from-[#0a0500] via-[#180c00] to-[#060300]", accent: "#d97706", image: "images/settings/european_villa.webp" },
-  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9", image: "images/settings/private_yacht.webp" },
+  { id: "Private Yacht",            label: "Private Yacht",            sub: "Open water. No escape. No reason to leave",        gradient: "from-[#001220] via-[#001e35] to-[#000a14]", accent: "#0ea5e9", image: act4("private-yacht-mf") },
   { id: "Mountain Retreat",         label: "Mountain Retreat",         sub: "Snowbound. Firelit. Nowhere else to be",           gradient: "from-[#060e06] via-[#0c160c] to-[#040804]", accent: "#4ade80", image: "images/settings/mountain_retreat.webp" },
-  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc", image: "images/settings/penthouse_suite.webp" },
+  { id: "Penthouse Suite",          label: "Penthouse Suite",          sub: "City below. Nothing between you and glass",        gradient: "from-[#060408] via-[#0e0812] to-[#030204]", accent: "#c084fc", image: act4("penthouse-hotel-mf") },
   { id: "Art Gallery After Hours",  label: "Art Gallery After Hours",  sub: "Empty rooms. Something priceless at stake",        gradient: "from-[#04080a] via-[#080e12] to-[#020406]", accent: "#94a3b8", image: "images/settings/art_gallery.webp" },
-  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8", image: "images/settings/office_after_hours.webp" },
+  { id: "Office After Hours",       label: "Office After Hours",       sub: "Everyone else has gone. The door is locked.",      gradient: "from-[#060406] via-[#0c080c] to-[#030203]", accent: "#818cf8", image: act4("office-after-hours-mf") },
   { id: "Rooftop Bar",              label: "Rooftop Bar",              sub: "City spread out below. Drinks. A decision.",       gradient: "from-[#050208] via-[#0a040e] to-[#030104]", accent: "#e879a0", image: "images/settings/rooftop_bar.webp" },
   { id: "Beach House",              label: "Beach House",              sub: "Salt air. No phone signal. Nowhere to hide.",      gradient: "from-[#001018] via-[#001c28] to-[#000810]", accent: "#38bdf8", image: "images/settings/beach_house.webp" },
   { id: "Private Members Club",     label: "Private Members Club",     sub: "Velvet booths. Whispered conversations. Power.",   gradient: "from-[#0a0800] via-[#160e00] to-[#060500]", accent: "#fcd34d", image: "images/settings/private_members_club.webp" },
@@ -408,7 +410,7 @@ export const CONTEMPORARY_SETTINGS = [
 
 export const HISTORICAL_SETTINGS = [
   { id: "Regency England (1810s)",    label: "Regency England",       sub: "1810s — letters never sent, country house urgency",  gradient: "from-[#0a0600] via-[#160e00] to-[#060400]", accent: "#fcd34d", image: "images/settings/regency_england.webp" },
-  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: "images/settings/victorian_london.webp" },
+  { id: "Victorian London (1880s)",   label: "Victorian London",      sub: "1880s — fog, corsets, what's unspeakable and felt",  gradient: "from-[#040408] via-[#0a0a10] to-[#020206]", accent: "#9ca3af", image: act4("london-townhouse-mf") },
   { id: "Belle Époque Paris (1900s)", label: "Belle Époque Paris",    sub: "1900s — absinthe, salons, decadent evenings",        gradient: "from-[#080400] via-[#140800] to-[#040200]", accent: "#f59e0b", image: "images/settings/belle_epoque.webp" },
   { id: "Roaring Twenties (1920s)",   label: "Roaring Twenties",      sub: "1920s — speakeasies, jazz, smoke and consequence",   gradient: "from-[#080004] via-[#12000a] to-[#040002]", accent: "#f472b6", image: "images/settings/roaring_twenties.webp" },
   { id: "Wartime (1940s)",            label: "Wartime",               sub: "1940s — last night together, everything at stake",   gradient: "from-[#050802] via-[#0a1004] to-[#020400]", accent: "#86efac", image: "images/settings/wartime.webp" },
@@ -423,18 +425,18 @@ export const HISTORICAL_SETTINGS = [
 
 export const AFTER_DARK_SETTINGS = [
   { id: "Private Club",          label: "Private Club",             sub: "Invitation only. No cameras.",                       gradient: "from-[#0e0002] via-[#1a0004] to-[#080002]", accent: "#fb7185", image: "images/settings/private_club.webp" },
-  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: "images/settings/vip_suite.webp" },
+  { id: "VIP Suite",             label: "VIP Suite",                sub: "No names. No history. No morning.",                  gradient: "from-[#0a0002] via-[#180004] to-[#060001]", accent: "#f43f5e", image: act4("adjoining-suites-mfm") },
   { id: "The Back Room",         label: "The Back Room",            sub: "Velvet curtains. Low light. No questions.",           gradient: "from-[#0c0004] via-[#180008] to-[#060002]", accent: "#e11d48" },
-  { id: "Moving Elevator",       label: "Moving Elevator",          sub: "Thirty floors of anticipation.",                     gradient: "from-[#08000a] via-[#130010] to-[#040005]", accent: "#c026d3" },
+  { id: "Moving Elevator",       label: "Moving Elevator",          sub: "Thirty floors of anticipation.",                     gradient: "from-[#08000a] via-[#130010] to-[#040005]", accent: "#c026d3", image: act4("elevator-mf") },
   { id: "Private Cinema",        label: "Private Cinema",           sub: "The film is not what they're watching.",             gradient: "from-[#080004] via-[#120008] to-[#040002]", accent: "#dc2626" },
-  { id: "Hotel Balcony",         label: "Hotel Balcony",            sub: "Floor above the party. No one can see them.",        gradient: "from-[#06000a] via-[#0e0012] to-[#030005]", accent: "#9333ea" },
+  { id: "Hotel Balcony",         label: "Hotel Balcony",            sub: "Floor above the party. No one can see them.",        gradient: "from-[#06000a] via-[#0e0012] to-[#030005]", accent: "#9333ea", image: act4("her-her-bw") },
   { id: "Dressing Room",         label: "Dressing Room",            sub: "After the show ends. The adrenaline hasn't.",        gradient: "from-[#0a0002] via-[#160004] to-[#050001]", accent: "#e11d48" },
   { id: "Locked Room",           label: "Locked Room",              sub: "House full of people. Only they know.",              gradient: "from-[#0c0003] via-[#1a0005] to-[#060002]", accent: "#f43f5e" },
   { id: "Rooftop 3am",           label: "Rooftop, 3am",             sub: "City below. No witnesses.",                          gradient: "from-[#02020a] via-[#04041a] to-[#010108]", accent: "#6366f1", image: "images/settings/rooftop_3am.webp" },
-  { id: "First-Class Cabin",     label: "First-Class Cabin",        sub: "Overnight. No names. Nowhere to go.",                gradient: "from-[#02050a] via-[#040a16] to-[#010306]", accent: "#3b82f6" },
+  { id: "First-Class Cabin",     label: "First-Class Cabin",        sub: "Overnight. No names. Nowhere to go.",                gradient: "from-[#02050a] via-[#040a16] to-[#010306]", accent: "#3b82f6", image: act4("adjoining-suites-mfm") },
   { id: "The Glass House",       label: "The Glass House",          sub: "Floor-to-ceiling windows. No curtains.",             gradient: "from-[#04080a] via-[#080e14] to-[#020406]", accent: "#0ea5e9" },
-  { id: "Yacht Cabin",           label: "Yacht Cabin",              sub: "Open water. No escape. No reason to want one.",      gradient: "from-[#001018] via-[#001a26] to-[#000810]", accent: "#38bdf8" },
-  { id: "Penthouse Pool",        label: "Penthouse Pool",           sub: "Midnight. No neighbours. No one coming.",            gradient: "from-[#020010] via-[#04001e] to-[#010008]", accent: "#a855f7" },
+  { id: "Yacht Cabin",           label: "Yacht Cabin",              sub: "Open water. No escape. No reason to want one.",      gradient: "from-[#001018] via-[#001a26] to-[#000810]", accent: "#38bdf8", image: act4("private-yacht-mf") },
+  { id: "Penthouse Pool",        label: "Penthouse Pool",           sub: "Midnight. No neighbours. No one coming.",            gradient: "from-[#020010] via-[#04001e] to-[#010008]", accent: "#a855f7", image: act4("penthouse-hotel-mf") },
   { id: "Private Spa Suite",     label: "Private Spa Suite",        sub: "Late booking. No other guests.",                     gradient: "from-[#080008] via-[#100012] to-[#040006]", accent: "#c084fc" },
 ];
 
@@ -786,7 +788,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   })();
 
   const [step, setStep] = useState<number>(
-    (savedSession?.handoffStep as number) ?? initialHandoff?.handoffStep ?? handoffStep ?? 0
+    savedSession?.handoffStep != null
+      ? (savedSession.handoffStep as number)
+      : 0
   );
   const [data, setData] = useState<Partial<CastingRoomResult>>(() => {
     const base: Partial<CastingRoomResult> = {
@@ -884,7 +888,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
-  const TOTAL_STEPS = 12;
+  const TOTAL_STEPS = 13;
 
   const update = (key: keyof CastingRoomResult, value: string) => {
     setData(d => {
@@ -925,16 +929,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
   const canProceed = () => {
     switch (step) {
       case 0: return !!data.pairing;
-      case 1: return !!data.chemistry;
-      case 2: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your" | "their");
-      case 3: return !!data.heritage && !!data.archetype;
-      case 4: return true;
-      case 5: return !!data.setting;
-      case 6: return !!data.intensity && !!data.mood;
-      case 7: return true; // Situation — optional
-      case 8: return true; // Tag Studio
-      case 9: return true; // Your Character's Name
-      case 10: return true; // Partner Name
+      case 1: return !!data.heritage;
+      case 2: return !!data.chemistry;
+      case 3: return !!data.perspective && getValidPerspectiveIds(data.pairing).includes(data.perspective as "her" | "his" | "your" | "their");
+      case 4: return !!data.archetype;
+      case 5: return true;
+      case 6: return !!data.setting;
+      case 7: return !!data.intensity && !!data.mood;
+      case 8: return true; // Situation — optional
+      case 9: return true; // Tag Studio
+      case 10: return true; // Your Character's Name
+      case 11: return true; // Partner Name
       default: return true;
     }
   };
@@ -1177,9 +1182,36 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           </motion.div>
         )}
 
-        {/* ── Step 1 — Chemistry / Dynamic ─────────────────────────── */}
+        {/* ── Step 1 — Heritage ────────────────────────────────────── */}
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              {isSameGender ? "Who are they?" : `Who is ${partnerP.subject === "They" ? "your partner" : partnerP.subject.toLowerCase()}?`}
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Choose their heritage first — it shapes pronouns, descriptions, and cultural texture throughout your story.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {HERITAGES.map(h => (
+                <ArtTile
+                  key={h.id}
+                  gradient={h.gradient}
+                  accent={h.accent}
+                  image={h.image}
+                  selected={data.heritage === h.id}
+                  onClick={() => { update("heritage", h.id); setTimeout(next, 350); }}
+                >
+                  <p className="font-semibold text-white text-sm">{h.label}</p>
+                  <p className="text-white/75 text-xs mt-0.5 leading-snug">{h.sub}</p>
+                </ArtTile>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Step 2 — Chemistry / Dynamic ─────────────────────────── */}
+        {step === 2 && (
+          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
               What's the tension between you?
             </h2>
@@ -1207,9 +1239,9 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           </motion.div>
         )}
 
-        {/* ── Step 2 — Perspective ─────────────────────────────────── */}
-        {step === 2 && (
-          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 3 — Perspective ─────────────────────────────────── */}
+        {step === 3 && (
+          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Are you in it, or watching them?</h2>
             <p className="text-muted-foreground text-sm mb-2">Choose who the story follows.</p>
             {isSameGender && (
@@ -1228,79 +1260,17 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           </motion.div>
         )}
 
-        {/* ── Step 3 — Character ───────────────────────────────────── */}
-        {step === 3 && (
-          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {/* ── Step 4 — Character vibe & appearance ─────────────────── */}
+        {step === 4 && (
+          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
               {isSameGender ? "Your love interest." : partnerHeadingVerb}
             </h2>
             <p className="text-muted-foreground text-sm mb-6">
               {isSameGender
-                ? `${capFirst(partnerRoleLabel)} in your story — ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`
-                : `Choose ${partnerP.possessive} heritage and the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
+                ? `${capFirst(partnerRoleLabel)} in your story — the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`
+                : `Choose the energy ${partnerP.subject === "They" ? "they bring" : `${partnerP.subject.toLowerCase()} brings`}.`}
             </p>
-
-            {/* Heritage dropdown */}
-            {(() => {
-              const selectedHeritage = HERITAGES.find(h => h.id === data.heritage);
-              return (
-                <div className="mb-5 relative" ref={heritageDropdownRef}>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-2">Their background</p>
-                  <button
-                    type="button"
-                    onClick={() => { setHeritageDropdownOpen(o => !o); setEnergyDropdownOpen(false); setAppearanceDropdownOpen(false); }}
-                    className="w-full rounded-2xl border text-left flex items-center gap-3 focus:outline-none transition-all cursor-pointer relative overflow-hidden"
-                    style={selectedHeritage
-                      ? { borderColor: `${selectedHeritage.accent}60`, background: `linear-gradient(135deg, ${selectedHeritage.accent}18 0%, transparent 55%)` }
-                      : { borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }
-                    }
-                  >
-                    {selectedHeritage && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: gradientCSS(selectedHeritage.gradient) }} />
-                    )}
-                    <div className="flex items-center gap-3 flex-1 min-w-0 px-5 py-4">
-                      {selectedHeritage ? (
-                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-white/15 shadow-sm"
-                          style={{ background: gradientCSS(selectedHeritage.gradient) }} />
-                      ) : (
-                        <div className="w-9 h-9 rounded-xl flex-shrink-0 border border-dashed border-white/20 bg-white/3 flex items-center justify-center">
-                          <span className="text-white/30 text-lg">+</span>
-                        </div>
-                      )}
-                      <span className="flex-1 min-w-0">
-                        <span className={`block text-sm font-semibold ${selectedHeritage ? "text-foreground" : "text-muted-foreground/60"}`}>
-                          {selectedHeritage ? selectedHeritage.label : "Choose heritage…"}
-                        </span>
-                        {selectedHeritage && (
-                          <span className="block text-xs truncate mt-0.5" style={{ color: `${selectedHeritage.accent}99` }}>{selectedHeritage.sub}</span>
-                        )}
-                      </span>
-                    </div>
-                    <ChevronDown
-                      className={`w-4 h-4 flex-shrink-0 mr-4 transition-transform duration-200 ${heritageDropdownOpen ? "rotate-180" : ""}`}
-                      style={{ color: selectedHeritage ? selectedHeritage.accent : "rgba(255,255,255,0.3)" }}
-                    />
-                  </button>
-                  {heritageDropdownOpen && (
-                    <div className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl shadow-2xl overflow-hidden"
-                      style={{ background: "#0c0c0f", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <div className="max-h-[45vh] sm:max-h-[360px] overflow-y-auto p-3">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {HERITAGES.map(h => (
-                            <ArtTile key={h.id} gradient={h.gradient} accent={h.accent} image={h.image} selected={data.heritage === h.id}
-                              onClick={() => { update("heritage", h.id); setHeritageDropdownOpen(false); }}
-                            >
-                              <p className="font-semibold text-white text-sm">{h.label}</p>
-                              <p className="text-white/75 text-xs mt-0.5 leading-snug">{h.sub}</p>
-                            </ArtTile>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
 
             {/* Energy dropdown */}
             {(() => {
@@ -1514,8 +1484,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 4 — Location ────────────────────────────────────── */}
-        {step === 4 && (
-          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 5 && (
+          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-center gap-3 mb-3">
               <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: accentColor }} />
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Pick your city</h2>
@@ -1693,8 +1663,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 5 — Setting ─────────────────────────────────────── */}
-        {step === 5 && (
-          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 6 && (
+          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Where does it happen?</h2>
             <p className="text-muted-foreground text-sm mb-6">The scene shapes what's possible — and how everything feels.</p>
 
@@ -1751,8 +1721,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 6 — Intensity + Mood ────────────────────────────── */}
-        {step === 6 && (
-          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 7 && (
+          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             {bedtime ? (
               <>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How gentle?</h2>
@@ -1928,12 +1898,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 7 — The Situation ───────────────────────────────── */}
-        {step === 7 && (
-          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 8 && (
+          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What's the fantasy?</h2>
-                <p className="text-muted-foreground text-sm">Choose what happens — or let us pick one for you.</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/80 mb-2">
+                  Step {step + 1} · The Situation
+                </p>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">What&apos;s happening?</h2>
+                <p className="text-muted-foreground text-sm">The literary setup — read the scene in your pronouns.</p>
               </div>
               <button
                 type="button"
@@ -1944,184 +1917,34 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               </button>
             </div>
 
-            {/* Choose For Me — always prominent at top */}
-            <div className="glass-panel rounded-2xl p-4 border border-white/8 mb-4">
-              {situationLabel && cfmMode === "cfm" ? (
-                /* Selected via CFM — show selected + re-roll + clear */
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
-                      {situationCategory}
-                    </p>
-                    <p className="font-semibold text-foreground text-sm leading-snug">{displayedSitLabel}</p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 mt-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const eligible = SITUATIONS.filter(s => !s.allowedPairings || s.allowedPairings.includes(data.pairing ?? ""));
-                        const pool = eligible.length > 0 ? eligible : SITUATIONS.filter(s => !s.allowedPairings);
-                        const pick = pool[Math.floor(Math.random() * pool.length)];
-                        setSituationLabel(pick.label);
-                        setSituationId(pick.id);
-                        setSituationCategory(pick.category);
-                        setExpandedCategories(prev => { const n = new Set(prev); n.add(pick.category); return n; });
-                      }}
-                      className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
-                    >
-                      <Shuffle size={12} /> Re-roll
-                    </button>
-                    <span className="text-border/40">·</span>
-                    <button
-                      type="button"
-                      onClick={() => { setSituationLabel(""); setSituationId(""); setSituationCategory(""); setCfmMode("none"); }}
-                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <X size={12} /> Clear
-                    </button>
-                  </div>
-                </div>
-              ) : situationLabel ? (
-                /* Selected via tab browse — show selected + clear */
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: accentColor }}>
-                      {situationCategory}
-                    </p>
-                    <p className="font-semibold text-foreground text-sm leading-snug">{displayedSitLabel}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setSituationLabel(""); setSituationId(""); setSituationCategory(""); setCfmMode("none"); }}
-                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-1"
-                  >
-                    <X size={12} /> Clear
-                  </button>
-                </div>
-              ) : (
-                /* Nothing selected — show CFM button */
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/60 mb-3">Choose For Me</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const eligible = SITUATIONS.filter(s => !s.allowedPairings || s.allowedPairings.includes(data.pairing ?? ""));
-                      const pool = eligible.length > 0 ? eligible : SITUATIONS.filter(s => !s.allowedPairings);
-                      const pick = pool[Math.floor(Math.random() * pool.length)];
-                      setSituationLabel(pick.label);
-                      setSituationId(pick.id);
-                      setSituationCategory(pick.category);
-                      setExpandedCategories(prev => { const n = new Set(prev); n.add(pick.category); return n; });
-                      setCfmMode("cfm");
-                    }}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-primary/30 bg-primary/5 text-sm font-semibold text-primary hover:bg-primary/10 hover:border-primary/50 transition-all"
-                  >
-                    <Shuffle size={15} />
-                    Surprise me — pick one for me
-                  </button>
-                </div>
-              )}
-            </div>
+            <SituationLiteraryPanel
+              pairing={data.pairing ?? "Her & Him"}
+              situationId={situationId}
+              situationLabel={situationLabel}
+              previewText={displayedSitLabel || undefined}
+              hideBrowseAll
+              compact
+              fullBrief={{
+                pairing: data.pairing ?? "Her & Him",
+                chemistry: data.chemistry ?? "",
+                archetype: data.archetype ?? "",
+                setting: data.setting ?? "",
+                voice:
+                  VOICES.find((v) => v.id === voiceId)?.displayName ?? "Kayla",
+                intensity: data.intensity ?? "Warm",
+                situationId: situationId || undefined,
+                situationLabel: situationLabel || undefined,
+              } satisfies HomeBrief}
+              onChange={(id, _label) => {
+                const sit = SITUATIONS.find((s) => s.id === id);
+                if (!sit) return;
+                setSituationId(id);
+                setSituationLabel(interpSit(sit));
+                setSituationCategory(sit.category);
+                setCfmMode("none");
+              }}
+            />
 
-            {/* Accordion — one collapsible section per category */}
-            <div className="space-y-2">
-              {SITUATION_CATEGORIES.map(cat => {
-                const situations = getSituationsByCategory(cat);
-                // Skip categories where every situation is locked for this pairing
-                const anyUnlocked = situations.some(s => !s.allowedPairings || !data.pairing || s.allowedPairings.includes(data.pairing));
-                if (!anyUnlocked) return null;
-                const isOpen = expandedCategories.has(cat);
-                const hasSelected = situations.some(s => s.id === situationId);
-                // Adapt category label to protagonist pronouns (e.g. "Her Desire" → "His Desire")
-                const catLabel = cat === "Her Desire"
-                  ? (rawProtagonistPronouns === "he/him" ? "His Desire" : rawProtagonistPronouns === "they/them" ? "Their Desire" : "Her Desire")
-                  : cat;
-                // Count only unlocked situations for display
-                const unlockedCount = situations.filter(s => !s.allowedPairings || !data.pairing || s.allowedPairings.includes(data.pairing)).length;
-                return (
-                  <div
-                    key={cat}
-                    className={`rounded-xl border overflow-hidden transition-colors ${
-                      hasSelected ? "border-primary/40" : "border-border/25"
-                    }`}
-                  >
-                    {/* Section header */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpandedCategories(prev => {
-                          const n = new Set(prev);
-                          if (n.has(cat)) n.delete(cat);
-                          else n.add(cat);
-                          return n;
-                        })
-                      }
-                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/5 transition-colors"
-                    >
-                      <div className="flex items-center gap-2">
-                        {hasSelected && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                        )}
-                        <span className={`text-sm font-semibold ${hasSelected ? "text-primary" : "text-foreground"}`}>
-                          {catLabel}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground/60">{unlockedCount}</span>
-                        <ChevronDown
-                          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                        />
-                      </div>
-                    </button>
-
-                    {/* Situation list */}
-                    {isOpen && (
-                      <div className="border-t border-border/20 divide-y divide-border/10">
-                        {situations.map(sit => {
-                          const isSelected = situationId === sit.id;
-                          const isLocked = !!(sit.allowedPairings && data.pairing && !sit.allowedPairings.includes(data.pairing));
-                          return (
-                            <button
-                              key={sit.id}
-                              type="button"
-                              disabled={isLocked}
-                              onClick={() => {
-                                if (isLocked) return;
-                                if (isSelected) {
-                                  setSituationLabel("");
-                                  setSituationId("");
-                                  setSituationCategory("");
-                                  setCfmMode("none");
-                                } else {
-                                  setSituationLabel(interpSit(sit));
-                                  setSituationId(sit.id);
-                                  setSituationCategory(sit.category);
-                                  setCfmMode("none");
-                                }
-                              }}
-                              className={`w-full text-left px-4 py-3 text-sm leading-snug transition-all ${
-                                isLocked
-                                  ? "opacity-35 cursor-not-allowed"
-                                  : isSelected
-                                    ? "bg-primary/10 text-primary font-medium"
-                                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-                              }`}
-                            >
-                              <span className={isLocked ? "text-muted-foreground/50" : ""}>{interpSit(sit)}</span>
-                              {isLocked && (
-                                <span className="ml-2 text-[10px] font-medium text-primary/40 align-middle">Her stories only</span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Skip link at the bottom */}
             <div className="mt-4 text-center">
               <button
                 type="button"
@@ -2163,8 +1986,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 8 — Tag Studio ──────────────────────────────────── */}
-        {step === 8 && (
-          <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 9 && (
+          <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Make it yours.</h2>
@@ -2222,8 +2045,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 9 — Your Character's Name ──────────────────────── */}
-        {step === 9 && (
-          <motion.div key="step9" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 10 && (
+          <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Your character's name.</h2>
             <p className="text-muted-foreground text-sm mb-2">
               This is what the narrator calls the lead in your story — pick any first name you like (it doesn't have to be yours). Choose from 6,000+ names — or skip and you'll be addressed as "you."
@@ -2321,8 +2144,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
         )}
 
         {/* ── Step 10 — Partner Name ───────────────────────────────── */}
-        {step === 10 && (
-          <motion.div key="step10" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 11 && (
+          <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
               {isSameGender ? "Your love interest's name." : "Their name."}
             </h2>
@@ -2412,8 +2235,8 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           </motion.div>
         )}
 
-        {step === 11 && (
-          <motion.div key="step11" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+        {step === 12 && (
+          <motion.div key="step12" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who do you want in your ear?</h2>
             <p className="text-muted-foreground text-sm mb-1">
               Choose your narrator — character voices are matched automatically.
@@ -2529,15 +2352,15 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-4">Your cast at a glance</p>
               <div className="space-y-0">
                 {([
-                  { label: "Chemistry",   value: chemistries.find(c => c.id === data.chemistry)?.label,                                                      goTo: 1,  fallback: "—" },
-                  { label: "Heritage",    value: data.heritage && data.heritage !== "Ambiguous" ? data.heritage : undefined,                                  goTo: 3,  fallback: "Ambiguous" },
-                  { label: "Archetype",   value: data.archetype,                                                                                              goTo: 3,  fallback: "—" },
-                  { label: "Setting",     value: data.setting,                                                                                                goTo: 5,  fallback: "—" },
-                  { label: "Intensity",   value: data.intensity,                                                                                              goTo: 6,  fallback: "—" },
-                  { label: "Situation",   value: displayedSitLabel || undefined,                                                                              goTo: 7,  fallback: "We'll choose for you" },
-                  { label: "Your name",   value: listenerName || undefined,                                                                                   goTo: 9,  fallback: "Addressed as 'you'" },
-                  { label: "Their name",  value: partnerName || undefined,                                                                                    goTo: 10, fallback: "Narrator will choose" },
-                  { label: "Voice",       value: (() => { const v = VOICES.find(v => v.id === voiceId); return v ? (v.displayName || v.label) : undefined; })(), goTo: 11, fallback: "—" },
+                  { label: "Chemistry",   value: chemistries.find(c => c.id === data.chemistry)?.label,                                                      goTo: 2,  fallback: "—" },
+                  { label: "Heritage",    value: data.heritage && data.heritage !== "Ambiguous" ? data.heritage : undefined,                                  goTo: 1,  fallback: "Ambiguous" },
+                  { label: "Archetype",   value: data.archetype,                                                                                              goTo: 4,  fallback: "—" },
+                  { label: "Setting",     value: data.setting,                                                                                                goTo: 6,  fallback: "—" },
+                  { label: "Intensity",   value: data.intensity,                                                                                              goTo: 7,  fallback: "—" },
+                  { label: "Situation",   value: displayedSitLabel || undefined,                                                                              goTo: 8,  fallback: "We'll choose for you" },
+                  { label: "Your name",   value: listenerName || undefined,                                                                                   goTo: 10, fallback: "Addressed as 'you'" },
+                  { label: "Their name",  value: partnerName || undefined,                                                                                    goTo: 11, fallback: "Narrator will choose" },
+                  { label: "Voice",       value: (() => { const v = VOICES.find(v => v.id === voiceId); return v ? (v.displayName || v.label) : undefined; })(), goTo: 12, fallback: "—" },
                 ] as { label: string; value: string | undefined; goTo: number; fallback: string }[]).map(({ label, value, goTo, fallback }) => (
                   <div key={label} className="flex items-center justify-between gap-3 py-2.5 border-b border-white/5 last:border-0">
                     <span className="text-[11px] text-muted-foreground/50 w-24 flex-shrink-0 uppercase tracking-wide font-medium">{label}</span>

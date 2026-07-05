@@ -12,6 +12,8 @@ export type ExpressSummaryBrief = {
   chemistry: string;
   mood: string;
   customTags: string[];
+  situationId?: string;
+  situationLabel?: string;
 };
 
 /** One flowing summary line — grouped logically, no chip soup */
@@ -38,7 +40,11 @@ export function buildExpressSummaryLine(brief: ExpressSummaryBrief, act: number)
     if (brief.chemistry) parts.push(brief.chemistry.replace(/ Dominates$/, " leads"));
   }
 
-  if (act >= 3 && brief.customTags.length > 0) {
+  if (act >= 3 && brief.situationLabel) {
+    parts.push(brief.situationLabel.replace(/\.$/, ""));
+  }
+
+  if (act >= 4 && brief.customTags.length > 0) {
     parts.push(`${brief.customTags.length} desire${brief.customTags.length === 1 ? "" : "s"} chosen`);
   }
 
@@ -47,6 +53,7 @@ export function buildExpressSummaryLine(brief: ExpressSummaryBrief, act: number)
 
 export type ExpressSummaryGroups = {
   who: string | null;
+  situation: string | null;
   fantasy: string | null;
   world: string | null;
   heat: string | null;
@@ -61,6 +68,8 @@ export function buildExpressSummaryGroups(brief: ExpressSummaryBrief): ExpressSu
         : brief.pairing
       : null;
 
+  const situation = brief.situationLabel ?? null;
+
   const fantasy = brief.scenario?.label ?? null;
 
   const place = [brief.city, brief.country].filter(Boolean).join(", ");
@@ -74,5 +83,5 @@ export function buildExpressSummaryGroups(brief: ExpressSummaryBrief): ExpressSu
       ? `${brief.customTags.length} explicit desire${brief.customTags.length === 1 ? "" : "s"}`
       : null;
 
-  return { who, fantasy, world, heat, desires };
+  return { who, situation, fantasy, world, heat, desires };
 }

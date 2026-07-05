@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Sparkles, SlidersHorizontal, MapPin, Globe2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, SlidersHorizontal, MapPin, Globe2, X } from "lucide-react";
 import { IntensityDial, INTENSITY_LEVELS } from "@/components/IntensityDial";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
 import { StoryTagStudio, getTagDisplayLabel } from "@/components/StoryTagStudio";
@@ -40,11 +40,69 @@ import { resolveExpressCategoryImage } from "@/lib/expressAct4Slugs";
 import { HorizontalScrollRow, VerticalScrollCol } from "@/components/ScrollRowHint";
 import { ExpressCharacterNames } from "@/components/ExpressCharacterNames";
 import { PAIRING_IMAGES } from "@/lib/chemistryImages";
+import { SituationLiteraryPanel } from "@/components/SituationPicker";
+import { SITUATIONS } from "@/data/situations";
+import { interpolateHomeSituation } from "@/lib/homeBriefUtils";
 
 const BASE = import.meta.env.BASE_URL;
 
+/** Fast-suite palette — aligned with full Creation Room crimson / rose */
+export const EXPRESS_CRIMSON = "#c0392b";
+export const EXPRESS_ROSE = "#e879a0";
+export const EXPRESS_WINE = "#922b21";
+
+export type ExpressFunnelPhase =
+  | "express_pairing"
+  | "express_situation"
+  | "express_fantasy"
+  | "express_world"
+  | "express_scenes";
+
 function act4Img(path: string) {
   return resolveExpressCategoryImage(path, BASE);
+}
+
+function ExpressStepNav({
+  onBack,
+  backLabel = "Back",
+  onOpenStudio,
+  showBack = true,
+}: {
+  onBack?: () => void;
+  backLabel?: string;
+  onOpenStudio: () => void;
+  showBack?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 mb-5">
+      {showBack && onBack ? (
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 text-sm transition-colors"
+          style={{ color: "rgba(232,160,154,0.75)" }}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          {backLabel}
+        </button>
+      ) : (
+        <span />
+      )}
+      <button
+        type="button"
+        onClick={onOpenStudio}
+        className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors"
+        style={{
+          borderColor: `${EXPRESS_CRIMSON}44`,
+          color: "rgba(232,160,154,0.9)",
+          background: `${EXPRESS_CRIMSON}12`,
+        }}
+      >
+        <SlidersHorizontal className="w-3.5 h-3.5" />
+        Full studio
+      </button>
+    </div>
+  );
 }
 
 const NARRATOR_AVATARS: Record<string, string> = {
@@ -67,27 +125,27 @@ const EXPRESS_NARRATORS = (["Kayla", "Theo", "Maya", "James", "Clara", "Ethan"] 
   };
 });
 
-export const EXPRESS_ACTS = ["Who", "Fantasy", "World", "Yours", "Unlock"] as const;
-export type ExpressActIndex = 0 | 1 | 2 | 3 | 4;
+export const EXPRESS_ACTS = ["Who", "Fantasy", "World", "Situation", "Yours", "Unlock"] as const;
+export type ExpressActIndex = 0 | 1 | 2 | 3 | 4 | 5;
 
 export function ExpressActProgress({ current, compact }: { current: ExpressActIndex; compact?: boolean }) {
-  const visibleIndex = Math.min(current, 3) as 0 | 1 | 2 | 3;
+  const visibleIndex = Math.min(current, 4) as 0 | 1 | 2 | 3 | 4;
   return (
     <div className={`flex items-center gap-1.5 ${compact ? "mb-0" : "mb-6"}`}>
-      {EXPRESS_ACTS.slice(0, 4).map((label, i) => (
+      {EXPRESS_ACTS.slice(0, 5).map((label, i) => (
         <div key={label} className="flex items-center gap-1.5 flex-1 min-w-0">
           <div
             className="h-1 flex-1 rounded-full transition-colors"
             style={{
               background:
                 i <= visibleIndex
-                  ? "linear-gradient(90deg, #c0392b, #e879a0)"
+                  ? `linear-gradient(90deg, ${EXPRESS_CRIMSON}, ${EXPRESS_ROSE})`
                   : "rgba(255,255,255,0.1)",
             }}
           />
           <span
             className="text-[8px] font-bold uppercase tracking-wider shrink-0 hidden sm:inline"
-            style={{ color: i === visibleIndex ? "#e879a0" : "rgba(255,255,255,0.3)" }}
+            style={{ color: i === visibleIndex ? EXPRESS_ROSE : "rgba(255,255,255,0.3)" }}
           >
             {label}
           </span>
@@ -133,6 +191,8 @@ export type ExpressBriefState = {
   mood: string;
   voiceName: string;
   customTags: string[];
+  situationId: string;
+  situationLabel: string;
   listenerName?: string;
   partnerName?: string;
 };
@@ -157,10 +217,23 @@ export function ExpressLivingBrief({ brief }: { brief: ExpressBriefState }) {
     intensity: homeIntensity,
     voice: brief.voiceName,
   };
-  const preset = buildPresetFromSelections(selections, scenario?.label ?? pairing ?? "After Dark");
+  const preset = buildPresetFromSelections(
+    {
+      pairing: selections.pairing,
+      chemistry: selections.chemistry,
+      archetype: selections.archetype,
+      setting: selections.setting,
+      voice: selections.voice,
+    },
+    {
+      intensity: homeIntensity,
+      title: scenario?.label ?? pairing ?? "After Dark",
+    },
+  );
 
   const rows = [
     groups.who && { label: "Who", value: groups.who },
+    groups.situation && { label: "Situation", value: groups.situation },
     groups.fantasy && { label: "Fantasy", value: groups.fantasy },
     groups.world && { label: "World", value: groups.world },
     groups.heat && { label: "Heat", value: groups.heat },
@@ -168,7 +241,10 @@ export function ExpressLivingBrief({ brief }: { brief: ExpressBriefState }) {
   ].filter(Boolean) as { label: string; value: string }[];
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/50 backdrop-blur-md">
+    <div
+      className="rounded-2xl overflow-hidden border bg-black/50 backdrop-blur-md"
+      style={{ borderColor: `${EXPRESS_CRIMSON}28`, boxShadow: `0 0 40px ${EXPRESS_CRIMSON}08` }}
+    >
       {cover && (
         <div className="relative h-28 overflow-hidden">
           <img src={cover} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover opacity-80" />
@@ -231,8 +307,11 @@ function ImageTile({
       type="button"
       onClick={onClick}
       className={`relative overflow-hidden rounded-xl border text-left transition-all ${className} ${
-        selected ? "border-white/40 shadow-[0_0_24px_rgba(192,57,43,0.2)]" : "border-white/10 hover:border-white/22"
+        selected
+          ? "shadow-[0_0_28px_rgba(192,57,43,0.28)]"
+          : "border-white/10 hover:border-[#c0392b]/30"
       }`}
+      style={selected ? { borderColor: `${EXPRESS_CRIMSON}66` } : undefined}
     >
       {image && (
         <img src={`${BASE}${image}`} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
@@ -262,6 +341,7 @@ export function AfterDarkExpressPairing({
   onPairing,
   onHeritage,
   onContinue,
+  onBack,
   onOpenStudio,
   brief,
 }: {
@@ -271,6 +351,7 @@ export function AfterDarkExpressPairing({
   onPairing: (id: string) => void;
   onHeritage: (id: string) => void;
   onContinue: () => void;
+  onBack: () => void;
   onOpenStudio: () => void;
   brief: ExpressBriefState;
 }) {
@@ -284,8 +365,9 @@ export function AfterDarkExpressPairing({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
         <div>
           <ExpressActHeader current={0} brief={brief} />
+          <ExpressStepNav onBack={onBack} backLabel="Back to After Dark" onOpenStudio={onOpenStudio} />
 
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#e879a0] mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] mb-2" style={{ color: EXPRESS_ROSE }}>
             Act I · Who&apos;s in the story
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-2">
@@ -302,7 +384,8 @@ export function AfterDarkExpressPairing({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="relative mb-6 rounded-2xl overflow-hidden border border-white/15 min-h-[200px] md:min-h-[240px]"
+                className="relative mb-6 rounded-2xl overflow-hidden min-h-[200px] md:min-h-[240px]"
+                style={{ border: `1px solid ${EXPRESS_CRIMSON}35`, boxShadow: `0 0 48px ${EXPRESS_CRIMSON}15` }}
               >
                 <img
                   src={`${BASE}${heroImage}`}
@@ -312,7 +395,7 @@ export function AfterDarkExpressPairing({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
                 <div className="relative z-10 p-6 flex flex-col justify-end min-h-[200px] md:min-h-[240px]">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#e879a0] mb-1">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.24em] mb-1" style={{ color: EXPRESS_ROSE }}>
                     {pairingCfg?.label}
                   </p>
                   <h2 className="font-display text-2xl font-bold text-white">
@@ -338,8 +421,15 @@ export function AfterDarkExpressPairing({
                   type="button"
                   onClick={() => onPairing(p.id)}
                   className={`relative overflow-hidden rounded-xl border p-3 min-h-[88px] text-left transition-all ${
-                    selected ? "border-[#e879a0]/50 ring-1 ring-[#e879a0]/30" : "border-white/10 hover:border-white/22"
+                    selected
+                      ? "ring-1"
+                      : "border-white/10 hover:border-[#c0392b]/35"
                   }`}
+                  style={
+                    selected
+                      ? { borderColor: `${EXPRESS_CRIMSON}55`, boxShadow: `0 0 20px ${EXPRESS_CRIMSON}22` }
+                      : undefined
+                  }
                 >
                   {img && (
                     <img
@@ -390,20 +480,14 @@ export function AfterDarkExpressPairing({
               onClick={onContinue}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-sm text-white disabled:opacity-40"
               style={{
-                background: canContinue ? "linear-gradient(135deg, #c0392b, #922b21)" : "rgba(255,255,255,0.08)",
-                boxShadow: canContinue ? "0 0 32px rgba(192,57,43,0.35)" : "none",
+                background: canContinue
+                  ? `linear-gradient(135deg, ${EXPRESS_CRIMSON}, ${EXPRESS_WINE})`
+                  : "rgba(255,255,255,0.08)",
+                boxShadow: canContinue ? `0 0 32px ${EXPRESS_CRIMSON}55` : "none",
               }}
             >
-              Continue — choose your fantasy
+              Continue — choose your situation
               <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={onOpenStudio}
-              className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-2xl text-sm border border-white/15 text-white/60 hover:text-white/80"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Full studio
             </button>
           </div>
         </div>
@@ -416,7 +500,98 @@ export function AfterDarkExpressPairing({
   );
 }
 
-/* ── Act II · Fantasy (centrepiece) ─────────────────────────────────── */
+/* ── Act II · Situation (200+ scenes) ─────────────────────────────── */
+
+export function AfterDarkExpressSituation({
+  selectedPairing,
+  situationId,
+  situationLabel,
+  onSituation,
+  onContinue,
+  onBack,
+  onOpenStudio,
+  brief,
+}: {
+  selectedPairing: string;
+  situationId: string;
+  situationLabel: string;
+  onSituation: (id: string, label: string) => void;
+  onContinue: () => void;
+  onBack: () => void;
+  onOpenStudio: () => void;
+  brief: ExpressBriefState;
+}) {
+  const activeSit = SITUATIONS.find((s) => s.id === situationId);
+  const previewText = activeSit
+    ? interpolateHomeSituation(activeSit, selectedPairing)
+    : situationLabel || "Choose what happens — or let us surprise you.";
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 pb-28 md:pb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
+        <div>
+          <ExpressActHeader current={3} brief={brief} />
+          <ExpressStepNav
+            onBack={onBack}
+            backLabel="Back to the world"
+            onOpenStudio={onOpenStudio}
+          />
+
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] mb-2" style={{ color: EXPRESS_ROSE }}>
+            Act IV · The situation
+          </p>
+          <h1 className="font-display text-2xl md:text-4xl font-bold text-white leading-tight mb-2">
+            What&apos;s happening?
+          </h1>
+          <p className="text-sm text-white/60 mb-5 max-w-lg">
+            The literary setup — read the scene in your pronouns. No stock photos, just the writing.
+          </p>
+
+          <SituationLiteraryPanel
+            pairing={selectedPairing}
+            situationId={situationId}
+            situationLabel={situationLabel}
+            previewText={previewText}
+            hideBrowseAll
+            compact
+            fullBrief={{
+              pairing: selectedPairing,
+              chemistry: brief.chemistry,
+              archetype: brief.archetype,
+              setting: brief.setting,
+              voice: brief.voiceName,
+              intensity: castingIntensityToHome(brief.intensity),
+              situationId: situationId || undefined,
+              situationLabel: situationLabel || undefined,
+            }}
+            onChange={onSituation}
+          />
+        </div>
+
+        <div className="hidden lg:block lg:sticky lg:top-20">
+          <ExpressLivingBrief brief={brief} />
+        </div>
+      </div>
+
+      <div className="fixed bottom-0 inset-x-0 z-30 md:static md:mt-8 px-4 pb-4 pt-3 md:p-0 bg-gradient-to-t from-[#0a0608] via-[#0a0608]/95 to-transparent md:from-transparent md:via-transparent pointer-events-none md:pointer-events-auto">
+        <button
+          type="button"
+          onClick={onContinue}
+          className="pointer-events-auto w-full md:flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-sm text-white min-h-[52px]"
+          style={{
+            background: `linear-gradient(135deg, ${EXPRESS_CRIMSON}, ${EXPRESS_WINE})`,
+            boxShadow: `0 0 32px ${EXPRESS_CRIMSON}55`,
+          }}
+        >
+          {situationId ? "Continue — make it yours" : "Skip — make it yours"}
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Act III · Fantasy (centrepiece) ─────────────────────────────────── */
 
 export function AfterDarkExpressFantasy({
   rooms,
@@ -430,6 +605,7 @@ export function AfterDarkExpressFantasy({
   onScenario,
   onIntensity,
   onContinue,
+  onBack,
   onOpenStudio,
   adaptScenarioText,
   brief,
@@ -445,6 +621,7 @@ export function AfterDarkExpressFantasy({
   onScenario: (s: ExpressScenario) => void;
   onIntensity: (index: number) => void;
   onContinue: () => void;
+  onBack: () => void;
   onOpenStudio: () => void;
   adaptScenarioText?: (text: string) => string;
   brief: ExpressBriefState;
@@ -472,21 +649,25 @@ export function AfterDarkExpressFantasy({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
         <div>
           <ExpressActHeader current={1} brief={brief} />
+          <ExpressStepNav onBack={onBack} backLabel="Back to who's in the story" onOpenStudio={onOpenStudio} />
 
           {homeBriefBanner && (
-            <div className="mb-5 px-4 py-3 rounded-xl border border-primary/30 bg-primary/10 text-sm text-white/85">
+            <div
+              className="mb-5 px-4 py-3 rounded-xl border text-sm text-white/85"
+              style={{ borderColor: `${EXPRESS_CRIMSON}40`, background: `${EXPRESS_CRIMSON}12` }}
+            >
               Your brief from home — pick the fantasy that matches it.
             </div>
           )}
 
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#e879a0] mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] mb-2" style={{ color: EXPRESS_ROSE }}>
             Act II · Your fantasy
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-2">
-            What are you imagining tonight?
+            What are you imagining?
           </h1>
           <p className="text-sm text-white/60 mb-6 max-w-lg">
-            Browse by room — every fantasy updates the cinematic preview above.
+            Browse by room — cinematic After Dark fantasies. The situation comes next, in words.
           </p>
 
           <AnimatePresence mode="wait">
@@ -496,7 +677,8 @@ export function AfterDarkExpressFantasy({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="relative mb-4 md:mb-6 rounded-2xl overflow-hidden border border-white/15 min-h-[200px] md:min-h-[280px]"
+                className="relative mb-4 md:mb-6 rounded-2xl overflow-hidden min-h-[200px] md:min-h-[280px]"
+                style={{ border: `1px solid ${EXPRESS_CRIMSON}40`, boxShadow: `0 0 56px ${EXPRESS_CRIMSON}18` }}
               >
                 <img
                   src={heroCover}
@@ -530,9 +712,14 @@ export function AfterDarkExpressFantasy({
               onClick={() => onRoomTab("featured")}
               className={`flex-shrink-0 snap-start px-4 py-2 rounded-full text-xs font-semibold border transition-colors ${
                 activeRoomTab === "featured"
-                  ? "border-[#e879a0]/60 bg-[#e879a0]/15 text-white"
-                  : "border-white/12 text-white/55 hover:border-white/25"
+                  ? "text-white"
+                  : "border-white/12 text-white/55 hover:border-[#c0392b]/35"
               }`}
+              style={
+                activeRoomTab === "featured"
+                  ? { borderColor: `${EXPRESS_CRIMSON}66`, background: `${EXPRESS_CRIMSON}18` }
+                  : undefined
+              }
             >
               Featured · {curatedScenarios.length}
             </button>
@@ -567,8 +754,13 @@ export function AfterDarkExpressFantasy({
                   type="button"
                   onClick={() => onScenario(s)}
                   className={`relative flex-shrink-0 w-[140px] sm:w-auto snap-start rounded-xl border overflow-hidden text-left transition-all min-h-[120px] sm:min-h-[100px] ${
-                    selected ? "border-[#e879a0]/60 ring-1 ring-[#e879a0]/30" : "border-white/10 hover:border-white/22"
+                    selected ? "ring-1" : "border-white/10 hover:border-[#c0392b]/35"
                   }`}
+                  style={
+                    selected
+                      ? { borderColor: `${EXPRESS_CRIMSON}66`, boxShadow: `0 0 24px ${EXPRESS_CRIMSON}25` }
+                      : undefined
+                  }
                 >
                   {cover && (
                     <img src={cover} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover opacity-80" />
@@ -592,20 +784,14 @@ export function AfterDarkExpressFantasy({
               onClick={onContinue}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-sm text-white disabled:opacity-40"
               style={{
-                background: selectedScenario ? "linear-gradient(135deg, #c0392b, #922b21)" : "rgba(255,255,255,0.08)",
-                boxShadow: selectedScenario ? "0 0 32px rgba(192,57,43,0.35)" : "none",
+                background: selectedScenario
+                  ? `linear-gradient(135deg, ${EXPRESS_CRIMSON}, ${EXPRESS_WINE})`
+                  : "rgba(255,255,255,0.08)",
+                boxShadow: selectedScenario ? `0 0 32px ${EXPRESS_CRIMSON}55` : "none",
               }}
             >
               Continue — choose the world
               <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={onOpenStudio}
-              className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-2xl text-sm border border-white/15 text-white/60 hover:text-white/80"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Full studio
             </button>
           </div>
         </div>
@@ -637,6 +823,7 @@ export function AfterDarkExpressWorld({
   onVoice,
   onContinue,
   onBack,
+  onOpenStudio,
   brief,
 }: {
   scenario: ExpressScenario;
@@ -655,6 +842,7 @@ export function AfterDarkExpressWorld({
   onVoice: (v: string) => void;
   onContinue: () => void;
   onBack: () => void;
+  onOpenStudio: () => void;
   brief: ExpressBriefState;
 }) {
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
@@ -696,10 +884,11 @@ export function AfterDarkExpressWorld({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 lg:gap-8 items-start">
         <div>
           <ExpressActHeader current={2} brief={brief} />
+          <ExpressStepNav onBack={onBack} backLabel="Back to fantasy" onOpenStudio={onOpenStudio} />
 
           <div className="flex items-center gap-2 mb-2">
-            <Globe2 className="w-4 h-4 text-[#e879a0]" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#e879a0]">
+            <Globe2 className="w-4 h-4" style={{ color: EXPRESS_ROSE }} />
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em]" style={{ color: EXPRESS_ROSE }}>
               Act III · The world — and the heat
             </p>
           </div>
@@ -710,8 +899,8 @@ export function AfterDarkExpressWorld({
             {countryCount} countries, eras, and private rooms — written into every scene. No generic backdrop.
           </p>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 mb-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#e879a0] mb-4">Where it unfolds</p>
+          <div className="rounded-2xl border bg-white/[0.02] p-4 sm:p-5 mb-6" style={{ borderColor: `${EXPRESS_CRIMSON}28` }}>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] mb-4" style={{ color: EXPRESS_ROSE }}>Where it unfolds</p>
 
             <div className="flex items-center justify-between gap-3 mb-3">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/45">Country</p>
@@ -999,8 +1188,8 @@ export function AfterDarkExpressWorld({
               const nameA = voiceA?.displayName ?? voiceA?.label ?? "";
               const nameB = voiceB?.displayName ?? voiceB?.label ?? "";
               return (
-                <div className="mt-4 rounded-xl border border-[#e879a0]/20 bg-[#e879a0]/5 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#e879a0]/60 mb-2">Your full cast</p>
+                <div className="mt-4 rounded-xl border p-4" style={{ borderColor: `${EXPRESS_CRIMSON}30`, background: `${EXPRESS_CRIMSON}08` }}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: `${EXPRESS_ROSE}99` }}>Your full cast</p>
                   <p className="text-sm text-white/75">
                     <span className="text-white/45">Narrator</span> {narratorLabel}
                     <span className="text-white/25 mx-2">·</span>
@@ -1022,19 +1211,14 @@ export function AfterDarkExpressWorld({
               onClick={onContinue}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-sm text-white disabled:opacity-40"
               style={{
-                background: canContinue ? "linear-gradient(135deg, #c0392b, #922b21)" : "rgba(255,255,255,0.08)",
-                boxShadow: canContinue ? "0 0 32px rgba(192,57,43,0.35)" : "none",
+                background: canContinue
+                  ? `linear-gradient(135deg, ${EXPRESS_CRIMSON}, ${EXPRESS_WINE})`
+                  : "rgba(255,255,255,0.08)",
+                boxShadow: canContinue ? `0 0 32px ${EXPRESS_CRIMSON}55` : "none",
               }}
             >
               Continue — make it yours
               <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={onBack}
-              className="text-sm text-white/45 hover:text-white/65 underline underline-offset-2 py-4"
-            >
-              ← Back
             </button>
           </div>
         </div>
@@ -1105,6 +1289,7 @@ export function AfterDarkExpressMakeItYours({
   onReveal,
   onSkip,
   onBack,
+  onOpenStudio,
   brief,
 }: {
   selectedPairing: string | null;
@@ -1117,6 +1302,7 @@ export function AfterDarkExpressMakeItYours({
   onReveal: () => void;
   onSkip: () => void;
   onBack: () => void;
+  onOpenStudio: () => void;
   brief: ExpressBriefState;
 }) {
   const [noteDismissed, setNoteDismissed] = useState(false);
@@ -1186,7 +1372,8 @@ export function AfterDarkExpressMakeItYours({
   return (
     <div className="relative max-w-5xl mx-auto px-4 py-6 pb-36">
       <div className="relative z-10">
-      <ExpressActHeader current={3} brief={brief} />
+      <ExpressActHeader current={4} brief={brief} />
+      <ExpressStepNav onBack={onBack} backLabel="Back to situation" onOpenStudio={onOpenStudio} />
 
       <ExpressCategoryHero
         category={activeTagCategory}
@@ -1291,19 +1478,12 @@ export function AfterDarkExpressMakeItYours({
             activeCategoryHeading={activeTagCategory}
             onActiveCategoryChange={setActiveTagCategory}
             onCategoryCountsChange={setCategoryPickCounts}
-            accentColor="#e879a0"
+            accentColor={EXPRESS_CRIMSON}
             protagonistPronouns={protagonistPronouns}
             partnerPronouns={partnerPronouns}
             isSameGender={isSameGender}
           />
 
-          <button
-            type="button"
-            onClick={onBack}
-            className="mt-6 text-xs text-white/40 hover:text-white/60 underline underline-offset-2"
-          >
-            ← Back to world
-          </button>
         </div>
 
         <div className="hidden lg:block lg:sticky lg:top-20">
@@ -1312,7 +1492,10 @@ export function AfterDarkExpressMakeItYours({
       </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#e879a0]/30 bg-gradient-to-t from-black via-black/95 to-black/80 backdrop-blur-xl">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t backdrop-blur-xl bg-gradient-to-t from-black via-black/95 to-black/80"
+        style={{ borderColor: `${EXPRESS_CRIMSON}40` }}
+      >
         <div className="max-w-5xl mx-auto space-y-3">
           <div className="flex items-center gap-3">
             <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">

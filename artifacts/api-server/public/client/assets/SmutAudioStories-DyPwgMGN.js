@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-WcHzuGS1.js";import{S as t,g as s}from"./SEOPage-DdY1yWZF.js";import"./index-iMoBVwWO.js";import"./data-editors-picks-CU3fKZjv.js";const i=s("smut-audio-stories");function a(){return o.jsx(t,{config:i,slug:"smut-audio-stories"})}export{a as default};

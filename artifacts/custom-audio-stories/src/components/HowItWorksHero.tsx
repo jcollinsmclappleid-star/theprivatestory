@@ -130,7 +130,7 @@ export function HowItWorksHero({ priceDisplay }: Props) {
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-[0_0_32px_-8px_rgba(201,162,39,0.55)]"
               >
                 <Sparkles className="w-4 h-4" />
-                Create your erotica
+                Create your fantasy
               </button>
             </Link>
             <Link

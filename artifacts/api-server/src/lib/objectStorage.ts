@@ -11,23 +11,94 @@ import {
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
 
-export const objectStorageClient = new Storage({
-  credentials: {
-    audience: "replit",
-    subject_token_type: "access_token",
-    token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
-    type: "external_account",
-    credential_source: {
-      url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
-      format: {
-        type: "json",
-        subject_token_field_name: "access_token",
+export type ObjectStorageAuthMode =
+  | "service_account"
+  | "application_default"
+  | "replit_sidecar";
+
+function parseServiceAccountJson(raw: string): {
+  credentials: Record<string, unknown>;
+  projectId: string;
+} {
+  const parsed = JSON.parse(raw) as { project_id?: string };
+  if (!parsed.project_id) {
+    throw new Error("Service account JSON is missing project_id");
+  }
+  return { credentials: parsed, projectId: parsed.project_id };
+}
+
+function loadServiceAccountFromEnv(): {
+  credentials: Record<string, unknown>;
+  projectId: string;
+} | null {
+  const b64 = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64?.trim();
+  if (b64) {
+    return parseServiceAccountJson(Buffer.from(b64, "base64").toString("utf8"));
+  }
+  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim();
+  if (json) {
+    return parseServiceAccountJson(json);
+  }
+  return null;
+}
+
+function createReplitSidecarClient(): Storage {
+  return new Storage({
+    credentials: {
+      audience: "replit",
+      subject_token_type: "access_token",
+      token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
+      type: "external_account",
+      credential_source: {
+        url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
+        format: {
+          type: "json",
+          subject_token_field_name: "access_token",
+        },
       },
+      universe_domain: "googleapis.com",
     },
-    universe_domain: "googleapis.com",
-  },
-  projectId: "",
-});
+    projectId: "",
+  });
+}
+
+function createObjectStorageClient(): { client: Storage; mode: ObjectStorageAuthMode } {
+  const serviceAccount = loadServiceAccountFromEnv();
+  if (serviceAccount) {
+    return {
+      client: new Storage({
+        credentials: serviceAccount.credentials,
+        projectId: serviceAccount.projectId,
+      }),
+      mode: "service_account",
+    };
+  }
+
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim()) {
+    return { client: new Storage(), mode: "application_default" };
+  }
+
+  if (process.env.REPL_ID || process.env.REPLIT_DEV_DOMAIN) {
+    return { client: createReplitSidecarClient(), mode: "replit_sidecar" };
+  }
+
+  // Vercel / other hosts: avoid Replit sidecar (127.0.0.1) — it will never respond.
+  if (process.env.VERCEL) {
+    console.warn(
+      "[objectStorage] GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 not set — " +
+        "story audio/image upload and playback from GCS will fail until configured.",
+    );
+    // Return a client that will fail clearly on first API call (no sidecar hang).
+    return { client: new Storage(), mode: "application_default" };
+  }
+
+  return { client: createReplitSidecarClient(), mode: "replit_sidecar" };
+}
+
+const { client: objectStorageClient, mode: objectStorageAuthMode } =
+  createObjectStorageClient();
+
+export { objectStorageClient, objectStorageAuthMode };
 
 export class ObjectNotFoundError extends Error {
   constructor() {
@@ -238,30 +309,44 @@ async function signObjectURL({
   method: "GET" | "PUT" | "DELETE" | "HEAD";
   ttlSec: number;
 }): Promise<string> {
-  const request = {
-    bucket_name: bucketName,
-    object_name: objectName,
-    method,
-    expires_at: new Date(Date.now() + ttlSec * 1000).toISOString(),
-  };
-  const response = await fetch(
-    `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-      signal: AbortSignal.timeout(30_000),
-    }
-  );
-  if (!response.ok) {
-    throw new Error(
-      `Failed to sign object URL, errorcode: ${response.status}, ` +
-        `make sure you're running on Replit`
+  if (objectStorageAuthMode === "replit_sidecar") {
+    const request = {
+      bucket_name: bucketName,
+      object_name: objectName,
+      method,
+      expires_at: new Date(Date.now() + ttlSec * 1000).toISOString(),
+    };
+    const response = await fetch(
+      `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
+        signal: AbortSignal.timeout(30_000),
+      }
     );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to sign object URL, errorcode: ${response.status}, ` +
+          `make sure you're running on Replit`
+      );
+    }
+
+    const { signed_url: signedURL } = (await response.json()) as {
+      signed_url: string;
+    };
+    return signedURL;
   }
 
-  const { signed_url: signedURL } = await response.json();
+  const file = objectStorageClient.bucket(bucketName).file(objectName);
+  const action =
+    method === "PUT" ? "write" : method === "DELETE" ? "delete" : "read";
+  const [signedURL] = await file.getSignedUrl({
+    version: "v4",
+    action,
+    expires: Date.now() + ttlSec * 1000,
+  });
   return signedURL;
 }

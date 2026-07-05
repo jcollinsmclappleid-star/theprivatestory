@@ -108,7 +108,16 @@ Currently PostgreSQL via Replit's managed Postgres. On migration:
 
 ### Static audio and image assets
 
-Audio files and generated story images are stored in Google Cloud Storage. The GCS bucket and credentials need to stay the same or be migrated — the bucket name is in `DEFAULT_OBJECT_STORAGE_BUCKET_ID`. GCS access uses Replit's connector SDK currently; on migration you will need to provide a GCS service account JSON key directly via `GOOGLE_APPLICATION_CREDENTIALS` or equivalent.
+Audio files and generated story images are stored in Google Cloud Storage. On **Replit**, GCS access uses the Replit Object Storage sidecar. On **Vercel**, set a service account:
+
+| Variable | Notes |
+|---|---|
+| `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | **Recommended on Vercel.** Base64-encoded GCP service account JSON with `Storage Object Admin` on your bucket |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Alternative: raw JSON string (single line) |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Path to a JSON key file (local dev / non-Vercel hosts) |
+| `DEFAULT_OBJECT_STORAGE_BUCKET_ID` | GCS bucket name for generated audio/images |
+
+The service account needs read/write on `media/audio/*` and `media/images/*` in the bucket named by `DEFAULT_OBJECT_STORAGE_BUCKET_ID`. Replit-hosted buckets may not grant external access — if so, create a new GCS bucket, update `DEFAULT_OBJECT_STORAGE_BUCKET_ID`, and copy existing `media/` objects across.
 
 ### CORS and domain
 

@@ -65,10 +65,66 @@ export const EXPRESS_ACT4_CHARACTER_BRIEFS: Record<string, Act4CharacterBrief> =
   },
   "dark-fantasy": {
     cast: "Her & Him",
+    skipIfExists: true,
+    characters: "White woman, blonde hair, sleek black dress; white man, brown hair, open-collar shirt",
+    scene: "modern luxury hotel penthouse, city skyline night, power-play tension, NO text in scene",
+  },
+  "after-gala": {
+    cast: "Her & Her",
+    skipIfExists: true,
     characters:
-      "White woman, raven black hair, black lace gown; pale dark aristocrat man, sharp cheekbones, silver-grey eyes, black long coat — human, devastating, uncanny not monstrous",
+      "Black woman, elegant updo, emerald gown and stole; South Asian woman, low bun, midnight blue cocktail dress",
     scene:
-      "gothic castle chamber, crimson moon through arched window, his hand at her jaw, supernatural seduction, suspended reality",
+      "hotel corridor after charity gala, suite door, champagne, stolen charged glance, NO text on doors",
+  },
+  "penthouse-hotel-mf": {
+    cast: "Her & Him",
+    skipIfExists: true,
+    characters: "White woman, blonde hair, black dress; white man, brown hair, open shirt dark trousers",
+    scene: "Luxury Hotel penthouse suite, floor-to-ceiling windows, city night, champagne marble counter",
+  },
+  "london-townhouse-mf": {
+    cast: "Her & Him",
+    skipIfExists: true,
+    characters: "White woman, auburn hair, burgundy dress; white man, dark hair, shirt sleeves",
+    scene: "London Chelsea townhouse evening, rain on windows, study doorway reunion, modern interior",
+  },
+  "private-yacht-mf": {
+    cast: "Her & Him",
+    skipIfExists: true,
+    characters: "White woman, blonde hair, ivory linen dress; white man, dark hair, white linen shirt",
+    scene: "Private Yacht sundeck Monaco harbor night, city lights water, slow surrender railing",
+  },
+  "office-after-hours-mf": {
+    cast: "Her & Him",
+    skipIfExists: true,
+    characters: "White woman, dark blonde hair, navy blazer dress; white man, light brown hair, loosened tie",
+    scene: "Office After Hours glass boardroom, city lights, empty floor, her standing his seated",
+  },
+  "adjoining-suites-mfm": {
+    cast: "MFM",
+    skipIfExists: true,
+    characters: "White woman, chestnut hair, emerald dress; two white men in tuxedos, attention on her",
+    scene: "Luxury Hotel corridor adjoining suite doors ajar, MFM tension not male couple, champagne",
+  },
+  "caribbean-mfm": {
+    cast: "MFM",
+    skipIfExists: true,
+    characters:
+      "Towering athletic Black man white linen; white woman coral sundress; second man background resort wear",
+    scene: "Caribbean beach house veranda sunset, turquoise sea, charged group dynamic, attention on her",
+  },
+  "her-her-bw": {
+    cast: "Her & Her",
+    skipIfExists: true,
+    characters: "Black woman natural curls emerald slip; white woman auburn waves cream robe",
+    scene: "luxury hotel suite balcony night, F+F intimate closeness, contemporary",
+  },
+  "elevator-mf": {
+    cast: "Her & Him",
+    skipIfExists: true,
+    characters: "Racially ambiguous woman olive skin red dress; racially ambiguous man medium brown skin black shirt",
+    scene: "modern glass elevator night city lights, confined charged proximity, no floor numbers visible",
   },
   "style-written": {
     cast: "Her & Him",

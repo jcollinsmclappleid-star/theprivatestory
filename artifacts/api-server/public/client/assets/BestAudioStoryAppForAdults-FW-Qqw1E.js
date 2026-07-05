@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-WcHzuGS1.js";import{S as t,g as r}from"./SEOPage-DdY1yWZF.js";import"./index-iMoBVwWO.js";import"./data-editors-picks-CU3fKZjv.js";const s=r("best-audio-story-app-for-adults");function u(){return o.jsx(t,{config:s,slug:"best-audio-story-app-for-adults",doorFilter:["dark"]})}export{u as default};

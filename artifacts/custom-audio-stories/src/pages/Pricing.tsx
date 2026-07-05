@@ -78,7 +78,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "How explicit can my story be?",
-    a: "You set the dial when you create your erotica — from slow burn and romantic to warm, elevated, or explicitly unrestrained. There is no separate tier or extra charge. Every pack includes the full range.",
+    a: "You set the dial when you create your fantasy — from slow burn and romantic to warm, elevated, or explicitly unrestrained. There is no separate tier or extra charge. Every pack includes the full range.",
   },
   {
     q: "Are my stories private?",
@@ -242,7 +242,7 @@ export default function Pricing() {
                 href="/after-dark"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/40 text-green-300 text-xs font-bold hover:bg-green-500/30 transition-colors"
               >
-                Create your erotica
+                Create your fantasy
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </motion.div>
@@ -513,7 +513,7 @@ export default function Pricing() {
             href="/after-dark"
             className="inline-flex items-center justify-center gap-1.5 text-xs text-white/70 hover:text-primary transition-colors uppercase tracking-widest py-2"
           >
-            Create your erotica first →
+            Create your fantasy first →
           </Link>
         </div>
       </section>

@@ -1,17 +1,19 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Users, Flame, UserCircle, MapPin, Volume2, Gauge,
+  Users, Flame, UserCircle, MapPin, Volume2,
 } from "lucide-react";
 import type { AnatomyPreset } from "@/components/StoryAnatomy";
 import { HOME_STUDIO_IMAGES } from "@/lib/chemistryImages";
 import { CREATION_ROOM_FOCUS_EVENT } from "@/components/HeroChoiceChips";
 import { HorizontalScrollRow } from "@/components/ScrollRowHint";
+import { VisualChoiceTile } from "@/components/VisualChoiceTile";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (path: string) => `${BASE}/${path.replace(/^\//, "")}`;
 
-type CategoryId = "pairing" | "chemistry" | "archetype" | "setting" | "intensity" | "voice";
+export type CastCategoryId = "pairing" | "chemistry" | "archetype" | "setting" | "voice";
+export type CategoryId = CastCategoryId | "intensity";
 
 type Option = {
   value: string;
@@ -21,11 +23,12 @@ type Option = {
 };
 
 const CATEGORIES: {
-  id: CategoryId;
+  id: CastCategoryId;
   label: string;
   icon: typeof Users;
   axis: string;
   scale: string;
+  moreLabel?: string;
   options: Option[];
 }[] = [
   {
@@ -34,6 +37,7 @@ const CATEGORIES: {
     icon: Users,
     axis: "Who you're with",
     scale: "6 ways",
+    moreLabel: "+3 more in studio",
     options: [
       { value: "Her & Him", label: "Her & Him", image: img(HOME_STUDIO_IMAGES.pairing.herHim), accent: "#e879a0" },
       { value: "Her & Her", label: "Her & Her", image: img(HOME_STUDIO_IMAGES.pairing.herHer), accent: "#f472b6" },
@@ -46,6 +50,7 @@ const CATEGORIES: {
     icon: Flame,
     axis: "The tension",
     scale: "8 dynamics",
+    moreLabel: "+4 more in studio",
     options: [
       { value: "Forbidden Pull", label: "Forbidden", image: img(HOME_STUDIO_IMAGES.chemistry.forbidden), accent: "#c9a227" },
       { value: "Power Play", label: "Power", image: img(HOME_STUDIO_IMAGES.chemistry.power), accent: "#ef4444" },
@@ -59,6 +64,7 @@ const CATEGORIES: {
     icon: UserCircle,
     axis: "Who they are",
     scale: "19 types",
+    moreLabel: "+15 more in studio",
     options: [
       { value: "The Executive", label: "Executive", image: img(HOME_STUDIO_IMAGES.archetype.executive), accent: "#c9a227" },
       { value: "The Professor", label: "Professor", image: img(HOME_STUDIO_IMAGES.archetype.professor), accent: "#60a5fa" },
@@ -72,24 +78,12 @@ const CATEGORIES: {
     icon: MapPin,
     axis: "Where it happens",
     scale: "200+ places",
+    moreLabel: "+196 more in studio",
     options: [
       { value: "Victorian London", label: "Victorian", image: img("images/settings/victorian_london.webp"), accent: "#34d399" },
       { value: "Luxury hotel", label: "Hotel", image: img("images/settings/luxury_hotel.webp"), accent: "#c9a227" },
       { value: "Office after hours", label: "Office", image: img("images/settings/office_after_hours.webp"), accent: "#818cf8" },
       { value: "Private yacht", label: "Yacht", image: img("images/settings/private_yacht.webp"), accent: "#0ea5e9" },
-    ],
-  },
-  {
-    id: "intensity",
-    label: "How you want it",
-    icon: Gauge,
-    axis: "How you want it",
-    scale: "4 levels",
-    options: [
-      { value: "Slow burn", label: "Slow burn", image: img(HOME_STUDIO_IMAGES.intensity.slowBurn), accent: "#94a3b8" },
-      { value: "Warm", label: "Warm", image: img(HOME_STUDIO_IMAGES.intensity.warm), accent: "#f97316" },
-      { value: "Explicit", label: "Explicit", image: img(HOME_STUDIO_IMAGES.intensity.explicit), accent: "#e879a0" },
-      { value: "Unrestrained", label: "Unrestrained", image: img(HOME_STUDIO_IMAGES.intensity.unrestrained), accent: "#c9a227" },
     ],
   },
   {
@@ -109,29 +103,33 @@ const CATEGORIES: {
   },
 ];
 
-const CATEGORY_PROMPTS: Record<CategoryId, string> = {
+const CATEGORY_PROMPTS: Record<CastCategoryId, string> = {
   pairing: "Who's in this fantasy?",
   chemistry: "What's the pull between you?",
   archetype: "Stranger, executive, old friend…",
   setting: "Hotel, office, your city…",
-  intensity: "Slow burn through to unrestrained",
   voice: "Pick the voice in your ear",
 };
 
 const TEASERS: Record<string, string> = {
-  "Slow burn": "\"They've been circling each other for weeks. Tonight, neither of them left.\"",
+  "Slow burn": "\"They've been circling each other for weeks. Neither of them left.\"",
   Warm: "\"He shouldn't be in her study. She should have locked the door.\"",
   Explicit: "\"She set the rules. He looked at her like he was already breaking the first one.\"",
   Unrestrained: "\"Two men. One room. She'd had every chance to leave — and hadn't taken one.\"",
 };
 
-const DEFAULT_SELECTIONS: Record<CategoryId, string> = {
+export const DEFAULT_CAST_SELECTIONS: Record<CastCategoryId, string> = {
   pairing: "Her & Him",
   chemistry: "Forbidden Pull",
   archetype: "The Executive",
   setting: "Victorian London",
-  intensity: "Warm",
   voice: "Kayla",
+};
+
+/** @deprecated use DEFAULT_CAST_SELECTIONS — kept for callers expecting intensity key */
+export const DEFAULT_SELECTIONS: Record<CategoryId, string> = {
+  ...DEFAULT_CAST_SELECTIONS,
+  intensity: "Warm",
 };
 
 export function intensityToIndex(value: string): number {
@@ -145,8 +143,13 @@ export function intensityToIndex(value: string): number {
 }
 
 export function buildPresetFromSelections(
-  selections: Record<CategoryId, string>,
-  title = "Your story brief",
+  selections: Record<CastCategoryId, string>,
+  opts?: {
+    intensity?: string;
+    situationLabel?: string;
+    customTagCount?: number;
+    title?: string;
+  },
 ): AnatomyPreset {
   const rows = CATEGORIES.map((cat) => {
     const opt = cat.options.find((o) => o.value === selections[cat.id]) ?? cat.options[0]!;
@@ -157,129 +160,63 @@ export function buildPresetFromSelections(
       accent: opt.accent,
     };
   });
-  const intensity = selections.intensity;
+  const intensity = opts?.intensity ?? "Warm";
+  const extraRows = [
+    {
+      axis: "Situation",
+      value: opts?.situationLabel ?? "Choose your situation",
+      scale: "1 of 200+",
+      accent: "#e11d48",
+    },
+    {
+      axis: "Intensity",
+      value: intensity,
+      scale: "1 of 4",
+      accent: "#f97316",
+    },
+    {
+      axis: "Ending",
+      value: "You choose",
+      scale: "1 of 7",
+      accent: "#a78bfa",
+    },
+  ];
+  if (opts?.customTagCount && opts.customTagCount > 0) {
+    extraRows.push({
+      axis: "Desires",
+      value: `${opts.customTagCount} chosen`,
+      scale: "40+ available",
+      accent: "#c9a227",
+    });
+  }
   return {
-    title,
+    title: opts?.title ?? "Your story brief",
     teaser: TEASERS[intensity] ?? TEASERS.Warm,
     intensityIndex: intensityToIndex(intensity),
-    rows: [
-      ...rows,
-      { axis: "Ending", value: "You choose", scale: "1 of 7", accent: "#a78bfa" },
-      { axis: "Situation", value: "Your scenario", scale: "1 of 200+", accent: "#e11d48" },
-    ],
+    rows: [...rows, ...extraRows],
   };
 }
 
-function ThemedTile({
-  image,
-  accent,
-  label,
-  sublabel,
-  selected,
-  onClick,
-  size = "option",
-  bright = true,
-}: {
-  image: string;
-  accent: string;
-  label: string;
-  sublabel?: string;
-  selected: boolean;
-  onClick: () => void;
-  size?: "tab" | "option";
-  /** Lighter scrim so Act IV art reads on home tiles. */
-  bright?: boolean;
-}) {
-  const isTab = size === "tab";
-  const scrimBottom = bright ? 0.72 : 0.92;
-  const scrimMid = bright ? 0.28 : 0.5;
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileHover={{ scale: selected ? 1.03 : 1.05, y: -2 }}
-      whileTap={{ scale: 0.97 }}
-      className={`relative overflow-hidden rounded-xl border text-left transition-shadow ${
-        isTab ? "min-h-[84px]" : "w-[112px] sm:w-[120px] shrink-0 snap-start"
-      } ${
-        selected
-          ? "border-primary/70 ring-2 ring-primary/45 shadow-[0_0_28px_-6px_rgba(201,162,39,0.55)]"
-          : "border-white/15 hover:border-white/35 hover:shadow-[0_0_20px_-8px_rgba(201,162,39,0.35)]"
-      }`}
-      style={{
-        boxShadow: selected ? `0 0 32px -8px ${accent}88` : undefined,
-      }}
-    >
-      <img
-        src={image}
-        alt=""
-        className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
-          selected ? "opacity-100 scale-105" : bright ? "opacity-95" : "opacity-80"
-        }`}
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          background: selected
-            ? `linear-gradient(to top, rgba(8,6,4,${bright ? 0.82 : 0.95}) 0%, rgba(8,6,4,${bright ? 0.2 : 0.35}) 50%, ${accent}18 100%)`
-            : `linear-gradient(to top, rgba(8,6,4,${scrimBottom}) 0%, rgba(8,6,4,${scrimMid}) 55%, rgba(8,6,4,${bright ? 0.08 : 0.25}) 100%)`,
-        }}
-      />
-      {selected && (
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            background: `radial-gradient(circle at 50% 20%, ${accent}33 0%, transparent 55%)`,
-          }}
-        />
-      )}
-      <div
-        className={`relative flex flex-col justify-end h-full ${
-          isTab ? "p-2.5 min-h-[84px]" : "aspect-[4/5] p-2.5"
-        }`}
-      >
-        {!isTab && (
-          <div
-            className="absolute top-2 right-2 w-2 h-2 rounded-full"
-            style={{
-              background: accent,
-              boxShadow: selected ? `0 0 10px ${accent}` : undefined,
-            }}
-          />
-        )}
-        <span
-          className={`font-bold text-white leading-tight ${
-            isTab ? "text-[9px] uppercase tracking-wide" : "text-[10px]"
-          }`}
-        >
-          {label}
-        </span>
-        {sublabel && (
-          <span className={`text-white/70 truncate leading-tight ${isTab ? "text-[8px]" : "text-[9px] mt-0.5"}`}>
-            {sublabel}
-          </span>
-        )}
-      </div>
-    </motion.button>
-  );
-}
-
 interface BriefBuilderProps {
-  selections: Record<CategoryId, string>;
-  onChange: (selections: Record<CategoryId, string>) => void;
-  onIntensityChange: (index: number) => void;
+  selections: Record<CastCategoryId, string>;
+  onChange: (selections: Record<CastCategoryId, string>) => void;
+  /** Hide “+N more in studio” hints (homepage mobile funnel). */
+  hideStudioHints?: boolean;
+  /** Homepage demo — emphasise visual creativity showcase. */
+  showcaseMode?: boolean;
 }
 
-export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefBuilderProps) {
-  const [activeCategory, setActiveCategory] = useState<CategoryId>("chemistry");
-  const active = CATEGORIES.find((c) => c.id === activeCategory)!;
+export function BriefBuilder({
+  selections,
+  onChange,
+  hideStudioHints = false,
+  showcaseMode = false,
+}: BriefBuilderProps) {
+  const [activeCategory, setActiveCategory] = useState<CastCategoryId>("chemistry");
 
   useEffect(() => {
     const handler = (e: Event) => {
-      const cat = (e as CustomEvent<CategoryId>).detail;
+      const cat = (e as CustomEvent<CastCategoryId>).detail;
       if (cat && CATEGORIES.some((c) => c.id === cat)) {
         setActiveCategory(cat);
       }
@@ -288,28 +225,37 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
     return () => window.removeEventListener(CREATION_ROOM_FOCUS_EVENT, handler);
   }, []);
 
-  const pick = (catId: CategoryId, value: string) => {
-    const next = { ...selections, [catId]: value };
-    onChange(next);
-    if (catId === "intensity") {
-      onIntensityChange(intensityToIndex(value));
-    }
+  const pick = (catId: CastCategoryId, value: string) => {
+    onChange({ ...selections, [catId]: value });
   };
 
-  const filledCount = useMemo(
-    () => Object.keys(selections).length,
-    [selections],
-  );
+  const filledCount = useMemo(() => Object.keys(selections).length, [selections]);
+  const active = CATEGORIES.find((c) => c.id === activeCategory)!;
 
   return (
-    <div className="space-y-5">
+    <div id="creation-step-fantasy" className="space-y-4 md:space-y-5 scroll-mt-24">
+      {showcaseMode && (
+        <div className="rounded-xl border border-primary/25 bg-primary/[0.06] px-3 py-2 flex items-center gap-2">
+          <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-primary/15 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-primary">
+            Live demo
+          </span>
+          <p className="text-[11px] sm:text-[12px] text-white/75 leading-snug">
+            <span className="hidden sm:inline">Images show the </span>
+            <span className="text-white/90">creative range</span>
+            <span className="hidden sm:inline"> — every tap reshapes your story.</span>
+            <span className="sm:hidden"> — tap to explore.</span>
+          </p>
+        </div>
+      )}
       <div className="flex items-end justify-between gap-3">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary mb-1.5">
-            Create your spicy fantasy
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary mb-1 md:mb-1.5">
+            {showcaseMode ? "Step 1 · Your fantasy" : "Step 1 · Build your cast"}
           </p>
-          <p className="text-sm text-white/85 leading-snug">
-            Tap each piece — every choice updates your story live.
+          <p className="text-[13px] md:text-sm text-white/85 leading-snug">
+            {showcaseMode
+              ? "Explore the visual palette — this is what we can write for you."
+              : "Tap each piece — pairing, tension, character, place, voice."}
           </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -322,11 +268,11 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
               aria-hidden
             />
           ))}
-          <span className="text-[9px] text-white/50 ml-1">{filledCount}/6</span>
+          <span className="text-[9px] text-white/50 ml-1">{filledCount}/5</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {CATEGORIES.map((cat) => {
           const Icon = cat.icon;
           const selected = selections[cat.id];
@@ -334,7 +280,7 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
           const isActive = activeCategory === cat.id;
           return (
             <div key={cat.id} className="relative">
-              <ThemedTile
+              <VisualChoiceTile
                 image={opt.image}
                 accent={opt.accent}
                 label={cat.label}
@@ -360,13 +306,25 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
           exit={{ opacity: 0, y: -8, scale: 0.99 }}
           transition={{ duration: 0.32, ease: "easeOut" }}
         >
-          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55 mb-1">
-            {active.label}
-          </p>
+          <div className="flex items-baseline justify-between gap-2 mb-2.5">
+            <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55">
+              {showcaseMode ? (
+                <>
+                  <span className="text-primary/80">Visual · </span>
+                  {active.label} · {active.scale}
+                </>
+              ) : (
+                <>{active.label} · {active.scale}</>
+              )}
+            </p>
+            {active.moreLabel && !hideStudioHints && (
+              <p className="text-[9px] text-primary/70">{active.moreLabel}</p>
+            )}
+          </div>
           <p className="text-[11px] text-white/65 mb-2.5 leading-snug">{CATEGORY_PROMPTS[activeCategory]}</p>
           <HorizontalScrollRow className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-brand snap-x snap-mandatory">
             {active.options.map((opt) => (
-              <ThemedTile
+              <VisualChoiceTile
                 key={opt.value}
                 image={opt.image}
                 accent={opt.accent}
@@ -376,20 +334,10 @@ export function BriefBuilder({ selections, onChange, onIntensityChange }: BriefB
               />
             ))}
           </HorizontalScrollRow>
-          {activeCategory === "intensity" && (
-            <motion.p
-              key={selections.intensity}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-3 text-xs italic text-white/75 leading-relaxed border-l-2 border-primary/50 pl-3"
-            >
-              {TEASERS[selections.intensity]}
-            </motion.p>
-          )}
         </motion.div>
       </AnimatePresence>
     </div>
   );
 }
 
-export { CATEGORIES, DEFAULT_SELECTIONS, type CategoryId };
+export { CATEGORIES };

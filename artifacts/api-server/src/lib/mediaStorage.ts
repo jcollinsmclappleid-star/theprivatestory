@@ -2,11 +2,10 @@
  * Persistent media storage for generated audio and image files.
  *
  * Generated media (user stories, library stories) is stored in Google Cloud
- * Storage (via Replit Object Storage) so it survives deployments and scales
- * across server instances. Static/brand assets committed to git (voice samples,
- * category images, cover images for library stories seeded at build time) are
- * still served from local disk — they are committed to the repo so they are
- * always present.
+ * Storage so it survives deployments and scales across server instances.
+ * Static/brand assets committed to git (voice samples, category images, cover
+ * images for library stories seeded at build time) are still served from local
+ * disk — they are committed to the repo so they are always present.
  *
  * Key design:
  *   - Upload: server saves bytes directly to GCS (no presigned URL needed for

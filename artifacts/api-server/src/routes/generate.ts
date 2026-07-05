@@ -4529,6 +4529,15 @@ async function runConcurrent<T>(items: T[], fn: (item: T) => Promise<Buffer>): P
   return results;
 }
 
+export interface AudioQaSegment {
+  index: number;
+  role: string;
+  rawText: string;
+  spokenText: string | null;
+  muted: boolean;
+  voiceId: string;
+}
+
 export async function generateAudioFile(
   scenes: Scene[],
   voiceFeel: string,
@@ -4537,7 +4546,15 @@ export async function generateAudioFile(
   intensity?: string,
   partnerName?: string,
   protagonistName?: string,
-): Promise<{ url: string; durationSeconds: number }> {
+): Promise<{
+  url: string;
+  durationSeconds: number;
+  qa?: {
+    useMultiVoice: boolean;
+    tagger: "attributeSpeakers" | "tagScriptForMultiVoice";
+    segments: AudioQaSegment[];
+  };
+}> {
   // Stress-test mode: skip ElevenLabs entirely. Set DISABLE_AUDIO=true to enable.
   if (process.env.DISABLE_AUDIO === "true") {
     console.info("[audio] DISABLE_AUDIO=true — skipping ElevenLabs TTS");
@@ -4613,6 +4630,9 @@ export async function generateAudioFile(
     .filter(Boolean)
     .join("\n\n");
   let tagged = await attributeSpeakers(cleanText, pairing ?? "", protagonistName, partnerName);
+  const taggerSource: "attributeSpeakers" | "tagScriptForMultiVoice" = tagged
+    ? "attributeSpeakers"
+    : "tagScriptForMultiVoice";
   if (tagged) {
     console.info(`[tagger] speaker-attribution pass: segments=${tagged.segments.length} distinctRoles=${tagged.distinctCharRoles}`);
   } else {
@@ -4636,10 +4656,28 @@ export async function generateAudioFile(
   const useMultiVoice = tagged.distinctCharRoles >= 2 &&
     (nullGenderPairing ? charSegments >= 4 : tagged.explicitAttributions >= 1);
 
+  const attributionQa = process.env.ATTRIBUTION_QA === "1";
+  const qaSegments: AudioQaSegment[] = [];
+
   if (useMultiVoice) {
     // Multi-voice path: distinct voices for narrator / protagonist / love interest.
     const { charA, charB } = resolveCharacterVoicesServer(narratorId, pairing ?? "");
     console.info(`[audio] multi-voice: narrator=${narratorId} charA=${charA} charB=${charB} segments=${segments.length} intensity=${intensity ?? "?"}`);
+    if (attributionQa) {
+      segments.forEach((seg, index) => {
+        const isNarrator = seg.role === "NARRATOR";
+        const vid = isNarrator ? narratorId : seg.role === "CHAR_A" ? charA : charB;
+        const spoken = isNarrator ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+        qaSegments.push({
+          index,
+          role: seg.role,
+          rawText: seg.text,
+          spokenText: spoken,
+          muted: !spoken,
+          voiceId: vid,
+        });
+      });
+    }
     const segBuffers = await runConcurrent(segments, async (seg) => {
       const isNarrator = seg.role === "NARRATOR";
       const vid = isNarrator ? narratorId : seg.role === "CHAR_A" ? charA : charB;
@@ -4706,7 +4744,19 @@ export async function generateAudioFile(
   // Estimate duration from MP3 size: ElevenLabs turbo v2.5 outputs ~128 kbps = 16,000 bytes/sec
   const durationSeconds = Math.max(1, Math.round(finalBuffer.length / 16000));
   await uploadAudioFile(filename, finalBuffer);
-  return { url: `/api/audio/${filename}`, durationSeconds };
+  return {
+    url: `/api/audio/${filename}`,
+    durationSeconds,
+    ...(attributionQa
+      ? {
+          qa: {
+            useMultiVoice,
+            tagger: taggerSource,
+            segments: qaSegments,
+          },
+        }
+      : {}),
+  };
 }
 
 // ---------------------------------------------------------------------------

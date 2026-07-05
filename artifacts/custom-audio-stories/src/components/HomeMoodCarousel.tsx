@@ -6,6 +6,7 @@ import {
   HOME_STORY_SHOWCASES,
   presetForShowcase,
 } from "@/lib/homeStoryShowcases";
+import { preloadHomeCarouselImages } from "@/lib/preloadHomeAssets";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (path: string) => `${BASE}/${path.replace(/^\//, "")}`;
@@ -30,6 +31,10 @@ export function HomeMoodCarousel() {
   const total = HOME_STORY_SHOWCASES.length;
   const preset = useMemo(() => presetForShowcase(story), [story]);
   const selectionRows = preset.rows.slice(0, 6);
+
+  useEffect(() => {
+    preloadHomeCarouselImages();
+  }, []);
 
   const go = useCallback(
     (delta: number) => {
@@ -82,7 +87,9 @@ export function HomeMoodCarousel() {
                 src={img(story.image)}
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover object-center"
-                loading="lazy"
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                fetchPriority={index === 0 ? "high" : "auto"}
                 draggable={false}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0806] via-transparent to-transparent opacity-90" />

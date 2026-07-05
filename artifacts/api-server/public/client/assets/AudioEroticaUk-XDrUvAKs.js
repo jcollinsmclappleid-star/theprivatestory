@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-CiBZxd8U.js";import{S as t,g as i}from"./SEOPage-BBL3DYRC.js";import"./index-CKMAnHKP.js";import"./data-situations-86WGA8_L.js";import"./data-editors-picks-CU3fKZjv.js";import"./StoryAnatomy-BoM-h6dp.js";import"./ThreeDoors-eNu10e6j.js";const r=i("audio-erotica-uk");function n(){return o.jsx(t,{config:r,slug:"audio-erotica-uk"})}export{n as default};

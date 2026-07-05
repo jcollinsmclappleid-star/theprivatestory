@@ -78,12 +78,12 @@ export function StoryRevealPaywall({
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[100] overflow-hidden">
+    <div className="fixed inset-0 z-[100] overflow-hidden bg-[#050203]">
       <div className="absolute inset-0">
         <motion.img
           key={heroSrc}
           initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: hasGeneratedCover ? 0.72 : 0.48, scale: 1 }}
+          animate={{ opacity: hasGeneratedCover ? 0.55 : 0.38, scale: 1 }}
           transition={{ duration: 1.1, ease: "easeOut" }}
           src={heroSrc}
           alt=""
@@ -96,7 +96,7 @@ export function StoryRevealPaywall({
         <div
           className="absolute inset-0"
           style={{
-            background: `radial-gradient(ellipse at 50% 20%, ${accentHex}33 0%, transparent 50%), linear-gradient(0deg, #050203 0%, rgba(5,2,3,0.55) 35%, rgba(5,2,3,0.25) 65%, rgba(5,2,3,0.5) 100%)`,
+            background: `radial-gradient(ellipse at 50% 20%, ${accentHex}28 0%, transparent 50%), linear-gradient(0deg, #050203 0%, #050203ee 28%, #050203dd 55%, #050203f0 100%)`,
           }}
         />
       </div>

@@ -1922,6 +1922,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               situationId={situationId}
               situationLabel={situationLabel}
               previewText={displayedSitLabel || undefined}
+              previewForSituation={(sit) => interpolateSituation(sit, data.pairing ?? "Her & Him")}
               hideBrowseAll
               compact
               fullBrief={{

@@ -71,7 +71,7 @@ export function StickyMobileCTA({
           transition={{ type: "spring", stiffness: 320, damping: 28 }}
           className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pt-3 pointer-events-none"
           style={{
-            background: "linear-gradient(0deg, rgba(10,9,8,0.97) 0%, rgba(10,9,8,0.88) 55%, transparent 100%)",
+            background: "linear-gradient(0deg, #0a0908 0%, #0a0908 40%, #0a0908f5 70%, transparent 100%)",
           }}
         >
           <div className="pointer-events-auto flex flex-col gap-2">

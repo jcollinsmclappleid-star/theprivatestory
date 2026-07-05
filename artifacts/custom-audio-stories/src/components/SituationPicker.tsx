@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Shuffle } from "lucide-react";
+import { ChevronRight, List, Shuffle } from "lucide-react";
 import { Link } from "wouter";
 import {
   SITUATIONS,
@@ -20,6 +20,7 @@ import {
 } from "@/lib/situationImages";
 import { VisualChoiceTile } from "@/components/VisualChoiceTile";
 import { HorizontalScrollRow } from "@/components/ScrollRowHint";
+import { SituationFullListModal } from "@/components/SituationFullListModal";
 
 /** Curated hero situations — one strong pick per popular category. */
 export const CURATED_SITUATION_IDS = [
@@ -55,6 +56,8 @@ export interface SituationVisualPanelProps {
   hideBrowseAll?: boolean;
   /** Override preview interpolation (e.g. Casting Room pronouns). */
   previewText?: string;
+  /** Per-situation excerpt for list + modal (defaults to home interpolation). */
+  previewForSituation?: (sit: SituationDisplay) => string;
   /** Cap visible situation cards (homepage mobile). */
   maxItems?: number;
   /** Tighter typography and scroll regions for small screens. */
@@ -225,9 +228,11 @@ export function SituationLiteraryPanel({
   fullBrief,
   hideBrowseAll = false,
   previewText: previewTextOverride,
+  previewForSituation,
   maxItems = 8,
   compact = false,
 }: SituationVisualPanelProps) {
+  const [fullListOpen, setFullListOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>(
     () =>
       SITUATIONS.find((s) => s.id === situationId)?.category ??
@@ -255,8 +260,11 @@ export function SituationLiteraryPanel({
   }, [categoryPool, curated, maxItems]);
 
   const activeSit = SITUATIONS.find((s) => s.id === situationId);
+  const excerptFor = (sit: SituationDisplay) =>
+    previewForSituation ? previewForSituation(sit) : interpolateHomeSituation(sit, pairing);
+  const totalEligible = useMemo(() => eligibleSituations(pairing).length, [pairing]);
   const previewText = previewTextOverride ?? (activeSit
-    ? interpolateHomeSituation(activeSit, pairing)
+    ? excerptFor(activeSit)
     : situationLabel
       ? situationLabel
       : "Choose what happens — or let us surprise you.");
@@ -328,7 +336,7 @@ export function SituationLiteraryPanel({
         }`}
       >
         {displayPool.map((sit) => {
-          const excerpt = interpolateHomeSituation(sit, pairing);
+          const excerpt = excerptFor(sit);
           const selected = situationId === sit.id;
           return (
             <button
@@ -370,17 +378,38 @@ export function SituationLiteraryPanel({
           <Shuffle className="w-4 h-4" />
           Surprise me
         </button>
+        <button
+          type="button"
+          onClick={() => setFullListOpen(true)}
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2.5 rounded-xl border border-white/12 text-sm text-white/80 hover:text-primary hover:border-primary/30 transition-colors min-h-[44px] sm:min-h-0"
+        >
+          <List className="w-4 h-4" />
+          See full list ({totalEligible})
+        </button>
         {!hideBrowseAll && (
           <Link
             href="/after-dark"
             onClick={browseAll}
             className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/12 text-sm text-white/75 hover:text-primary hover:border-primary/30 transition-colors"
           >
-            Browse all 200+ situations
+            Open in studio
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         )}
       </div>
+
+      <SituationFullListModal
+        open={fullListOpen}
+        pairing={pairing}
+        selectedId={situationId}
+        previewForSituation={previewForSituation}
+        onSelect={(id, label) => {
+          onChange(id, label);
+          const sit = SITUATIONS.find((s) => s.id === id);
+          if (sit) setActiveCategory(sit.category);
+        }}
+        onClose={() => setFullListOpen(false)}
+      />
     </div>
   );
 }

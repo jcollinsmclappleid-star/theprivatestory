@@ -20,8 +20,8 @@ import { TrustBar } from "@/components/TrustBar";
 import { EDITORS_PICKS, type EditorsPick } from "@/data/editorsPicks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { SAMPLE_ID_PREFIX, isSampleId } from "@/data/sampleId";
-import { useHomeSampleAutoplay } from "@/hooks/useHomeSampleAutoplay";
 import { handoffFromSample } from "@/lib/sampleInspiredBrief";
+import { preloadHomeCriticalImages, preloadHomeCarouselImages } from "@/lib/preloadHomeAssets";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -62,6 +62,72 @@ const MOBILE_HERO_PROOF = [
   { icon: Sparkles, text: "1M+ fantasy combinations — yours is written fresh" },
   { icon: Headphones, text: "Full-cast audio · ~10 min · private to your account" },
 ] as const;
+
+/** Shared hero copy — one message on mobile and desktop. */
+function HomeHeroCopy({ layout }: { layout: "mobile" | "desktop" }) {
+  const isMobile = layout === "mobile";
+  return (
+    <>
+      <p
+        className={`text-[10px] font-bold uppercase tracking-[0.32em] text-primary/90 ${
+          isMobile ? "mb-3 text-center" : ""
+        }`}
+      >
+        Your Private Story
+      </p>
+      <h1
+        className={`font-display font-bold text-white tracking-tight ${
+          isMobile
+            ? "text-[1.75rem] leading-[1.08] mb-4 text-center"
+            : "text-[1.85rem] sm:text-5xl md:text-6xl leading-[1.1] md:drop-shadow-xl"
+        }`}
+      >
+        You create the fantasy.
+        <span className={`block text-primary ${isMobile ? "mt-1" : "mt-1 sm:mt-2"}`}>
+          We write &amp; narrate it.
+        </span>
+      </h1>
+      <div
+        className={`hero-sensual-copy space-y-2 ${
+          isMobile ? "mx-auto max-w-[20rem] text-left" : "max-w-xl text-left"
+        }`}
+      >
+        <p
+          className={`font-display italic text-white/92 leading-snug ${
+            isMobile ? "text-[15px]" : "text-base md:text-lg"
+          }`}
+        >
+          Name the longing —
+        </p>
+        <p
+          className={`text-white/78 leading-relaxed border-l border-primary/25 pl-3 ${
+            isMobile ? "text-[13px]" : "text-[15px] md:text-base"
+          }`}
+        >
+          who holds the room, how slow the burn, how far you&apos;re willing to go.
+        </p>
+        <p className={`text-white/70 leading-relaxed ${isMobile ? "text-[13px]" : "text-[15px] md:text-base"}`}>
+          We script your{" "}
+          <span
+            className={`hero-accent-purple font-display italic ${
+              isMobile ? "text-[15px]" : "text-base md:text-lg"
+            }`}
+          >
+            spicy audio fantasy
+          </span>{" "}
+          in full-cast voices.
+        </p>
+        <p
+          className={`text-white/48 tracking-[0.12em] uppercase pt-0.5 ${
+            isMobile ? "text-[11px]" : "text-xs"
+          }`}
+        >
+          ~ten private minutes · written once · yours alone
+        </p>
+      </div>
+    </>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Data hooks
@@ -243,15 +309,23 @@ function SamplePlayCard({ pick, tone, featured = false, showInspiredLink = false
 
 export default function Home() {
   const { pack1, pack5, pack20 } = usePricing();
-  const { play } = useAudioPlayer();
 
-  const featuredSample = useMemo(() => {
-    const slug = HERO_SAMPLE_SLUGS[0];
-    const pick = EDITORS_PICKS.find((p) => p.slug === slug);
-    return pick ? pickToStory(pick) : null;
+  useEffect(() => {
+    preloadHomeCriticalImages();
+    const el = document.getElementById("what-you-get");
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          preloadHomeCarouselImages();
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
-
-  useHomeSampleAutoplay("home-samples", play, featuredSample);
 
   useSEO({
     title: "The Private Story — Personalised Audio Fantasy",
@@ -275,19 +349,7 @@ export default function Home() {
           className="max-w-lg mx-auto"
         >
           <div className="text-center mb-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/90 mb-2.5">
-              Your Private Story
-            </p>
-            <h1 className="text-[1.65rem] font-display font-bold text-white leading-[1.12] mb-3">
-              You create the fantasy.{" "}
-              <span className="text-primary">We write &amp; narrate it.</span>
-            </h1>
-            <p className="text-[14px] text-white/82 leading-relaxed max-w-[21rem] mx-auto">
-              Name the longing — who holds the room, how slow the burn, how far you&apos;re willing to go.
-              We script your{" "}
-              <span className="text-white/95">spicy audio fantasy</span> in full-cast voices: ~ten private
-              minutes, written once, kept only for you.
-            </p>
+            <HomeHeroCopy layout="mobile" />
           </div>
 
           <HeroLivingPortrait variant="contained" className="mx-auto mb-4 !max-h-[min(36vh,300px)]" />
@@ -348,20 +410,7 @@ export default function Home() {
           transition={{ delay: 0.15, duration: 0.75 }}
           className="relative flex flex-col items-start gap-4 md:gap-8 w-full md:max-w-xl lg:max-w-[42%] pt-2 md:pt-4"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-primary/90">
-            Your Private Story
-          </p>
-          <h1 className="text-[1.85rem] sm:text-5xl md:text-6xl font-display font-bold text-white leading-[1.1] md:drop-shadow-xl">
-            Your fantasy. Your cast.{" "}
-            <span className="text-primary">Your story.</span>
-          </h1>
-
-          <p className="text-[15px] md:text-lg text-white/85 tracking-wide max-w-xl leading-relaxed">
-            Create your{" "}
-            <span className="text-white/95">spicy audio fantasy</span> — choose who undoes you, where the air
-            changes, whether you want velvet or fire. We write it in voices, paint the cover, and leave it
-            waiting in your library alone.
-          </p>
+          <HomeHeroCopy layout="desktop" />
 
           <Link href="/after-dark" className="w-full md:w-auto">
             <button
@@ -431,8 +480,7 @@ export default function Home() {
               <span className="text-primary">Ten minutes of yours.</span>
             </h2>
             <p className="text-white/80 text-base leading-relaxed mb-4">
-              Hear the craft in a brief opening — then imagine your version at full length.{" "}
-              <span className="text-white/55 text-sm">Audio starts when you scroll here.</span>
+              Tap play on a card to hear the craft — then imagine your version at full length.
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {[

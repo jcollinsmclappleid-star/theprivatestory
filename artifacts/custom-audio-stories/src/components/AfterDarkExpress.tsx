@@ -40,6 +40,7 @@ import { resolveExpressCategoryImage } from "@/lib/expressAct4Slugs";
 import { HorizontalScrollRow, VerticalScrollCol } from "@/components/ScrollRowHint";
 import { ExpressCharacterNames } from "@/components/ExpressCharacterNames";
 import { PAIRING_IMAGES } from "@/lib/chemistryImages";
+import { preloadExpressPairingImages } from "@/lib/preloadHomeAssets";
 import { SituationLiteraryPanel } from "@/components/SituationPicker";
 import { SITUATIONS } from "@/data/situations";
 import { interpolateHomeSituation } from "@/lib/homeBriefUtils";
@@ -360,6 +361,10 @@ export function AfterDarkExpressPairing({
   const heritageCfg = HERITAGES.find((h) => h.id === heritage);
   const canContinue = !!selectedPairing && !!heritage;
 
+  useEffect(() => {
+    preloadExpressPairingImages();
+  }, []);
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 pb-16">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
@@ -392,6 +397,9 @@ export function AfterDarkExpressPairing({
                   alt=""
                   aria-hidden
                   className="absolute inset-0 w-full h-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
                 <div className="relative z-10 p-6 flex flex-col justify-end min-h-[200px] md:min-h-[240px]">
@@ -437,6 +445,8 @@ export function AfterDarkExpressPairing({
                       alt=""
                       aria-hidden
                       className="absolute inset-0 w-full h-full object-cover opacity-55"
+                      loading="lazy"
+                      decoding="async"
                     />
                   )}
                   <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient}`} style={{ opacity: 0.65 }} />

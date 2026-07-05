@@ -18,7 +18,7 @@ import { LogoMark } from "@/components/Logo";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { MiniDoorCTA } from "@/components/MiniDoorCTA";
 import { TrustBar } from "@/components/TrustBar";
-import { EDITORS_PICKS, type EditorsPick } from "@/data/editorsPicks";
+import { EDITORS_PICKS, EDITORS_PICK_AUDIO_VERSION, type EditorsPick } from "@/data/editorsPicks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { SAMPLE_ID_PREFIX, isSampleId } from "@/data/sampleId";
 import { handoffFromSample } from "@/lib/sampleInspiredBrief";
@@ -31,7 +31,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 // ---------------------------------------------------------------------------
 
 const sampleAudioUrl = (slug: string) =>
-  `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
+  `${API_BASE}/voice-samples/editors-picks/${slug}.mp3?v=${EDITORS_PICK_AUDIO_VERSION}`;
 const sampleCoverUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/covers/${slug}.webp`;
 

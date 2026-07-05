@@ -72,10 +72,31 @@ export function narratorTextForTts(text: string): string | null {
   if (!t) return null;
 
   const sentences = t.match(/[^.!?…]+[.!?…]+["']?\s*|[^.!?…]+$/g) ?? [t];
-  const kept = sentences
+  let kept = sentences
     .map((s) => s.trim())
     .filter((s) => s.length > 0 && !isAttributionOnlySentence(s));
 
   if (kept.length === 0) return null;
+
+  // Safety net: strip any remaining speech-tag clauses from mixed narrator lines.
+  const attrClause = new RegExp(
+    `[,\\s]+(?:(?:the\\s+)?[\\w'-]+\\s+)*(?:${ATTR_VERBS})(?:\\s+(?:his|her|their|my|your|a|an|the)\\s+[\\w'-]+|\\s+[\\w'-]+){0,4}[.!?…,]*`,
+    "gi",
+  );
+  kept = kept
+    .map((s) => s.replace(attrClause, " ").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+
+  if (kept.length === 0) return null;
   return kept.join(" ").trim();
+}
+
+/** Dialogue sent to TTS — inner words only, no quote marks or trailing tags. */
+export function dialogueTextForTts(text: string): string {
+  const inner = text.replace(/^[“"]|[”"]$/g, "").trim();
+  const attrClause = new RegExp(
+    `[,\\s]+(?:(?:the\\s+)?[\\w'-]+\\s+)*(?:${ATTR_VERBS})(?:\\s+(?:his|her|their|my|your|a|an|the)\\s+[\\w'-]+|\\s+[\\w'-]+){0,4}[.!?…,]*$`,
+    "gi",
+  );
+  return inner.replace(attrClause, "").replace(/\s+/g, " ").trim() || inner;
 }

@@ -38,6 +38,9 @@ export interface EditorsPick {
   transcript: string;
 }
 
+/** Bump when editor-pick MP3s are regenerated so browsers fetch fresh audio. */
+export const EDITORS_PICK_AUDIO_VERSION = "3";
+
 export function formatRuntime(sec: number): string {
   if (sec < 60) return `~${sec} sec`;
   const m = Math.floor(sec / 60);

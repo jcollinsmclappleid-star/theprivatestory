@@ -16,6 +16,7 @@ import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
 import {
   EDITORS_PICKS,
   VOICES_META,
+  EDITORS_PICK_AUDIO_VERSION,
   formatRuntime,
   pickIncludesVoice,
   type EditorsPick,
@@ -29,7 +30,7 @@ const BASE = import.meta.env.BASE_URL;
 const API_BASE = BASE.replace(/\/$/, "");
 
 const audioUrl = (slug: string) =>
-  `${API_BASE}/voice-samples/editors-picks/${slug}.mp3`;
+  `${API_BASE}/voice-samples/editors-picks/${slug}.mp3?v=${EDITORS_PICK_AUDIO_VERSION}`;
 const coverUrl = (slug: string) =>
   `${API_BASE}/voice-samples/editors-picks/covers/${slug}.webp`;
 

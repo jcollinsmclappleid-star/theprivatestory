@@ -31,7 +31,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
-import { narratorTextForTts } from "./lib/narratorAttributionMute.mjs";
+import { narratorTextForTts, dialogueTextForTts } from "./lib/narratorAttributionMute.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(
@@ -816,7 +816,8 @@ async function generateOne(pick) {
       for (const seg of tagged.segments) {
         const vid = seg.role === "NARRATOR" ? narratorId : seg.role === "CHAR_A" ? charA : charB;
         const vname = VNAMES[vid] ?? vid.slice(0,8);
-        const preview = seg.text.replace(/\n/g," ").slice(0,72);
+        const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+        const preview = (spoken ?? `(muted) ${seg.text}`).replace(/\n/g," ").slice(0,72);
         console.log(`  [${seg.role.padEnd(8)}] ${vname.padEnd(6)} | ${preview}`);
       }
       return;
@@ -826,12 +827,8 @@ async function generateOne(pick) {
       const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
       // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
-      const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : seg.text;
-      if (!spoken) {
-        if (DRY_RUN) console.log(`  [${seg.role.padEnd(8)}] (muted tag) | ${seg.text.replace(/\n/g, " ").slice(0, 72)}`);
-        continue;
-      }
-      if (DRY_RUN) continue;
+      const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
+      if (!spoken) continue;
       const buf = await mvTTS(vid, spoken, style);
       buffers.push(await trimSilenceFromMp3(buf));
     }

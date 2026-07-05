@@ -18,7 +18,7 @@ import { STORY_CATEGORIES } from "../lib/storyCategories.js";
 import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInput, validateNameFormat } from "../lib/contentBlocklist.js";
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
-import { narratorTextForTts } from "../lib/narratorAttributionMute.js";
+import { narratorTextForTts, dialogueTextForTts } from "../lib/narratorAttributionMute.js";
 import { db, contentBlocks, usersTable, generationJobs } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
@@ -4648,7 +4648,7 @@ export async function generateAudioFile(
       // Narrator gets higher stability for consistent tone across chunks;
       // character voices stay expressive with lower stability.
       const stability = isNarrator ? NARRATOR_STABILITY : CHAR_STABILITY;
-      const spoken = isNarrator ? narratorTextForTts(seg.text) : seg.text;
+      const spoken = isNarrator ? narratorTextForTts(seg.text) : dialogueTextForTts(seg.text);
       if (!spoken) return Buffer.alloc(0);
       const buf = await ttsWithFallback(vid, spoken, style, stability);
       return trimSilenceFromMp3(buf);

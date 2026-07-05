@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Link } from "wouter";
 import { Play, Pause, Headphones, ChevronRight } from "lucide-react";
-import { EDITORS_PICKS, formatRuntime } from "@/data/editorsPicks";
+import { EDITORS_PICKS, EDITORS_PICK_AUDIO_VERSION, formatRuntime } from "@/data/editorsPicks";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { SAMPLE_ID_PREFIX, isSampleId } from "@/data/sampleId";
 import type { Story } from "@workspace/api-client-react";
@@ -20,7 +20,7 @@ function pickToStory(slug: string): Story | null {
     tags: pick.tags,
     duration: formatRuntime(pick.runtimeSec),
     coverImage: `${API_BASE}/voice-samples/editors-picks/covers/${pick.slug}.webp`,
-    audioUrl: `${API_BASE}/voice-samples/editors-picks/${pick.slug}.mp3`,
+    audioUrl: `${API_BASE}/voice-samples/editors-picks/${pick.slug}.mp3?v=${EDITORS_PICK_AUDIO_VERSION}`,
     isPremium: false,
     isNew: false,
   };

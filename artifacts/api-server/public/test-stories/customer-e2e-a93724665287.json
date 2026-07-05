@@ -1,0 +1,417 @@
+{
+  "generatedAt": "2026-07-05T17:54:16.273Z",
+  "customerJourney": "After Dark Express → The Colleague → Her & Him → Explicit → Kayla",
+  "title": "The Risk in the Glow",
+  "description": "After hours in his office, the line between professional and personal blurs—until it snaps.",
+  "durationSeconds": 319,
+  "audioUrl": "/api/audio/audio-a937246652876c7e8164e49e5b048176.mp3",
+  "audioFilename": "audio-a937246652876c7e8164e49e5b048176.mp3",
+  "listenUrl": "http://localhost:3000/api/audio/audio-a937246652876c7e8164e49e5b048176.mp3",
+  "staticListenUrl": "http://127.0.0.1:8770/audio/audio-a937246652876c7e8164e49e5b048176.mp3",
+  "qcScore": 8.8,
+  "qcPassed": true,
+  "pairing": "Her & Him",
+  "narrator": "Kayla",
+  "partnerName": "James",
+  "sceneCount": 5,
+  "igniteScene": {
+    "id": 4,
+    "heading": "The Point of No Return",
+    "quoteLines": 6,
+    "wordCount": 189,
+    "textPreview": "The salt of his skin, the roughness of his stubble, the way his breath hitched when your lips brushed his collarbone—all of it registered before your mind could form a word. \"Tell me what you want,\" he said, his voice rough with need. You didn’t hesitate. \"I want you inside me,\" you breathed. \"Now.\" His hands gripped your hips, pulling you onto him, and the slide of his body into yours was everyth"
+  },
+  "qa": {
+    "useMultiVoice": true,
+    "tagger": "attributeSpeakers",
+    "segments": [
+      {
+        "index": 0,
+        "role": "NARRATOR",
+        "rawText": "You’d told yourself this was just another late-night review. The office was empty, the city outside a grid of gold and shadow, but your pulse had already betrayed you. The way your fingers tightened around the tablet wasn’t professional. Neither was the way your breath hitched when the elevator dinged—too early, too loud. James stepped out, his cufflinks catching the light like a warning. He moved with the quiet authority of someone who owned the floor, the building, the air itself. His suit was tailored, but it was the way he rolled his sleeves to the elbow that made your throat dry. A decade at this firm, and you’d never noticed how his hands looked when they weren’t holding a pen",
+        "spokenText": "You’d told yourself this was just another late-night review. The office was empty, the city outside a grid of gold and shadow, but your pulse had already betrayed you. The way your fingers tightened around the tablet wasn’t professional. Neither was the way your breath hitched when the elevator dinged—too early, too loud. James stepped out, his cufflinks catching the light like a warning. He moved with the quiet authority of someone who owned the floor, the building, the air itself. His suit was tailored, but it was the way he rolled his sleeves to the elbow that made your throat dry. A decade at this firm, and you’d never noticed how his hands looked when they weren’t holding a pen",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 1,
+        "role": "CHAR_A",
+        "rawText": "\"You wanted to see me, James?\"",
+        "spokenText": "You wanted to see me, James?",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 2,
+        "role": "NARRATOR",
+        "rawText": "Your voice was steady. That was the lie. His gaze lingered on the way your blouse caught the light, just a second too long",
+        "spokenText": "Your voice was steady. That was the lie. His gaze lingered on the way your blouse caught the light, just a second too long",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 3,
+        "role": "CHAR_B",
+        "rawText": "\"I did,\"",
+        "spokenText": "I did,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 4,
+        "role": "CHAR_A",
+        "rawText": "\"There’s something I need to discuss—professionally.\"",
+        "spokenText": "There’s something I need to discuss—professionally.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 5,
+        "role": "NARRATOR",
+        "rawText": "The word hung between you, fragile as glass. You exhaled",
+        "spokenText": "The word hung between you, fragile as glass. You exhaled",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 6,
+        "role": "CHAR_A",
+        "rawText": "\"Of course. Professionally.\"",
+        "spokenText": "Of course. Professionally.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 7,
+        "role": "NARRATOR",
+        "rawText": "But the air didn’t feel professional at all. It felt like the moment before a storm, when the sky is still clear but the pressure has already dropped. The leather of the chair was cold against your thighs, but his voice was warm, rough at the edges it settled into the space between you like a physical thing, heavy and alive",
+        "spokenText": "But the air didn’t feel professional at all. It felt like the moment before a storm, when the sky is still clear but the pressure has already dropped. The leather of the chair was cold against your thighs, but his voice was warm, rough at the edges it settled into the space between you like a physical thing, heavy and alive",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 8,
+        "role": "CHAR_B",
+        "rawText": "\"You’re staring,\"",
+        "spokenText": "You’re staring,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 9,
+        "role": "NARRATOR",
+        "rawText": "not looking up from the report. The words were light, but the way his fingers paused over the page wasn’t. You leaned forward, just enough that the fabric of your skirt whispered against the chair",
+        "spokenText": "not looking up from the report. The words were light, but the way his fingers paused over the page wasn’t. You leaned forward, just enough that the fabric of your skirt whispered against the chair",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 10,
+        "role": "CHAR_A",
+        "rawText": "\"You’re the one who called me in after hours.\"",
+        "spokenText": "You’re the one who called me in after hours.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 11,
+        "role": "NARRATOR",
+        "rawText": "The air between you felt like a live wire, humming. His sleeve brushed yours when he reached for a pen, and the contact was electric—brief, accidental, but your skin remembered it. He noticed. Of course he noticed. His voice dropped, lower now",
+        "spokenText": "The air between you felt like a live wire, humming. His sleeve brushed yours when he reached for a pen, and the contact was electric—brief, accidental, but your skin remembered it. He noticed. Of course he noticed. His voice dropped, lower now",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 12,
+        "role": "CHAR_B",
+        "rawText": "\"And now I’m wondering if that was a mistake.\"",
+        "spokenText": "And now I’m wondering if that was a mistake.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 13,
+        "role": "NARRATOR",
+        "rawText": "The words weren’t a question. They were an invitation. Or a confession. The pressure of his presence was everywhere—his cologne, the heat of his body, the way his eyes flicked to your mouth when you licked your lips. You didn’t mean to neither did he. But the tension wasn’t accidental anymore. It was deliberate. And it was growing. He didn’t wait for you to finish the sentence. His hand was on your wrist before you could pull away—warm, firm, impossible to ignore",
+        "spokenText": "The words weren’t a question. They were an invitation. Or a confession. The pressure of his presence was everywhere—his cologne, the heat of his body, the way his eyes flicked to your mouth when you licked your lips. You didn’t mean to neither did he. But the tension wasn’t accidental anymore. It was deliberate. And it was growing. He didn’t wait for you to finish the sentence. His hand was on your wrist before you could pull away—warm, firm, impossible to ignore",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 14,
+        "role": "CHAR_A",
+        "rawText": "\"James—\"",
+        "spokenText": "James—",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 15,
+        "role": "NARRATOR",
+        "rawText": "His name broke in your throat. His thumb traced the pulse there, slow, deliberate",
+        "spokenText": "His name broke in your throat. His thumb traced the pulse there, slow, deliberate",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 16,
+        "role": "CHAR_B",
+        "rawText": "\"Say it again,\"",
+        "spokenText": "Say it again,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 17,
+        "role": "CHAR_B",
+        "rawText": "\"Say my name like that.\"",
+        "spokenText": "Say my name like that.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 18,
+        "role": "NARRATOR",
+        "rawText": "His eyes were dark, fixed on yours, and you couldn’t look away. Not when his grip tightened. Not when his breath hitched. Not when the world narrowed to the heat of his skin against yours",
+        "spokenText": "His eyes were dark, fixed on yours, and you couldn’t look away. Not when his grip tightened. Not when his breath hitched. Not when the world narrowed to the heat of his skin against yours",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 19,
+        "role": "CHAR_A",
+        "rawText": "\"We can’t,\"",
+        "spokenText": "We can’t,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 20,
+        "role": "NARRATOR",
+        "rawText": "But your body leaned into his touch, betraying you. The words were a lie. The want wasn’t. The way his fingers slid up your arm, the way your breath caught—none of it was professional. None of it was safe. And neither of you moved to stop it. The salt of his skin, the roughness of his stubble, the way his breath hitched when your lips brushed his collarbone—all of it registered before your mind could form a word",
+        "spokenText": "But your body leaned into his touch, betraying you. The words were a lie. The want wasn’t. The way his fingers slid up your arm, the way your breath caught—none of it was professional. None of it was safe. And neither of you moved to stop it. The salt of his skin, the roughness of his stubble, the way his breath hitched when your lips brushed his collarbone—all of it registered before your mind could form a word",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 21,
+        "role": "CHAR_B",
+        "rawText": "\"Tell me what you want,\"",
+        "spokenText": "Tell me what you want,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 22,
+        "role": "NARRATOR",
+        "rawText": "his voice rough with need. You didn’t hesitate",
+        "spokenText": "his voice rough with need. You didn’t hesitate",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 23,
+        "role": "CHAR_A",
+        "rawText": "\"I want you inside me,\"",
+        "spokenText": "I want you inside me,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 24,
+        "role": "CHAR_A",
+        "rawText": "\"Now.\"",
+        "spokenText": "Now.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 25,
+        "role": "NARRATOR",
+        "rawText": "His hands gripped your hips, pulling you onto him, and the slide of his body into yours was everything—slow, deliberate, impossible to resist. He filled you completely, and the sound he made when you tightened around him was raw, unguarded",
+        "spokenText": "His hands gripped your hips, pulling you onto him, and the slide of his body into yours was everything—slow, deliberate, impossible to resist. He filled you completely, and the sound he made when you tightened around him was raw, unguarded",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 26,
+        "role": "CHAR_B",
+        "rawText": "\"Turn over,\"",
+        "spokenText": "Turn over,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 27,
+        "role": "NARRATOR",
+        "rawText": "his hands guiding you onto your knees. You obeyed, arching into him, and the friction was exquisite",
+        "spokenText": "his hands guiding you onto your knees. You obeyed, arching into him, and the friction was exquisite",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 28,
+        "role": "CHAR_A",
+        "rawText": "\"Come here,\"",
+        "spokenText": "Come here,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 29,
+        "role": "NARRATOR",
+        "rawText": "pulling him back onto you, your legs wrapping around his waist. His mouth found yours, swallowing your gasp as he moved deeper",
+        "spokenText": "pulling him back onto you, your legs wrapping around his waist. His mouth found yours, swallowing your gasp as he moved deeper",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 30,
+        "role": "CHAR_A",
+        "rawText": "\"I want to feel you come inside me,\"",
+        "spokenText": "I want to feel you come inside me,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 31,
+        "role": "NARRATOR",
+        "rawText": "and the words undid him. His rhythm faltered, his breath ragged, and the way he shuddered against you was the most intimate thing you’d ever felt. The risk was part of the pull. And you didn’t care anymore. You hadn’t planned to stay. But his chest was warm beneath your cheek, his fingers tracing idle patterns on your skin, and the city outside felt very far away",
+        "spokenText": "and the words undid him. His rhythm faltered, his breath ragged, and the way he shuddered against you was the most intimate thing you’d ever felt. The risk was part of the pull. And you didn’t care anymore. You hadn’t planned to stay. But his chest was warm beneath your cheek, his fingers tracing idle patterns on your skin, and the city outside felt very far away",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 32,
+        "role": "CHAR_A",
+        "rawText": "\"We shouldn’t have done this,\"",
+        "spokenText": "We shouldn’t have done this,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 33,
+        "role": "NARRATOR",
+        "rawText": "but your voice lacked conviction. He didn’t stop touching you",
+        "spokenText": "but your voice lacked conviction. He didn’t stop touching you",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 34,
+        "role": "CHAR_B",
+        "rawText": "\"But you wanted to,\"",
+        "spokenText": "But you wanted to,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 35,
+        "role": "CHAR_B",
+        "rawText": "\"And so did I.\"",
+        "spokenText": "And so did I.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 36,
+        "role": "NARRATOR",
+        "rawText": "The words settled between you, heavier now. The risk was still there. The boundary hadn’t disappeared. It had just shifted",
+        "spokenText": "The words settled between you, heavier now. The risk was still there. The boundary hadn’t disappeared. It had just shifted",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 37,
+        "role": "CHAR_A",
+        "rawText": "\"The risk is part of the pull,\"",
+        "spokenText": "The risk is part of the pull,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 38,
+        "role": "NARRATOR",
+        "rawText": "Neither of you moved to leave. The silence wasn’t uncomfortable. It was full—of what had happened, of what might happen next. The glow of the city lights blurred through the windows, soft and endless. And for now, that was enough",
+        "spokenText": "Neither of you moved to leave. The silence wasn’t uncomfortable. It was full—of what had happened, of what might happen next. The glow of the city lights blurred through the windows, soft and endless. And for now, that was enough",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      }
+    ]
+  },
+  "elapsedMs": 108530,
+  "intake": {
+    "mood": "Charged",
+    "intensity": "Explicit",
+    "numericIntensity": 5,
+    "voiceFeel": "aTxZrSrp47xsP6Ot4Kgd",
+    "storyLength": "10 min",
+    "perspective": "her",
+    "cinematicVisuals": true,
+    "emotionalFocus": false,
+    "whoIsHe": "The Executive",
+    "dynamic": "Magnetic",
+    "storyMode": "forbidden",
+    "experienceTags": [
+      "He shouldn't, and neither should you",
+      "The risk is part of the pull"
+    ],
+    "pairing": "Her & Him",
+    "heritage": "Ambiguous",
+    "atmosphere": "Electric",
+    "chemistry": "Magnetic",
+    "setting": "After hours",
+    "listenerName": "You",
+    "partnerName": "James",
+    "scenarioRoom": "the_forbidden",
+    "situationId": "fc_01",
+    "bypassCache": true
+  },
+  "fullScenes": [
+    {
+      "id": 1,
+      "heading": "The Last Meeting of the Day",
+      "text": "You’d told yourself this was just another late-night review. The office was empty, the city outside a grid of gold and shadow, but your pulse had already betrayed you. The way your fingers tightened around the tablet wasn’t professional. Neither was the way your breath hitched when the elevator dinged—too early, too loud. James stepped out, his cufflinks catching the light like a warning. He moved with the quiet authority of someone who owned the floor, the building, the air itself. His suit was tailored, but it was the way he rolled his sleeves to the elbow that made your throat dry. A decade at this firm, and you’d never noticed how his hands looked when they weren’t holding a pen. \"You wanted to see me, James?\" Your voice was steady. That was the lie. His gaze lingered on the way your blouse caught the light, just a second too long. \"I did,\" he said. \"There’s something I need to discuss—professionally.\" The word hung between you, fragile as glass. You exhaled. \"Of course. Professionally.\" But the air didn’t feel professional at all. It felt like the moment before a storm, when the sky is still clear but the pressure has already dropped.",
+      "rawText": "You’d told yourself this was just another late-night review. The office was empty, the city outside a grid of gold and shadow, but your pulse had already betrayed you. The way your fingers tightened around the tablet wasn’t professional. Neither was the way your breath hitched when the elevator dinged—too early, too loud. James stepped out, his cufflinks catching the light like a warning. He moved with the quiet authority of someone who owned the floor, the building, the air itself. His suit was tailored, but it was the way he rolled his sleeves to the elbow that made your throat dry. A decade at this firm, and you’d never noticed how his hands looked when they weren’t holding a pen. \"You wanted to see me, James?\" Your voice was steady. That was the lie. His gaze lingered on the way your blouse caught the light, just a second too long. \"I did,\" he said. \"There’s something I need to discuss—professionally.\" The word hung between you, fragile as glass. You exhaled. \"Of course. Professionally.\" But the air didn’t feel professional at all. It felt like the moment before a storm, when the sky is still clear but the pressure has already dropped.",
+      "visualPrompt": "",
+      "durationEstimate": 60,
+      "emotionalShift": "professional distance → charged awareness"
+    },
+    {
+      "id": 2,
+      "heading": "The Weight of Proximity",
+      "text": "The leather of the chair was cold against your thighs, but his voice was warm, rough at the edges it settled into the space between you like a physical thing, heavy and alive. \"You’re staring,\" he said, not looking up from the report. The words were light, but the way his fingers paused over the page wasn’t. You leaned forward, just enough that the fabric of your skirt whispered against the chair. \"You’re the one who called me in after hours.\" The air between you felt like a live wire, humming. His sleeve brushed yours when he reached for a pen, and the contact was electric—brief, accidental, but your skin remembered it. He noticed. Of course he noticed. His voice dropped, lower now. \"And now I’m wondering if that was a mistake.\" The words weren’t a question. They were an invitation. Or a confession. The pressure of his presence was everywhere—his cologne, the heat of his body, the way his eyes flicked to your mouth when you licked your lips. You didn’t mean to neither did he. But the tension wasn’t accidental anymore. It was deliberate. And it was growing.",
+      "rawText": "The leather of the chair was cold against your thighs, but his voice was warm, rough at the edges it settled into the space between you like a physical thing, heavy and alive. \"You’re staring,\" he said, not looking up from the report. The words were light, but the way his fingers paused over the page wasn’t. You leaned forward, just enough that the fabric of your skirt whispered against the chair. \"You’re the one who called me in after hours.\" The air between you felt like a live wire, humming. His sleeve brushed yours when he reached for a pen, and the contact was electric—brief, accidental, but your skin remembered it. He noticed. Of course he noticed. His voice dropped, lower now. \"And now I’m wondering if that was a mistake.\" The words weren’t a question. They were an invitation. Or a confession. The pressure of his presence was everywhere—his cologne, the heat of his body, the way his eyes flicked to your mouth when you licked your lips. You didn’t mean to neither did he. But the tension wasn’t accidental anymore. It was deliberate. And it was growing.",
+      "visualPrompt": "",
+      "durationEstimate": 70,
+      "emotionalShift": "awareness → longing"
+    },
+    {
+      "id": 3,
+      "heading": "The First Touch",
+      "text": "He didn’t wait for you to finish the sentence. His hand was on your wrist before you could pull away—warm, firm, impossible to ignore. \"James—\" His name broke in your throat. His thumb traced the pulse there, slow, deliberate. \"Say it again,\" he murmured. \"Say my name like that.\" His eyes were dark, fixed on yours, and you couldn’t look away. Not when his grip tightened. Not when his breath hitched. Not when the world narrowed to the heat of his skin against yours. \"We can’t,\" you said. But your body leaned into his touch, betraying you. The words were a lie. The want wasn’t. The way his fingers slid up your arm, the way your breath caught—none of it was professional. None of it was safe. And neither of you moved to stop it.",
+      "rawText": "He didn’t wait for you to finish the sentence. His hand was on your wrist before you could pull away—warm, firm, impossible to ignore. \"James—\" His name broke in your throat. His thumb traced the pulse there, slow, deliberate. \"Say it again,\" he murmured. \"Say my name like that.\" His eyes were dark, fixed on yours, and you couldn’t look away. Not when his grip tightened. Not when his breath hitched. Not when the world narrowed to the heat of his skin against yours. \"We can’t,\" you said. But your body leaned into his touch, betraying you. The words were a lie. The want wasn’t. The way his fingers slid up your arm, the way your breath caught—none of it was professional. None of it was safe. And neither of you moved to stop it.",
+      "visualPrompt": "",
+      "durationEstimate": 80,
+      "emotionalShift": "restraint → surrender to the moment"
+    },
+    {
+      "id": 4,
+      "heading": "The Point of No Return",
+      "text": "The salt of his skin, the roughness of his stubble, the way his breath hitched when your lips brushed his collarbone—all of it registered before your mind could form a word. \"Tell me what you want,\" he said, his voice rough with need. You didn’t hesitate. \"I want you inside me,\" you breathed. \"Now.\" His hands gripped your hips, pulling you onto him, and the slide of his body into yours was everything—slow, deliberate, impossible to resist. He filled you completely, and the sound he made when you tightened around him was raw, unguarded. \"Turn over,\" he commanded, his hands guiding you onto your knees. You obeyed, arching into him, and the friction was exquisite. \"Come here,\" you said, pulling him back onto you, your legs wrapping around his waist. His mouth found yours, swallowing your gasp as he moved deeper. \"I want to feel you come inside me,\" you whispered, and the words undid him. His rhythm faltered, his breath ragged, and the way he shuddered against you was the most intimate thing you’d ever felt. The risk was part of the pull. And you didn’t care anymore.",
+      "rawText": "The salt of his skin, the roughness of his stubble, the way his breath hitched when your lips brushed his collarbone—all of it registered before your mind could form a word. \"Tell me what you want,\" he said, his voice rough with need. You didn’t hesitate. \"I want you inside me,\" you breathed. \"Now.\" His hands gripped your hips, pulling you onto him, and the slide of his body into yours was everything—slow, deliberate, impossible to resist. He filled you completely, and the sound he made when you tightened around him was raw, unguarded. \"Turn over,\" he commanded, his hands guiding you onto your knees. You obeyed, arching into him, and the friction was exquisite. \"Come here,\" you said, pulling him back onto you, your legs wrapping around his waist. His mouth found yours, swallowing your gasp as he moved deeper. \"I want to feel you come inside me,\" you whispered, and the words undid him. His rhythm faltered, his breath ragged, and the way he shuddered against you was the most intimate thing you’d ever felt. The risk was part of the pull. And you didn’t care anymore.",
+      "visualPrompt": "",
+      "durationEstimate": 90,
+      "emotionalShift": "vulnerability → raw desire"
+    },
+    {
+      "id": 5,
+      "heading": "The Aftermath of Want",
+      "text": "You hadn’t planned to stay. But his chest was warm beneath your cheek, his fingers tracing idle patterns on your skin, and the city outside felt very far away. \"We shouldn’t have done this,\" you said, but your voice lacked conviction. He didn’t stop touching you. \"But you wanted to,\" he said. \"And so did I.\" The words settled between you, heavier now. The risk was still there. The boundary hadn’t disappeared. It had just shifted. \"The risk is part of the pull,\" you whispered. Neither of you moved to leave. The silence wasn’t uncomfortable. It was full—of what had happened, of what might happen next. The glow of the city lights blurred through the windows, soft and endless. And for now, that was enough.",
+      "rawText": "You hadn’t planned to stay. But his chest was warm beneath your cheek, his fingers tracing idle patterns on your skin, and the city outside felt very far away. \"We shouldn’t have done this,\" you said, but your voice lacked conviction. He didn’t stop touching you. \"But you wanted to,\" he said. \"And so did I.\" The words settled between you, heavier now. The risk was still there. The boundary hadn’t disappeared. It had just shifted. \"The risk is part of the pull,\" you whispered. Neither of you moved to leave. The silence wasn’t uncomfortable. It was full—of what had happened, of what might happen next. The glow of the city lights blurred through the windows, soft and endless. And for now, that was enough.",
+      "visualPrompt": "",
+      "durationEstimate": 50,
+      "emotionalShift": "release → lingering ache"
+    }
+  ]
+}

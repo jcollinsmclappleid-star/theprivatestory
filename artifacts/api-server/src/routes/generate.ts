@@ -19,6 +19,15 @@ import { isBlockedInput, isBlockedOutput, isInjectionAttempt, isNearBoundaryInpu
 import { VALID_EXPERIENCE_TAGS } from "../lib/validTags.js";
 import { logger } from "../lib/logger.js";
 import { cleanNarratorSegmentsForTts, speakableDialogueLine, speakableNarratorSpan } from "../lib/dialogueAttribution.js";
+import {
+  buildExpandOnlyNote,
+  buildStructuralRetryNote,
+  MAX_STRUCTURAL_WRITE_ATTEMPTS,
+  minWordsForStoryLength,
+  totalWordCountFromSceneTexts,
+  validateStoryLength,
+  wordCountTargetForStoryLength,
+} from "../lib/storyLength.js";
 import { db, contentBlocks, usersTable, generationJobs } from "@workspace/db";
 import { sql as drizzleSql, eq } from "drizzle-orm";
 import { isUserBanned, logModerationEvent } from "../lib/moderationLog.js";
@@ -3093,6 +3102,8 @@ interface OriginalUserInput {
   hookSentence?: string;
   /** For series episodes: the arc-defined word count target (e.g. "1,800 — 1,900 words") */
   wordCountTarget?: string;
+  /** Customer story length selection — drives minimum word count enforcement */
+  storyLength?: string;
   /** True for series episodes — enforces third-person close POV instead of second-person */
   isSeries?: boolean;
   /** True when the input triggered a Tier-2 near-boundary flag — activates enhanced safety layer */
@@ -3391,8 +3402,11 @@ SPECIFIC PROHIBITIONS:
 If you write an IGNITE scene without explicit sex, you have failed this brief. Write the sex.\n`
     : "";
 
-  const wordCountDirective = originalInput?.wordCountTarget
-    ? `\nWORD COUNT TARGET (MANDATORY): ${originalInput.wordCountTarget} total across all scenes. Distribute proportionally by scene phase. Stay within 5% of this target — do not compress, do not pad.\n`
+  const wordCountTarget =
+    originalInput?.wordCountTarget ??
+    wordCountTargetForStoryLength(originalInput?.storyLength);
+  const wordCountDirective = wordCountTarget
+    ? `\nWORD COUNT TARGET (MANDATORY): ${wordCountTarget} total across all scenes. Distribute proportionally by scene phase. Stay within 5% of this target — do not compress, do not pad.\n`
     : "";
 
   const povDirective = isSeries
@@ -3763,11 +3777,6 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
   ]
 }`;
 
-  function totalWordCount(p: Record<string, unknown>): number {
-    const scenes = (p.scenes ?? []) as Array<{ text?: string }>;
-    return scenes.reduce((sum, s) => sum + (s.text ?? "").trim().split(/\s+/).filter(Boolean).length, 0);
-  }
-
   async function attemptWrite(extraUserNote?: string): Promise<Record<string, unknown>> {
     const finalUserPrompt = extraUserNote ? `${userPrompt}\n\n${extraUserNote}` : userPrompt;
     const completion = await openrouter.chat.completions.create({
@@ -3784,11 +3793,11 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
   }
 
   const TARGET_SCENES = brief.scene_count ?? 5;
-  const MIN_WORDS = 1440;
+  const MIN_WORDS = minWordsForStoryLength(originalInput?.storyLength);
 
   let parsed: Record<string, unknown>;
 
-  // Attempt 1 — clean run
+  // Attempt 1 — clean run (parse retries are separate from structural retries)
   try {
     parsed = await attemptWrite();
   } catch (err) {
@@ -3806,29 +3815,64 @@ Return ONLY raw JSON — no markdown code fences, no backticks, no explanation. 
     }
   }
 
-  // Structural validation — scene count and minimum word count
-  const sceneCount1 = ((parsed.scenes ?? []) as unknown[]).length;
-  const words1 = totalWordCount(parsed);
-  const sceneCountOk = sceneCount1 === TARGET_SCENES;
-  const wordCountOk = words1 >= MIN_WORDS;
+  // Structural validation — scene count, total words, per-phase floors. Re-validate after every retry.
+  let validation = validateStoryLength(parsed, TARGET_SCENES, brief.scene_plan, MIN_WORDS);
+  let structuralAttempt = 1;
 
-  if (!sceneCountOk || !wordCountOk) {
-    const notes: string[] = [];
-    if (!sceneCountOk) {
-      notes.push(`CRITICAL — SCENE COUNT: You returned ${sceneCount1} scene(s) but the story requires EXACTLY ${TARGET_SCENES} scenes (ESTABLISH / SIMMER / CRACK / IGNITE / RESONATE). Return exactly ${TARGET_SCENES} scene objects in the "scenes" array.`);
-    }
-    if (!wordCountOk) {
-      notes.push(`CRITICAL — WORD COUNT: Your story has only ~${words1} words. The TARGET is 1,440–1,760 words total (no more, no less). Each phase has a mandatory word range — write to this length exactly:\n  ESTABLISH = 280–320 words (count them — do not stop early)\n  SIMMER = 310–350 words (count them — do not stop early)\n  CRACK = 340–380 words (count them — do not stop early)\n  IGNITE = 380–420 words (count them — do not stop early)\n  RESONATE = 220–260 words\nDo NOT compress. Do NOT summarise. Write each phase fully to its minimum before moving to the next. Do NOT exceed the upper bound.`);
-    }
-    const retryNote = notes.join("\n\n");
-    logger.warn({ sceneCount: sceneCount1, wordCount: words1, target: TARGET_SCENES, minWords: MIN_WORDS }, "[writeStory] Structural validation failed (attempt 1/2) — retrying with correction prompt");
+  while (!validation.ok && structuralAttempt < MAX_STRUCTURAL_WRITE_ATTEMPTS) {
+    const retryNote = buildStructuralRetryNote(validation);
+    logger.warn(
+      {
+        structuralAttempt,
+        sceneCount: validation.sceneCount,
+        wordCount: validation.wordCount,
+        target: TARGET_SCENES,
+        minWords: MIN_WORDS,
+        shortPhases: validation.shortPhases,
+      },
+      "[writeStory] Structural validation failed — retrying with correction prompt",
+    );
 
     try {
-      const retried = await attemptWrite(retryNote);
-      parsed = retried;
+      parsed = await attemptWrite(retryNote);
+      validation = validateStoryLength(parsed, TARGET_SCENES, brief.scene_plan, MIN_WORDS);
     } catch (retryErr) {
-      logger.warn({ err: retryErr instanceof Error ? retryErr.message : String(retryErr) }, "[writeStory] Structural retry parse failed (attempt 2/2) — using best-effort first result");
+      logger.warn(
+        { err: retryErr instanceof Error ? retryErr.message : String(retryErr), structuralAttempt },
+        "[writeStory] Structural retry parse failed — keeping last valid draft",
+      );
+      break;
     }
+    structuralAttempt++;
+  }
+
+  // Final expand-only pass when close but still under minimum
+  if (!validation.ok) {
+    logger.warn(
+      { wordCount: validation.wordCount, minWords: MIN_WORDS, shortPhases: validation.shortPhases },
+      "[writeStory] Structural retries exhausted — attempting expand-only pass",
+    );
+    try {
+      const expanded = await attemptWrite(buildExpandOnlyNote(parsed, validation));
+      const expandedValidation = validateStoryLength(expanded, TARGET_SCENES, brief.scene_plan, MIN_WORDS);
+      if (expandedValidation.ok || expandedValidation.wordCount > validation.wordCount) {
+        parsed = expanded;
+        validation = expandedValidation;
+      }
+    } catch (expandErr) {
+      logger.warn({ err: expandErr instanceof Error ? expandErr.message : String(expandErr) }, "[writeStory] Expand-only pass failed");
+    }
+  }
+
+  if (!validation.ok) {
+    logger.error(
+      { sceneCount: validation.sceneCount, wordCount: validation.wordCount, minWords: MIN_WORDS, shortPhases: validation.shortPhases },
+      "[writeStory] Story below minimum length after all retries — refusing to ship",
+    );
+    throw Object.assign(
+      new Error("Story generation did not reach the required length. Please try again — you will not be charged twice."),
+      { statusCode: 503 },
+    );
   }
 
   // Smart scene selection: if the model generated more scenes than requested,
@@ -5573,6 +5617,8 @@ router.post("/generate-full-story", async (req, res) => {
       situationId: intake.situationId,
       perspective: intake.perspective,
       varietyProfile: fullStoryVarietyProfile,
+      storyLength: intake.storyLength,
+      wordCountTarget: wordCountTargetForStoryLength(intake.storyLength),
     };
     let story = await writeStoryFromBrief(brief, intake.listenerName, intake.intensity, originalUserInput);
 
@@ -5696,6 +5742,20 @@ router.post("/generate-full-story", async (req, res) => {
       : buildCoverPromptFromFormData(intake);
     console.log(`[cover-prompt] casting=${isCastingBased}`, coverPrompt);
     const imagePrompts: ImagePrompts = { coverPrompt, scenePrompts: [] };
+
+    // Step 7b: Final length gate — never spend on audio if prose is under minimum
+    const minWords = minWordsForStoryLength(intake.storyLength);
+    const storyWords = totalWordCountFromSceneTexts(story.scenes.map((s) => s.text));
+    if (storyWords < minWords) {
+      logger.error(
+        { storyWords, minWords, storyLength: intake.storyLength },
+        "[generate] Story below minimum word count before audio — refusing to ship",
+      );
+      throw Object.assign(
+        new Error("Story generation did not reach the required length. Please try again — you will not be charged twice."),
+        { statusCode: 503 },
+      );
+    }
 
     // Step 8: Images + audio in parallel
     const storyHash = getCacheKey({ brief, story });

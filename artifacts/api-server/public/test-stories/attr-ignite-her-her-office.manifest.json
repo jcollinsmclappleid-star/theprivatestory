@@ -1,0 +1,247 @@
+{
+  "generatedAt": "2026-07-05T17:34:56.185Z",
+  "engine": "generateAudioFile",
+  "fixture": "ignite-her-her-office",
+  "phase": "IGNITE",
+  "title": "IGNITE — Supervisor's Office (Her & Her)",
+  "pairing": "Her & Her",
+  "narratorId": "aTxZrSrp47xsP6Ot4Kgd",
+  "partnerName": "Clara",
+  "protagonistName": "Maya",
+  "intensity": "Explicit",
+  "wordCount": 211,
+  "durationSeconds": 66,
+  "audioUrl": "/api/audio/audio-attr-ignite-her-her-office.mp3",
+  "audioFilename": "audio-attr-ignite-her-her-office.mp3",
+  "localPath": "/Users/JoshuaCollins-MAClaggan/Documents/theprivatestory/artifacts/api-server/public/audio/audio-attr-ignite-her-her-office.mp3",
+  "listenUrl": "http://localhost:3000/api/audio/audio-attr-ignite-her-her-office.mp3",
+  "forbiddenInAudio": [
+    "she said",
+    "her supervisor said"
+  ],
+  "gate": "strict",
+  "gateNote": null,
+  "elapsedMs": 3180,
+  "qa": {
+    "useMultiVoice": true,
+    "tagger": "attributeSpeakers",
+    "segments": [
+      {
+        "index": 0,
+        "role": "NARRATOR",
+        "rawText": "The office door was locked. The city was seventeen floors below them and neither woman was looking at it",
+        "spokenText": "The office door was locked. The city was seventeen floors below them and neither woman was looking at it",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 1,
+        "role": "CHAR_B",
+        "rawText": "\"On the desk,\"",
+        "spokenText": "On the desk,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 2,
+        "role": "NARRATOR",
+        "rawText": "Maya went. The leather was cool against her palms. Clara stood between her thighs, hands already working at the buttons of her blouse",
+        "spokenText": "Maya went. The leather was cool against her palms. Clara stood between her thighs, hands already working at the buttons of her blouse",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 3,
+        "role": "CHAR_B",
+        "rawText": "\"You've thought about this,\"",
+        "spokenText": "You've thought about this,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 4,
+        "role": "CHAR_A",
+        "rawText": "\"Every night,\"",
+        "spokenText": "Every night,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 5,
+        "role": "CHAR_B",
+        "rawText": "\"Tell me,\"",
+        "spokenText": "Tell me,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 6,
+        "role": "CHAR_A",
+        "rawText": "\"I want your hands on me,\"",
+        "spokenText": "I want your hands on me,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 7,
+        "role": "CHAR_A",
+        "rawText": "\"I want you to tell me what to do.\"",
+        "spokenText": "I want you to tell me what to do.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 8,
+        "role": "CHAR_B",
+        "rawText": "\"Then listen,\"",
+        "spokenText": "Then listen,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 9,
+        "role": "NARRATOR",
+        "rawText": "She pushed Maya's skirt up, fingers finding bare skin",
+        "spokenText": "She pushed Maya's skirt up, fingers finding bare skin",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 10,
+        "role": "CHAR_B",
+        "rawText": "\"Spread your legs.\"",
+        "spokenText": "Spread your legs.",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 11,
+        "role": "NARRATOR",
+        "rawText": "Maya did",
+        "spokenText": "Maya did",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 12,
+        "role": "CHAR_A",
+        "rawText": "\"...yes,\"",
+        "spokenText": "...yes,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 13,
+        "role": "CHAR_B",
+        "rawText": "\"Good,\"",
+        "spokenText": "Good,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 14,
+        "role": "NARRATOR",
+        "rawText": "Her mouth was on Maya's neck, then lower, and Maya's breath broke apart in her chest",
+        "spokenText": "Her mouth was on Maya's neck, then lower, and Maya's breath broke apart in her chest",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 15,
+        "role": "CHAR_A",
+        "rawText": "\"Please,\"",
+        "spokenText": "Please,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 16,
+        "role": "CHAR_B",
+        "rawText": "\"Please what,\"",
+        "spokenText": "Please what,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 17,
+        "role": "CHAR_A",
+        "rawText": "\"Don't stop,\"",
+        "spokenText": "Don't stop,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 18,
+        "role": "NARRATOR",
+        "rawText": "Clara lifted her head",
+        "spokenText": "Clara lifted her head",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 19,
+        "role": "CHAR_B",
+        "rawText": "\"Look at me,\"",
+        "spokenText": "Look at me,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 20,
+        "role": "NARRATOR",
+        "rawText": "Maya looked. Clara's hair was loose for the first time Maya could remember",
+        "spokenText": "Maya looked. Clara's hair was loose for the first time Maya could remember",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 21,
+        "role": "CHAR_A",
+        "rawText": "\"I mean it,\"",
+        "spokenText": "I mean it,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 22,
+        "role": "CHAR_A",
+        "rawText": "\"I want all of it.\"",
+        "spokenText": "I want all of it.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 23,
+        "role": "CHAR_B",
+        "rawText": "\"Then say it,\"",
+        "spokenText": "Then say it,",
+        "muted": false,
+        "voiceId": "FA6HhUjVbervLw2rNl8M"
+      },
+      {
+        "index": 24,
+        "role": "CHAR_A",
+        "rawText": "\"I want you,\"",
+        "spokenText": "I want you,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 25,
+        "role": "CHAR_A",
+        "rawText": "\"Inside me. Now.\"",
+        "spokenText": "Inside me. Now.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 26,
+        "role": "NARRATOR",
+        "rawText": "Clara kissed her — slow, claiming — and then her fingers were where Maya needed them, and the sounds Maya made were nothing she would ever put in a footnote",
+        "spokenText": "Clara kissed her — slow, claiming — and then her fingers were where Maya needed them, and the sounds Maya made were nothing she would ever put in a footnote",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      }
+    ]
+  }
+}

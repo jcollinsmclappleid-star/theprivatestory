@@ -1,0 +1,196 @@
+{
+  "generatedAt": "2026-07-05T17:35:01.182Z",
+  "engine": "generateAudioFile",
+  "fixture": "ignite-her-him-production",
+  "phase": "IGNITE",
+  "title": "IGNITE — On Your Knees (production story excerpt)",
+  "pairing": "Her & Him",
+  "narratorId": "tQ4MEZFJOzsahSEEZtHK",
+  "partnerName": "James",
+  "protagonistName": "You",
+  "intensity": "Explicit",
+  "wordCount": 230,
+  "durationSeconds": 91,
+  "audioUrl": "/api/audio/audio-attr-ignite-her-him-production.mp3",
+  "audioFilename": "audio-attr-ignite-her-him-production.mp3",
+  "localPath": "/Users/JoshuaCollins-MAClaggan/Documents/theprivatestory/artifacts/api-server/public/audio/audio-attr-ignite-her-him-production.mp3",
+  "listenUrl": "http://localhost:3000/api/audio/audio-attr-ignite-her-him-production.mp3",
+  "forbiddenInAudio": [
+    "he said",
+    "she said",
+    "he commands",
+    "he gasps",
+    "he growls",
+    "you ask",
+    "you breathe"
+  ],
+  "gate": "strict",
+  "gateNote": "Real LLM IGNITE prose — he commands / you ask / you breathe attribution style.",
+  "elapsedMs": 2305,
+  "qa": {
+    "useMultiVoice": true,
+    "tagger": "attributeSpeakers",
+    "segments": [
+      {
+        "index": 0,
+        "role": "NARRATOR",
+        "rawText": "The heat of his skin is the first thing you notice—the way it radiates off him when he steps closer, his hands already reaching for the zipper of your dress. The fabric pools at your feet. His eyes darken as he takes you in, and the way he looks at you makes your knees weak",
+        "spokenText": "The heat of his skin is the first thing you notice—the way it radiates off him when he steps closer, his hands already reaching for the zipper of your dress. The fabric pools at your feet. His eyes darken as he takes you in, and the way he looks at you makes your knees weak",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 1,
+        "role": "CHAR_B",
+        "rawText": "\"On your knees,\"",
+        "spokenText": "On your knees,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 2,
+        "role": "NARRATOR",
+        "rawText": "voice low. His hands are already working at his belt",
+        "spokenText": "voice low. His hands are already working at his belt",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 3,
+        "role": "CHAR_B",
+        "rawText": "\"I want to feel your mouth on me.\"",
+        "spokenText": "I want to feel your mouth on me.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 4,
+        "role": "NARRATOR",
+        "rawText": "You sink to your knees in front of him, hands sliding up his thighs. When you free him, the heat of him against your palm makes your breath hitch. When you lean in, tongue swirling around the tip, his groan is all the encouragement you need",
+        "spokenText": "You sink to your knees in front of him, hands sliding up his thighs. When you free him, the heat of him against your palm makes your breath hitch. When you lean in, tongue swirling around the tip, his groan is all the encouragement you need",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 5,
+        "role": "CHAR_A",
+        "rawText": "\"Like this?\"",
+        "spokenText": "Like this?",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 6,
+        "role": "NARRATOR",
+        "rawText": "taking him deeper",
+        "spokenText": "taking him deeper",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 7,
+        "role": "CHAR_B",
+        "rawText": "\"Fuck—yes,\"",
+        "spokenText": "Fuck—yes,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 8,
+        "role": "NARRATOR",
+        "rawText": "grip tightening",
+        "spokenText": "grip tightening",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 9,
+        "role": "CHAR_B",
+        "rawText": "\"Now ride me. I want to watch you.\"",
+        "spokenText": "Now ride me. I want to watch you.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 10,
+        "role": "NARRATOR",
+        "rawText": "His hands are on your waist, lifting you onto the bed, flipping you onto your back",
+        "spokenText": "His hands are on your waist, lifting you onto the bed, flipping you onto your back",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 11,
+        "role": "CHAR_B",
+        "rawText": "\"Turn over,\"",
+        "spokenText": "Turn over,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 12,
+        "role": "CHAR_B",
+        "rawText": "\"I want to see your face when I fuck you.\"",
+        "spokenText": "I want to see your face when I fuck you.",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 13,
+        "role": "NARRATOR",
+        "rawText": "You roll onto your stomach, breath catching as he grips your hips",
+        "spokenText": "You roll onto your stomach, breath catching as he grips your hips",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 14,
+        "role": "CHAR_A",
+        "rawText": "\"Please,\"",
+        "spokenText": "Please,",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 15,
+        "role": "NARRATOR",
+        "rawText": "looking back at him",
+        "spokenText": "looking back at him",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 16,
+        "role": "CHAR_A",
+        "rawText": "\"I want you inside me. Now.\"",
+        "spokenText": "I want you inside me. Now.",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 17,
+        "role": "NARRATOR",
+        "rawText": "He thrusts into you in one smooth motion, filling you completely. His hands hold you in place, moving slow at first, then harder, deeper",
+        "spokenText": "He thrusts into you in one smooth motion, filling you completely. His hands hold you in place, moving slow at first, then harder, deeper",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 18,
+        "role": "CHAR_A",
+        "rawText": "\"Harder,\"",
+        "spokenText": "Harder,",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 19,
+        "role": "CHAR_A",
+        "rawText": "\"Don't stop,\"",
+        "spokenText": "Don't stop,",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      }
+    ]
+  }
+}

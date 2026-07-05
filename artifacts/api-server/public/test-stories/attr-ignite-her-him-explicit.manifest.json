@@ -1,0 +1,215 @@
+{
+  "generatedAt": "2026-07-05T17:34:58.876Z",
+  "engine": "generateAudioFile",
+  "fixture": "ignite-her-him-explicit",
+  "phase": "IGNITE",
+  "title": "IGNITE — Adjoining Suites (Her & Him)",
+  "pairing": "Her & Him",
+  "narratorId": "aTxZrSrp47xsP6Ot4Kgd",
+  "partnerName": "James",
+  "protagonistName": "You",
+  "intensity": "Explicit",
+  "wordCount": 228,
+  "durationSeconds": 74,
+  "audioUrl": "/api/audio/audio-attr-ignite-her-him-explicit.mp3",
+  "audioFilename": "audio-attr-ignite-her-him-explicit.mp3",
+  "localPath": "/Users/JoshuaCollins-MAClaggan/Documents/theprivatestory/artifacts/api-server/public/audio/audio-attr-ignite-her-him-explicit.mp3",
+  "listenUrl": "http://localhost:3000/api/audio/audio-attr-ignite-her-him-explicit.mp3",
+  "forbiddenInAudio": [
+    "he said",
+    "she said"
+  ],
+  "gate": "strict",
+  "gateNote": null,
+  "elapsedMs": 2689,
+  "qa": {
+    "useMultiVoice": true,
+    "tagger": "attributeSpeakers",
+    "segments": [
+      {
+        "index": 0,
+        "role": "NARRATOR",
+        "rawText": "The sheets were tangled at their feet. His hands found her hips without ceremony — and she let him, breath catching against his mouth",
+        "spokenText": "The sheets were tangled at their feet. His hands found her hips without ceremony — and she let him, breath catching against his mouth",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 1,
+        "role": "CHAR_A",
+        "rawText": "\"Don't stop,\"",
+        "spokenText": "Don't stop,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 2,
+        "role": "CHAR_B",
+        "rawText": "\"I wasn't going to,\"",
+        "spokenText": "I wasn't going to,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 3,
+        "role": "NARRATOR",
+        "rawText": "He pushed her onto the mattress, the frame creaking under them",
+        "spokenText": "He pushed her onto the mattress, the frame creaking under them",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 4,
+        "role": "CHAR_B",
+        "rawText": "\"Tell me what you want,\"",
+        "spokenText": "Tell me what you want,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 5,
+        "role": "CHAR_A",
+        "rawText": "\"You know what I want,\"",
+        "spokenText": "You know what I want,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 6,
+        "role": "CHAR_B",
+        "rawText": "\"Say it,\"",
+        "spokenText": "Say it,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 7,
+        "role": "CHAR_A",
+        "rawText": "\"I want your mouth on me,\"",
+        "spokenText": "I want your mouth on me,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 8,
+        "role": "CHAR_A",
+        "rawText": "\"I want you inside me. Now.\"",
+        "spokenText": "I want you inside me. Now.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 9,
+        "role": "NARRATOR",
+        "rawText": "He didn't make her wait. He slid down her body, breath hot against her thigh, and when his tongue found her she arched off the bed with a sound she didn't recognise",
+        "spokenText": "He didn't make her wait. He slid down her body, breath hot against her thigh, and when his tongue found her she arched off the bed with a sound she didn't recognise",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 10,
+        "role": "CHAR_B",
+        "rawText": "\"Like that?\"",
+        "spokenText": "Like that?",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 11,
+        "role": "CHAR_A",
+        "rawText": "\"Yes—there,\"",
+        "spokenText": "Yes—there,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 12,
+        "role": "NARRATOR",
+        "rawText": "He lifted his head",
+        "spokenText": "He lifted his head",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 13,
+        "role": "CHAR_B",
+        "rawText": "\"Turn over,\"",
+        "spokenText": "Turn over,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 14,
+        "role": "NARRATOR",
+        "rawText": "She rolled onto her stomach, shoulders trembling. His hands spread her open, slow and deliberate, and then he was pressing into her from behind — thick, relentless, exactly what she had been asking for",
+        "spokenText": "She rolled onto her stomach, shoulders trembling. His hands spread her open, slow and deliberate, and then he was pressing into her from behind — thick, relentless, exactly what she had been asking for",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 15,
+        "role": "CHAR_A",
+        "rawText": "\"Harder,\"",
+        "spokenText": "Harder,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 16,
+        "role": "CHAR_B",
+        "rawText": "\"You sure?\"",
+        "spokenText": "You sure?",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 17,
+        "role": "CHAR_A",
+        "rawText": "\"Don't ask me again,\"",
+        "spokenText": "Don't ask me again,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 18,
+        "role": "NARRATOR",
+        "rawText": "He gripped her hips and gave her what she asked for. The room filled with skin and breath and the wet friction of bodies that had stopped pretending hours ago",
+        "spokenText": "He gripped her hips and gave her what she asked for. The room filled with skin and breath and the wet friction of bodies that had stopped pretending hours ago",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 19,
+        "role": "CHAR_B",
+        "rawText": "\"Look at me,\"",
+        "spokenText": "Look at me,",
+        "muted": false,
+        "voiceId": "AeRdCCKzvd23BpJoofzx"
+      },
+      {
+        "index": 20,
+        "role": "NARRATOR",
+        "rawText": "She twisted until she could see his face — dark eyes, jaw tight, completely undone",
+        "spokenText": "She twisted until she could see his face — dark eyes, jaw tight, completely undone",
+        "muted": false,
+        "voiceId": "aTxZrSrp47xsP6Ot4Kgd"
+      },
+      {
+        "index": 21,
+        "role": "CHAR_A",
+        "rawText": "\"I mean it,\"",
+        "spokenText": "I mean it,",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      },
+      {
+        "index": 22,
+        "role": "CHAR_A",
+        "rawText": "\"Don't stop.\"",
+        "spokenText": "Don't stop.",
+        "muted": false,
+        "voiceId": "tQ4MEZFJOzsahSEEZtHK"
+      }
+    ]
+  }
+}

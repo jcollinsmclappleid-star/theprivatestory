@@ -31,6 +31,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
+import { narratorTextForTts } from "./lib/narratorAttributionMute.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(
@@ -825,7 +826,13 @@ async function generateOne(pick) {
       const baseStyle = seg.role === "NARRATOR" ? styleFor.narrator : styleFor.char;
       // Opening hook: first NARRATOR segment runs hotter, capped at 0.80.
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
-      const buf = await mvTTS(vid, seg.text, style);
+      const spoken = seg.role === "NARRATOR" ? narratorTextForTts(seg.text) : seg.text;
+      if (!spoken) {
+        if (DRY_RUN) console.log(`  [${seg.role.padEnd(8)}] (muted tag) | ${seg.text.replace(/\n/g, " ").slice(0, 72)}`);
+        continue;
+      }
+      if (DRY_RUN) continue;
+      const buf = await mvTTS(vid, spoken, style);
       buffers.push(await trimSilenceFromMp3(buf));
     }
   } else {

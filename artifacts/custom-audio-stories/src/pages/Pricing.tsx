@@ -273,7 +273,7 @@ export default function Pricing() {
               disabled={loadingPlan !== null}
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all flex-shrink-0 disabled:opacity-60"
             >
-              {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Get 20 stories"}
+              {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Create 20 stories"}
             </button>
           </div>
         </section>
@@ -320,7 +320,7 @@ export default function Pricing() {
                 disabled={loadingPlan !== null}
                 className="block w-full text-center py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all hover:shadow-[0_0_32px_rgba(201,162,39,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Get 20 stories"}
+                {loadingPlan === "pack_20" ? <CheckoutSpinner /> : "Create 20 stories"}
               </button>
               <p className="text-center text-[10px] text-white/45 mt-3">Twenty nights. Twenty fantasies. Yours alone.</p>
             </div>
@@ -343,7 +343,7 @@ export default function Pricing() {
                 disabled={loadingPlan !== null}
                 className="block w-full text-center py-3 rounded-full border border-primary/45 bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingPlan === "pack_5" ? <CheckoutSpinner /> : "Get 5 stories"}
+                {loadingPlan === "pack_5" ? <CheckoutSpinner /> : "Create 5 stories"}
               </button>
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function Pricing() {
                 disabled={loadingPlan !== null}
                 className="block w-full text-center py-2.5 rounded-full border border-white/20 bg-white/[0.03] text-white/80 font-semibold text-sm hover:border-primary/35 hover:text-primary transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingPlan === "pack_1" ? <CheckoutSpinner /> : "Try one story"}
+                {loadingPlan === "pack_1" ? <CheckoutSpinner /> : "Create one story"}
               </button>
             </div>
           </div>
@@ -505,7 +505,7 @@ export default function Pricing() {
             {loadingPlan === "pack_20" ? <CheckoutSpinner /> : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Get 20 stories · {pack20.display}
+                Create 20 stories · {pack20.display}
               </>
             )}
           </button>
@@ -520,7 +520,7 @@ export default function Pricing() {
 
       <StickyMobileCTA
         priceDisplay={pack20.display}
-        label={warmTraffic ? `Unlock your story · ${pack20.display}` : `Get 20 stories · ${pack20.display}`}
+        label={warmTraffic ? `Unlock your story · ${pack20.display}` : `Create 20 stories · ${pack20.display}`}
         onClick={() => startCheckout("pack_20")}
         loading={loadingPlan === "pack_20"}
         secondaryLabel="Just one story"

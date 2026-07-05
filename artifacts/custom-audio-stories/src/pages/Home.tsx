@@ -14,6 +14,7 @@ import { usePricing } from "@/hooks/usePricing";
 import type { Story } from "@workspace/api-client-react";
 import { HomeCreativityShowcase } from "@/components/HomeCreativityShowcase";
 import { HeroLivingPortrait } from "@/components/HeroLivingPortrait";
+import { LogoMark } from "@/components/Logo";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { MiniDoorCTA } from "@/components/MiniDoorCTA";
 import { TrustBar } from "@/components/TrustBar";
@@ -68,13 +69,21 @@ function HomeHeroCopy({ layout }: { layout: "mobile" | "desktop" }) {
   const isMobile = layout === "mobile";
   return (
     <>
-      <p
-        className={`text-[10px] font-bold uppercase tracking-[0.32em] text-primary/90 ${
-          isMobile ? "mb-3 text-center" : ""
-        }`}
-      >
-        Your Private Story
-      </p>
+      {isMobile ? (
+        <div className="flex flex-col items-center mb-4">
+          <LogoMark
+            size={54}
+            className="mb-3 ring-1 ring-primary/35 shadow-[0_0_36px_-12px_hsl(var(--primary)/0.55)]"
+          />
+          <p className="hero-brand-title text-[10px] font-bold uppercase tracking-[0.34em]">
+            The Private Story
+          </p>
+        </div>
+      ) : (
+        <p className="hero-brand-title text-[10px] font-bold uppercase tracking-[0.32em] mb-3">
+          The Private Story
+        </p>
+      )}
       <h1
         className={`font-display font-bold text-white tracking-tight ${
           isMobile
@@ -326,15 +335,15 @@ export default function Home() {
       {/* Hero — cinematic moving portrait + SEO copy                         */}
       {/* ------------------------------------------------------------------ */}
 
-      {/* Mobile — copy first, contained moving portrait, then CTA */}
-      <section className="relative z-30 w-full md:hidden px-4 pt-4 pb-3">
+      {/* Mobile — branded header, copy, portrait, CTA */}
+      <section className="relative z-30 w-full md:hidden px-3 pt-2 pb-3">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="max-w-lg mx-auto"
+          className="max-w-lg mx-auto rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.07] via-background/50 to-transparent px-4 pt-4 pb-4 shadow-[0_20px_56px_-28px_rgba(0,0,0,0.85)]"
         >
-          <div className="text-center mb-4">
+          <div className="text-center mb-3">
             <HomeHeroCopy layout="mobile" />
           </div>
 

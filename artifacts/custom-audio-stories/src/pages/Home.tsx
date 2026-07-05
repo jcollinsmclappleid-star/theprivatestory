@@ -88,41 +88,27 @@ function HomeHeroCopy({ layout }: { layout: "mobile" | "desktop" }) {
         </span>
       </h1>
       <div
-        className={`hero-sensual-copy space-y-2 ${
-          isMobile ? "mx-auto max-w-[20rem] text-left" : "max-w-xl text-left"
+        className={`space-y-3 ${
+          isMobile ? "mx-auto max-w-[21rem] text-center mb-1" : "max-w-xl text-left"
         }`}
       >
         <p
-          className={`font-display italic text-white/92 leading-snug ${
-            isMobile ? "text-[15px]" : "text-base md:text-lg"
+          className={`text-white/82 leading-relaxed ${
+            isMobile ? "text-[14px]" : "text-[15px] md:text-base"
           }`}
         >
-          Name the longing —
+          Create who you want and how they look — which city, which room, the situation that
+          won&apos;t leave you alone — then the fantasy, from slow burn to no limits, and the voice
+          that makes your skin prickle.
         </p>
         <p
-          className={`text-white/78 leading-relaxed border-l border-primary/25 pl-3 ${
+          className={`text-white/65 leading-relaxed ${
             isMobile ? "text-[13px]" : "text-[15px] md:text-base"
           }`}
         >
-          who holds the room, how slow the burn, how far you&apos;re willing to go.
-        </p>
-        <p className={`text-white/70 leading-relaxed ${isMobile ? "text-[13px]" : "text-[15px] md:text-base"}`}>
-          We script your{" "}
-          <span
-            className={`hero-accent-purple font-display italic ${
-              isMobile ? "text-[15px]" : "text-base md:text-lg"
-            }`}
-          >
-            spicy audio fantasy
-          </span>{" "}
-          in full-cast voices.
-        </p>
-        <p
-          className={`text-white/48 tracking-[0.12em] uppercase pt-0.5 ${
-            isMobile ? "text-[11px]" : "text-xs"
-          }`}
-        >
-          ~ten private minutes · written once · yours alone
+          Your{" "}
+          <span className="hero-accent-purple font-semibold">spicy audio fantasy</span>, written and
+          narrated in ~ten private minutes. Yours alone.
         </p>
       </div>
     </>

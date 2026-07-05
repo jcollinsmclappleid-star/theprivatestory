@@ -122,12 +122,6 @@
   }
 }
 
-/* Homepage hero — Dipsea-inspired sensual copy rhythm */
-.hero-sensual-copy {
-  font-weight: 300;
-  letter-spacing: 0.012em;
-}
-
 .hero-accent-purple {
   color: hsl(272 58% 72%);
   text-shadow: 0 0 28px hsl(272 50% 50% / 0.22);

@@ -1131,6 +1131,9 @@ export function AfterDarkExpressWorld({
               ))}
             </VerticalScrollCol>
 
+            <p className="text-xs text-white/50 mb-3">
+              Kayla and Theo are our most expressive narrators — we recommend either.
+            </p>
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">Narrator — hear a sample</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
               {VOICE_OPTS.map((o) => {

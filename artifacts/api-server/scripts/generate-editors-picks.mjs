@@ -11,11 +11,10 @@
  *   then served as static files at /voice-samples/editors-picks/{slug}.mp3.
  *
  * Voice mix (target female 25-45 audience):
- *   Clara x3 (British, soothing) - 01, 02, 03
- *   Kayla x3 (American, expressive) - 04, 05, 06
- *   Maya  x2 (American, intimate)   - 07, 08
- *   Theo  x2 (British, measured)    - 09, 10  (his-POV narrator)
+ *   Kayla x6 (American, expressive) - 01, 03, 04, 05, 06, 07, 08
+ *   Theo  x3 (British, measured)    - 02, 09, 10  (his-POV narrator)
  * In-story male: James (primary CHAR_B), Ethan (secondary)
+ * In-story female dialogue: Maya, Clara (when Kayla narrates)
  *
  * Usage:
  *   node scripts/generate-editors-picks.mjs              # skip existing
@@ -270,7 +269,7 @@ const PICKS = [
   {
     slug: "01-last-one",
     title: "The Last One in the Building",
-    voice: VOICE.clara,
+    voice: VOICE.kayla,
     text:
 `"You're still here," he said.
 
@@ -346,7 +345,7 @@ She reached back and found his hands. Guided them.
   {
     slug: "03-spa-at-six",
     title: "The Spa at Six",
-    voice: VOICE.clara,
+    voice: VOICE.kayla,
     pairing: "Her & Her",
     text:
 `"You're tense," the woman said quietly.
@@ -553,10 +552,10 @@ They didn't answer. They didn't need to.`,
   {
     slug: "06-supervisor",
     title: "The Supervisor's Office",
-    voice: VOICE.clara,
+    voice: VOICE.kayla,
     pairing: "Her & Her",
     charAVoice: MV_MAYA,
-    charBVoice: MV_KAYLA,
+    charBVoice: MV_CLARA,
     text:
 `The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule did not apply.
 
@@ -579,7 +578,7 @@ They didn't answer. They didn't need to.`,
   {
     slug: "07-bodyguard",
     title: "The Bodyguard",
-    voice: VOICE.maya,
+    voice: VOICE.kayla,
     text:
 `"You can stand somewhere else," she said.
 
@@ -660,7 +659,7 @@ She had six weeks of corners to work through. She intended to take her time.`,
   {
     slug: "08-proposition",
     title: "The Proposition",
-    voice: VOICE.clara,
+    voice: VOICE.kayla,
     pairing: "Her & Him",
     charAVoice: MV_MAYA,
     text:

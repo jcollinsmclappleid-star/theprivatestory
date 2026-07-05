@@ -130,31 +130,31 @@ export const EDITORS_PICKS: EditorsPick[] = [
       "\"Wanting your hands on me. Wanting you to tell me what to do.\"",
     endsOn: "she says: lock the door. Then we'll find out if you mean it.",
     tags: ["Full cast", "Her & Her", "Forbidden"],
-    narrator: "clara",
-    cast: ["clara", "kayla", "maya"],
-    castLabel: "Clara · Kayla · Maya",
-    voice: "clara",
-    voiceName: "Clara",
-    voiceMeta: "British · Soothing",
+    narrator: "kayla",
+    cast: ["kayla", "clara", "maya"],
+    castLabel: "Kayla · Clara · Maya",
+    voice: "kayla",
+    voiceName: "Kayla",
+    voiceMeta: "American · Expressive",
     pairing: "Her & Her",
     runtimeSec: 38,
-    transcript: `[Clara] The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply.
+    transcript: `[Kayla] The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply.
 
 [Maya] You're not looking at the page.
 
-[Kayla] No. I'm looking at you. And I'm done pretending I haven't wanted to for three years.
+[Clara] No. I'm looking at you. And I'm done pretending I haven't wanted to for three years.
 
 [Maya] You can't say that. You're still my—
 
-[Kayla] I'm not your supervisor anymore. You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?
+[Clara] I'm not your supervisor anymore. You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?
 
 [Maya] Wanting your hands on me. Wanting you to tell me what to do.
 
-[Kayla] Be still.
+[Clara] Be still.
 
 [Maya] ...yes.
 
-[Kayla] Lock the door. Then we'll find out if you mean it.`,
+[Clara] Lock the door. Then we'll find out if you mean it.`,
   },
   {
     number: 4,
@@ -165,15 +165,15 @@ export const EDITORS_PICKS: EditorsPick[] = [
       "\"I want you to say it out loud. What you want a stranger to do to you tonight.\"",
     endsOn: "she says: then stop talking — and let me say it.",
     tags: ["Full cast", "Strangers", "Surrender"],
-    narrator: "clara",
-    cast: ["clara", "james", "maya"],
-    castLabel: "Clara · James · Maya",
-    voice: "clara",
-    voiceName: "Clara",
-    voiceMeta: "British · Soothing",
+    narrator: "kayla",
+    cast: ["kayla", "james", "maya"],
+    castLabel: "Kayla · James · Maya",
+    voice: "kayla",
+    voiceName: "Kayla",
+    voiceMeta: "American · Expressive",
     pairing: "Her & Him",
     runtimeSec: 40,
-    transcript: `[Clara] The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over.
+    transcript: `[Kayla] The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over.
 
 [Maya] ...yes.
 

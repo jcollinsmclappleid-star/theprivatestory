@@ -2243,7 +2243,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               Choose your narrator — character voices are matched automatically.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
-              Kayla is our recommended narrator; Theo if you prefer a male voice. Maya and James handle dialogue by default for Her &amp; Him.
+              Kayla and Theo are our most expressive narrators — we recommend either. Maya and James handle dialogue by default for Her &amp; Him.
             </p>
 
             {(() => {

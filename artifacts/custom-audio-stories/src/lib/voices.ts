@@ -24,7 +24,7 @@ export const VOICES: Voice[] = [
     bestFor: "Emotional scenes · Romance · Engaging tone",
     gender: "female",
     recommended: true,
-    recommendLabel: "Recommended",
+    recommendLabel: "Most expressive",
   },
   {
     id: "jfIS2w2yJi0grJZPyEsk",
@@ -36,7 +36,8 @@ export const VOICES: Voice[] = [
     presence: "Feels raw, grounded, and quietly intense.",
     bestFor: "Slow burn · Dark romance · His perspective",
     gender: "male",
-    recommendLabel: "Male narrator",
+    recommended: true,
+    recommendLabel: "Most expressive",
   },
   {
     id: "tQ4MEZFJOzsahSEEZtHK",
@@ -185,10 +186,16 @@ export function getCastLabels(pairing: string): { labelA: string; labelB: string
 const ALL_MALE_PAIRINGS = ["Him & Him", "Him & Them"];
 
 export function getVoicesForPairing(pairing: string | undefined): Voice[] {
-  if (pairing && ALL_MALE_PAIRINGS.includes(pairing)) {
-    return [...MALE_VOICES, ...FEMALE_VOICES];
-  }
-  return [...FEMALE_VOICES, ...MALE_VOICES];
+  const base =
+    pairing && ALL_MALE_PAIRINGS.includes(pairing)
+      ? [...MALE_VOICES, ...FEMALE_VOICES]
+      : [...FEMALE_VOICES, ...MALE_VOICES];
+  return [...base].sort((a, b) => {
+    const ar = a.recommended ? 0 : 1;
+    const br = b.recommended ? 0 : 1;
+    if (ar !== br) return ar - br;
+    return 0;
+  });
 }
 
 export function getDefaultVoiceId(_pairing?: string): string {

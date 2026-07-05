@@ -72,7 +72,7 @@ export function VoiceShowcase() {
           Choose your narrator
         </p>
         <p className="text-sm text-muted-foreground/60 leading-relaxed">
-          Kayla is our recommended narrator — Theo for a male voice. Press play to hear each one before you decide.
+          Kayla and Theo are our most expressive narrators — press play to hear each before you decide.
         </p>
       </div>
 

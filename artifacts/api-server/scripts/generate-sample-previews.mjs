@@ -7,7 +7,7 @@
  *   node scripts/generate-sample-previews.mjs              # all 4
  *   node scripts/generate-sample-previews.mjs neighbour    # just one
  *
- * Voice cast mirrors the live /samples page — Maya is the lead female voice.
+ * Voice cast mirrors the live /samples page — Kayla narrates female-led samples.
  */
 
 import fs from "fs";
@@ -62,22 +62,22 @@ const SAMPLES = [
     slug: "preview-supervisors-office",
     label: "The Supervisor's Office",
     segments: [
-      { voice: "clara", text: "The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply." },
+      { voice: "kayla", text: "The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply." },
       { voice: "maya",  text: "You're not looking at the page." },
-      { voice: "kayla", text: "No. I'm looking at you. And I'm done pretending I haven't wanted to for three years." },
+      { voice: "clara", text: "No. I'm looking at you. And I'm done pretending I haven't wanted to for three years." },
       { voice: "maya",  text: "You can't say that. You're still my—" },
-      { voice: "kayla", text: "I'm not your supervisor anymore. You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?" },
+      { voice: "clara", text: "I'm not your supervisor anymore. You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?" },
       { voice: "maya",  text: "Wanting your hands on me. Wanting you to tell me what to do." },
-      { voice: "kayla", text: "Be still." },
+      { voice: "clara", text: "Be still." },
       { voice: "maya",  text: "...yes." },
-      { voice: "kayla", text: "Lock the door. Then we'll find out if you mean it." },
+      { voice: "clara", text: "Lock the door. Then we'll find out if you mean it." },
     ],
   },
   {
     slug: "preview-proposition",
     label: "The Proposition",
     segments: [
-      { voice: "clara", text: "The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over." },
+      { voice: "kayla", text: "The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over." },
       { voice: "maya",  text: "...yes." },
       { voice: "james", text: "I'm going to be direct. I have a room upstairs. I won't touch you in the lift. I won't touch you in the corridor. If you change your mind, you walk away — I won't follow." },
       { voice: "maya",  text: "And if I don't?" },

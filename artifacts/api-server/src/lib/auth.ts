@@ -24,6 +24,11 @@ function getTrustedOrigins(): string[] {
   const origins = new Set<string>();
   origins.add(getBaseURL());
   origins.add("https://theprivatestory.com");
+  origins.add("https://www.theprivatestory.com");
+  origins.add("https://theprivatestory.vercel.app");
+  if (process.env.SITE_URL) origins.add(process.env.SITE_URL.replace(/\/$/, ""));
+  if (process.env.APP_URL) origins.add(process.env.APP_URL.replace(/\/$/, ""));
+  if (process.env.VERCEL_URL) origins.add(`https://${process.env.VERCEL_URL}`);
   if (process.env.REPLIT_DEV_DOMAIN) {
     origins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
   }

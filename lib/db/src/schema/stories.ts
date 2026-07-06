@@ -142,6 +142,9 @@ export const generationJobs = pgTable("generation_jobs", {
   id: text("id").primaryKey(),
   userId: text("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
   status: text("status").notNull().default("pending"),
+  /** 0–100 generation progress for client polling (updated in-process; no extra LLM cost). */
+  progress: integer("progress").notNull().default(0),
+  progressLabel: text("progress_label"),
   result: jsonb("result"),
   error: text("error"),
   errorCode: text("error_code"),

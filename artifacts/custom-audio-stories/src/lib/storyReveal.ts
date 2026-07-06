@@ -118,5 +118,7 @@ export const PENDING_CAST_KEY = "afterDarkPendingCast";
 export type PendingAfterDarkCast = {
   casting: CastingRoomResult;
   allTags: string[];
+  scenarioTags?: string[];
+  customerDesireTags?: string[];
   scenarioId?: string;
 };

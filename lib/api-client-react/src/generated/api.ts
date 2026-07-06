@@ -1084,17 +1084,33 @@ export const getGenerateFullStoryUrl = () => {
   return `/api/generate-full-story`;
 };
 
-async function pollGenerationJob(jobId: string): Promise<FullGeneratedStory> {
-  const MAX_POLLS = 200;
+export type GenerationJobPollStatus = {
+  status: string;
+  progress?: number;
+  progressLabel?: string;
+  result?: FullGeneratedStory;
+  error?: string;
+  errorCode?: string;
+};
+
+export type GenerateFullStoryOptions = RequestInit & {
+  onProgress?: (update: { progress: number; label?: string }) => void;
+};
+
+async function pollGenerationJob(
+  jobId: string,
+  onProgress?: GenerateFullStoryOptions["onProgress"],
+): Promise<FullGeneratedStory> {
+  const MAX_POLLS = 400;
+  const POLL_MS = 1500;
   for (let i = 0; i < MAX_POLLS; i++) {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    const status = await customFetch<{
-      status: string;
-      result?: FullGeneratedStory;
-      error?: string;
-      errorCode?: string;
-    }>(`/api/generate-job/${jobId}`);
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+    const status = await customFetch<GenerationJobPollStatus>(`/api/generate-job/${jobId}`);
+    if (typeof status.progress === "number") {
+      onProgress?.({ progress: status.progress, label: status.progressLabel });
+    }
     if (status.status === "complete" && status.result) {
+      onProgress?.({ progress: 100, label: status.progressLabel ?? "Complete" });
       return status.result;
     }
     if (status.status === "error") {
@@ -1109,19 +1125,21 @@ async function pollGenerationJob(jobId: string): Promise<FullGeneratedStory> {
 
 export const generateFullStory = async (
   generateStoryRequest: GenerateStoryRequest,
-  options?: RequestInit,
+  options?: GenerateFullStoryOptions,
 ): Promise<FullGeneratedStory> => {
+  const { onProgress, ...requestInit } = options ?? {};
   const response = await customFetch<{ jobId?: string } & Record<string, unknown>>(
     getGenerateFullStoryUrl(),
     {
-      ...options,
+      ...requestInit,
       method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
+      headers: { "Content-Type": "application/json", ...requestInit?.headers },
       body: JSON.stringify(generateStoryRequest),
     },
   );
   if (response.jobId) {
-    return pollGenerationJob(response.jobId as string);
+    onProgress?.({ progress: 0, label: "Starting…" });
+    return pollGenerationJob(response.jobId as string, onProgress);
   }
   return response as unknown as FullGeneratedStory;
 };

@@ -7,6 +7,10 @@ export type BuildGeneratePayloadOptions = {
   funnel: StoryFunnel;
   casting: CastingRoomResult;
   experienceTags?: string[];
+  /** Act III scenario preset tags */
+  scenarioTags?: string[];
+  /** Act IV Make it yours chips */
+  customerDesireTags?: string[];
   scenarioRoom?: string;
   /** After Dark scenario storyMode — bedtime uses casting.storyMode (nocturne). */
   scenarioStoryMode?: string;
@@ -17,7 +21,7 @@ export type BuildGeneratePayloadOptions = {
  * All funnels (After Dark, bedtime/Drift handoff) must use this — no per-page genData objects.
  */
 export function buildGeneratePayload(opts: BuildGeneratePayloadOptions): Record<string, unknown> {
-  const { casting, funnel, experienceTags = [], scenarioRoom, scenarioStoryMode } = opts;
+  const { casting, funnel, experienceTags = [], scenarioTags, customerDesireTags, scenarioRoom, scenarioStoryMode } = opts;
 
   const apiPerspective =
     casting.perspective === "your"
@@ -43,6 +47,8 @@ export function buildGeneratePayload(opts: BuildGeneratePayloadOptions): Record<
     dynamic: casting.dynamic || undefined,
     storyMode,
     experienceTags: experienceTags.length > 0 ? experienceTags : undefined,
+    scenarioTags: scenarioTags?.length ? scenarioTags : undefined,
+    customerDesireTags: customerDesireTags?.length ? customerDesireTags : undefined,
     pairing: casting.pairing || undefined,
     heritage: casting.heritage || undefined,
     atmosphere: casting.atmosphere || undefined,

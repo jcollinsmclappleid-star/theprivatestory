@@ -13,7 +13,15 @@
     "qa:attr:generate": "ATTRIBUTION_QA=1 LOCAL_AUDIO_MIRROR=1 SKIP_GCS_UPLOAD=1 tsx scripts/generate-attribution-snippet-audio.mts --all",
     "qa:attr:verify": "tsx scripts/verify-attribution-audio.mts --all",
     "test:dialogue-attribution": "tsx scripts/dialogueAttribution.test.mts",
-    "test:story-length": "tsx scripts/storyLength.test.mts"
+    "test:story-length": "tsx scripts/storyLength.test.mts",
+    "test:dialogue-vocal": "tsx scripts/dialogue-vocal.test.mts",
+    "test:customer-desire": "tsx scripts/customerDesireBeats.test.mts",
+    "test:enactment-constraints": "tsx scripts/enactmentConstraints.test.mts",
+    "test:express-brief": "tsx scripts/expressBrief.test.mts",
+    "test:express-scene-plan": "tsx scripts/expressScenePlan.test.mts",
+    "story:fantasy-e2e": "tsx scripts/story-fantasy-e2e.mts",
+    "story:extreme-e2e": "tsx scripts/story-extreme-e2e.mts",
+    "pilot:vocal-v3": "VOCAL_EFFECTS=1 LOCAL_AUDIO_MIRROR=1 tsx scripts/pilot-vocal-v3.mts"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.19.0",

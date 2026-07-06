@@ -27,6 +27,8 @@ interface StoryRevealPaywallProps {
   loadingPlan: string | null;
   storyCredits: number | null;
   creditsLoading: boolean;
+  /** Server-side admin — can generate without pack credits (matches API bypass). */
+  isAdmin?: boolean;
   onCheckout: (plan: "pack_1" | "pack_5" | "pack_20") => void;
   onWriteWithCredit: () => void;
   onStartOver: () => void;
@@ -49,6 +51,7 @@ export function StoryRevealPaywall({
   loadingPlan,
   storyCredits,
   creditsLoading,
+  isAdmin = false,
   onCheckout,
   onWriteWithCredit,
   onStartOver,
@@ -243,7 +246,7 @@ export function StoryRevealPaywall({
               <p className="text-xs text-red-400 text-center">{checkoutError}</p>
             )}
 
-            {!creditsLoading && storyCredits != null && storyCredits > 0 && (
+            {!creditsLoading && storyCredits != null && (storyCredits > 0 || isAdmin) && (
               <button
                 type="button"
                 onClick={onWriteWithCredit}
@@ -256,7 +259,9 @@ export function StoryRevealPaywall({
               >
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Write my story now — {storyCredits} credit{storyCredits === 1 ? "" : "s"} left
+                  {storyCredits > 0
+                    ? `Write my story now — ${storyCredits} credit${storyCredits === 1 ? "" : "s"} left`
+                    : "Generate my story now"}
                 </span>
                 <ChevronRight className="w-4 h-4" />
               </button>

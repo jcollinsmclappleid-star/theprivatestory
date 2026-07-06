@@ -16,3 +16,7 @@ export const openrouter = new OpenAI({
 });
 
 export const MISTRAL_MODEL = "mistralai/mistral-large-2512";
+
+/** All story generation uses Mistral — other providers block explicit adult content. */
+export const MISTRAL_MODEL_WRITE = MISTRAL_MODEL;
+export const MISTRAL_MODEL_CLASSIFY = MISTRAL_MODEL;

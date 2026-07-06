@@ -9,7 +9,45 @@ export const TEN_MIN_MIN_WORDS = 1440;
 /** Soft upper bound — prompts ask the model not to exceed this. */
 export const TEN_MIN_MAX_WORDS = 1760;
 
-/** Per-phase floors for the 5-scene ESTABLISH → RESONATE arc. */
+/** Express 4-beat screenplay arc (Create Your Fantasy fast path). */
+export const EXPRESS_BEAT_ORDER = ["FRAME", "DECLARE", "PERFORM", "LAND"] as const;
+
+export const EXPRESS_BEAT_BUDGET_RATIO: Record<string, number> = {
+  FRAME: 0.15,
+  DECLARE: 0.2,
+  PERFORM: 0.55,
+  LAND: 0.1,
+};
+
+export function isExpressBeatPhase(phase: string): boolean {
+  return (EXPRESS_BEAT_ORDER as readonly string[]).includes(phase.toUpperCase());
+}
+
+export function wordBudgetForBeat(
+  beat: string,
+  storyLength?: string,
+): { min: number; max: number; target: number } {
+  const total = minWordsForStoryLength(storyLength);
+  const ratio = EXPRESS_BEAT_BUDGET_RATIO[beat.toUpperCase()] ?? 0.25;
+  const target = Math.round(total * ratio);
+  return {
+    target,
+    min: Math.max(60, Math.round(target * 0.78)),
+    max: Math.round(target * 1.22),
+  };
+}
+
+export function beatWordMin(phase: string, storyLength?: string): number {
+  if (isExpressBeatPhase(phase)) return wordBudgetForBeat(phase, storyLength).min;
+  return scaledPhaseWordMin(phase, storyLength);
+}
+
+export function beatWordMax(phase: string, storyLength?: string): number {
+  if (isExpressBeatPhase(phase)) return wordBudgetForBeat(phase, storyLength).max;
+  return Math.round(scaledPhaseWordMin(phase, storyLength) * 1.25);
+}
+
+/** Per-phase floors for legacy 5-scene arc (library / planStory). */
 export const PHASE_WORD_MIN: Record<string, number> = {
   ESTABLISH: 280,
   SIMMER: 310,
@@ -52,6 +90,16 @@ export function minWordsForStoryLength(storyLength?: string): number {
   }
 }
 
+/** Scale per-phase floors when story length is shorter than 10 min. */
+export function phaseLengthScale(storyLength?: string): number {
+  if (!storyLength) return 1;
+  return minWordsForStoryLength(storyLength) / TEN_MIN_MIN_WORDS;
+}
+
+export function scaledPhaseWordMin(phase: string, storyLength?: string): number {
+  return Math.max(80, Math.round((PHASE_WORD_MIN[phase] ?? 200) * phaseLengthScale(storyLength)));
+}
+
 export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -81,6 +129,7 @@ export function validateStoryLength(
   targetScenes: number,
   scenePlan: ScenePhaseRef[] = [],
   minWords = TEN_MIN_MIN_WORDS,
+  storyLength?: string,
 ): StoryLengthValidation {
   const scenes = (parsed.scenes ?? []) as Array<{ text?: string }>;
   const sceneCount = scenes.length;
@@ -92,7 +141,7 @@ export function validateStoryLength(
       scenePlan[i]?.phase ??
       DEFAULT_PHASE_ORDER[i] ??
       DEFAULT_PHASE_ORDER[DEFAULT_PHASE_ORDER.length - 1]!;
-    const min = PHASE_WORD_MIN[phase] ?? 200;
+    const min = beatWordMin(phase, storyLength);
     const words = countWords(scenes[i]?.text ?? "");
     if (words < min) {
       shortPhases.push({ sceneIndex: i + 1, phase, words, min });

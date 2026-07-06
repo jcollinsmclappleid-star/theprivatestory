@@ -3,10 +3,11 @@ import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronLeft, ArrowLeft, Moon, Check, Loader2 } from "lucide-react";
 import { useSearch } from "wouter";
-import { useGenerateFullStory } from "@workspace/api-client-react";
+import { useGenerateFullStory, generateFullStory } from "@workspace/api-client-react";
 import type { FullGeneratedStory } from "@workspace/api-client-react";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import { usePricing } from "@/hooks/usePricing";
 import { CastingRoom, PAIRINGS, buildChemistries } from "@/components/CastingRoom";
@@ -1195,15 +1196,9 @@ const SCENARIOS: Scenario[] = [
   },
 ];
 
-/* ── Loading phases ─────────────────────────────────────────────────── */
-const LOADING_PHASES = [
-  { label: "Setting the scene…", sub: "Building the world behind closed doors" },
-  { label: "Writing the story…", sub: "Crafting every moment with full presence" },
-  { label: "Adding depth…", sub: "Layering the emotional weight and tension" },
-  { label: "Refining the edge…", sub: "Making every scene land exactly right" },
-  { label: "Composing imagery…", sub: "Designing cinematic visuals" },
-  { label: "Finalizing…", sub: "Your private story is almost ready" },
-];
+/* ── Generation progress (polled from backend job) ──────────────────── */
+const GENERATION_PROGRESS_SUB =
+  "Your story is written with full presence and complete privacy. Nothing here leaves this room.";
 
 /* ── Paywall preview teasers ────────────────────────────────────────── */
 const AFTER_DARK_TEASERS: Record<string, string> = {
@@ -1365,6 +1360,7 @@ export default function AfterDark() {
         },
   );
   const { isAuthenticated, isLoading: authLoading, openSignIn } = useAuth();
+  const { isAdmin } = useSubscription();
   const [ageConfirmed, setAgeConfirmed] = useState(() => hasConfirmedAge());
   const [showLanding, setShowLanding] = useState(true);
   const [phase, setPhase] = useState<
@@ -1680,7 +1676,8 @@ export default function AfterDark() {
 
   // Always start fresh — no handoff from regular casting room
 
-  const [loadingPhase, setLoadingPhase] = useState(0);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationProgressLabel, setGenerationProgressLabel] = useState("Starting…");
   const [result, setResult] = useState<FullGeneratedStory | null>(null);
   const [lastCastingData, setLastCastingData] = useState<Record<string, unknown> | null>(null);
 
@@ -1770,27 +1767,17 @@ export default function AfterDark() {
 
   const [presetSaved, setPresetSaved] = useState(false);
   const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<PendingAfterDarkCast | null>(null);
-  const phaseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const { play } = useAudioPlayer();
 
-  const startLoadingPhase = useCallback(() => {
-    phaseTimersRef.current.forEach(clearTimeout);
-    phaseTimersRef.current = [];
-    setLoadingPhase(0);
-    const phaseMs = [8000, 20000, 12000, 12000, 12000, 35000];
-    let cumulativeMs = 0;
-    phaseMs.forEach((ms, i) => {
-      cumulativeMs += ms;
-      phaseTimersRef.current.push(
-        setTimeout(() => setLoadingPhase(Math.min(i + 1, LOADING_PHASES.length - 1)), cumulativeMs)
-      );
-    });
+  const resetGenerationProgress = useCallback(() => {
+    setGenerationProgress(0);
+    setGenerationProgressLabel("Starting…");
   }, []);
 
-  const stopLoadingPhase = useCallback(() => {
-    phaseTimersRef.current.forEach(clearTimeout);
-    phaseTimersRef.current = [];
+  const handleGenerationProgress = useCallback((progress: number, label?: string) => {
+    setGenerationProgress((prev) => Math.max(prev, progress));
+    if (label) setGenerationProgressLabel(label);
   }, []);
 
   const applyResultToPlayer = useCallback(
@@ -1820,14 +1807,19 @@ export default function AfterDark() {
 
   const generateMutation = useGenerateFullStory({
     mutation: {
+      mutationFn: ({ data }) =>
+        generateFullStory(data, {
+          onProgress: ({ progress, label }) => handleGenerationProgress(progress, label),
+        }),
       onSuccess: (data) => {
-        stopLoadingPhase();
+        setGenerationProgress(100);
+        setGenerationProgressLabel("Complete");
         setResult(data);
         setPhase("result");
         applyResultToPlayer(data);
       },
       onError: (err: unknown) => {
-        stopLoadingPhase();
+        resetGenerationProgress();
         const status = (err as { status?: number }).status;
         if (status === 401 || status === 402) {
           setPhase("paywall");
@@ -1861,24 +1853,26 @@ export default function AfterDark() {
 
   // Generates immediately from casting data — avoids stale React state reads
   const handleAutoGenerateAfterDark = useCallback(
-    async (casting: CastingRoomResult, allTags: string[]) => {
+    async (casting: CastingRoomResult, allTags: string[], tagSplit?: { scenarioTags: string[]; customerDesireTags: string[] }) => {
       setPhase("generating");
-      startLoadingPhase();
+      resetGenerationProgress();
       const genData = buildGeneratePayload({
         funnel: isBedtime ? "bedtime" : "erotic",
         casting,
         experienceTags: allTags,
+        scenarioTags: tagSplit?.scenarioTags,
+        customerDesireTags: tagSplit?.customerDesireTags,
         scenarioRoom: isBedtime ? selectedBedtimeScenario?.room : selectedScenario?.room,
         scenarioStoryMode: isBedtime ? undefined : selectedScenario?.storyMode,
       });
       lastGenDataRef.current = genData;
       try {
         await generateMutation.mutateAsync({ data: genData as never });
-      } finally {
-        stopLoadingPhase();
+      } catch {
+        /* onError handles UI */
       }
     },
-    [generateMutation, startLoadingPhase, stopLoadingPhase, selectedScenario, selectedBedtimeScenario, isBedtime]
+    [generateMutation, resetGenerationProgress, selectedScenario, selectedBedtimeScenario, isBedtime]
   );
 
   const handleCastingComplete = useCallback(
@@ -1927,12 +1921,16 @@ export default function AfterDark() {
       setLastCastingData(castingSnapshot);
       setPresetSaved(false);
 
-      const allTags = isBedtime
-        ? [...(selectedBedtimeScenario?.tags ?? []), ...(casting.customTags ?? [])]
-        : [...(selectedScenario?.tags ?? []), ...(casting.customTags ?? [])];
+      const scenarioTags = isBedtime
+        ? (selectedBedtimeScenario?.tags ?? [])
+        : (selectedScenario?.tags ?? []);
+      const customerDesireTags = casting.customTags ?? [];
+      const allTags = [...scenarioTags, ...customerDesireTags];
       const pending: PendingAfterDarkCast = {
         casting,
         allTags,
+        scenarioTags,
+        customerDesireTags: customerDesireTags.length ? customerDesireTags : undefined,
         scenarioId: isBedtime ? selectedBedtimeScenario?.id : selectedScenario?.id,
       };
       setPendingAfterDarkCast(pending);
@@ -2006,7 +2004,16 @@ export default function AfterDark() {
 
   const handleWriteWithCredit = useCallback(() => {
     if (!pendingAfterDarkCast) return;
-    void handleAutoGenerateAfterDark(pendingAfterDarkCast.casting, pendingAfterDarkCast.allTags);
+    void handleAutoGenerateAfterDark(
+      pendingAfterDarkCast.casting,
+      pendingAfterDarkCast.allTags,
+      pendingAfterDarkCast.scenarioTags || pendingAfterDarkCast.customerDesireTags
+        ? {
+            scenarioTags: pendingAfterDarkCast.scenarioTags ?? [],
+            customerDesireTags: pendingAfterDarkCast.customerDesireTags ?? [],
+          }
+        : undefined,
+    );
   }, [pendingAfterDarkCast, handleAutoGenerateAfterDark]);
 
   const activePairingId =
@@ -2039,9 +2046,14 @@ export default function AfterDark() {
   const handleDevBypassPaywall = useCallback(() => {
     if (!canBypassPaywall) return;
     setPhase("generating");
-    startLoadingPhase();
+    resetGenerationProgress();
+    const devProgressTimer = window.setInterval(() => {
+      setGenerationProgress((p) => Math.min(p + 6, 92));
+    }, 180);
     window.setTimeout(() => {
-      stopLoadingPhase();
+      window.clearInterval(devProgressTimer);
+      setGenerationProgress(100);
+      setGenerationProgressLabel("Complete");
       const cover = paywallCoverUrl ?? revealFallbackCover;
       setResult({
         id: "dev-preview-story",
@@ -2061,8 +2073,7 @@ export default function AfterDark() {
       setPhase("result");
     }, 2600);
   }, [
-    startLoadingPhase,
-    stopLoadingPhase,
+    resetGenerationProgress,
     paywallCoverUrl,
     revealFallbackCover,
     storyReveal,
@@ -2647,6 +2658,7 @@ export default function AfterDark() {
               loadingPlan={paywallLoadingPlan}
               storyCredits={storyCredits}
               creditsLoading={creditsLoading}
+              isAdmin={isAdmin}
               onCheckout={doPaywallCheckout}
               onWriteWithCredit={handleWriteWithCredit}
               onDevBypass={canBypassPaywall ? handleDevBypassPaywall : undefined}
@@ -2691,39 +2703,34 @@ export default function AfterDark() {
 
             <AnimatePresence mode="wait">
               <motion.div
-                key={loadingPhase}
+                key={generationProgressLabel}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 className="mb-6"
               >
                 <h2 className="text-3xl font-display font-bold text-foreground mb-2">
-                  {LOADING_PHASES[loadingPhase].label}
+                  {generationProgressLabel}
                 </h2>
-                <p className="text-muted-foreground text-sm">
-                  {LOADING_PHASES[loadingPhase].sub}
+                <p className="text-muted-foreground text-sm tabular-nums">
+                  {generationProgress}%
                 </p>
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-6 flex gap-2 items-center">
-              {LOADING_PHASES.map((_, i) => (
+            <div className="mt-6 w-full max-w-xs">
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#333" }}>
                 <motion.div
-                  key={i}
-                  animate={{
-                    width: i === loadingPhase ? 32 : i < loadingPhase ? 16 : 8,
-                    opacity: i <= loadingPhase ? 1 : 0.2,
-                  }}
-                  className="h-1 rounded-full"
-                  style={{ background: i <= loadingPhase ? "#c0392b" : "#333" }}
-                  transition={{ duration: 0.4 }}
+                  className="h-full rounded-full"
+                  style={{ background: "#c0392b" }}
+                  animate={{ width: `${generationProgress}%` }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
                 />
-              ))}
+              </div>
             </div>
 
             <p className="text-xs text-muted-foreground mt-8 max-w-xs">
-              Your story is written with full presence and complete privacy.
-              Nothing here leaves this room.
+              {GENERATION_PROGRESS_SUB}
             </p>
           </motion.div>
         )}

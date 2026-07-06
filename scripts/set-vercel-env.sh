@@ -30,6 +30,7 @@ add_env "NODE_ENV" "production"
 # Do not set SKIP_VITE_BUILD on Vercel — build.mjs always runs Vite when VERCEL=1.
 add_env "ADMIN_EMAIL" "Jcollinsmclappleid@gmail.com"
 add_env "VITE_ADMIN_EMAIL" "Jcollinsmclappleid@gmail.com"
+add_env "BETTER_AUTH_TRUSTED_ORIGINS" "https://theprivatestory.com,https://www.theprivatestory.com,https://theprivatestory.vercel.app,https://*.vercel.app"
 add_env "STRIPE_ADDON_PRICE_ID" "price_1TV8O0Dv8IzJrrwIAUqcBVLP"
 add_env "STRIPE_ADDON_PRICE_ID_USD" "price_1TV8OXDv8IzJrrwI521Jioe1"
 add_env "STRIPE_ANNUAL_PRICE_ID" "price_1TZyy2Dv8IzJrrwI6ljswsSw"

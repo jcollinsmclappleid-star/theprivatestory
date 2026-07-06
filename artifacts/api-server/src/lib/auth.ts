@@ -14,27 +14,54 @@ function generateUserCode(): string {
   return code;
 }
 
-function getBaseURL(): string {
-  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL;
+function getDevBaseURL(): string {
+  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL.replace(/\/$/, "");
   if (process.env.REPLIT_DEV_DOMAIN) return `https://${process.env.REPLIT_DEV_DOMAIN}`;
   return "http://localhost:8080";
 }
 
-function getTrustedOrigins(): string[] {
-  const origins = new Set<string>();
-  origins.add(getBaseURL());
-  origins.add("https://theprivatestory.com");
-  origins.add("https://www.theprivatestory.com");
-  origins.add("https://theprivatestory.vercel.app");
+/** Production/Vercel — accept any deployment host; fixes "Invalid origin" on sign-in. */
+const PRODUCTION_AUTH_BASE = {
+  allowedHosts: [
+    "theprivatestory.com",
+    "www.theprivatestory.com",
+    "theprivatestory.vercel.app",
+    "*.vercel.app",
+    "localhost:*",
+  ],
+  fallback: (process.env.BETTER_AUTH_URL ?? "https://theprivatestory.vercel.app").replace(/\/$/, ""),
+} as const;
+
+function resolveAuthBaseURL() {
+  if (process.env.NODE_ENV === "development") return getDevBaseURL();
+  return PRODUCTION_AUTH_BASE;
+}
+
+function getStaticTrustedOrigins(): string[] {
+  const origins = new Set<string>([
+    "https://theprivatestory.com",
+    "https://www.theprivatestory.com",
+    "https://theprivatestory.vercel.app",
+    "https://*.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:8080",
+  ]);
+  const base = process.env.BETTER_AUTH_URL?.replace(/\/$/, "");
+  if (base) origins.add(base);
   if (process.env.SITE_URL) origins.add(process.env.SITE_URL.replace(/\/$/, ""));
   if (process.env.APP_URL) origins.add(process.env.APP_URL.replace(/\/$/, ""));
   if (process.env.VERCEL_URL) origins.add(`https://${process.env.VERCEL_URL}`);
-  if (process.env.REPLIT_DEV_DOMAIN) {
-    origins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
-  }
+  if (process.env.REPLIT_DEV_DOMAIN) origins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
   if (process.env.REPLIT_DOMAINS) {
     for (const d of process.env.REPLIT_DOMAINS.split(",")) {
       origins.add(`https://${d.trim()}`);
+    }
+  }
+  const envExtra = process.env.BETTER_AUTH_TRUSTED_ORIGINS;
+  if (envExtra) {
+    for (const o of envExtra.split(",")) {
+      const trimmed = o.trim();
+      if (trimmed) origins.add(trimmed);
     }
   }
   return [...origins];
@@ -53,7 +80,7 @@ if (process.env.NODE_ENV !== "development") {
 }
 
 export const auth = betterAuth({
-  baseURL: getBaseURL(),
+  baseURL: resolveAuthBaseURL(),
   basePath: "/api/auth",
   secret: process.env.BETTER_AUTH_SECRET ?? "dev-secret-change-in-production",
 
@@ -170,7 +197,7 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: getTrustedOrigins(),
+  trustedOrigins: getStaticTrustedOrigins(),
 });
 
 export type Auth = typeof auth;

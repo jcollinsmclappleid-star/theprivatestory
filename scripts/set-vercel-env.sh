@@ -27,7 +27,7 @@ add_env "BETTER_AUTH_SECRET" "6755e0eb33dc17459611d077cae39120dafad6d899ca327913
 add_env "SITE_URL" "https://theprivatestory.vercel.app"
 add_env "APP_URL" "https://theprivatestory.vercel.app"
 add_env "NODE_ENV" "production"
-add_env "SKIP_VITE_BUILD" "1"
+# Do not set SKIP_VITE_BUILD on Vercel — build.mjs always runs Vite when VERCEL=1.
 add_env "ADMIN_EMAIL" "Jcollinsmclappleid@gmail.com"
 add_env "VITE_ADMIN_EMAIL" "Jcollinsmclappleid@gmail.com"
 add_env "STRIPE_ADDON_PRICE_ID" "price_1TV8O0Dv8IzJrrwIAUqcBVLP"

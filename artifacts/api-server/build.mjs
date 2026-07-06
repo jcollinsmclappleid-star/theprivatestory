@@ -140,9 +140,10 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
 
   // Build the React SPA (custom-audio-stories) unless we are in a dev-restart
   // loop (SKIP_VITE_BUILD=1 is exported by the dev script to keep restarts
-  // fast).  In production deployments the env var is absent, so the Vite build
-  // always runs, ensuring the bundled client is always up-to-date.
-  if (!process.env.SKIP_VITE_BUILD) {
+  // fast). On Vercel we always rebuild from source — SKIP_VITE_BUILD must not
+  // skip the client there or production serves stale index.html / JS hashes.
+  const skipVite = process.env.SKIP_VITE_BUILD === "1" && !process.env.VERCEL;
+  if (!skipVite) {
     const pnpmBin = "npx pnpm";
     console.log("Building React SPA (Vite)…");
     execSync(

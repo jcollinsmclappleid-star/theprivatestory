@@ -39,7 +39,7 @@ export interface EditorsPick {
 }
 
 /** Bump when editor-pick MP3s are regenerated so browsers fetch fresh audio. */
-export const EDITORS_PICK_AUDIO_VERSION = "3";
+export const EDITORS_PICK_AUDIO_VERSION = "4";
 
 export function formatRuntime(sec: number): string {
   if (sec < 60) return `~${sec} sec`;
@@ -63,7 +63,7 @@ export const EDITORS_PICKS: EditorsPick[] = [
     tagline: "Two men. One suite. She walked through the connecting door.",
     excerpt:
       "\"One of you holding me still. The other watching until I say his name.\"",
-    endsOn: "he says: then get on the bed.",
+    endsOn: "he says: here. take this. I've been waiting for an occasion to use it.",
     tags: ["Full cast", "MFM", "Hotel"],
     narrator: "theo",
     cast: ["theo", "james", "maya"],
@@ -72,7 +72,7 @@ export const EDITORS_PICKS: EditorsPick[] = [
     voiceName: "Theo",
     voiceMeta: "British · Measured",
     pairing: "Her & Him & Him",
-    runtimeSec: 40,
+    runtimeSec: 45,
     transcript: `[Theo] Two men. One hotel suite. She'd had every chance to leave — and walked through the connecting door instead.
 
 [James] We've been talking about you. For months. Tell us what you've imagined.
@@ -87,7 +87,9 @@ export const EDITORS_PICKS: EditorsPick[] = [
 
 [Maya] I've never been more sure of anything.
 
-[James] Then get on the bed.`,
+[Theo] He reached into the drawer beside the bed. Something cool clicked against the wood.
+
+[James] Here. Take this. I've been waiting for an occasion to use it.`,
   },
   {
     number: 2,
@@ -178,7 +180,7 @@ export const EDITORS_PICKS: EditorsPick[] = [
     runtimeSec: 40,
     transcript: `[Kayla] The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over.
 
-[Maya] ...yes.
+She looked at the corner table. Then she nodded.
 
 [James] I'm going to be direct. I have a room upstairs. I won't touch you in the lift. I won't touch you in the corridor. If you change your mind, you walk away — I won't follow.
 

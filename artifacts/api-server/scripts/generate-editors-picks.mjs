@@ -32,6 +32,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
 import { cleanNarratorSegmentsForTts, speakableDialogueLine } from "./lib/dialogueAttribution.mjs";
+import { hybridTts } from "./lib/ttsHybrid.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(
@@ -252,18 +253,13 @@ function trimSilenceFromMp3(input) {
   });
 }
 
-async function mvTTS(vid, chunk, style) {
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vid}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "Accept": "audio/mpeg", "xi-api-key": ELEVENLABS_API_KEY },
-    body: JSON.stringify({
-      text: chunk,
-      model_id: "eleven_turbo_v2_5",
-      voice_settings: { stability: 0.45, similarity_boost: 0.80, style, use_speaker_boost: true },
-    }),
+async function mvTTS(vid, chunk, style, role = "NARRATOR") {
+  return hybridTts(vid, chunk, {
+    role: role === "NARRATOR" ? "NARRATOR" : "CHAR",
+    style,
+    vocalEffects: true,
+    apiKey: ELEVENLABS_API_KEY,
   });
-  if (!res.ok) { const t = await res.text(); throw new Error(`ElevenLabs API error (${res.status}): ${t}`); }
-  return Buffer.from(await res.arrayBuffer());
 }
 
 const PICKS = [
@@ -326,6 +322,7 @@ She reached back and found his hands. Guided them.
     voice: VOICE.theo,
     pairing: "Her & Him & Him",
     charAVoice: MV_MAYA,
+    charBVoice: MV_JAMES,
     text:
 `Two men. One hotel suite. She had had every chance to leave — and walked through the connecting door instead.
 
@@ -335,13 +332,15 @@ She reached back and found his hands. Guided them.
 
 "Be specific," he said.
 
-"One of you holding me still," she said. "The other watching until I say his name."
+"[sighs softly] One of you holding me still," she said. "The other watching until I say his name."
 
 "Look at me," he said. "Are you sure?"
 
-"I've never been more sure of anything," she said.
+"[breathless] I've never been more sure of anything," she said.
 
-"Then get on the bed," he said.`,
+He reached into the drawer beside the bed. Something cool clicked against the wood.
+
+"Here," he said. "Take this. I've been waiting for an occasion to use it."`,
   },
   {
     slug: "03-spa-at-six",
@@ -568,11 +567,11 @@ They didn't answer. They didn't need to.`,
 
 "I'm not your supervisor anymore," her supervisor said. "You passed. You're a doctor now. So tell me — what have you been writing about me in those footnotes?"
 
-"Wanting your hands on me," she said. "Wanting you to tell me what to do."
+"[sighs softly] Wanting your hands on me," she said. "Wanting you to tell me what to do."
 
 "Be still," her supervisor said.
 
-"...yes," she said.
+"[whispers] ...yes," she said.
 
 "Lock the door," her supervisor said. "Then we'll find out if you mean it."`,
   },
@@ -678,7 +677,7 @@ She looked at the corner table. Then she nodded.
 
 "I want you to say it out loud," he said. "What you want a stranger to do to you tonight."
 
-"Then stop talking," she said. "And let me say it."`,
+"[breathless] Then stop talking," she said. "And let me say it."`,
   },
   {
     slug: "09-neighbour",
@@ -686,6 +685,7 @@ She looked at the corner table. Then she nodded.
     voice: VOICE.theo,
     pairing: "Her & Him",
     charAVoice: MV_MAYA,
+    charBVoice: MV_JAMES,
     text:
 `Three weeks. Every night — footsteps above her. Barefoot. Restless. Tonight she knocked on his door with an empty wine glass and no shoes.
 
@@ -693,7 +693,7 @@ She looked at the corner table. Then she nodded.
 
 "That's a strange thing to admit to your neighbour," he said.
 
-"I didn't come for the corkscrew," she said. "I came because I wanted to know if you've been listening too."
+"[sighs softly] I didn't come for the corkscrew," she said. "I came because I wanted to know if you've been listening too."
 
 "Every night," he said. "Every sound you make upstairs."
 
@@ -701,9 +701,9 @@ She looked at the corner table. Then she nodded.
 
 "You," he said. "In my kitchen. Not leaving until I—"
 
-"Until you what?" she said. "Say it."
+"[breathless] Until you what?" she said. "Say it."
 
-"Until you let me do everything I've been thinking about for three weeks," he said.`,
+"[groans softly] Until you let me do everything I've been thinking about for three weeks," he said.`,
   },
   {
     slug: "10-night-manager",
@@ -830,7 +830,7 @@ async function generateOne(pick) {
       const style = seg.isFirst ? Math.min(0.80, baseStyle + 0.15) : baseStyle;
       const spoken = seg.role === "NARRATOR" ? seg.text : speakableDialogueLine(seg.text);
       if (!spoken) continue;
-      const buf = await mvTTS(vid, spoken, style);
+      const buf = await mvTTS(vid, spoken, style, seg.role);
       buffers.push(await trimSilenceFromMp3(buf));
     }
   } else {

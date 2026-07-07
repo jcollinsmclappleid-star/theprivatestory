@@ -11,10 +11,10 @@
  *   then served as static files at /voice-samples/editors-picks/{slug}.mp3.
  *
  * Voice mix (target female 25-45 audience):
- *   Kayla x6 (American, expressive) - 01, 03, 04, 05, 06, 07, 08
+ *   Lisa x6 (American, sensual) - 01, 03, 04, 05, 06, 07, 08
  *   Theo  x3 (British, measured)    - 02, 09, 10  (his-POV narrator)
  * In-story male: James (primary CHAR_B), Ethan (secondary)
- * In-story female dialogue: Maya, Clara (when Kayla narrates)
+ * In-story female dialogue: Maya, Sofia (when Lisa narrates)
  *
  * Usage:
  *   node scripts/generate-editors-picks.mjs              # skip existing
@@ -55,8 +55,8 @@ if (IS_MAIN && !ELEVENLABS_API_KEY) {
 }
 
 const VOICE = {
-  clara: { id: "FA6HhUjVbervLw2rNl8M", name: "Clara", settings: { stability: 0.62, similarity_boost: 0.78, style: 0.12 } },
-  kayla: { id: "aTxZrSrp47xsP6Ot4Kgd", name: "Kayla", settings: { stability: 0.48, similarity_boost: 0.80, style: 0.32 } },
+  sofia: { id: "D9MdulIxfrCUUJcGNQon", name: "Sofia", settings: { stability: 0.62, similarity_boost: 0.78, style: 0.12 } },
+  lisa:  { id: "PB6BdkFkZLbI39GHdnbQ", name: "Lisa",  settings: { stability: 0.48, similarity_boost: 0.80, style: 0.32 } },
   maya:  { id: "tQ4MEZFJOzsahSEEZtHK", name: "Maya",  settings: { stability: 0.45, similarity_boost: 0.82, style: 0.35 } },
   james: { id: "AeRdCCKzvd23BpJoofzx", name: "James", settings: { stability: 0.55, similarity_boost: 0.78, style: 0.18 } },
   theo:  { id: "jfIS2w2yJi0grJZPyEsk", name: "Theo",  settings: { stability: 0.52, similarity_boost: 0.78, style: 0.20 } },
@@ -66,13 +66,13 @@ const VOICE = {
 // src/routes/generate.ts (tagScriptForMultiVoice / resolveCharacterVoicesServer /
 // generateAudioFile). Kept duplicated intentionally — the .mjs script cannot
 // import the bundled server module. Keep in sync with that file.
-const MV_CLARA = "FA6HhUjVbervLw2rNl8M";
+const MV_SOFIA = "D9MdulIxfrCUUJcGNQon";
 const MV_MAYA  = "tQ4MEZFJOzsahSEEZtHK";
-const MV_KAYLA = "aTxZrSrp47xsP6Ot4Kgd";
+const MV_LISA  = "PB6BdkFkZLbI39GHdnbQ";
 const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
 const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
 const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
-const MV_HER_POOL = [MV_MAYA, MV_KAYLA, MV_CLARA];
+const MV_HER_POOL = [MV_MAYA, MV_LISA, MV_SOFIA];
 const MV_HIM_POOL = [MV_JAMES, MV_THEO, MV_ETHAN];
 const MV_MALE_NARRATORS = new Set([MV_JAMES, MV_ETHAN, MV_THEO]);
 
@@ -91,7 +91,7 @@ function resolveCharacterVoicesServer(narratorId, pairing) {
       return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId) };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? MV_MAYA, charB: b ?? MV_KAYLA };
+      return { charA: a ?? MV_MAYA, charB: b ?? MV_LISA };
     }
     case "him & him": {
       const [a, b] = twoHim();
@@ -266,7 +266,7 @@ const PICKS = [
   {
     slug: "01-last-one",
     title: "The Last One in the Building",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     text:
 `"You're still here," he said.
 
@@ -345,7 +345,7 @@ He reached into the drawer beside the bed. Something cool clicked against the wo
   {
     slug: "03-spa-at-six",
     title: "The Spa at Six",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     pairing: "Her & Her",
     text:
 `"You're tense," the woman said quietly.
@@ -417,7 +417,7 @@ She wrapped one hand in the woman's hair and told her exactly what she wanted ne
   {
     slug: "04-driver",
     title: "The Driver",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     text:
 `"Come up," she said.
 
@@ -478,7 +478,7 @@ He found the zip at the side of her dress — certain, unhurried, the hands of a
   {
     slug: "05-cabin",
     title: "The Cabin",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     pairing: "Her & Him & Him",
     text:
 `"Right," he said finally. "The bedroom is yours. We'll work it out down here."
@@ -552,10 +552,10 @@ They didn't answer. They didn't need to.`,
   {
     slug: "06-supervisor",
     title: "The Supervisor's Office",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     pairing: "Her & Her",
     charAVoice: MV_MAYA,
-    charBVoice: MV_CLARA,
+    charBVoice: MV_SOFIA,
     text:
 `The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule did not apply.
 
@@ -578,7 +578,7 @@ They didn't answer. They didn't need to.`,
   {
     slug: "07-bodyguard",
     title: "The Bodyguard",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     text:
 `"You can stand somewhere else," she said.
 
@@ -659,7 +659,7 @@ She had six weeks of corners to work through. She intended to take her time.`,
   {
     slug: "08-proposition",
     title: "The Proposition",
-    voice: VOICE.kayla,
+    voice: VOICE.lisa,
     pairing: "Her & Him",
     charAVoice: MV_MAYA,
     text:
@@ -810,7 +810,7 @@ async function generateOne(pick) {
     // route CHAR_B dialogue back to the narrator voice so the listener hears one consistent
     // male voice rather than a jarring switch between Theo (narration) and James (dialogue).
     const charB = pick.charBVoice ?? charBResolved;
-    const VNAMES = { [MV_CLARA]:"Clara",[MV_MAYA]:"Maya",[MV_KAYLA]:"Kayla",[MV_JAMES]:"James",[MV_ETHAN]:"Ethan",[MV_THEO]:"Theo" };
+    const VNAMES = { [MV_SOFIA]:"Sofia",[MV_MAYA]:"Maya",[MV_LISA]:"Lisa",[MV_JAMES]:"James",[MV_ETHAN]:"Ethan",[MV_THEO]:"Theo" };
     console.log(`  - gen  ${pick.slug} MULTI-VOICE narrator=${pick.voice.name} segments=${segments.length} attr=${tagged.explicitAttributions} "${pick.title}"`);
     if (DRY_RUN) {
       console.log(`  pairing="${pairing}" charA=${VNAMES[charA]||charA.slice(0,8)} charB=${VNAMES[charB]||charB.slice(0,8)}`);

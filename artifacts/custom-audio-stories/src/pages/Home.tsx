@@ -14,7 +14,7 @@ import { usePricing } from "@/hooks/usePricing";
 import type { Story } from "@workspace/api-client-react";
 import { HomeCreativityShowcase } from "@/components/HomeCreativityShowcase";
 import { HeroLivingPortrait } from "@/components/HeroLivingPortrait";
-import { LogoMark } from "@/components/Logo";
+import { LogoHero } from "@/components/Logo";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { MiniDoorCTA } from "@/components/MiniDoorCTA";
 import { TrustBar } from "@/components/TrustBar";
@@ -69,21 +69,19 @@ function HomeHeroCopy({ layout }: { layout: "mobile" | "desktop" }) {
   const isMobile = layout === "mobile";
   return (
     <>
-      {isMobile ? (
-        <div className="flex flex-col items-center mb-4">
-          <LogoMark
-            size={54}
-            className="mb-3 ring-1 ring-primary/35 shadow-[0_0_36px_-12px_hsl(var(--primary)/0.55)]"
-          />
-          <p className="hero-brand-title text-[10px] font-bold uppercase tracking-[0.34em]">
+      <div className={`flex flex-col ${isMobile ? "items-center -mt-0.5 mb-2" : "mb-3"}`}>
+        {isMobile ? (
+          <LogoHero height={56} className="max-w-[min(90vw,17rem)] mb-1" />
+        ) : (
+          <p
+            className={`hero-brand-title font-bold uppercase ${
+              isMobile ? "text-[10px] tracking-[0.34em]" : "text-[10px] tracking-[0.32em]"
+            }`}
+          >
             The Private Story
           </p>
-        </div>
-      ) : (
-        <p className="hero-brand-title text-[10px] font-bold uppercase tracking-[0.32em] mb-3">
-          The Private Story
-        </p>
-      )}
+        )}
+      </div>
       <h1
         className={`font-display font-bold text-white tracking-tight ${
           isMobile
@@ -336,18 +334,18 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
 
       {/* Mobile — branded header, copy, portrait, CTA */}
-      <section className="relative z-30 w-full md:hidden px-3 pt-2 pb-3">
+      <section className="relative z-30 w-full md:hidden px-3 pt-1 pb-3">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="max-w-lg mx-auto rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.07] via-background/50 to-transparent px-4 pt-4 pb-4 shadow-[0_20px_56px_-28px_rgba(0,0,0,0.85)]"
+          className="max-w-lg mx-auto rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.07] via-background/50 to-transparent px-4 pt-3 pb-4 shadow-[0_20px_56px_-28px_rgba(0,0,0,0.85)]"
         >
-          <div className="text-center mb-3">
+          <div className="text-center mb-2">
             <HomeHeroCopy layout="mobile" />
           </div>
 
-          <HeroLivingPortrait variant="contained" className="mx-auto mb-4 !max-h-[min(36vh,300px)]" />
+          <HeroLivingPortrait variant="contained" className="mx-auto mb-3 !max-h-[min(30vh,240px)]" />
 
           <div className="flex flex-col gap-2.5">
             <Link
@@ -385,7 +383,7 @@ export default function Home() {
       </section>
 
       {/* Desktop hero */}
-      <section className="relative z-30 w-full min-h-0 md:min-h-[min(88vh,720px)] pt-2 pb-4 md:pt-4 md:pb-6 px-6 sm:px-8 hidden md:flex flex-col items-start justify-start overflow-hidden">
+      <section className="relative z-30 w-full min-h-0 md:min-h-[min(88vh,720px)] pt-2 pb-4 md:pt-4 md:pb-6 px-6 sm:px-8 hidden md:flex flex-col items-start justify-start overflow-x-hidden">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none hidden md:block">
           <div
             className="absolute inset-0"

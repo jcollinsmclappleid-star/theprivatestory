@@ -19,8 +19,8 @@ function LogoFrame({
 }) {
   return (
     <span
-      className={`inline-flex items-center bg-background ${className}`}
-      style={{ lineHeight: 0, flexShrink: 0 }}
+      className={`inline-flex items-center max-w-full bg-transparent ${className}`}
+      style={{ lineHeight: 0, flexShrink: 1 }}
     >
       {children}
     </span>
@@ -45,6 +45,8 @@ export function Logo({ height = 44, className = "", wordmarkOnly = false }: Logo
           style={{
             height: `${height}px`,
             width: "auto",
+            maxWidth: "100%",
+            objectFit: "contain",
             marginLeft: `-${Math.round(height * 0.92)}px`,
             ...LOGO_IMG_STYLE,
           }}
@@ -58,7 +60,7 @@ export function Logo({ height = 44, className = "", wordmarkOnly = false }: Logo
       <img
         src={`${BASE}images/logo-nav.webp`}
         alt="The Private Story"
-        style={{ height: `${height}px`, width: "auto", ...LOGO_IMG_STYLE }}
+        style={{ height: `${height}px`, width: "auto", maxWidth: "100%", objectFit: "contain", ...LOGO_IMG_STYLE }}
       />
     </LogoFrame>
   );
@@ -71,17 +73,45 @@ export function LogoFull({ height = 120, className = "" }: { height?: number; cl
       <img
         src={`${BASE}images/logo-full.webp`}
         alt="The Private Story"
-        style={{ height: `${height}px`, width: "auto", ...LOGO_IMG_STYLE }}
+        style={{ height: `${height}px`, width: "auto", maxWidth: "100%", objectFit: "contain", ...LOGO_IMG_STYLE }}
       />
     </LogoFrame>
   );
 }
 
-/** Circle icon only — the woman-in-headphones mark, clipped to a circle. Best for favicons and small badges. */
+/** Hero wordmark — same nav asset; screen blend drops the black plate on site purple. */
+export function LogoHero({ height = 56, className = "" }: { height?: number; className?: string }) {
+  return <Logo height={height} className={className} />;
+}
+
+/** Hero mark — gold headphones on black plate; screen blend drops the plate on site purple. */
+export function LogoHeroMark({ size = 54, className = "" }: { size?: number; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center justify-center overflow-hidden bg-transparent ${className}`}
+      style={{ lineHeight: 0, flexShrink: 0, width: size, height: size }}
+      aria-hidden
+    >
+      <img
+        src={`${BASE}images/logo-icon.png`}
+        alt=""
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          display: "block",
+          ...LOGO_IMG_STYLE,
+        }}
+      />
+    </span>
+  );
+}
+
+/** Circle icon only — favicons and small badges (not used in main nav/hero). */
 export function LogoMark({ size = 40, className = "" }: { size?: number; className?: string }) {
   return (
     <span
-      className={`inline-flex items-center justify-center bg-background overflow-hidden rounded-full ${className}`}
+      className={`inline-flex items-center justify-center overflow-hidden rounded-full bg-transparent ${className}`}
       style={{
         lineHeight: 0,
         flexShrink: 0,

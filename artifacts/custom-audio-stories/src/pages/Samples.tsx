@@ -147,10 +147,9 @@ export default function Samples() {
 
   const skip = useCallback(
     (delta: number) => {
-      if (duration <= 0) return;
-      seekTo(Math.max(0, Math.min(duration, currentTime + delta)));
+      seekTo(currentTime + delta);
     },
-    [currentTime, duration, seekTo],
+    [currentTime, seekTo],
   );
 
   const seek = useCallback(

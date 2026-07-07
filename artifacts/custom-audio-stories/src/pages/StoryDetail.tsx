@@ -14,7 +14,7 @@ const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 export default function StoryDetail() {
   const { id } = useParams();
   const { data: story } = useStoryFallback(id || "");
-  const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress, seekTo } = useAudioPlayer();
+  const { currentStory, isPlaying, progress, currentTime, duration, play, togglePlay, setProgress, seekTo, seekBy } = useAudioPlayer();
   const { hasFullAccess, isLoading: subLoading } = useSubscription();
   const [saved, setSaved] = useState(false);
   const [savePending, setSavePending] = useState(false);
@@ -218,10 +218,10 @@ export default function StoryDetail() {
             </button>
             
             <button
-              onClick={() => isCurrent && seekTo(currentTime - 15)}
+              onClick={() => isCurrent && seekBy(-30)}
               disabled={!isCurrent}
               className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30"
-              title="Back 15 seconds"
+              title="Back 30 seconds"
             >
               <Rewind className="w-6 h-6" />
             </button>
@@ -238,7 +238,7 @@ export default function StoryDetail() {
             </button>
 
             <button
-              onClick={() => isCurrent && seekTo(currentTime + 30)}
+              onClick={() => isCurrent && seekBy(30)}
               disabled={!isCurrent}
               className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30"
               title="Forward 30 seconds"

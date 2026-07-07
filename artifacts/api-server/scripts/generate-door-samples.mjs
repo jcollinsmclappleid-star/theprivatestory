@@ -7,8 +7,6 @@
  * each in a voice picked to match the door's tone.
  *
  * Output: public-static/voice-samples/doors/{slug}.mp3
- *   These are committed to git and copied to public/ on each api-server build,
- *   then served as static files at /voice-samples/doors/{slug}.mp3.
  *
  * Usage:
  *   node scripts/generate-door-samples.mjs          # skip existing
@@ -18,6 +16,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { hybridTts } from "./lib/ttsHybrid.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SAMPLE_OUTPUT_DIR = path.join(__dirname, "..", "public-static", "voice-samples", "doors");
@@ -29,14 +28,18 @@ if (!ELEVENLABS_API_KEY) {
   process.exit(1);
 }
 
+const LISA = "PB6BdkFkZLbI39GHdnbQ";
+const MAYA = "tQ4MEZFJOzsahSEEZtHK";
+const SOFIA = "D9MdulIxfrCUUJcGNQon";
+
 const SAMPLES = [
   {
     slug: "romance",
     door: "Romance",
-    voiceId: "aTxZrSrp47xsP6Ot4Kgd",
-    voiceName: "Kayla",
+    voiceId: LISA,
+    voiceName: "Lisa",
     title: "The Fake-Dating One",
-    voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.25 },
+    style: 0.28,
     text:
 `His sister's wedding was on Saturday, and the plus-one box had been empty for six months.
 
@@ -55,10 +58,11 @@ She didn't tell him, until Sunday morning, that she hadn't been pretending.`,
   {
     slug: "after-dark",
     door: "After Dark",
-    voiceId: "tQ4MEZFJOzsahSEEZtHK",
+    voiceId: MAYA,
     voiceName: "Maya",
     title: "The First Word",
-    voice_settings: { stability: 0.45, similarity_boost: 0.82, style: 0.35 },
+    style: 0.38,
+    role: "CHAR",
     text:
 `He stopped at her door.
 
@@ -78,15 +82,15 @@ She stepped back. Held the door open. Looked at him properly — at the way he h
 
 And then, because he was still watching her, because he needed to hear it —
 
-"Yes. I want you to."`,
+"[breathless] Yes. I want you to."`,
   },
   {
     slug: "drift",
     door: "Drift",
-    voiceId: "FA6HhUjVbervLw2rNl8M",
-    voiceName: "Clara",
+    voiceId: SOFIA,
+    voiceName: "Sofia",
     title: "The House at the Edge of the Forest",
-    voice_settings: { stability: 0.72, similarity_boost: 0.78, style: 0.05 },
+    style: 0.08,
     text:
 `The house sits where the field ends and the forest begins.
 
@@ -98,7 +102,7 @@ You don't remember who left it. You don't need to.
 
 There is a window seat that looks out over the trees. The light is the kind of light that only exists in late afternoon in autumn — gold, slow, settling on everything.
 
-You sit. You let your shoulders drop. You let your breath find its own pace.
+You sit. You let your shoulders drop. [sighs softly] You let your breath find its own pace.
 
 Outside, somewhere deep in the forest, a single bird calls. And then everything is quiet again.`,
   },
@@ -114,47 +118,27 @@ async function generateSample(sample) {
 
   console.log(`  - gen  ${sample.door.padEnd(11)} ${sample.title} (${sample.voiceName})...`);
 
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${sample.voiceId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "xi-api-key": ELEVENLABS_API_KEY,
-      },
-      body: JSON.stringify({
-        text: sample.text,
-        model_id: "eleven_multilingual_v2",
-        voice_settings: sample.voice_settings,
-      }),
-    },
-  );
+  const buffer = await hybridTts(sample.voiceId, sample.text, {
+    role: sample.role ?? "NARRATOR",
+    style: sample.style,
+    vocalEffects: true,
+    apiKey: ELEVENLABS_API_KEY,
+  });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(
-      `ElevenLabs API error (${response.status}) for ${sample.slug}: ${error}`,
-    );
-  }
-
-  const buffer = await response.arrayBuffer();
-  fs.writeFileSync(outputPath, Buffer.from(buffer));
-  const sizeKb = Math.round(buffer.byteLength / 1024);
-  console.log(`    -> ${outputPath} (${sizeKb} KB)`);
+  fs.writeFileSync(outputPath, buffer);
+  console.log(`    -> ${outputPath} (${Math.round(buffer.length / 1024)} KB)`);
 }
 
 async function main() {
   if (!fs.existsSync(SAMPLE_OUTPUT_DIR)) {
     fs.mkdirSync(SAMPLE_OUTPUT_DIR, { recursive: true });
-    console.log(`+ created ${SAMPLE_OUTPUT_DIR}`);
   }
 
-  console.log(`Generating ${SAMPLES.length} door samples...`);
+  console.log(`Generating ${SAMPLES.length} door samples (turbo + v3 where tagged)...`);
   for (const sample of SAMPLES) {
     await generateSample(sample);
   }
-  console.log("\nDone. Files committed to public-static/voice-samples/doors/");
-  console.log("Served at /voice-samples/doors/{slug}.mp3 after api-server build.");
+  console.log("\nDone. Served at /voice-samples/doors/{slug}.mp3 after api-server build.");
 }
 
 main().catch((err) => {

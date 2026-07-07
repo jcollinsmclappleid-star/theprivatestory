@@ -14,6 +14,10 @@ export type BuildGeneratePayloadOptions = {
   scenarioRoom?: string;
   /** After Dark scenario storyMode — bedtime uses casting.storyMode (nocturne). */
   scenarioStoryMode?: string;
+  /** Paywall preview cover data URL — reused server-side to skip duplicate DALL-E. */
+  existingCoverDataUrl?: string;
+  /** Server cover fingerprint — must match current casting to reuse preview bytes. */
+  previewCoverKey?: string;
 };
 
 /**
@@ -21,7 +25,7 @@ export type BuildGeneratePayloadOptions = {
  * All funnels (After Dark, bedtime/Drift handoff) must use this — no per-page genData objects.
  */
 export function buildGeneratePayload(opts: BuildGeneratePayloadOptions): Record<string, unknown> {
-  const { casting, funnel, experienceTags = [], scenarioTags, customerDesireTags, scenarioRoom, scenarioStoryMode } = opts;
+  const { casting, funnel, experienceTags = [], scenarioTags, customerDesireTags, scenarioRoom, scenarioStoryMode, existingCoverDataUrl, previewCoverKey } = opts;
 
   const apiPerspective =
     casting.perspective === "your"
@@ -65,5 +69,11 @@ export function buildGeneratePayload(opts: BuildGeneratePayloadOptions): Record<
     city: casting.city || undefined,
     scenarioRoom: scenarioRoom || undefined,
     situationId: casting.situationId || undefined,
+    charAVoiceId: casting.charAVoiceId || undefined,
+    charBVoiceId: casting.charBVoiceId || undefined,
+    existingCoverDataUrl: existingCoverDataUrl?.startsWith("data:image/")
+      ? existingCoverDataUrl
+      : undefined,
+    previewCoverKey: previewCoverKey?.trim() || undefined,
   };
 }

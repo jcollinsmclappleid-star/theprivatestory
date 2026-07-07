@@ -37,8 +37,8 @@ export function stripV3AudioTags(text: string): string {
 export const MAX_V3_TAGGED_LINES_PER_STORY = 12;
 
 export const VOCAL_PERFORMANCE_PROMPT_BLOCK = `
-VOCAL PERFORMANCE (character quoted dialogue only — Explicit / Unrestrained IGNITE scenes):
-You may place ElevenLabs performance tags in square brackets INSIDE quoted character lines only — sparingly (max 2 tagged lines per IGNITE scene, max ${MAX_V3_TAGGED_LINES_PER_STORY} per story).
+VOCAL PERFORMANCE (character quoted dialogue only — Explicit / Unrestrained PERFORM scenes):
+You may place ElevenLabs performance tags in square brackets INSIDE quoted character lines only — sparingly (max 2 tagged lines per PERFORM scene, max ${MAX_V3_TAGGED_LINES_PER_STORY} per story).
 Allowed tags only: [breathless], [sighs softly], [gasps softly], [groans softly], [whispers]
 Example: "[breathless] Don't stop—" / "[gasps softly] Yes—there."
 NEVER place these tags in narrator prose. NEVER use graphic or loop-style moaning — one brief tag per beat, then real words.

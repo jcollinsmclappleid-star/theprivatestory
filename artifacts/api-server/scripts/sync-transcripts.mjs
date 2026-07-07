@@ -9,7 +9,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { PICKS } from "./generate-editors-picks.mjs";
+import { PICKS, ACTIVE_SAMPLE_SLUGS } from "./generate-editors-picks.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TARGET = path.join(
@@ -17,7 +17,9 @@ const TARGET = path.join(
   "../../custom-audio-stories/src/data/editorsPicks.ts",
 );
 
-const textBySlug = Object.fromEntries(PICKS.map((p) => [p.slug, p.text]));
+const textBySlug = Object.fromEntries(
+  PICKS.filter((p) => ACTIVE_SAMPLE_SLUGS.includes(p.slug)).map((p) => [p.slug, p.text]),
+);
 
 let src = fs.readFileSync(TARGET, "utf8");
 

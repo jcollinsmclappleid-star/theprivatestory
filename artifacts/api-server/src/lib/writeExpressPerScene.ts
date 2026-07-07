@@ -4,8 +4,9 @@
  */
 
 import { openrouter, MISTRAL_MODEL } from "./openrouter.js";
-import { buildIntensityLayer as buildNumericIntensityLayer } from "./buildPrompt.js";
-import { buildCustomerDesireWriteBlock, buildScenarioFrameInstruction } from "./customerDesireBeats.js";
+import { buildIntensityLayerForPairing } from "./buildPrompt.js";
+import { VOCAL_PERFORMANCE_PROMPT_BLOCK } from "./audioVocal/index.js";
+import { buildCustomerDesireWriteBlock, buildConversationBlockContract, buildScenarioFrameInstruction } from "./customerDesireBeats.js";
 import type { ExpressStoryBrief } from "./expressBrief.js";
 import type { ExpressScenePlanRow } from "./expressScenePlan.js";
 import {
@@ -18,6 +19,16 @@ import {
   PHASE_QUOTED_WORD_MIN,
   validateDialogueDensity,
 } from "./dialogueRatio.js";
+import { SPEAKER_ATTRIBUTION_WRITE_CONTRACT } from "./speakerAttribution.js";
+import {
+  EXPRESS_AUDIO_SCRIPT_CONTRACT,
+  mergeWriterScripts,
+  parseWriterScriptField,
+  validateWriterScript,
+  writerScriptToDisplayProse,
+  writerScriptToTaggedRawText,
+  type WriterScriptLine,
+} from "./expressAudioScript.js";
 import {
   buildInitialLedger,
   ledgerPromptBlock,
@@ -29,13 +40,30 @@ import { beatWordMax, beatWordMin, countWords, minWordsForStoryLength, phaseLeng
 import { logger } from "./logger.js";
 import { recordExpressWriteTiming, resetExpressWriteTimings, summarizeExpressWriteTimings, timeExpressWrite } from "./expressWriteTiming.js";
 import {
+  assertExpressLlmBudget,
+  canMakeExpressLlmCall,
+  expressLlmCallsUsed,
+  recordExpressLlmCall,
+  resetExpressLlmBudget,
+} from "./expressLlmBudget.js";
+import {
+  applyDeterministicConstraintRepairs,
   buildConstraintRetryNote,
+  describeConstraintViolations,
   compileEnactmentSpecs,
   constraintsPromptBlock,
   resolveActiveConstraints,
   validateBeatConstraints,
+  type ConstraintViolation,
   type EnactmentSpec,
 } from "./enactmentConstraints.js";
+import {
+  autoPickPartnerName,
+  pairingGuideLine,
+  performPartGoalSuffix,
+  performSexActsLine,
+  protPronounsFromPairing,
+} from "./pairingWrite.js";
 
 const BANNED_REPEAT_PHRASES = [
   "neither of you moves to close the distance",
@@ -67,14 +95,22 @@ export type PerSceneWriteInput = {
   pairing?: string;
   storyLength?: string;
   context?: ExpressWriteContext;
+  /** Called when a beat begins — keeps progress moving during long LLM calls. */
+  onBeatStart?: (beat: string) => void;
   /** Called after each beat (and PERFORM part A/B) completes — for job progress UI. */
   onBeatComplete?: (beat: string, part?: "A" | "B") => void;
+  /** Max QC revision passes per non-PERFORM beat (default 2). Express uses 1. */
+  maxSceneAttempts?: number;
+  /** Max QC revision passes per PERFORM part (default 2). Express uses 1. */
+  maxPerformPartAttempts?: number;
 };
 
 type SceneDraft = {
   id: number;
   heading: string;
   text: string;
+  /** Tagged [N]/[A]/[B] text for multi-voice TTS — from write-time script. */
+  rawText?: string;
   duration_estimate: number;
   emotional_shift: string;
 };
@@ -97,17 +133,35 @@ function coerceSceneText(value: unknown): string {
   return value == null ? "" : String(value).trim();
 }
 
-function parseSceneJson(raw: string): {
+function parseSceneJson(
+  raw: string,
+  phase?: string,
+): {
   heading?: string;
   text: string;
+  script?: WriterScriptLine[];
   emotional_shift?: string;
   continuity?: ReturnType<typeof parseContinuityFromSceneJson>;
 } {
   const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
   const parsed = JSON.parse(cleaned) as Record<string, unknown>;
+  const script = parseWriterScriptField(parsed.script);
+  const textFromField = coerceSceneText(parsed.text);
+  const scriptProse = script ? writerScriptToDisplayProse(script) : "";
+  const text =
+    textFromField && countWords(textFromField) >= countWords(scriptProse)
+      ? textFromField
+      : scriptProse || textFromField;
+  if (script) {
+    const v = validateWriterScript(script, { phase, requireBothSpeakers: phase !== "LAND" });
+    if (!v.ok) {
+      throw new Error(`Invalid audio script for ${phase ?? "beat"}: ${v.issues.join("; ")}`);
+    }
+  }
   return {
     heading: typeof parsed.heading === "string" ? parsed.heading : undefined,
-    text: coerceSceneText(parsed.text),
+    text,
+    script: script ?? undefined,
     emotional_shift: typeof parsed.emotional_shift === "string" ? parsed.emotional_shift : undefined,
     continuity: parseContinuityFromSceneJson(parsed),
   };
@@ -180,6 +234,7 @@ function buildBeatScreenplayContract(
   level: number,
   storyLength?: string,
   plan?: ExpressScenePlanRow,
+  pairing?: string,
 ): string {
   const minLines = PHASE_QUOTE_LINE_MIN[phase] ?? 5;
   const minQuoted = PHASE_QUOTED_WORD_MIN[phase] ?? 60;
@@ -187,43 +242,52 @@ function buildBeatScreenplayContract(
   const minWords = plan?.word_budget_min ?? beatWordMin(phase, storyLength);
   const maxWords = plan?.word_budget_max ?? beatWordMax(phase, storyLength);
   const target = plan?.word_budget_target ?? Math.round((minWords + maxWords) / 2);
+  const chipCount = plan?.customer_desire_beats?.length ?? 0;
+  const conversationBlocks = buildConversationBlockContract(phase, chipCount);
 
   const base = `
 SCREENPLAY-FIRST — performed in multi-voice audio (narrator + partner):
-- Alternate: narrator bridge (MAX 2 sentences) → dialogue run → narrator bridge → dialogue…
+- Dedicated conversation blocks: uninterrupted quoted lines (6–10 per block); narrator MAX 1–2 sentences BETWEEN blocks only — never between every line.
 - Target ${target} words (${minWords}–${maxWords} hard band). Do NOT exceed ${maxWords}.
-- Partner (${plan ? "see prompt" : "partner"}) speaks in full sentences (6–20 words per line).`;
+- Partner speaks in full sentences (6–20 words per line).`;
 
   if (phase === "FRAME") {
     return `${base}
-- FRAME: situation stakes + scenario frame tags as tension. Setting sensorially grounded.
-- Do NOT name customer sex chips. No sex acts. ${minLines}+ quoted lines; ${minRatio}%+ dialogue.
-- Open with quoted dialogue within first 100 words.`;
+${conversationBlocks}
+- FRAME: situation stakes + scenario frame in DIALOGUE. Setting grounded in speech and brief narrator bridges.
+- Foreshadow chip themes in subtext; do NOT name customer sex-chip labels. No sex acts. ${minLines}+ quoted lines; ${minRatio}%+ dialogue.
+- Open with a conversation block within first 120 words.`;
   }
   if (phase === "DECLARE") {
     return `${base}
-- DECLARE: customer SPEAKS Make it yours fantasies; partner repeats back verbatim themes.
+${conversationBlocks}
+- DECLARE: negotiate Make it yours fantasies — partner TESTS desires in speech; listener confesses. No verbatim chip echo.
 - No sex acts, no blindfold on body yet. ${minLines}+ quoted lines; ${minQuoted}+ quoted words; ${minRatio}%+ dialogue.`;
   }
   if (phase === "PERFORM") {
     return `${base}
-- PERFORM: ONE continuous scene — opens with first physical cross (kiss/grope), then enacts every customer_desire_beat.
-- Blindfold: applied in dialogue; stays through climax; removal only after orgasm or in LAND.
+${conversationBlocks}
+- PERFORM: ONE continuous scene — opens with first physical cross, then enacts every chip as OFFER→ACT→REACT→DEEPEN.
+- SAY ≠ ENACT: chip labels were negotiated in DECLARE; PERFORM shows partner doing (commands, position, pace).
+- Sensation in dirty talk, not narrator body prose. Blindfold: applied in dialogue; stays through climax.
 - Praise: partner praises DURING the act in quoted lines.
-- ${minLines}+ quoted lines; ${minQuoted}+ quoted words; ${minRatio}%+ dialogue. Speech before each escalation.
-- Include one line acknowledging situation/forbidden risk during sex.
-${level >= 4 ? "- Intensity: oral sex AND penetrative intercourse with anatomical specificity; position changes introduced by speech." : ""}`;
+- ${minLines}+ quoted lines; ${minQuoted}+ quoted words; ${minRatio}%+ dialogue.
+- One line acknowledging situation/forbidden risk during sex.
+${performSexActsLine(pairing, level)}`;
   }
   if (phase === "LAND") {
     return `${base}
+${conversationBlocks}
 - LAND: aftermath only — MUST match continuity ledger (position, acts, blindfold state). No new sex.
 - Reference what physically happened in PERFORM. ${minLines}+ quoted lines; emotional landing.`;
   }
   return base;
 }
 
-function buildInputAnchors(ctx: ExpressWriteContext | undefined, brief: ExpressStoryBrief): string {
+function buildInputAnchors(ctx: ExpressWriteContext | undefined, brief: ExpressStoryBrief, pairing?: string): string {
   const lines: string[] = [];
+  const prot = protPronounsFromPairing(pairing);
+  lines.push(`REQUIRED — PAIRING: ${pairingGuideLine(pairing)}`);
   if (ctx?.whoIsHe) lines.push(`REQUIRED — Partner archetype: ${ctx.whoIsHe}`);
   if (ctx?.setting || brief.fantasy_spine?.scenario_frame) {
     lines.push(`REQUIRED — Setting: ${ctx?.setting ?? "from scenario"}`);
@@ -235,7 +299,7 @@ function buildInputAnchors(ctx: ExpressWriteContext | undefined, brief: ExpressS
   if (ctx?.atmosphere) lines.push(`REQUIRED — Atmosphere: ${ctx.atmosphere}`);
   if (ctx?.ending) lines.push(`REQUIRED — Ending type: ${ctx.ending}`);
   if (brief.fantasy_spine?.scenario_tags?.length) {
-    lines.push(buildScenarioFrameInstruction(brief.fantasy_spine.scenario_tags, { sub: "She", obj: "her", poss: "her", refl: "herself" }));
+    lines.push(buildScenarioFrameInstruction(brief.fantasy_spine.scenario_tags, prot));
   }
   if (brief.situation) lines.push(`REQUIRED — Situation (Act IV): ${brief.situation}`);
   return lines.filter(Boolean).join("\n");
@@ -258,6 +322,7 @@ function buildSceneUserPrompt(
     enactmentSpecs: EnactmentSpec[];
     situationStakes?: string;
     skipSituationStakes?: boolean;
+    pairing?: string;
   },
 ): string {
   const phase = plan.phase.toUpperCase();
@@ -301,7 +366,7 @@ ${JSON.stringify({
   position_changes: plan.position_changes,
 }, null, 2)}
 
-${buildBeatScreenplayContract(phase, ctx.level, ctx.storyLength, plan)}
+${buildBeatScreenplayContract(phase, ctx.level, ctx.storyLength, plan, ctx.pairing)}
 
 ${ctx.fantasyBlock ? `FANTASY CONTRACT:\n${ctx.fantasyBlock}\n` : ""}
 
@@ -311,7 +376,12 @@ ${[...BANNED_REPEAT_PHRASES, ...ctx.bannedPhrases].map((p) => `  - "${p}"`).join
 Return ONLY JSON:
 {
   "heading": "unique evocative beat title",
-  "text": "full beat prose — screenplay-first",
+  "script": [
+    { "role": "narrator", "text": "scene prose without spoken character lines" },
+    { "role": "love_interest", "text": "\\"Partner dialogue in quotes.\\"" },
+    { "role": "protagonist", "text": "\\"Listener dialogue in quotes.\\"" }
+  ],
+  "text": "optional — same beat as flat prose if easier",
   "emotional_shift": "one line",
   "continuity": {
     "location": "where bodies are",
@@ -321,7 +391,9 @@ Return ONLY JSON:
     "lastPosition": "physical configuration",
     "actsCompleted": ["kiss", "oral", "penetration"]
   }
-}`;
+}
+
+${EXPRESS_AUDIO_SCRIPT_CONTRACT}`;
 }
 
 function trimProseToWordMax(text: string, maxWords: number): string {
@@ -355,7 +427,222 @@ function trimProseToWordMax(text: string, maxWords: number): string {
   return trimmed;
 }
 
+/** Trim prose when salvage/repair pushed a beat over its soft ceiling — prefer shipping over hard-fail. */
+function trimBeatToCeiling(text: string, wordMax: number, ceilingRatio = 1.15): string {
+  const softCeiling = Math.ceil(wordMax * ceilingRatio);
+  const words = countWords(text);
+  if (words <= softCeiling) return text;
+  logger.warn(
+    { words, softCeiling, wordMax },
+    "[writeExpress] Trimming beat over ceiling after recovery",
+  );
+  return trimProseToWordMax(text, wordMax);
+}
+
 export { resetExpressWriteTimings, summarizeExpressWriteTimings };
+
+const MAX_CONSTRAINT_SALVAGE_WRITES = 1;
+const MAX_SCENE_ATTEMPTS = 2;
+const MAX_PERFORM_PART_ATTEMPTS = 2;
+const WORD_FLOOR_SLACK = 0.9;
+
+type SceneWriteDraft = {
+  heading: string;
+  text: string;
+  emotional_shift: string;
+  continuity?: ReturnType<typeof parseContinuityFromSceneJson>;
+  script?: WriterScriptLine[];
+  rawText?: string;
+};
+
+type EnactmentValidateOpts = {
+  situationStakes?: string;
+  skipSituationStakes?: boolean;
+};
+
+function validateSceneConstraints(
+  text: string,
+  ledgerBefore: SceneContinuityLedger,
+  ledgerAfter: SceneContinuityLedger,
+  phase: string,
+  specs: EnactmentSpec[],
+  opts?: EnactmentValidateOpts,
+): ConstraintViolation[] {
+  return validateBeatConstraints(text, ledgerBefore, ledgerAfter, phase, specs, opts);
+}
+
+/** Identify QC failures, patch what we can deterministically, then targeted LLM salvage. */
+async function recoverSceneConstraints(
+  draft: SceneWriteDraft,
+  opts: {
+    plan: ExpressScenePlanRow;
+    systemPrompt: string;
+    userPrompt: string;
+    tokenCap?: number;
+    ledgerBefore: SceneContinuityLedger;
+    specs: EnactmentSpec[];
+    phase: string;
+    validateOpts?: EnactmentValidateOpts;
+    timingPrefix: string;
+    wordMax?: number;
+    ceilingRatio?: number;
+    pairing?: string;
+    /** When true, ship best-effort after deterministic repairs instead of throwing. */
+    relaxFinalQc?: boolean;
+  },
+): Promise<SceneWriteDraft> {
+  let current = draft;
+  let ledgerAfter = mergeContinuityUpdate(opts.ledgerBefore, current.continuity);
+  let violations = validateSceneConstraints(
+    current.text,
+    opts.ledgerBefore,
+    ledgerAfter,
+    opts.phase,
+    opts.specs,
+    opts.validateOpts,
+  );
+
+  const tryDeterministic = () => {
+    if (!violations.length) return;
+    const repaired = applyDeterministicConstraintRepairs(current.text, violations, opts.pairing);
+    if (repaired.text === current.text) return;
+    current = { ...current, text: repaired.text };
+    if (opts.wordMax) {
+      current = {
+        ...current,
+        text: trimBeatToCeiling(current.text, opts.wordMax, opts.ceilingRatio),
+      };
+    }
+    logger.info(
+      { repairs: repaired.applied, timingPrefix: opts.timingPrefix },
+      "[writeExpress] Applied deterministic constraint repairs",
+    );
+    ledgerAfter = mergeContinuityUpdate(opts.ledgerBefore, current.continuity);
+    violations = validateSceneConstraints(
+      current.text,
+      opts.ledgerBefore,
+      ledgerAfter,
+      opts.phase,
+      opts.specs,
+      opts.validateOpts,
+    );
+  };
+
+  tryDeterministic();
+
+  for (let salvage = 0; salvage < MAX_CONSTRAINT_SALVAGE_WRITES && violations.length; salvage++) {
+    if (!canMakeExpressLlmCall()) break;
+    const ids = violations.map((v) => v.constraintId).join(", ");
+    logger.warn(
+      { violationIds: ids, salvage: salvage + 1, timingPrefix: opts.timingPrefix },
+      "[writeExpress] Constraint QC failed — targeted salvage rewrite",
+    );
+    current = await writeOneScene(
+      opts.plan,
+      opts.systemPrompt,
+      opts.userPrompt,
+      `${buildConstraintRetryNote(violations)}\n\nCONSTRAINT SALVAGE ${salvage + 1}/${MAX_CONSTRAINT_SALVAGE_WRITES} — fix ONLY these violation types: ${ids}. Rewrite offending sentences; keep word band and plot.`,
+      opts.tokenCap,
+      `${opts.timingPrefix}:salvage${salvage}`,
+    );
+    ledgerAfter = mergeContinuityUpdate(opts.ledgerBefore, current.continuity);
+    violations = validateSceneConstraints(
+      current.text,
+      opts.ledgerBefore,
+      ledgerAfter,
+      opts.phase,
+      opts.specs,
+      opts.validateOpts,
+    );
+    tryDeterministic();
+    if (opts.wordMax) {
+      current = {
+        ...current,
+        text: trimBeatToCeiling(current.text, opts.wordMax, opts.ceilingRatio),
+      };
+    }
+  }
+
+  if (violations.length) {
+    logger.error(
+      { violations: describeConstraintViolations(violations), timingPrefix: opts.timingPrefix },
+      "[writeExpress] Constraint recovery exhausted — applying final deterministic pass",
+    );
+    const finalRepair = applyDeterministicConstraintRepairs(current.text, violations, opts.pairing);
+    current = { ...current, text: finalRepair.text };
+    violations = validateSceneConstraints(
+      current.text,
+      opts.ledgerBefore,
+      mergeContinuityUpdate(opts.ledgerBefore, current.continuity),
+      opts.phase,
+      opts.specs,
+      opts.validateOpts,
+    );
+  }
+
+  if (opts.wordMax) {
+    current = {
+      ...current,
+      text: trimBeatToCeiling(current.text, opts.wordMax, opts.ceilingRatio),
+    };
+    violations = validateSceneConstraints(
+      current.text,
+      opts.ledgerBefore,
+      mergeContinuityUpdate(opts.ledgerBefore, current.continuity),
+      opts.phase,
+      opts.specs,
+      opts.validateOpts,
+    );
+    if (violations.length) tryDeterministic();
+  }
+
+  if (violations.length) {
+    if (opts.relaxFinalQc) {
+      logger.warn(
+        { violations: describeConstraintViolations(violations), timingPrefix: opts.timingPrefix },
+        "[writeExpress] Constraint QC soft-fail — shipping best-effort after deterministic repair",
+      );
+      return current;
+    }
+    throw new Error(
+      `${opts.phase} enactment constraints failed after recovery: ${describeConstraintViolations(violations)}`,
+    );
+  }
+
+  return current;
+}
+
+async function recoverPerformDialogue(
+  draft: SceneWriteDraft,
+  plan: ExpressScenePlanRow,
+  systemPrompt: string,
+  userPrompt: string,
+  storyLength: string | undefined,
+  tokenCap: number | undefined,
+  timingLabel: string,
+  combined = false,
+): Promise<SceneWriteDraft> {
+  const dlg = combined
+    ? performCombinedDialogueOk(draft.text, storyLength)
+    : performPartDialogueOk(draft.text, storyLength);
+  if (dlg) return draft;
+  if (!canMakeExpressLlmCall()) return draft;
+
+  const density = validateDialogueDensity(
+    { scenes: [{ text: draft.text }] },
+    [{ phase: "PERFORM" }],
+    storyLength,
+  );
+  logger.warn({ timingLabel }, "[writeExpress] PERFORM below dialogue floor — dialogue salvage rewrite");
+  return writeOneScene(
+    plan,
+    systemPrompt,
+    userPrompt,
+    `${DIALOGUE_FORWARD_PROMPT_BLOCK}\n\n${buildDialogueRetryNote(density)}\n\nDIALOGUE SALVAGE — add multi-turn quoted partner/listener lines during physical escalation. Do not shorten plot.`,
+    tokenCap,
+    `${timingLabel}:dialogue-salvage`,
+  );
+}
 
 async function writePerformSingle(
   plan: ExpressScenePlanRow,
@@ -363,8 +650,9 @@ async function writePerformSingle(
   baseUserPrompt: string,
   storyLength: string | undefined,
   ledger: SceneContinuityLedger,
-  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string },
+  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string; pairing?: string; performPartAttempts?: number },
 ): Promise<{ heading: string; text: string; emotional_shift: string; continuity?: ReturnType<typeof parseContinuityFromSceneJson> }> {
+  const maxAttempts = enactmentCtx.performPartAttempts ?? MAX_PERFORM_PART_ATTEMPTS;
   const min = plan.word_budget_min ?? beatWordMin("PERFORM", storyLength);
   const max = plan.word_budget_max ?? beatWordMax("PERFORM", storyLength);
   const tokenCap = 3200;
@@ -376,7 +664,7 @@ async function writePerformSingle(
   const prompt = constraintBlock ? `${baseUserPrompt}\n\n${constraintBlock}` : baseUserPrompt;
 
   let draft = await writeOneScene(plan, systemPrompt, prompt, undefined, tokenCap, "PERFORM:single:0");
-  for (let attempt = 1; attempt < 3; attempt++) {
+  for (let attempt = 1; attempt < maxAttempts; attempt++) {
     const w = countWords(draft.text);
     const ledgerAfter = mergeContinuityUpdate(ledger, draft.continuity);
     const violations = validateBeatConstraints(
@@ -391,6 +679,7 @@ async function writePerformSingle(
     const over = w > max * 1.15;
     const dlgOk = performCombinedDialogueOk(draft.text, storyLength);
     if (!under && !over && dlgOk && violations.length === 0) break;
+    if (!canMakeExpressLlmCall()) break;
 
     const noteParts = [
       under || over ? buildSceneRetryNote("PERFORM", draft.text, storyLength, plan) : "",
@@ -400,7 +689,7 @@ async function writePerformSingle(
           )}`
         : "",
       violations.length ? buildConstraintRetryNote(violations) : "",
-      `PERFORM single revision ${attempt + 1}/3 — one continuous scene ${min}–${max} words.`,
+      `PERFORM single revision ${attempt + 1}/${maxAttempts} — one continuous scene ${min}–${max} words.`,
     ];
     const note = noteParts.filter(Boolean).join("\n\n");
     draft = await writeOneScene(plan, systemPrompt, prompt, note, tokenCap, `PERFORM:single:${attempt}`);
@@ -411,37 +700,53 @@ async function writePerformSingle(
     draft = { ...draft, text: trimProseToWordMax(draft.text, max) };
     w = countWords(draft.text);
   }
-  const ledgerAfter = mergeContinuityUpdate(ledger, draft.continuity);
-  const violations = validateBeatConstraints(
-    draft.text,
-    ledger,
-    ledgerAfter,
-    "PERFORM",
-    enactmentCtx.specs,
-    { situationStakes: enactmentCtx.situationStakes },
-  );
   if (w < min) throw new Error(`PERFORM single below floor (${w} < ${min})`);
   if (w > max * 1.15) throw new Error(`PERFORM single above ceiling (${w} > ${max})`);
+
+  draft = await recoverPerformDialogue(
+    draft,
+    plan,
+    systemPrompt,
+    prompt,
+    storyLength,
+    tokenCap,
+    "PERFORM:single",
+  );
   if (!performCombinedDialogueOk(draft.text, storyLength)) {
-    throw new Error("PERFORM single below dialogue floor");
-  }
-  if (violations.length) {
-    throw new Error(`PERFORM single constraints: ${violations.map((v) => v.message).join("; ")}`);
+    logger.warn("[writeExpress] PERFORM single below dialogue floor after salvage — shipping best-effort");
   }
 
-  return {
+  draft = await recoverSceneConstraints(draft, {
+    plan,
+    systemPrompt,
+    userPrompt: prompt,
+    tokenCap,
+    ledgerBefore: ledger,
+    specs: enactmentCtx.specs,
+    phase: "PERFORM",
+    validateOpts: { situationStakes: enactmentCtx.situationStakes },
+    timingPrefix: "PERFORM:single",
+    wordMax: max,
+    ceilingRatio: 1.15,
+    pairing: enactmentCtx.pairing,
+    relaxFinalQc: true,
+  });
+
+  const finalLedger = mergeContinuityUpdate(ledger, draft.continuity);
+  return attachAudioScript({
     heading: draft.heading,
     text: draft.text,
+    script: draft.script,
     emotional_shift: draft.emotional_shift,
     continuity: {
-      location: ledgerAfter.location,
-      clothing: ledgerAfter.clothing,
-      blindfold: ledgerAfter.blindfold,
-      restraint: ledgerAfter.restraint,
-      lastPosition: ledgerAfter.lastPosition,
-      actsCompleted: ledgerAfter.actsCompleted,
+      location: finalLedger.location,
+      clothing: finalLedger.clothing,
+      blindfold: finalLedger.blindfold,
+      restraint: finalLedger.restraint,
+      lastPosition: finalLedger.lastPosition,
+      actsCompleted: finalLedger.actsCompleted,
     },
-  };
+  });
 }
 
 async function writePerformBeat(
@@ -450,20 +755,14 @@ async function writePerformBeat(
   baseUserPrompt: string,
   storyLength: string | undefined,
   ledger: SceneContinuityLedger,
-  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string },
+  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string; pairing?: string; performPartAttempts?: number },
   onPartComplete?: (part: "A" | "B") => void,
 ): Promise<{ heading: string; text: string; emotional_shift: string; continuity?: ReturnType<typeof parseContinuityFromSceneJson> }> {
   if (minWordsForStoryLength(storyLength) >= 1440) {
-    try {
-      return await timeExpressWrite("PERFORM", () =>
-        writePerformSingle(plan, systemPrompt, baseUserPrompt, storyLength, ledger, enactmentCtx),
-      "single-call");
-    } catch (err) {
-      logger.info(
-        { reason: err instanceof Error ? err.message : String(err) },
-        "[writeExpress] PERFORM single-call missed — falling back to A/B split",
-      );
-    }
+    return timeExpressWrite("PERFORM", () =>
+      writePerformSingle(plan, systemPrompt, baseUserPrompt, storyLength, ledger, enactmentCtx),
+      "single-call",
+    );
   }
   return writePerformBeatSplit(
     plan,
@@ -482,9 +781,10 @@ async function writePerformBeatSplit(
   baseUserPrompt: string,
   storyLength: string | undefined,
   ledger: SceneContinuityLedger,
-  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string },
+  enactmentCtx: { specs: EnactmentSpec[]; situationStakes?: string; pairing?: string; performPartAttempts?: number },
   onPartComplete?: (part: "A" | "B") => void,
 ): Promise<{ heading: string; text: string; emotional_shift: string; continuity?: ReturnType<typeof parseContinuityFromSceneJson> }> {
+  const maxAttempts = enactmentCtx.performPartAttempts ?? MAX_PERFORM_PART_ATTEMPTS;
   const min = plan.word_budget_min ?? beatWordMin("PERFORM", storyLength);
   const max = plan.word_budget_max ?? beatWordMax("PERFORM", storyLength);
   const halfMin = Math.max(120, Math.floor(min / 2));
@@ -495,14 +795,12 @@ async function writePerformBeatSplit(
     word_budget_min: halfMin,
     word_budget_max: halfMax,
     word_budget_target: Math.round((halfMin + halfMax) / 2),
-    goal:
-      part === "A"
-        ? `${plan.goal} — PART A: first physical cross (kiss/grope) → blindfold on → enact customer chips begin (oral foreplay). Stop before penetration.`
-        : `${plan.goal} — PART B: continue uninterrupted — penetration → praise during act → climax. Blindfold stays until climax. Match continuity from Part A.`,
+    goal: `${plan.goal} — ${performPartGoalSuffix(enactmentCtx.pairing, part)}`,
   });
 
   let partLedger = ledger;
   const parts: string[] = [];
+  const partScripts: WriterScriptLine[][] = [];
   let heading = plan.phase;
   let emotional = plan.emotional_shift;
   const partTokenCap = () => 2200;
@@ -526,10 +824,9 @@ async function writePerformBeatSplit(
     if (part === "B") partBPromptForExpand = partPrompt;
 
     let draft = await writeOneScene(pPlan, systemPrompt, partPrompt, undefined, tokenCap, `PERFORM:${part}:0`);
-    const MAX_PERFORM_PART_ATTEMPTS = 3;
     const partCeiling = Math.ceil(halfMax * 1.08);
     const ledgerBeforePart = partLedger;
-    for (let attempt = 1; attempt < MAX_PERFORM_PART_ATTEMPTS; attempt++) {
+    for (let attempt = 1; attempt < maxAttempts; attempt++) {
       const w = countWords(draft.text);
       const under = w < halfMin;
       const over = w > halfMax;
@@ -550,11 +847,13 @@ async function writePerformBeatSplit(
         partLedger = ledgerAfterPart;
         break;
       }
+      if (!canMakeExpressLlmCall()) break;
+
       const note = [
         buildSceneRetryNote("PERFORM", draft.text, storyLength, pPlan),
         !dlg ? DIALOGUE_FORWARD_PROMPT_BLOCK : "",
         violations.length ? buildConstraintRetryNote(violations) : "",
-        `PERFORM part ${part} revision ${attempt + 1}/${MAX_PERFORM_PART_ATTEMPTS} — stay in ${halfMin}–${halfMax} words; dialogue-heavy.`,
+        `PERFORM part ${part} revision ${attempt + 1}/${maxAttempts} — stay in ${halfMin}–${halfMax} words; dialogue-heavy.`,
       ]
         .filter(Boolean)
         .join("\n\n");
@@ -573,57 +872,42 @@ async function writePerformBeatSplit(
       throw new Error(`PERFORM part ${part} above ceiling (${partWords} > ${partCeiling})`);
     }
     if (!performPartDialogueOk(draft.text, storyLength)) {
-      throw new Error(`PERFORM part ${part} below dialogue floor`);
-    }
-    const finalLedger = mergeContinuityUpdate(ledgerBeforePart, draft.continuity);
-    let finalViolations = validateBeatConstraints(
-      draft.text,
-      ledgerBeforePart,
-      finalLedger,
-      "PERFORM",
-      enactmentCtx.specs,
-      {
-        situationStakes: enactmentCtx.situationStakes,
-        skipSituationStakes: part === "A",
-      },
-    );
-    if (finalViolations.length) {
-      const salvageNote = buildConstraintRetryNote(finalViolations);
-      draft = await writeOneScene(
+      draft = await recoverPerformDialogue(
+        draft,
         pPlan,
         systemPrompt,
         partPrompt,
-        `${salvageNote}\n\nCONSTRAINT SALVAGE — rewrite only the violating lines; keep word band and plot.`,
+        storyLength,
         tokenCap,
-        `PERFORM:${part}:constraint-salvage`,
+        `PERFORM:${part}`,
       );
-      partWords = countWords(draft.text);
-      if (partWords > partCeiling) {
-        draft = { ...draft, text: trimProseToWordMax(draft.text, halfMax) };
-        partWords = countWords(draft.text);
-      }
-      const salvageLedger = mergeContinuityUpdate(ledgerBeforePart, draft.continuity);
-      finalViolations = validateBeatConstraints(
-        draft.text,
-        ledgerBeforePart,
-        salvageLedger,
-        "PERFORM",
-        enactmentCtx.specs,
-        {
-          situationStakes: enactmentCtx.situationStakes,
-          skipSituationStakes: part === "A",
-        },
-      );
-      if (finalViolations.length) {
-        throw new Error(
-          `PERFORM part ${part} enactment constraints failed: ${finalViolations.map((v) => v.message).join("; ")}`,
-        );
-      }
-      partLedger = salvageLedger;
-    } else {
-      partLedger = finalLedger;
     }
+    if (!performPartDialogueOk(draft.text, storyLength) && canMakeExpressLlmCall()) {
+      throw new Error(`PERFORM part ${part} below dialogue floor after salvage`);
+    }
+
+    const validateOpts: EnactmentValidateOpts = {
+      situationStakes: enactmentCtx.situationStakes,
+      skipSituationStakes: part === "A",
+    };
+    draft = await recoverSceneConstraints(draft, {
+      plan: pPlan,
+      systemPrompt,
+      userPrompt: partPrompt,
+      tokenCap,
+      ledgerBefore: ledgerBeforePart,
+      specs: enactmentCtx.specs,
+      phase: "PERFORM",
+      validateOpts,
+      timingPrefix: `PERFORM:${part}`,
+      wordMax: halfMax,
+      ceilingRatio: 1.08,
+      pairing: enactmentCtx.pairing,
+      relaxFinalQc: true,
+    });
+    partLedger = mergeContinuityUpdate(ledgerBeforePart, draft.continuity);
     parts.push(draft.text);
+    if (draft.script?.length) partScripts.push(draft.script);
     onPartComplete?.(part);
     heading = draft.heading || heading;
     emotional = draft.emotional_shift || emotional;
@@ -634,7 +918,7 @@ async function writePerformBeatSplit(
   const scale = phaseLengthScale(storyLength);
   const combinedCeiling = max * (scale < 0.55 ? 1.55 : 1.15);
 
-  if (total < min && partBPromptForExpand) {
+  if (total < min && partBPromptForExpand && canMakeExpressLlmCall()) {
     const expand = await writeOneScene(
       partPlan("B"),
       systemPrompt,
@@ -643,17 +927,35 @@ async function writePerformBeatSplit(
       partTokenCap(),
     );
     parts[1] = parts[1] ? `${parts[1]}\n\n${expand.text}` : expand.text;
+    if (expand.script?.length) {
+      if (partScripts[1]) partScripts[1] = mergeWriterScripts([partScripts[1], expand.script]);
+      else partScripts.push(expand.script);
+    }
     combined = parts.join("\n\n");
     total = countWords(combined);
   }
 
-  if (total < min) throw new Error(`PERFORM below floor after split (${total} < ${min})`);
-  if (total > combinedCeiling) throw new Error(`PERFORM above ceiling after split (${total} > ${combinedCeiling})`);
-  if (!performCombinedDialogueOk(combined, storyLength)) {
-    throw new Error("PERFORM below dialogue floor after split");
+  if (total < min) {
+    logger.warn({ total, min }, "[writeExpress] PERFORM below floor after split — shipping best-effort");
   }
 
-  const combinedViolations = validateBeatConstraints(
+  let combinedDraft: SceneWriteDraft = { heading, text: combined, emotional_shift: emotional };
+  combinedDraft = await recoverPerformDialogue(
+    combinedDraft,
+    partPlan("B"),
+    systemPrompt,
+    partBPromptForExpand || baseUserPrompt,
+    storyLength,
+    partTokenCap(),
+    "PERFORM:combined",
+    true,
+  );
+  combined = combinedDraft.text;
+  if (!performCombinedDialogueOk(combined, storyLength)) {
+    logger.warn("[writeExpress] PERFORM combined below dialogue floor — shipping best-effort");
+  }
+
+  let combinedViolations = validateSceneConstraints(
     combined,
     ledger,
     partLedger,
@@ -662,14 +964,71 @@ async function writePerformBeatSplit(
     { situationStakes: enactmentCtx.situationStakes },
   );
   if (combinedViolations.length) {
-    throw new Error(
-      `PERFORM enactment constraints failed: ${combinedViolations.map((v) => v.message).join("; ")}`,
+    const repaired = applyDeterministicConstraintRepairs(combined, combinedViolations, enactmentCtx.pairing);
+    combined = repaired.text;
+    combinedViolations = validateSceneConstraints(
+      combined,
+      ledger,
+      partLedger,
+      "PERFORM",
+      enactmentCtx.specs,
+      { situationStakes: enactmentCtx.situationStakes },
     );
+    if (combinedViolations.length && partBPromptForExpand) {
+      logger.warn(
+        { violations: describeConstraintViolations(combinedViolations) },
+        "[writeExpress] Combined PERFORM constraint QC failed — Part B salvage",
+      );
+      const partBSalvage = await recoverSceneConstraints(
+        { heading, text: parts[1] ?? "", emotional_shift: emotional },
+        {
+          plan: partPlan("B"),
+          systemPrompt,
+          userPrompt: partBPromptForExpand,
+          tokenCap: partTokenCap(),
+          ledgerBefore: partLedger,
+          specs: enactmentCtx.specs,
+          phase: "PERFORM",
+          validateOpts: { situationStakes: enactmentCtx.situationStakes },
+          timingPrefix: "PERFORM:B:combined",
+          pairing: enactmentCtx.pairing,
+          relaxFinalQc: true,
+        },
+      );
+      parts[1] = partBSalvage.text;
+      combined = parts.join("\n\n");
+      const finalRepair = applyDeterministicConstraintRepairs(
+        combined,
+        validateSceneConstraints(combined, ledger, partLedger, "PERFORM", enactmentCtx.specs, {
+          situationStakes: enactmentCtx.situationStakes,
+        }),
+        enactmentCtx.pairing,
+      );
+      combined = finalRepair.text;
+    }
   }
 
-  return {
+  total = countWords(combined);
+  if (total > combinedCeiling) {
+    logger.warn(
+      { total, combinedCeiling },
+      "[writeExpress] PERFORM combined over ceiling after recovery — trimming",
+    );
+    combined = trimProseToWordMax(combined, Math.floor(max * (scale < 0.55 ? 1.55 : 1.15)));
+  }
+
+  const mergedScript = partScripts.length ? mergeWriterScripts(partScripts) : undefined;
+  const scriptValidation = mergedScript
+    ? validateWriterScript(mergedScript, { phase: "PERFORM", requireBothSpeakers: true })
+    : { ok: false, issues: ["missing script"] };
+  if (!scriptValidation.ok) {
+    logger.warn({ issues: scriptValidation.issues }, "[writeExpress] PERFORM combined script invalid");
+  }
+
+  return attachAudioScript({
     heading,
     text: combined,
+    script: mergedScript,
     emotional_shift: emotional,
     continuity: {
       location: partLedger.location,
@@ -679,6 +1038,20 @@ async function writePerformBeatSplit(
       lastPosition: partLedger.lastPosition,
       actsCompleted: partLedger.actsCompleted,
     },
+  });
+}
+
+function attachAudioScript(draft: SceneWriteDraft): SceneWriteDraft {
+  if (!draft.script?.length) return draft;
+  const scriptProse = writerScriptToDisplayProse(draft.script);
+  const displayText =
+    draft.text && countWords(draft.text) >= countWords(scriptProse)
+      ? draft.text
+      : scriptProse || draft.text;
+  return {
+    ...draft,
+    text: displayText,
+    rawText: writerScriptToTaggedRawText(draft.script),
   };
 }
 
@@ -689,9 +1062,10 @@ async function writeOneScene(
   extraNote?: string,
   maxTokens?: number,
   timingLabel?: string,
-): Promise<{ heading: string; text: string; emotional_shift: string; continuity?: ReturnType<typeof parseContinuityFromSceneJson> }> {
+): Promise<SceneWriteDraft> {
   const t0 = Date.now();
   try {
+  assertExpressLlmBudget(timingLabel ?? plan.phase);
   const completion = await openrouter.chat.completions.create({
     model: MISTRAL_MODEL,
     max_tokens: maxTokens ?? phaseMaxTokens(plan.phase),
@@ -701,11 +1075,16 @@ async function writeOneScene(
       { role: "user", content: extraNote ? `${userPrompt}\n\n${extraNote}` : userPrompt },
     ],
   });
+  recordExpressLlmCall();
   const raw = completion.choices[0]?.message?.content ?? "{}";
   let parsed: ReturnType<typeof parseSceneJson>;
   try {
-    parsed = parseSceneJson(raw);
-  } catch {
+    parsed = parseSceneJson(raw, plan.phase);
+  } catch (parseErr) {
+    if (!canMakeExpressLlmCall()) {
+      throw new Error(`Invalid scene JSON for ${plan.phase} and LLM budget exhausted`);
+    }
+    assertExpressLlmBudget(`${timingLabel ?? plan.phase}:json-repair`);
     const repairTokens = Math.max((maxTokens ?? phaseMaxTokens(plan.phase)) + 600, 2400);
     const repair = await openrouter.chat.completions.create({
       model: MISTRAL_MODEL,
@@ -717,25 +1096,32 @@ async function writeOneScene(
         {
           role: "user",
           content:
-            "Your previous response was truncated or invalid JSON. Return ONE complete json_object with heading, text, emotional_shift, continuity. Keep text within the word budget; escape quotes inside text properly.",
+            parseErr instanceof Error && parseErr.message.includes("audio script")
+              ? `${parseErr.message}\n\nReturn ONE complete json_object with heading, script (ordered narrator/protagonist/love_interest spans), emotional_shift, continuity. Every quoted line must be protagonist or love_interest — never narrator.`
+              : "Your previous response was truncated or invalid JSON. Return ONE complete json_object with heading, script array, emotional_shift, continuity. Keep within word budget; escape quotes properly.",
         },
       ],
     });
+    recordExpressLlmCall();
     try {
-      parsed = parseSceneJson(repair.choices[0]?.message?.content ?? "{}");
+      parsed = parseSceneJson(repair.choices[0]?.message?.content ?? "{}", plan.phase);
     } catch (repairErr) {
       throw new Error(
         `Invalid scene JSON for ${plan.phase}: ${repairErr instanceof Error ? repairErr.message : "parse failed"}`,
       );
     }
   }
+  if (!parsed.script?.length) {
+    throw new Error(`Missing audio script array for ${plan.phase} — multi-voice requires labelled script spans`);
+  }
   if (!parsed.text) throw new Error(`Empty scene text for ${plan.phase}`);
-  return {
+  return attachAudioScript({
     heading: parsed.heading?.trim() || plan.phase,
     text: parsed.text,
+    script: parsed.script,
     emotional_shift: parsed.emotional_shift?.trim() || plan.emotional_shift,
     continuity: parsed.continuity,
-  };
+  });
   } finally {
     if (timingLabel) recordExpressWriteTiming(timingLabel, Date.now() - t0);
   }
@@ -783,17 +1169,27 @@ export async function writeExpressStoryPerScene(input: PerSceneWriteInput): Prom
   description: string;
   scenes: SceneDraft[];
 }> {
-  const { brief, listenerName, intensity, partnerName, storyLength, context, onBeatComplete } = input;
+  const { brief, listenerName, intensity, partnerName, pairing, storyLength, context, onBeatStart, onBeatComplete, maxSceneAttempts: maxSceneAttemptsInput, maxPerformPartAttempts } = input;
+  const maxSceneAttempts = maxSceneAttemptsInput ?? MAX_SCENE_ATTEMPTS;
+  const performCtx = {
+    performPartAttempts: maxPerformPartAttempts,
+  };
   const level = intensityLevel(intensity);
-  const partner = partnerName ?? "James";
+  const resolvedPairing = pairing ?? "Her & Him";
+  const partner = partnerName ?? autoPickPartnerName(resolvedPairing, listenerName);
   const fantasyBlock = brief.fantasy_spine ? buildCustomerDesireWriteBlock(brief.fantasy_spine) : "";
-  const inputAnchors = buildInputAnchors(context, brief);
+  const inputAnchors = buildInputAnchors(context, brief, resolvedPairing);
   const enactmentSpecs = brief.fantasy_spine ? compileEnactmentSpecs(brief.fantasy_spine) : [];
   const situationStakes = brief.fantasy_spine?.situation_stakes;
 
   resetExpressWriteTimings();
+  resetExpressLlmBudget();
+  const vocalBlock = level >= 4 ? `\n\n${VOCAL_PERFORMANCE_PROMPT_BLOCK}\n` : "";
   const systemPrompt = `You write explicit adult audio fiction for a premium product. Mistral-only pipeline.
-${buildNumericIntensityLayer(level)}
+${buildIntensityLayerForPairing(level, resolvedPairing)}
+${pairingGuideLine(resolvedPairing)}
+${vocalBlock}
+${SPEAKER_ATTRIBUTION_WRITE_CONTRACT}
 Second-person "you" for the listener unless brief says otherwise.
 Return only valid JSON per beat.`;
 
@@ -809,6 +1205,7 @@ Return only valid JSON per beat.`;
 
   for (const plan of brief.scene_plan) {
     const phase = plan.phase.toUpperCase();
+    onBeatStart?.(phase);
     const userPrompt = buildSceneUserPrompt(plan, {
       titleDirection: brief.title_direction,
       priorSummary: priorSummaries.join("\n"),
@@ -824,6 +1221,7 @@ Return only valid JSON per beat.`;
       enactmentSpecs,
       situationStakes,
       skipSituationStakes: false,
+      pairing: resolvedPairing,
     });
 
     let draft =
@@ -834,14 +1232,14 @@ Return only valid JSON per beat.`;
             userPrompt,
             storyLength,
             ledger,
-            { specs: enactmentSpecs, situationStakes },
+            { specs: enactmentSpecs, situationStakes, pairing: resolvedPairing, ...performCtx },
             (part) => onBeatComplete?.("PERFORM", part),
           )
         : await writeOneScene(plan, systemPrompt, userPrompt, undefined, undefined, phase);
 
-    const MAX_SCENE_ATTEMPTS = 3;
+    const sceneMaxAttempts = maxSceneAttempts;
     if (phase !== "PERFORM") {
-    for (let attempt = 1; attempt < MAX_SCENE_ATTEMPTS; attempt++) {
+    for (let attempt = 1; attempt < sceneMaxAttempts; attempt++) {
       const underMin = !sceneWordsUnderMin(draft.text, phase, storyLength, plan);
       const overMax = sceneWordsOverMax(draft.text, phase, storyLength, plan);
       const dialogueOk = sceneDialogueOk(
@@ -861,6 +1259,7 @@ Return only valid JSON per beat.`;
           { situationStakes },
         ).length === 0;
       if (!underMin && !overMax && dialogueOk && constraintOk) break;
+      if (!canMakeExpressLlmCall()) break;
 
       const retryParts = [buildSceneRetryNote(phase, draft.text, storyLength, plan)];
       if (!dialogueOk) {
@@ -879,16 +1278,33 @@ Return only valid JSON per beat.`;
         retryParts.push(buildConstraintRetryNote(violations));
       }
       retryParts.push(
-        `REVISE (attempt ${attempt + 1}/${MAX_SCENE_ATTEMPTS}) — same plot; stay in word band ${plan.word_budget_min}–${plan.word_budget_max}:\n${JSON.stringify({ heading: draft.heading, text: draft.text.slice(0, 600) }, null, 0)}`,
+        `REVISE (attempt ${attempt + 1}/${sceneMaxAttempts}) — same plot; stay in word band ${plan.word_budget_min}–${plan.word_budget_max}:\n${JSON.stringify({ heading: draft.heading, text: draft.text.slice(0, 600) }, null, 0)}`,
       );
       draft = await writeOneScene(plan, systemPrompt, userPrompt, retryParts.filter(Boolean).join("\n\n"), undefined, `${phase}:retry${attempt}`);
     }
+
+    const ledgerBeforeScene = ledger;
+    draft = await recoverSceneConstraints(draft, {
+      plan,
+      systemPrompt,
+      userPrompt,
+      ledgerBefore: ledgerBeforeScene,
+      specs: enactmentSpecs,
+      phase,
+      validateOpts: { situationStakes },
+      timingPrefix: phase,
+      wordMax: plan.word_budget_max ?? beatWordMax(phase, storyLength),
+      ceilingRatio: phase === "DECLARE" ? 1.35 : 1.15,
+      pairing: resolvedPairing,
+      relaxFinalQc: true,
+    });
     }
 
     const w = countWords(draft.text);
     const min = plan.word_budget_min ?? beatWordMin(phase, storyLength);
     const max = plan.word_budget_max ?? beatWordMax(phase, storyLength);
-    if (w < min && phase !== "PERFORM") {
+    const softMin = Math.floor(min * WORD_FLOOR_SLACK);
+    if (w < softMin && phase !== "PERFORM" && canMakeExpressLlmCall()) {
       draft = await writeOneScene(
         plan,
         systemPrompt,
@@ -899,18 +1315,20 @@ Return only valid JSON per beat.`;
       );
     }
     const finalWords = countWords(draft.text);
-    if (finalWords < min) {
-      throw new Error(`Express write failed: ${phase} below word floor (${finalWords} < ${min})`);
+    if (finalWords < softMin) {
+      throw new Error(`Express write failed: ${phase} below word floor (${finalWords} < ${softMin})`);
     }
-    if (phase === "PERFORM" && finalWords > max * 1.15) {
-      throw new Error(`Express write failed: ${phase} above word ceiling (${finalWords} > ${max})`);
-    }
-    if (phase === "DECLARE" && finalWords > max * 1.35) {
-      throw new Error(`Express write failed: ${phase} above word ceiling (${finalWords} > ${max})`);
+    const ceilingRatio = phase === "DECLARE" ? 1.35 : 1.15;
+    if (phase === "PERFORM" || phase === "DECLARE") {
+      draft = {
+        ...draft,
+        text: trimBeatToCeiling(draft.text, max, ceilingRatio),
+      };
     }
     if (
       !sceneDialogueOk(draft.text, phase, storyLength, scenes.map((s) => s.text)) &&
-      phase !== "PERFORM"
+      phase !== "PERFORM" &&
+      canMakeExpressLlmCall()
     ) {
       if (phase === "DECLARE" || phase === "LAND") {
         const issues = validateDialogueDensity({ scenes: [{ text: draft.text }] }, [{ phase }], storyLength)
@@ -942,6 +1360,7 @@ Return only valid JSON per beat.`;
       id: plan.scene_number,
       heading: draft.heading,
       text: draft.text,
+      rawText: draft.rawText,
       duration_estimate: 60,
       emotional_shift: draft.emotional_shift,
     });
@@ -949,12 +1368,16 @@ Return only valid JSON per beat.`;
     priorSummaries.push(summarizeScene(draft.text, draft.heading));
     bannedAccum.push(...extractBannedFromScene(draft.text));
     usedHeadings.push(draft.heading);
-    if (phase !== "PERFORM") onBeatComplete?.(phase);
+    if (phase === "PERFORM") {
+      onBeatComplete?.("PERFORM", "B");
+    } else {
+      onBeatComplete?.(phase);
+    }
   }
 
   const timing = summarizeExpressWriteTimings();
   logger.info(
-    { llmCalls: timing.llmCalls, totalWriteMs: timing.totalMs, beats: timing.byBeat },
+    { llmCalls: timing.llmCalls, expressLlmBudgetUsed: expressLlmCallsUsed(), totalWriteMs: timing.totalMs, beats: timing.byBeat },
     "[writeExpress] generation timing",
   );
 

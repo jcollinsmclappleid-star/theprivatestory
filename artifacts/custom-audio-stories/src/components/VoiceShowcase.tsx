@@ -5,12 +5,11 @@ import { VOICES } from "@/lib/voices";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const SAMPLE_VOICE_IDS = [
-  "aTxZrSrp47xsP6Ot4Kgd", // Kayla — recommended narrator
+  "PB6BdkFkZLbI39GHdnbQ", // Lisa — recommended narrator
   "jfIS2w2yJi0grJZPyEsk", // Theo — male narrator
   "tQ4MEZFJOzsahSEEZtHK", // Maya — her dialogue
   "AeRdCCKzvd23BpJoofzx", // James — his dialogue
-  "FA6HhUjVbervLw2rNl8M", // Clara
-  "n1PvBOwxb8X6m7tahp2h", // Ethan
+  "D9MdulIxfrCUUJcGNQon", // Sofia
 ];
 
 const SAMPLE_VOICES = SAMPLE_VOICE_IDS
@@ -72,7 +71,7 @@ export function VoiceShowcase() {
           Choose your narrator
         </p>
         <p className="text-sm text-muted-foreground/60 leading-relaxed">
-          Kayla and Theo are our most expressive narrators — press play to hear each before you decide.
+          Lisa is our recommended narrator — press play to hear each voice before you decide.
         </p>
       </div>
 

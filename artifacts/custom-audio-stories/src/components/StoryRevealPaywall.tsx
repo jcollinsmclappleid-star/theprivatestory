@@ -58,7 +58,6 @@ export function StoryRevealPaywall({
   onDevBypass,
 }: StoryRevealPaywallProps) {
   const heroSrc = coverUrl ?? fallbackCoverUrl;
-  const hasGeneratedCover = !!coverUrl;
   const sym = currency === "gbp" ? "£" : "$";
 
   const savings = useMemo(
@@ -86,7 +85,7 @@ export function StoryRevealPaywall({
         <motion.img
           key={heroSrc}
           initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: hasGeneratedCover ? 0.55 : 0.38, scale: 1 }}
+          animate={{ opacity: 0.52, scale: 1 }}
           transition={{ duration: 1.1, ease: "easeOut" }}
           src={heroSrc}
           alt=""
@@ -170,17 +169,6 @@ export function StoryRevealPaywall({
                 style={{ opacity: 0.95 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-              {coverLoading && !coverUrl && (
-                <div className="absolute top-3 right-3 flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/50 border border-white/10">
-                  <Loader2 className="w-3 h-3 animate-spin text-white/70" />
-                  <span className="text-[9px] uppercase tracking-wider text-white/60">Creating your cover</span>
-                </div>
-              )}
-              {hasGeneratedCover && (
-                <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/50 border border-white/15">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/80">Made for you</span>
-                </div>
-              )}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span

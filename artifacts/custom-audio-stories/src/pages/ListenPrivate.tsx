@@ -19,7 +19,7 @@ const CHOICES = [
   { label: "Setting",    value: "Moving Elevator" },
   { label: "World",      value: "Sun-Soaked · Late Night · Montego Bay" },
   { label: "Archetype",  value: "The Adventurer" },
-  { label: "Narrator",   value: "Clara · Soothing" },
+  { label: "Narrator",   value: "Sofia · Warm" },
 ];
 
 const SITUATION = "He's engaged. The announcement was three weeks ago.";
@@ -247,7 +247,7 @@ export default function ListenPrivate() {
             className="text-center mb-7 w-full"
           >
             <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest mb-2">
-              Warm · 10 min · Narrated by Clara
+              Warm · 10 min · Narrated by Sofia
             </p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
               The Ring in the Mirror

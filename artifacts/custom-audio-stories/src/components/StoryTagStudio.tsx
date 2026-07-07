@@ -194,6 +194,129 @@ function buildContradictionPairs(p: PronounCtx): [string, string][] {
   ];
 }
 
+export const AFTER_DARK_TAG_CAP = 8;
+
+export type TagBlockReason = {
+  message: string;
+  solution: string;
+};
+
+function buildAfterDarkActiveCategories(
+  protagonistPronouns: string,
+  partnerPronouns: string,
+): TagCategory[] {
+  const p = getPronounCtx(protagonistPronouns);
+  const partner = getPronounCtx(partnerPronouns);
+  const isSheProtagonist = p.sub === "She";
+  const sameGender = protagonistPronouns === partnerPronouns;
+  const std = buildStandardCategories(p, partner);
+  const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories(partner) : [];
+  const ad = buildAfterDarkCategories(p);
+  const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories(partner, sameGender) : [];
+  const adRestraint = ad.filter((c) => c.heading === "Restraint & BDSM");
+  const adSubmission = ad.filter((c) => c.heading === "Submission & Worship");
+  const adWords = ad.filter((c) => c.heading === "Words & Praise");
+  const darkFantasy = ad.filter((c) => c.heading === "Dark Fantasy");
+  const adEnd = ad.filter(
+    (c) => c.heading === "Just the Scene" || c.heading === "How does it end?",
+  );
+  return [
+    ...adRestraint,
+    ...adSubmission,
+    ...sheAD,
+    ...sheStd,
+    std[4],
+    std[0],
+    ...adWords,
+    ...darkFantasy,
+    std[1],
+    std[2],
+    std[3],
+    std[5],
+    std[6],
+    std[7],
+    ...adEnd,
+  ];
+}
+
+const categoryTagMapFrom = (categories: TagCategory[]) =>
+  new Map<string, string[]>(categories.map((c) => [c.heading, c.tags]));
+
+function getCategoryExcludedBy(
+  heading: string,
+  selectedTags: string[],
+  categoryTagMap: Map<string, string[]>,
+): string | null {
+  for (const [a, b] of CATEGORY_EXCLUSION_PAIRS) {
+    if (heading === b) {
+      const aTags = categoryTagMap.get(a) ?? [];
+      if (aTags.some((t) => selectedTags.includes(t))) return a;
+    }
+    if (heading === a) {
+      const bTags = categoryTagMap.get(b) ?? [];
+      if (bTags.some((t) => selectedTags.includes(t))) return b;
+    }
+  }
+  return null;
+}
+
+/** Why a tag cannot be added (express / After Dark). Returns null if the tag may be selected. */
+export function getExpressTagBlockReason(
+  tag: string,
+  selectedTags: string[],
+  protagonistPronouns: string,
+  partnerPronouns: string,
+): TagBlockReason | null {
+  if (selectedTags.includes(tag)) return null;
+
+  if (selectedTags.length >= AFTER_DARK_TAG_CAP) {
+    return {
+      message: `You've chosen ${AFTER_DARK_TAG_CAP} desires — that's the maximum.`,
+      solution: "Remove one of your selections above to add another.",
+    };
+  }
+
+  const p = getPronounCtx(protagonistPronouns);
+  const pairs = buildContradictionPairs(p);
+  for (const [a, b] of pairs) {
+    if (a === tag && selectedTags.includes(b)) {
+      return {
+        message: `This conflicts with "${getTagDisplayLabel(b)}".`,
+        solution: `Remove "${getTagDisplayLabel(b)}" to select this instead.`,
+      };
+    }
+    if (b === tag && selectedTags.includes(a)) {
+      return {
+        message: `This conflicts with "${getTagDisplayLabel(a)}".`,
+        solution: `Remove "${getTagDisplayLabel(a)}" to select this instead.`,
+      };
+    }
+  }
+
+  const categories = buildAfterDarkActiveCategories(protagonistPronouns, partnerPronouns);
+  const categoryTagMap = categoryTagMapFrom(categories);
+  for (const cat of categories) {
+    if (!cat.tags.includes(tag)) continue;
+    const excludedBy = getCategoryExcludedBy(cat.heading, selectedTags, categoryTagMap);
+    if (excludedBy) {
+      return {
+        message: `"${cat.heading}" is locked while "${excludedBy}" is selected.`,
+        solution: `Clear your "${excludedBy}" choices to unlock this section.`,
+      };
+    }
+    const catSelectedCount = cat.tags.filter((t) => selectedTags.includes(t)).length;
+    if (cat.maxSelect !== undefined && catSelectedCount >= cat.maxSelect) {
+      return {
+        message: `${cat.heading} allows ${cat.maxSelect} choices — you've reached the limit.`,
+        solution: `Remove another tag from "${cat.heading}" to add this one.`,
+      };
+    }
+    break;
+  }
+
+  return null;
+}
+
 /** Pick the correct pronoun form for the protagonist. */
 function pSub(p: PronounCtx, sheV: string, heV: string, theyV: string): string {
   if (p.sub === "He") return heV;
@@ -444,7 +567,7 @@ function buildSheOnlyStandardCategories(partner: PronounCtx): TagCategory[] {
   ];
 }
 
-function buildSheOnlyAfterDarkCategories(partner: PronounCtx): TagCategory[] {
+function buildSheOnlyAfterDarkCategories(partner: PronounCtx, sameGender: boolean): TagCategory[] {
   const A = partner.sub;
   const a = A.toLowerCase();
   const ao = partner.obj;
@@ -452,8 +575,8 @@ function buildSheOnlyAfterDarkCategories(partner: PronounCtx): TagCategory[] {
   const twoPartners = A === "She" ? "Two women" : A === "They" ? "Two people" : "Two men";
   return [
     {
-      heading: "Her Dominance",
-      sub: "When she controls everything",
+      heading: sameGender ? "Your dominance" : "Her Dominance",
+      sub: sameGender ? "When you control everything — your character leads" : "When she controls everything",
       maxSelect: 5,
       tags: [
         `She asked for it and ${a} obliged completely`,
@@ -602,30 +725,7 @@ export function StoryTagStudio({
   const isSheProtagonist = p.sub === "She";
 
   const activeCategories: TagCategory[] = afterDark
-    ? (() => {
-        const std = buildStandardCategories(p, partner);
-        const sheStd = isSheProtagonist ? buildSheOnlyStandardCategories(partner) : [];
-        const ad = buildAfterDarkCategories(p);
-        const sheAD = isSheProtagonist ? buildSheOnlyAfterDarkCategories(partner) : [];
-        const adRestraint  = ad.filter(c => c.heading === "Restraint & BDSM");
-        const adSubmission = ad.filter(c => c.heading === "Submission & Worship");
-        const adWords      = ad.filter(c => c.heading === "Words & Praise");
-        const darkFantasy  = ad.filter(c => c.heading === "Dark Fantasy");
-        const adEnd        = ad.filter(c => c.heading === "Just the Scene" || c.heading === "How does it end?");
-        return [
-          ...adRestraint,               // Restraint & BDSM — top
-          ...adSubmission,              // Submission & Worship
-          ...sheAD,                     // Her Dominance (She only)
-          ...sheStd,                    // Her Lead (She only)
-          std[4],                       // What does she really want?
-          std[0],                       // How do you want to feel?
-          ...adWords,                   // Words & Praise
-          ...darkFantasy,               // Dark Fantasy
-          std[1], std[2], std[3],       // What's between them?, How do you want it written?, What makes this yours?
-          std[5], std[6], std[7],       // Pure Romance, Praise & Devotion, Story Arc & Plot
-          ...adEnd,                     // Just the Scene, How does it end?
-        ];
-      })()
+    ? buildAfterDarkActiveCategories(protagonistPronouns, partnerPronouns)
     : bedtime
     ? [buildNocturneCategory()]
     : [
@@ -637,8 +737,21 @@ export function StoryTagStudio({
 
   const contradictionPairs = buildContradictionPairs(p);
 
+  const guardedTagToggle = (tag: string) => {
+    if (!selectedTags.includes(tag) && afterDark) {
+      const block = getExpressTagBlockReason(
+        tag,
+        selectedTags,
+        protagonistPronouns,
+        partnerPronouns,
+      );
+      if (block) return;
+    }
+    onTagToggle(tag);
+  };
+
   // Global cap: 10 standard, 8 after dark, 5 nocturne/bedtime
-  const totalCap = afterDark ? 8 : bedtime ? 5 : 10;
+  const totalCap = afterDark ? AFTER_DARK_TAG_CAP : bedtime ? 5 : 10;
   const totalSelected = selectedTags.length;
   const globalAtCap = totalSelected >= totalCap;
 
@@ -689,6 +802,8 @@ export function StoryTagStudio({
     maxSelect: number | undefined,
     locked: boolean,
     categoryExcluded: boolean,
+    categoryHeading: string,
+    excludedBy: string | null,
   ) {
     const selected = !locked && selectedTags.includes(tag);
     const isUsual = !locked && usualTags.has(tag) && !selected;
@@ -709,23 +824,45 @@ export function StoryTagStudio({
 
     const isDisabled = locked || categoryExcluded || blockedByContradiction || blockedByCap || blockedByGlobalCap;
 
-    const titleText = locked
-      ? "Not available in Drift mode"
-      : categoryExcluded
-      ? "Not available with your current selections"
-      : blockedByContradiction
-      ? "Conflicts with another selection"
-      : blockedByCap
-      ? `Limit reached (${maxSelect} per section)`
+    const blockingConflict = blockedByContradiction
+      ? contradictionPartners.find((cp) => selectedTags.includes(cp))
+      : undefined;
+
+    const blockReason: TagBlockReason | null = blockedByContradiction && blockingConflict
+      ? {
+          message: `Conflicts with "${getTagDisplayLabel(blockingConflict)}".`,
+          solution: `Remove "${getTagDisplayLabel(blockingConflict)}" to select this instead.`,
+        }
       : blockedByGlobalCap
-      ? `Total limit reached (${totalCap} tags)`
+      ? {
+          message: `You've chosen ${totalCap} desires — that's the maximum.`,
+          solution: "Remove one of your selections above to add another.",
+        }
+      : blockedByCap
+      ? {
+          message: `This section allows ${maxSelect} choices — you've reached the limit.`,
+          solution: "Remove another tag from this section to add this one.",
+        }
+      : categoryExcluded && excludedBy
+      ? {
+          message: `"${categoryHeading}" is locked while "${excludedBy}" is selected.`,
+          solution: `Clear your "${excludedBy}" choices to unlock this section.`,
+        }
+      : locked
+      ? { message: "Not available in Drift mode.", solution: "" }
+      : null;
+
+    const titleText = blockReason
+      ? blockReason.solution
+        ? `${blockReason.message} ${blockReason.solution}`
+        : blockReason.message
       : undefined;
 
     return (
       <span key={tag} className="relative inline-flex flex-col items-start gap-0.5">
         <button
           type="button"
-          onClick={() => !isDisabled && onTagToggle(tag)}
+          onClick={() => !isDisabled && guardedTagToggle(tag)}
           disabled={isDisabled}
           title={titleText}
           className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
@@ -763,9 +900,12 @@ export function StoryTagStudio({
             Your Usual
           </span>
         )}
-        {blockedByContradiction && (
-          <span className="text-[9px] text-foreground/50 px-1.5 leading-tight italic">
-            Conflicts with "{contradictionPartners.find(cp => selectedTags.includes(cp))}"
+        {blockReason && isDisabled && !selected && (
+          <span className="text-[9px] text-foreground/55 px-1.5 leading-tight max-w-[220px]">
+            {blockReason.message}
+            {blockReason.solution ? (
+              <span className="block text-foreground/40 italic mt-0.5">{blockReason.solution}</span>
+            ) : null}
           </span>
         )}
       </span>
@@ -847,7 +987,7 @@ export function StoryTagStudio({
         )}
         <div className={`flex flex-wrap gap-2 ${express ? "gap-2.5" : ""}`}>
           {cat.tags.map((tag) =>
-            renderTag(tag, catSelectedCount, cat.maxSelect, locked, categoryExcluded),
+            renderTag(tag, catSelectedCount, cat.maxSelect, locked, categoryExcluded, cat.heading, excludedBy),
           )}
         </div>
         </div>
@@ -858,7 +998,7 @@ export function StoryTagStudio({
   return (
     <div className={expressTabbed ? "space-y-4" : "space-y-10"}>
       {expressTabbed && !hideCategoryNav && (
-        <div className="sticky top-14 z-20 -mx-1 px-1 py-2 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div className="sticky top-20 z-20 -mx-1 px-1 py-2 bg-black/80 backdrop-blur-md border-b border-white/10">
           <HorizontalScrollRow className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1 scrollbar-hide">
             {activeCategories.map((cat) => {
               const count = categorySelectionCounts.get(cat.heading) ?? 0;
@@ -888,7 +1028,7 @@ export function StoryTagStudio({
       )}
       {/* Express — always-visible selected desires (tap × to remove) */}
       {express && selectedTags.length > 0 && (
-        <div className="sticky top-[4.5rem] z-20 -mx-1 px-3 py-3 mb-3 rounded-xl border border-[#e879a0]/35 bg-black/90 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
+        <div className="sticky top-20 z-20 px-3 py-3 mb-3 rounded-xl border border-[#e879a0]/35 bg-black/90 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
           <div className="flex items-center justify-between gap-2 mb-2">
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#e879a0]">
               Your selections
@@ -902,7 +1042,7 @@ export function StoryTagStudio({
               <button
                 key={tag}
                 type="button"
-                onClick={() => onTagToggle(tag)}
+                onClick={() => guardedTagToggle(tag)}
                 className="flex-shrink-0 snap-start inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full text-xs font-semibold text-black border border-transparent"
                 style={{
                   background: `linear-gradient(135deg, ${accentColor}, #922b21)`,

@@ -1,12 +1,12 @@
 import { useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { NAMES } from "@/data/names";
-
-const POPULAR = ["Emma", "Sophia", "Olivia", "James", "Alexander", "Lucas", "Charlotte", "Amelia"];
+import { NameLibraryNote } from "@/components/NameLibraryNote";
+import { Link } from "wouter";
 
 function filterNames(query: string, limit = 12): string[] {
   const q = query.trim().toLowerCase();
-  if (!q) return POPULAR;
+  if (!q) return [];
   return NAMES.filter((n) => n.toLowerCase().startsWith(q)).slice(0, limit);
 }
 
@@ -21,11 +21,12 @@ function NameField({ label, hint, value, onChange }: FieldProps) {
   const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestions = useMemo(() => filterNames(search), [search]);
+  const trimmed = search.trim();
 
   if (value) {
     return (
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-1.5">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-white/55 mb-1.5">{label}</p>
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-[#e879a0]/40 bg-[#e879a0]/10">
           <span className="text-sm font-semibold text-white flex-1">{value}</span>
           <button
@@ -46,9 +47,9 @@ function NameField({ label, hint, value, onChange }: FieldProps) {
 
   return (
     <div>
-      <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-1.5">{label}</p>
-      <p className="text-[11px] text-white/45 mb-2 leading-snug">{hint}</p>
-      <div className="flex items-center gap-2 border border-white/12 rounded-xl px-3 py-2.5 bg-black/40 focus-within:border-[#e879a0]/45">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-white/55 mb-1.5">{label}</p>
+      <p className="text-[11px] text-white/50 mb-2 leading-snug">{hint}</p>
+      <div className="flex items-center gap-2 border border-white/15 rounded-xl px-3 py-2.5 bg-black/50 focus-within:border-[#e879a0]/55 focus-within:ring-1 focus-within:ring-[#e879a0]/25">
         <Search className="w-3.5 h-3.5 text-white/40 shrink-0" />
         <input
           ref={inputRef}
@@ -61,6 +62,7 @@ function NameField({ label, hint, value, onChange }: FieldProps) {
           spellCheck={false}
         />
       </div>
+      <NameLibraryNote variant="express" />
       {suggestions.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-2">
           {suggestions.map((name) => (
@@ -78,6 +80,20 @@ function NameField({ label, hint, value, onChange }: FieldProps) {
           ))}
         </div>
       )}
+      {trimmed.length >= 1 && suggestions.length === 0 && (
+        <div className="mt-3 px-3 py-2.5 rounded-xl border border-white/12 bg-black/40">
+          <p className="text-xs font-semibold text-white mb-1">&ldquo;{trimmed}&rdquo; isn&apos;t in our library yet.</p>
+          <p className="text-[11px] text-white/50 mb-2 leading-snug">
+            We add names within 48 hours — or skip and the narrator uses pronouns.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#e879a0] hover:text-[#f0a0bc]"
+          >
+            Request this name →
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
@@ -91,7 +107,7 @@ type Props = {
   partnerLabel?: string;
 };
 
-/** Optional character names on the express desires step — skip = addressed as "you". */
+/** Character names on the express Make It Yours step — always visible, optional to fill. */
 export function ExpressCharacterNames({
   listenerName,
   partnerName,
@@ -100,27 +116,35 @@ export function ExpressCharacterNames({
   protagonistLabel = "Your character's name",
   partnerLabel = "Their name",
 }: Props) {
-  const [open, setOpen] = useState(!!listenerName || !!partnerName);
+  const hasNames = !!(listenerName || partnerName);
 
   return (
-    <details
-      open={open}
-      onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
-      className="mb-5 rounded-xl border border-white/12 bg-black/30 overflow-hidden group"
+    <section
+      className={`mb-6 rounded-2xl border overflow-hidden ${
+        hasNames
+          ? "border-[#e879a0]/45 bg-gradient-to-b from-[#e879a0]/12 to-black/40 shadow-[0_0_32px_rgba(232,121,160,0.12)]"
+          : "border-[#e879a0]/30 bg-gradient-to-b from-[#e879a0]/08 to-black/35"
+      }`}
     >
-      <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between gap-2 hover:bg-white/[0.03]">
-        <div>
-          <p className="text-sm font-semibold text-white/90">Name your characters</p>
-          <p className="text-[11px] text-white/45 mt-0.5">
-            Optional — skip and the narrator uses &ldquo;you&rdquo; and pronouns
-          </p>
+      <div className="px-4 pt-4 pb-1">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold text-white">Name your characters</p>
+            <p className="text-[11px] text-white/55 mt-1 leading-snug">
+              Optional — skip and the narrator uses &ldquo;you&rdquo; and pronouns. Many listeners personalise here.
+            </p>
+          </div>
+          {!hasNames && (
+            <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border border-[#e879a0]/40 text-[#e879a0]">
+              Optional
+            </span>
+          )}
         </div>
-        <span className="text-xs text-white/35 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div className="px-4 pb-4 pt-1 space-y-4 border-t border-white/8">
+      </div>
+      <div className="px-4 pb-4 pt-3 space-y-4 border-t border-white/8 mt-3">
         <NameField
           label={protagonistLabel}
-          hint="Any first name — nickname, pen name, anything you like."
+          hint="Search our library — nickname, pen name, or any first name you like."
           value={listenerName}
           onChange={onListenerName}
         />
@@ -131,6 +155,6 @@ export function ExpressCharacterNames({
           onChange={onPartnerName}
         />
       </div>
-    </details>
+    </section>
   );
 }

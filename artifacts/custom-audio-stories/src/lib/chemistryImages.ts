@@ -5,7 +5,7 @@ export function act4(slug: string): string {
 
 /**
  * Fixed pairing hero/CTA art — Act IV character illustrations (not legacy prop photos).
- * Paywall covers are still AI-generated via POST /api/preview-cover; pairing tiles use these only.
+ * Paywall covers use AI preview generation; curated library via resolvePaywallCoverUrl as fallback.
  */
 export const PAIRING_IMAGES: Record<string, string> = {
   /** M+F · rope restraint · gallery characters */

@@ -40,6 +40,16 @@ export const EXPRESS_CATEGORY_GALLERIES: Record<string, ExpressCategoryGallery> 
     focus: "center 35%",
     glow: "#f472b6",
   },
+  "Your dominance": {
+    primary: expressAct4ImagePath("Her Dominance"),
+    alternates: [
+      "images/chemistry/leads.webp",
+      "images/category-dominant_surrendered.webp",
+      "images/settings/penthouse_suite.webp",
+    ],
+    focus: "center 35%",
+    glow: "#f472b6",
+  },
   "What does she really want?": {
     primary: expressAct4ImagePath("What does she really want?"),
     alternates: [

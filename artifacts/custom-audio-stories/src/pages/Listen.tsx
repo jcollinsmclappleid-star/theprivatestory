@@ -152,7 +152,7 @@ export default function Listen() {
                     className="w-10 h-10 rounded-lg object-cover opacity-70 group-hover:opacity-100 transition-opacity"
                   />
                   <span className="text-[10px] text-white/35 group-hover:text-white/55 transition-colors">
-                    Forbidden · 10 min · Clara · Soothing
+                    Forbidden · 10 min · Sofia · Warm
                   </span>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function Listen() {
                     className="w-10 h-10 rounded-lg object-cover opacity-70 group-hover:opacity-100 transition-opacity"
                   />
                   <span className="text-[10px] text-[#e879a0]/40 group-hover:text-[#e879a0]/70 transition-colors">
-                    Intense · 10 min · Kayla · Expressive
+                    Intense · 10 min · Lisa · Sensual
                   </span>
                 </div>
               </div>

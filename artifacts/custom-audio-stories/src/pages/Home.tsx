@@ -70,17 +70,10 @@ function HomeHeroCopy({ layout }: { layout: "mobile" | "desktop" }) {
   return (
     <>
       <div className={`flex flex-col ${isMobile ? "items-center -mt-0.5 mb-2" : "mb-3"}`}>
-        {isMobile ? (
-          <LogoHero height={56} className="max-w-[min(90vw,17rem)] mb-1" />
-        ) : (
-          <p
-            className={`hero-brand-title font-bold uppercase ${
-              isMobile ? "text-[10px] tracking-[0.34em]" : "text-[10px] tracking-[0.32em]"
-            }`}
-          >
-            The Private Story
-          </p>
-        )}
+        <LogoHero
+          size={isMobile ? 96 : 112}
+          className={isMobile ? "mb-1" : "mb-2"}
+        />
       </div>
       <h1
         className={`font-display font-bold text-white tracking-tight ${

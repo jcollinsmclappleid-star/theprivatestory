@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Sparkles, Menu, X, LogIn, LogOut, User, Home, BookOpen, Settings, MessageCircle, Info } from "lucide-react";
 import { FloatingPlayer } from "./FloatingPlayer";
-import { Logo, LogoFull, LogoMark } from "./Logo";
+import { Logo, LogoFull } from "./Logo";
 import { AuthModal } from "./AuthModal";
 import { useAuth } from "../hooks/useAuth";
 import { useAudioPlayer } from "@/store/use-audio-player";
@@ -138,12 +138,9 @@ function Navbar({ streakDays }: { streakDays: number }) {
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2.5 min-w-0">
-              <span className="flex md:hidden items-center gap-2 min-w-0">
-                <LogoMark size={36} />
-                <span className="hero-brand-title text-[9px] font-bold uppercase tracking-[0.22em] leading-tight">
-                  The Private Story
-                </span>
+            <Link href="/" className="flex items-center min-w-0 shrink max-w-[min(72vw,17rem)] sm:max-w-[18rem] md:max-w-none">
+              <span className="md:hidden w-full">
+                <Logo height={56} />
               </span>
               <span className="hidden md:inline-flex">
                 <Logo height={64} />
@@ -460,7 +457,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         isAuthenticated={isAuthenticated}
         onStreakIncrement={setStreakDays}
       />
-      <main className="pt-20 pb-24 min-h-screen flex flex-col">{children}</main>
+      <main className="pt-20 pb-20 md:pb-12 min-h-screen flex flex-col">{children}</main>
       <Footer />
       <FloatingPlayer />
     </div>

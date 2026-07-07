@@ -5,11 +5,13 @@ import { ChevronRight, ChevronDown, Sparkles, ArrowLeft, Search, X, MapPin, Shuf
 import { NAMES } from "../data/names";
 import { StoryTagStudio } from "./StoryTagStudio";
 import { SITUATIONS, SITUATION_CATEGORIES, getSituationsByCategory, interpolateSituation } from "../data/situations";
-import { VOICES, DEFAULT_NARRATOR_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices, getCastLabels } from "../lib/voices";
+import { VOICES, DEFAULT_NARRATOR_VOICE_ID, getVoicesForPairing, getDefaultVoiceId, resolveCharacterVoices } from "../lib/voices";
+import { CastVoicePicker } from "@/components/CastVoicePicker";
 import { CHEMISTRY_IMAGES, PAIRING_IMAGES, act4 } from "../lib/chemistryImages";
 import { VoiceSamplePlayer } from "./VoiceSamplePlayer";
 import { VoiceAvatar } from "./VoiceAvatar";
 import { SituationLiteraryPanel } from "./SituationPicker";
+import { NameLibraryNote } from "@/components/NameLibraryNote";
 import type { HomeBrief } from "@/lib/homeBriefUtils";
 
 export interface CastingRoomResult {
@@ -43,6 +45,10 @@ export interface CastingRoomResult {
   situationId?: string;
   /** ElevenLabs voice ID chosen by the user in the casting flow. */
   voiceId?: string;
+  /** Protagonist dialogue voice (CHAR_A). */
+  charAVoiceId?: string;
+  /** Love-interest dialogue voice (CHAR_B). */
+  charBVoiceId?: string;
 }
 
 export interface CastingRoomHandoff {
@@ -84,7 +90,7 @@ interface Props {
 }
 
 /* ── Perspective helpers ──────────────────────────────────────────── */
-function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "his" | "your" | "their"> {
+export function getValidPerspectiveIds(pairingId: string | undefined): Array<"her" | "his" | "your" | "their"> {
   const pairing = PAIRINGS.find(p => p.id === pairingId);
   if (!pairing) return ["her", "his", "your", "their"];
 
@@ -158,7 +164,7 @@ function ArtTile({ gradient, accent, children, selected, onClick, image }: {
 }
 
 /* ── Step data ────────────────────────────────────────────────────── */
-const PERSPECTIVES = [
+export const PERSPECTIVES = [
   { id: "her" as const,   label: "Her Story",   sub: "She feels it. She decides.",    gradient: "from-[#1a0810] via-[#2a1020] to-[#120508]", accent: "#e879a0" },
   { id: "your" as const,  label: "Your Story",  sub: "You're the one in this world.", gradient: "from-[#100d00] via-[#1e1900] to-[#0c0a00]", accent: "#c9a227" },
   { id: "his" as const,   label: "His Story",   sub: "Follow him. Feel everything.",  gradient: "from-[#050a1a] via-[#0a1428] to-[#030810]", accent: "#6b8cce" },
@@ -223,11 +229,24 @@ interface ChemistryOption {
 
 export function buildChemistries(pairingId: string | undefined): ChemistryOption[] {
   const { partner: P, protagonist: ME } = derivePronouns(pairingId);
+  const pairingCfg = PAIRINGS.find((p) => p.id === pairingId);
+  const sameGender = !!pairingCfg && pairingCfg.protagonistPronouns === pairingCfg.partnerPronouns;
+  const partnerDominatesLabel = sameGender ? "Your partner dominates" : `${P.subject} Dominates`;
+  const protagonistDominatesLabel = sameGender ? "You dominate" : `${ME.subject} Dominates`;
+  const partnerChargeSub = sameGender
+    ? "Your love interest takes control — certain, patient, in command."
+    : `${P.subject} takes control. Certain of what ${P.possessive} want. Patient enough to take their time.`;
+  const protagonistLeadSub = sameGender
+    ? "You take the lead — set the terms, and your partner follows your pace entirely."
+    : `${ME.subject} takes the lead. Sets the terms. ${P.subject} follows ${ME.possessive} pace entirely.`;
+  const powerPlaySub = sameGender
+    ? "Your partner holds the power. You chose to give it. That's what makes everything that follows possible."
+    : `${P.subject} holds the power. ${ME.subject} chose to give it. That's what makes everything that follows possible.`;
   return [
     {
       id: `${P.subject} Takes Charge`,
-      label: `${P.subject} Dominates`,
-      sub: `${P.subject} takes control. Certain of what ${P.possessive} want. Patient enough to take their time.`,
+      label: partnerDominatesLabel,
+      sub: partnerChargeSub,
       dynamic: "They pursue, I decide",
       gradient: "from-[#100800] via-[#201000] to-[#080500]", accent: "#c9a227",
       image: CHEMISTRY_IMAGES.takesCharge,
@@ -242,8 +261,8 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
     },
     {
       id: `${ME.subject} Leads`,
-      label: `${ME.subject} Dominates`,
-      sub: `${ME.subject} takes the lead. Sets the terms. ${P.subject} follows ${ME.possessive} pace entirely.`,
+      label: protagonistDominatesLabel,
+      sub: protagonistLeadSub,
       dynamic: "I take what I want",
       gradient: "from-[#180010] via-[#280020] to-[#100008]", accent: "#f472b6",
       image: CHEMISTRY_IMAGES.leads,
@@ -267,7 +286,7 @@ export function buildChemistries(pairingId: string | undefined): ChemistryOption
     {
       id: "Charged Dynamic",
       label: "Dominance & Submission",
-      sub: `${P.subject} holds the power. ${ME.subject} chose to give it. That's what makes everything that follows possible.`,
+      sub: powerPlaySub,
       dynamic: "Leading and following",
       gradient: "from-[#0a0000] via-[#140000] to-[#050000]", accent: "#dc2626",
       image: CHEMISTRY_IMAGES.powerPlay,
@@ -855,6 +874,31 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       return DEFAULT_NARRATOR_VOICE_ID;
     }
   });
+  const pairingForVoices = data.pairing ?? "Her & Him";
+  const [charAVoiceId, setCharAVoiceId] = useState<string>(() =>
+    resolveCharacterVoices(
+      (() => {
+        try {
+          return localStorage.getItem("preferred_voice_id") ?? DEFAULT_NARRATOR_VOICE_ID;
+        } catch {
+          return DEFAULT_NARRATOR_VOICE_ID;
+        }
+      })(),
+      pairingForVoices,
+    ).charA,
+  );
+  const [charBVoiceId, setCharBVoiceId] = useState<string>(() =>
+    resolveCharacterVoices(
+      (() => {
+        try {
+          return localStorage.getItem("preferred_voice_id") ?? DEFAULT_NARRATOR_VOICE_ID;
+        } catch {
+          return DEFAULT_NARRATOR_VOICE_ID;
+        }
+      })(),
+      pairingForVoices,
+    ).charB,
+  );
   const [situationCategory, setSituationCategory] = useState<string>("");
 
   // Save casting state to localStorage whenever any field changes
@@ -990,8 +1034,10 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
       // Situation — the selected situation label (one of 200 predefined)
       situation: situationLabel || undefined,
       situationId: situationId || undefined,
-      // Voice selected in step 11 — persist to localStorage for next session
+      // Voice selected in step 12 — persist to localStorage for next session
       voiceId: voiceId || undefined,
+      charAVoiceId: charAVoiceId || undefined,
+      charBVoiceId: charBVoiceId || undefined,
     };
     try { localStorage.setItem("preferred_voice_id", voiceId); } catch { /* ignore */ }
     // Clear saved session so the room always opens at step 0 next time
@@ -1931,7 +1977,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 archetype: data.archetype ?? "",
                 setting: data.setting ?? "",
                 voice:
-                  VOICES.find((v) => v.id === voiceId)?.displayName ?? "Kayla",
+                  VOICES.find((v) => v.id === voiceId)?.displayName ?? "Lisa",
                 intensity: data.intensity ?? "Warm",
                 situationId: situationId || undefined,
                 situationLabel: situationLabel || undefined,
@@ -2108,6 +2154,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     </button>
                   )}
                 </div>
+                <NameLibraryNote />
                 {filteredListenerNames.length > 0 && (
                   <>
                     <p className="mt-3 mb-2 text-xs text-muted-foreground/60">Tap a name to select it</p>
@@ -2200,6 +2247,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                     </button>
                   )}
                 </div>
+                <NameLibraryNote />
                 {filteredPartnerNames.length > 0 && (
                   <>
                     <p className="mt-3 mb-2 text-xs text-muted-foreground/60">Tap a name to select it</p>
@@ -2240,113 +2288,22 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
           <motion.div key="step12" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">Who do you want in your ear?</h2>
             <p className="text-muted-foreground text-sm mb-1">
-              Choose your narrator — character voices are matched automatically.
+              Pick narrator and character voices — tap a role chip, then choose who speaks.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
-              Kayla and Theo are our most expressive narrators — we recommend either. Maya and James handle dialogue by default for Her &amp; Him.
+              Lisa is our recommended narrator. Pick narrator and character voices with the role chips below.
             </p>
 
-            {(() => {
-              const voicesToShow = getVoicesForPairing(data.pairing);
-              const renderVoiceCard = (voice: typeof VOICES[0]) => {
-                const isSelected = voiceId === voice.id;
-                const displayTitle = voice.displayName
-                  ? `${voice.displayName} — ${voice.label}`
-                  : voice.label;
-                return (
-                  <button
-                    key={voice.id}
-                    type="button"
-                    onClick={() => setVoiceId(voice.id)}
-                    className={`w-full p-4 rounded-2xl transition-all text-left ${
-                      isSelected
-                        ? "border-2 border-primary bg-gradient-to-b from-primary/20 to-primary/5 shadow-[0_0_32px_rgba(201,162,39,0.25),inset_0_1px_0_rgba(201,162,39,0.15)]"
-                        : "border-2 border-border/30 bg-card/40 hover:border-primary/50 hover:bg-card/60"
-                    }`}
-                    style={isSelected ? { transitionDuration: "150ms", transitionTimingFunction: "ease" } : {}}
-                  >
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-foreground leading-tight">{displayTitle}</span>
-                            {voice.recommendLabel && (
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-semibold tracking-wide uppercase">
-                                {voice.recommendLabel}
-                              </span>
-                            )}
-                          </div>
-                          {isSelected && <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />}
-                        </div>
-                        <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wide">{voice.accentLabel || voice.accent}</span>
-                        {voice.presence && (
-                          <p className="text-xs text-muted-foreground/65 mt-1 leading-snug">{voice.presence}</p>
-                        )}
-                      </div>
-                      <div className="flex-shrink-0">
-                        <VoiceAvatar voiceId={voice.id} size="md" />
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{voice.desc}</p>
-
-                    {voice.bestFor && (
-                      <div className="mb-4 pt-2">
-                        <p className="text-[10px] font-medium uppercase tracking-wide text-primary/60 mb-1.5">Best for this mood</p>
-                        <p className="text-[11px] text-primary/75 font-medium leading-relaxed">{voice.bestFor}</p>
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 flex-shrink-0 rounded-xl bg-black/30 border border-white/5 flex items-center justify-center">
-                        <VoiceAvatar voiceId={voice.id} size="md" />
-                      </div>
-                      <div className="flex-1">
-                        <VoiceSamplePlayer
-                          src={`${API_BASE}/api/voice-samples/${voice.id}`}
-                        />
-                      </div>
-                    </div>
-                  </button>
-                );
-              };
-              const { charA, charB } = resolveCharacterVoices(voiceId, data.pairing ?? "Her & Him");
-              const { labelA, labelB } = getCastLabels(data.pairing ?? "Her & Him");
-              const voiceA = VOICES.find(v => v.id === charA);
-              const voiceB = VOICES.find(v => v.id === charB);
-              const nameA = voiceA?.displayName ?? voiceA?.label ?? "";
-              const nameB = voiceB?.displayName ?? voiceB?.label ?? "";
-              const selectedVoice = VOICES.find(v => v.id === voiceId);
-              const narratorName = selectedVoice?.displayName ?? selectedVoice?.label ?? "";
-              return (
-                <>
-                  <div className="space-y-4">
-                    {voicesToShow.map(renderVoiceCard)}
-                  </div>
-                  <div className="mt-5 rounded-2xl border border-primary/15 bg-primary/[0.03] p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary/50 mb-3">Your full cast</p>
-                    <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
-                      {[
-                        { role: "Narrator", name: narratorName },
-                        { role: labelA, name: nameA },
-                        { role: labelB, name: nameB },
-                      ].map(({ role, name }, i, arr) => (
-                        <div key={role} className="flex items-end gap-3">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[9px] uppercase tracking-widest text-muted-foreground/40 font-semibold">{role}</span>
-                            <span className="text-sm font-medium text-foreground">{name}</span>
-                          </div>
-                          {i < arr.length - 1 && <span className="text-muted-foreground/25 text-base mb-0.5">·</span>}
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-[10px] text-muted-foreground/40 mt-3 leading-relaxed">
-                      Three voices, one story — character voices are matched to your narrator and pairing. Maya and James by default for Her &amp; Him.
-                    </p>
-                  </div>
-                </>
-              );
-            })()}
+            <CastVoicePicker
+              pairing={pairingForVoices}
+              narratorVoiceId={voiceId}
+              charAVoiceId={charAVoiceId}
+              charBVoiceId={charBVoiceId}
+              onNarrator={setVoiceId}
+              onCharA={setCharAVoiceId}
+              onCharB={setCharBVoiceId}
+              variant="studio"
+            />
 
             {/* ── Your cast at a glance ── */}
             <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/[0.03] p-5">

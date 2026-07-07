@@ -192,12 +192,12 @@ export function validateDialogueDensity(
 
 export const DIALOGUE_FORWARD_PROMPT_BLOCK = `
 DIALOGUE VOLUME — MANDATORY (this story is performed in multi-voice audio):
-- Characters must talk to each other constantly. Narrator carries atmosphere; dialogue carries desire, negotiation, and explicit beats.
-- DECLARE: 8+ alternating quoted lines; partner mirrors customer's fantasies back.
-- PERFORM: 14+ quoted lines; dialogue carries 42%+ of scene words; speech before each physical escalation.
-- Each speaker turn should average 6–20 words inside the quotes — write fuller lines, not "Yes." / "Now." ping-pong unless rhythm demands a single beat.
-- Cluster dialogue: 3–6 consecutive quoted lines between narrator bridges, especially in DECLARE and PERFORM.
-- Move sensation into speech in PERFORM: characters name want, sensation, and act — not only narrator description.
+- Characters talk to each other in dedicated conversation blocks. Narrator bridges between blocks only (max 1–2 sentences).
+- FRAME: 1 block (6–10 lines) — situation stakes live in quoted speech; foreshadow chip themes in subtext.
+- DECLARE: 2 blocks — tension/risk, then desire negotiation; partner tests fantasies in speech (no verbatim chip echo).
+- PERFORM: 1 block per customer chip — OFFER→ACT→REACT→DEEPEN; sensation in dirty talk, not narrator description.
+- Each speaker turn: 6–20 words inside quotes — fuller lines, not ping-pong unless rhythm demands it.
+- SAY ≠ ENACT: DECLARE negotiates; PERFORM shows partner doing through commands and touch framed in speech.
 `.trim();
 
 export function buildDialogueRetryNote(v: DialogueDensityValidation): string {

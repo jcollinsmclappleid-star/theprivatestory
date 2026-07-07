@@ -1,4 +1,5 @@
 import type { CastingRoomResult } from "@/components/CastingRoom";
+import { PAIRINGS } from "@/components/CastingRoom";
 import { getDefaultVoiceId, VOICES } from "@/lib/voices";
 import type { CastCategoryId } from "@/components/BriefBuilder";
 import type { HomeBrief } from "@/lib/homeBriefUtils";
@@ -22,6 +23,20 @@ export const CURATED_SCENARIO_IDS = [
   "completely_undone",
   "she_takes_the_reins",
 ] as const;
+
+/** Pairing gate — multi-partner rooms default to Her & Him unless explicitly allowed. */
+export function scenarioAllowsPairing(
+  scenario: { allowedPairings?: string[]; room?: string },
+  pairing: string,
+): boolean {
+  if (scenario.allowedPairings?.length) {
+    return scenario.allowedPairings.includes(pairing);
+  }
+  if (scenario.room === "more_than_two") {
+    return pairing === "Her & Him";
+  }
+  return true;
+}
 
 const ROOM_SETTING: Record<string, string> = {
   power_exchange: "Private club",
@@ -89,11 +104,24 @@ export type ExpressScenario = {
   tags: string[];
 };
 
+export function perspectiveFromPairing(pairing: string): CastingRoomResult["perspective"] {
+  const cfg = PAIRINGS.find((p) => p.id === pairing);
+  if (!cfg) return "her";
+  if (cfg.protagonistPronouns === "he/him") return "his";
+  if (cfg.protagonistPronouns === "they/them") return "their";
+  return "her";
+}
+
+function defaultDynamicForPairing(pairing: string): string {
+  return pairing === "Her & Her" ? "She Takes Charge" : "He Takes Charge";
+}
+
 export function buildExpressCasting(
   scenario: ExpressScenario,
   pairing: string,
   intensity: CastingRoomResult["intensity"],
   opts: {
+    perspective?: CastingRoomResult["perspective"];
     chemistry?: string;
     archetype?: string;
     voiceId?: string;
@@ -110,9 +138,11 @@ export function buildExpressCasting(
     chooseForMe?: boolean;
     listenerName?: string;
     partnerName?: string;
+    charAVoiceId?: string;
+    charBVoiceId?: string;
   },
 ): CastingRoomResult {
-  const primaryTag = scenario.tags[0] ?? "He Takes Charge";
+  const primaryTag = scenario.tags[0] ?? defaultDynamicForPairing(pairing);
   const mood =
     opts.mood ??
     (scenario.darkness === "No Limits"
@@ -127,7 +157,7 @@ export function buildExpressCasting(
     opts.afterDarkScene || opts.setting || ROOM_SETTING[scenario.room] || "Luxury Hotel";
 
   return {
-    perspective: "her",
+    perspective: opts.perspective ?? perspectiveFromPairing(pairing),
     pairing,
     heritage: opts.heritage || "Ambiguous",
     archetype,
@@ -142,6 +172,8 @@ export function buildExpressCasting(
     dynamic: chemistry,
     storyMode: scenario.storyMode,
     voiceId: opts.voiceId ?? getDefaultVoiceId(pairing),
+    charAVoiceId: opts.charAVoiceId || undefined,
+    charBVoiceId: opts.charBVoiceId || undefined,
     customTags: opts.customTags?.length ? opts.customTags : undefined,
     listenerName: opts.listenerName || undefined,
     partnerName: opts.partnerName || undefined,

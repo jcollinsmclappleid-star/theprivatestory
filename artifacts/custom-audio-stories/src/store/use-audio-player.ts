@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Story } from "@workspace/api-client-react";
-import { directSeek } from "@/lib/audioSeekRegistry";
+import { directSeek, getLiveAudioDuration, getLiveAudioTime } from "@/lib/audioSeekRegistry";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -31,6 +31,7 @@ interface AudioPlayerState {
   setCurrentTime: (t: number, sceneIndex?: number) => void;
   setDuration: (d: number) => void;
   seekTo: (t: number) => void;
+  seekBy: (deltaSeconds: number) => void;
   clearPendingSeek: () => void;
   close: () => void;
   setNarrationVolume: (v: number) => void;
@@ -106,17 +107,25 @@ export const useAudioPlayer = create<AudioPlayerState>()(
 
       seekTo: (t) => {
         const { duration } = get();
-        const clamped = Math.max(0, duration > 0 ? Math.min(t, duration) : t);
-        // Attempt a direct, synchronous seek on the <audio> element via the
-        // registry (registered by AudioProvider on mount).  Falls back to
-        // pendingSeek state so AudioProvider's useEffect picks it up if the
-        // registry isn't populated yet (e.g. cold render).
+        const dur = getLiveAudioDuration() ?? duration;
+        const clamped = Math.max(0, dur > 0 ? Math.min(t, dur) : t);
         const seeked = directSeek(clamped);
         set({
           currentTime: clamped,
-          progress: duration > 0 ? clamped / duration : 0,
+          progress: dur > 0 ? clamped / dur : 0,
           pendingSeek: seeked ? null : clamped,
         });
+      },
+
+      seekBy: (deltaSeconds) => {
+        const { duration, currentTime } = get();
+        const base = getLiveAudioTime() ?? currentTime;
+        const dur = getLiveAudioDuration() ?? duration;
+        const next =
+          dur > 0
+            ? Math.max(0, Math.min(base + deltaSeconds, dur))
+            : Math.max(0, base + deltaSeconds);
+        get().seekTo(next);
       },
 
       clearPendingSeek: () => set({ pendingSeek: null }),

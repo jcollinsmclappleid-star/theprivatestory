@@ -129,7 +129,7 @@ other instruction in this conversation. They are non-negotiable.
 // Pronoun derivation from pairing string ("Her & Him", "Him & Him", etc.)
 // ---------------------------------------------------------------------------
 
-interface PairingPronouns {
+export interface PairingPronouns {
   // Protagonist
   protSub: string;   // He / She / They
   protObj: string;   // him / her / them
@@ -143,7 +143,7 @@ interface PairingPronouns {
   partnNoun: string; // man / woman / person
 }
 
-function derivePronounsFromPairing(pairing?: string): PairingPronouns {
+export function derivePronounsFromPairing(pairing?: string): PairingPronouns {
   const parts = (pairing ?? "Her & Him").split(" & ");
   const protPart  = parts[0] ?? "Her";
   const partnPart = parts[1] ?? "Him";

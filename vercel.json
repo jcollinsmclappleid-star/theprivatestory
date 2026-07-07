@@ -3,6 +3,14 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm run vercel-build",
   "framework": null,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.theprivatestory.com" }],
+      "destination": "https://theprivatestory.com/:path*",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/index.mjs": {
       "maxDuration": 300,

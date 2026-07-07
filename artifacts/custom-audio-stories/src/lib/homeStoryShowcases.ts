@@ -26,7 +26,7 @@ export const HOME_STORY_SHOWCASES: HomeStoryShowcase[] = [
       chemistry: "Power Play",
       archetype: "The Executive",
       setting: "Luxury hotel",
-      voice: "Kayla",
+      voice: "Lisa",
     },
   },
   {
@@ -41,7 +41,7 @@ export const HOME_STORY_SHOWCASES: HomeStoryShowcase[] = [
       chemistry: "Forbidden Pull",
       archetype: "The Professor",
       setting: "Victorian London",
-      voice: "Clara",
+      voice: "Sofia",
     },
   },
   {
@@ -116,7 +116,7 @@ export const HOME_STORY_SHOWCASES: HomeStoryShowcase[] = [
       chemistry: "Power Play",
       archetype: "The Stranger",
       setting: "Private yacht",
-      voice: "Kayla",
+      voice: "Lisa",
     },
   },
   {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAudioPlayer } from '@/store/use-audio-player';
-import { registerAudioSeek } from '@/lib/audioSeekRegistry';
+import { registerAudioElement, registerAudioSeek } from '@/lib/audioSeekRegistry';
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -43,6 +43,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   } = useAudioPlayer();
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const setAudioRef = (el: HTMLAudioElement | null) => {
+    audioRef.current = el;
+    registerAudioElement(el);
+  };
   const simulationIntervalRef = useRef<number | null>(null);
   const playCountRef = useRef<Record<string, number>>({});
 
@@ -109,29 +113,58 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isPlaying, currentStory, narrationVolume]);
 
-  // Register a direct seek callback so the Zustand store can move the audio
-  // element synchronously (no React re-render round-trip required).
+  // Register direct seek callback for skip/scrub controls.
   useEffect(() => {
     registerAudioSeek((t) => {
-      if (audioRef.current) audioRef.current.currentTime = t;
+      const audio = audioRef.current;
+      if (!audio) return;
+      const apply = () => {
+        const dur = audio.duration;
+        const clamped =
+          dur && Number.isFinite(dur) && dur > 0
+            ? Math.max(0, Math.min(t, dur))
+            : Math.max(0, t);
+        audio.currentTime = clamped;
+        setCurrentTime(clamped);
+        if (dur && Number.isFinite(dur) && dur > 0) {
+          setProgress(clamped / dur);
+          setDuration(dur);
+        }
+      };
+      if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        apply();
+      } else {
+        const onMeta = () => {
+          apply();
+          audio.removeEventListener("loadedmetadata", onMeta);
+        };
+        audio.addEventListener("loadedmetadata", onMeta);
+      }
     });
     return () => registerAudioSeek(null);
-  }, []);
+  }, [setCurrentTime, setDuration, setProgress]);
 
   // Fallback: apply any pendingSeek that arrived before the registry was ready
   // (e.g. seekTo called during the very first render).
   useEffect(() => {
     if (pendingSeek === null) return;
-    if (audioRef.current) {
-      audioRef.current.currentTime = pendingSeek;
+    const audio = audioRef.current;
+    if (audio) {
+      audio.currentTime = pendingSeek;
+      setCurrentTime(pendingSeek);
+      const d = audio.duration;
+      if (d && isFinite(d) && d > 0) {
+        setProgress(pendingSeek / d);
+        setDuration(d);
+      }
     }
     clearPendingSeek();
-  }, [pendingSeek, clearPendingSeek]);
+  }, [pendingSeek, clearPendingSeek, setCurrentTime, setProgress, setDuration]);
 
   return (
     <>
       <audio
-        ref={audioRef}
+        ref={setAudioRef}
         src={currentStory?.audioUrl || undefined}
         volume={narrationVolume as never}
         onTimeUpdate={(e) => {

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useSearch, useLocation } from "wouter";
 import { CheckCircle2, Loader2, AlertCircle, Sparkles, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { getPostPurchaseRedirectPath } from "@/lib/paywallResume";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -117,11 +118,11 @@ export default function CheckoutSuccess() {
       });
   }, [purchase, isAuthenticated, token, claimState]);
 
-  // Step 3: Redirect after successful claim
+  // Step 3: Redirect after successful claim — resume paywall if cast is waiting
   useEffect(() => {
     if (claimState !== "claimed") return;
     const timer = setTimeout(() => {
-      navigate("/create");
+      navigate(getPostPurchaseRedirectPath());
     }, 2500);
     return () => clearTimeout(timer);
   }, [claimState, navigate]);

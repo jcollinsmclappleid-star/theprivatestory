@@ -27,9 +27,9 @@ if (!ELEVENLABS_API_KEY) {
 }
 
 const VOICES = [
-  { id: "RILOU7YmBhvwJGDGjNmP", label: "Classic" },
+  { id: "PB6BdkFkZLbI39GHdnbQ", label: "Sensual" },
+  { id: "D9MdulIxfrCUUJcGNQon", label: "Warm" },
   { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close" },
-  { id: "FA6HhUjVbervLw2rNl8M", label: "Unhurried" },
   { id: "AeRdCCKzvd23BpJoofzx", label: "Low" },
   { id: "n1PvBOwxb8X6m7tahp2h", label: "Deep" },
   { id: "jfIS2w2yJi0grJZPyEsk", label: "Heavy" },

@@ -2,7 +2,11 @@
 import assert from "node:assert/strict";
 import { buildFantasySpine } from "../src/lib/customerDesireBeats.js";
 import {
+  applyDeterministicConstraintRepairs,
   compileEnactmentSpecs,
+  repairBlindfoldSightText,
+  repairPraiseInDialogue,
+  repairSituationStakesText,
   resolveActiveConstraints,
   validateBeatConstraints,
   validateStoryEnactmentConstraints,
@@ -76,5 +80,26 @@ const storyViolations = validateStoryEnactmentConstraints(
   spine,
 );
 assert.ok(storyViolations.some((v) => v.constraintId === "no_listener_sight_while_blindfolded"));
+
+const stakesMissing = "He touched you slowly, voice low, hands mapping every curve.";
+const stakesRepaired = repairSituationStakesText(stakesMissing);
+assert.ok(/shouldn'?t|forbidden/i.test(stakesRepaired));
+
+const praiseMissing = 'He moved against you. "Tell me," he said.';
+const praiseRepaired = repairPraiseInDialogue(praiseMissing, "Her & Her");
+assert.ok(/good girl|perfect/i.test(praiseRepaired));
+assert.ok(!/\bhe murmured\b/i.test(praiseRepaired));
+
+const praiseRepairedMlm = repairPraiseInDialogue(praiseMissing, "Him & Him");
+assert.ok(/good boy/i.test(praiseRepairedMlm));
+
+const blindfoldBad = 'The blindfold slips on. "Look at this," he says.';
+const blindfoldRepaired = repairBlindfoldSightText(blindfoldBad);
+assert.ok(!/look at this/i.test(blindfoldRepaired));
+
+const repairResult = applyDeterministicConstraintRepairs(stakesMissing, [
+  { constraintId: "situation_stakes_present", tag: "situation", message: "missing stakes" },
+]);
+assert.ok(repairResult.applied.includes("situation_stakes_present"));
 
 console.log("enactmentConstraints.test.mts — all assertions passed");

@@ -337,6 +337,36 @@ This is not literary erotica with an explicit scene. This is explicit erotica wr
   return layers[clamped] ?? layers[3];
 }
 
+/** Pairing-aware intensity — overrides hetero-only anatomy mandates for same-gender pairings. */
+export function buildIntensityLayerForPairing(intensity: number, pairing?: string): string {
+  const base = buildIntensityLayer(intensity);
+  const p = (pairing ?? "").toLowerCase().trim();
+  if (intensity < 4) return base;
+
+  if (p === "her & her") {
+    return `${base}
+
+PAIRING OVERRIDE — HER & HER (MANDATORY):
+Both characters are women. PERFORM scenes are woman-on-woman only.
+REQUIRED explicit acts: (a) oral between women — anatomically specific; (b) penetration via fingers, toy, or grinding — NOT male penetrative intercourse.
+FORBIDDEN: cock, penis, dick, erection, balls, "good boy", he/him/his for either character.
+Arousal language: wetness, clit, breasts, mouth on her — never erection.
+Praise chip dialogue: "good girl" or gender-neutral praise only — never "good boy".`;
+  }
+
+  if (p === "him & him") {
+    return `${base}
+
+PAIRING OVERRIDE — HIM & HIM (MANDATORY):
+Both characters are men. PERFORM scenes are man-on-man only.
+REQUIRED: oral and anal penetration with anatomical specificity — both men throughout.
+FORBIDDEN: she/her for either character, pussy, wetness (female), "good girl".
+Praise chip dialogue: "good boy" or gender-neutral praise — never "good girl".`;
+  }
+
+  return base;
+}
+
 export function buildSeriesLayer(episodeNum: number, totalEpisodes: number, seriesArc: string): string {
   const arc = getArcStage(episodeNum);
 

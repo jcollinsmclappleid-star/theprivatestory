@@ -5,10 +5,12 @@ import type { HomeBrief } from "@/lib/homeBriefUtils";
 
 const NARRATOR_TO_VOICE: Record<string, string> = {
   theo: "Theo",
-  kayla: "Kayla",
+  kayla: "Lisa",
+  lisa: "Lisa",
   maya: "Maya",
   james: "James",
-  clara: "Clara",
+  clara: "Sofia",
+  sofia: "Sofia",
 };
 
 /** Studio teaser slug → After Dark express scenario id */

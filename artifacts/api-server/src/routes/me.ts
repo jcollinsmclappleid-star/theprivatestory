@@ -25,12 +25,16 @@ const VALID_TASTE_INTENSITIES = new Set([
 ]);
 const VALID_TASTE_VOICES = new Set([
   // Current voice IDs
-  "RILOU7YmBhvwJGDGjNmP", // Jane (Audio Story)
-  "tQ4MEZFJOzsahSEEZtHK", // Ivanna (Soft Intimate)
-  "FA6HhUjVbervLw2rNl8M", // Ophelia Rose (Calm Bedtime)
-  "AeRdCCKzvd23BpJoofzx", // Nathaniel (British Suspense)
-  "n1PvBOwxb8X6m7tahp2h", // Michael C. Vincent (Cinematic Male)
-  "jfIS2w2yJi0grJZPyEsk", // Oliver Silk (Deep Gravel)
+  "PB6BdkFkZLbI39GHdnbQ", // Lisa
+  "D9MdulIxfrCUUJcGNQon", // Sofia
+  "tQ4MEZFJOzsahSEEZtHK", // Maya
+  "AeRdCCKzvd23BpJoofzx", // James
+  "n1PvBOwxb8X6m7tahp2h", // Ethan
+  "jfIS2w2yJi0grJZPyEsk", // Theo
+  // Retired IDs (migrate on read)
+  "aTxZrSrp47xsP6Ot4Kgd",
+  "FA6HhUjVbervLw2rNl8M",
+  "RILOU7YmBhvwJGDGjNmP",
   // Legacy region values — kept for backward compatibility with stored taste profiles
   "UK Voice", "US Voice",
   "Soft Voice", "Deep Voice", "Breathy Voice", "Confident Voice",

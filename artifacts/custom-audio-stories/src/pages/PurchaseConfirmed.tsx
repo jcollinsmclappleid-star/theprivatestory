@@ -5,6 +5,7 @@ import { CheckCircle2, Loader2, AlertCircle, Sparkles, Lock, BookOpen, Moon } fr
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
 import { Logo } from "@/components/Logo";
+import { getPostPurchaseRedirectPath, hasPendingAfterDarkPaywall } from "@/lib/paywallResume";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -218,10 +219,10 @@ function GuestTokenFlow({ token }: { token: string }) {
       });
   }, [purchase, isAuthenticated, token, claimState]);
 
-  // Step 3: Redirect after successful claim
+  // Step 3: Redirect after successful claim — resume paywall if cast is waiting
   useEffect(() => {
     if (claimState !== "claimed") return;
-    const timer = setTimeout(() => navigate("/create"), 2500);
+    const timer = setTimeout(() => navigate(getPostPurchaseRedirectPath()), 2500);
     return () => clearTimeout(timer);
   }, [claimState, navigate]);
 
@@ -256,7 +257,10 @@ function GuestTokenFlow({ token }: { token: string }) {
         </div>
         <h1 className="font-display text-2xl font-bold text-foreground mb-2">You're all set.</h1>
         <p className="text-muted-foreground text-sm mb-4">
-          Your {planName(purchase.plan)} has been added to your account. Taking you to create your first story…
+          Your {planName(purchase.plan)} has been added to your account.{" "}
+          {hasPendingAfterDarkPaywall()
+            ? "Taking you back to your story…"
+            : "Taking you to create your first story…"}
         </p>
         <Loader2 className="w-4 h-4 text-primary mx-auto animate-spin" />
       </motion.div>
@@ -406,10 +410,10 @@ function AuthVerifyFlow({ sessionId }: { sessionId: string }) {
     return () => { cancelled = true; };
   }, [sessionId]);
 
-  // Redirect to create once credits are applied.
+  // Redirect once credits are applied — resume paywall if cast is waiting.
   useEffect(() => {
     if (state !== "done") return;
-    const timer = setTimeout(() => navigate("/create"), 2500);
+    const timer = setTimeout(() => navigate(getPostPurchaseRedirectPath()), 2500);
     return () => clearTimeout(timer);
   }, [state, navigate]);
 
@@ -450,7 +454,10 @@ function AuthVerifyFlow({ sessionId }: { sessionId: string }) {
       </div>
       <h1 className="font-display text-2xl font-bold text-foreground mb-2">You're all set.</h1>
       <p className="text-muted-foreground text-sm mb-4">
-        Your credits have been added to your account. Taking you to create your story…
+        Your credits have been added to your account.{" "}
+        {hasPendingAfterDarkPaywall()
+          ? "Taking you back to your story…"
+          : "Taking you to create your story…"}
       </p>
       <Loader2 className="w-4 h-4 text-primary mx-auto animate-spin" />
     </motion.div>

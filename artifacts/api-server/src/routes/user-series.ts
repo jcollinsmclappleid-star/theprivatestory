@@ -401,7 +401,7 @@ router.post("/:id/next-chapter", async (req, res) => {
       const isCastingBased = !!(intake.heritage || intake.atmosphere || intake.chemistry);
       const coverPrompt = isCastingBased
         ? buildCoverPromptFromCasting(intake)
-        : buildCoverPromptFromBrief(brief);
+        : buildCoverPromptFromBrief(brief, intake.pairing, intake.heritage);
 
       const pipelineKey = getCacheKey({ seriesId: s.id, chapter: chapterNumber, ts: Date.now() });
       const [images, audioUrl] = await Promise.all([

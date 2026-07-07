@@ -9,6 +9,8 @@ if (!apiKey) {
 export const openrouter = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey,
+  timeout: Number(process.env.OPENROUTER_TIMEOUT_MS ?? 45_000),
+  maxRetries: 0,
   defaultHeaders: {
     "HTTP-Referer": "https://yourromanticstory.com",
     "X-Title": "The Private Story",

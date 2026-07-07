@@ -62,7 +62,7 @@ export function HorizontalScrollRow({ className = "", children, ...props }: Scro
   const showHint = useScrollOverflow(ref, "x");
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 w-full">
       <div ref={ref} className={className} {...props}>
         {children}
       </div>
@@ -83,7 +83,7 @@ export function VerticalScrollCol({ className = "", children, ...props }: Scroll
   const showHint = useScrollOverflow(ref, "y");
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 w-full">
       <div ref={ref} className={className} {...props}>
         {children}
       </div>

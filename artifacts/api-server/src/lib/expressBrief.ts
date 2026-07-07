@@ -8,9 +8,9 @@ import {
   attachFantasySpineToBrief,
   buildFantasySpine,
   type FantasySpine,
-  type ProtPronouns,
 } from "./customerDesireBeats.js";
 import { buildExpressScenePlan, type ExpressScenePlanRow } from "./expressScenePlan.js";
+import { adaptTextForPairing, protPronounsFromPairing } from "./pairingWrite.js";
 
 export type ExpressBriefInput = {
   listenerName?: string;
@@ -55,13 +55,6 @@ export type ExpressStoryBrief = {
   scenario_tags?: string[];
 };
 
-function protagonistFromPairing(pairing?: string): ProtPronouns {
-  const p = (pairing ?? "Her & Him").toLowerCase();
-  if (p.startsWith("him &")) return { sub: "He", obj: "him", poss: "his", refl: "himself" };
-  if (p.includes("them & them") || (p.includes("them") && !p.startsWith("her & him")))
-    return { sub: "They", obj: "them", poss: "their", refl: "themselves" };
-  return { sub: "She", obj: "her", poss: "her", refl: "herself" };
-}
 
 function sceneCountForLength(_storyLength?: string): number {
   return 4;
@@ -80,11 +73,11 @@ export function shouldUseExpressFastPath(intake: ExpressBriefInput): boolean {
 }
 
 export function buildExpressBrief(intake: ExpressBriefInput): ExpressStoryBrief {
-  const prot = protagonistFromPairing(intake.pairing);
+  const prot = protPronounsFromPairing(intake.pairing);
   const customerDesireTags = intake.customerDesireTags?.length
     ? intake.customerDesireTags
     : (!intake.scenarioTags?.length ? (intake.experienceTags ?? []) : []);
-  const scenarioTags = intake.scenarioTags ?? [];
+  const scenarioTags = (intake.scenarioTags ?? []).map((t) => adaptTextForPairing(t, intake.pairing));
 
   const spine = buildFantasySpine(
     {
@@ -95,6 +88,7 @@ export function buildExpressBrief(intake: ExpressBriefInput): ExpressStoryBrief 
       dynamic: intake.dynamic,
       chemistry: intake.chemistry,
       setting: intake.setting,
+      pairing: intake.pairing,
     },
     prot,
   );
@@ -128,6 +122,8 @@ export function buildExpressBrief(intake: ExpressBriefInput): ExpressStoryBrief 
     situationBeatsByPhase: situationBeats,
     intensityLevel: intensityLabelToLevel(intake.intensity),
     storyLength: intake.storyLength,
+    pairing: intake.pairing,
+    partnerName: intake.partnerName,
   });
 
   let brief: ExpressStoryBrief = {

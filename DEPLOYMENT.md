@@ -123,6 +123,17 @@ The service account needs read/write on `media/audio/*` and `media/images/*` in 
 
 The API server has CORS configured for `theprivatestory.com`. If the domain stays the same, no changes needed. Check `artifacts/api-server/src/app.ts` for the CORS origin list if the domain changes.
 
+**Pre-cutover (DNS still on Replit):** Vercel production uses `SITE_URL` / `BETTER_AUTH_URL` = `https://theprivatestory.vercel.app` so Stripe success URLs and auth callbacks return to the Vercel app, not the live Replit site.
+
+**DNS cutover checklist (when moving `theprivatestory.com` to Vercel):**
+
+1. In Vercel → Project → Domains: add `theprivatestory.com` and `www.theprivatestory.com` (www redirects to apex via `vercel.json` + Express middleware).
+2. Update DNS at your registrar to Vercel’s A/CNAME records (remove Replit targets).
+3. Update Vercel env for **production**: `SITE_URL`, `BETTER_AUTH_URL`, and `APP_URL` → `https://theprivatestory.com`.
+4. Stripe dashboard: webhook endpoint → `https://theprivatestory.com/api/stripe/webhook` (regenerate `STRIPE_WEBHOOK_SECRET` if adding a new endpoint).
+5. Google Cloud Console: add `https://theprivatestory.com` to OAuth authorised redirect URIs.
+6. Redeploy production after env changes.
+
 ### Stripe webhooks
 
 Update the Stripe webhook endpoint in the Stripe dashboard from the Replit deployment URL to the new Vercel URL. Regenerate `STRIPE_WEBHOOK_SECRET` after adding the new endpoint.

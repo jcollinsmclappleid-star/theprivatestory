@@ -386,6 +386,18 @@ const OUTPUT_HARD_BLOCK_PATTERNS: RegExp[] = [
 ];
 
 /**
+ * Idioms where "kid" is not an age reference — mask before output scans to reduce false blocks.
+ */
+function maskKidIdioms(text: string): string {
+  return text
+    .replace(/\bkid\s+gloves\b/gi, "soft touch")
+    .replace(/\bjust\s+kidding\b/gi, "just joking")
+    .replace(/\bkidding\b/gi, "joking")
+    .replace(/\bkid\s+around\b/gi, "joke around")
+    .replace(/\bno\s+kids\b/gi, "no children");
+}
+
+/**
  * Checks AI-generated story text against the output-specific hard-block list.
  * Use this instead of isBlockedInput() for scanning model output — it omits
  * terms that can appear innocuously in literary adult prose.
@@ -396,7 +408,8 @@ export function isBlockedOutput(text: string): {
   matchedTerms?: string[];
   pattern?: string;
 } {
-  for (const variant of getTextVariants(text)) {
+  const masked = maskKidIdioms(text);
+  for (const variant of getTextVariants(masked)) {
     for (const pattern of OUTPUT_HARD_BLOCK_PATTERNS) {
       if (pattern.test(variant)) {
         const matched = variant.match(pattern) || [];

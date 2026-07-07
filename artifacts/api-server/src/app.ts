@@ -32,6 +32,16 @@ const PUBLIC_ROOT = serverPublicRoot();
 
 const app: Express = express();
 
+// Apex canonical host — redirect www once DNS points at Vercel.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const host = req.headers.host?.split(":")[0]?.toLowerCase();
+  if (host === "www.theprivatestory.com") {
+    res.redirect(301, `https://theprivatestory.com${req.originalUrl}`);
+    return;
+  }
+  next();
+});
+
 // Trust the first hop of Replit's reverse proxy so rate limiters key on the
 // real client IP (from X-Forwarded-For) rather than the proxy's IP. Without
 // this, all users share one rate-limit bucket and one heavy user can exhaust
@@ -150,6 +160,8 @@ const globalLimiter = rateLimit({
     // Static / auth paths never need rate-limiting
     if (
       req.path.startsWith("/api/auth") ||
+      req.path.startsWith("/api/generate-job/") ||
+      req.path === "/api/health" ||
       req.path.startsWith("/images/") ||
       req.path.startsWith("/fonts/") ||
       req.path.startsWith("/audio/") ||

@@ -76,6 +76,7 @@ import {
 } from "../lib/pairingWrite.js";
 import {
   appendImageSafetyConstraints,
+  buildCastingCoverLock,
   heritageImageLabel,
   pairingCastingSubject,
   pairingCoverFigures,
@@ -97,7 +98,7 @@ import { signProtectedMediaUrl } from "../lib/playbackToken.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const EXPRESS_COVER_ATTEMPTS = 2;
+const EXPRESS_COVER_ATTEMPTS = 1;
 
 /** Signed media URLs for immediate guest playback (~1h); DB keeps canonical paths. */
 function withPlaybackTokens<
@@ -652,6 +653,10 @@ export interface GenerateStoryRequest {
   charAVoiceId?: string;
   /** Optional CHAR_B dialogue voice — must be a valid catalogue ID, distinct from narrator. */
   charBVoiceId?: string;
+  /** Paywall preview cover (data URL) — reused server-side to skip a second DALL-E call. */
+  existingCoverDataUrl?: string;
+  /** Fingerprint from /api/preview-cover — must match current casting to reuse preview bytes. */
+  previewCoverKey?: string;
 }
 
 /** Internal server-only extension of GenerateStoryRequest.
@@ -1165,6 +1170,8 @@ export function buildCoverPromptFromCasting(
   }
 
   const parts = [
+    buildCastingCoverLock(intake.pairing, heritageKey),
+    pairingImageExtractionGuide(intake.pairing, heritageKey),
     subjectDesc,
     appearanceDesc,
     settingDesc,
@@ -2344,6 +2351,13 @@ function normaliseIntake(raw: GenerateStoryRequest): InternalGenerateRequest {
     })(),
     charAVoiceId,
     charBVoiceId,
+    existingCoverDataUrl: (() => {
+      const url = raw.existingCoverDataUrl?.trim();
+      if (!url?.startsWith("data:image/")) return undefined;
+      if (url.length > 2_800_000) return undefined;
+      return url;
+    })(),
+    previewCoverKey: raw.previewCoverKey?.trim() || undefined,
   };
 }
 
@@ -3394,6 +3408,8 @@ export async function writeStoryFromBrief(
       storyLength: originalInput?.storyLength,
       onBeatStart: writeOpts?.onWriteBeatStart,
       onBeatComplete: writeOpts?.onWriteProgress,
+      maxSceneAttempts: writeOpts?.expressFastPath ? 1 : undefined,
+      maxPerformPartAttempts: writeOpts?.expressFastPath ? 1 : undefined,
       context: originalInput
         ? {
             whoIsHe: originalInput.whoIsHe,
@@ -4529,6 +4545,34 @@ async function attemptGenerateImageBuffer(
   return null;
 }
 
+function coverCacheKeyFromIntake(intake: InternalGenerateRequest): string {
+  return getCacheKey({
+    pairing: intake.pairing,
+    heritage: intake.heritage,
+    chemistry: intake.chemistry,
+    setting: intake.setting,
+    atmosphere: intake.atmosphere,
+    mood: intake.mood,
+    partnerAppearance: intake.partnerAppearance,
+    appearBuild: intake.appearBuild,
+    appearColouring: intake.appearColouring,
+  });
+}
+
+async function uploadCoverFromDataUrl(dataUrl: string, filename: string): Promise<string | null> {
+  const match = /^data:image\/[\w+.-]+;base64,(.+)$/i.exec(dataUrl.trim());
+  if (!match) return null;
+  try {
+    const buffer = Buffer.from(match[1], "base64");
+    if (buffer.length < 100 || buffer.length > 3_000_000) return null;
+    await uploadImageFile(filename, buffer);
+    return `/api/images/${filename}`;
+  } catch (err) {
+    logger.warn({ err, filename }, "[generate] Failed to upload preview cover");
+    return null;
+  }
+}
+
 export async function generateAllImages(
   prompts: ImagePrompts,
   cacheKey: string,
@@ -4792,7 +4836,7 @@ Return ONLY valid JSON with exactly ${batchCount} entries in order:
 }
 
 const AUDIO_CONCURRENCY = 6;
-export const EXPRESS_MAX_STRUCTURAL_WRITE_ATTEMPTS = 2;
+export const EXPRESS_MAX_STRUCTURAL_WRITE_ATTEMPTS = 1;
 
 async function runConcurrent<T>(items: T[], fn: (item: T) => Promise<Buffer>): Promise<Buffer[]> {
   const results = new Array<Buffer>(items.length);
@@ -5931,6 +5975,35 @@ const GENERATION_TIMEOUT_MS = process.env.VERCEL
     }
     report(10, "Writing your story…");
 
+    let previewCoverUrl: string | null = null;
+    let earlyCoverPromise: Promise<{ cover: string; scenes: string[] }> | null = null;
+    const coverCacheKey = coverCacheKeyFromIntake(intake);
+
+    if (expressFast) {
+      const dataUrl = intake.existingCoverDataUrl;
+      const coverKey = coverCacheKeyFromIntake(intake);
+      const previewKeyMatches = !!intake.previewCoverKey && intake.previewCoverKey === coverKey;
+      if (dataUrl?.startsWith("data:image/") && previewKeyMatches) {
+        previewCoverUrl = await uploadCoverFromDataUrl(dataUrl, `cover-${coverKey}.png`);
+        if (previewCoverUrl) {
+          logger.info("[generate] Reusing paywall preview cover — skipping DALL-E");
+        }
+      } else if (dataUrl?.startsWith("data:image/") && !previewKeyMatches) {
+        logger.warn(
+          { expectedKey: coverKey, gotKey: intake.previewCoverKey ?? null },
+          "[generate] Preview cover casting mismatch — regenerating cover",
+        );
+      }
+      if (!previewCoverUrl) {
+        const earlyCoverPrompt = buildPreviewCoverPrompt(intake);
+        earlyCoverPromise = generateAllImages(
+          { coverPrompt: earlyCoverPrompt, scenePrompts: [] },
+          coverCacheKey,
+          { coverAttempts: EXPRESS_COVER_ATTEMPTS },
+        );
+      }
+    }
+
     // Step 4: Write story — pass original user input so specific details survive into the final text
     const originalUserInput = {
       scenarioPrompt: intake.scenarioPrompt,
@@ -6113,11 +6186,18 @@ const GENERATION_TIMEOUT_MS = process.env.VERCEL
 
       report(78, expressFast ? "Painting your cover…" : "Refining the details…");
       const modPromise = moderateOutput(outputText);
-      const coverPromise = expressFast
-        ? generateAllImages(imagePrompts, storyHash, { coverAttempts: EXPRESS_COVER_ATTEMPTS })
-        : Promise.resolve(null as { cover: string; scenes: string[] } | null);
+      const coverFetch: Promise<{ cover: string; scenes: string[] } | null> = previewCoverUrl
+        ? Promise.resolve({ cover: previewCoverUrl, scenes: [] })
+        : earlyCoverPromise
+          ? earlyCoverPromise.catch((err) => {
+              logger.warn({ err }, "[generate] Early parallel cover failed");
+              return null;
+            })
+          : expressFast
+            ? generateAllImages(imagePrompts, storyHash, { coverAttempts: EXPRESS_COVER_ATTEMPTS })
+            : Promise.resolve(null);
 
-      const [outputMod, coverResult] = await Promise.all([modPromise, coverPromise]);
+      const [outputMod, coverResult] = await Promise.all([modPromise, coverFetch]);
       if (outputMod.blocked) {
         logger.warn({
           event: "output_blocked",
@@ -6661,6 +6741,11 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
 router.post("/preview-cover", async (req: Request, res: Response) => {
   try {
     const intake = normaliseIntake(req.body as GenerateStoryRequest);
+    if (!intake.pairing) {
+      res.status(400).json({ error: "pairing is required for cover generation" });
+      return;
+    }
+    const coverKey = coverCacheKeyFromIntake(intake);
     const prompt = buildPreviewCoverPrompt(intake);
     const buf = await attemptGenerateImageBuffer(prompt, 2, "preview-cover");
 
@@ -6670,7 +6755,7 @@ router.post("/preview-cover", async (req: Request, res: Response) => {
     }
 
     const dataUrl = `data:image/png;base64,${buf.toString("base64")}`;
-    res.json({ url: dataUrl });
+    res.json({ url: dataUrl, coverKey });
   } catch (err) {
     logger.error({ err }, "[preview-cover] Generation failed");
     res.status(500).json({ error: "Cover generation failed" });

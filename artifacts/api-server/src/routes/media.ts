@@ -22,14 +22,21 @@ import { db, generatedStories } from "@workspace/db";
 import { eq, or, sql } from "drizzle-orm";
 import { logger } from "../lib/logger.js";
 import { streamAudioFile, streamImageFile } from "../lib/mediaStorage.js";
+import { verifyProtectedMediaToken } from "../lib/playbackToken.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(__dirname, "../public");
 
 const router = Router();
 
-// ---------------------------------------------------------------------------
-// Filename allowlist — only hex/alphanumeric filenames are accepted.
+/** Allow time-limited signed URLs (post-generation guest playback). */
+function hasValidPlaybackToken(req: Request, urlPath: string): boolean {
+  const exp = typeof req.query.playback === "string" ? req.query.playback : undefined;
+  const sig = typeof req.query.sig === "string" ? req.query.sig : undefined;
+  if (!exp || !sig) return false;
+  return verifyProtectedMediaToken(urlPath, exp, sig);
+}
+
 // This prevents path-traversal attacks (e.g. ../../../../etc/passwd).
 // ---------------------------------------------------------------------------
 const AUDIO_FILENAME_RE = /^[\w\-]+\.mp3$/;
@@ -141,12 +148,15 @@ router.get("/voice-samples/:voiceId", (req: Request, res: Response) => {
   const { voiceId } = req.params;
   // Whitelist of valid voice IDs to prevent path traversal
   const validVoiceIds = [
-    "FA6HhUjVbervLw2rNl8M", // Clara (Soothing)
+    "PB6BdkFkZLbI39GHdnbQ", // Lisa (Sensual)
+    "D9MdulIxfrCUUJcGNQon", // Sofia (Warm)
     "tQ4MEZFJOzsahSEEZtHK", // Maya (Close)
-    "aTxZrSrp47xsP6Ot4Kgd", // Kayla (Expressive)
-    "AeRdCCKzvd23BpJoofzx", // Nathaniel (Assured)
+    "AeRdCCKzvd23BpJoofzx", // James (Assured)
     "n1PvBOwxb8X6m7tahp2h", // Deep
     "jfIS2w2yJi0grJZPyEsk", // Heavy
+    // Legacy — until samples expire from saved links
+    "aTxZrSrp47xsP6Ot4Kgd",
+    "FA6HhUjVbervLw2rNl8M",
   ];
 
   if (!validVoiceIds.includes(voiceId)) {
@@ -191,6 +201,13 @@ router.get("/audio/:filename", async (req: Request, res: Response, next: NextFun
     return;
   }
 
+  const urlPath = `/api/audio/${filename}`;
+  if (hasValidPlaybackToken(req, urlPath)) {
+    const found = await streamAudioFile(filename, res, req);
+    if (!found) return res.status(404).json({ error: "File not found." });
+    return;
+  }
+
   const allowed = await checkOwnership(req, res, "audio", filename);
   if (!allowed) return;
 
@@ -222,6 +239,13 @@ router.get("/images/:filename", async (req: Request, res: Response, next: NextFu
     /^express-act4-[a-z0-9-]+\.(?:png|webp)$/.test(filename) ||
     SAMPLE_COVER_FILENAMES.has(filename)
   ) {
+    const found = await streamImageFile(filename, res);
+    if (!found) return res.status(404).json({ error: "File not found." });
+    return;
+  }
+
+  const imageUrlPath = `/api/images/${filename}`;
+  if (hasValidPlaybackToken(req, imageUrlPath)) {
     const found = await streamImageFile(filename, res);
     if (!found) return res.status(404).json({ error: "File not found." });
     return;

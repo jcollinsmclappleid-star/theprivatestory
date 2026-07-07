@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles, SlidersHorizontal, MapPin, Globe2, X } from "lucide-react";
 import { IntensityDial, INTENSITY_LEVELS } from "@/components/IntensityDial";
 import { StoryAnatomyCard } from "@/components/StoryAnatomy";
-import { StoryTagStudio, getTagDisplayLabel } from "@/components/StoryTagStudio";
+import { StoryTagStudio, getTagDisplayLabel, AFTER_DARK_TAG_CAP, getExpressTagBlockReason } from "@/components/StoryTagStudio";
 import { VoiceSamplePlayer } from "@/components/VoiceSamplePlayer";
-import { VOICES, resolveCharacterVoices, getCastLabels, getDefaultVoiceId } from "@/lib/voices";
+import { VOICES } from "@/lib/voices";
+import { CastVoicePicker } from "@/components/CastVoicePicker";
 import { ExpressCategoryHero } from "@/components/ExpressCategoryHero";
 import { EXPRESS_CATEGORY_SHORT, getCategoryGallery, getCategoryImagePool } from "@/lib/expressCategoryImages";
 import { preloadImages } from "@/lib/preloadImages";
@@ -14,7 +15,7 @@ import {
   intensityToIndex,
   type CategoryId,
 } from "@/components/BriefBuilder";
-import { castingIntensityToHome, type ExpressScenario } from "@/lib/afterDarkExpress";
+import { castingIntensityToHome, scenarioAllowsPairing, type ExpressScenario } from "@/lib/afterDarkExpress";
 import type { CastingRoomResult } from "@/components/CastingRoom";
 import {
   buildArchetypes,
@@ -22,8 +23,10 @@ import {
   COUNTRY_CITIES,
   COUNTRY_CULTURAL_PREVIEW,
   COUNTRY_FLAGS,
+  getValidPerspectiveIds,
   HERITAGES,
   PAIRINGS,
+  PERSPECTIVES,
 } from "@/components/CastingRoom";
 import { getScenarioImage } from "@/lib/scenarioImages";
 import { FEATURED_EXPRESS_SETTINGS, getSettingById, ALL_EXPRESS_SETTINGS, SETTING_GROUP_LABELS } from "@/lib/expressSettings";
@@ -106,26 +109,6 @@ function ExpressStepNav({
   );
 }
 
-const NARRATOR_AVATARS: Record<string, string> = {
-  Kayla: "images/avatar-isla.webp",
-  Theo: "images/avatar-oliver.webp",
-  Maya: "images/avatar-maya.webp",
-  James: "images/avatar-nathaniel.webp",
-  Clara: "images/avatar-eleanor.webp",
-  Ethan: "images/avatar-caleb.webp",
-};
-
-const EXPRESS_NARRATORS = (["Kayla", "Theo", "Maya", "James", "Clara", "Ethan"] as const).map((name) => {
-  const voice = VOICES.find((v) => v.displayName === name)!;
-  return {
-    id: name,
-    voiceId: voice.id,
-    label: name,
-    desc: voice.desc,
-    image: NARRATOR_AVATARS[name],
-  };
-});
-
 export const EXPRESS_ACTS = ["Who", "Fantasy", "World", "Situation", "Yours", "Unlock"] as const;
 export type ExpressActIndex = 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -166,7 +149,7 @@ export function ExpressActHeader({
 }) {
   const summary = buildExpressSummaryLine(brief, current);
   return (
-    <div className="sticky top-0 z-30 -mx-4 px-4 py-3 mb-5 bg-black/92 backdrop-blur-lg border-b border-white/8 lg:static lg:z-auto lg:bg-transparent lg:border-0 lg:mx-0 lg:px-0 lg:py-0 lg:mb-6">
+    <div className="sticky top-20 z-30 w-full py-3 mb-5 bg-black/92 backdrop-blur-lg border-b border-white/8 lg:static lg:z-auto lg:top-auto lg:bg-transparent lg:border-0 lg:py-0 lg:mb-6">
       <ExpressActProgress current={current} compact />
       {summary && (
         <p className="text-[11px] text-white/55 mt-2 leading-snug line-clamp-2 lg:hidden">{summary}</p>
@@ -180,6 +163,7 @@ export function ExpressActHeader({
 export type ExpressBriefState = {
   scenario: ExpressScenario | null;
   pairing: string | null;
+  perspective: CastingRoomResult["perspective"] | null;
   intensity: CastingRoomResult["intensity"];
   country: string;
   city: string;
@@ -331,15 +315,17 @@ function ImageTile({
   );
 }
 
-const VOICE_OPTS = EXPRESS_NARRATORS;
+type WhoSubStep = "pairing" | "perspective" | "heritage";
 
-/* ── Act I · Who (pairing + heritage — drives all pronouns) ───────── */
+/* ── Act I · Who (pairing → perspective → heritage) ───────────────── */
 
 export function AfterDarkExpressPairing({
   pairings,
   selectedPairing,
+  perspective,
   heritage,
   onPairing,
+  onPerspective,
   onHeritage,
   onContinue,
   onBack,
@@ -348,27 +334,54 @@ export function AfterDarkExpressPairing({
 }: {
   pairings: PairingOption[];
   selectedPairing: string | null;
+  perspective: CastingRoomResult["perspective"] | null;
   heritage: string;
   onPairing: (id: string) => void;
+  onPerspective: (id: CastingRoomResult["perspective"]) => void;
   onHeritage: (id: string) => void;
   onContinue: () => void;
   onBack: () => void;
   onOpenStudio: () => void;
   brief: ExpressBriefState;
 }) {
+  const [subStep, setSubStep] = useState<WhoSubStep>("pairing");
   const pairingCfg = PAIRINGS.find((p) => p.id === selectedPairing);
   const heroImage = selectedPairing ? PAIRING_IMAGES[selectedPairing] : null;
   const heritageCfg = HERITAGES.find((h) => h.id === heritage);
-  const canContinue = !!selectedPairing && !!heritage;
+  const perspectiveCfg = PERSPECTIVES.find((p) => p.id === perspective);
+  const validPerspectives = getValidPerspectiveIds(selectedPairing ?? undefined);
+  const isSameGender =
+    !!pairingCfg && pairingCfg.protagonistPronouns === pairingCfg.partnerPronouns;
+  const canContinue = !!selectedPairing && !!perspective && !!heritage;
 
   useEffect(() => {
     preloadExpressPairingImages();
   }, []);
 
+  useEffect(() => {
+    if (!selectedPairing) setSubStep("pairing");
+  }, [selectedPairing]);
+
+  const stepTitle =
+    subStep === "pairing"
+      ? "Who's in the story?"
+      : subStep === "perspective"
+        ? "Whose story is this?"
+        : "Heritage — who are they?";
+
+  const stepHint =
+    subStep === "pairing"
+      ? "Choose the pairing — every choice after this adapts to who's in your story."
+      : subStep === "perspective"
+        ? isSameGender
+          ? "Same pronouns for both — pick who you follow so dominance and desire stay clear."
+          : "Choose who the story follows — you in the moment, or your character throughout."
+        : "This shapes how both characters look on the cover and in every scene.";
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 pb-16">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
-        <div>
+    <div className="max-w-5xl mx-auto px-4 py-8 pb-28 md:pb-16 w-full min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-8 items-start">
+        <div className="min-w-0">
           <ExpressActHeader current={0} brief={brief} />
           <ExpressStepNav onBack={onBack} backLabel="Back to After Dark" onOpenStudio={onOpenStudio} />
 
@@ -379,17 +392,48 @@ export function AfterDarkExpressPairing({
             Start with who — and who they are
           </h1>
           <p className="text-sm text-white/60 mb-6 max-w-lg">
-            Pairing and heritage come first. They set every pronoun, every tag, every line of your story.
+            Pairing, perspective, and heritage set every pronoun, tag, and cover image.
           </p>
 
+          <div className="flex items-center gap-2 mb-6">
+            {(["pairing", "perspective", "heritage"] as const).map((s, i) => {
+              const active = subStep === s;
+              const done =
+                (s === "pairing" && !!selectedPairing) ||
+                (s === "perspective" && !!perspective) ||
+                (s === "heritage" && !!heritage);
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    if (s === "perspective" && !selectedPairing) return;
+                    if (s === "heritage" && (!selectedPairing || !perspective)) return;
+                    setSubStep(s);
+                  }}
+                  className={`flex-1 rounded-full py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    active ? "text-white" : done ? "text-white/70" : "text-white/35"
+                  }`}
+                  style={
+                    active
+                      ? { background: `${EXPRESS_CRIMSON}55`, border: `1px solid ${EXPRESS_CRIMSON}66` }
+                      : { border: "1px solid rgba(255,255,255,0.08)" }
+                  }
+                >
+                  {i + 1}. {s === "pairing" ? "Pairing" : s === "perspective" ? "Perspective" : "Heritage"}
+                </button>
+              );
+            })}
+          </div>
+
           <AnimatePresence mode="wait">
-            {selectedPairing && heroImage && (
+            {selectedPairing && heroImage && subStep !== "pairing" && (
               <motion.div
-                key={selectedPairing}
+                key={`${selectedPairing}-${subStep}`}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="relative mb-6 rounded-2xl overflow-hidden min-h-[200px] md:min-h-[240px]"
+                className="relative mb-6 rounded-2xl overflow-hidden min-h-[180px] md:min-h-[200px]"
                 style={{ border: `1px solid ${EXPRESS_CRIMSON}35`, boxShadow: `0 0 48px ${EXPRESS_CRIMSON}15` }}
               >
                 <img
@@ -402,88 +446,125 @@ export function AfterDarkExpressPairing({
                   fetchPriority="high"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-                <div className="relative z-10 p-6 flex flex-col justify-end min-h-[200px] md:min-h-[240px]">
+                <div className="relative z-10 p-6 flex flex-col justify-end min-h-[180px] md:min-h-[200px]">
                   <p className="text-[10px] font-bold uppercase tracking-[0.24em] mb-1" style={{ color: EXPRESS_ROSE }}>
                     {pairingCfg?.label}
+                    {perspectiveCfg ? ` · ${perspectiveCfg.label}` : ""}
                   </p>
                   <h2 className="font-display text-2xl font-bold text-white">
-                    {heritageCfg && heritage !== "Ambiguous"
+                    {subStep === "heritage" && heritageCfg && heritage !== "Ambiguous"
                       ? `${heritageCfg.label} — ${heritageCfg.sub}`
-                      : "Choose their heritage below"}
+                      : subStep === "perspective" && perspectiveCfg
+                        ? perspectiveCfg.sub
+                        : pairingCfg?.sub}
                   </h2>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-3">
-            Who&apos;s in the story?
+          <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-1">
+            {stepTitle}
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
-            {pairings.map((p) => {
-              const img = PAIRING_IMAGES[p.id];
-              const selected = selectedPairing === p.id;
-              return (
+          <p className="text-sm text-white/55 mb-4 max-w-lg">{stepHint}</p>
+
+          {subStep === "pairing" && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
+              {pairings.map((p) => {
+                const img = PAIRING_IMAGES[p.id];
+                const selected = selectedPairing === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      onPairing(p.id);
+                      setSubStep("perspective");
+                    }}
+                    className={`relative overflow-hidden rounded-xl border p-3 min-h-[88px] text-left transition-all ${
+                      selected ? "ring-1" : "border-white/10 hover:border-[#c0392b]/35"
+                    }`}
+                    style={
+                      selected
+                        ? { borderColor: `${EXPRESS_CRIMSON}55`, boxShadow: `0 0 20px ${EXPRESS_CRIMSON}22` }
+                        : undefined
+                    }
+                  >
+                    {img && (
+                      <img
+                        src={`${BASE}${img}`}
+                        alt=""
+                        aria-hidden
+                        className="absolute inset-0 w-full h-full object-cover opacity-55"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient}`} style={{ opacity: 0.65 }} />
+                    <p className="relative z-10 font-semibold text-white text-sm">{p.label}</p>
+                    <p className="relative z-10 text-[10px] text-white/60 mt-0.5">{p.sub}</p>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {subStep === "perspective" && selectedPairing && (
+            <div className="grid gap-2.5 mb-8">
+              {PERSPECTIVES.filter((p) => validPerspectives.includes(p.id)).map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => onPairing(p.id)}
-                  className={`relative overflow-hidden rounded-xl border p-3 min-h-[88px] text-left transition-all ${
-                    selected
-                      ? "ring-1"
-                      : "border-white/10 hover:border-[#c0392b]/35"
+                  onClick={() => {
+                    onPerspective(p.id);
+                    setSubStep("heritage");
+                  }}
+                  className={`relative overflow-hidden rounded-xl border p-4 text-left transition-all ${
+                    perspective === p.id ? "ring-1" : "border-white/10 hover:border-[#c0392b]/35"
                   }`}
                   style={
-                    selected
-                      ? { borderColor: `${EXPRESS_CRIMSON}55`, boxShadow: `0 0 20px ${EXPRESS_CRIMSON}22` }
+                    perspective === p.id
+                      ? { borderColor: `${p.accent}66`, boxShadow: `0 0 20px ${p.accent}22` }
                       : undefined
                   }
                 >
-                  {img && (
-                    <img
-                      src={`${BASE}${img}`}
-                      alt=""
-                      aria-hidden
-                      className="absolute inset-0 w-full h-full object-cover opacity-55"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient}`} style={{ opacity: 0.65 }} />
-                  <p className="relative z-10 font-semibold text-white text-sm">{p.label}</p>
-                  <p className="relative z-10 text-[10px] text-white/60 mt-0.5">{p.sub}</p>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient}`} style={{ opacity: 0.55 }} />
+                  <p className="relative z-10 font-semibold text-white">{p.label}</p>
+                  <p className="relative z-10 text-sm text-white/70 mt-0.5">{p.sub}</p>
                 </button>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {selectedPairing ? (
-            <>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">
-                Heritage — who are they?
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8">
-                {HERITAGES.map((h) => (
-                  <ImageTile
-                    key={h.id}
-                    image={h.image}
-                    label={h.label}
-                    sub={h.sub}
-                    accent={h.accent}
-                    selected={heritage === h.id}
-                    onClick={() => onHeritage(h.id)}
-                    className="min-h-[96px]"
-                  />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="mb-8 px-4 py-6 rounded-xl border border-white/10 bg-white/5 text-sm text-white/50 italic">
-              Pick a pairing first — every choice after this adapts to who&apos;s in your story.
+          {subStep === "heritage" && selectedPairing && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8">
+              {HERITAGES.map((h) => (
+                <ImageTile
+                  key={h.id}
+                  image={h.image}
+                  label={h.label}
+                  sub={h.sub}
+                  accent={h.accent}
+                  selected={heritage === h.id}
+                  onClick={() => onHeritage(h.id)}
+                  className="min-h-[96px]"
+                />
+              ))}
             </div>
           )}
 
           <div className="flex flex-col sm:flex-row gap-3">
+            {subStep !== "pairing" && (
+              <button
+                type="button"
+                onClick={() =>
+                  setSubStep(subStep === "heritage" ? "perspective" : "pairing")
+                }
+                className="px-5 py-4 rounded-2xl font-semibold text-sm text-white/70 border border-white/15"
+              >
+                Back
+              </button>
+            )}
             <button
               type="button"
               disabled={!canContinue}
@@ -537,9 +618,9 @@ export function AfterDarkExpressSituation({
     : situationLabel || "Choose what happens — or let us surprise you.";
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 pb-28 md:pb-16">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
-        <div>
+    <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 pb-32 md:pb-16 w-full min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-8 items-start">
+        <div className="min-w-0">
           <ExpressActHeader current={3} brief={brief} />
           <ExpressStepNav
             onBack={onBack}
@@ -607,6 +688,7 @@ export function AfterDarkExpressFantasy({
   rooms,
   curatedScenarios,
   allScenarios,
+  selectedPairing,
   activeRoomTab,
   selectedScenario,
   intensityIndex,
@@ -623,6 +705,7 @@ export function AfterDarkExpressFantasy({
   rooms: RoomOption[];
   curatedScenarios: ExpressScenario[];
   allScenarios: ExpressScenario[];
+  selectedPairing: string;
   activeRoomTab: string;
   selectedScenario: ExpressScenario | null;
   intensityIndex: number;
@@ -642,22 +725,26 @@ export function AfterDarkExpressFantasy({
     : null;
 
   const displayedScenarios = useMemo(() => {
-    if (activeRoomTab === "featured") return curatedScenarios;
-    return allScenarios.filter((s) => s.room === activeRoomTab);
-  }, [activeRoomTab, curatedScenarios, allScenarios]);
+    const base =
+      activeRoomTab === "featured"
+        ? curatedScenarios
+        : allScenarios.filter((s) => s.room === activeRoomTab);
+    return base.filter((s) => scenarioAllowsPairing(s, selectedPairing));
+  }, [activeRoomTab, curatedScenarios, allScenarios, selectedPairing]);
 
   const roomCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of allScenarios) {
+      if (!scenarioAllowsPairing(s, selectedPairing)) continue;
       counts[s.room] = (counts[s.room] ?? 0) + 1;
     }
     return counts;
-  }, [allScenarios]);
+  }, [allScenarios, selectedPairing]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 pb-16">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
-        <div>
+    <div className="max-w-5xl mx-auto px-4 py-8 pb-28 md:pb-16 w-full min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-8 items-start">
+        <div className="min-w-0">
           <ExpressActHeader current={1} brief={brief} />
           <ExpressStepNav onBack={onBack} backLabel="Back to who's in the story" onOpenStudio={onOpenStudio} />
 
@@ -825,12 +912,18 @@ export function AfterDarkExpressWorld({
   chemistry,
   archetype,
   voiceName,
+  narratorVoiceId,
+  charAVoiceId,
+  charBVoiceId,
   onCountry,
   onCity,
   onSetting,
   onChemistry,
   onArchetype,
   onVoice,
+  onNarratorVoice,
+  onCharAVoice,
+  onCharBVoice,
   onContinue,
   onBack,
   onOpenStudio,
@@ -844,12 +937,18 @@ export function AfterDarkExpressWorld({
   chemistry: string;
   archetype: string;
   voiceName: string;
+  narratorVoiceId: string;
+  charAVoiceId: string;
+  charBVoiceId: string;
   onCountry: (c: string) => void;
   onCity: (c: string) => void;
   onSetting: (s: string) => void;
   onChemistry: (v: string) => void;
   onArchetype: (v: string) => void;
   onVoice: (v: string) => void;
+  onNarratorVoice: (id: string) => void;
+  onCharAVoice: (id: string) => void;
+  onCharBVoice: (id: string) => void;
   onContinue: () => void;
   onBack: () => void;
   onOpenStudio: () => void;
@@ -877,7 +976,7 @@ export function AfterDarkExpressWorld({
   );
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 pb-16">
+    <div className="max-w-5xl mx-auto px-4 py-8 pb-28 md:pb-16 w-full min-w-0">
       <CountryPickerModal
         open={countryPickerOpen}
         selected={country}
@@ -891,8 +990,8 @@ export function AfterDarkExpressWorld({
         onClose={() => setSettingPickerOpen(false)}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 lg:gap-8 items-start">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-6 lg:gap-8 items-start">
+        <div className="min-w-0">
           <ExpressActHeader current={2} brief={brief} />
           <ExpressStepNav onBack={onBack} backLabel="Back to fantasy" onOpenStudio={onOpenStudio} />
 
@@ -1102,6 +1201,11 @@ export function AfterDarkExpressWorld({
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">
               Dynamic — who moves first?
             </p>
+            {selectedPairing && PAIRINGS.find((p) => p.id === selectedPairing)?.protagonistPronouns === PAIRINGS.find((p) => p.id === selectedPairing)?.partnerPronouns && (
+              <p className="text-xs text-white/50 mb-3 italic">
+                Same pronouns in this pairing — &ldquo;Your partner dominates&rdquo; is your love interest; &ldquo;You dominate&rdquo; is your character.
+              </p>
+            )}
             <HorizontalScrollRow className="flex gap-2 overflow-x-auto pb-2 mb-6 snap-x snap-mandatory">
               {chemistries.map((o) => (
                 <ImageTile
@@ -1132,88 +1236,22 @@ export function AfterDarkExpressWorld({
             </VerticalScrollCol>
 
             <p className="text-xs text-white/50 mb-3">
-              Kayla and Theo are our most expressive narrators — we recommend either.
+              Lisa is our recommended narrator — tap a role chip to pick narrator or character voices.
             </p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">Narrator — hear a sample</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
-              {VOICE_OPTS.map((o) => {
-                const selected = voiceName === o.id;
-                const sampleSrc = `${BASE.replace(/\/$/, "")}/api/voice-samples/${o.voiceId}`;
-                return (
-                  <div
-                    key={o.id}
-                    className={`rounded-xl border overflow-hidden transition-all ${
-                      selected
-                        ? "border-[#e879a0]/50 bg-[#e879a0]/10 shadow-[0_0_24px_rgba(232,121,160,0.15)]"
-                        : "border-white/10 bg-black/30 hover:border-white/22"
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => onVoice(o.id)}
-                      className="w-full text-left p-3 flex items-center gap-3"
-                    >
-                      <span className="relative w-12 h-12 rounded-full overflow-hidden border border-white/15 flex-shrink-0">
-                        <img
-                          src={`${BASE}${o.image}`}
-                          alt=""
-                          aria-hidden
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center gap-2">
-                          <span className="font-semibold text-white">{o.label}</span>
-                          {(() => {
-                            const voice = VOICES.find((v) => v.displayName === o.id);
-                            if (voice?.recommendLabel) {
-                              return (
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">
-                                  {voice.recommendLabel}
-                                </span>
-                              );
-                            }
-                            return null;
-                          })()}
-                          {selected && (
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-[#e879a0]">Selected</span>
-                          )}
-                        </span>
-                        <span className="text-[10px] text-white/55 line-clamp-2 block mt-0.5">{o.desc}</span>
-                      </span>
-                    </button>
-                    <div className="px-3 pb-3">
-                      <VoiceSamplePlayer src={sampleSrc} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {(() => {
-              const narratorVoice = VOICES.find((v) => v.displayName === voiceName);
-              const narratorId = narratorVoice?.id ?? getDefaultVoiceId();
-              const pairing = selectedPairing ?? "Her & Him";
-              const { charA, charB } = resolveCharacterVoices(narratorId, pairing);
-              const { labelA, labelB } = getCastLabels(pairing);
-              const voiceA = VOICES.find((v) => v.id === charA);
-              const voiceB = VOICES.find((v) => v.id === charB);
-              const narratorLabel = narratorVoice?.displayName ?? "Kayla";
-              const nameA = voiceA?.displayName ?? voiceA?.label ?? "";
-              const nameB = voiceB?.displayName ?? voiceB?.label ?? "";
-              return (
-                <div className="mt-4 rounded-xl border p-4" style={{ borderColor: `${EXPRESS_CRIMSON}30`, background: `${EXPRESS_CRIMSON}08` }}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: `${EXPRESS_ROSE}99` }}>Your full cast</p>
-                  <p className="text-sm text-white/75">
-                    <span className="text-white/45">Narrator</span> {narratorLabel}
-                    <span className="text-white/25 mx-2">·</span>
-                    <span className="text-white/45">{labelA}</span> {nameA}
-                    <span className="text-white/25 mx-2">·</span>
-                    <span className="text-white/45">{labelB}</span> {nameB}
-                  </p>
-                  <p className="text-[10px] text-white/40 mt-2">Character voices are matched to your narrator — Maya and James by default for Her &amp; Him.</p>
-                </div>
-              );
-            })()}
+            <CastVoicePicker
+              pairing={selectedPairing ?? "Her & Him"}
+              narratorVoiceId={narratorVoiceId}
+              charAVoiceId={charAVoiceId}
+              charBVoiceId={charBVoiceId}
+              onNarrator={(id) => {
+                onNarratorVoice(id);
+                const v = VOICES.find((voice) => voice.id === id);
+                if (v?.displayName) onVoice(v.displayName);
+              }}
+              onCharA={onCharAVoice}
+              onCharB={onCharBVoice}
+              variant="express"
+            />
             </div>
           </details>
 
@@ -1253,6 +1291,7 @@ const EXPRESS_CATEGORY_SUB: Record<string, string> = {
   "Restraint & BDSM": "Bound, blindfolded, begging — how far the surrender goes",
   "Submission & Worship": "On their knees. Every word of praise you want heard.",
   "Her Dominance": "She sets every rule — they follow, or else",
+  "Your dominance": "You set every rule — your partner follows, or else",
   "What does she really want?": "The desire she's never said out loud",
   "What does he really want?": "What he's been holding back — finally written",
   "What do they really want?": "The hunger between them, finally named",
@@ -1269,10 +1308,11 @@ const EXPRESS_CATEGORY_SUB: Record<string, string> = {
   "How does it end?": "The final note — satisfied, ruined, or wanting more",
 };
 
-function getExpressCategoryTabs(protagonistPronouns: string): string[] {
+function getExpressCategoryTabs(protagonistPronouns: string, partnerPronouns?: string): string[] {
   const isShe = !protagonistPronouns.startsWith("he") && !protagonistPronouns.startsWith("they");
   const isHe = protagonistPronouns.startsWith("he");
   const isThey = protagonistPronouns.startsWith("they");
+  const sameGender = !!partnerPronouns && protagonistPronouns === partnerPronouns;
   const skip = new Set<string>();
   if (isShe) {
     skip.add("What does he really want?");
@@ -1282,13 +1322,19 @@ function getExpressCategoryTabs(protagonistPronouns: string): string[] {
     skip.add("What does she really want?");
     skip.add("What do they really want?");
     skip.add("Her Dominance");
+    skip.add("Your dominance");
   }
   if (isThey) {
     skip.add("What does she really want?");
     skip.add("What does he really want?");
     skip.add("Her Dominance");
+    skip.add("Your dominance");
   }
-  return Object.keys(EXPRESS_CATEGORY_SHORT).filter((h) => !skip.has(h));
+  let tabs = Object.keys(EXPRESS_CATEGORY_SHORT).filter((h) => !skip.has(h));
+  if (sameGender) {
+    tabs = tabs.map((h) => (h === "Her Dominance" ? "Your dominance" : h));
+  }
+  return tabs;
 }
 
 export function AfterDarkExpressMakeItYours({
@@ -1325,8 +1371,8 @@ export function AfterDarkExpressMakeItYours({
   const isSameGender = protagonistPronouns === partnerPronouns;
 
   const categoryTabs = useMemo(
-    () => getExpressCategoryTabs(protagonistPronouns),
-    [protagonistPronouns],
+    () => getExpressCategoryTabs(protagonistPronouns, partnerPronouns),
+    [protagonistPronouns, partnerPronouns],
   );
 
   useEffect(() => {
@@ -1341,6 +1387,7 @@ export function AfterDarkExpressMakeItYours({
   );
   const [tagPulse, setTagPulse] = useState(0);
   const [categoryPickCounts, setCategoryPickCounts] = useState<Record<string, number>>({});
+  const [tagBlockHint, setTagBlockHint] = useState<string | null>(null);
 
   useEffect(() => {
     const preferred = defaultCategoryForRoom(brief.scenario?.room);
@@ -1350,6 +1397,23 @@ export function AfterDarkExpressMakeItYours({
   }, [brief.scenario?.room, categoryTabs]);
 
   const handleTagToggle = (tag: string) => {
+    if (customTags.includes(tag)) {
+      setTagBlockHint(null);
+      onTagToggle(tag);
+      setTagPulse((n) => n + 1);
+      return;
+    }
+    const block = getExpressTagBlockReason(
+      tag,
+      customTags,
+      protagonistPronouns,
+      partnerPronouns,
+    );
+    if (block) {
+      setTagBlockHint(`${block.message} ${block.solution}`);
+      return;
+    }
+    setTagBlockHint(null);
     onTagToggle(tag);
     setTagPulse((n) => n + 1);
   };
@@ -1379,12 +1443,12 @@ export function AfterDarkExpressMakeItYours({
     [brief.scenario, brief.chemistry, brief.mood, protagonistPronouns, customTags],
   );
 
-  const tagCap = 8;
+  const tagCap = AFTER_DARK_TAG_CAP;
   const desirePct = Math.min(100, (customTags.length / tagCap) * 100);
 
   return (
-    <div className="relative max-w-5xl mx-auto px-4 py-6 pb-36">
-      <div className="relative z-10">
+    <div className="relative max-w-5xl mx-auto px-4 py-6 pb-44 md:pb-36 w-full min-w-0">
+      <div className="relative z-10 min-w-0">
       <ExpressActHeader current={4} brief={brief} />
       <ExpressStepNav onBack={onBack} backLabel="Back to situation" onOpenStudio={onOpenStudio} />
 
@@ -1399,8 +1463,8 @@ export function AfterDarkExpressMakeItYours({
         categoryPickCounts={categoryPickCounts}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-6 items-start">
+        <div className="min-w-0">
           <div className="flex items-start justify-between gap-4 mb-4">
             {isSameGender && !noteDismissed ? (
               <div className="flex items-start gap-2 flex-1 max-w-lg">
@@ -1430,6 +1494,12 @@ export function AfterDarkExpressMakeItYours({
             </button>
           </div>
 
+          {tagBlockHint && (
+            <p className="mb-4 text-xs text-amber-200/90 bg-amber-950/40 border border-amber-500/30 rounded-xl px-4 py-3 leading-relaxed">
+              {tagBlockHint}
+            </p>
+          )}
+
           {suggestedTags.length > 0 && (
             <div className="mb-5 rounded-xl border border-[#e879a0]/25 overflow-hidden bg-[#1a0008]/50">
               <div className="relative h-16 overflow-hidden">
@@ -1445,16 +1515,28 @@ export function AfterDarkExpressMakeItYours({
                 </p>
               </div>
               <HorizontalScrollRow className="px-3 pb-3 flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-                {suggestedTags.map((tag) => (
+                {suggestedTags.map((tag) => {
+                  const block = customTags.includes(tag)
+                    ? null
+                    : getExpressTagBlockReason(tag, customTags, protagonistPronouns, partnerPronouns);
+                  const disabled = !!block;
+                  return (
                   <button
                     key={tag}
                     type="button"
+                    disabled={disabled}
                     onClick={() => handleTagToggle(tag)}
-                    className="flex-shrink-0 snap-start px-4 py-2.5 rounded-full text-xs font-semibold border border-[#e879a0]/40 text-white bg-black/40 hover:bg-[#e879a0]/20 transition-all hover:shadow-[0_0_20px_rgba(232,121,160,0.25)]"
+                    title={block ? `${block.message} ${block.solution}` : undefined}
+                    className={`flex-shrink-0 snap-start px-4 py-2.5 rounded-full text-xs font-semibold border text-white transition-all ${
+                      disabled
+                        ? "border-white/10 bg-black/20 text-white/35 cursor-not-allowed"
+                        : "border-[#e879a0]/40 bg-black/40 hover:bg-[#e879a0]/20 hover:shadow-[0_0_20px_rgba(232,121,160,0.25)]"
+                    }`}
                   >
                     + {getTagDisplayLabel(tag)}
                   </button>
-                ))}
+                  );
+                })}
               </HorizontalScrollRow>
             </div>
           )}

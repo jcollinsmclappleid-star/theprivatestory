@@ -58,7 +58,11 @@ import {
   PENDING_CAST_KEY,
   type PendingAfterDarkCast,
 } from "@/lib/storyReveal";
-import { PAIRING_IMAGES } from "@/lib/chemistryImages";
+import {
+  AFTER_DARK_CHECKOUT_STATE_KEY,
+  readAfterDarkCheckoutState,
+  readPendingAfterDarkCast,
+} from "@/lib/paywallResume";
 
 /* ── Pronoun adaptation for scenario text ────────────────────────── */
 type PCtxFull = {
@@ -1209,11 +1213,24 @@ const GENERATION_PROGRESS_SUB =
   "Written only for you. It stays in this room — no one else hears it.";
 
 const GENERATION_USER_ERROR =
-  "We had a little problem creating your private story. Please try again — you won't be charged.";
+  "Your story almost made it through in one breath — sometimes desire needs a second pass. Tap try again; your choices are still here, and you won't be charged twice.";
 
-function formatGenerationErrorMessage(_raw: string): string {
-  if (_raw.includes("429") || _raw.toLowerCase().includes("too many requests")) {
-    return "We're a little busy right now. Please wait a minute and try again — your choices are saved.";
+function formatGenerationErrorMessage(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (raw.includes("429") || lower.includes("too many requests")) {
+    return "We're caught up in the moment — a little busy right now. Wait a minute and try again. Your choices are saved.";
+  }
+  if (
+    lower.includes("timeout") ||
+    lower.includes("timed out") ||
+    raw.includes("504") ||
+    lower.includes("did not reach the required length") ||
+    lower.includes("function_invocation_timeout")
+  ) {
+    return "Your story wanted a little more time than one sitting allows — sometimes the best ones unfold in two parts. Tap try again; everything you chose is still here, and you won't be charged twice.";
+  }
+  if (lower.includes("llm budget") || lower.includes("call limit")) {
+    return "We ran out of room to finish this one in a single breath. Try again — your casting is saved, and you won't be charged twice.";
   }
   return GENERATION_USER_ERROR;
 }
@@ -1441,7 +1458,7 @@ export default function AfterDark() {
   }, [selectedPairing]);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
-  const paywallStateRef = useRef<{ confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null }>({});
+  const paywallStateRef = useRef<{ confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null; paywallCoverKey?: string | null }>({});
 
   const doPaywallCheckout = useCallback(async (plan: "pack_1" | "pack_5" | "pack_20") => {
     setPaywallLoadingPlan(plan);
@@ -1458,7 +1475,7 @@ export default function AfterDark() {
         setPaywallCheckoutError(data.error ?? "Could not start checkout — please try again.");
       } else {
         try {
-          sessionStorage.setItem("afterDarkCheckoutState", JSON.stringify(paywallStateRef.current));
+          sessionStorage.setItem(AFTER_DARK_CHECKOUT_STATE_KEY, JSON.stringify(paywallStateRef.current));
         } catch { /* storage unavailable */ }
         window.location.href = data.url;
       }
@@ -1469,6 +1486,7 @@ export default function AfterDark() {
     }
   }, [currency, isBedtime]);
   const [paywallCoverUrl, setPaywallCoverUrl] = useState<string | null>(null);
+  const [paywallCoverKey, setPaywallCoverKey] = useState<string | null>(null);
   const [paywallImageLoading, setPaywallImageLoading] = useState(false);
   const [storyCredits, setStoryCredits] = useState<number | null>(null);
   const [creditsLoading, setCreditsLoading] = useState(false);
@@ -1687,31 +1705,49 @@ export default function AfterDark() {
 
   // Keep paywallStateRef current so doPaywallCheckout always saves fresh values on Stripe navigate
   useEffect(() => {
-    paywallStateRef.current = { confirmedPairing, lastCastingData, paywallCoverUrl };
-  }, [confirmedPairing, lastCastingData, paywallCoverUrl]);
+    paywallStateRef.current = { confirmedPairing, lastCastingData, paywallCoverUrl, paywallCoverKey };
+  }, [confirmedPairing, lastCastingData, paywallCoverUrl, paywallCoverKey]);
 
-  // Restore paywall phase when Stripe cancel_url redirects back with ?checkout=cancelled
+  // Restore paywall after Stripe checkout (cancel or successful purchase + claim).
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("checkout") !== "cancelled") return;
-    window.history.replaceState({}, "", window.location.pathname);
-    const saved = sessionStorage.getItem("afterDarkCheckoutState");
-    if (saved) {
-      try {
-        const s = JSON.parse(saved) as { confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null };
-        if (s.confirmedPairing) setConfirmedPairing(s.confirmedPairing);
-        if (s.lastCastingData) setLastCastingData(s.lastCastingData);
-        if (s.paywallCoverUrl) setPaywallCoverUrl(s.paywallCoverUrl);
-      } catch { /* malformed storage */ }
-      sessionStorage.removeItem("afterDarkCheckoutState");
-    }
-    try {
-      const pendingRaw = sessionStorage.getItem(PENDING_CAST_KEY);
-      if (pendingRaw) {
-        const pending = JSON.parse(pendingRaw) as PendingAfterDarkCast;
-        setPendingAfterDarkCast(pending);
+    const checkout = params.get("checkout");
+    if (checkout !== "cancelled" && checkout !== "success") return;
+
+    const saved = readAfterDarkCheckoutState();
+    const pending = readPendingAfterDarkCast();
+    if (!saved && !pending) {
+      window.history.replaceState({}, "", window.location.pathname);
+      if (checkout === "success") {
+        window.location.replace("/create");
       }
-    } catch { /* malformed storage */ }
+      return;
+    }
+
+    window.history.replaceState({}, "", window.location.pathname);
+
+    if (saved) {
+      if (saved.confirmedPairing) setConfirmedPairing(saved.confirmedPairing);
+      if (saved.lastCastingData) setLastCastingData(saved.lastCastingData);
+      if (saved.paywallCoverUrl) setPaywallCoverUrl(saved.paywallCoverUrl);
+      if (saved.paywallCoverKey) setPaywallCoverKey(saved.paywallCoverKey);
+      try {
+        sessionStorage.removeItem(AFTER_DARK_CHECKOUT_STATE_KEY);
+      } catch { /* storage unavailable */ }
+    }
+
+    if (pending) {
+      setPendingAfterDarkCast(pending);
+      if (pending.casting.pairing) {
+        setSelectedPairing(pending.casting.pairing);
+        setConfirmedPairing(pending.casting.pairing);
+      }
+      if (pending.scenarioId) {
+        const scenario = SCENARIOS.find((s) => s.id === pending.scenarioId);
+        if (scenario) setSelectedScenario(scenario);
+      }
+    }
+
     setShowLanding(false);
     setPhase("paywall");
   }, []);
@@ -1765,16 +1801,18 @@ export default function AfterDark() {
     if (phase !== "paywall") {
       if (phase === "pairing") {
         setPaywallCoverUrl(null);
+        setPaywallCoverKey(null);
       }
       return;
     }
     setCreditsLoading(true);
     const fallback = resolveCurrentPaywallCover();
     setPaywallCoverUrl(null);
+    setPaywallCoverKey(null);
     setPaywallImageLoading(true);
 
     const previewInput = castingToPreviewInput(lastCastingData, {
-      pairing: selectedPairing ?? confirmedPairing,
+      pairing: (lastCastingData?.pairing as string | undefined) ?? selectedPairing ?? confirmedPairing,
       heritage: expressHeritage || undefined,
       chemistry: expressChemistry || undefined,
       mood: expressMood || undefined,
@@ -1785,11 +1823,13 @@ export default function AfterDark() {
     });
 
     void fetchPreviewCover(API_BASE, previewInput)
-      .then((url) => {
-        setPaywallCoverUrl(url ?? fallback);
+      .then((result) => {
+        setPaywallCoverUrl(result?.url ?? fallback);
+        setPaywallCoverKey(result?.coverKey ?? null);
       })
       .catch(() => {
         setPaywallCoverUrl(fallback);
+        setPaywallCoverKey(null);
       })
       .finally(() => {
         setPaywallImageLoading(false);
@@ -1916,6 +1956,8 @@ export default function AfterDark() {
       setExpressReturnPhase(null);
       setPhase("generating");
       resetGenerationProgress();
+      const previewDataUrl =
+        paywallCoverUrl?.startsWith("data:image/") ? paywallCoverUrl : undefined;
       const genData = buildGeneratePayload({
         funnel: isBedtime ? "bedtime" : "erotic",
         casting,
@@ -1924,6 +1966,8 @@ export default function AfterDark() {
         customerDesireTags: tagSplit?.customerDesireTags,
         scenarioRoom: isBedtime ? selectedBedtimeScenario?.room : selectedScenario?.room,
         scenarioStoryMode: isBedtime ? undefined : selectedScenario?.storyMode,
+        existingCoverDataUrl: previewDataUrl ?? undefined,
+        previewCoverKey: previewDataUrl && paywallCoverKey ? paywallCoverKey : undefined,
       });
       lastGenDataRef.current = genData;
       try {
@@ -1932,7 +1976,7 @@ export default function AfterDark() {
         /* onError handles UI */
       }
     },
-    [generateMutation, resetGenerationProgress, selectedScenario, selectedBedtimeScenario, isBedtime]
+    [generateMutation, resetGenerationProgress, selectedScenario, selectedBedtimeScenario, isBedtime, paywallCoverUrl, paywallCoverKey]
   );
 
   const retryLastGeneration = useCallback(() => {
@@ -2037,11 +2081,18 @@ export default function AfterDark() {
       } catch { /* storage unavailable */ }
 
       setPaywallCoverUrl(null);
+      setPaywallCoverKey(null);
       setPaywallImageLoading(true);
 
-      void fetchPreviewCover(API_BASE, castingToPreviewInput(casting, { storyMode })).then((url) => {
+      void fetchPreviewCover(
+        API_BASE,
+        castingToPreviewInput(casting, {
+          storyMode,
+          pairing: casting.pairing ?? selectedPairing ?? confirmedPairing,
+        }),
+      ).then((result) => {
         setPaywallCoverUrl(
-          url ??
+          result?.url ??
             resolvePaywallCoverUrl({
               baseUrl: import.meta.env.BASE_URL,
               pairing: castingSnapshot.pairing as string | undefined,
@@ -2051,6 +2102,7 @@ export default function AfterDark() {
               setting: castingSnapshot.setting as string | undefined,
             }),
         );
+        setPaywallCoverKey(result?.coverKey ?? null);
         setPaywallImageLoading(false);
       });
 
@@ -3024,6 +3076,7 @@ export default function AfterDark() {
                 setResult(null);
                 setCastingHandoff(null);
                 setPaywallCoverUrl(null);
+                setPaywallCoverKey(null);
                 window.scrollTo({ top: 0 });
               }}
               className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white border transition-all hover:border-[#c0392b]/50"

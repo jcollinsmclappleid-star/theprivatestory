@@ -12,10 +12,8 @@ export function FloatingPlayer() {
     isPlaying,
     togglePlay,
     progress,
-    currentTime,
-    duration,
     close,
-    seekTo,
+    seekBy,
   } = useAudioPlayer();
 
   // Hide on the dedicated story page (its own player) and on /samples (the
@@ -28,8 +26,8 @@ export function FloatingPlayer() {
     location.startsWith("/story/") ||
     location === "/samples";
 
-  const skipBack    = () => seekTo(Math.max(0, currentTime - 30));
-  const skipForward = () => seekTo(Math.min(duration || currentTime + 30, currentTime + 30));
+  const skipBack = () => seekBy(-30);
+  const skipForward = () => seekBy(30);
 
   return (
     <AnimatePresence>

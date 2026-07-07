@@ -7,6 +7,7 @@ import type { CustomerDesireBeat, FantasySpine } from "./customerDesireBeats.js"
 import type { ContinuityUpdate, SceneContinuityLedger } from "./sceneContinuity.js";
 import { buildInitialLedger, mergeContinuityUpdate } from "./sceneContinuity.js";
 import { countWords } from "./storyLength.js";
+import { pairingRepairContext } from "./pairingWrite.js";
 
 export type ConstraintId =
   | "no_listener_sight_while_blindfolded"
@@ -40,7 +41,7 @@ const CONSTRAINT_COPY: Record<ConstraintId, string> = {
   restraint_remains_binding:
     "While restraint is ON: do not describe the listener moving freely (standing, walking away, reaching) unless the partner releases them in dialogue.",
   praise_in_partner_dialogue:
-    "Praise chip active: partner must speak praise in quoted dialogue during physical escalation (e.g. good girl, perfect, incredible, doing so well).",
+    "Praise chip active: partner must speak praise in quoted dialogue during physical escalation (e.g. good girl, good boy, perfect, incredible, doing so well — match pairing gender).",
   situation_stakes_present:
     "Situation stakes active: include at least one line acknowledging forbidden/professional risk during PERFORM (contract, boss, caught, shouldn't, office rules).",
 };
@@ -54,7 +55,7 @@ const PRAISE_IN_DIALOGUE =
 const FREE_MOVEMENT_WHILE_BOUND =
   /\byou (?:stand up|walk away|reach for|push (?:him|her|them) away|break free)\b/i;
 const SITUATION_RISK =
-  /\b(contract|professional|boss|colleague|office|shouldn't|forbidden|caught|rules|employed|fired|risk)\b/i;
+  /\b(contract|professional|boss|colleague|office|shouldn'?t|mustn'?t|can'?t|forbidden|caught|rules|employed|fired|firing|risk|wrong|secret|married|anyone|discover|exposed|knock|door|policy|coworker|work|after hours|not supposed|if (?:they|anyone) (?:found|saw|knew)|could lose|stakes)\b/i;
 
 function tagLc(tag: string): string {
   return tag.toLowerCase();
@@ -247,6 +248,101 @@ function checkSituationStakes(text: string): ConstraintViolation[] {
       message: "PERFORM segment missing forbidden/professional risk acknowledgment",
     },
   ];
+}
+
+/** Last-resort patch when the model omits stakes language after salvage — keeps generation from hard-failing. */
+export function repairSituationStakesText(text: string, pairing?: string): string {
+  if (SITUATION_RISK.test(text)) return text;
+  const { partnSub } = pairingRepairContext(pairing);
+  const trimmed = text.trimEnd();
+  const bridge = trimmed.endsWith('"') || trimmed.endsWith(".") ? "" : ".";
+  return `${trimmed}${bridge}\n\n"We shouldn't—" ${partnSub} said, voice low with the risk of it, the forbidden part of the situation still between them like a door someone could open.`;
+}
+
+/** Append partner praise in dialogue when the model skipped the praise chip. */
+export function repairPraiseInDialogue(text: string, pairing?: string): string {
+  const quotes = [...text.matchAll(/"([^"]+)"/g)].map((m) => m[1] ?? "");
+  if (quotes.some((q) => PRAISE_IN_DIALOGUE.test(q))) return text;
+  const { partnSub, praisePhrase } = pairingRepairContext(pairing);
+  const trimmed = text.trimEnd();
+  const bridge = trimmed.endsWith('"') || trimmed.endsWith(".") ? "" : ".";
+  return `${trimmed}${bridge}\n\n"${praisePhrase}," ${partnSub.toLowerCase()} murmured against your skin. "Perfect — you're doing so well."`;
+}
+
+/** Rewrite sight-directing language while blindfold is on — touch/sound only. */
+export function repairBlindfoldSightText(text: string): string {
+  const fixLine = (line: string) =>
+    line
+      .replace(/\blook at\b/gi, "feel")
+      .replace(/\bwatch(?:\s+me)?\b/gi, "listen to me")
+      .replace(/\bsee (?:this|how|what)\b/gi, "sense ")
+      .replace(/\bgaze at\b/gi, "turn toward")
+      .replace(/\bstare at\b/gi, "face");
+
+  let out = text.replace(/"([^"]+)"/g, (full, inner: string) => {
+    if (!LISTENER_SIGHT_PATTERN.test(inner) || BLINDFOLD_CONTEXT_OK.test(inner)) return full;
+    return `"${fixLine(inner)}"`;
+  });
+
+  for (const sentence of out.split(/(?<=[.!?])\s+/)) {
+    if (/"[^"]+"/.test(sentence)) continue;
+    if (
+      /\byou\b/i.test(sentence) &&
+      LISTENER_SIGHT_PATTERN.test(sentence) &&
+      !BLINDFOLD_CONTEXT_OK.test(sentence)
+    ) {
+      out = out.replace(sentence, fixLine(sentence));
+    }
+  }
+  return out;
+}
+
+/** Soften free-movement lines while restraint should still be active. */
+export function repairRestraintBindingText(text: string): string {
+  return text
+    .replace(/\byou stand up\b/gi, "you strain to rise")
+    .replace(/\byou walk away\b/gi, "you pull against the binding")
+    .replace(/\byou reach for\b/gi, "you try to reach for")
+    .replace(/\byou push (?:him|her|them) away\b/gi, "you twist against the hold")
+    .replace(/\byou break free\b/gi, "you test the restraint");
+}
+
+export type ConstraintRepairResult = {
+  text: string;
+  applied: ConstraintId[];
+};
+
+/** Apply deterministic text patches for each reported violation type. */
+export function applyDeterministicConstraintRepairs(
+  text: string,
+  violations: ConstraintViolation[],
+  pairing?: string,
+): ConstraintRepairResult {
+  const ids = new Set(violations.map((v) => v.constraintId));
+  let out = text;
+  const applied: ConstraintId[] = [];
+
+  const patch = (id: ConstraintId, next: string) => {
+    if (next !== out) {
+      out = next;
+      applied.push(id);
+    }
+  };
+
+  if (ids.has("situation_stakes_present")) patch("situation_stakes_present", repairSituationStakesText(out, pairing));
+  if (ids.has("praise_in_partner_dialogue")) patch("praise_in_partner_dialogue", repairPraiseInDialogue(out, pairing));
+  if (ids.has("no_listener_sight_while_blindfolded")) {
+    patch("no_listener_sight_while_blindfolded", repairBlindfoldSightText(out));
+  }
+  if (ids.has("restraint_remains_binding")) {
+    patch("restraint_remains_binding", repairRestraintBindingText(out));
+  }
+
+  return { text: out, applied };
+}
+
+export function describeConstraintViolations(violations: ConstraintViolation[]): string {
+  return violations.map((v) => `${v.constraintId}: ${v.message}`).join("; ");
 }
 
 /** Validate one beat's prose against active constraints. */

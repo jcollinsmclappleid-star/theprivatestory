@@ -4,6 +4,7 @@
  */
 
 import { wordBudgetForBeat } from "./storyLength.js";
+import { positionChangeExamples } from "./pairingWrite.js";
 
 export type ExpressScenePlanRow = {
   scene_number: number;
@@ -51,9 +52,9 @@ const BEAT_DEFAULTS: Omit<
     primary_touch_action: "(none)",
     staging_position: "distance",
     prose_rhythm: "flowing",
-    scene_open_beat: "environment",
+    scene_open_beat: "dialogue",
     interiority_depth: "shallow",
-    dialogue_mode: "exchange",
+    dialogue_mode: "sustained",
     partner_attention_focus: "spatial_presence",
   },
   {
@@ -112,6 +113,8 @@ export function buildExpressScenePlan(opts: {
   situationBeatsByPhase?: Record<string, string[]>;
   intensityLevel: number;
   storyLength?: string;
+  pairing?: string;
+  partnerName?: string;
 }): ExpressScenePlanRow[] {
   const phases = ["FRAME", "DECLARE", "PERFORM", "LAND"];
   const setting = opts.setting ?? "the setting";
@@ -120,14 +123,14 @@ export function buildExpressScenePlan(opts: {
     : "";
 
   const baseGoals: Record<string, string> = {
-    FRAME: `Ground ${setting}${situationNote}. Situation stakes + charged atmosphere. Scenario frame tags as tension. Do NOT name customer sex chips. No sex acts.`,
+    FRAME: `Ground ${setting}${situationNote}. Situation stakes in dedicated conversation block — risk/forbidden in quoted dialogue. Foreshadow chip themes in subtext. No sex acts.`,
     DECLARE:
       opts.declareGoal ??
-      "Customer speaks their Make it yours fantasies in dialogue; partner repeats back. Consent and specificity. No sex acts yet.",
+      "Two conversation blocks: (1) tension/risk, (2) negotiate Make it yours fantasies — partner tests desires in speech; listener confesses. No sex acts yet.",
     PERFORM:
       opts.performSpine?.split("\n")[0] ??
-      "One continuous performance: first physical cross → enact every customer chip in action + dialogue. Blindfold stays through climax.",
-    LAND: "Aftermath bound to continuity ledger — reference exact position, acts, and blindfold state. Emotional landing. No new sex.",
+      "One continuous performance: each chip OFFER→ACT→REACT→DEEPEN in dialogue + action. Sensation in dirty talk. Blindfold stays through climax.",
+    LAND: "Aftermath — short dialogue exchange; reference exact position, acts, blindfold. No new sex.",
   };
 
   return phases.map((phase, i) => {
@@ -147,6 +150,10 @@ export function buildExpressScenePlan(opts: {
 
     if (phase === "PERFORM" && opts.intensityLevel >= 5) {
       row.dirty_talk_register = "filthy_declarative";
+    }
+
+    if (phase === "PERFORM") {
+      row.position_changes = positionChangeExamples(opts.pairing, opts.partnerName);
     }
 
     return row;

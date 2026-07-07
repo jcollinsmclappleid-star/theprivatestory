@@ -65,9 +65,9 @@ export function ExpressCategoryHero({
   }, [category]);
 
   return (
-    <div className="relative -mx-4 sm:mx-0 mb-4 sm:mb-5 rounded-none sm:rounded-2xl overflow-hidden border-y sm:border border-[#e879a0]/25 shadow-[0_0_60px_rgba(192,57,43,0.15)]">
+    <div className="relative -mx-4 sm:mx-0 mb-4 sm:mb-5 rounded-none sm:rounded-2xl overflow-hidden border-y sm:border border-[#e879a0]/25 shadow-[0_0_60px_rgba(192,57,43,0.15)] max-w-[100vw] sm:max-w-none">
       <div
-        className="absolute -inset-1 z-0 rounded-2xl opacity-40 blur-2xl pointer-events-none"
+        className="absolute inset-0 z-0 rounded-2xl opacity-40 blur-2xl pointer-events-none"
         style={{ background: `radial-gradient(ellipse at 50% 80%, ${gallery.glow}55, transparent 70%)` }}
       />
 

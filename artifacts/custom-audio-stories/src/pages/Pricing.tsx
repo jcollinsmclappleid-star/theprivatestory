@@ -15,6 +15,7 @@ import { PricingSampleTeaser } from "@/components/PricingSampleTeaser";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { hiwAct4Src } from "@/components/HowItWorksHero";
 import { readHomeBrief } from "@/lib/afterDarkExpress";
+import { AFTER_DARK_CHECKOUT_STATE_KEY } from "@/lib/paywallResume";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -107,7 +108,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 function hasWarmTraffic(): boolean {
   try {
-    if (sessionStorage.getItem("afterDarkCheckoutState")) return true;
+    if (sessionStorage.getItem(AFTER_DARK_CHECKOUT_STATE_KEY)) return true;
     const prs = sessionStorage.getItem("paywallReturnState");
     if (prs) {
       const p = (JSON.parse(prs) as { returnPath?: string }).returnPath;
@@ -188,7 +189,7 @@ export default function Pricing() {
                 const p = (JSON.parse(s) as { returnPath?: string }).returnPath;
                 if (p) return p;
               }
-              if (sessionStorage.getItem("afterDarkCheckoutState")) return "/after-dark";
+              if (sessionStorage.getItem(AFTER_DARK_CHECKOUT_STATE_KEY)) return "/after-dark";
             } catch { /* ignore */ }
             return "/after-dark";
           })(),

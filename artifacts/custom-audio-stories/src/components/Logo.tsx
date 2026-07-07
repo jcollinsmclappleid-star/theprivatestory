@@ -79,9 +79,33 @@ export function LogoFull({ height = 120, className = "" }: { height?: number; cl
   );
 }
 
-/** Hero wordmark — same nav asset; screen blend drops the black plate on site purple. */
-export function LogoHero({ height = 56, className = "" }: { height?: number; className?: string }) {
-  return <Logo height={height} className={className} />;
+/** Favicon emblem — gold headphones on black plate; screen blend on site purple. */
+export function LogoFaviconHero({ size = 96, className = "" }: { size?: number; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center justify-center overflow-hidden bg-transparent ${className}`}
+      style={{ lineHeight: 0, flexShrink: 0, width: size, height: size }}
+    >
+      <img
+        src={`${BASE}favicon-512.png`}
+        srcSet={`${BASE}favicon-192.png 192w, ${BASE}favicon-512.png 512w`}
+        sizes={`${size}px`}
+        alt="The Private Story"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          display: "block",
+          ...LOGO_IMG_STYLE,
+        }}
+      />
+    </span>
+  );
+}
+
+/** Hero wordmark — favicon emblem above headline (replaces nav wordmark in hero). */
+export function LogoHero({ size = 96, className = "" }: { size?: number; className?: string }) {
+  return <LogoFaviconHero size={size} className={className} />;
 }
 
 /** Hero mark — gold headphones on black plate; screen blend drops the plate on site purple. */

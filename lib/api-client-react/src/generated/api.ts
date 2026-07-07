@@ -1101,7 +1101,7 @@ async function pollGenerationJob(
   jobId: string,
   onProgress?: GenerateFullStoryOptions["onProgress"],
 ): Promise<FullGeneratedStory> {
-  const MAX_POLLS = 400;
+  const MAX_POLLS = 200;
   const POLL_MS = 1500;
   for (let i = 0; i < MAX_POLLS; i++) {
     await new Promise((resolve) => setTimeout(resolve, POLL_MS));
@@ -1110,7 +1110,7 @@ async function pollGenerationJob(
       onProgress?.({ progress: status.progress, label: status.progressLabel });
     }
     if (status.status === "complete" && status.result) {
-      onProgress?.({ progress: 100, label: status.progressLabel ?? "Complete" });
+      onProgress?.({ progress: 100, label: status.progressLabel ?? "Ready for you…" });
       return status.result;
     }
     if (status.status === "error") {

@@ -1173,7 +1173,7 @@ router.get("/", (_req: Request, res: Response) => {
         url,
         logo: {
           "@type": "ImageObject",
-          url: `${url}/favicon.svg`,
+          url: `${url}/favicon-192.png`,
           width: 180,
           height: 180,
         },

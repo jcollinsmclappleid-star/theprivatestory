@@ -10,10 +10,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useSEO } from "@/hooks/useSEO";
 import { usePricing } from "@/hooks/usePricing";
-import { CastingRoom, PAIRINGS, buildChemistries } from "@/components/CastingRoom";
+import { CastingRoom, PAIRINGS, buildChemistries, getValidPerspectiveIds } from "@/components/CastingRoom";
+import { getExpressTagBlockReason } from "@/components/StoryTagStudio";
 import type { CastingRoomResult, CastingRoomHandoff } from "@/components/CastingRoom";
 import { AgeGate, hasConfirmedAge } from "@/components/AgeGate";
-import { VOICES, resolveCharacterVoices } from "@/lib/voices";
+import { VOICES, resolveCharacterVoices, DEFAULT_NARRATOR_VOICE_ID, defaultCastVoices } from "@/lib/voices";
 import AfterDarkLanding from "@/pages/AfterDarkLanding";
 import DriftLanding from "@/pages/DriftLanding";
 import { BedtimeScenarioPicker } from "@/components/BedtimeScenarioPicker";
@@ -36,11 +37,14 @@ import {
   CURATED_SCENARIO_IDS,
   HOME_STUDIO_HANDOFF_KEY,
   homeIntensityToCasting,
+  perspectiveFromPairing,
   readHomeBrief,
-  voiceNameToId,
+  scenarioAllowsPairing,
   type ExpressScenario,
 } from "@/lib/afterDarkExpress";
 import { readSampleScenarioId } from "@/lib/sampleInspiredBrief";
+import { resolvePaywallCoverUrl } from "@/lib/paywallCover";
+import { castingToPreviewInput, fetchPreviewCover } from "@/lib/previewCover";
 import {
   EXPRESS_SETTINGS,
   suggestAfterDarkSceneForRoom,
@@ -695,6 +699,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#080010] via-[#0e001c] to-[#04000a]",
     accent: "#818cf8",
     storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
     tags: ["Nothing off limits", "Desire without apology"],
   },
   {
@@ -706,6 +711,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#060010] via-[#0c001a] to-[#040008]",
     accent: "#a5b4fc",
     storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
     tags: ["I take what I want", "I'm completely in control"],
   },
   {
@@ -717,6 +723,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#07000e] via-[#0e0018] to-[#04000a]",
     accent: "#7c3aed",
     storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
     tags: ["Nothing off limits", "Desire without apology"],
   },
   {
@@ -728,6 +735,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#060012] via-[#0a001c] to-[#040008]",
     accent: "#6366f1",
     storyMode: "unrestrained",
+    allowedPairings: ["Her & Him"],
     tags: ["Nothing off limits", "Complete presence, nothing held back"],
   },
 
@@ -1131,7 +1139,7 @@ const SCENARIOS: Scenario[] = [
     gradient: "from-[#1a0612] via-[#28081a] to-[#12040e]",
     accent: "#f472b6",
     storyMode: "unrestrained",
-    allowedPairings: ["Her & Him", "Her & Her"],
+    allowedPairings: ["Her & Him"],
     tags: ["She directed them both — they were there for exactly that", "Two men, both completely focused on her"],
   },
   {
@@ -1198,7 +1206,17 @@ const SCENARIOS: Scenario[] = [
 
 /* ── Generation progress (polled from backend job) ──────────────────── */
 const GENERATION_PROGRESS_SUB =
-  "Your story is written with full presence and complete privacy. Nothing here leaves this room.";
+  "Written only for you. It stays in this room — no one else hears it.";
+
+const GENERATION_USER_ERROR =
+  "We had a little problem creating your private story. Please try again — you won't be charged.";
+
+function formatGenerationErrorMessage(_raw: string): string {
+  if (_raw.includes("429") || _raw.toLowerCase().includes("too many requests")) {
+    return "We're a little busy right now. Please wait a minute and try again — your choices are saved.";
+  }
+  return GENERATION_USER_ERROR;
+}
 
 /* ── Paywall preview teasers ────────────────────────────────────────── */
 const AFTER_DARK_TEASERS: Record<string, string> = {
@@ -1380,11 +1398,19 @@ export default function AfterDark() {
   const [expressIntensityIndex, setExpressIntensityIndex] = useState(1);
   const [expressChemistry, setExpressChemistry] = useState("Forbidden Pull");
   const [expressArchetype, setExpressArchetype] = useState("The Executive");
-  const [expressVoiceName, setExpressVoiceName] = useState("Kayla");
+  const [expressVoiceName, setExpressVoiceName] = useState("Lisa");
+  const [expressNarratorVoiceId, setExpressNarratorVoiceId] = useState(DEFAULT_NARRATOR_VOICE_ID);
+  const [expressCharAVoiceId, setExpressCharAVoiceId] = useState(
+    () => defaultCastVoices(DEFAULT_NARRATOR_VOICE_ID, "Her & Him").charA,
+  );
+  const [expressCharBVoiceId, setExpressCharBVoiceId] = useState(
+    () => defaultCastVoices(DEFAULT_NARRATOR_VOICE_ID, "Her & Him").charB,
+  );
   const [expressCountry, setExpressCountry] = useState("");
   const [expressCity, setExpressCity] = useState("");
   const [expressSetting, setExpressSetting] = useState("");
   const [expressHeritage, setExpressHeritage] = useState("Ambiguous");
+  const [expressPerspective, setExpressPerspective] = useState<CastingRoomResult["perspective"] | null>(null);
   const [expressSituationId, setExpressSituationId] = useState("");
   const [expressSituationLabel, setExpressSituationLabel] = useState("");
   const [expressCustomTags, setExpressCustomTags] = useState<string[]>([]);
@@ -1397,12 +1423,22 @@ export default function AfterDark() {
   const [expressChooseForMe, setExpressChooseForMe] = useState(false);
   const [expressReturnPhase, setExpressReturnPhase] = useState<ExpressFunnelPhase | null>(null);
 
-  const toggleExpressTag = useCallback((tag: string) => {
-    setExpressCustomTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
-  }, []);
   const [selectedPairing, setSelectedPairing] = useState<string | null>(null);
+
+  const toggleExpressTag = useCallback((tag: string) => {
+    setExpressCustomTags((prev) => {
+      if (prev.includes(tag)) return prev.filter((t) => t !== tag);
+      const pairingCfg = PAIRINGS.find((p) => p.id === selectedPairing);
+      const block = getExpressTagBlockReason(
+        tag,
+        prev,
+        pairingCfg?.protagonistPronouns ?? "she/her",
+        pairingCfg?.partnerPronouns ?? "he/him",
+      );
+      if (block) return prev;
+      return [...prev, tag];
+    });
+  }, [selectedPairing]);
   const [paywallLoadingPlan, setPaywallLoadingPlan] = useState<string | null>(null);
   const [paywallCheckoutError, setPaywallCheckoutError] = useState<string | null>(null);
   const paywallStateRef = useRef<{ confirmedPairing?: string | null; lastCastingData?: Record<string, unknown> | null; paywallCoverUrl?: string | null }>({});
@@ -1438,12 +1474,24 @@ export default function AfterDark() {
   const [creditsLoading, setCreditsLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [selectedBedtimeScenario, setSelectedBedtimeScenario] = useState<BedtimeScenario | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [generationFailed, setGenerationFailed] = useState(false);
   const curatedScenarios = useMemo(
-    () =>
-      CURATED_SCENARIO_IDS.map((id) => SCENARIOS.find((s) => s.id === id))
-        .filter((s): s is Scenario => !!s),
-    [],
+    () => {
+      const list = CURATED_SCENARIO_IDS.map((id) => SCENARIOS.find((s) => s.id === id))
+        .filter((s): s is Scenario => !!s);
+      if (!selectedPairing) return list;
+      return list.filter((s) => scenarioAllowsPairing(s, selectedPairing));
+    },
+    [selectedPairing],
   );
+
+  useEffect(() => {
+    if (!selectedPairing || !selectedScenario) return;
+    if (!scenarioAllowsPairing(selectedScenario, selectedPairing)) {
+      setSelectedScenario(null);
+    }
+  }, [selectedPairing, selectedScenario]);
 
   const startFunnel = useCallback(() => {
     setShowLanding(false);
@@ -1505,13 +1553,6 @@ export default function AfterDark() {
         setExpressAfterDarkScene(suggestAfterDarkSceneForRoom(scenario.room));
         const country = suggestCountryForSetting(suggested);
         if (country) setExpressCountry(country);
-        const pairingForCover = brief?.pairing ?? selectedPairing ?? undefined;
-        const intensityLabel = brief?.intensity ?? "Warm";
-        preGenCoverPromise.current = fetchPreviewCover({
-          pairing: pairingForCover,
-          intensity: homeIntensityToCasting(intensityLabel),
-          mood: scenario.tags[0],
-        });
       }
     }
 
@@ -1541,6 +1582,7 @@ export default function AfterDark() {
   const expressBrief = useMemo((): ExpressBriefState => ({
     scenario: selectedScenario as ExpressScenario | null,
     pairing: selectedPairing,
+    perspective: expressPerspective,
     intensity: expressIntensity,
     country: expressCountry,
     city: expressCity,
@@ -1560,6 +1602,7 @@ export default function AfterDark() {
   }), [
     selectedScenario,
     selectedPairing,
+    expressPerspective,
     expressIntensity,
     expressCountry,
     expressCity,
@@ -1598,6 +1641,7 @@ export default function AfterDark() {
       setExpressReturnPhase(returnPhase);
       setCastingHandoff({
         pairing: selectedPairing,
+        perspective: expressPerspective ?? undefined,
         heritage: expressHeritage,
         chemistry: expressChemistry,
         archetype: expressArchetype,
@@ -1612,6 +1656,7 @@ export default function AfterDark() {
     },
     [
       selectedPairing,
+      expressPerspective,
       expressHeritage,
       expressChemistry,
       expressArchetype,
@@ -1632,47 +1677,6 @@ export default function AfterDark() {
   }, [expressReturnPhase]);
 
   const lastGenDataRef = useRef<Record<string, unknown> | null>(null);
-
-  // Pre-generate the paywall cover image as soon as the scenario is selected,
-  // so by the time the paywall appears it's already fetched.
-  const preGenCoverPromise = useRef<Promise<string | null> | null>(null);
-
-  const fetchPreviewCover = useCallback(async (opts?: {
-    pairing?: string;
-    intensity?: string;
-    heritage?: string;
-    mood?: string;
-    archetype?: string;
-  }): Promise<string | null> => {
-    const cacheKey = `preview-cover:afterdark:${opts?.pairing ?? "default"}:${opts?.intensity ?? "warm"}`;
-    try {
-      const cached = sessionStorage.getItem(cacheKey);
-      if (cached) return cached;
-    } catch { /* storage unavailable */ }
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const r = await fetch(`${API_BASE}/api/preview-cover`, {
-          method: "POST", credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            mood: opts?.mood ?? "After Dark",
-            intensity: opts?.intensity ?? "Warm",
-            pairing: opts?.pairing,
-            heritage: opts?.heritage,
-          }),
-        });
-        if (r.ok) {
-          const d = await r.json() as { url?: string };
-          if (d?.url) {
-            try { sessionStorage.setItem(cacheKey, d.url); } catch { /* quota */ }
-            return d.url;
-          }
-        }
-      } catch { /* ignore — will retry or fallback */ }
-      if (attempt < 1) await new Promise(res => setTimeout(res, 2000));
-    }
-    return null;
-  }, []);
 
   // Always start fresh — no handoff from regular casting room
 
@@ -1721,16 +1725,75 @@ export default function AfterDark() {
     }
   }, [phase, selectedPairing]);
 
+  const [presetSaved, setPresetSaved] = useState(false);
+  const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<PendingAfterDarkCast | null>(null);
+
+  const resolveCurrentPaywallCover = useCallback(
+    (casting?: Record<string, unknown> | null) =>
+      resolvePaywallCoverUrl({
+        baseUrl: import.meta.env.BASE_URL,
+        pairing:
+          (casting?.pairing as string | undefined) ??
+          (lastCastingData?.pairing as string | undefined) ??
+          selectedPairing ??
+          confirmedPairing,
+        chemistry:
+          (casting?.chemistry as string | undefined) ??
+          (casting?.dynamic as string | undefined) ??
+          (lastCastingData?.chemistry as string | undefined) ??
+          (lastCastingData?.dynamic as string | undefined) ??
+          expressChemistry,
+        scenarioId: selectedScenario?.id ?? pendingAfterDarkCast?.scenarioId,
+        scenarioRoom: selectedScenario?.room,
+        setting:
+          (casting?.setting as string | undefined) ??
+          (lastCastingData?.setting as string | undefined) ??
+          (expressSetting || undefined),
+      }),
+    [
+      lastCastingData,
+      selectedPairing,
+      confirmedPairing,
+      expressChemistry,
+      selectedScenario,
+      pendingAfterDarkCast,
+      expressSetting,
+    ],
+  );
+
   useEffect(() => {
     if (phase !== "paywall") {
       if (phase === "pairing") {
-        preGenCoverPromise.current = null;
         setPaywallCoverUrl(null);
       }
       return;
     }
-    setPaywallImageLoading(true);
     setCreditsLoading(true);
+    const fallback = resolveCurrentPaywallCover();
+    setPaywallCoverUrl(null);
+    setPaywallImageLoading(true);
+
+    const previewInput = castingToPreviewInput(lastCastingData, {
+      pairing: selectedPairing ?? confirmedPairing,
+      heritage: expressHeritage || undefined,
+      chemistry: expressChemistry || undefined,
+      mood: expressMood || undefined,
+      intensity: expressIntensity || undefined,
+      atmosphere: expressAtmosphere || undefined,
+      setting: expressSetting || undefined,
+      storyMode: selectedScenario?.storyMode ?? "unrestrained",
+    });
+
+    void fetchPreviewCover(API_BASE, previewInput)
+      .then((url) => {
+        setPaywallCoverUrl(url ?? fallback);
+      })
+      .catch(() => {
+        setPaywallCoverUrl(fallback);
+      })
+      .finally(() => {
+        setPaywallImageLoading(false);
+      });
 
     void fetch(`${API_BASE}/api/me/usage`, { credentials: "include" })
       .then((r) => (r.ok ? r.json() : null))
@@ -1739,34 +1802,20 @@ export default function AfterDark() {
       })
       .catch(() => setStoryCredits(0))
       .finally(() => setCreditsLoading(false));
-
-    const casting = lastCastingData ?? {};
-    const pairing = (casting.pairing as string | undefined) ?? selectedPairing ?? undefined;
-
-    void (async () => {
-      if (preGenCoverPromise.current) {
-        const url = await preGenCoverPromise.current;
-        if (url) {
-          setPaywallCoverUrl(url);
-          setPaywallImageLoading(false);
-          return;
-        }
-      }
-      const url = await fetchPreviewCover({
-        pairing,
-        intensity: casting.intensity as string | undefined,
-        heritage: casting.heritage as string | undefined,
-        mood: casting.mood as string | undefined,
-        archetype: casting.archetype as string | undefined,
-      });
-      if (url) setPaywallCoverUrl(url);
-      setPaywallImageLoading(false);
-    })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
-
-  const [presetSaved, setPresetSaved] = useState(false);
-  const [pendingAfterDarkCast, setPendingAfterDarkCast] = useState<PendingAfterDarkCast | null>(null);
+  }, [
+    phase,
+    resolveCurrentPaywallCover,
+    lastCastingData,
+    selectedPairing,
+    confirmedPairing,
+    expressHeritage,
+    expressChemistry,
+    expressMood,
+    expressIntensity,
+    expressAtmosphere,
+    expressSetting,
+    selectedScenario,
+  ]);
 
   const { play } = useAudioPlayer();
 
@@ -1812,6 +1861,8 @@ export default function AfterDark() {
           onProgress: ({ progress, label }) => handleGenerationProgress(progress, label),
         }),
       onSuccess: (data) => {
+        setGenerationFailed(false);
+        setGenerationError(null);
         setGenerationProgress(100);
         setGenerationProgressLabel("Complete");
         setResult(data);
@@ -1819,14 +1870,20 @@ export default function AfterDark() {
         applyResultToPlayer(data);
       },
       onError: (err: unknown) => {
-        resetGenerationProgress();
         const status = (err as { status?: number }).status;
+        const raw =
+          err instanceof Error ? err.message : "Story generation failed. Please try again.";
+        const message = formatGenerationErrorMessage(raw);
         if (status === 401 || status === 402) {
+          resetGenerationProgress();
+          setGenerationFailed(false);
           setPhase("paywall");
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          setPhase("casting");
+          return;
         }
+        setGenerationError(message);
+        setGenerationFailed(true);
+        setExpressReturnPhase(null);
+        // Keep progress % visible — stay on loading screen; never return to full casting studio
       },
     },
   });
@@ -1854,6 +1911,9 @@ export default function AfterDark() {
   // Generates immediately from casting data — avoids stale React state reads
   const handleAutoGenerateAfterDark = useCallback(
     async (casting: CastingRoomResult, allTags: string[], tagSplit?: { scenarioTags: string[]; customerDesireTags: string[] }) => {
+      setGenerationError(null);
+      setGenerationFailed(false);
+      setExpressReturnPhase(null);
       setPhase("generating");
       resetGenerationProgress();
       const genData = buildGeneratePayload({
@@ -1875,21 +1935,53 @@ export default function AfterDark() {
     [generateMutation, resetGenerationProgress, selectedScenario, selectedBedtimeScenario, isBedtime]
   );
 
+  const retryLastGeneration = useCallback(() => {
+    if (pendingAfterDarkCast) {
+      void handleAutoGenerateAfterDark(
+        pendingAfterDarkCast.casting,
+        pendingAfterDarkCast.allTags,
+        pendingAfterDarkCast.scenarioTags || pendingAfterDarkCast.customerDesireTags
+          ? {
+              scenarioTags: pendingAfterDarkCast.scenarioTags ?? [],
+              customerDesireTags: pendingAfterDarkCast.customerDesireTags ?? [],
+            }
+          : undefined,
+      );
+      return;
+    }
+    if (lastGenDataRef.current) {
+      setGenerationFailed(false);
+      setGenerationError(null);
+      setPhase("generating");
+      resetGenerationProgress();
+      void generateMutation.mutateAsync({ data: lastGenDataRef.current as never });
+    }
+  }, [pendingAfterDarkCast, handleAutoGenerateAfterDark, generateMutation, resetGenerationProgress]);
+
+  const leaveFailedGeneration = useCallback(() => {
+    setGenerationFailed(false);
+    if (selectedScenario && selectedPairing) {
+      setPhase("express_scenes");
+    } else if (lastCastingData) {
+      setPhase("paywall");
+    } else {
+      setPhase("express_pairing");
+    }
+  }, [selectedScenario, selectedPairing, lastCastingData]);
+
   const handleCastingComplete = useCallback(
     (casting: CastingRoomResult) => {
       // Update confirmed pairing so scenario lock state reflects this cast.
       if (casting.pairing) setConfirmedPairing(casting.pairing);
 
-      // Guard: if the selected scenario requires specific pairings and the
-      // chosen pairing doesn't qualify, send the user back to scenario selection.
       if (
         !isBedtime &&
-        selectedScenario?.allowedPairings &&
         casting.pairing &&
-        !selectedScenario.allowedPairings.includes(casting.pairing)
+        selectedScenario &&
+        !scenarioAllowsPairing(selectedScenario, casting.pairing)
       ) {
         setSelectedScenario(null);
-        setPhase("scenario");
+        setPhase("express_fantasy");
         return;
       }
 
@@ -1916,6 +2008,12 @@ export default function AfterDark() {
         pairing: casting.pairing || selectedPairing || undefined,
         listenerName: casting.listenerName,
         partnerName: casting.partnerName,
+        appearBuild: casting.appearBuild,
+        appearHeight: casting.appearHeight,
+        appearColouring: casting.appearColouring,
+        appearEyes: casting.appearEyes,
+        appearFeatures: casting.appearFeatures,
+        perspective: casting.perspective,
       };
 
       setLastCastingData(castingSnapshot);
@@ -1938,30 +2036,59 @@ export default function AfterDark() {
         sessionStorage.setItem(PENDING_CAST_KEY, JSON.stringify(pending));
       } catch { /* storage unavailable */ }
 
-      preGenCoverPromise.current = fetchPreviewCover({
-        pairing: castingSnapshot.pairing as string | undefined,
-        intensity: casting.intensity,
-        heritage: casting.heritage,
-        mood: casting.mood,
-        archetype: casting.archetype,
+      setPaywallCoverUrl(null);
+      setPaywallImageLoading(true);
+
+      void fetchPreviewCover(API_BASE, castingToPreviewInput(casting, { storyMode })).then((url) => {
+        setPaywallCoverUrl(
+          url ??
+            resolvePaywallCoverUrl({
+              baseUrl: import.meta.env.BASE_URL,
+              pairing: castingSnapshot.pairing as string | undefined,
+              chemistry: (castingSnapshot.chemistry as string) ?? (castingSnapshot.dynamic as string),
+              scenarioId: pending.scenarioId,
+              scenarioRoom: selectedScenario?.room,
+              setting: castingSnapshot.setting as string | undefined,
+            }),
+        );
+        setPaywallImageLoading(false);
       });
+
+      if (canBypassPaywall) {
+        void handleAutoGenerateAfterDark(casting, allTags, {
+          scenarioTags,
+          customerDesireTags: customerDesireTags.length ? customerDesireTags : undefined,
+        });
+        return;
+      }
 
       setPhase("paywall");
     },
-    [selectedScenario, selectedBedtimeScenario, selectedPairing, fetchPreviewCover, isBedtime]
+    [
+      selectedScenario,
+      selectedBedtimeScenario,
+      selectedPairing,
+      isBedtime,
+      handleAutoGenerateAfterDark,
+    ]
   );
 
   const finishExpress = useCallback(
     (chooseForMe: boolean) => {
       if (!selectedScenario || !selectedPairing) return;
+      setGenerationError(null);
+      setExpressReturnPhase(null);
       const casting = buildExpressCasting(
         selectedScenario as ExpressScenario,
         selectedPairing,
         expressIntensity,
         {
+          perspective: expressPerspective ?? undefined,
           chemistry: expressChemistry,
           archetype: expressArchetype,
-          voiceId: voiceNameToId(expressVoiceName, selectedPairing),
+          voiceId: expressNarratorVoiceId,
+          charAVoiceId: expressCharAVoiceId,
+          charBVoiceId: expressCharBVoiceId,
           country: expressCountry || undefined,
           city: expressCity || undefined,
           setting: expressSetting || undefined,
@@ -1983,9 +2110,13 @@ export default function AfterDark() {
       selectedScenario,
       selectedPairing,
       expressIntensity,
+      expressPerspective,
       expressChemistry,
       expressArchetype,
       expressVoiceName,
+      expressNarratorVoiceId,
+      expressCharAVoiceId,
+      expressCharBVoiceId,
       expressCountry,
       expressCity,
       expressSetting,
@@ -2037,10 +2168,15 @@ export default function AfterDark() {
   }, [lastCastingData, selectedScenario, protagonistPronouns, partnerPronouns]);
 
   const revealFallbackCover = useMemo(
-    () =>
-      getScenarioRoomImage(selectedScenario?.room, import.meta.env.BASE_URL) ??
-      `${import.meta.env.BASE_URL}images/creation-room-hero.webp`,
-    [selectedScenario?.room],
+    () => resolvePaywallCoverUrl({
+      baseUrl: import.meta.env.BASE_URL,
+      pairing: selectedPairing ?? confirmedPairing,
+      chemistry: expressChemistry,
+      scenarioId: selectedScenario?.id,
+      scenarioRoom: selectedScenario?.room,
+      setting: expressSetting,
+    }),
+    [selectedPairing, confirmedPairing, expressChemistry, selectedScenario, expressSetting],
   );
 
   const handleDevBypassPaywall = useCallback(() => {
@@ -2148,29 +2284,34 @@ export default function AfterDark() {
       {(phase === "express_pairing" || phase === "express_situation" || phase === "express_fantasy" || phase === "express_world" || phase === "express_scenes" || phase === "pairing" || phase === "scenario" || phase === "casting") && (
         <AfterDarkCreationBackdrop />
       )}
-      <div className="relative z-10 w-full min-h-screen">
+      <div className="relative z-10 w-full min-h-screen min-w-0 max-w-full overflow-x-hidden">
       <AnimatePresence mode="wait">
 
         {phase === "express_pairing" && (
-          <motion.div key="express_pairing" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="express_pairing" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0 w-full">
             <AfterDarkExpressPairing
               pairings={PAIRINGS}
               selectedPairing={selectedPairing}
+              perspective={expressPerspective}
               heritage={expressHeritage}
               brief={expressBrief}
               onPairing={(id) => {
                 setSelectedPairing(id);
                 setConfirmedPairing(id);
+                const valid = getValidPerspectiveIds(id);
+                if (expressPerspective && !valid.includes(expressPerspective)) {
+                  setExpressPerspective(null);
+                }
                 const chemistries = buildChemistries(id);
                 const validChemistry = chemistries.find((c) => c.id === expressChemistry);
                 if (!validChemistry && chemistries[0]) {
                   setExpressChemistry(chemistries[0].id);
                 }
-                preGenCoverPromise.current = fetchPreviewCover({ pairing: id, intensity: expressIntensity });
               }}
+              onPerspective={setExpressPerspective}
               onHeritage={setExpressHeritage}
               onContinue={() => {
-                if (!selectedPairing || !expressHeritage) return;
+                if (!selectedPairing || !expressPerspective || !expressHeritage) return;
                 window.scrollTo({ top: 0 });
                 setPhase("express_fantasy");
               }}
@@ -2184,11 +2325,12 @@ export default function AfterDark() {
         )}
 
         {phase === "express_fantasy" && selectedPairing && (
-          <motion.div key="express_fantasy" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="express_fantasy" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0 w-full">
             <AfterDarkExpressFantasy
               rooms={ROOMS}
               curatedScenarios={curatedScenarios}
               allScenarios={SCENARIOS}
+              selectedPairing={selectedPairing}
               activeRoomTab={expressRoomTab}
               selectedScenario={selectedScenario}
               intensityIndex={expressIntensityIndex}
@@ -2210,11 +2352,6 @@ export default function AfterDark() {
                 setExpressAfterDarkScene(suggestAfterDarkSceneForRoom(s.room));
                 const country = suggestCountryForSetting(suggested);
                 if (country) setExpressCountry(country);
-                preGenCoverPromise.current = fetchPreviewCover({
-                  pairing: selectedPairing ?? undefined,
-                  intensity: expressIntensity,
-                  mood: s.tags[0],
-                });
               }}
               onIntensity={setExpressIntensityIndex}
               onContinue={() => {
@@ -2232,7 +2369,7 @@ export default function AfterDark() {
         )}
 
         {phase === "express_world" && selectedScenario && selectedPairing && (
-          <motion.div key="express_world" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="express_world" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0 w-full">
             <AfterDarkExpressWorld
               scenario={selectedScenario as ExpressScenario}
               selectedPairing={selectedPairing}
@@ -2242,6 +2379,9 @@ export default function AfterDark() {
               chemistry={expressChemistry}
               archetype={expressArchetype}
               voiceName={expressVoiceName}
+              narratorVoiceId={expressNarratorVoiceId}
+              charAVoiceId={expressCharAVoiceId}
+              charBVoiceId={expressCharBVoiceId}
               brief={expressBrief}
               onCountry={(c) => {
                 setExpressCountry(c);
@@ -2256,6 +2396,9 @@ export default function AfterDark() {
               onChemistry={setExpressChemistry}
               onArchetype={setExpressArchetype}
               onVoice={setExpressVoiceName}
+              onNarratorVoice={setExpressNarratorVoiceId}
+              onCharAVoice={setExpressCharAVoiceId}
+              onCharBVoice={setExpressCharBVoiceId}
               onContinue={() => {
                 window.scrollTo({ top: 0 });
                 setPhase("express_situation");
@@ -2267,7 +2410,7 @@ export default function AfterDark() {
         )}
 
         {phase === "express_situation" && selectedPairing && (
-          <motion.div key="express_situation" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="express_situation" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0 w-full">
             <AfterDarkExpressSituation
               selectedPairing={selectedPairing}
               situationId={expressSituationId}
@@ -2291,7 +2434,17 @@ export default function AfterDark() {
         )}
 
         {phase === "express_scenes" && selectedScenario && selectedPairing && (
-          <motion.div key="express_scenes" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="express_scenes" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0 w-full">
+            {generationError && (
+              <div className="max-w-5xl mx-auto px-4 pt-4">
+                <p className="text-sm text-red-200 bg-red-950/60 border border-red-500/35 rounded-xl px-4 py-3 leading-relaxed">
+                  {generationError}
+                  <span className="block text-xs text-red-200/70 mt-1">
+                    Your choices are saved — tap Reveal my story to try again.
+                  </span>
+                </p>
+              </div>
+            )}
             <AfterDarkExpressMakeItYours
               selectedPairing={selectedPairing}
               customTags={expressCustomTags}
@@ -2356,7 +2509,6 @@ export default function AfterDark() {
                     whileTap={{ scale: 0.97 }}
                     onClick={() => {
                       setSelectedPairing(p.id);
-                      preGenCoverPromise.current = fetchPreviewCover({ pairing: p.id });
                       setTimeout(() => setPhase("scenario"), 280);
                     }}
                     className={`relative overflow-hidden rounded-2xl border text-left p-5 min-h-[120px] transition-colors ${
@@ -2405,10 +2557,6 @@ export default function AfterDark() {
               setSelectedBedtimeScenario(scenario);
               setCastingHandoff({ pairing: selectedPairing ?? "Her & Him" });
               setConfirmedPairing(selectedPairing ?? "Her & Him");
-              preGenCoverPromise.current = fetchPreviewCover({
-                pairing: selectedPairing ?? "Her & Him",
-                intensity: "Warm",
-              });
               window.scrollTo({ top: 0 });
               setPhase("casting");
             }}
@@ -2541,7 +2689,6 @@ export default function AfterDark() {
                                 const next = selectedScenario?.id === scenario.id ? null : scenario;
                                 setSelectedScenario(next);
                                 if (next) {
-                                  preGenCoverPromise.current = fetchPreviewCover({ pairing: selectedPairing ?? confirmedPairing ?? undefined });
                                   if (selectedPairing) {
                                     setCastingHandoff({ pairing: selectedPairing });
                                     setConfirmedPairing(selectedPairing);
@@ -2605,12 +2752,12 @@ export default function AfterDark() {
               onComplete={handleCastingComplete}
               onSkip={() =>
                 handleCastingComplete({
-                  perspective: "her",
+                  perspective: perspectiveFromPairing(selectedPairing || "Her & Him"),
                   heritage: "",
                   archetype: "",
                   chemistry: isBedtime
                     ? (selectedBedtimeScenario?.tags[0] ?? "Warmth with nowhere to go")
-                    : (selectedScenario?.tags[0] ?? "He Takes Charge"),
+                    : (selectedScenario?.tags[0] ?? (selectedPairing === "Her & Her" ? "She Takes Charge" : "He Takes Charge")),
                   setting: "",
                   atmosphere: "",
                   intensity: isBedtime ? "Subtle" : "Intense",
@@ -2681,6 +2828,46 @@ export default function AfterDark() {
             exit={{ opacity: 0 }}
             className="max-w-2xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[60vh] text-center"
           >
+            {generationFailed ? (
+              <>
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+                  style={{ border: "1px solid rgba(239,68,68,0.35)", background: "rgba(127,29,29,0.2)" }}
+                >
+                  <Moon className="w-7 h-7 text-red-300" />
+                </div>
+                <h2 className="text-2xl font-display font-bold text-foreground mb-3">
+                  Couldn&apos;t finish your story
+                </h2>
+                <p className="text-sm text-muted-foreground tabular-nums mb-3">
+                  Stopped at {generationProgress}%
+                </p>
+                <p className="text-sm text-red-200/90 bg-red-950/50 border border-red-500/30 rounded-xl px-4 py-3 mb-2 max-w-md leading-relaxed">
+                  {generationError}
+                </p>
+                <p className="text-xs text-muted-foreground mb-8 max-w-sm leading-relaxed">
+                  Your choices are saved. You can try again or go back to edit them.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+                  <button
+                    type="button"
+                    onClick={retryLastGeneration}
+                    className="flex-1 px-6 py-3 rounded-2xl font-bold text-sm text-white"
+                    style={{ background: "linear-gradient(135deg, #c0392b, #922b21)" }}
+                  >
+                    Try again
+                  </button>
+                  <button
+                    type="button"
+                    onClick={leaveFailedGeneration}
+                    className="flex-1 px-6 py-3 rounded-2xl font-semibold text-sm border border-white/15 text-white/80 hover:text-white hover:border-white/30 transition-colors"
+                  >
+                    Back to your choices
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
             <div className="relative mb-10">
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center"
@@ -2732,6 +2919,8 @@ export default function AfterDark() {
             <p className="text-xs text-muted-foreground mt-8 max-w-xs">
               {GENERATION_PROGRESS_SUB}
             </p>
+              </>
+            )}
           </motion.div>
         )}
 
@@ -2834,7 +3023,6 @@ export default function AfterDark() {
                 setSelectedScenario(null);
                 setResult(null);
                 setCastingHandoff(null);
-                preGenCoverPromise.current = null;
                 setPaywallCoverUrl(null);
                 window.scrollTo({ top: 0 });
               }}

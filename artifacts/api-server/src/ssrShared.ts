@@ -266,9 +266,9 @@ export function ssrHtmlShell(opts: SsrShellOptions): string {
   <!-- Structured data -->
   ${schemasHtml}
 
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-square.png" />
-  <link rel="apple-touch-icon" href="/favicon-square.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192.png" />
   <link rel="preload" as="image" href="/logo.webp" fetchpriority="high" />
   <style>${CSS}</style>
 </head>

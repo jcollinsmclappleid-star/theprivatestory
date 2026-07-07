@@ -22,12 +22,10 @@ fi
 
 echo "Adding Vercel environment variables…"
 add_env "DATABASE_URL" "$1"
-add_env "BETTER_AUTH_URL" "https://theprivatestory.vercel.app"
+add_env "BETTER_AUTH_URL" "https://theprivatestory.com"
 add_env "BETTER_AUTH_SECRET" "6755e0eb33dc17459611d077cae39120dafad6d899ca327913919399b3dbf76f"
-# Pre-DNS-cutover: keep URLs on *.vercel.app until theprivatestory.com points at Vercel.
-# After cutover, set SITE_URL / BETTER_AUTH_URL / APP_URL to https://theprivatestory.com (production only).
-add_env "SITE_URL" "https://theprivatestory.vercel.app"
-add_env "APP_URL" "https://theprivatestory.vercel.app"
+add_env "SITE_URL" "https://theprivatestory.com"
+add_env "APP_URL" "https://theprivatestory.com"
 add_env "NODE_ENV" "production"
 # Do not set SKIP_VITE_BUILD on Vercel — build.mjs always runs Vite when VERCEL=1.
 add_env "ADMIN_EMAIL" "Jcollinsmclappleid@gmail.com"

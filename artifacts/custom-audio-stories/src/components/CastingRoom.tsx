@@ -1977,7 +1977,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
                 archetype: data.archetype ?? "",
                 setting: data.setting ?? "",
                 voice:
-                  VOICES.find((v) => v.id === voiceId)?.displayName ?? "Lisa",
+                  VOICES.find((v) => v.id === voiceId)?.displayName ?? "Kayla",
                 intensity: data.intensity ?? "Warm",
                 situationId: situationId || undefined,
                 situationLabel: situationLabel || undefined,
@@ -2291,7 +2291,7 @@ export function CastingRoom({ onComplete, onSkip, afterDark = false, bedtime = f
               Pick narrator and character voices — tap a role chip, then choose who speaks.
             </p>
             <p className="text-xs text-muted-foreground/50 mb-6">
-              Lisa is our recommended narrator. Pick narrator and character voices with the role chips below.
+              Kayla is our recommended narrator. Pick narrator and character voices with the role chips below.
             </p>
 
             <CastVoicePicker

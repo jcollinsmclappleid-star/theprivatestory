@@ -9,7 +9,7 @@
  * in generate-editors-picks.mjs (do not run sync-transcripts on these four).
  */
 
-export type EditorsPickVoice = "sofia" | "lisa" | "maya" | "james" | "theo";
+export type EditorsPickVoice = "sofia" | "lisa" | "kayla" | "maya" | "james" | "theo";
 export type EditorsPickPairing =
   | "Her & Him"
   | "Her & Her"
@@ -39,7 +39,7 @@ export interface EditorsPick {
 }
 
 /** Bump when editor-pick MP3s are regenerated so browsers fetch fresh audio. */
-export const EDITORS_PICK_AUDIO_VERSION = "5";
+export const EDITORS_PICK_AUDIO_VERSION = "6";
 
 export function formatRuntime(sec: number): string {
   if (sec < 60) return `~${sec} sec`;
@@ -135,15 +135,15 @@ export const EDITORS_PICKS: EditorsPick[] = [
       "\"Wanting your hands on me. Wanting you to tell me what to do.\"",
     endsOn: "she says: lock the door. Then we'll find out if you mean it.",
     tags: ["Full cast", "Her & Her", "Forbidden"],
-    narrator: "lisa",
-    cast: ["lisa", "sofia", "maya"],
-    castLabel: "Lisa · Sofia · Maya",
-    voice: "lisa",
-    voiceName: "Lisa",
-    voiceMeta: "American · Sensual",
+    narrator: "kayla",
+    cast: ["kayla", "sofia", "maya"],
+    castLabel: "Kayla · Sofia · Maya",
+    voice: "kayla",
+    voiceName: "Kayla",
+    voiceMeta: "American · Expressive",
     pairing: "Her & Her",
     runtimeSec: 38,
-    transcript: `[Lisa] The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply.
+    transcript: `[Kayla] The report was still open. Neither of them was reading it. Three years of supervision — and tonight, for the first time, the rule didn't apply.
 
 [Maya] You're not looking at the page.
 
@@ -170,15 +170,15 @@ export const EDITORS_PICKS: EditorsPick[] = [
       "\"I want you to say it out loud. What you want a stranger to do to you tonight.\"",
     endsOn: "she says: then stop talking — and let me say it.",
     tags: ["Full cast", "Strangers", "Surrender"],
-    narrator: "lisa",
-    cast: ["lisa", "james", "maya"],
-    castLabel: "Lisa · James · Maya",
-    voice: "lisa",
-    voiceName: "Lisa",
-    voiceMeta: "American · Sensual",
+    narrator: "kayla",
+    cast: ["kayla", "james", "maya"],
+    castLabel: "Kayla · James · Maya",
+    voice: "kayla",
+    voiceName: "Kayla",
+    voiceMeta: "American · Expressive",
     pairing: "Her & Him",
     runtimeSec: 40,
-    transcript: `[Lisa] The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over.
+    transcript: `[Kayla] The members' club had no sign on the door. He'd been watching her for an hour. A drink arrived she didn't order — and a message: he asked if he could come over.
 
 She looked at the corner table. Then she nodded.
 
@@ -213,9 +213,9 @@ export const VOICES_META: Array<{
     oneLine: "British. Direct, confident — the voice in the room with you.",
   },
   {
-    key: "lisa",
-    name: "Lisa",
-    oneLine: "American narrator. Sensual, warm, draws you in.",
+    key: "kayla",
+    name: "Kayla",
+    oneLine: "American narrator. Expressive, warm — our recommended voice.",
   },
   {
     key: "sofia",

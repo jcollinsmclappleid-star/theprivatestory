@@ -1236,7 +1236,7 @@ export function AfterDarkExpressWorld({
             </VerticalScrollCol>
 
             <p className="text-xs text-white/50 mb-3">
-              Lisa is our recommended narrator — tap a role chip to pick narrator or character voices.
+              Kayla is our recommended narrator — tap a role chip to pick narrator or character voices.
             </p>
             <CastVoicePicker
               pairing={selectedPairing ?? "Her & Him"}

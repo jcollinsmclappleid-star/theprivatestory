@@ -5,7 +5,7 @@ import type { HomeBrief } from "@/lib/homeBriefUtils";
 
 const NARRATOR_TO_VOICE: Record<string, string> = {
   theo: "Theo",
-  kayla: "Lisa",
+  kayla: "Kayla",
   lisa: "Lisa",
   maya: "Maya",
   james: "James",

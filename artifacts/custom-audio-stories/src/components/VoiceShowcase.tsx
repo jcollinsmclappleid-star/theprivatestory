@@ -1,14 +1,15 @@
 import { useState, useRef, useCallback } from "react";
 import { Play, Pause, Loader } from "lucide-react";
-import { VOICES } from "@/lib/voices";
+import { VOICES, KAYLA_VOICE_ID } from "@/lib/voices";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const SAMPLE_VOICE_IDS = [
-  "PB6BdkFkZLbI39GHdnbQ", // Lisa — recommended narrator
+  KAYLA_VOICE_ID,         // Kayla — recommended narrator
   "jfIS2w2yJi0grJZPyEsk", // Theo — male narrator
   "tQ4MEZFJOzsahSEEZtHK", // Maya — her dialogue
   "AeRdCCKzvd23BpJoofzx", // James — his dialogue
+  "PB6BdkFkZLbI39GHdnbQ", // Lisa
   "D9MdulIxfrCUUJcGNQon", // Sofia
 ];
 
@@ -71,7 +72,7 @@ export function VoiceShowcase() {
           Choose your narrator
         </p>
         <p className="text-sm text-muted-foreground/60 leading-relaxed">
-          Lisa is our recommended narrator — press play to hear each voice before you decide.
+          Kayla is our recommended narrator — press play to hear each voice before you decide.
         </p>
       </div>
 

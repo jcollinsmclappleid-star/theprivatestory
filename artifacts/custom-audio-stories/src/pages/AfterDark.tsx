@@ -1415,7 +1415,7 @@ export default function AfterDark() {
   const [expressIntensityIndex, setExpressIntensityIndex] = useState(1);
   const [expressChemistry, setExpressChemistry] = useState("Forbidden Pull");
   const [expressArchetype, setExpressArchetype] = useState("The Executive");
-  const [expressVoiceName, setExpressVoiceName] = useState("Lisa");
+  const [expressVoiceName, setExpressVoiceName] = useState("Kayla");
   const [expressNarratorVoiceId, setExpressNarratorVoiceId] = useState(DEFAULT_NARRATOR_VOICE_ID);
   const [expressCharAVoiceId, setExpressCharAVoiceId] = useState(
     () => defaultCastVoices(DEFAULT_NARRATOR_VOICE_ID, "Her & Him").charA,

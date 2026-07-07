@@ -1364,10 +1364,11 @@ export function getCacheKey(data: object): string {
 // Voice catalogue
 // ---------------------------------------------------------------------------
 
-const DEFAULT_VOICE_ID = "PB6BdkFkZLbI39GHdnbQ"; // Lisa (Sensual)
+const DEFAULT_VOICE_ID = "aTxZrSrp47xsP6Ot4Kgd"; // Kayla (Expressive)
 
 // All available voice IDs
 const VOICE_CATALOGUE: Record<string, { label: string; gender: "female" | "male" }> = {
+  "aTxZrSrp47xsP6Ot4Kgd": { label: "Expressive", gender: "female" }, // Kayla
   "PB6BdkFkZLbI39GHdnbQ": { label: "Sensual", gender: "female" },   // Lisa
   "D9MdulIxfrCUUJcGNQon": { label: "Warm", gender: "female" },      // Sofia
   "tQ4MEZFJOzsahSEEZtHK": { label: "Close", gender: "female" },      // Maya
@@ -1385,10 +1386,9 @@ const LEGACY_VOICE_MAP: Record<string, string> = {
   "Breathy Voice": DEFAULT_VOICE_ID,
   "Confident Voice": DEFAULT_VOICE_ID,
   // Retired catalogue IDs
-  "aTxZrSrp47xsP6Ot4Kgd": "PB6BdkFkZLbI39GHdnbQ", // Kayla → Lisa
   "FA6HhUjVbervLw2rNl8M": "D9MdulIxfrCUUJcGNQon", // Clara / Eleanor → Sofia
   // Display names stored on old profiles
-  Kayla: "PB6BdkFkZLbI39GHdnbQ",
+  Kayla: "aTxZrSrp47xsP6Ot4Kgd",
   Clara: "D9MdulIxfrCUUJcGNQon",
   Eleanor: "D9MdulIxfrCUUJcGNQon",
   Lisa: "PB6BdkFkZLbI39GHdnbQ",
@@ -1418,12 +1418,13 @@ function resolveVoiceId(voiceIdOrFeel: string, _pairing?: string): string {
 
 const MV_SOFIA = "D9MdulIxfrCUUJcGNQon";
 const MV_MAYA  = "tQ4MEZFJOzsahSEEZtHK";
+const MV_KAYLA = "aTxZrSrp47xsP6Ot4Kgd";
 const MV_LISA  = "PB6BdkFkZLbI39GHdnbQ";
 const MV_JAMES = "AeRdCCKzvd23BpJoofzx";
 const MV_ETHAN = "n1PvBOwxb8X6m7tahp2h";
 const MV_THEO  = "jfIS2w2yJi0grJZPyEsk";
 
-const MV_HER_POOL = [MV_MAYA, MV_LISA, MV_SOFIA] as const;
+const MV_HER_POOL = [MV_MAYA, MV_KAYLA, MV_LISA, MV_SOFIA] as const;
 const MV_HIM_POOL = [MV_JAMES, MV_THEO, MV_ETHAN] as const;
 const MV_HIM_POOL_STANDARD = [MV_JAMES, MV_THEO] as const;
 const MV_MALE_NARRATORS = new Set<string>([MV_JAMES, MV_ETHAN, MV_THEO]);
@@ -1456,7 +1457,7 @@ function resolveCharacterVoicesServer(
       return { charA: pickHerDialogue(narratorId), charB: pickHimDialogue(narratorId, pairing) };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? MV_MAYA, charB: b ?? MV_LISA };
+      return { charA: a ?? MV_MAYA, charB: b ?? MV_KAYLA };
     }
     case "him & him": {
       const [a, b] = twoHim();
@@ -6623,6 +6624,7 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
 
   // Friendly voice-ID → display name mapping.
   const VOICE_NAMES: Record<string, string> = {
+    "aTxZrSrp47xsP6Ot4Kgd": "Kayla",
     "PB6BdkFkZLbI39GHdnbQ": "Lisa",
     "D9MdulIxfrCUUJcGNQon": "Sofia",
     "tQ4MEZFJOzsahSEEZtHK": "Maya",
@@ -6630,7 +6632,6 @@ router.post("/debug-tags", async (req: Request, res: Response) => {
     "n1PvBOwxb8X6m7tahp2h": "Ethan",
     "jfIS2w2yJi0grJZPyEsk": "Theo",
     // Legacy IDs
-    "aTxZrSrp47xsP6Ot4Kgd": "Lisa",
     "FA6HhUjVbervLw2rNl8M": "Sofia",
   };
 

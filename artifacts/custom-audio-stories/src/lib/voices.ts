@@ -13,6 +13,7 @@ export interface Voice {
   recommendLabel?: string;
 }
 
+export const KAYLA_VOICE_ID = "aTxZrSrp47xsP6Ot4Kgd";
 export const LISA_VOICE_ID = "PB6BdkFkZLbI39GHdnbQ";
 export const SOFIA_VOICE_ID = "D9MdulIxfrCUUJcGNQon";
 export const MAYA_VOICE_ID = "tQ4MEZFJOzsahSEEZtHK";
@@ -20,23 +21,31 @@ export const JAMES_VOICE_ID = "AeRdCCKzvd23BpJoofzx";
 export const ETHAN_VOICE_ID = "n1PvBOwxb8X6m7tahp2h";
 export const THEO_VOICE_ID = "jfIS2w2yJi0grJZPyEsk";
 
-/** @deprecated Kayla → Lisa */
-export const KAYLA_VOICE_ID = LISA_VOICE_ID;
 /** @deprecated Clara/Eleanor → Sofia */
 export const CLARA_VOICE_ID = SOFIA_VOICE_ID;
 
 export const VOICES: Voice[] = [
+  {
+    id: KAYLA_VOICE_ID,
+    displayName: "Kayla",
+    label: "Expressive",
+    accent: "American",
+    accentLabel: "American · Expressive",
+    desc: "American expressive narration — warm, dynamic, and emotionally alive. Draws you in with natural pull.",
+    bestFor: "After Dark · Romance · Main storyteller",
+    gender: "female",
+    recommended: true,
+    recommendLabel: "Recommended narrator",
+  },
   {
     id: LISA_VOICE_ID,
     displayName: "Lisa",
     label: "Sensual",
     accent: "American",
     accentLabel: "American · Sensual",
-    desc: "American sensual narration — warm, close, and expressive. Draws you in with natural intimacy and emotional pull.",
-    bestFor: "After Dark · Romance · Main storyteller",
+    desc: "American sensual narration — warm, close, and measured. A softer, more intimate register.",
+    bestFor: "Romance · Slow burn · Closer delivery",
     gender: "female",
-    recommended: true,
-    recommendLabel: "Recommended narrator",
   },
   {
     id: THEO_VOICE_ID,
@@ -101,14 +110,13 @@ export const MALE_VOICES   = VOICES.filter(v => v.gender === "male");
 /** @deprecated use JAMES_VOICE_ID */
 export const JOSHUA_VOICE_ID = JAMES_VOICE_ID;
 
-export const DEFAULT_FEMALE_VOICE_ID = LISA_VOICE_ID;
+export const DEFAULT_FEMALE_VOICE_ID = KAYLA_VOICE_ID;
 export const DEFAULT_MALE_VOICE_ID   = JAMES_VOICE_ID;
-/** Default narrator — Lisa (American, sensual). */
-export const DEFAULT_NARRATOR_VOICE_ID = LISA_VOICE_ID;
+/** Default narrator — Kayla (American, expressive). */
+export const DEFAULT_NARRATOR_VOICE_ID = KAYLA_VOICE_ID;
 
 /** Retired voice IDs → current catalogue (saved prefs, old stories). */
 export const LEGACY_VOICE_ID_MAP: Record<string, string> = {
-  aTxZrSrp47xsP6Ot4Kgd: LISA_VOICE_ID,  // Kayla
   FA6HhUjVbervLw2rNl8M: SOFIA_VOICE_ID, // Clara / Eleanor
 };
 
@@ -132,7 +140,7 @@ export {
 } from "@workspace/intensity";
 
 /** Dialogue pools — skips narrator to avoid same voice twice. */
-const HER_DIALOGUE_POOL = [MAYA_VOICE_ID, LISA_VOICE_ID, SOFIA_VOICE_ID] as const;
+const HER_DIALOGUE_POOL = [MAYA_VOICE_ID, KAYLA_VOICE_ID, LISA_VOICE_ID, SOFIA_VOICE_ID] as const;
 const HIM_DIALOGUE_POOL = [JAMES_VOICE_ID, THEO_VOICE_ID, ETHAN_VOICE_ID] as const;
 const HIM_DIALOGUE_POOL_STANDARD = [JAMES_VOICE_ID, THEO_VOICE_ID] as const;
 const MALE_NARRATOR_IDS = new Set([JAMES_VOICE_ID, ETHAN_VOICE_ID, THEO_VOICE_ID]);
@@ -172,7 +180,7 @@ export function resolveCharacterVoices(
       return { charA: pickHerDialogue(resolved), charB: pickHimDialogue(resolved, pairing) };
     case "her & her": {
       const [a, b] = twoHer();
-      return { charA: a ?? MAYA_VOICE_ID, charB: b ?? LISA_VOICE_ID };
+      return { charA: a ?? MAYA_VOICE_ID, charB: b ?? KAYLA_VOICE_ID };
     }
     case "him & him": {
       const [a, b] = twoHim();

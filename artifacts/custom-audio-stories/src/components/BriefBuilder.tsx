@@ -91,9 +91,10 @@ const CATEGORIES: {
     label: "Who tells it",
     icon: Volume2,
     axis: "Who tells it",
-    scale: "5 narrators",
+    scale: "6 narrators",
     options: [
-      { value: "Lisa", label: "Lisa · American", image: img("images/avatar-isla.webp"), accent: "#e879a0" },
+      { value: "Kayla", label: "Kayla · American", image: img("images/avatar-isla.webp"), accent: "#e879a0" },
+      { value: "Lisa", label: "Lisa · American", image: img("images/avatar-isla.webp"), accent: "#f0a8c0" },
       { value: "Theo", label: "Theo · British", image: img("images/avatar-oliver.webp"), accent: "#34d399" },
       { value: "Maya", label: "Maya · American", image: img("images/avatar-maya.webp"), accent: "#f472b6" },
       { value: "James", label: "James · British", image: img("images/avatar-nathaniel.webp"), accent: "#6b8cce" },
@@ -122,7 +123,7 @@ export const DEFAULT_CAST_SELECTIONS: Record<CastCategoryId, string> = {
   chemistry: "Forbidden Pull",
   archetype: "The Executive",
   setting: "Victorian London",
-  voice: "Lisa",
+  voice: "Kayla",
 };
 
 /** @deprecated use DEFAULT_CAST_SELECTIONS — kept for callers expecting intensity key */

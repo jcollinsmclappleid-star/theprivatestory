@@ -27,6 +27,7 @@ if (!ELEVENLABS_API_KEY) {
 }
 
 const VOICES = [
+  { id: "aTxZrSrp47xsP6Ot4Kgd", label: "Expressive" },
   { id: "PB6BdkFkZLbI39GHdnbQ", label: "Sensual" },
   { id: "D9MdulIxfrCUUJcGNQon", label: "Warm" },
   { id: "tQ4MEZFJOzsahSEEZtHK", label: "Close" },

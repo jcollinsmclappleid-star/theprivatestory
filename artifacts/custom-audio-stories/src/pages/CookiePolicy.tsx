@@ -42,7 +42,7 @@ export default function CookiePolicy() {
       </header>
 
       <P>
-        This Cookie Policy explains how Ianson System Ltd, trading as The Private Story
+        This Cookie Policy explains how The Private Story
         (&ldquo;<strong>we</strong>&rdquo;, &ldquo;<strong>us</strong>&rdquo;), uses cookies and similar
         technologies on <Link href="/" className="text-primary hover:underline">theprivatestory.com</Link>.
         It should be read alongside our{" "}

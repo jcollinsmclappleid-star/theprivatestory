@@ -648,7 +648,7 @@ export const audioStoriesForWomenConfig: SEOPageConfig = {
       { q: `Are the stories narrated by a real voice?`, a: `Stories are narrated using studio-quality digital voices selected to complement the specific tone and register of each story. The voice quality is indistinguishable from professional human narration in the ways that matter for the listening experience: warmth, pacing, texture. The narration is part of what is created — not an afterthought — and the voice selected is matched to the story's character and emotional register.` },
       { q: `How private is the platform, genuinely?`, a: `Genuinely private. There are no social features. There is no public profile. Your listening history is not visible to others, not shared with third parties for social purposes, and not used to build any public-facing recommendation or activity feed. Your stories are stored in your private account and are audible only to you. The platform was designed from the beginning with the requirement that adult fiction listening should be genuinely private — not a setting, but the fundamental premise.` },
       { q: `What does a credit pack cost?`, a: `Credit packs start at £12/$15 for a single story. Five stories cost £39/$49. The Full Collection — 24 stories — is £99/$119. Credits never expire and stack if you buy more than one pack. All packs include full narration, original cover art, and permanent storage in your private library. After Dark is included with the five-story and full-collection packs.` },
-      { q: `Is the platform UK-based?`, a: `The Private Story is operated by a UK-registered company and priced in US dollars. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.` },
+      { q: `Is the platform UK-based?`, a: `The Private Story is operated from the UK and priced in US dollars. The platform is available to listeners globally, and the literary register — UK English, a preference for emotional texture and craft over volume — reflects its origin. Women from any country are welcome.` },
     ],
 };
 
@@ -5344,7 +5344,7 @@ export const aiEroticaConfig: SEOPageConfig = {
     { q: `What makes the brief so important?`, a: `The specificity of the output is determined by the specificity of the input. A vague prompt produces a vague story. The Creation Room asks for seven specific creative choices — the character, the dynamic, the chemistry type, the setting, the emotional mood, the situation, and the intensity — which collectively produce a brief detailed enough to generate something genuinely particular to this listener and this session. The precision of the brief is the mechanism through which the story becomes genuinely yours rather than generically produced.` },
     { q: `How long does it take to receive my story?`, a: `Most stories are generated and available to listen within a few minutes of completing the Creation Room. The brief itself typically takes under two minutes to complete. You can be listening to your story within five minutes of starting the creation flow.` },
     { q: `Can I create more than one story?`, a: `Yes. You can create a new story for each session — a new brief, a new story, something that has never existed before. Each credit produces a fully independent story: a different character, a different dynamic, a different emotional register, built around what you want for that particular session. Your private library accumulates everything you create, each story with its own cover art and title. Credits never expire, so you can use them whenever you want.` },
-    { q: `Is AI erotica legal in the UK?`, a: `Yes. AI-generated erotic fiction for adults is legal in the United Kingdom, provided it complies with existing obscenity and content law and does not depict prohibited content. The Private Story is operated by Ianson System Ltd, a UK registered company, and is designed and operated in full compliance with UK law. All sexually explicit content is age-gated and requires verification that users are 18 or over. The platform does not generate content involving minors, non-consensual scenarios presented approvingly, or other categories prohibited under UK law. For a full account of content standards, see the Content Policy.` },
+    { q: `Is AI erotica legal in the UK?`, a: `Yes. AI-generated erotic fiction for adults is legal in the United Kingdom, provided it complies with existing obscenity and content law and does not depict prohibited content. The Private Story is a UK-based platform, and is designed and operated in full compliance with UK law. All sexually explicit content is age-gated and requires verification that users are 18 or over. The platform does not generate content involving minors, non-consensual scenarios presented approvingly, or other categories prohibited under UK law. For a full account of content standards, see the Content Policy.` },
     { q: `Can I use AI erotica alongside other audio platforms?`, a: `Yes. The Private Story serves a different need from catalogue-based audio platforms like Dipsea, Quinn, or Spotify's audio fiction catalogue. Those platforms offer pre-produced content for browsing; The Private Story generates original content from your brief. Many listeners use both: catalogue platforms for discovery and browsing, The Private Story for the sessions when they want something specific that does not exist yet. The use cases are complementary rather than competing.` },
     { q: `What makes The Private Story different from other AI erotica generators?`, a: `Three things distinguish the platform: the brief is structured and detailed (seven specific creative choices, not a single open text prompt), which produces genuinely specific output rather than generic generation; the output is literary prose narrated as studio-quality audio, not text on a page; and the privacy architecture is foundational — no social features, no data sold, no browsing history accessible to anyone. The combination of a detailed brief, literary quality, professional narration, and genuine privacy is not standard in the AI erotica category.` },
   ],
@@ -7602,7 +7602,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
         "Most of the audio erotica that British listeners encounter was produced for the American market and adapted, lightly, for an international audience. The voices are American. The cultural references are American. The consumer protection sits under American law. The billing is in dollars routed through subscription stacks that were designed for the largest possible market. None of this is hostile to British listeners — but none of it was built for them either.",
         "What changes when a platform is built in the UK from the start is small in any one detail and substantial in aggregate. The narration registers — Received Pronunciation, contemporary London, the softer Northern voices — carry cultural meaning that an American voice cannot replicate, however accomplished the performance. The settings and references can be British without translation: the late-night taxi home, the country house weekend, the office in the City, the Edinburgh hotel in winter. The billing is straightforward — in dollars, secure card processing, the consumer protections British listeners are entitled to under UK law.",
         "The privacy expectation is also distinctly British in character. There is a long British literary tradition — gothic, Victorian, contemporary romance — of treating private interior life as something that belongs to the person who has it, not to a public conversation. The Private Story is built around that expectation: no public listening history, no review system, no recommendation feed shaped by what other listeners chose. Privacy is a structural feature, not a setting you have to find.",
-        "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform is built, hosted, and run from the UK. <a href=\"/private-audio-stories\">Private audio stories</a> made by a British team for British listeners — and for anyone, anywhere, who recognises the difference.",
+        "The Private Story is operated from the UK. The platform is built, hosted, and run from the UK. <a href=\"/private-audio-stories\">Private audio stories</a> made by a British team for British listeners — and for anyone, anywhere, who recognises the difference.",
       ],
     },
     {
@@ -7617,7 +7617,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
       h2: "UK Consumer Protection and How Billing Works",
       paragraphs: [
         "British listeners have specific consumer rights — under the Consumer Rights Act 2015, the Consumer Contracts Regulations, and the GDPR as retained in UK law — that platforms registered overseas often satisfy in name rather than in practice. Cancelling an overseas subscription, exercising data rights against a US-based operator, or pursuing a billing dispute through a foreign card processor is technically possible and practically frustrating.",
-        "The Private Story is operated under UK company law, billed in dollars through secure card processing, and subject directly to UK consumer protection. Cancellation is a single action in your account. Refund requests within the cooling-off period are handled directly. Data subject requests under UK GDPR are answered by the people who run the platform, not routed through international support tiers.",
+        "The Private Story is operated under UK law, billed in dollars through secure card processing, and subject directly to UK consumer protection. Cancellation is a single action in your account. Refund requests within the cooling-off period are handled directly. Data subject requests under UK GDPR are answered by the people who run the platform, not routed through international support tiers.",
         "Pricing is stated plainly: a one-time credit pack, no subscription required. Packs start at £12 for a single story, with larger collections available. Prices are visible on the <a href=\"/pricing\">pricing page</a>. There are no hidden tiers, no add-on payments inside the listening experience, and no upsell prompts during a story. Credits never expire. What you pay for is access; what you receive is access.",
       ],
     },
@@ -7675,7 +7675,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
       },
       {
         heading: "UK consumer protection and UK GDPR",
-        body: "Operated by a UK-registered company, subject directly to UK consumer law. Billing, cancellation, and data subject requests are handled under UK rules by the people who run the platform.",
+        body: "Operated from the UK, subject directly to UK consumer law. Billing, cancellation, and data subject requests are handled under UK rules by the people who run the platform.",
       },
       {
         heading: "Pricing in dollars, plainly stated",
@@ -7695,7 +7695,7 @@ export const audioEroticaUkConfig: SEOPageConfig = {
     h2: "Audio Erotica UK — The Full Picture",
     paragraphs: [
       "British listeners have been an under-served audience in audio erotica from the form's earliest commercial years. The dominant platforms were built for the American mainstream and treat international audiences as a long tail. The voices, references, billing, and editorial sensibility have all been calibrated for somewhere else.",
-      "The Private Story was built differently from the start. Operated from the UK by Ianson System Ltd, narrated in British voices as primary options, written in UK English, billed in dollars, and structured around the privacy expectation that British listeners have always quietly insisted on. None of this is a marketing posture; it is what the platform actually is.",
+      "The Private Story was built differently from the start. Operated from the UK by The Private Story, narrated in British voices as primary options, written in UK English, billed in dollars, and structured around the privacy expectation that British listeners have always quietly insisted on. None of this is a marketing posture; it is what the platform actually is.",
       "What that produces, in practice, is audio erotica in which the cultural register sits where British listeners live — recognisable settings, recognisable voices, the literary inheritance available rather than translated away. Stories that begin from a specific brief and end as a private, narrated piece of fiction kept in your account.",
       "Last updated: April 2026.",
       "Open the <a href=\"/after-dark\">After Dark creation flow</a> and create a story in the register you actually want.",
@@ -7717,8 +7717,8 @@ export const audioEroticaUkConfig: SEOPageConfig = {
   },
   faqs: [
     {
-      q: "Is The Private Story actually a UK company?",
-      a: "Yes. The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The team and the operation are UK-based, the platform is hosted on UK infrastructure where applicable, and the company is subject directly to UK company law, UK consumer protection, and UK GDPR. Billing is processed in dollars. Cancellation, refund requests within the statutory cooling-off period, and data subject requests are all handled directly by the operating company rather than routed through overseas support layers.",
+      q: "Is The Private Story UK-based?",
+      a: "Yes. The Private Story is operated from the UK. The team and the operation are UK-based, the platform is hosted on UK infrastructure where applicable, and the platform is subject directly to UK law, UK consumer protection, and UK GDPR. Billing is processed in dollars. Cancellation, refund requests within the statutory cooling-off period, and data subject requests are all handled directly rather than routed through overseas support layers.",
     },
     {
       q: "Are the narration voices actually British?",
@@ -7734,11 +7734,11 @@ export const audioEroticaUkConfig: SEOPageConfig = {
     },
     {
       q: "What about my data and privacy under UK law?",
-      a: "The Private Story is subject to UK GDPR. Data subject requests — access, correction, deletion — are handled by the operating company directly. The platform is structurally designed so that very little data needs to be held: there is no public listening history, no review feed, no recommendation engine, no social layer. Your stories are saved to your private account and accessible only to you. The full position is on the <a href=\"/privacy\">privacy page</a>.",
+      a: "The Private Story is subject to UK GDPR. Data subject requests — access, correction, deletion — are handled directly. The platform is structurally designed so that very little data needs to be held: there is no public listening history, no review feed, no recommendation engine, no social layer. Your stories are saved to your private account and accessible only to you. The full position is on the <a href=\"/privacy\">privacy page</a>.",
     },
     {
       q: "How is this different from Dipsea or Quinn for UK listeners?",
-      a: "Dipsea and Quinn are catalogue platforms — they offer a library of pre-recorded stories produced for a general audience, predominantly the US market. They are well-made within that model, but the model is not personalised, the voices are predominantly American, and the consumer relationship sits under US company structures. The Private Story is generative rather than catalogue-based: a story is created from your brief at the moment you ask for it. The voices include British options, the company is UK-registered, and the model itself is different in kind.",
+      a: "Dipsea and Quinn are catalogue platforms — they offer a library of pre-recorded stories produced for a general audience, predominantly the US market. They are well-made within that model, but the model is not personalised, the voices are predominantly American, and the consumer relationship sits under US company structures. The Private Story is generative rather than catalogue-based: a story is created from your brief at the moment you ask for it. The voices include British options, The Private Story is UK-based, and the model itself is different in kind.",
     },
     {
       q: "Can I create a story set in a specific UK location?",
@@ -7794,7 +7794,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     {
       h2: "Home-Grown — Not a Translation",
       paragraphs: [
-        "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform was designed and built in the UK. Billing is in dollars. Consumer protection sits under UK law. Data subject requests are handled directly under UK GDPR. None of this is a posture for marketing purposes; it is what the platform structurally is.",
+        "The Private Story is operated from the UK. The platform was designed and built in the UK. Billing is in dollars. Consumer protection sits under UK law. Data subject requests are handled directly under UK GDPR. None of this is a posture for marketing purposes; it is what the platform structurally is.",
         "What this means for British women in particular is that the listening relationship is not mediated through a foreign company optimising for a different market. The voices are not adapted from elsewhere. The editorial register is not translated. The privacy architecture is not bolted on as a response to a different jurisdiction's rules. The whole thing was designed in the place where you live, by people who recognise what the listening is for.",
         "There is a wider point about the alternative this represents to US-based platforms. Catalogue services like Dipsea and Quinn are well-made within their model, but the model is built for the American mainstream and the cultural register reflects it. British women who want something closer to the literary register they actually inherit have not had a home-grown option. The Private Story is the home-grown option.",
       ],
@@ -7852,8 +7852,8 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
         body: "No public listening history, no reviews, no recommendation feed, no social layer. The features that would make your exploration feel witnessed simply do not exist.",
       },
       {
-        heading: "UK company, UK consumer protection",
-        body: "Operated under UK company law, billed in dollars, subject to UK GDPR. Cancellation and data requests are handled directly.",
+        heading: "UK-based, UK consumer protection",
+        body: "Operated under UK law, billed in dollars, subject to UK GDPR. Cancellation and data requests are handled directly.",
       },
       {
         heading: "Generative, not catalogue",
@@ -7865,7 +7865,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     h2: "British Audio Erotica for Women — The Full Picture",
     paragraphs: [
       "British women have been the implicit and largely unrecognised audience for romance fiction's most influential lineage — gothic, Victorian, contemporary — for two centuries. Audio erotica, as a commercial category, has been slower to build for them. The dominant platforms were built for the American market and the cultural register reflects it.",
-      "The Private Story is the home-grown alternative. Built in the UK by a UK-registered company, narrated in British voices as primary options, written in UK English, structured around the privacy expectation British women have always carried. The literary register the British romance tradition makes available — gothic atmospheric, contemporary restraint, the quiet intensity that does not need to perform — is the register the platform is most fluent in.",
+      "The Private Story is the home-grown alternative. Built in the UK, narrated in British voices as primary options, written in UK English, structured around the privacy expectation British women have always carried. The literary register the British romance tradition makes available — gothic atmospheric, contemporary restraint, the quiet intensity that does not need to perform — is the register the platform is most fluent in.",
       "What that produces in practice is audio erotica that reads as if it were written for the listener rather than translated for her. Stories that begin from a specific brief and arrive as a private, narrated piece of fiction kept in your account. Voices that carry cultural meaning the alternatives do not have access to.",
       "Last updated: April 2026.",
       "Open the <a href=\"/after-dark\">After Dark creation flow</a> and create a story in the register you actually inherit.",
@@ -7888,7 +7888,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
   faqs: [
     {
       q: "What makes a platform 'British' rather than just available in the UK?",
-      a: "The distinction is structural. A platform that is available in the UK has been built for a larger market and made accessible to British listeners as part of a global rollout — the voices, references, billing, and editorial register reflect the primary market. A British platform was built in the UK from the start: operated by a UK company, subject to UK consumer protection and UK GDPR by default rather than by adaptation, billed in dollars, and produced by people whose cultural register is the same as the listener's. The Private Story is built in the second sense.",
+      a: "The distinction is structural. A platform that is available in the UK has been built for a larger market and made accessible to British listeners as part of a global rollout — the voices, references, billing, and editorial register reflect the primary market. A British platform was built in the UK from the start: operated by The Private Story, subject to UK consumer protection and UK GDPR by default rather than by adaptation, billed in dollars, and produced by people whose cultural register is the same as the listener's. The Private Story is built in the second sense.",
     },
     {
       q: "Which British accents are available in narration?",
@@ -7904,7 +7904,7 @@ export const britishAudioEroticaForWomenConfig: SEOPageConfig = {
     },
     {
       q: "Is the platform private under UK GDPR?",
-      a: "Yes. The Private Story is operated by Ianson System Ltd, a UK-registered company subject to UK GDPR. Data subject requests are handled by the operating company directly. The platform is structurally designed so that there is no public listening history, no review system, no recommendation feed, no social layer — features that would create implicit public records of erotic preference simply do not exist. The full position is on the <a href=\"/privacy\">privacy page</a>.",
+      a: "Yes. The Private Story is operated from the UK and is subject to UK GDPR. Data subject requests are handled directly. The platform is structurally designed so that there is no public listening history, no review system, no recommendation feed, no social layer — features that would create implicit public records of erotic preference simply do not exist. The full position is on the <a href=\"/privacy\">privacy page</a>.",
     },
     {
       q: "Can I create stories set in specific British places?",
@@ -7961,7 +7961,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
         "Production polish and editorial coherence. Catalogue platforms have invested heavily in this — the stories are produced like radio drama, with sound design and multiple performers. Audiobooks are similarly polished within their format. Generative platforms produce single-voice narration of a written story; the polish is in the writing and the voice rather than in multi-track production. If the listening experience as production matters most to you, the catalogue platforms are stronger here.",
         "Depth and character development. Audiobook romance is in a category of its own here — full-length novels with the time to develop characters, relationships, and emotional arcs in ways that shorter formats cannot. If you want to inhabit a long story, audiobook romance is the answer.",
         "Privacy and the absence of social features. The catalogue platforms have varying levels of social and recommendation features. Audiobook services typically have substantial public-facing libraries, ratings, and reviews. Generative platforms tend to be more private by design; The Private Story specifically has no social features, no public listening history, no review system, and no recommendation feed.",
-        "UK consumer protection and billing. Catalogue and audiobook services operating in the UK from US-based companies satisfy UK consumer rights in name; the practical experience of cancelling, exercising data rights, or pursuing a billing dispute varies. UK-registered platforms — including The Private Story — handle these directly under UK law.",
+        "UK consumer protection and billing. Catalogue and audiobook services operating in the UK from US-based companies satisfy UK consumer rights in name; the practical experience of cancelling, exercising data rights, or pursuing a billing dispute varies. UK-based platforms — including The Private Story — handle these directly under UK law.",
       ],
     },
     {
@@ -7977,7 +7977,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
       h2: "Where The Private Story Sits — Plainly",
       paragraphs: [
         "The Private Story is a generative platform built in the UK. The story is created from your brief at the moment you ask for it, by Mistral Large, narrated in production-grade voices including British registers, and saved to your private account. The form is around ten minutes; the creation flow takes under two minutes. There is no catalogue and no library; nothing pre-existed your brief.",
-        "The platform's strengths are specificity, privacy, and the UK structural footing — operated by Ianson System Ltd under UK company law, billed in dollars, subject to UK GDPR by default. Its limitations relative to catalogue platforms are production format (single-voice narration rather than multi-track production) and length (around ten minutes rather than thirty). Its limitations relative to audiobooks are the depth and character development that only a full-length novel can deliver.",
+        "The platform's strengths are specificity, privacy, and the UK structural footing — operated by The Private Story under UK law, billed in dollars, subject to UK GDPR by default. Its limitations relative to catalogue platforms are production format (single-voice narration rather than multi-track production) and length (around ten minutes rather than thirty). Its limitations relative to audiobooks are the depth and character development that only a full-length novel can deliver.",
         "Whether it is the right app for you depends on which criteria matter most. If specificity and privacy are higher priorities than production polish and length, generative is likely the right category. If the catalogue immediacy is what you want, the catalogue platforms are likely the right category. Both can be true on different evenings.",
       ],
     },
@@ -8030,8 +8030,8 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
         body: "No public listening history, no review feed, no recommendations, no social layer. The features that would make exploration feel witnessed simply do not exist.",
       },
       {
-        heading: "UK company, UK consumer protection",
-        body: "Operated by Ianson System Ltd, a UK-registered company subject to UK consumer law and UK GDPR. Cancellation and data requests handled directly.",
+        heading: "UK-based, UK consumer protection",
+        body: "Operated by The Private Story, subject to UK consumer law and UK GDPR. Cancellation and data requests handled directly.",
       },
       {
         heading: "Pricing in dollars, plainly stated",
@@ -8082,7 +8082,7 @@ export const bestAudioEroticaAppUkConfig: SEOPageConfig = {
     },
     {
       q: "Are any of the major audio erotica apps actually British?",
-      a: "Most are not. Dipsea, Quinn, and Aural are US-based companies. Audible and most major audiobook services are also US-based. The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story, and is built and run from the UK. For UK listeners, the difference matters in three ways: the consumer protection regime, the data protection regime, and the cultural register of the voices and writing.",
+      a: "Most are not. Dipsea, Quinn, and Aural are US-based companies. Audible and most major audiobook services are also US-based. The Private Story is operated from the UK and is built and run from the UK. For UK listeners, the difference matters in three ways: the consumer protection regime, the data protection regime, and the cultural register of the voices and writing.",
     },
     {
       q: "Is The Private Story a competitor to Dipsea or Quinn?",
@@ -8222,7 +8222,7 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
       },
       {
         heading: "UK-built, UK-billed",
-        body: "Operated by Ianson System Ltd under UK company law, billed in dollars, subject to UK GDPR. The voice is British and so is the consumer footing.",
+        body: "Operated by The Private Story under UK law, billed in dollars, subject to UK GDPR. The voice is British and so is the consumer footing.",
       },
     ],
   },
@@ -8231,7 +8231,7 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
     paragraphs: [
       "The British male voice in audio erotica is its own erotic instrument. The prosodic restraint, the cultural connotations of composure and observational acuity, the literary tradition the voice is reading inside — these compound into a register that no other narration option replicates. For the right story, the British male voice in first-person POV is doing something specific and specifically powerful.",
       "The Private Story makes the British male voice a primary option in the Creation Room, not an afterthought. Three production-grade registers — RP baritone, contemporary London, softer Northern — each suited to a different kind of story. The voice you choose becomes part of the story, not a generic delivery layer applied afterwards.",
-      "The wider context: the platform is built in the UK by Ianson System Ltd, a UK-registered company, with stories generated by Mistral Large from your specific brief and narrated in the voice you selected. Around ten minutes per story. Saved privately to your account. UK consumer protection and UK GDPR by default.",
+      "The wider context: the platform is built in the UK by The Private Story, with stories generated by Mistral Large from your specific brief and narrated in the voice you selected. Around ten minutes per story. Saved privately to your account. UK consumer protection and UK GDPR by default.",
       "Last updated: April 2026.",
       "Open the <a href=\"/after-dark\">After Dark creation flow</a> and choose the voice that fits the story you actually want.",
     ],
@@ -8281,7 +8281,7 @@ export const audioEroticaMaleVoiceBritishConfig: SEOPageConfig = {
     },
     {
       q: "Where is The Private Story based?",
-      a: "The Private Story is operated by Ianson System Ltd, a UK-registered company trading as The Private Story. The platform is built and run from the UK, billed in dollars, and subject directly to UK consumer protection and UK GDPR. The British voice options reflect the platform's UK origins rather than being added as a marketing feature.",
+      a: "The Private Story is operated from the UK. The platform is built and run from the UK, billed in dollars, and subject directly to UK consumer protection and UK GDPR. The British voice options reflect the platform's UK origins rather than being added as a marketing feature.",
     },
   ],
 };

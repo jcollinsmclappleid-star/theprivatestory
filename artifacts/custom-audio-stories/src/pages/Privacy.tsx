@@ -21,7 +21,7 @@ export default function Privacy() {
           This isn't just a legal document. It's a plain explanation of what we do and don't hold on to — because you have a right to know, and you deserve a straight answer.
         </p>
         <p className="text-muted-foreground text-sm mt-3">
-          For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is Ianson System Ltd (trading as The Private Story), registered in England and Wales. Registered address: 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ.
+          For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is The Private Story. Contact: <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>.
         </p>
       </div>
 
@@ -310,7 +310,7 @@ export default function Privacy() {
           <div>
             <p className="font-display font-semibold text-foreground text-sm mb-1">Full Privacy Policy</p>
             <p className="text-muted-foreground text-xs leading-relaxed">
-              The complete formal privacy notice for Ianson System Ltd (trading as The Private Story), including all lawful bases, international transfers, and your full UK GDPR rights.
+              The complete formal privacy notice for The Private Story, including all lawful bases, international transfers, and your full UK GDPR rights.
             </p>
           </div>
           <Link

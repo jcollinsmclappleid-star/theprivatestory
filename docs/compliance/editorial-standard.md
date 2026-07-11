@@ -1,6 +1,6 @@
 # Editorial Standard — Public Sample Content
 
-**Owner:** Ianson System Ltd t/a The Private Story
+**Owner:** The Private Story
 **Scope:** All audio and text content served on public, unauthenticated routes — including the central `/samples` "Editor's Picks" landing page.
 **Last reviewed:** 2026-05
 

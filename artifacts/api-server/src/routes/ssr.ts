@@ -540,14 +540,14 @@ const STATIC_PAGES: StaticPage[] = [
     slug: "about",
     title: "About — The Private Story",
     description:
-      "The Private Story is built by Ianson System Ltd. Privacy-led, agency-first, female-first audio fiction.",
+      "The Private Story is built in the UK. Privacy-led, agency-first, female-first audio fiction.",
     h1: "About The Private Story",
     tagline:
       "Stories written for the parts of you that nobody else gets to know.",
     body: `
     <section>
       <h2>Who We Are</h2>
-      <p>The Private Story is a product of Ianson System Ltd t/a The Private Story. We are a UK-based company building premium literary audio for adults who want stories that respond to them — not to a generic audience.</p>
+      <p>The Private Story is a UK-based platform building premium literary audio for adults who want stories that respond to them — not to a generic audience.</p>
     </section>
     <section>
       <h2>Our Principles</h2>
@@ -718,7 +718,6 @@ const STATIC_PAGES: StaticPage[] = [
     <section>
       <h2>Contact</h2>
       <p>Questions about your data? Email <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>.</p>
-      <p>Ianson System Ltd t/a The Private Story, registered in England and Wales.</p>
     </section>`,
   },
   {
@@ -741,7 +740,6 @@ const STATIC_PAGES: StaticPage[] = [
     <section>
       <h2>Contact</h2>
       <p>Questions about your data? Email <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>.</p>
-      <p>Ianson System Ltd t/a The Private Story, registered in England and Wales.</p>
     </section>`,
   },
   {
@@ -792,7 +790,7 @@ const STATIC_PAGES: StaticPage[] = [
     </section>
     <section>
       <h2>Contact</h2>
-      <p>Ianson System Ltd t/a The Private Story. Email: <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>.</p>
+      <p>The Private Story. Email: <a href="mailto:support@theprivatestory.com">support@theprivatestory.com</a>.</p>
     </section>`,
   },
   {

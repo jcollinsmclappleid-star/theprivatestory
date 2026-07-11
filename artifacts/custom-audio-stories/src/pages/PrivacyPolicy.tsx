@@ -97,15 +97,13 @@ export default function PrivacyPolicy() {
         <div className="glass-panel rounded-xl p-4 text-xs text-muted-foreground space-y-1 mb-6">
           <p><span className="text-foreground/60 font-medium">Effective date:</span> {EFFECTIVE_DATE}</p>
           <p><span className="text-foreground/60 font-medium">Last updated:</span> {LAST_UPDATED}</p>
-          <p><span className="text-foreground/60 font-medium">Controller:</span> Ianson System Ltd</p>
-          <p><span className="text-foreground/60 font-medium">Trading as:</span> The Private Story</p>
-          <p><span className="text-foreground/60 font-medium">Registered office:</span> 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
+          <p><span className="text-foreground/60 font-medium">Controller:</span> The Private Story</p>
           <p><span className="text-foreground/60 font-medium">Contact:</span>{" "}
             <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          This policy sets out the complete terms on which Ianson System Ltd (trading as The Private Story) processes personal data. For a plain-language overview, see our{" "}
+          This policy sets out the complete terms on which The Private Story processes personal data. For a plain-language overview, see our{" "}
           <Link href="/privacy" className="text-primary hover:underline">Privacy Summary</Link>.
         </p>
       </div>
@@ -127,10 +125,7 @@ export default function PrivacyPolicy() {
         {/* 2 */}
         <SectionHeading number="2" title="Who we are" />
         <P>
-          For the purposes of UK data protection law, <strong className="text-foreground/80">Ianson System Ltd</strong> is the controller of your personal data.
-        </P>
-        <P>
-          Registered in England and Wales. Registered office: 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ.
+          For the purposes of UK data protection law, <strong className="text-foreground/80">The Private Story</strong> is the controller of your personal data.
         </P>
         <P>
           If you have any questions about this Privacy Policy or wish to exercise your rights, contact us at:{" "}
@@ -527,10 +522,9 @@ export default function PrivacyPolicy() {
         {/* 23 */}
         <SectionHeading number="23" title="Contact us" />
         <div className="glass-panel rounded-xl p-5 mb-6">
-          <p className="font-display font-bold text-foreground mb-3">Ianson System Ltd (trading as The Private Story)</p>
+          <p className="font-display font-bold text-foreground mb-3">The Private Story</p>
           <div className="space-y-1.5 text-sm text-muted-foreground">
             <p>Email: <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a></p>
-            <p>Address: 71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
             <p className="text-xs text-muted-foreground/60 mt-2">We aim to respond to all data subject requests within one calendar month of receipt.</p>
           </div>
         </div>

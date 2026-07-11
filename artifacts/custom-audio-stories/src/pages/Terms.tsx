@@ -23,8 +23,7 @@ export default function Terms() {
           <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2026
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
-          The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
-          <strong>Registered office:</strong> 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, England<br />
+          <strong>The Private Story</strong><br />
           <strong>Contact:</strong> <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
         </p>
       </div>
@@ -169,9 +168,8 @@ export default function Terms() {
             support@theprivatestory.com
           </a>
           <p className="text-muted-foreground text-xs mt-4">
-            Registered company: Ianson System Ltd<br />
-            Registered in England and Wales<br />
-            71-75 Shelton Street, Covent Garden, London, WC2H 9JQ
+            The Private Story<br />
+            <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
           </p>
         </div>
 

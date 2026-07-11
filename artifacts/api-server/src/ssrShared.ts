@@ -217,7 +217,7 @@ const FOOTER_HTML = `
         <a href="/content-policy">Content Policy</a>
         <a href="/refund-policy">Refund Policy</a>
       </div>
-      <p class="footer-copy">What you listen to here stays here. Always. · Adults 18+ only. · Ianson System Ltd t/a The Private Story.</p>
+      <p class="footer-copy">What you listen to here stays here. Always. · Adults 18+ only. · The Private Story.</p>
     </div>
   </div>
 </footer>

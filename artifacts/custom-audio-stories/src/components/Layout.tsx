@@ -434,7 +434,7 @@ function Footer() {
               </Link>
             ))}
           </div>
-          <p className="text-[11px] text-muted-foreground/30">What you listen to here stays here. Always. · The Private Story operates through a company registered in England &amp; Wales.</p>
+          <p className="text-[11px] text-muted-foreground/30">What you listen to here stays here. Always. · Adults 18+ only. · The Private Story.</p>
         </div>
       </div>
     </footer>

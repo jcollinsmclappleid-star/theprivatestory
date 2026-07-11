@@ -125,10 +125,14 @@ The API server has CORS configured for `theprivatestory.com`. If the domain stay
 
 **DNS cutover (completed July 2026):** `theprivatestory.com` and `www.theprivatestory.com` point at Vercel. Production env uses `SITE_URL` / `BETTER_AUTH_URL` / `APP_URL` = `https://theprivatestory.com`. Preview deployments may still use `*.vercel.app`.
 
-**Post-cutover manual checks (if not done yet):**
+**Post-cutover manual checks:**
 
-1. Stripe dashboard: webhook endpoint → `https://theprivatestory.com/api/stripe/webhook` (regenerate `STRIPE_WEBHOOK_SECRET` if adding a new endpoint).
-2. Google Cloud Console: add `https://theprivatestory.com` to OAuth authorised redirect URIs.
+1. **Stripe webhook** — endpoint `https://theprivatestory.com/api/stripe/webhook` (verified enabled Jul 2026). If you add a new endpoint, regenerate `STRIPE_WEBHOOK_SECRET` in Vercel. Helper: `node --env-file=.env.local scripts/setup-stripe-webhook.mjs` (run from repo root; uses `artifacts/api-server` Stripe dependency via dynamic import — install deps first).
+2. **Google OAuth** (Google Cloud Console → APIs & Services → Credentials → your OAuth client):
+   - **Authorised JavaScript origins:** `https://theprivatestory.com`
+   - **Authorised redirect URIs:** `https://theprivatestory.com/api/auth/callback/google`
+   - Optional (preview): `https://theprivatestory.vercel.app` and `https://theprivatestory.vercel.app/api/auth/callback/google`
+   - `BETTER_AUTH_URL` / trusted origins must match (already set to apex).
 3. Redeploy production after env changes (Vercel redeploys automatically when env vars change, or run `vercel --prod`).
 
 **Historical pre-cutover note:** While DNS still pointed at Replit, Vercel production used `*.vercel.app` URLs so Stripe/auth callbacks did not hit the old host.

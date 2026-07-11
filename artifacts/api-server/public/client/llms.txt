@@ -96,4 +96,4 @@ The Private Story uses a Casting Room model: the listener makes seven choices be
 
 Stories are written by Mistral Large, narrated by ElevenLabs, and given original cover art by gpt-image-1. Each story is approximately 10 minutes of narrated audio. Stories are saved to the listener's private account and are not visible to anyone else — including the platform operators.
 
-Privacy is architectural: there are no social features, no public profiles, no listening history shared with other users or with advertisers. The platform does not run ads and does not sell data. UK GDPR compliant; data controller is Ianson System Ltd (trading as The Private Story).
+Privacy is architectural: there are no social features, no public profiles, no listening history shared with other users or with advertisers. The platform does not run ads and does not sell data. UK GDPR compliant; data controller is The Private Story.

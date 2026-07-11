@@ -21,7 +21,7 @@ export default function RefundPolicy() {
           <strong>Effective date:</strong> March 2025 | <strong>Last updated:</strong> March 2026
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-3">
-          The Private Story is operated by <strong>Ianson System Ltd</strong> trading as <strong>The Private Story</strong>.<br />
+          <strong>The Private Story</strong><br />
           <strong>Billing inquiries:</strong> <a href="mailto:support@theprivatestory.com" className="text-primary hover:underline">support@theprivatestory.com</a>
         </p>
       </div>
